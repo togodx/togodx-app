@@ -1,30 +1,35 @@
 [
   {
-    "trackId": "refex_specific_expression",
+    "propertyId": "refex_specific_expression",
+    "subject": "Gene",
     "label": "RefEx specific expression",
     "endpoint": "http://ep6.dbcls.jp/togoid/sparqlist/refex_specific_expression",
     "primaryKey": "ncbigene",
   },
   {
-    "trackId": "uniprot_subcellular_location",
+    "propertyId": "uniprot_subcellular_location",
+    "subject": "Protein",
     "label": "uniprot subcellular location",
     "endpoint": "http://ep6.dbcls.jp/togoid/sparqlist/uniprot_subcellular_location",
     "primaryKey": "uniprot"
   },
   {
-    "trackId": "uniprot_pdb_existence",
+    "propertyId": "uniprot_pdb_existence",
+    "subject": "Structure",
     "label": "uniprot pdb-existence from uniprot",
     "endpoint": "http://ep6.dbcls.jp/togoid/sparqlist/uniprot_pdb_existence",
     "primaryKey": "uniprot"
   },
   {
-    "trackId": "uniprot_chembl_assay_existence",
+    "propertyId": "uniprot_chembl_assay_existence",
+    "subject": "Drug",
     "label": "uniprot chembl-assay existence",
     "endpoint": "http://ep6.dbcls.jp/togoid/sparqlist/uniprot_chembl_assay_existence",
     "primaryKey": "hgnc"
   },
   {
-    "trackId": "variant_type",
+    "propertyId": "variant_type",
+    "subject": "Variant",
     "label": "variant type",
     "endpoint": "http://ep6.dbcls.jp/togoid/sparqlist/variant_type",
     "primaryKey": "hgnc"
