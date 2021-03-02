@@ -102,7 +102,7 @@
   },
   {
     "subject": "Drug",
-    "propertyId": "atc_classification",
+    "property": "atc_classification",
     "label": "ATC classification",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/atc_classification",
     "hierarchy":  "https://raw.githubusercontent.com/dbcls/togosite/assets/atc.json",
@@ -110,7 +110,7 @@
   },
   {
     "subject": "Drug",
-    "propertyId": "chembl_mesh",
+    "property": "chembl_mesh",
     "label": "MeSH diseases category",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/chembl_mesh",
     "hierarchy":  "https://raw.githubusercontent.com/dbcls/togosite/assets/mesh.json",
@@ -118,14 +118,14 @@
   },
   {
     "subject": "Drug",
-    "propertyId": "uniprot_chembl_assay_existence",
+    "property": "uniprot_chembl_assay_existence",
     "label": "ChEMBL-assay existence",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_chembl_assay_existence",
     "primaryKey": "chembl"
   },
   {
     "subject": "Disease",
-    "propertyId": "disease_hpo_filter",
+    "property": "disease_hpo_filter",
     "label": "HPO diseases category",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_hpo_filter",
     "hierarchy":  "https://raw.githubusercontent.com/dbcls/togosite/assets/hpo.json",
@@ -133,7 +133,7 @@
   },
   {
     "subject": "Disease",
-    "propertyId": "disease_mondo_filter",
+    "property": "disease_mondo_filter",
     "label": "MONDO diseases category",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_mondo_filter",
     "hierarchy":  "https://raw.githubusercontent.com/dbcls/togosite/assets/mondo.json",
@@ -141,14 +141,14 @@
   },
   {
     "subject": "Variant",
-    "propertyId": "variant_type",
+    "property": "variant_type",
     "label": "Variant type",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/variant_type",
     "primaryKey": "hgnc"
   },
   {
     "subject": "Variant",
-    "propertyId": "variant_clinical_significance",
+    "property": "variant_clinical_significance",
     "label": "Variant clinical significance",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/variant_clinical_significance",
     "primaryKey": "hgnc"
