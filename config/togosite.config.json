@@ -143,6 +143,13 @@
     "primaryKey": "chembl"
   },
   {
+    "subject": "Drug",
+    "property": "chembl_development_phase",
+    "label": "Dvelopment phase",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/chembl_development_phase",
+    "primaryKey": "chembl"
+  },
+  {
     "subject": "Disease",
     "property": "disease_hpo_filter",
     "label": "HPO diseases category",
