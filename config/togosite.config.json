@@ -4,7 +4,6 @@
     "property": "refex_specific_high_expression",
     "label": "RefEx organ specific high expression",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/refex_specific_high_expression",
-    "hierarchy": "https://raw.githubusercontent.com/dbcls/togosite/assets/refex.json",
     "primaryKey": "ncbigene"
   },
   {
@@ -12,7 +11,27 @@
     "property": "refex_specific_low_expression",
     "label": "RefEx organ specific low expression",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/refex_specific_low_expression",
-    "hierarchy": "https://raw.githubusercontent.com/dbcls/togosite/assets/uniprot_keywords.json", 
+    "primaryKey": "ncbigene"
+  },
+  {
+    "subject": "Gene",
+    "property": "gtex6_tissues",
+    "label": "Genes expressed in tissues (GTEx ver6)",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/gtex6_tissues",
+    "primaryKey": "ensembl.gene"
+  },
+  {
+    "subject": "Gene",
+    "property": "homologene_category",
+    "label": "Evolutionary conservation of genes",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/homologene_category",
+    "primaryKey": "ncbigene"
+  },
+  {
+    "subject": "Gene",
+    "property": "homologene_human_paralog_count",
+    "label": "The number of paralogs",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/homologene_human_paralog_count",
     "primaryKey": "ncbigene"
   },
   {
