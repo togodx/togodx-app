@@ -39,7 +39,7 @@
     "property": "uniprot_keywords_cellular_component",
     "label": "UniProt keywords - cellular component",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_cellular_component",
-    "hierarchy": "https://raw.githubusercontent.com/dbcls/togosite/assets/uniprot_keywords.json",
+    "hierarchy": "https://raw.githubusercontent.com/dbcls/togosite/config/assets/uniprot_keywords.json",
     "primaryKey": "uniprot"
   },
   {
@@ -47,7 +47,7 @@
     "property": "uniprot_keywords_biological_process",
     "label": "UniProt keywords - biological process",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_biological_process",
-    "hierarchy": "https://raw.githubusercontent.com/dbcls/togosite/assets/uniprot_keywords.json",
+    "hierarchy": "https://raw.githubusercontent.com/dbcls/togosite/config/assets/uniprot_keywords.json",
     "primaryKey": "uniprot"
   },
   {
@@ -55,7 +55,7 @@
     "property": "uniprot_keywords_molecular_function",
     "label": "UniProt keywords - molecular function",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_molecular_function",
-    "hierarchy": "https://raw.githubusercontent.com/dbcls/togosite/assets/uniprot_keywords.json",
+    "hierarchy": "https://raw.githubusercontent.com/dbcls/togosite/config/assets/uniprot_keywords.json",
     "primaryKey": "uniprot"
   },
   {
@@ -63,7 +63,7 @@
     "property": "uniprot_mass",
     "label": "UniProt - molecular mass",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_mass",
-    "hierarchy": "https://raw.githubusercontent.com/dbcls/togosite/assets/uniprot_intact.json",
+    "hierarchy": "https://raw.githubusercontent.com/dbcls/togosite/config/assets/uniprot_mass.json",
     "primaryKey": "uniprot"
   },
   {
@@ -78,7 +78,7 @@
     "property": "uniprot_phospho_site",
     "label": "UniProt - the number of phosphorylation sites",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_phospho_site",
-    "hierarchy": "https://raw.githubusercontent.com/dbcls/togosite/assets/uniprot_iphospho_site.json",
+    "hierarchy": "https://raw.githubusercontent.com/dbcls/togosite/config/assets/uniprot_iphospho_site.json",
     "primaryKey": "uniprot"
   },
   {
@@ -86,7 +86,7 @@
     "property": "uniprot_glyco_site",
     "label": "UniProt - the number of glycosylation sites",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_glyco_site",
-    "hierarchy": "https://raw.githubusercontent.com/dbcls/togosite/assets/uniprot_glyco_site.json",
+    "hierarchy": "https://raw.githubusercontent.com/dbcls/togosite/config/assets/uniprot_glyco_site.json",
     "primaryKey": "uniprot"
   },
   {
@@ -94,7 +94,7 @@
     "property": "uniprot_interact",
     "label": "UniProt - the number of interaction proteins",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_interact",
-    "hierarchy": "https://raw.githubusercontent.com/dbcls/togosite/assets/uniprot_intact.json",
+    "hierarchy": "https://raw.githubusercontent.com/dbcls/togosite/config/assets/uniprot_intact.json",
     "primaryKey": "uniprot"
   },
   {
@@ -109,7 +109,7 @@
     "property": "uniprot_reactome",
     "label" : "UniProt - pathway components",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_reactome",
-    "hierarchy":  "https://raw.githubusercontent.com/dbcls/togosite/assets/reactome.json",
+    "hierarchy":  "https://raw.githubusercontent.com/dbcls/togosite/config/assets/reactome.json",
     "primaryKey": "uniprot"
   },
   {
@@ -124,7 +124,7 @@
     "property": "atc_classification",
     "label": "ATC classification",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/atc_classification",
-    "hierarchy":  "https://raw.githubusercontent.com/dbcls/togosite/assets/atc.json",
+    "hierarchy":  "https://raw.githubusercontent.com/dbcls/togosite/config/assets/atc.json",
     "primaryKey": "chembl"
   },
   {
@@ -132,7 +132,7 @@
     "property": "chembl_mesh",
     "label": "MeSH diseases category",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/chembl_mesh",
-    "hierarchy":  "https://raw.githubusercontent.com/dbcls/togosite/assets/mesh.json",
+    "hierarchy":  "https://raw.githubusercontent.com/dbcls/togosite/config/assets/mesh.json",
     "primaryKey": "chembl"
   },
   {
@@ -154,7 +154,7 @@
     "property": "disease_hpo_filter",
     "label": "HPO diseases category",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_hpo_filter",
-    "hierarchy":  "https://raw.githubusercontent.com/dbcls/togosite/assets/hpo.json",
+    "hierarchy":  "https://raw.githubusercontent.com/dbcls/togosite/config/assets/hpo.json",
     "primaryKey": "hpo"
   },
   {
@@ -162,7 +162,7 @@
     "property": "disease_mondo_filter",
     "label": "MONDO diseases category",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_mondo_filter",
-    "hierarchy":  "https://raw.githubusercontent.com/dbcls/togosite/assets/mondo.json",
+    "hierarchy":  "https://raw.githubusercontent.com/dbcls/togosite/config/assets/mondo.json",
     "primaryKey": "mondo"
   },
   {
