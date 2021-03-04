@@ -112,6 +112,27 @@
     "primaryKey": "uniprot"
   },
   {
+    "subject": "Structure",
+    "property": "pdb_experimental_methods",
+    "label": "Structure determination method",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_experimental_methods",
+    "primaryKey": "pdb"
+  },
+  {
+    "subject": "Structure",
+    "property": "pdb-temperature",
+    "label": "Temperature of the crystallization solution",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb-temperature",
+    "primaryKey": "pdb"
+  },
+  {
+    "subject": "Structure",
+    "property": "pdb_pH",
+    "label": "pH value of the crystallization solution",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_pH",
+    "primaryKey": "pdb"
+  },
+  {
     "subject": "Drug",
     "property": "atc_classification",
     "label": "ATC classification",
@@ -138,6 +159,13 @@
     "label": "Dvelopment phase",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/chembl_development_phase",
     "primaryKey": "chembl"
+  },
+  {
+    "subject": "Disease",
+    "property": "disease_mondo_filter",
+    "label": "MONDO disease category",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_mondo_filter_haschild",
+    "primaryKey": "mondo"
   },
   {
     "subject": "Variant",
