@@ -137,7 +137,7 @@
     "property": "atc_classification",
     "label": "ATC classification",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/atc_classification_hsachild",
-    "primaryKey": "chembl"
+    "primaryKey": "pubchem.compound"
   },
   {
     "subject": "Drug",
