@@ -158,7 +158,7 @@
     "property": "uniprot_chembl_assay_existence",
     "label": "ChEMBL-assay existence",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_chembl_assay_existence",
-    "primaryKey": "chembl"
+    "primaryKey": "uniprot"
   },
   {
     "subject": "Drug",
