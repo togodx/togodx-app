@@ -22,6 +22,13 @@
   },
   {
     "subject": "Gene",
+    "property": "chip_atlas",
+    "label": "Genes with hypothetical upstream TFs in ChIP-Atlas",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/chip_atlas",
+    "primaryKey": "ensembl.gene"
+  },
+  {
+    "subject": "Gene",
     "property": "homologene_category",
     "label": "Evolutionary conservation of genes",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/homologene_category",
