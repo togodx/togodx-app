@@ -78,6 +78,27 @@
   },
   {
     "subject": "Protein",
+    "property": "uniprot_keywords_domain",
+    "label": "Protein domains",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_domain",
+    "primaryKey": "uniprot"
+  },
+  {
+    "subject": "Protein",
+    "property": "uniprot_keywords_ptm",
+    "label": "Post-translationl modifications",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_PTM",
+    "primaryKey": "uniprot"
+  },
+  {
+    "subject": "Protein",
+    "property": "uniprot_keywords_ligand",
+    "label": "Ligand bindings",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_ligand",
+    "primaryKey": "uniprot"
+  },
+  {
+    "subject": "Protein",
     "property": "uniprot_transmembranenumber",
     "label": "The number of transmembrane segments",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_transmembranenumber",
