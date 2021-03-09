@@ -45,7 +45,7 @@
     "subject": "Gene",
     "property": "ensembl-exon-count",
     "label": "The number of exons",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/Ensembl-exon-count",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/Ensembl-exon-count_bin",
     "primaryKey": "ensembl.transcript"
   },
   {
