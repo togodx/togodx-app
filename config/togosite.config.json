@@ -171,14 +171,14 @@
     "subject": "Structure",
     "property": "pdb_alphahelix",
     "label": "The number of alpha-helices",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_alphahelix",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_alphahelix_bin",
     "primaryKey": "pdb"
   },
   {
     "subject": "Structure",
     "property": "pdb_betasheet",
     "label": "The number of beta-sheets",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_betasheet",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_betasheet_bin",
     "primaryKey": "pdb"
   },
   {
