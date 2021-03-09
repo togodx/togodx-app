@@ -191,7 +191,7 @@
   {
     "subject": "Drug",
     "property": "uniprot_chembl_assay_existence",
-    "label": "ChEMBL assay existence",
+    "label": "The number of proteins with assay",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_chembl_assay_existence",
     "primaryKey": "uniprot"
   },
