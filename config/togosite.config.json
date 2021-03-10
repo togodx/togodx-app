@@ -42,7 +42,8 @@
         "propertyId": "ensembl-exon-count",
         "label": "The number of exons",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/Ensembl-exon-count_bin",
-        "primaryKey": "ensembl.transcript"
+        "primaryKey": "ensembl.transcript",
+        "viewMethod": "histogram"
       }
     ]
   },
@@ -72,7 +73,7 @@
         "label": "Molecular mass",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_mass",
         "primaryKey": "uniprot",
-        "viewMethod": "heatmap"
+        "viewMethod": "histogram"
       },
       {
         "propertyId": "uniprot_keywords_domain",
@@ -96,19 +97,22 @@
         "propertyId": "uniprot_transmembranenumber",
         "label": "The number of transmembrane segments",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_transmembranenumber",
-        "primaryKey": "uniprot"
+        "primaryKey": "uniprot",
+        "viewMethod": "histogram"
       },
       {
         "propertyId": "uniprot_phospho_site",
         "label": "The number of phosphorylation sites",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_phospho_site",
-        "primaryKey": "uniprot"
+        "primaryKey": "uniprot",
+        "viewMethod": "histogram"
       },
       {
         "propertyId": "uniprot_glyco_site",
         "label": "The number of glycosylation sites",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_glyco_site",
-        "primaryKey": "uniprot"
+        "primaryKey": "uniprot",
+        "viewMethod": "histogram"
       },
       {
         "propertyId": "nextprot_protein_existence",
@@ -131,7 +135,8 @@
         "propertyId": "uniprot_interact",
         "label": "The number of interaction proteins",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_interact",
-        "primaryKey": "uniprot"
+        "primaryKey": "uniprot",
+        "viewMethod": "histogram"
       }
     ]
   },
@@ -148,7 +153,8 @@
         "propertyId": "pdb_polypeptide",
         "label": "The number of proteins in the PDB entry",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_polypeptide",
-        "primaryKey": "pdb"
+        "primaryKey": "pdb",
+        "viewMethod": "histogram"
       },
       {
         "propertyId": "pdb_experimental_methods",
@@ -166,13 +172,15 @@
         "propertyId": "pdb_alphahelix",
         "label": "The number of alpha-helices",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_alphahelix_bin",
-        "primaryKey": "pdb"
+        "primaryKey": "pdb",
+        "viewMethod": "histogram"
       },
       {
         "propertyId": "pdb_betasheet",
         "label": "The number of beta-sheets",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_betasheet_bin",
-        "primaryKey": "pdb"
+        "primaryKey": "pdb",
+        "viewMethod": "histogram"
       },
       {
         "propertyId": "pdb-temperature",

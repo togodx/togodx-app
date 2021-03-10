@@ -22,7 +22,7 @@ A property object must have four fields, `propertyId`, `label`, `data`, and `pri
 ]
 ```
 
-An optional field `viewMethod` specifies the method of visualization (`column` or `heatmap`, default: `column`)
+An optional field `viewMethod` specifies the method of visualization (`column` or `histogram`, default: `column`)
 
 ```
 [
@@ -34,7 +34,7 @@ An optional field `viewMethod` specifies the method of visualization (`column` o
         "label": "Molecular mass",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_mass",
         "primaryKey": "uniprot",
-        "viewMethod": "heatmap"
+        "viewMethod": "histogram"
       }
     ]
   }
