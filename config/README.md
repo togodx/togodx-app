@@ -30,7 +30,7 @@ An optional field `viewMethod` specifies the method of visualization (`column` o
     "subject": "Protein",
     "properties": [
       {
-        "property": "uniprot_mass",
+        "propertyId": "uniprot_mass",
         "label": "Molecular mass",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_mass",
         "primaryKey": "uniprot",
