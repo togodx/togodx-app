@@ -246,6 +246,12 @@
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_hpo_filter",
         "primaryKey": "hp"
       },
+        {
+        "propertyId": "rare_disease_nando_filter",
+        "label": "Nando rare disease category",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/nando",
+        "primaryKey": "nando"
+      }
       {
         "propertyId": "disease_related_database",
         "label": "Disease related database",
