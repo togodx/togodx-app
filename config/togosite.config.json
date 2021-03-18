@@ -239,6 +239,13 @@
   },
   {
     "subject": "Disease",
+    "property": "disease_hpo_filter",
+    "label": "HPO phenotype category",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_hpo_filter",
+    "primaryKey": "hp"
+  },
+  {
+    "subject": "Disease",
     "property": "disease_related_database",
     "label": "Disease related database",
     "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/Disease-relatedDB",
