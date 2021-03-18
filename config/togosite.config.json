@@ -231,7 +231,7 @@
       {
         "propertyId": "disease_mondo_filter",
         "label": "MONDO disease category",
-        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_mondo_filter_haschild",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_mondo_filter",
         "primaryKey": "mondo"
       },
       {
@@ -239,6 +239,12 @@
         "label": "MONDO disease category by anatomical system",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_mondo_filter_anatomical",
         "primaryKey": "mondo"
+      },
+      {
+        "propertyId": "disease_hpo_filter",
+        "label": "HPO phenotype category",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_hpo_filter",
+        "primaryKey": "hp"
       },
       {
         "propertyId": "disease_related_database",
