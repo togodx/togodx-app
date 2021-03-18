@@ -1,268 +1,274 @@
 [
   {
     "subject": "Gene",
-    "property": "refex_specific_high_expression",
-    "label": "RefEx organ specific high expression",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/refex_specific_high_expression",
-    "primaryKey": "ncbigene"
-  },
-  {
-    "subject": "Gene",
-    "property": "refex_specific_low_expression",
-    "label": "RefEx organ specific low expression",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/refex_specific_low_expression",
-    "primaryKey": "ncbigene"
-  },
-  {
-    "subject": "Gene",
-    "property": "gtex6_tissues",
-    "label": "Genes expressed in tissues (GTEx ver6)",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/gtex6_tissues",
-    "primaryKey": "ensembl.gene"
-  },
-  {
-    "subject": "Gene",
-    "property": "chip_atlas",
-    "label": "Genes with hypothetical upstream TFs in ChIP-Atlas",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/chip_atlas",
-    "primaryKey": "ensembl.gene"
-  },
-  {
-    "subject": "Gene",
-    "property": "homologene_category",
-    "label": "Evolutionary conservation of genes",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/homologene_category",
-    "primaryKey": "ncbigene"
-  },
-  {
-    "subject": "Gene",
-    "property": "homologene_human_paralog_count",
-    "label": "The number of paralogs",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/homologene_human_paralog_count",
-    "primaryKey": "ncbigene"
-  },
-  {
-    "subject": "Gene",
-    "property": "ensembl-exon-count",
-    "label": "The number of exons",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/Ensembl-exon-count_bin",
-    "primaryKey": "ensembl.transcript"
-  },
-  {
-    "subject": "Protein",
-    "property": "uniprot_keywords_cellular_component",
-    "label": "Cellular component",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_cellular_component",
-    "primaryKey": "uniprot"
+    "properties": [
+      {
+        "propertyId": "refex_specific_high_expression",
+        "label": "RefEx organ specific high expression",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/refex_specific_high_expression",
+        "primaryKey": "ncbigene"
+      },
+      {
+        "propertyId": "refex_specific_low_expression",
+        "label": "RefEx organ specific low expression",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/refex_specific_low_expression",
+        "primaryKey": "ncbigene"
+      },
+      {
+        "propertyId": "gtex6_tissues",
+        "label": "Genes expressed in tissues (GTEx ver6)",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/gtex6_tissues",
+        "primaryKey": "ensembl.gene"
+      },
+      {
+        "propertyId": "chip_atlas",
+        "label": "Genes with hypothetical upstream TFs in ChIP-Atlas",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/chip_atlas",
+        "primaryKey": "ensembl.gene"
+      },
+      {
+        "propertyId": "homologene_category",
+        "label": "Evolutionary conservation of genes",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/homologene_category",
+        "primaryKey": "ncbigene"
+      },
+      {
+        "propertyId": "homologene_human_paralog_count",
+        "label": "The number of paralogs",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/homologene_human_paralog_count",
+        "primaryKey": "ncbigene"
+      },
+      {
+        "propertyId": "ensembl-exon-count",
+        "label": "The number of exons",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/Ensembl-exon-count_bin",
+        "primaryKey": "ensembl.transcript",
+        "viewMethod": "histogram"
+      }
+    ]
   },
   {
     "subject": "Protein",
-    "property": "uniprot_keywords_biological_process",
-    "label": "Biological process",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_biological_process",
-    "primaryKey": "uniprot"
-  },
-  {
-    "subject": "Protein",
-    "property": "uniprot_keywords_molecular_function",
-    "label": "Molecular function",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_molecular_function",
-    "primaryKey": "uniprot"
-  },
-  {
-    "subject": "Protein",
-    "property": "uniprot_mass",
-    "label": "Molecular mass",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_mass",
-    "primaryKey": "uniprot"
-  },
-  {
-    "subject": "Protein",
-    "property": "uniprot_keywords_domain",
-    "label": "Protein domains",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_domain",
-    "primaryKey": "uniprot"
-  },
-  {
-    "subject": "Protein",
-    "property": "uniprot_keywords_ptm",
-    "label": "Post-translationl modifications",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_PTM",
-    "primaryKey": "uniprot"
-  },
-  {
-    "subject": "Protein",
-    "property": "uniprot_keywords_ligand",
-    "label": "Ligand bindings",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_ligand",
-    "primaryKey": "uniprot"
-  },
-  {
-    "subject": "Protein",
-    "property": "uniprot_transmembranenumber",
-    "label": "The number of transmembrane segments",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_transmembranenumber",
-    "primaryKey": "uniprot"
-  },
-  {
-    "subject": "Protein",
-    "property": "uniprot_phospho_site",
-    "label": "The number of phosphorylation sites",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_phospho_site",
-    "primaryKey": "uniprot"
-  },
-  {
-    "subject": "Protein",
-    "property": "uniprot_glyco_site",
-    "label": "The number of glycosylation sites",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_glyco_site",
-    "primaryKey": "uniprot"
-  },
-  {
-    "subject": "Protein",
-    "property": "nextprot_protein_existence",
-    "label" :"Protein existence",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/nextprot_protein_existence",
-    "primaryKey": "uniprot"
-  },
-  {
-    "subject": "Protein",
-    "property": "uniprot_reactome",
-    "label" : "Pathway components",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_reactome",
-    "primaryKey": "uniprot"
+    "properties": [
+      {
+        "propertyId": "uniprot_keywords_cellular_component",
+        "label": "Cellular component",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_cellular_component",
+        "primaryKey": "uniprot"
+      },
+      {
+        "propertyId": "uniprot_keywords_biological_process",
+        "label": "Biological process",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_biological_process",
+        "primaryKey": "uniprot"
+      },
+      {
+        "propertyId": "uniprot_keywords_molecular_function",
+        "label": "Molecular function",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_molecular_function",
+        "primaryKey": "uniprot"
+      },
+      {
+        "propertyId": "uniprot_mass",
+        "label": "Molecular mass",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_mass",
+        "primaryKey": "uniprot",
+        "viewMethod": "histogram"
+      },
+      {
+        "propertyId": "uniprot_keywords_domain",
+        "label": "Protein domains",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_domain",
+        "primaryKey": "uniprot"
+      },
+      {
+        "propertyId": "uniprot_keywords_ptm",
+        "label": "Post-translationl modifications",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_PTM",
+        "primaryKey": "uniprot"
+      },
+      {
+        "propertyId": "uniprot_keywords_ligand",
+        "label": "Ligand bindings",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_ligand",
+        "primaryKey": "uniprot"
+      },
+      {
+        "propertyId": "uniprot_transmembranenumber",
+        "label": "The number of transmembrane segments",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_transmembranenumber",
+        "primaryKey": "uniprot",
+        "viewMethod": "histogram"
+      },
+      {
+        "propertyId": "uniprot_phospho_site",
+        "label": "The number of phosphorylation sites",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_phospho_site",
+        "primaryKey": "uniprot",
+        "viewMethod": "histogram"
+      },
+      {
+        "propertyId": "uniprot_glyco_site",
+        "label": "The number of glycosylation sites",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_glyco_site",
+        "primaryKey": "uniprot",
+        "viewMethod": "histogram"
+      },
+      {
+        "propertyId": "nextprot_protein_existence",
+        "label" :"Protein existence",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/nextprot_protein_existence",
+        "primaryKey": "uniprot"
+      },
+      {
+        "propertyId": "uniprot_reactome",
+        "label" : "Pathway components",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_reactome",
+        "primaryKey": "uniprot"
+      }
+    ]
   },
   {
     "subject": "Interaction",
-    "property": "uniprot_interact",
-    "label": "The number of interaction proteins",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_interact",
-    "primaryKey": "uniprot"
+    "properties": [
+      {
+        "propertyId": "uniprot_interact",
+        "label": "The number of interaction proteins",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_interact",
+        "primaryKey": "uniprot",
+        "viewMethod": "histogram"
+      }
+    ]
   },
   {
     "subject": "Structure",
-    "property": "uniprot_pdb_existence",
-    "label": "Structure data existence",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_pdb_existence",
-    "primaryKey": "uniprot"
-  },
-  {
-    "subject": "Structure",
-    "property": "pdb_polypeptide",
-    "label": "The number of proteins in the PDB entry",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_polypeptide",
-    "primaryKey": "pdb"
-  },
-  {
-    "subject": "Structure",
-    "property": "pdb_experimental_methods",
-    "label": "Structure determination method",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_experimental_methods",
-    "primaryKey": "pdb"
-  },
-  {
-    "subject": "Structure",
-    "property": "pdb_nonpeptide",
-    "label": "Binding molecules",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_nonpeptide",
-    "primaryKey": "pdb"
-  },
-  {
-    "subject": "Structure",
-    "property": "pdb_alphahelix",
-    "label": "The number of alpha-helices",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_alphahelix_bin",
-    "primaryKey": "pdb"
-  },
-  {
-    "subject": "Structure",
-    "property": "pdb_betasheet",
-    "label": "The number of beta-sheets",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_betasheet_bin",
-    "primaryKey": "pdb"
-  },
-  {
-    "subject": "Structure",
-    "property": "pdb-temperature",
-    "label": "Temperature of the crystallization solution",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb-temperature",
-    "primaryKey": "pdb"
-  },
-  {
-    "subject": "Structure",
-    "property": "pdb_pH",
-    "label": "pH value of the crystallization solution",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_pH",
-    "primaryKey": "pdb"
+    "properties": [
+      {
+        "propertyId": "uniprot_pdb_existence",
+        "label": "Structure data existence",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_pdb_existence",
+        "primaryKey": "uniprot"
+      },
+      {
+        "propertyId": "pdb_polypeptide",
+        "label": "The number of proteins in the PDB entry",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_polypeptide",
+        "primaryKey": "pdb",
+        "viewMethod": "histogram"
+      },
+      {
+        "propertyId": "pdb_experimental_methods",
+        "label": "Structure determination method",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_experimental_methods",
+        "primaryKey": "pdb"
+      },
+      {
+        "propertyId": "pdb_nonpeptide",
+        "label": "Binding molecules",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_nonpeptide",
+        "primaryKey": "pdb"
+      },
+      {
+        "propertyId": "pdb_alphahelix",
+        "label": "The number of alpha-helices",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_alphahelix_bin",
+        "primaryKey": "pdb",
+        "viewMethod": "histogram"
+      },
+      {
+        "propertyId": "pdb_betasheet",
+        "label": "The number of beta-sheets",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_betasheet_bin",
+        "primaryKey": "pdb",
+        "viewMethod": "histogram"
+      },
+      {
+        "propertyId": "pdb-temperature",
+        "label": "Temperature of the crystallization solution",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb-temperature",
+        "primaryKey": "pdb"
+      },
+      {
+        "propertyId": "pdb_pH",
+        "label": "pH value of the crystallization solution",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/pdb_pH",
+        "primaryKey": "pdb"
+      }
+    ]
   },
   {
     "subject": "Drug",
-    "property": "atc_classification",
-    "label": "ATC classification",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/atc_classification_haschild",
-    "primaryKey": "pubchem.compound"
-  },
-  {
-    "subject": "Drug",
-    "property": "chembl_mesh",
-    "label": "MeSH diseases category",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/chembl_mesh",
-    "primaryKey": "chembl"
-  },
-  {
-    "subject": "Drug",
-    "property": "uniprot_chembl_assay_existence",
-    "label": "Proteins with ChEMBL assay",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_chembl_assay_existence",
-    "primaryKey": "uniprot"
-  },
-  {
-    "subject": "Drug",
-    "property": "chembl_development_phase",
-    "label": "Dvelopment phase",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/chembl_development_phase",
-    "primaryKey": "chembl"
-  },
-  {
-    "subject": "Disease",
-    "property": "disease_mondo_filter",
-    "label": "MONDO disease category",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_mondo_filter",
-    "primaryKey": "mondo"
+    "properties": [
+      {
+        "propertyId": "atc_classification",
+        "label": "ATC classification",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/atc_classification_haschild",
+        "primaryKey": "pubchem.compound"
+      },
+      {
+        "propertyId": "chembl_mesh",
+        "label": "MeSH diseases category",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/chembl_mesh",
+        "primaryKey": "chembl"
+      },
+      {
+        "propertyId": "uniprot_chembl_assay_existence",
+        "label": "Proteins with ChEMBL assay",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_chembl_assay_existence",
+        "primaryKey": "uniprot"
+      },
+      {
+        "propertyId": "chembl_development_phase",
+        "label": "Dvelopment phase",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/chembl_development_phase",
+        "primaryKey": "chembl"
+      }
+    ]
   },
   {
     "subject": "Disease",
-    "property": "disease_mondo_filter_anatomical",
-    "label": "MONDO disease category by anatomical system",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_mondo_filter_anatomical",
-    "primaryKey": "mondo"
-  },
-  {
-    "subject": "Disease",
-    "property": "disease_hpo_filter",
-    "label": "HPO phenotype category",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_hpo_filter",
-    "primaryKey": "hp"
-  },
-  {
-    "subject": "Disease",
-    "property": "disease_related_database",
-    "label": "Disease related database",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/Disease-relatedDB",
-    "primaryKey": "mondo"
+    "properties": [
+      {
+        "propertyId": "disease_mondo_filter",
+        "label": "MONDO disease category",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_mondo_filter",
+        "primaryKey": "mondo"
+      },
+      {
+        "propertyId": "disease_mondo_filter_anatomical",
+        "label": "MONDO disease category by anatomical system",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_mondo_filter_anatomical",
+        "primaryKey": "mondo"
+      },
+      {
+        "propertyId": "disease_hpo_filter",
+        "label": "HPO phenotype category",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_hpo_filter",
+        "primaryKey": "hp"
+      },
+      {
+        "propertyId": "disease_related_database",
+        "label": "Disease related database",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/Disease-relatedDB",
+        "primaryKey": "mondo"
+      }
+    ]
   },
   {
     "subject": "Variant",
-    "property": "variant_type",
-    "label": "Variant type",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/variant_type",
-    "primaryKey": "hgnc"
-  },
-  {
-    "subject": "Variant",
-    "property": "variant_clinical_significance",
-    "label": "Variant clinical significance",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/variant_clinical_significance",
-    "primaryKey": "hgnc"
+    "properties": [
+      {
+        "propertyId": "variant_type",
+        "label": "Variant type",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/variant_type",
+        "primaryKey": "hgnc"
+      },
+      {
+        "propertyId": "variant_clinical_significance",
+        "label": "Variant clinical significance",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/variant_clinical_significance",
+        "primaryKey": "hgnc"
+      }
+    ]
   }
 ]
