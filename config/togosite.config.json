@@ -227,7 +227,7 @@
     "subject": "Disease",
     "property": "disease_mondo_filter",
     "label": "MONDO disease category",
-    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_mondo_filter_haschild",
+    "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/disease_mondo_filter",
     "primaryKey": "mondo"
   },
   {
