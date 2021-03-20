@@ -19,13 +19,13 @@
         "propertyId": "gtex6_tissues",
         "label": "Genes expressed in tissues (GTEx ver6)",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/gtex6_tissues",
-        "primaryKey": "ensembl.gene"
+        "primaryKey": "ensembl_gene"
       },
       {
         "propertyId": "chip_atlas",
         "label": "Genes with hypothetical upstream TFs in ChIP-Atlas",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/chip_atlas",
-        "primaryKey": "ensembl.gene"
+        "primaryKey": "ensembl_gene"
       },
       {
         "propertyId": "homologene_category",
@@ -76,6 +76,12 @@
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_mass",
         "primaryKey": "uniprot",
         "viewMethod": "histogram"
+      },
+      {
+        "propertyId": "uniprot_keywords_disease",
+        "label": "Disease-related proteins",
+        "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/uniprot_keywords_disease",
+        "primaryKey": "uniprot"
       },
       {
         "propertyId": "uniprot_keywords_domain",
@@ -202,19 +208,19 @@
   },
   {
     "subject": "Drug",
-    "togoKey": "chembl",
+    "togoKey": "chembl_compound",
     "properties": [
       {
         "propertyId": "atc_classification",
         "label": "ATC classification",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/atc_classification_haschild",
-        "primaryKey": "pubchem.compound"
+        "primaryKey": "pubchem_compound"
       },
       {
         "propertyId": "chembl_mesh",
         "label": "MeSH diseases category",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/chembl_mesh",
-        "primaryKey": "chembl"
+        "primaryKey": "chembl_compound"
       },
       {
         "propertyId": "uniprot_chembl_assay_existence",
@@ -226,7 +232,7 @@
         "propertyId": "chembl_development_phase",
         "label": "Dvelopment phase",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/chembl_development_phase",
-        "primaryKey": "chembl"
+        "primaryKey": "chembl_compound"
       }
     ]
   },
@@ -268,19 +274,19 @@
   },
   {
     "subject": "Variant",
-    "togoKey": "hgnc",
+    "togoKey": "togovar",
     "properties": [
       {
         "propertyId": "variant_type",
         "label": "Variant type",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/variant_type",
-        "primaryKey": "hgnc"
+        "primaryKey": "togovar"
       },
       {
         "propertyId": "variant_clinical_significance",
         "label": "Variant clinical significance",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/variant_clinical_significance",
-        "primaryKey": "hgnc"
+        "primaryKey": "togovar"
       }
     ]
   }
