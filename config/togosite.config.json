@@ -1,6 +1,7 @@
 [
   {
     "subject": "Gene",
+    "togoKey": "hgnc",
     "properties": [
       {
         "propertyId": "refex_specific_high_expression",
@@ -49,6 +50,7 @@
   },
   {
     "subject": "Protein",
+    "togoKey": "uniprot",
     "properties": [
       {
         "propertyId": "uniprot_keywords_cellular_component",
@@ -130,6 +132,7 @@
   },
   {
     "subject": "Interaction",
+    "togoKey": "uniprot",
     "properties": [
       {
         "propertyId": "uniprot_interact",
@@ -142,6 +145,7 @@
   },
   {
     "subject": "Structure",
+    "togoKey": "pdb",
     "properties": [
       {
         "propertyId": "uniprot_pdb_existence",
@@ -198,6 +202,7 @@
   },
   {
     "subject": "Drug",
+    "togoKey": "chembl",
     "properties": [
       {
         "propertyId": "atc_classification",
@@ -227,6 +232,7 @@
   },
   {
     "subject": "Disease",
+    "togoKey": "mondo",
     "properties": [
       {
         "propertyId": "disease_mondo_filter",
@@ -262,6 +268,7 @@
   },
   {
     "subject": "Variant",
+    "togoKey": "hgnc",
     "properties": [
       {
         "propertyId": "variant_type",
