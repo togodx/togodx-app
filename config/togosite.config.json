@@ -43,7 +43,7 @@
         "propertyId": "ensembl-exon-count",
         "label": "The number of exons",
         "data": "http://ep6.dbcls.jp/togoid/sparqlist/api/Ensembl-exon-count",
-        "primaryKey": "ensembl.transcript",
+        "primaryKey": "ensembl_transcript",
         "viewMethod": "histogram"
       }
     ]
