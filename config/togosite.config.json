@@ -277,9 +277,9 @@
     "togoKey": "togovar",
     "properties": [
       {
-        "propertyId": "variant_type",
-        "label": "Variant type",
-        "data": "https://integbio.jp/togosite/sparqlist/api/variant_type",
+        "propertyId": "variant_consequence",
+        "label": "Variant consequence",
+        "data": "https://integbio.jp/togosite/sparqlist/api/variant_consequence",
         "primaryKey": "togovar"
       },
       {
