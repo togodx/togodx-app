@@ -1,0 +1,36 @@
+{
+  "chembl_compound": {
+    "metastanzaUrl": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/chembl_compound.html"
+  },
+  "ensembl_gene": {
+    "metastanzaUrl": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/ensembl_gene.html"
+  },
+  "ensembl_transcript",: {
+    "metastanzaUrl": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/ensembl_transcript.html"
+  },
+  "hp": {
+    "metastanzaUrl": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/hp.html"
+  },
+  "mondo": {
+    "metastanzaUrl": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/mondo.html"
+  },
+  "nando": {
+    "metastanzaUrl": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/nando.html"
+  },
+  "ncbigene": {
+    "metastanzaUrl": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/ncbigene.html"
+  },
+  "pdb": {
+    "metastanzaUrl": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/pdb.html"
+  },
+  "pubchem_compound": {
+    "metastanzaUrl": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/pubchem_compound.html"
+  },
+  "togovar": {
+    "metastanzaUrl": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/togovar.html"
+  },
+  "uniprot": {
+    "metastanza-source": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/uniprot.html"
+    "data-url": "https://integbio.jp/togosite/sparqlist/api/togosite-protein-summary-uniprot?uniprot=",
+  }
+}
