@@ -275,36 +275,36 @@
     "properties": [
       {
         "propertyId": "disease_mondo_filter",
-        "label": "MONDO disease category",
-        "description": "",
+        "label": "MONDO category",
+        "description": "MONDO disease category",
         "data": "https://integbio.jp/togosite/sparqlist/api/disease_mondo_filter",
         "primaryKey": "mondo"
       },
       {
         "propertyId": "disease_mondo_filter_anatomical",
-        "label": "MONDO disease category by anatomical system",
-        "description": "",
+        "label": "MONDO category by anatomical system",
+        "description": "MONDO disease category by anatomical system",
         "data": "https://integbio.jp/togosite/sparqlist/api/disease_mondo_filter_anatomical",
         "primaryKey": "mondo"
       },
       {
         "propertyId": "disease_hpo_filter",
-        "label": "HPO phenotype category",
-        "description": "",
+        "label": "HPO category",
+        "description": "HPO phenotype category",
         "data": "https://integbio.jp/togosite/sparqlist/api/disease_hpo_filter",
         "primaryKey": "hp"
       },
       {
         "propertyId": "rare_disease_nando_filter",
-        "label": "Nando rare disease category",
-        "description": "",
+        "label": "Nando category",
+        "description": "Nando rare disease category",
         "data": "https://integbio.jp/togosite/sparqlist/api/nando",
         "primaryKey": "nando"
       },
       {
         "propertyId": "disease_related_database",
-        "label": "Disease related database",
-        "description": "",
+        "label": "#entries in DBs",
+        "description": "Disease related database",
         "data": "https://integbio.jp/togosite/sparqlist/api/Disease-relatedDB",
         "primaryKey": "mondo"
       }
