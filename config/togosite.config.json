@@ -80,6 +80,13 @@
     "togoKey": "uniprot",
     "properties": [
       {
+        "propertyId": "nextprot_protein_existence",
+        "label" : "Protein existence",
+        "description": "Protein existence obtained from neXtProt",
+        "data": "https://integbio.jp/togosite/sparqlist/api/nextprot_protein_existence",
+        "primaryKey": "uniprot"
+      },
+      {
         "propertyId": "uniprot_keywords_cellular_component",
         "label": "Cellular component",
         "description": "Gene ontology cellular component annotation from Uniprot",
@@ -101,21 +108,6 @@
         "primaryKey": "uniprot"
       },
       {
-        "propertyId": "uniprot_mass",
-        "label": "Molecular mass",
-        "description": "Molecular mass from Uniprot",
-        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_mass",
-        "primaryKey": "uniprot",
-        "viewMethod": "histogram"
-      },
-      {
-        "propertyId": "uniprot_keywords_disease",
-        "label": "Disease-related proteins",
-        "description": "Disease-related proteins from Uniprot",
-        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_disease",
-        "primaryKey": "uniprot"
-      },
-      {
         "propertyId": "uniprot_keywords_domain",
         "label": "Protein domains",
         "description": "Protein domains from Uniprot",
@@ -123,11 +115,12 @@
         "primaryKey": "uniprot"
       },
       {
-        "propertyId": "uniprot_keywords_ptm",
-        "label": "Post-translationl modifications",
-        "description": "Post-translationl modifications from Uniprot",
-        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_PTM",
-        "primaryKey": "uniprot"
+        "propertyId": "uniprot_mass",
+        "label": "Molecular mass",
+        "description": "Molecular mass from Uniprot",
+        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_mass",
+        "primaryKey": "uniprot",
+        "viewMethod": "histogram"
       },
       {
         "propertyId": "uniprot_keywords_ligand",
@@ -143,6 +136,13 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_transmembranenumber",
         "primaryKey": "uniprot",
         "viewMethod": "histogram"
+      },
+      {
+        "propertyId": "uniprot_keywords_ptm",
+        "label": "Post-translationl modifications",
+        "description": "Post-translationl modifications from Uniprot",
+        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_PTM",
+        "primaryKey": "uniprot"
       },
       {
         "propertyId": "uniprot_phospho_site",
@@ -161,10 +161,17 @@
         "viewMethod": "histogram"
       },
       {
-        "propertyId": "nextprot_protein_existence",
-        "label" : "Protein existence",
-        "description": "Protein existence obtained from neXtProt",
-        "data": "https://integbio.jp/togosite/sparqlist/api/nextprot_protein_existence",
+        "propertyId": "uniprot_chembl_assay_existence",
+        "label": "#proteins with ChEMBL assays",
+        "description": "Proteins with ChEMBL assay",
+        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_chembl_assay_existence",
+        "primaryKey": "uniprot"
+      },
+      {
+        "propertyId": "uniprot_keywords_disease",
+        "label": "Disease-related proteins",
+        "description": "Disease-related proteins from Uniprot",
+        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_disease",
         "primaryKey": "uniprot"
       },
       {
@@ -172,13 +179,6 @@
         "label" : "Pathway components",
         "description": "Pathway components from reactome",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_reactome",
-        "primaryKey": "uniprot"
-      },
-      {
-        "propertyId": "uniprot_chembl_assay_existence",
-        "label": "#proteins with ChEMBL assays",
-        "description": "Proteins with ChEMBL assay",
-        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_chembl_assay_existence",
         "primaryKey": "uniprot"
       }
     ]
