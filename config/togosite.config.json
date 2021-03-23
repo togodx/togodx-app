@@ -162,8 +162,8 @@
     "properties": [
       {
         "propertyId": "uniprot_interact",
-        "label": "The number of interaction proteins",
-        "description": "",
+        "label": "#protein interactions",
+        "description": "The number of interaction proteins",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_interact",
         "primaryKey": "uniprot",
         "viewMethod": "histogram"
