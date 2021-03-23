@@ -25,7 +25,7 @@
     "properties": [
       {
         "propertyId": "ensembl-exon-count",
-        "label": "#exons",
+        "label": "#Exons",
         "description": "The number of exons",
         "data": "https://integbio.jp/togosite/sparqlist/api/Ensembl-exon-count",
         "primaryKey": "ensembl_transcript",
@@ -33,42 +33,42 @@
       },
       {
         "propertyId": "homologene_human_paralog_count",
-        "label": "#paralogs",
+        "label": "#Paralogs",
         "description": "The number of paralogs",
         "data": "https://integbio.jp/togosite/sparqlist/api/homologene_human_paralog_count",
         "primaryKey": "ncbigene"
       },
       {
         "propertyId": "homologene_category",
-        "label": "Evolutionary conservation groups",
+        "label": "Phylogenetic profile",
         "description": "Evolutionary conservation of genes",
         "data": "https://integbio.jp/togosite/sparqlist/api/homologene_category",
         "primaryKey": "ncbigene"
       },
       {
         "propertyId": "refex_specific_high_expression",
-        "label": "High expression in organs",
-        "description": "RefEx organ specific high expression",
+        "label": "High-level expression",
+        "description": "Highly expressed genes in organs from RefEx",
         "data": "https://integbio.jp/togosite/sparqlist/api/refex_specific_high_expression",
         "primaryKey": "ncbigene"
       },
       {
         "propertyId": "refex_specific_low_expression",
-        "label": "Low expression in organs",
-        "description": "RefEx organ specific low expression",
+        "label": "Low-level expression",
+        "description": "Low expressed genes in organs from RefEx",
         "data": "https://integbio.jp/togosite/sparqlist/api/refex_specific_low_expression",
         "primaryKey": "ncbigene"
       },
       {
         "propertyId": "gtex6_tissues",
-        "label": "Tissues/Organs of GTEx expression",
+        "label": "Tissue expression",
         "description": "Genes expressed in tissues (GTEx ver6)",
         "data": "https://integbio.jp/togosite/sparqlist/api/gtex6_tissues",
         "primaryKey": "ensembl_gene"
       },
       {
         "propertyId": "chip_atlas",
-        "label": "Upstream transcription factors",
+        "label": "Transcription factors",
         "description": "Genes with hypothetical upstream TFs in ChIP-Atlas",
         "data": "https://integbio.jp/togosite/sparqlist/api/chip_atlas",
         "primaryKey": "ensembl_gene"
@@ -124,14 +124,14 @@
       },
       {
         "propertyId": "uniprot_keywords_ligand",
-        "label": "Ligand bindings",
+        "label": "Ligands",
         "description": "Ligand bindings from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_ligand",
         "primaryKey": "uniprot"
       },
       {
         "propertyId": "uniprot_transmembranenumber",
-        "label": "#transmembrane segments",
+        "label": "#Transmembrane segments",
         "description": "The number of transmembrane segments from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_transmembranenumber",
         "primaryKey": "uniprot",
@@ -139,14 +139,14 @@
       },
       {
         "propertyId": "uniprot_keywords_ptm",
-        "label": "Post-translationl modifications",
+        "label": "PTMs",
         "description": "Post-translationl modifications from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_PTM",
         "primaryKey": "uniprot"
       },
       {
         "propertyId": "uniprot_phospho_site",
-        "label": "#phosphorylation sites",
+        "label": "#Phosphorylation sites",
         "description": "The number of phosphorylation sites from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_phospho_site",
         "primaryKey": "uniprot",
@@ -154,31 +154,17 @@
       },
       {
         "propertyId": "uniprot_glyco_site",
-        "label": "#glycosylation sites",
+        "label": "#Glycosylation sites",
         "description": "The number of glycosylation sites from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_glyco_site",
         "primaryKey": "uniprot",
         "viewMethod": "histogram"
       },
       {
-        "propertyId": "uniprot_chembl_assay_existence",
-        "label": "#proteins with ChEMBL assays",
-        "description": "Proteins with ChEMBL assay",
-        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_chembl_assay_existence",
-        "primaryKey": "uniprot"
-      },
-      {
         "propertyId": "uniprot_keywords_disease",
         "label": "Disease-related proteins",
         "description": "Disease-related proteins from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_disease",
-        "primaryKey": "uniprot"
-      },
-      {
-        "propertyId": "uniprot_reactome",
-        "label" : "Pathway components",
-        "description": "Pathway components from reactome",
-        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_reactome",
         "primaryKey": "uniprot"
       }
     ]
@@ -188,12 +174,26 @@
     "togoKey": "uniprot",
     "properties": [
       {
+        "propertyId": "uniprot_reactome",
+        "label" : "#Proteins in a pathway",
+        "description": "Pathway components from reactome",
+        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_reactome",
+        "primaryKey": "uniprot"
+      },
+      {
         "propertyId": "uniprot_interact",
-        "label": "#protein interactions",
+        "label": "#Interactions of proteins",
         "description": "The number of interaction proteins",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_interact",
         "primaryKey": "uniprot",
         "viewMethod": "histogram"
+      },
+      {
+        "propertyId": "uniprot_chembl_assay_existence",
+        "label": "#Proteins with ChEMBL assays",
+        "description": "Proteins with ChEMBL assay",
+        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_chembl_assay_existence",
+        "primaryKey": "uniprot"
       }
     ]
   },
@@ -203,7 +203,7 @@
     "properties": [
       {
         "propertyId": "uniprot_pdb_existence",
-        "label": "#proteins with known strutures",
+        "label": "#Structure existence",
         "description": "Uniprot entries with links to PDB data entries",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_pdb_existence",
         "primaryKey": "uniprot"
@@ -231,7 +231,7 @@
       },
       {
         "propertyId": "pdb_alphahelix",
-        "label": "#alpha-helices",
+        "label": "#Alpha-helices",
         "description": "The number of alpha-helices",
         "data": "https://integbio.jp/togosite/sparqlist/api/pdb_alphahelix_bin",
         "primaryKey": "pdb",
@@ -239,7 +239,7 @@
       },
       {
         "propertyId": "pdb_betasheet",
-        "label": "#beta-sheets",
+        "label": "#Beta-sheets",
         "description": "The number of beta-sheets",
         "data": "https://integbio.jp/togosite/sparqlist/api/pdb_betasheet_bin",
         "primaryKey": "pdb",
@@ -247,7 +247,7 @@
       },
       {
         "propertyId": "pdb_polypeptide",
-        "label": "#proteins in a PDB entry",
+        "label": "#Proteins in a PDB entry",
         "description": "The number of proteins in the PDB entry",
         "data": "https://integbio.jp/togosite/sparqlist/api/pdb_polypeptide",
         "primaryKey": "pdb",
@@ -323,7 +323,7 @@
       },
       {
         "propertyId": "disease_related_database",
-        "label": "#entries in DBs",
+        "label": "#Entries in DBs",
         "description": "Disease related database",
         "data": "https://integbio.jp/togosite/sparqlist/api/Disease-relatedDB",
         "primaryKey": "mondo"
