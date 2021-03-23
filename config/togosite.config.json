@@ -1,8 +1,50 @@
 [
   {
+    "subject": "Variant",
+    "togoKey": "togovar",
+    "properties": [
+      {
+        "propertyId": "variant_consequence",
+        "label": "Consequence",
+        "description": "Variant consequence",
+        "data": "https://integbio.jp/togosite/sparqlist/api/variant_consequence",
+        "primaryKey": "togovar"
+      },
+      {
+        "propertyId": "variant_clinical_significance",
+        "label": "Clinical significance",
+        "description": "Variant clinical significance",
+        "data": "https://integbio.jp/togosite/sparqlist/api/variant_clinical_significance",
+        "primaryKey": "togovar"
+      }
+    ]
+  },
+  {
     "subject": "Gene",
     "togoKey": "hgnc",
     "properties": [
+      {
+        "propertyId": "ensembl-exon-count",
+        "label": "#exons",
+        "description": "The number of exons",
+        "data": "https://integbio.jp/togosite/sparqlist/api/Ensembl-exon-count",
+        "primaryKey": "ensembl_transcript",
+        "viewMethod": "histogram"
+      },
+      {
+        "propertyId": "homologene_human_paralog_count",
+        "label": "#paralogs",
+        "description": "The number of paralogs",
+        "data": "https://integbio.jp/togosite/sparqlist/api/homologene_human_paralog_count",
+        "primaryKey": "ncbigene"
+      },
+      {
+        "propertyId": "homologene_category",
+        "label": "Evolutionary conservation groups",
+        "description": "Evolutionary conservation of genes",
+        "data": "https://integbio.jp/togosite/sparqlist/api/homologene_category",
+        "primaryKey": "ncbigene"
+      },
       {
         "propertyId": "refex_specific_high_expression",
         "label": "High expression in organs",
@@ -30,28 +72,6 @@
         "description": "Genes with hypothetical upstream TFs in ChIP-Atlas",
         "data": "https://integbio.jp/togosite/sparqlist/api/chip_atlas",
         "primaryKey": "ensembl_gene"
-      },
-      {
-        "propertyId": "homologene_category",
-        "label": "Evolutionary conservation groups",
-        "description": "Evolutionary conservation of genes",
-        "data": "https://integbio.jp/togosite/sparqlist/api/homologene_category",
-        "primaryKey": "ncbigene"
-      },
-      {
-        "propertyId": "homologene_human_paralog_count",
-        "label": "#paralogs",
-        "description": "The number of paralogs",
-        "data": "https://integbio.jp/togosite/sparqlist/api/homologene_human_paralog_count",
-        "primaryKey": "ncbigene"
-      },
-      {
-        "propertyId": "ensembl-exon-count",
-        "label": "#exons",
-        "description": "The number of exons",
-        "data": "https://integbio.jp/togosite/sparqlist/api/Ensembl-exon-count",
-        "primaryKey": "ensembl_transcript",
-        "viewMethod": "histogram"
       }
     ]
   },
@@ -307,26 +327,6 @@
         "description": "Disease related database",
         "data": "https://integbio.jp/togosite/sparqlist/api/Disease-relatedDB",
         "primaryKey": "mondo"
-      }
-    ]
-  },
-  {
-    "subject": "Variant",
-    "togoKey": "togovar",
-    "properties": [
-      {
-        "propertyId": "variant_consequence",
-        "label": "Consequence",
-        "description": "Variant consequence",
-        "data": "https://integbio.jp/togosite/sparqlist/api/variant_consequence",
-        "primaryKey": "togovar"
-      },
-      {
-        "propertyId": "variant_clinical_significance",
-        "label": "Clinical significance",
-        "description": "Variant clinical significance",
-        "data": "https://integbio.jp/togosite/sparqlist/api/variant_clinical_significance",
-        "primaryKey": "togovar"
       }
     ]
   }
