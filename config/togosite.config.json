@@ -209,14 +209,6 @@
         "primaryKey": "uniprot"
       },
       {
-        "propertyId": "pdb_polypeptide",
-        "label": "#proteins in a PDB entry",
-        "description": "The number of proteins in the PDB entry",
-        "data": "https://integbio.jp/togosite/sparqlist/api/pdb_polypeptide",
-        "primaryKey": "pdb",
-        "viewMethod": "histogram"
-      },
-      {
         "propertyId": "pdb_experimental_methods",
         "label": "Methods",
         "description": "Structure determination method",
@@ -224,10 +216,17 @@
         "primaryKey": "pdb"
       },
       {
-        "propertyId": "pdb_nonpeptide",
-        "label": "Binding molecules",
-        "description": "Binding molecules",
-        "data": "https://integbio.jp/togosite/sparqlist/api/pdb_nonpeptide",
+        "propertyId": "pdb-temperature",
+        "label": "Crystallization temp",
+        "description": "Temperature of the crystallization solution",
+        "data": "https://integbio.jp/togosite/sparqlist/api/pdb-temperature",
+        "primaryKey": "pdb"
+      },
+      {
+        "propertyId": "pdb_pH",
+        "label": "Crystallization pH",
+        "description": "pH value of the crystallization solution",
+        "data": "https://integbio.jp/togosite/sparqlist/api/pdb_pH",
         "primaryKey": "pdb"
       },
       {
@@ -247,17 +246,18 @@
         "viewMethod": "histogram"
       },
       {
-        "propertyId": "pdb-temperature",
-        "label": "Crystallization temp",
-        "description": "Temperature of the crystallization solution",
-        "data": "https://integbio.jp/togosite/sparqlist/api/pdb-temperature",
-        "primaryKey": "pdb"
+        "propertyId": "pdb_polypeptide",
+        "label": "#proteins in a PDB entry",
+        "description": "The number of proteins in the PDB entry",
+        "data": "https://integbio.jp/togosite/sparqlist/api/pdb_polypeptide",
+        "primaryKey": "pdb",
+        "viewMethod": "histogram"
       },
       {
-        "propertyId": "pdb_pH",
-        "label": "Crystallization pH",
-        "description": "pH value of the crystallization solution",
-        "data": "https://integbio.jp/togosite/sparqlist/api/pdb_pH",
+        "propertyId": "pdb_nonpeptide",
+        "label": "Binding molecules",
+        "description": "Binding molecules",
+        "data": "https://integbio.jp/togosite/sparqlist/api/pdb_nonpeptide",
         "primaryKey": "pdb"
       }
     ]
