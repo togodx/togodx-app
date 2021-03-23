@@ -316,15 +316,15 @@
     "properties": [
       {
         "propertyId": "variant_consequence",
-        "label": "Variant consequence",
-        "description": "",
+        "label": "Consequence",
+        "description": "Variant consequence",
         "data": "https://integbio.jp/togosite/sparqlist/api/variant_consequence",
         "primaryKey": "togovar"
       },
       {
         "propertyId": "variant_clinical_significance",
-        "label": "Variant clinical significance",
-        "description": "",
+        "label": "Clinical significance",
+        "description": "Variant clinical significance",
         "data": "https://integbio.jp/togosite/sparqlist/api/variant_clinical_significance",
         "primaryKey": "togovar"
       }
