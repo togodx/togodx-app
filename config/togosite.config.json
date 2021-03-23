@@ -62,28 +62,28 @@
       {
         "propertyId": "uniprot_keywords_cellular_component",
         "label": "Cellular component",
-        "description": "",
+        "description": "Gene ontology cellular component annotation from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_cellular_component",
         "primaryKey": "uniprot"
       },
       {
         "propertyId": "uniprot_keywords_biological_process",
         "label": "Biological process",
-        "description": "",
+        "description": "Gene ontology biological process annotation from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_biological_process",
         "primaryKey": "uniprot"
       },
       {
         "propertyId": "uniprot_keywords_molecular_function",
         "label": "Molecular function",
-        "description": "",
+        "description": "Gene ontology molecular function annotation from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_molecular_function",
         "primaryKey": "uniprot"
       },
       {
         "propertyId": "uniprot_mass",
         "label": "Molecular mass",
-        "description": "",
+        "description": "Molecular mass from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_mass",
         "primaryKey": "uniprot",
         "viewMethod": "histogram"
@@ -91,66 +91,66 @@
       {
         "propertyId": "uniprot_keywords_disease",
         "label": "Disease-related proteins",
-        "description": "",
+        "description": "Disease-related proteins from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_disease",
         "primaryKey": "uniprot"
       },
       {
         "propertyId": "uniprot_keywords_domain",
         "label": "Protein domains",
-        "description": "",
+        "description": "Protein domains from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_domain",
         "primaryKey": "uniprot"
       },
       {
         "propertyId": "uniprot_keywords_ptm",
         "label": "Post-translationl modifications",
-        "description": "",
+        "description": "Post-translationl modifications from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_PTM",
         "primaryKey": "uniprot"
       },
       {
         "propertyId": "uniprot_keywords_ligand",
         "label": "Ligand bindings",
-        "description": "",
+        "description": "Ligand bindings from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_ligand",
         "primaryKey": "uniprot"
       },
       {
         "propertyId": "uniprot_transmembranenumber",
-        "label": "The number of transmembrane segments",
-        "description": "",
+        "label": "#transmembrane segments",
+        "description": "The number of transmembrane segments from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_transmembranenumber",
         "primaryKey": "uniprot",
         "viewMethod": "histogram"
       },
       {
         "propertyId": "uniprot_phospho_site",
-        "label": "The number of phosphorylation sites",
-        "description": "",
+        "label": "#phosphorylation sites",
+        "description": "The number of phosphorylation sites from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_phospho_site",
         "primaryKey": "uniprot",
         "viewMethod": "histogram"
       },
       {
         "propertyId": "uniprot_glyco_site",
-        "label": "The number of glycosylation sites",
-        "description": "",
+        "label": "#glycosylation sites",
+        "description": "The number of glycosylation sites from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_glyco_site",
         "primaryKey": "uniprot",
         "viewMethod": "histogram"
       },
       {
         "propertyId": "nextprot_protein_existence",
-        "label" :"Protein existence",
-        "description": "",
+        "label" : "Protein existence",
+        "description": "Protein existence obtained from neXtProt",
         "data": "https://integbio.jp/togosite/sparqlist/api/nextprot_protein_existence",
         "primaryKey": "uniprot"
       },
       {
         "propertyId": "uniprot_reactome",
         "label" : "Pathway components",
-        "description": "",
+        "description": "Pathway components from reactome",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_reactome",
         "primaryKey": "uniprot"
       }
