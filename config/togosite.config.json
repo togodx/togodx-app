@@ -190,7 +190,7 @@
       },
       {
         "propertyId": "uniprot_chembl_assay_existence",
-        "label": "#Proteins with ChEMBL assays",
+        "label": "ChEMBL assay existence",
         "description": "Proteins with ChEMBL assay",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_chembl_assay_existence",
         "primaryKey": "uniprot"
@@ -203,7 +203,7 @@
     "properties": [
       {
         "propertyId": "uniprot_pdb_existence",
-        "label": "#Structure existence",
+        "label": "Structure existence",
         "description": "Uniprot entries with links to PDB data entries",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_pdb_existence",
         "primaryKey": "uniprot"
