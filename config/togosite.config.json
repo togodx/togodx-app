@@ -281,6 +281,20 @@
         "primaryKey": "chembl_compound"
       },
       {
+        "propertyId": "chembl_mechanism_action_type",
+        "label": "Action type",
+        "description": "Mechanism action types in ChEMBL",
+        "data": "https://integbio.jp/togosite/sparqlist/api/chembl_mechanism_action_type",
+        "primaryKey": "chembl_compound"
+      },
+      {
+        "propertyId": "chembl_substance_type",
+        "label": "Substance type",
+        "description": "Substance types in ChEMBL",
+        "data": "https://integbio.jp/togosite/sparqlist/api/chembl_substancetype",
+        "primaryKey": "chembl_compound"
+      },
+      {
         "propertyId": "chembl_development_phase",
         "label": "Drug development phase",
         "description": "Drug development phase",
