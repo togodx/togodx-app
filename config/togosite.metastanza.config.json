@@ -29,5 +29,7 @@
   "togovar": {
     "hbsTemplate": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/togovar.hbs"
   },
-  "uniprot": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/uniprot.hbs"
+  "uniprot": {
+    "hbsTemplate": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/uniprot.hbs"
+  }
 }
