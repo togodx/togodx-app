@@ -1,9 +1,0 @@
-<script type="module" src="https://togostanza.github.io/metastanza/hash-table.js" async></script>
-<togostanza-hash-table
-  data-url="DATA_URL"
-  data-type="json"
-  width="840"
-  height="410"
-  padding="50"
-  data-type="json"
-></togostanza-hash-table>
