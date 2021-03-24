@@ -1,4 +1,14 @@
 <script type="module" src="https://togostanza.github.io/metastanza/hash-table.js" async></script>
+<script type="module" src="https://togostanza.github.io/metastanza/barchart.js" async></script>
+
+<style>
+  togostanza-barchart {
+    --series-1-color: #ff3d3d;
+  }
+</style>
+
+<h2>UniProt summary</h2>
+
 <togostanza-hash-table
   data-url="https://integbio.jp/togosite/sparqlist/api/togosite-protein-summary-uniprot?uniprot={{id}}"
   data-type="json"
@@ -7,6 +17,8 @@
   padding="50"
   data-type="json"
   ></togostanza-hash-table>
+
+<h2>Protein mass</h2>
 
 <togostanza-barchart
 	chart-type="stacked"
