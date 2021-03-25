@@ -266,7 +266,7 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/pdb_polypeptide_mode",
         "primaryKey": "pdb",
         "viewMethod": "histogram"
-      },
+      }
     ]
   },
   {
@@ -319,13 +319,6 @@
         "label": "MONDO category",
         "description": "MONDO disease category",
         "data": "https://integbio.jp/togosite/sparqlist/api/disease_mondo_filter",
-        "primaryKey": "mondo"
-      },
-      {
-        "propertyId": "disease_mondo_filter_anatomical",
-        "label": "MONDO category by anatomical system",
-        "description": "MONDO disease category by anatomical system",
-        "data": "https://integbio.jp/togosite/sparqlist/api/disease_mondo_filter_anatomical",
         "primaryKey": "mondo"
       },
       {
