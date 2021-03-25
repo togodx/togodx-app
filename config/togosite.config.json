@@ -32,6 +32,13 @@
         "viewMethod": "histogram"
       },
       {
+        "propertyId": "ensembl-transcript-category",
+        "label": "transcript-category",
+        "description": "transcript category",
+        "data": "https://integbio.jp/togosite/sparqlist/api/Ensembl_transcript_description",
+        "primaryKey": "ensembl_transcript"
+      },
+      {
         "propertyId": "homologene_human_paralog_count",
         "label": "#Paralogs",
         "description": "The number of paralogs",
