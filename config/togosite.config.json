@@ -219,7 +219,7 @@
         "propertyId": "pdb_experimental_methods",
         "label": "Methods",
         "description": "Structure determination method",
-        "data": "https://integbio.jp/togosite/sparqlist/api/pdb_experimental_methods",
+        "data": "https://integbio.jp/togosite/sparqlist/api/pdb_experimental_methods_mode",
         "primaryKey": "pdb"
       },
       {
@@ -256,17 +256,10 @@
         "propertyId": "pdb_polypeptide",
         "label": "#Proteins in a PDB entry",
         "description": "The number of proteins in the PDB entry",
-        "data": "https://integbio.jp/togosite/sparqlist/api/pdb_polypeptide",
+        "data": "https://integbio.jp/togosite/sparqlist/api/pdb_polypeptide_mode",
         "primaryKey": "pdb",
         "viewMethod": "histogram"
       },
-      {
-        "propertyId": "pdb_nonpeptide",
-        "label": "Binding molecules",
-        "description": "Binding molecules",
-        "data": "https://integbio.jp/togosite/sparqlist/api/pdb_nonpeptide",
-        "primaryKey": "pdb"
-      }
     ]
   },
   {
