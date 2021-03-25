@@ -173,7 +173,7 @@
     "subject": "Interaction",
     "togoKey": "uniprot",
     "properties": [
-     {
+      {
         "propertyId": "uniprot_reactome",
         "label" : "#Proteins in a pathway",
         "description": "Proteins in pathway from reactome",
