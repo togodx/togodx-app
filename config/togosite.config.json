@@ -176,9 +176,16 @@
       {
         "propertyId": "uniprot_reactome",
         "label" : "#Proteins in a pathway",
-        "description": "Pathway components from reactome",
+        "description": "Proteins in pathway from reactome",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_reactome",
         "primaryKey": "uniprot"
+      },
+      {
+        "propertyId": "chebi_reactome",
+        "label" : "#Compounds in a pathway",
+        "description": "Chemical compounds in pathway from reactome",
+        "data": "https://integbio.jp/togosite/sparqlist/api/chebi_reactome",
+        "primaryKey": "chebi"
       },
       {
         "propertyId": "uniprot_interact",
