@@ -1,0 +1,8 @@
+{
+  "filter": {
+    "url": "https://integbio.jp/togosite/sparqlist/api/togokey_filter"
+  },
+  "table": {
+    "url": "https://integbio.jp/togosite/sparqlist/api/togokey_table_data"
+  }
+}
