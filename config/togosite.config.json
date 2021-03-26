@@ -275,14 +275,14 @@
     "properties": [
       {
         "propertyId": "atc_classification_pubchem",
-        "label": "ATC classification (PubChem)",
+        "label": "PubChem ATC classification",
         "description": "Anatomical Therapeutic Chemical (ATC) Classification in PubChem",
         "data": "https://integbio.jp/togosite/sparqlist/api/atc_classification_haschild",
         "primaryKey": "pubchem_compound"
       },
       {
         "propertyId": "atc_classification_pubchem_chembl",
-        "label": "ATC classification",
+        "label": "Chembl ATC classification",
         "description": "Anatomical Therapeutic Chemical (ATC) Classification in ChEMBL",
         "data": "https://integbio.jp/togosite/sparqlist/api/atcClassificationChEMBL",
         "primaryKey": "pubchem_compound"
