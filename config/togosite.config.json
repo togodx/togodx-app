@@ -266,7 +266,14 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/pdb_polypeptide_mode",
         "primaryKey": "pdb",
         "viewMethod": "histogram"
-      }
+      },
+      {
+        "propertyId": "pdb_nonpeptide",
+        "label": "Nonpeptide molecule",
+        "description": "Nonpeptide molecule in the PDB entry",
+        "data": "https://integbio.jp/togosite/sparqlist/api/pdb_nonpeptide",
+        "primaryKey": "pdb"
+      } 
     ]
   },
   {
