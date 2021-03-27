@@ -274,16 +274,23 @@
     "togoKey": "chembl_compound",
     "properties": [
       {
-        "propertyId": "atc_classification",
-        "label": "ATC classification",
-        "description": "Anatomical Therapeutic Chemical (ATC) Classification",
+        "propertyId": "atc_classification_pubchem",
+        "label": "PubChem ATC classification",
+        "description": "Anatomical Therapeutic Chemical (ATC) Classification in PubChem",
         "data": "https://integbio.jp/togosite/sparqlist/api/atc_classification_haschild",
         "primaryKey": "pubchem_compound"
       },
       {
+        "propertyId": "atc_classification_pubchem_chembl",
+        "label": "Chembl ATC classification",
+        "description": "Anatomical Therapeutic Chemical (ATC) Classification in ChEMBL",
+        "data": "https://integbio.jp/togosite/sparqlist/api/atcClassificationChEMBL",
+        "primaryKey": "pubchem_compound"
+      },
+      {
         "propertyId": "chembl_mesh",
-        "label": "MeSH diseases category",
-        "description": "MeSH diseases category",
+        "label": "Drug indication (MeSH)",
+        "description": "Drug indications in MeSH categories",
         "data": "https://integbio.jp/togosite/sparqlist/api/chembl_mesh",
         "primaryKey": "chembl_compound"
       },
