@@ -1,0 +1,19 @@
+<script type="module" src="https://togostanza.github.io/metastanza/hash-table.js" async></script>
+
+<style>
+  togostanza-barchart {
+    --series-1-color: #ff3d3d;
+  }
+</style>
+
+<h2>Emsemble transcript summary</h2>
+
+<togostanza-hash-table
+  data-url="https://integbio.jp/togosite/sparqlist/api/togosite-transcript-summary-ensembl"
+  data-type="json"
+  width="800"
+  height="400"
+  padding="0"
+  columns="[ {&quot;id&quot;: &quot;gene_name&quot;},  {&quot;id&quot;: &quot;id&quot;, &quot;label&quot;: &quot;Dataset ID&quot;}, {&quot;id&quot;: &quot;gene_symbol&quot;},  {&quot;id&quot;: &quot;location&quot;},  {&quot;id&quot;: &quot;description&quot;},  {&quot;id&quot;: &quot;exon_number&quot;, &quot;label&quot;: &quot;#exon&quot;} ]"
+  format-key="true"
+></togostanza-hash-table>
