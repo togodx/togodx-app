@@ -325,7 +325,7 @@
         "propertyId": "disease_mesh_filter",
         "label": "Diseases in MeSH",
         "description": "Diseases category [C] of Medical Subject Headings (MeSH)",
-        "data": "https://integbio.jp/togosite/sparqlist/disease_mesh_filter",
+        "data": "https://integbio.jp/togosite/sparqlist/api/disease_mesh_filter",
         "primaryKey": "mesh"
       },
       {
