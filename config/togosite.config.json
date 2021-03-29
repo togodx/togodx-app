@@ -316,17 +316,10 @@
     "properties": [
       {
         "propertyId": "disease_mondo_filter",
-        "label": "MONDO category",
-        "description": "MONDO disease category",
+        "label": "Mondo category",
+        "description": "Disease or disorder category (MONDO:0000001) of the Mondo Disease Ontology",
         "data": "https://integbio.jp/togosite/sparqlist/api/disease_mondo_filter",
         "primaryKey": "mondo"
-      },
-      {
-        "propertyId": "disease_hpo_filter",
-        "label": "HPO category",
-        "description": "HPO phenotype category",
-        "data": "https://integbio.jp/togosite/sparqlist/api/disease_hpo_filter",
-        "primaryKey": "hp"
       },
       {
         "propertyId": "rare_disease_nando_filter",
@@ -341,6 +334,13 @@
         "description": "Disease related database",
         "data": "https://integbio.jp/togosite/sparqlist/api/Disease-relatedDB",
         "primaryKey": "mondo"
+      },
+      {
+        "propertyId": "disease_hpo_filter",
+        "label": "HPO phenotypic abnormality category",
+        "description": "Phenotypic abnormality category (HP:0000118) of the Human Phenotype Ontology (HPO)",
+        "data": "https://integbio.jp/togosite/sparqlist/api/disease_hpo_filter",
+        "primaryKey": "hp"
       }
     ]
   }
