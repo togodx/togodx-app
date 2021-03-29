@@ -4,16 +4,16 @@
     "https://togostanza.github.io/metastanza/barchart.js"
   ],
   "templates": {
-    "chembl_compound": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/chembl_compound.hbs",
-    "ensembl_gene": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/ensembl_gene.hbs",
-    "ensembl_transcript": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/ensembl_transcript.hbs",
-    "hp": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/hp.hbs",
-    "mondo": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/mondo.hbs",
-    "nando": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/nando.hbs",
-    "ncbigene": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/ncbigene.hbs",
-    "pdb": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/pdb.hbs",
-    "pubchem_compound": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/pubchem_compound.hbs",
-    "togovar": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/togovar.hbs",
-    "uniprot": "https://raw.githubusercontent.com/dbcls/togosite/develop/metastanza/uniprot.hbs"
+    "chembl_compound": "https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates/chembl_compound.hbs",
+    "ensembl_gene": "https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates/ensembl_gene.hbs",
+    "ensembl_transcript": "https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates/ensembl_transcript.hbs",
+    "hp": "https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates/hp.hbs",
+    "mondo": "https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates/mondo.hbs",
+    "nando": "https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates/nando.hbs",
+    "ncbigene": "https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates/ncbigene.hbs",
+    "pdb": "https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates/pdb.hbs",
+    "pubchem_compound": "https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates/pubchem_compound.hbs",
+    "togovar": "https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates/togovar.hbs",
+    "uniprot": "https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates/uniprot.hbs"
   }
 }
