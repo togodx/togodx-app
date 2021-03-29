@@ -316,14 +316,14 @@
     "properties": [
       {
         "propertyId": "disease_mondo_filter",
-        "label": "Disease or disorder (Mondo)",
+        "label": "Diseases in Mondo",
         "description": "Disease or disorder category (MONDO:0000001) of the Mondo Disease Ontology",
         "data": "https://integbio.jp/togosite/sparqlist/api/disease_mondo_filter",
         "primaryKey": "mondo"
       },
       {
         "propertyId": "disease_mesh_filter",
-        "label": "Diseases (MeSH)",
+        "label": "Diseases in MeSH",
         "description": "Diseases category [C] of Medical Subject Headings (MeSH)",
         "data": "https://integbio.jp/togosite/sparqlist/disease_mesh_filter",
         "primaryKey": "mesh"
