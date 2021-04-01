@@ -1,0 +1,17 @@
+<h2> mondo {{id}} summary</h2>
+
+<script type="module" src="https://togostanza.github.io/metastanza/hash-table.js" async></script>
+
+  togostanza-hash-table {
+    --key-font-size: 16px;
+  }
+
+<togostanza-hash-table
+  data-url="https://integbio.jp/togosite/sparqlist/api/disease-mondo?mondo={{id}}"
+  data-type="json"
+  width="800"
+  height="400"
+  padding="0"
+  columns="[{&quot;id&quot;: &quot;ID&quot;,&quot;label&quot;:&quot;Mondo ID&quot;}, {&quot;id&quot;: &quot;label&quot;,&quot;label&quot;:&quot;Disease name&quot;},{&quot;id&quot;: &quot;synonym_label&quot;,&quot;label&quot;:&quot;Synonym(s)&quot;},{&quot;id&quot;: &quot;difinition&quot;,&quot;label&quot;:&quot;Disease difinition&quot;},{&quot;id&quot;: &quot;related_databases&quot;,&quot;label&quot;:&quot;Other related database ID(s)&quot;},{&quot;id&quot;: &quot;Upper_classID&quot;,&quot;label&quot;:&quot;Mondo upper disease ID&quot;},{&quot;id&quot;: &quot;Upper_class_label&quot;,&quot;label&quot;:&quot;Mondo upper class disase&quot;}]"
+  format-key="true"
+></togostanza-hash-table>
