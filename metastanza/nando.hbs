@@ -1,0 +1,18 @@
+<script type="module" src="https://togostanza.github.io/metastanza/hash-table.js" async></script>
+
+<h2> nando {{id}} summary</h2>
+
+  togostanza-hash-table {
+    --key-font-size: 16px;
+  }
+
+
+<togostanza-hash-table
+  data-url="https://integbio.jp/togosite/sparqlist/api/Disease-nando?nando={{id}}"
+  data-type="json"
+  width="800"
+  height="400"
+  padding="0"
+  columns="[{&quot;id&quot;: &quot;ID&quot;,&quot;label&quot;:&quot;NANDO ID&quot;}, {&quot;id&quot;: &quot;label_e&quot;,&quot;label&quot;:&quot;Disease name(E)&quot;}, {&quot;id&quot;: &quot;label_j&quot;,&quot;label&quot;:&quot;Disease name(J)&quot;}, {&quot;id&quot;: &quot;synonym_label&quot;,&quot;label&quot;:&quot;Synonym(s)&quot;}, {&quot;id&quot;: &quot;description&quot;,&quot;label&quot;:&quot;Disease description&quot;}, {&quot;id&quot;: &quot;mondo&quot;,&quot;label&quot;:&quot;Related Mondo ID&quot;,&quot;link&quot;:&quot;mondo&quot;}, {&quot;id&quot;: &quot;source&quot;,&quot;label&quot;:&quot;Source document&quot;,&quot;link&quot;:&quot;source&quot;}, {&quot;id&quot;: &quot;upper&quot;,&quot;label&quot;:&quot;NANDO upper disease ID&quot;}, {&quot;id&quot;: &quot;upper_label&quot;,&quot;label&quot;:&quot;NANDO upper class disase&quot;}]"
+  format-key="true"
+></togostanza-hash-table>
