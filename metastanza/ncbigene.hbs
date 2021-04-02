@@ -1,0 +1,13 @@
+<script type="module" src="https://togostanza.github.io/metastanza/hash-table.js" async></script>
+
+<h2>NCBI Gene {{id}} summary</h2>
+
+<togostanza-hash-table
+  data-url="https://integbio.jp/togosite/sparqlist/api/togosite-gene-summary-ncbigene?ncbigene={{id}}"
+  data-type="json"
+  width="800"
+  height="400"
+  padding="0"
+  columns="[{&quot;id&quot;:&quot;id&quot;,&quot;label&quot;:&quot;NCBI Gene ID&quot;},{&quot;id&quot;:&quot;hgnc_symbol&quot;,&quot;label&quot;:&quot;HGNC symbol&quot;},{&quot;id&quot;:&quot;synonyms&quot;},{&quot;id&quot;:&quot;description&quot;},{&quot;id&quot;:&quot;other_descriptions&quot;},{&quot;id&quot;:&quot;refex_tissue_labels&quot;,&quot;label&quot;:&quot;RefEx tissues&quot;},{&quot;id&quot;:&quot;gtex_v6_tissue_labels&quot;,&quot;label&quot;:&quot;GTEx tissues&quot;},{&quot;id&quot;:&quot;homologene_branch_label&quot;,&quot;label&quot;:&quot;Evoulutionary conservation&quot;},{&quot;id&quot;:&quot;type_of_gene&quot;},{&quot;id&quot;:&quot;human_paralog_count&quot;,&quot;label&quot;:&quot;#paralogs&quot;},{&quot;id&quot;:&quot;humman_paralog_ncbigene_ids&quot;,&quot;label&quot;:&quot;NCBI Gene IDs of paralogs&quot;},{&quot;id&quot;:&quot;chromosome&quot;},{&quot;id&quot;:&quot;map_location&quot;,&quot;label&quot;:&quot;location&quot;}]"
+  format-key="true"
+  ></togostanza-hash-table>
