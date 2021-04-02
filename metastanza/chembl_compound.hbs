@@ -1,0 +1,13 @@
+<script type="module" src="https://togostanza.github.io/metastanza/hash-table.js" async></script>
+
+<h2>{{id}} summary</h2>
+
+<togostanza-hash-table
+  data-url="https://integbio.jp/togosite/sparqlist/api/chembl_molecule_details?queryId={{id}}"
+  data-type="json"
+  width="800"
+  height="400"
+  padding="0"
+  columns="[ {&quot;id&quot;:&quot;id&quot;, &quot;label&quot;: &quot;ChEMBL ID&quot;}, {&quot;id&quot;:&quot;type&quot;, &quot;label&quot;: &quot;Type&quot;},  {&quot;id&quot;:&quot;label&quot;, &quot;label&quot;: &quot;Label&quot;}, {&quot;id&quot;:&quot;molecular_formula&quot;, &quot;label&quot;: &quot;Molecular Formula&quot;}, {&quot;id&quot;:&quot;molecular_weight&quot;, &quot;label&quot;: &quot;Molecular Weight&quot;}, {&quot;id&quot;:&quot;smiles&quot;, &quot;label&quot;: &quot;SMILEs&quot;}, {&quot;id&quot;:&quot;inchi&quot;, &quot;label&quot;: &quot;InChI&quot;}, {&quot;id&quot;:&quot;image&quot;,&quot;label&quot;: &quot;Image&quot;, &quot;link&quot;: &quot;image&quot;}]"
+  format-key="true"
+></togostanza-hash-table>

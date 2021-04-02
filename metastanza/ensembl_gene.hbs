@@ -1,0 +1,13 @@
+<script type="module" src="https://togostanza.github.io/metastanza/hash-table.js" async></script>
+
+<h2>Ensembl Gene {{id}} summary</h2>
+
+<togostanza-hash-table
+  data-url="https://integbio.jp/togosite/sparqlist/api/togosite-gene-summary-ensembl?ensg={{id}}"
+  data-type="json"
+  width="800"
+  height="400"
+  padding="0"
+  columns="[{&quot;id&quot;: &quot;desc&quot;, &quot;label&quot;: &quot;Gene Name&quot;}, {&quot;id&quot;: &quot;gene_symbol&quot;, &quot;label&quot;: &quot;HGNC Symbol&quot;}, {&quot;id&quot;: &quot;type_label&quot;, &quot;label&quot;: &quot;Gene Type&quot;}, {&quot;id&quot;: &quot;ensg_id&quot;, &quot;label&quot;: &quot;Ensembl Gene ID&quot;},  {&quot;id&quot;: &quot;ncbigene&quot;, &quot;label&quot;: &quot;NCBI Gene ID&quot;, &quot;link&quot;: &quot;ncbigene&quot;}]"
+  format-key="true"
+></togostanza-hash-table>
