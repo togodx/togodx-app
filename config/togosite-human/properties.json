@@ -332,7 +332,7 @@
   },
   {
     "subject": "Disease",
-    "subjcet": "disease",
+    "subjectId": "disease",
     "togoKey": "mondo",
     "properties": [
       {
