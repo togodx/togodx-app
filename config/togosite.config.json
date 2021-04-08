@@ -292,7 +292,7 @@
         "label": "Chembl ATC classification",
         "description": "Anatomical Therapeutic Chemical (ATC) Classification in ChEMBL",
         "data": "https://integbio.jp/togosite/sparqlist/api/atcClassificationChEMBL",
-        "primaryKey": "pubchem_compound"
+        "primaryKey": "chembl_compound"
       },
       {
         "propertyId": "chembl_mesh",
