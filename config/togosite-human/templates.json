@@ -1,0 +1,15 @@
+{
+  "stanzas": [
+    "https://togostanza.github.io/metastanza/hash-table.js",
+    "https://togostanza.github.io/metastanza/barchart.js"
+  ],
+  "templates": {
+    "variant": "https://raw.githubusercontent.com/dbcls/togosite/metastanza-per-subject/config/togosite-human/templates/variant.hbs",
+    "gene": "https://raw.githubusercontent.com/dbcls/togosite/metastanza-per-subject/config/togosite-human/templates/gene.hbs",
+    "protein": "https://raw.githubusercontent.com/dbcls/togosite/metastanza-per-subject/config/togosite-human/templates/protein.hbs",
+    "interaction": "https://raw.githubusercontent.com/dbcls/togosite/metastanza-per-subject/config/togosite-human/templates/interaction.hbs",
+    "proteinStructure": "https://raw.githubusercontent.com/dbcls/togosite/metastanza-per-subject/config/togosite-human/templates/proteinStructure.hbs",
+    "chemicalCompound": "https://raw.githubusercontent.com/dbcls/togosite/metastanza-per-subject/config/togosite-human/templates/chemicalCompound.hbs",
+    "disease": "https://raw.githubusercontent.com/dbcls/togosite/metastanza-per-subject/config/togosite-human/templates/disease.hbs"
+  }
+}
