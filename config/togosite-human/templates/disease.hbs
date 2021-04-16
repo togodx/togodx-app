@@ -1,3 +1,23 @@
+<div id="metastanza">
+<script>
+  const metastanzaDiv = document.getElementById("metastanza");
+
+  const response = await fetch("https://integbio.jp/togosite/sparqlist/api/disease_id_converter?id={{id}}");
+  const idObjs = await response.json();
+
+  for (const idObj of idObjs) {
+    const hashTable = document.createElement('togostanza-hash-table');
+    hashTable.setAttribute('data-url','https://integbio.jp/togosite/sparqlist/api/disease_hpo_details?id=' + idObj.id + '&type=' idObj.type)
+    hashTable.setAttribute('data-type','json')
+    hashTable.setAttribute('width','800')
+    hashTable.setAttribute('height','400')
+    hashTable.setAttribute('padding','0')
+    hashTable.setAttribute('columns','')
+    hashTable.setAttribute('format-key','true')
+    metastanzaDiv.appendChild(hashTable);
+  }
+</script>
+
 <togostanza-hash-table
   data-url="https://integbio.jp/togosite/sparqlist/api/disease_hpo_details?hp={{id}}"
   data-type="json"
