@@ -1,0 +1,126 @@
+=button-disabled
+  cursor: not-allowed
+  opacity: .5
+
+.table-data-controller-view
+  background-color: white
+  box-shadow: var(--shadow-shallow)
+  text-align: center
+  font-size: 1rem
+  animation: var(--transition-instant) enter-stacking-item
+  transform-origin: 0 0
+  margin-top: .6rem
+  opacity: .6
+  cursor: pointer
+  transition: opacity var(--transition-instant)
+  > .conditions
+    display: flex
+    font-weight: bold
+    border-bottom: solid .1rem var(--color-separator)
+    > .condiiton
+      padding: .2rem .4rem
+      overflow: hidden
+      flex-grow: 1
+      &:first-child
+        color: white
+        background-color: var(--color-lamp-black)
+      &.-value
+        color: white
+      > p
+        margin-bottom: 0
+        text-overflow: ellipsis
+        white-space: nowrap
+        overflow: hidden
+  > .status
+    padding: .3rem 0
+    border-bottom: solid .1rem var(--color-separator)
+    > p
+      margin-bottom: 0
+      opacity: .25
+      transition: opacity var(--transition-instant)
+      &.-error
+        color: red
+        opacity: 1
+  > .indicator
+    padding: .4rem .4rem
+    border-bottom: solid .1rem var(--color-separator)
+    display: none
+    > .text
+      line-height: 1
+    > .progress
+      margin: .4rem 0
+      position: relative
+      height: .4rem
+      width: 100%
+      background-color: rgba(0, 0, 0, .1)
+      > .bar
+        background-color: var(--color-lamp-black)
+        position: absolute
+        height: .4rem
+        top: 0
+        left: 0
+        transition: width var(--transition-wipe)
+  > .controller, > .downloads
+    color: white
+    > .button
+      padding: .2rem 0
+      flex-grow: 1
+      background-color: var(--color-translucent-lamp-black2)
+      transition: background-color var(--transition-instant)
+      cursor: pointer
+      &:hover
+        background-color: var(--color-lamp-black)
+      > .material-icons-outlined
+        position: relative
+        top: -.1rem
+        font-size: 1.4rem
+        vertical-align: middle
+  > .controller
+    display: flex
+    > .button
+      &[data-button="restore"]
+        [data-display="results"] &
+          +button-disabled
+  > .downloads
+    border-top: solid 1px var(--color-translucent-lamp-black3)
+    display: none
+  &.-current, &:hover
+    opacity: 1
+  &.-current
+    cursor: initial
+  &.-fetching
+    > .status
+      animation: var(--transition-fetching) infinite alternate fetching
+      > p
+        opacity: 1
+    > .indicator
+      > .progress
+        > .bar
+          animation: var(--transition-fetching) infinite alternate fetching
+  &.-autoload
+    > .controller
+      > .button
+        &[data-button="prepare-download"]
+          +button-disabled
+  &[data-status="load ids"]
+    > .controller
+      > .button
+        &[data-button="prepare-download"]
+          +button-disabled
+  &[data-status="load rows"]
+    > .indicator
+      display: block
+    > .controller
+      display: flex
+  &[data-status="complete"]
+    > .status
+      > p
+        opacity: 1
+    > .indicator
+      display: block
+    > .controller, > .downloads
+      display: flex
+    > .controller
+      > .button
+        &[data-button="prepare-download"]
+          +button-disabled

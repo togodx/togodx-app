@@ -1,0 +1,28 @@
+#ConditionBuilder
+  > .togoKey
+    margin-bottom: 1rem
+    transition: opacity var(--transition-wipe)
+    &:hover
+      top: auto
+    body[data-display="results"] &
+      pointer-events: none
+      opacity: .5
+  > .conditions
+    flex-grow: 1
+    > *
+      padding: .7rem .6rem
+      background-color: rgba(0, 0, 0, .1)
+      + *
+        margin-top: .2rem
+      > .title
+        margin-bottom: 0
+        line-height: 1
+        color: white
+        font-size: 1.2rem
+        font-weight: normal
+      > .conditions
+        > .stacking-condition-view
+          > .closebutton
+            body[data-display="results"] &
+              display: none
+

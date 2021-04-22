@@ -1,0 +1,31 @@
+.collapse-view
+  .collapsebutton
+    position: relative
+    display: inline-block
+    width: 1em
+    height: 1em
+    cursor: pointer
+    transition: transform var(--transition-instant)
+    &::before
+      content: ""
+      display: block
+      width: .4em
+      height: .4em
+      border-right: solid .1rem var(--color-black)
+      border-top: solid .1rem var(--color-black)
+      position: absolute
+      transform: translate(.1rem, .3rem) rotate(45deg)
+    &.-white
+      &::before
+        border-right-color: white
+        border-top-color: white
+    &.-spread
+      &::before
+        transform: translate(.2rem, .2rem) rotate(135deg)
+  .collapsingcontent
+    max-height: 0
+    overflow: hidden
+    transition: max-height var(--transition-instant)
+    &.-spread
+      height: 100%
+      max-height: 30rem

@@ -1,0 +1,67 @@
+#Results
+  --height-header: calc(var(--height-track) - var(--padding-track-block-start) * 2 + .2rem)
+
+  width: calc(100vw - var(--width-condition))
+  > .inner
+    height: 100vh
+    overflow-y: auto
+    > section
+      transition: height var(--transition-instant)
+      // > header
+      //   padding: 0 var(--padding-track-inline-start)
+      //   color: white
+      //   background-color: var(--color-lamp-black)
+      //   line-height: var(--height-header)
+      //   display: flex
+      //   align-items: center
+      //   border-top: solid .1rem rgba(255, 255, 255, .1)
+      //   border-bottom: solid .1rem rgba(0, 0, 0, .8)
+      //   // position: sticky
+      //   > .collapsebutton
+      //     display: inline-block
+      //   > .title
+      //     display: inline-block
+      //     font-size: var(--font-size-title)
+      //     margin-bottom: 0
+      //     > .numofdata
+      //       font-size: 1.2rem
+      //       font-weight: normal
+      //       margin-inline-start: .8rem
+      //   > .remainingspace
+      //     flex-grow: 1
+      //     text-align: right
+      //     > .button
+      //       display: inline-block
+      //       cursor: pointer
+      //       > .material-icons-outlined
+      //         font-size: 1.4rem
+      //         vertical-align: middle
+      //         position: relative
+      //         top: -.1rem
+      //         margin-right: .2rem
+
+      // &#ResultsStatistics
+      //   height: var(--height-header)
+      //   &.-spread
+      //     height: calc(var(--height-header) + var(--height-results-statistics))
+      // &#ResultsTable
+      //   height: 100vh
+      //   overflow-y: auto
+      //   > header
+      //     position: sticky
+      //     top: 0
+      //   > .body
+      //     > table
+      //       > thead
+      //         > tr
+      //           > th
+      //             position: sticky
+      //             top: var(--height-header)
+    //   &#ResultsStatistics.-spread
+    //     + section#ResultsTable
+    //       height: calc(100vh - var(--height-header) - var(--height-results-statistics))
+    //   &#ResultsStatistics
+    // > section#ResultsStatistics[data-views-count="0"]
+    //   height: var(--height-header)
+    //   + section#ResultsTable
+    //     height: calc(100vh - var(--height-header))

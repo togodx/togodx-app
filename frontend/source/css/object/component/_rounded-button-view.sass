@@ -1,0 +1,34 @@
+.rounded-button-view
+  margin-left: -.1rem
+  padding: 0 .8em
+  border: none
+  font-size: 1.4rem
+  line-height: 2em
+  background-color: white
+  border-radius: 1em
+  box-shadow: var(--shadow-shallow)
+  position: relative
+  cursor: pointer
+  &:hover
+    top: .1rem
+  &.-black
+    background-color: var(--color-lamp-black)
+    color: white
+  &.-outine
+    border: solid .1rem var(--color-separator)
+  &.-spread
+    width: calc(100% + .2rem)
+  &.-verysmall
+    font-size: 1rem
+    line-height: 1.6rem
+    border-radius: .8em
+  &:disabled
+    opacity: .4
+    &:hover
+      top: auto
+  > .material-icons-outlined
+    font-size: 1.4rem
+    vertical-align: middle
+    position: relative
+    top: -.1rem
+    margin-right: .2rem

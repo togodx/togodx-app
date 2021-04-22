@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link>
+  </head>
+</html><!DOCTYPE html>
+<html class="no-js" lang="">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" href="icon.png">
+    <!-- Place favicon.ico in the root directory-->
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+  <body data-heatmap="true" data-display="properties">
+    <header></header>
+    <main id="App">
+      <div class="inner">
+        <section id="Properties">
+          <header class="header">
+            <div class="title">
+              <h2 class="properties">Properties</h2>
+              <h2 class="attributes">Values</h2>
+            </div>
+            <nav>
+              <ul>
+                <li><span class="material-icons-outlined">file_upload</span>Upload IDs</li>
+                <li class="viewmodecontroller">
+                  <label>
+                    <input type="checkbox" value="log10">Log scale
+                  </label>
+                  <label>
+                    <input type="checkbox" value="area" checked>Area
+                  </label>
+                  <label>
+                    <input type="checkbox" value="heatmap" checked>Heatmap
+                  </label>
+                </li>
+              </ul>
+            </nav>
+          </header>
+          <section class="concepts"></section>
+        </section>
+        <section id="Results">
+          <div class="inner">
+            <section id="ResultsTable">
+              <div class="body">
+                <table>
+                  <thead>
+                    <tr class="header"></tr>
+                    <tr class="statistics"></tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+                <div class="tableend">
+                  <div class="loading-view"></div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+      </div>
+      <section id="FixedArea">
+        <div class="upper">
+          <section id="ConditionBuilder" data-hidden-by="results">
+            <header>
+              <h2 class="title">Condition builder</h2>
+            </header>
+            <select class="togoKey rounded-button-view" disabled>
+              <option value="">Select a TOGO key</option>
+            </select>
+            <div class="conditions">
+              <div class="attributes">
+                <h2 class="title">Property values</h2>
+                <div class="conditions"></div>
+              </div>
+              <div class="properties">
+                <h2 class="title">Properties</h2>
+                <div class="conditions"></div>
+              </div>
+            </div>
+            <footer>
+              <button class="exec rounded-button-view -black -spread" disabled><span class="material-icons-outlined">table_view</span>TOGO data</button>
+            </footer>
+          </section>
+          <section id="Reports" data-hidden-by="properties">
+            <header>
+              <h2 class="title">Reports</h2>
+            </header>
+            <div class="stanzas"></div>
+            <footer>
+              <button class="return rounded-button-view -black -spread"><span class="material-icons-outlined">keyboard_return</span>Return to tracks</button>
+            </footer>
+          </section>
+        </div>
+        <div class="lower">
+          <section id="Conditions">
+            <header>
+              <h2 class="title">Conditions</h2>
+            </header>
+            <div class="conditions"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script src="js/vendor/lodash.js"></script>
+    <script src="js/main.js"></script>
+    <script type="module" src="https://togostanza.github.io/metastanza/hash-table.js" async></script>
+    <script type="module" src="https://togostanza.github.io/metastanza/barchart.js" async></script>
+  </body>
+</html>
