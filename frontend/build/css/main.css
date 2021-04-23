@@ -1348,13 +1348,13 @@ body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .
   from {
     -webkit-transform: translate(-50%, calc(-50% - var(--height-drop)));
             transform: translate(-50%, calc(-50% - var(--height-drop)));
-    box-shadow: 0 calc(.2rem + var(--height-drop)) 1rem rgba(0, 0, 0, 0);
+    box-shadow: 0 calc(.4rem + var(--height-drop)) 1rem rgba(0, 0, 0, 0);
     opacity: 0;
   }
   to {
-    -webkit-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-    box-shadow: 0 0.2rem 0.2rem rgba(0, 0, 0, 0.5);
+    -webkit-transform: translate(-50%, 50%);
+            transform: translate(-50%, 50%);
+    box-shadow: 0 0.4rem 0.2rem rgba(0, 0, 0, 0.5);
     opacity: 1;
   }
 }
@@ -1362,13 +1362,13 @@ body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .
   from {
     -webkit-transform: translate(-50%, calc(-50% - var(--height-drop)));
             transform: translate(-50%, calc(-50% - var(--height-drop)));
-    box-shadow: 0 calc(.2rem + var(--height-drop)) 1rem rgba(0, 0, 0, 0);
+    box-shadow: 0 calc(.4rem + var(--height-drop)) 1rem rgba(0, 0, 0, 0);
     opacity: 0;
   }
   to {
-    -webkit-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-    box-shadow: 0 0.2rem 0.2rem rgba(0, 0, 0, 0.5);
+    -webkit-transform: translate(-50%, 50%);
+            transform: translate(-50%, 50%);
+    box-shadow: 0 0.4rem 0.2rem rgba(0, 0, 0, 0.5);
     opacity: 1;
   }
 }

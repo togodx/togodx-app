@@ -537,6 +537,12 @@
         _classPrivateFieldSet(this, _subjectId, subjectId);
 
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this);
+      } // public accessor
+
+    }, {
+      key: "currentTogoKey",
+      get: function get() {
+        return _classPrivateFieldGet(this, _togoKey);
       } // private methods
 
     }]);
@@ -812,6 +818,11 @@
       key: "subjects",
       get: function get() {
         return _classPrivateFieldGet(this, _subjects);
+      }
+    }, {
+      key: "properties",
+      get: function get() {
+        return _classPrivateFieldGet(this, _properties);
       }
     }]);
 
@@ -1224,8 +1235,6 @@
 
   var _values = new WeakMap();
 
-  var _color = new WeakMap();
-
   var _ROOT$6 = new WeakMap();
 
   var _update = new WeakSet();
@@ -1256,11 +1265,6 @@
       value: void 0
     });
 
-    _color.set(this, {
-      writable: true,
-      value: void 0
-    });
-
     _ROOT$6.set(this, {
       writable: true,
       value: void 0
@@ -1284,12 +1288,11 @@
 
     var _width = 100 / values.length;
 
-    _classPrivateFieldSet(this, _color, "hsla(".concat(360 * index / values.length, ", 70%, 50%, .075)"));
-
     elm.innerHTML = _classPrivateFieldGet(this, _values).map(function (value, index) {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / _sum * 100;
-      return "\n        <li class=\"value\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"color\" style=\"background-color: ").concat(_classPrivateFieldGet(_this, _color), ";\"></div>\n          <div class=\"heatmap\"></div>\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n          <div class=\"pin\"></div>\n        </li>");
+      value.color = "hsla(".concat(360 * index / values.length, ", 70%, 50%, .075)");
+      return "\n        <li class=\"value\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"color\" style=\"background-color: ").concat(value.color, ";\"></div>\n          <div class=\"heatmap\"></div>\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n          <div class=\"pin\"></div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .value').forEach(function (node, index) {
       return _classPrivateFieldGet(_this, _values)[index].elm = node;
@@ -2564,15 +2567,14 @@
 
   var _SPARQLET = new WeakMap();
 
-  var _PRIMARY_KEY = new WeakMap();
-
   var _USER_KEY = new WeakMap();
 
   var _USER_IDS = new WeakMap();
 
   var _fetch = new WeakSet();
 
-  var UploadIDsView = function UploadIDsView(elm) {
+  var UploadIDsView = // #PRIMARY_KEY;
+  function UploadIDsView(elm) {
     var _this = this;
 
     _classCallCheck(this, UploadIDsView);
@@ -2589,11 +2591,6 @@
       value: void 0
     });
 
-    _PRIMARY_KEY.set(this, {
-      writable: true,
-      value: void 0
-    });
-
     _USER_KEY.set(this, {
       writable: true,
       value: void 0
@@ -2606,9 +2603,8 @@
 
     _classPrivateFieldSet(this, _ROOT$1, elm);
 
-    _classPrivateFieldSet(this, _SPARQLET, elm.querySelector('#UploadIDsSparqlet'));
+    _classPrivateFieldSet(this, _SPARQLET, elm.querySelector('#UploadIDsSparqlet')); // this.#PRIMARY_KEY = elm.querySelector('#UploadIDsPrimaryKey');
 
-    _classPrivateFieldSet(this, _PRIMARY_KEY, elm.querySelector('#UploadIDsPrimaryKey'));
 
     _classPrivateFieldSet(this, _USER_KEY, elm.querySelector('#UploadIDsUserKey'));
 
@@ -2631,25 +2627,44 @@
   };
 
   function _fetch2() {
-    var propertyId = _classPrivateFieldGet(this, _SPARQLET).value;
+    console.log(Records$1.properties);
+    console.log(ConditionBuilder$1);
+    var togoKey = ConditionBuilder$1.currentTogoKey;
+    var queryTemplate = "".concat(PATH + DATA_FROM_USER_IDS, "?sparqlet=@@sparqlet@@&primaryKey=").concat(togoKey, "&categoryIds=&userKey=").concat(_classPrivateFieldGet(this, _USER_KEY).value, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
+    console.log(queryTemplate);
+    Records$1.properties.forEach(function (property) {
+      var propertyId = property.propertyId;
+      console.log(propertyId);
+      fetch(queryTemplate.replace('@@sparqlet@@', encodeURIComponent(PATH + propertyId))).then(function (responce) {
+        return responce.json();
+      }).then(function (values) {
+        console.log(values); // dispatch event
 
-    fetch("".concat(PATH + DATA_FROM_USER_IDS, "?sparqlet=").concat(encodeURIComponent(PATH + propertyId), "&primaryKey=").concat(_classPrivateFieldGet(this, _PRIMARY_KEY).value, "&categoryIds=&userKey=").concat(_classPrivateFieldGet(this, _USER_KEY).value, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value))).then(function (responce) {
-      return responce.json();
-    }).then(function (values) {
-      console.log(values); // dispatch event
-
-      var event = new CustomEvent('userValues', {
-        detail: {
-          propertyId: propertyId,
-          values: values
-        }
+        var event = new CustomEvent('userValues', {
+          detail: {
+            propertyId: propertyId,
+            values: values
+          }
+        });
+        DefaultEventEmitter$1.dispatchEvent(event);
       });
-      DefaultEventEmitter$1.dispatchEvent(event);
-    });
+    }); // const propertyId = this.#SPARQLET.value;
+    // const togoKey = ConditionBuilder.currentTogoKey;
+    // fetch(`${PATH + DATA_FROM_USER_IDS}?sparqlet=${encodeURIComponent(PATH + propertyId)}&primaryKey=${togoKey}&categoryIds=&userKey=${this.#USER_KEY.value}&userIds=${encodeURIComponent(this.#USER_IDS.value)}`)
+    // .then(responce => responce.json())
+    // .then(values => {
+    //   console.log(values)
+    //   // dispatch event
+    //   const event = new CustomEvent('userValues', {detail: {
+    //     propertyId,
+    //     values
+    //   }});
+    //   DefaultEventEmitter.dispatchEvent(event);
+    // });
   }
 
   var MIN_SIZE = 8;
-  var MAX_SIZE = 50;
+  var MAX_SIZE = 20;
   var RANGE_SIZE = MAX_SIZE - MIN_SIZE;
 
   var _ROOT = new WeakMap();
@@ -2686,7 +2701,7 @@
     console.log(rect);
     var pin = document.createElement('div');
     pin.classList.add('pin');
-    pin.style.top = rect.top + 'px';
+    pin.style.top = rect.top - size - 2 + 'px';
     pin.style.left = rect.left + 'px';
     pin.style.width = size + 'px';
     pin.style.height = size + 'px';

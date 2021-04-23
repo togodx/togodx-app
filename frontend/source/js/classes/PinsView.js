@@ -1,7 +1,7 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
 
 const MIN_SIZE = 8;
-const MAX_SIZE = 50;
+const MAX_SIZE = 20;
 const RANGE_SIZE = MAX_SIZE - MIN_SIZE;
 
 export default class PinsView {
@@ -27,7 +27,7 @@ export default class PinsView {
     console.log(rect)
     const pin = document.createElement('div');
     pin.classList.add('pin');
-    pin.style.top = rect.top + 'px';
+    pin.style.top = (rect.top - size - 2) + 'px';
     pin.style.left = rect.left + 'px';
     pin.style.width = size + 'px';
     pin.style.height = size + 'px';

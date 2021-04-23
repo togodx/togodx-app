@@ -7,7 +7,6 @@ export default class TrackOverviewCategorical {
   #subject;
   #property;
   #values;
-  #color;
   #ROOT;
 
   constructor(elm, subject, property, values) {
@@ -21,13 +20,13 @@ export default class TrackOverviewCategorical {
     // TODO: ヒストグラムは別処理
     const sum = values.reduce((acc, value) => acc + value.count, 0);
     const width = 100 / values.length;
-    this.#color = `hsla(${360 * index / values.length}, 70%, 50%, .075)`;
     elm.innerHTML = this.#values.map((value, index) => {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / sum * 100;
+      value.color = `hsla(${360 * index / values.length}, 70%, 50%, .075)`;
       return `
         <li class="value" style="width: ${width}%;" data-category-id="${value.categoryId}">
-          <div class="color" style="background-color: ${this.#color};"></div>
+          <div class="color" style="background-color: ${value.color};"></div>
           <div class="heatmap"></div>
           <p>
             <span class="label">${value.label}</span>

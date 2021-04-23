@@ -114,6 +114,12 @@ class ConditionBuilder {
     this.#satisfyAggregation();
   }
 
+  // public accessor
+
+  get currentTogoKey() {
+    return this.#togoKey;
+  }
+
   // private methods
 
   #satisfyAggregation() {
