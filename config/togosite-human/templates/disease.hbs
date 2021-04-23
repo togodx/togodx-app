@@ -43,7 +43,7 @@
     const targets = await targetIdTypes(subjectIdType);
     const array = [];
     for (const targetIdType of targets) {
-      const url = togoidAPIURL + '/convert?ids=' + subjectId + '&route=' + subjectIdType + ',' + targetIdType;
+      const url = togoidAPIURL + '/convert?format=json&ids=' + subjectId + '&route=' + subjectIdType + ',' + targetIdType;
       const json = await fetchJSON(url);
       if (json.results.length != 0) {
         array.push({
