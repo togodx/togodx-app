@@ -1,8 +1,7 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
-import {USER_VALUES} from '../events';
-import {CHANGE_VIEW_MODES} from '../events';
+import {USER_VALUES, CHANGE_VIEW_MODES, ENTER_PROPERTY_VALUE_ITEM_VIEW, MUTATE_PROPERTY_VALUE_CONDITION, STICK_USER_VALUE, LEAVE_PROPERTY_VALUE_ITEM_VIEW} from '../events';
 
 export default class TrackOverviewCategorical {
 
@@ -46,7 +45,7 @@ export default class TrackOverviewCategorical {
       // show tooltip
       valueElm.addEventListener('mouseenter', () => {
         const valueData = this.#values.find(valueData => valueData.elm === valueElm);
-        const event = new CustomEvent('enterPropertyValueItemView', {detail: {
+        const event = new CustomEvent(ENTER_PROPERTY_VALUE_ITEM_VIEW, {detail: {
           label: `<span style="color: ${App.getHslColor(this.#subject.hue)}">${valueElm.querySelector(':scope > p > .label').textContent}</span>`,
           values: [
             {
@@ -59,7 +58,7 @@ export default class TrackOverviewCategorical {
         DefaultEventEmitter.dispatchEvent(event);
       });
       valueElm.addEventListener('mouseleave', () => {
-        const event = new CustomEvent('leavePropertyValueItemView');
+        const event = new CustomEvent(LEAVE_PROPERTY_VALUE_ITEM_VIEW);
         DefaultEventEmitter.dispatchEvent(event);
       });
 
@@ -86,7 +85,7 @@ export default class TrackOverviewCategorical {
     });
 
     // event listener
-    DefaultEventEmitter.addEventListener('mutatePropertyValueCondition', e => {
+    DefaultEventEmitter.addEventListener(MUTATE_PROPERTY_VALUE_CONDITION, e => {
       let propertyId, categoryId;
       switch (e.detail.action) {
         case 'add':
@@ -143,7 +142,7 @@ export default class TrackOverviewCategorical {
         if (userValue) {
           value.elm.classList.add('-pinsticking');
           // dispatch event
-          const event = new CustomEvent('stickUserValue', {detail: {
+          const event = new CustomEvent(STICK_USER_VALUE, {detail: {
             view: value.elm,
             userValue,
             value

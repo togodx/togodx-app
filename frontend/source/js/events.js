@@ -1,2 +1,14 @@
 export const USER_VALUES = 'userValues';
 export const CHANGE_VIEW_MODES = 'changeViewModes';
+export const MUTATE_PROPERTY_CONDITION = 'mutatePropertyCondition';
+export const MUTATE_PROPERTY_VALUE_CONDITION = 'mutatePropertyValueCondition';
+export const MUTATE_ESTABLISH_CONDITIONS = 'mutateEstablishConditions';
+export const COMPLETE_QUERY_PARAMETER = 'completeQueryParameter';
+export const HIDE_STANZA = 'hideStanza';
+export const SHOW_STANZA = 'showStanza';
+export const FAILED_FETCH_TABLE_DATA_IDS = 'failedFetchTableDataIds';
+export const ADD_NEXT_ROWS = 'addNextRows';
+export const SELECT_TABLE_DATA = 'selectTableData';
+export const ENTER_PROPERTY_VALUE_ITEM_VIEW = 'enterPropertyValueItemView';
+export const LEAVE_PROPERTY_VALUE_ITEM_VIEW = 'leavePropertyValueItemView';
+export const STICK_USER_VALUE = 'stickUserValue';

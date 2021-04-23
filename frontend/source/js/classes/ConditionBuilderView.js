@@ -1,6 +1,7 @@
 import App from "./App";
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import {MUTATE_PROPERTY_CONDITION, MUTATE_PROPERTY_VALUE_CONDITION, MUTATE_ESTABLISH_CONDITIONS} from '../events';
 
 export default class ConditionBuilderView {
 
@@ -28,7 +29,7 @@ export default class ConditionBuilderView {
     });
 
     // event listeners
-    DefaultEventEmitter.addEventListener('mutatePropertyCondition', e => {
+    DefaultEventEmitter.addEventListener(MUTATE_PROPERTY_CONDITION, e => {
       switch (e.detail.action) {
         case 'add':
           this.#addProperty(e.detail.condition.subject, e.detail.condition.property);
@@ -38,7 +39,7 @@ export default class ConditionBuilderView {
           break;
       }
     });
-    DefaultEventEmitter.addEventListener('mutatePropertyValueCondition', e => {
+    DefaultEventEmitter.addEventListener(MUTATE_PROPERTY_VALUE_CONDITION, e => {
       switch (e.detail.action) {
         case 'add':
           this.#addPropertyValue(e.detail.condition.subject, e.detail.condition.property, e.detail.condition.value);
@@ -48,7 +49,7 @@ export default class ConditionBuilderView {
           break;
       }
     });
-    DefaultEventEmitter.addEventListener('mutateEstablishConditions', e => {
+    DefaultEventEmitter.addEventListener(MUTATE_ESTABLISH_CONDITIONS, e => {
       this.#execButton.disabled = !e.detail;
     });
 

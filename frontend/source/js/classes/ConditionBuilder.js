@@ -1,4 +1,5 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import {MUTATE_PROPERTY_CONDITION, COMPLETE_QUERY_PARAMETER, MUTATE_PROPERTY_VALUE_CONDITION, MUTATE_ESTABLISH_CONDITIONS} from '../events';
 
 class ConditionBuilder {
 
@@ -21,7 +22,7 @@ class ConditionBuilder {
     // evaluate
     this.#satisfyAggregation();
     // dispatch event
-    const event = new CustomEvent('mutatePropertyCondition', {detail: {
+    const event = new CustomEvent(MUTATE_PROPERTY_CONDITION, {detail: {
       action: 'add', 
       condition
     }});
@@ -35,7 +36,7 @@ class ConditionBuilder {
     // evaluate
     this.#satisfyAggregation();
     // dispatch event
-    const event = new CustomEvent('mutatePropertyValueCondition', {detail: {
+    const event = new CustomEvent(MUTATE_PROPERTY_VALUE_CONDITION, {detail: {
       action: 'add', 
       condition
     }});
@@ -50,7 +51,7 @@ class ConditionBuilder {
     // evaluate
     this.#satisfyAggregation();
     // dispatch event
-    const event = new CustomEvent('mutatePropertyCondition', {detail: {action: 'remove', propertyId}});
+    const event = new CustomEvent(MUTATE_PROPERTY_CONDITION, {detail: {action: 'remove', propertyId}});
     DefaultEventEmitter.dispatchEvent(event);
   }
 
@@ -62,7 +63,7 @@ class ConditionBuilder {
     // evaluate
     this.#satisfyAggregation();
     // dispatch event
-    const event = new CustomEvent('mutatePropertyValueCondition', {detail: {action: 'remove', propertyId, categoryId}});
+    const event = new CustomEvent(MUTATE_PROPERTY_VALUE_CONDITION, {detail: {action: 'remove', propertyId, categoryId}});
     DefaultEventEmitter.dispatchEvent(event);
   }
 
@@ -95,7 +96,7 @@ class ConditionBuilder {
       };
     });
     // emmit event
-    const event = new CustomEvent('completeQueryParameter', {detail: {
+    const event = new CustomEvent(COMPLETE_QUERY_PARAMETER, {detail: {
       togoKey: this.#togoKey,
       subjectId: this.#subjectId,
       properties,
@@ -126,7 +127,7 @@ class ConditionBuilder {
     const established 
       = (this.#togoKey && this.#subjectId)
       && (this.#propertyConditions.length > 0 || this.#attributeConditions.length > 0);
-    const event = new CustomEvent('mutateEstablishConditions', {detail: established});
+    const event = new CustomEvent(MUTATE_ESTABLISH_CONDITIONS, {detail: established});
     DefaultEventEmitter.dispatchEvent(event);
   }
 

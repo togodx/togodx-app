@@ -1,6 +1,7 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import StatisticsView from "./StatisticsView";
+import {HIDE_STANZA, SHOW_STANZA, SELECT_TABLE_DATA, ADD_NEXT_ROWS, FAILED_FETCH_TABLE_DATA_IDS} from '../events';
 
 export default class ResultsTable {
 
@@ -36,9 +37,9 @@ export default class ResultsTable {
     });
 
     // event listener
-    DefaultEventEmitter.addEventListener('selectTableData', e => this.#setupTable(e.detail));
-    DefaultEventEmitter.addEventListener('addNextRows', e => this.#addTableRows(e.detail));
-    DefaultEventEmitter.addEventListener('failedFetchTableDataIds', e => this.#failed(e.detail));
+    DefaultEventEmitter.addEventListener(SELECT_TABLE_DATA, e => this.#setupTable(e.detail));
+    DefaultEventEmitter.addEventListener(ADD_NEXT_ROWS, e => this.#addTableRows(e.detail));
+    DefaultEventEmitter.addEventListener(FAILED_FETCH_TABLE_DATA_IDS, e => this.#failed(e.detail));
 
     // turnoff intersection observer after display transition
     const mutationObserver = new MutationObserver(mutations => {
@@ -77,7 +78,7 @@ export default class ResultsTable {
     this.#THEAD.innerHTML = '';
     this.#TBODY.innerHTML = '';
     this.#LOADING_VIEW.classList.add('-shown');
-    DefaultEventEmitter.dispatchEvent(new CustomEvent('hideStanza'));
+    DefaultEventEmitter.dispatchEvent(new CustomEvent(HIDE_STANZA));
 
     // make table header
     this.#THEAD.innerHTML = `
@@ -167,13 +168,13 @@ export default class ResultsTable {
         if (tr.classList.contains('-selected')) {
           // hide stanza
           tr.classList.remove('-selected');
-          DefaultEventEmitter.dispatchEvent(new CustomEvent('hideStanza'));
+          DefaultEventEmitter.dispatchEvent(new CustomEvent(HIDE_STANZA));
         } else {
           // show stanza
           this.#TBODY.querySelectorAll(':scope > tr').forEach(tr => tr.classList.remove('-selected'));
           tr.classList.add('-selected');
           // dispatch event
-          const event = new CustomEvent('showStanza', {detail: {
+          const event = new CustomEvent(SHOW_STANZA, {detail: {
             subject: {
               togoKey: this.#tableData.togoKey,
               id: this.#tableData.subjectId,

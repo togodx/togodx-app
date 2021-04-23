@@ -1,7 +1,7 @@
 import App from "./App";
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
-import {CHANGE_VIEW_MODES} from '../events';
+import {CHANGE_VIEW_MODES, MUTATE_PROPERTY_VALUE_CONDITION} from '../events';
 
 export default class ColumnSelectorView {
 
@@ -26,7 +26,7 @@ export default class ColumnSelectorView {
     this._loadingView = this._view.querySelector(':scope > .loading-view');
 
     // even listener
-    DefaultEventEmitter.addEventListener('mutatePropertyValueCondition', e => {
+    DefaultEventEmitter.addEventListener(MUTATE_PROPERTY_VALUE_CONDITION, e => {
       let propertyId, categoryId;
       switch (e.detail.action) {
         case 'add':
