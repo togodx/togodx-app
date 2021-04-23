@@ -6,6 +6,8 @@ import ConceptView from './ConceptView.js';
 import ResultsTable from './ResultsTable.js';
 import BalloonView from './BalloonView.js';
 import ConditionsController from "./ConditionsController";
+import UploadIDsView from "./UploadIDsView";
+import PinsView from "./PinsView";
 
 const CONF_PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
 const CONF_TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
@@ -42,6 +44,8 @@ class App {
     const reportsView = new ReportsView(document.querySelector('#Reports'));
     new ResultsTable(document.querySelector('#ResultsTable'));
     new BalloonView();
+    new UploadIDsView(document.querySelector('#UploadIDsView'));
+    new PinsView(document.querySelector('#PinsView'));
 
     // load config json
     let stanzaTtemplates;

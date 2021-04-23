@@ -293,6 +293,20 @@
       "pg" : 0,
       "sct" : 0
     },
+    "\/source\/css\/object\/project\/_PinsView.sass" : {
+      "aP" : 1,
+      "bl" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 2,
+      "ma" : 1,
+      "oA" : 1,
+      "oAP" : "\/build\/css\/object\/project\/_PinsView.css",
+      "oF" : 0,
+      "oS" : 1,
+      "pg" : 0,
+      "sct" : 0
+    },
     "\/source\/css\/object\/project\/_Properties.sass" : {
       "aP" : 1,
       "bl" : 0,
@@ -344,6 +358,20 @@
       "ma" : 1,
       "oA" : 1,
       "oAP" : "\/build\/css\/object\/project\/_ResultsTable.css",
+      "oF" : 0,
+      "oS" : 1,
+      "pg" : 0,
+      "sct" : 0
+    },
+    "\/source\/css\/object\/project\/_UploadIDsView.sass" : {
+      "aP" : 1,
+      "bl" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 2,
+      "ma" : 1,
+      "oA" : 1,
+      "oAP" : "\/build\/css\/object\/project\/_UploadIDsView.css",
       "oF" : 0,
       "oS" : 1,
       "pg" : 0,
@@ -458,6 +486,17 @@
       "sC" : 3,
       "tS" : 1
     },
+    "\/source\/js\/classes\/PinsView.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/classes\/PinsView.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
     "\/source\/js\/classes\/Records.js" : {
       "bF" : 4,
       "ft" : 64,
@@ -531,6 +570,17 @@
       "mi" : 0,
       "oA" : 1,
       "oAP" : "\/build\/js\/classes\/TrackView.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
+    "\/source\/js\/classes\/UploadIDsView.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/classes\/UploadIDsView.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 1

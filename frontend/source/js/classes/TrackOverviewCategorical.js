@@ -29,6 +29,7 @@ export default class TrackOverviewCategorical {
             <span class="label">${value.label}</span>
             <span class="count">${value.count.toLocaleString()}</span>
           </p>
+          <div class="pin"></div>
         </li>`;
     }).join('');
     elm.querySelectorAll(':scope > .value').forEach((node, index) =>  this.#values[index].elm = node);
@@ -108,6 +109,7 @@ export default class TrackOverviewCategorical {
       }
     });
     DefaultEventEmitter.addEventListener('changeViewModes', e => this.#update(e.detail));
+    DefaultEventEmitter.addEventListener('userValues', e => this.#plotUserIdValues(e.detail));
   }
 
   #update(viewModes) {
@@ -126,6 +128,23 @@ export default class TrackOverviewCategorical {
       value.elm.querySelector(':scope > .heatmap').style.backgroundColor = `rgba(51, 50, 48, ${1 - (isLog10 ? value.countLog10 : value.count) / max})`;
       left += width;
     });
+  }
+
+  #plotUserIdValues(detail) {
+    if (this.#property.propertyId === detail.propertyId) {
+      this.#values.forEach(value => {
+        const userValue = detail.values.find(userValue => userValue.categoryId === value.categoryId);
+        if (userValue) {
+          // dispatch event
+          const event = new CustomEvent('stickUserValue', {detail: {
+            view: value.elm,
+            userValue,
+            value
+          }});
+          DefaultEventEmitter.dispatchEvent(event);
+        }
+      });
+    }
   }
 
 }

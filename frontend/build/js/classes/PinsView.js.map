@@ -1,0 +1,1 @@
+{"version":3,"file":"PinsView.js","sources":["../../../source/js/classes/PinsView.js"],"sourcesContent":["PinsView\n\nexport default class PinsView {\n  \n  constructor(elm) {\n\n  }\n\n}\n"],"names":["PinsView","elm"],"mappings":";;;;;;;;;MAEqBA,WAEnB,kBAAYC,GAAZ,EAAiB;EAAA;EAEhB;;;;;;;;"}

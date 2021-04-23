@@ -788,10 +788,13 @@
     }, {
       key: "getProperty",
       value: function getProperty(propertyId) {
+        console.log(propertyId);
+
         var property = _classPrivateFieldGet(this, _properties).find(function (property) {
           return property.propertyId === propertyId;
         });
 
+        console.log(property);
         return property;
       }
     }, {
@@ -1223,10 +1226,14 @@
 
   var _update = new WeakSet();
 
+  var _plotUserIdValues = new WeakSet();
+
   var TrackOverviewCategorical = function TrackOverviewCategorical(elm, subject, property, values) {
     var _this = this;
 
     _classCallCheck(this, TrackOverviewCategorical);
+
+    _plotUserIdValues.add(this);
 
     _update.add(this);
 
@@ -1264,7 +1271,7 @@
     elm.innerHTML = _classPrivateFieldGet(this, _values).map(function (value, index) {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / _sum * 100;
-      return "\n        <li class=\"value\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / values.length, ", 70%, 50%, .075);\"></div>\n          <div class=\"heatmap\"></div>\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n        </li>");
+      return "\n        <li class=\"value\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / values.length, ", 70%, 50%, .075);\"></div>\n          <div class=\"heatmap\"></div>\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n          <div class=\"pin\"></div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .value').forEach(function (node, index) {
       return _classPrivateFieldGet(_this, _values)[index].elm = node;
@@ -1355,6 +1362,9 @@
     DefaultEventEmitter$1.addEventListener('changeViewModes', function (e) {
       return _classPrivateMethodGet(_this, _update, _update2).call(_this, e.detail);
     });
+    DefaultEventEmitter$1.addEventListener('userValues', function (e) {
+      return _classPrivateMethodGet(_this, _plotUserIdValues, _plotUserIdValues2).call(_this, e.detail);
+    });
   };
 
   function _update2(viewModes) {
@@ -1382,13 +1392,35 @@
     });
   }
 
+  function _plotUserIdValues2(detail) {
+    if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
+      _classPrivateFieldGet(this, _values).forEach(function (value) {
+        var userValue = detail.values.find(function (userValue) {
+          return userValue.categoryId === value.categoryId;
+        });
+
+        if (userValue) {
+          // dispatch event
+          var event = new CustomEvent('stickUserValue', {
+            detail: {
+              view: value.elm,
+              userValue: userValue,
+              value: value
+            }
+          });
+          DefaultEventEmitter$1.dispatchEvent(event);
+        }
+      });
+    }
+  }
+
   var _subject = new WeakMap();
 
   var _property = new WeakMap();
 
   var _sparqlist = new WeakMap();
 
-  var _ROOT$3 = new WeakMap();
+  var _ROOT$5 = new WeakMap();
 
   var _LOADING_VIEW$1 = new WeakMap();
 
@@ -1422,7 +1454,7 @@
       value: void 0
     });
 
-    _ROOT$3.set(this, {
+    _ROOT$5.set(this, {
       writable: true,
       value: void 0
     });
@@ -1451,7 +1483,7 @@
     var elm = document.createElement('div');
     container.insertAdjacentElement('beforeend', elm);
 
-    _classPrivateFieldSet(this, _ROOT$3, elm);
+    _classPrivateFieldSet(this, _ROOT$5, elm);
 
     _classPrivateFieldSet(this, _subject, subject);
 
@@ -1489,12 +1521,12 @@
           property: _classPrivateFieldGet(_this, _property)
         });
 
-        _classPrivateFieldGet(_this, _ROOT$3).classList.add('-allselected');
+        _classPrivateFieldGet(_this, _ROOT$5).classList.add('-allselected');
       } else {
         // remove
         ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this, _property).propertyId);
 
-        _classPrivateFieldGet(_this, _ROOT$3).classList.remove('-allselected');
+        _classPrivateFieldGet(_this, _ROOT$5).classList.remove('-allselected');
       }
     }); // event listener
 
@@ -1522,7 +1554,7 @@
   ;
 
   function _makeValues2(values) {
-    _classPrivateFieldGet(this, _ROOT$3).classList.remove('-preparing');
+    _classPrivateFieldGet(this, _ROOT$5).classList.remove('-preparing');
 
     _classPrivateFieldGet(this, _LOADING_VIEW$1).classList.remove('-shown');
 
@@ -1683,7 +1715,7 @@
     }).join('');
   }
 
-  var _ROOT$2 = new WeakMap();
+  var _ROOT$4 = new WeakMap();
 
   var _THEAD = new WeakMap();
 
@@ -1720,7 +1752,7 @@
 
     _enterTableEnd.add(this);
 
-    _ROOT$2.set(this, {
+    _ROOT$4.set(this, {
       writable: true,
       value: void 0
     });
@@ -1761,7 +1793,7 @@
     });
 
     // references
-    _classPrivateFieldSet(this, _ROOT$2, _elm);
+    _classPrivateFieldSet(this, _ROOT$4, _elm);
 
     var TABLE = _elm.querySelector(':scope > .body > table');
 
@@ -1840,7 +1872,7 @@
 
     _classPrivateFieldGet(this, _intersctionObserver).unobserve(_classPrivateFieldGet(this, _TABLE_END));
 
-    _classPrivateFieldGet(this, _ROOT$2).classList.remove('-complete');
+    _classPrivateFieldGet(this, _ROOT$4).classList.remove('-complete');
 
     _classPrivateFieldGet(this, _THEAD).innerHTML = '';
     _classPrivateFieldGet(this, _TBODY).innerHTML = '';
@@ -1896,11 +1928,11 @@
 
 
     if (detail.done) {
-      _classPrivateFieldGet(this, _ROOT$2).classList.add('-complete');
+      _classPrivateFieldGet(this, _ROOT$4).classList.add('-complete');
 
       _classPrivateFieldGet(this, _LOADING_VIEW).classList.remove('-shown');
     } else {
-      _classPrivateFieldGet(this, _ROOT$2).classList.remove('-complete');
+      _classPrivateFieldGet(this, _ROOT$4).classList.remove('-complete');
 
       _classPrivateFieldGet(this, _LOADING_VIEW).classList.add('-shown');
 
@@ -1945,12 +1977,12 @@
   function _failed2(tableData) {
     console.log(tableData);
 
-    _classPrivateFieldGet(this, _ROOT$2).classList.add('-complete');
+    _classPrivateFieldGet(this, _ROOT$4).classList.add('-complete');
 
     _classPrivateFieldGet(this, _LOADING_VIEW).classList.remove('-shown');
   }
 
-  var _ROOT$1 = new WeakMap();
+  var _ROOT$3 = new WeakMap();
 
   var _CONTAINER = new WeakMap();
 
@@ -1959,7 +1991,7 @@
 
     _classCallCheck(this, BalloonView);
 
-    _ROOT$1.set(this, {
+    _ROOT$3.set(this, {
       writable: true,
       value: void 0
     });
@@ -1970,13 +2002,13 @@
     });
 
     // make element
-    _classPrivateFieldSet(this, _ROOT$1, document.createElement('div'));
+    _classPrivateFieldSet(this, _ROOT$3, document.createElement('div'));
 
-    _classPrivateFieldGet(this, _ROOT$1).className = 'balloon-view';
-    document.querySelector('body').insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$1));
-    _classPrivateFieldGet(this, _ROOT$1).innerHTML = '<div class="container"></div>';
+    _classPrivateFieldGet(this, _ROOT$3).className = 'balloon-view';
+    document.querySelector('body').insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$3));
+    _classPrivateFieldGet(this, _ROOT$3).innerHTML = '<div class="container"></div>';
 
-    _classPrivateFieldSet(this, _CONTAINER, _classPrivateFieldGet(this, _ROOT$1).querySelector(':scope > .container')); // event listener
+    _classPrivateFieldSet(this, _CONTAINER, _classPrivateFieldGet(this, _ROOT$3).querySelector(':scope > .container')); // event listener
 
 
     DefaultEventEmitter$1.addEventListener('enterPropertyValueItemView', function (e) {
@@ -1986,22 +2018,22 @@
 
       var rect = e.detail.elm.getBoundingClientRect();
       var isBelow = window.innerHeight * .3 > rect.top;
-      _classPrivateFieldGet(_this, _ROOT$1).style.left = rect.left + rect.width * .5 + 'px';
+      _classPrivateFieldGet(_this, _ROOT$3).style.left = rect.left + rect.width * .5 + 'px';
 
       if (isBelow) {
-        _classPrivateFieldGet(_this, _ROOT$1).classList.add('-below');
+        _classPrivateFieldGet(_this, _ROOT$3).classList.add('-below');
 
-        _classPrivateFieldGet(_this, _ROOT$1).style.top = rect.top + 10 + 'px';
+        _classPrivateFieldGet(_this, _ROOT$3).style.top = rect.top + 10 + 'px';
       } else {
-        _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-below');
+        _classPrivateFieldGet(_this, _ROOT$3).classList.remove('-below');
 
-        _classPrivateFieldGet(_this, _ROOT$1).style.top = rect.top + 'px';
+        _classPrivateFieldGet(_this, _ROOT$3).style.top = rect.top + 'px';
       }
 
-      _classPrivateFieldGet(_this, _ROOT$1).classList.add('-showing');
+      _classPrivateFieldGet(_this, _ROOT$3).classList.add('-showing');
     });
     DefaultEventEmitter$1.addEventListener('leavePropertyValueItemView', function (e) {
-      _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-showing');
+      _classPrivateFieldGet(_this, _ROOT$3).classList.remove('-showing');
     });
   };
 
@@ -2021,7 +2053,7 @@
 
   var _isLoaded = new WeakMap();
 
-  var _ROOT = new WeakMap();
+  var _ROOT$2 = new WeakMap();
 
   var _STATUS = new WeakMap();
 
@@ -2088,7 +2120,7 @@
         value: void 0
       });
 
-      _ROOT.set(this, {
+      _ROOT$2.set(this, {
         writable: true,
         value: void 0
       });
@@ -2140,7 +2172,7 @@
         return "<div class=\"condiiton -value\" style=\"color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
       }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\"></div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button\" title=\"Prepare for download\" data-button=\"prepare-download\">\n        <span class=\"material-icons-outlined\">download</span>\n      </div>\n      <div class=\"button\" title=\"Restore as condition\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n      </div>\n      <div class=\"button\" title=\"Delete\" data-button=\"delete\">\n        <span class=\"material-icons-outlined\">delete</span>\n      </div>\n    </div>\n    <div class=\"downloads\">\n      <div class=\"button\" title=\"Download CSV\">\n        <span class=\"material-icons-outlined\">download</span>\n        CSV\n      </div>\n      <div class=\"button\" title=\"Download JSON \">\n        <span class=\"material-icons-outlined\">download</span>\n        JSON\n      </div>\n    </div>"); // reference
 
-      _classPrivateFieldSet(this, _ROOT, elm);
+      _classPrivateFieldSet(this, _ROOT$2, elm);
 
       _classPrivateFieldSet(this, _STATUS, elm.querySelector(':scope > .status > p'));
 
@@ -2193,7 +2225,7 @@
       value:
       /* public methods */
       function select() {
-        _classPrivateFieldGet(this, _ROOT).classList.add('-current'); // dispatch event
+        _classPrivateFieldGet(this, _ROOT$2).classList.add('-current'); // dispatch event
 
 
         var event1 = new CustomEvent('selectTableData', {
@@ -2201,7 +2233,7 @@
         });
         DefaultEventEmitter$1.dispatchEvent(event1); // send rows
 
-        if (_classPrivateFieldGet(this, _ROOT).dataset.status !== 'load ids') {
+        if (_classPrivateFieldGet(this, _ROOT$2).dataset.status !== 'load ids') {
           var done = this.offset >= _classPrivateFieldGet(this, _queryIds).length;
 
           var event2 = new CustomEvent('addNextRows', {
@@ -2217,7 +2249,7 @@
     }, {
       key: "deselect",
       value: function deselect() {
-        _classPrivateFieldGet(this, _ROOT).classList.remove('-current');
+        _classPrivateFieldGet(this, _ROOT$2).classList.remove('-current');
       }
     }, {
       key: "next",
@@ -2274,7 +2306,7 @@
     // reset
     _classPrivateFieldSet(this, _abortController, new AbortController());
 
-    _classPrivateFieldGet(this, _ROOT).classList.add('-fetching'); // set parameters
+    _classPrivateFieldGet(this, _ROOT$2).classList.add('-fetching'); // set parameters
 
 
     fetch("".concat(App$1.aggregatePrimaryKeys, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
@@ -2312,7 +2344,7 @@
       } // display
 
 
-      _classPrivateFieldGet(_this2, _ROOT).dataset.status = 'load rows';
+      _classPrivateFieldGet(_this2, _ROOT$2).dataset.status = 'load rows';
       _classPrivateFieldGet(_this2, _STATUS).textContent = '';
       _classPrivateFieldGet(_this2, _INDICATOR_TEXT).innerHTML = "".concat(_this2.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this2, _queryIds).length.toLocaleString());
 
@@ -2325,14 +2357,14 @@
       });
       DefaultEventEmitter$1.dispatchEvent(event);
     }).finally(function () {
-      _classPrivateFieldGet(_this2, _ROOT).classList.remove('-fetching');
+      _classPrivateFieldGet(_this2, _ROOT$2).classList.remove('-fetching');
     });
   }
 
   function _getProperties2() {
     var _this3 = this;
 
-    _classPrivateFieldGet(this, _ROOT).classList.add('-fetching');
+    _classPrivateFieldGet(this, _ROOT$2).classList.add('-fetching');
 
     _classPrivateFieldGet(this, _STATUS).textContent = 'Getting data';
     fetch("".concat(App$1.aggregateRows, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
@@ -2353,7 +2385,7 @@
       _classPrivateFieldSet(_this3, _isLoaded, _this3.offset >= _classPrivateFieldGet(_this3, _queryIds).length); // display
 
 
-      _classPrivateFieldGet(_this3, _ROOT).classList.remove('-fetching');
+      _classPrivateFieldGet(_this3, _ROOT$2).classList.remove('-fetching');
 
       _classPrivateFieldGet(_this3, _STATUS).textContent = 'Awaiting';
       _classPrivateFieldGet(_this3, _INDICATOR_TEXT).innerHTML = "".concat(_this3.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this3, _queryIds).length.toLocaleString());
@@ -2374,7 +2406,7 @@
         _classPrivateMethodGet(_this3, _getProperties, _getProperties2).call(_this3);
       }
     }).catch(function (error) {
-      _classPrivateFieldGet(_this3, _ROOT).classList.remove('-fetching');
+      _classPrivateFieldGet(_this3, _ROOT$2).classList.remove('-fetching');
 
       console.error(error); // TODO:
     });
@@ -2385,13 +2417,13 @@
 
     _classPrivateFieldSet(this, _isAutoLoad, true);
 
-    _classPrivateFieldGet(this, _ROOT).classList.add('-autoload');
+    _classPrivateFieldGet(this, _ROOT$2).classList.add('-autoload');
 
     _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
   }
 
   function _complete2() {
-    _classPrivateFieldGet(this, _ROOT).dataset.status = 'complete';
+    _classPrivateFieldGet(this, _ROOT$2).dataset.status = 'complete';
     _classPrivateFieldGet(this, _STATUS).textContent = 'Complete';
   }
 
@@ -2502,6 +2534,145 @@
     }
   }
 
+  var PATH = 'https://integbio.jp/togosite/sparqlist/api/';
+  var DATA_FROM_USER_IDS = 'data_from_user_ids';
+
+  var _ROOT$1 = new WeakMap();
+
+  var _SPARQLET = new WeakMap();
+
+  var _PRIMARY_KEY = new WeakMap();
+
+  var _USER_KEY = new WeakMap();
+
+  var _USER_IDS = new WeakMap();
+
+  var _fetch = new WeakSet();
+
+  var UploadIDsView = function UploadIDsView(elm) {
+    var _this = this;
+
+    _classCallCheck(this, UploadIDsView);
+
+    _fetch.add(this);
+
+    _ROOT$1.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _SPARQLET.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _PRIMARY_KEY.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _USER_KEY.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _USER_IDS.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _classPrivateFieldSet(this, _ROOT$1, elm);
+
+    _classPrivateFieldSet(this, _SPARQLET, elm.querySelector('#UploadIDsSparqlet'));
+
+    _classPrivateFieldSet(this, _PRIMARY_KEY, elm.querySelector('#UploadIDsPrimaryKey'));
+
+    _classPrivateFieldSet(this, _USER_KEY, elm.querySelector('#UploadIDsUserKey'));
+
+    _classPrivateFieldSet(this, _USER_IDS, elm.querySelector('#UploadIDsUserIDs'));
+
+    elm.querySelectorAll(':scope > span').forEach(function (elm) {
+      elm.addEventListener('click', function () {
+        _classPrivateFieldGet(_this, _ROOT$1).classList.toggle('-showingmenu');
+      });
+    });
+    elm.querySelector(':scope > form > button').addEventListener('click', function (e) {
+      e.stopPropagation();
+
+      _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-showingmenu');
+
+      _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
+
+      return false;
+    });
+  };
+
+  function _fetch2() {
+    var propertyId = _classPrivateFieldGet(this, _SPARQLET).value;
+
+    fetch("".concat(PATH + DATA_FROM_USER_IDS, "?sparqlet=").concat(encodeURIComponent(PATH + propertyId), "&primaryKey=").concat(_classPrivateFieldGet(this, _PRIMARY_KEY).value, "&categoryIds=&userKey=").concat(_classPrivateFieldGet(this, _USER_KEY).value, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value))).then(function (responce) {
+      return responce.json();
+    }).then(function (values) {
+      console.log(values); // dispatch event
+
+      var event = new CustomEvent('userValues', {
+        detail: {
+          propertyId: propertyId,
+          values: values
+        }
+      });
+      DefaultEventEmitter$1.dispatchEvent(event);
+    });
+  }
+
+  var MIN_SIZE = 8;
+  var MAX_SIZE = 50;
+  var RANGE_SIZE = MAX_SIZE - MIN_SIZE;
+
+  var _ROOT = new WeakMap();
+
+  var _stick = new WeakSet();
+
+  var PinsView = function PinsView(elm) {
+    var _this = this;
+
+    _classCallCheck(this, PinsView);
+
+    _stick.add(this);
+
+    _ROOT.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    console.log(elm);
+
+    _classPrivateFieldSet(this, _ROOT, elm);
+
+    DefaultEventEmitter$1.addEventListener('stickUserValue', function (e) {
+      _classPrivateMethodGet(_this, _stick, _stick2).call(_this, e.detail); // Element.getBoundingClientRect
+
+    });
+  };
+
+  function _stick2(detail) {
+    console.log(detail);
+    var rect = detail.view.getBoundingClientRect();
+    var ratio = detail.userValue.count / detail.value.count;
+    var size = MIN_SIZE + RANGE_SIZE * ratio;
+    console.log(rect);
+    var pin = document.createElement('div');
+    pin.classList.add('pin');
+    pin.style.top = rect.top + 'px';
+    pin.style.left = rect.left + 'px';
+    pin.style.width = size + 'px';
+    pin.style.height = size + 'px';
+
+    _classPrivateFieldGet(this, _ROOT).insertAdjacentElement('beforeend', pin);
+
+    console.log(ratio, Math.log10(ratio));
+  }
+
   var CONF_PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
   var CONF_TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
   var CONF_AGGREGATE = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/aggregate.json';
@@ -2556,7 +2727,9 @@
         new ConditionsController(document.querySelector('#Conditions'));
         var reportsView = new ReportsView(document.querySelector('#Reports'));
         new ResultsTable(document.querySelector('#ResultsTable'));
-        new BalloonView(); // load config json
+        new BalloonView();
+        new UploadIDsView(document.querySelector('#UploadIDsView'));
+        new PinsView(document.querySelector('#PinsView')); // load config json
 
         var stanzaTtemplates;
         Promise.all([fetch(CONF_PROPERTIES), fetch(CONF_TEMPLATES), fetch(CONF_AGGREGATE)]).then(function (responces) {
