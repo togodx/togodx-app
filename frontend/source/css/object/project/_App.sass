@@ -1,0 +1,10 @@
+#App
+  height: 100%
+  overflow: hidden
+  > .inner
+    height: 100%
+    width: calc(200vw - var(--width-condition))
+    display: flex
+    transition: transform var(--transition-wipe)
+    body[data-display="results"] &
+      transform: translateX(calc(-100vw + var(--width-condition)))

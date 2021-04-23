@@ -1,0 +1,60 @@
+.stacking-condition-view
+  padding: 0 .4rem .4rem
+  position: relative
+  background-color: white
+  box-shadow: var(--shadow-shallow)
+  animation: var(--transition-instant) enter-stacking-item
+  transform-origin: 0 0
+  margin-top: .4rem
+  > .closebutton
+    width: 1.2rem
+    height: 1.2rem
+    position: absolute
+    top: .4rem
+    right: .4rem
+    cursor: pointer
+    &::before, &::after
+      content: ""
+      border-left: solid .1rem var(--color-black)
+      position: absolute
+      top: .1rem
+      left: .6rem
+      display: block
+      height: .8rem
+    &::before
+      transform: rotate(45deg)
+    &::after
+      transform: rotate(-45deg)
+  > .path
+    margin: 0
+    padding: .6rem 1.4rem 0 0
+    list-style: none
+    font-size: 1rem
+    font-weight: bold
+    line-height: 1
+    color: var(--color-gray)
+    > li
+      display: inline-block
+      + li
+        &::before
+          content: ""
+          display: inline-block
+          border-left: solid .1rem var(--color-gray)
+          height: 1.4rem
+          transform: rotate(20deg)
+          margin: -.6rem .4rem 0 .4rem
+  > .label
+    line-height: 1
+    font-size: 1.4rem
+    font-weight: bold
+  &.-value
+    > .path
+      color: rgba(0, 0, 0, .5)
+      > li
+        + li
+          &::before
+            border-left-color: rgba(0, 0, 0, .5)
+    > .label
+      color: white
+
+

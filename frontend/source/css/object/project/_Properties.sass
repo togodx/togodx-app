@@ -1,0 +1,46 @@
+#Properties
+  width: calc(100vw - var(--width-condition))
+  min-width: calc(var(--min-width-app) - var(--width-condition))
+  overflow-y: auto
+  > .header
+    padding: var(--padding-track-block-start) var(--padding-track-inline-start)
+    border-bottom: solid .1rem var(--color-black)
+    display: flex
+    align-items: center
+    height: var(--height-track)
+    line-height: calc(var(--height-track) - var(--padding-track-block-start) * 2)
+    position: sticky
+    top: 0
+    background-color: white
+    z-index: var(--z-track-tracks-header)
+    > .title
+      > *
+        font-size: var(--font-size-title)
+        margin-bottom: 0
+        display: inline-block
+      > .properties
+        padding-inline-start: calc(var(--width-track-column-subject) - var(--padding-track-inline-start))
+        width: calc(var(--width-track-column-subject) + var(--width-track-column-property) - var(--padding-track-inline-start))
+    > nav
+      flex-grow: 1
+      text-align: right
+      > ul
+        list-style: none
+        margin-bottom: 0
+        > li
+          display: inline-block
+          + li
+            margin-left: 1.6rem
+          > .material-icons-outlined
+            font-size: 1.4rem
+            vertical-align: middle
+            position: relative
+            top: -.1rem
+            margin-right: .2rem
+          > label
+            margin-bottom: 0
+            + label
+              margin-left: .8rem
+            > input[type="checkbox"]
+              vertical-align: middle
+              margin-right: .4rem

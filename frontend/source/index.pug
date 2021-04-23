@@ -1,0 +1,290 @@
+doctype html
+html
+  head
+    link()
+
+doctype html
+html.no-js(lang='')
+  head
+    meta(charset='utf-8')
+    title
+    meta(name='description' content='')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    meta(property='og:title' content='')
+    meta(property='og:type' content='')
+    meta(property='og:url' content='')
+    meta(property='og:image' content='')
+    link(rel='manifest' href='site.webmanifest')
+    link(rel='apple-touch-icon' href='icon.png')
+    // Place favicon.ico in the root directory
+    link(rel='stylesheet' href='css/main.css')
+  body(data-heatmap="true" data-display="properties")
+    header
+    main#App
+      .inner
+        section#Properties
+          header.header
+            .title
+              h2.properties Properties
+              h2.attributes Values
+            nav
+              ul
+                li
+                  span.material-icons-outlined file_upload
+                  | Upload IDs
+                li.viewmodecontroller
+                  label
+                    input(type="checkbox" value="log10")
+                    | Log scale
+                  label
+                    input(type="checkbox" value="area" checked)
+                    | Area
+                  label
+                    input(type="checkbox" value="heatmap" checked)
+                    | Heatmap
+              //-
+                li
+                  .switch-view
+                    .item Area
+                    .item.-current Heatmap
+          section.concepts
+          //-
+            section.concept-view
+              h3.title
+                span Gene
+              .properties
+                .track-view.collapse-view(data-concept="gene" data-collapse="gene")
+                  .collapsebutton(data-collapse="gene")
+                  header.title Type
+                  .items
+                    ul.overview
+                      li.item
+                        p Digestive
+                      li.item
+                        p Endocrine
+                      li.item
+                        p Nerve
+                      li.item
+                        p Urinary
+                      li.item
+                        p Circulatory
+                      li.item
+                        p Respiratory
+                      li.item
+                        p Genital
+                      li.item
+                        p Integumentary
+                      li.item
+                        p Locomotorium
+                      li.item
+                        p Others
+                    .selector.collapsing(data-collapse="gene")
+                      .column-selector-view
+                        ul.column
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Digestive
+                              span.count 11,673
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Endocrine
+                              span.count 12,800
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Nerve
+                              span.count 14,579
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Urinary
+                              span.count 8,329
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Circulatory
+                              span.count 8,283
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Respiratory
+                              span.count 2,704
+                          li.item.-selecting
+                            label
+                              input(type="checkbox" name="depth1" checked)
+                              span.label Genital
+                              span.count 5,861
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Integumentary
+                              span.count 20,784
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Locomotorium
+                              span.count 1,105
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Others
+                              span.count 10,154
+                        ul.column
+                          li.item
+                            label
+                              input(type="checkbox" name="depth2")
+                              span.label Testis
+                              span.count 18,718
+                          li.item
+                            label
+                              input(type="checkbox" name="depth2")
+                              span.label Prostate
+                              span.count 2,066
+
+        section#Results
+          .inner
+            //- section#ResultsStatistics.collapse-view.-spread(data-collapse="results statistics" data-views-count="0")
+            //-   header
+            //-     .collapsebutton.-white.-spread(data-collapse="results statistics")
+            //-     h2.title Statistics
+            //-   .body.collapsingcontent.-spread(data-collapse="results statistics")
+            //-     .statisticscontainer
+            section#ResultsTable
+              //- header
+              //-   h2.title
+              //-     | Data
+              //-     span.numofdata
+              //-   nav.remainingspace
+              //-     //- .button.-download
+              //-     //-   span.material-icons-outlined file_download
+              //-     //-   | Download
+              .body
+                table
+                  thead
+                    tr.header
+                    //-
+                      th Foo
+                      th Baa
+                      th Baz
+                      th Qux
+                      th Quux
+                      th Quuux
+                    tr.statistics
+                  tbody
+                  //-
+                    tr
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                    tr
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                    tr
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                    tr
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                    tr
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                    tr
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                      td hoge
+                .tableend
+                  .loading-view
+
+      section#FixedArea
+
+        .upper
+
+          section#ConditionBuilder(data-hidden-by="results")
+
+            header
+              //- nav.tabmenu(data-hidden-by="results")
+              //-   .item.-current Condition
+              //-   .item Relations
+              //- h2.title(data-hidden-by="properties") Results
+              h2.title Condition builder
+            select.togoKey.rounded-button-view(disabled)
+              option(value="") Select a TOGO key
+              //- option(val="gene") Gene
+            .conditions
+              .attributes
+                h2.title Property values
+                .conditions
+                //-
+                  .stacking-condition-view.-attribute
+                    .closebutton
+                    ul.path
+                      li Expression
+                      li Position
+                      li.end Genital
+                    .label Testis
+              .properties
+                h2.title Properties
+                .conditions
+                //-
+                  .stacking-condition-view
+                    .closebutton
+                    ul.path
+                      li.end Expression
+                    .label Testis
+                
+            footer
+              button.exec.rounded-button-view.-black.-spread(disabled)
+                span.material-icons-outlined table_view
+                | TOGO data
+
+          section#Reports(data-hidden-by="properties")
+            header
+              h2.title Reports
+
+            .stanzas
+
+            footer
+              button.return.rounded-button-view.-black.-spread
+                span.material-icons-outlined keyboard_return
+                | Return to tracks
+
+        .lower
+          
+          section#Conditions
+            header
+              h2.title Conditions
+            .conditions
+
+
+    script(src="js/vendor/lodash.js")
+    script(src="js/main.js")
+
+    script(type="module" src="https://togostanza.github.io/metastanza/hash-table.js" async)
+    script(type="module" src="https://togostanza.github.io/metastanza/barchart.js" async)
+
+    //- script(type="module" src="https://penqe.github.io/nbdc-togosite-stanza/test.js" async)
+    //- togostanza-test(say-to="world")

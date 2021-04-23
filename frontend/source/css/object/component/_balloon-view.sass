@@ -1,0 +1,44 @@
+.balloon-view
+  display: none
+  position: absolute
+  background-color: white
+  filter: drop-shadow(var(--shadow-normal))
+  z-index: var(--z-track-balloon)
+  transform: translate(-50%, calc(-100% + -5px))
+  pointer-events: none
+  border-radius: .2rem
+  &.-showing
+    display: block
+  &::before
+    content: ""
+    display: block
+    position: absolute
+    bottom: -1.4rem
+    left: calc(50% - .7rem)
+    border: .7rem solid transparent
+    border-top-color: white
+    width: 0
+    height: 0
+  &.-below
+    transform: translate(-50%, calc(100% - 14px))
+    &::before
+      top: -1.4rem
+      border-top-color: transparent
+      border-bottom-color: white
+  > .container
+    padding: .2rem .8rem
+    font-size: 1rem
+    list-style: 1.2
+    > header
+      font-size: 1.2rem
+      font-weight: bold
+    > dl
+      display: flex
+      margin: 0
+      > dt
+        flex-grow: 1
+      > dd
+        margin: 0
+        padding-left: 1rem
+        text-align: right
+    

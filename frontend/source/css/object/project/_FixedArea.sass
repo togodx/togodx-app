@@ -1,0 +1,58 @@
+#FixedArea
+  --padding-inline-start: 1.2rem
+  --padding-block-start: 1rem
+  // padding: 0 var(--padding-inline-start) 1.6rem
+  background-color: var(--color-gray)
+  width: var(--width-condition)
+  min-width: var(--width-condition)
+  height: 100%
+  overflow-y: auto
+  position: fixed
+  top: 0
+  right: 0
+  display: flex
+  flex-direction: column
+  > div
+    > section
+      display: flex
+      flex-direction: column
+      // height: 100%
+      padding: var(--padding-block-start) var(--padding-inline-start)
+      > header
+        padding: 0 0 var(--padding-track-block-start)
+        line-height: calc(var(--height-track) - var(--padding-track-block-start) * 2)
+        font-size: 1.4rem
+        line-height: 1
+        font-weight: bold
+        color: white
+        // > .tabmenu
+        //   > .item
+        //     display: inline-block
+        //     margin-right: .4rem
+        //     font-size: var(--font-size-title)
+        //     cursor: pointer
+        //     &.-current
+        //       position: relative
+        //       &::before
+        //         content: ""
+        //         border-bottom: solid .2rem white
+        //         display: block
+        //         width: 100%
+        //         position: absolute
+        //         bottom: 0
+        //     + .item
+        //       &::before
+        //         content: "/"
+        //         font-weight: lighter
+        //         margin-right: .4rem
+        > .title
+          margin: 0
+          font-size: var(--font-size-title)
+      > footer
+        padding-block-start: 1rem
+  > .upper
+    // flex-grow: 1
+    border-bottom: solid .1rem rgba(0, 0, 0, .2)
+  > .lower
+    // flex-grow: 1
+    border-top: solid .1rem rgba(255, 255, 255, .2)
