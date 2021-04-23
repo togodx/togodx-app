@@ -1,6 +1,8 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
+import {USER_VALUES} from '../events';
+import {CHANGE_VIEW_MODES} from '../events';
 
 export default class TrackOverviewCategorical {
 
@@ -111,8 +113,8 @@ export default class TrackOverviewCategorical {
         });
       }
     });
-    DefaultEventEmitter.addEventListener('changeViewModes', e => this.#update(e.detail));
-    DefaultEventEmitter.addEventListener('userValues', e => this.#plotUserIdValues(e.detail));
+    DefaultEventEmitter.addEventListener(CHANGE_VIEW_MODES, e => this.#update(e.detail));
+    DefaultEventEmitter.addEventListener(USER_VALUES, e => this.#plotUserIdValues(e.detail));
   }
 
   #update(viewModes) {

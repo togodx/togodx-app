@@ -943,6 +943,9 @@
     });
   }
 
+  var USER_VALUES = 'userValues';
+  var CHANGE_VIEW_MODES = 'changeViewModes';
+
   var ColumnSelectorView = /*#__PURE__*/function () {
     function ColumnSelectorView(elm, subject, property, items, sparqlist) {
       var _this = this;
@@ -1134,7 +1137,7 @@
           });
         }); // event listener
 
-        DefaultEventEmitter$1.addEventListener('changeViewModes', function (e) {
+        DefaultEventEmitter$1.addEventListener(CHANGE_VIEW_MODES, function (e) {
           return _this2._update(e.detail.log10);
         });
       }
@@ -1206,7 +1209,7 @@
       this._update(); // event
 
 
-      DefaultEventEmitter$1.addEventListener('changeViewModes', function (e) {
+      DefaultEventEmitter$1.addEventListener(CHANGE_VIEW_MODES, function (e) {
         return _this._update();
       });
     }
@@ -1380,10 +1383,10 @@
         });
       }
     });
-    DefaultEventEmitter$1.addEventListener('changeViewModes', function (e) {
+    DefaultEventEmitter$1.addEventListener(CHANGE_VIEW_MODES, function (e) {
       return _classPrivateMethodGet(_this, _update, _update2).call(_this, e.detail);
     });
-    DefaultEventEmitter$1.addEventListener('userValues', function (e) {
+    DefaultEventEmitter$1.addEventListener(USER_VALUES, function (e) {
       return _classPrivateMethodGet(_this, _plotUserIdValues, _plotUserIdValues2).call(_this, e.detail);
     });
   };
@@ -2565,16 +2568,13 @@
 
   var _ROOT$1 = new WeakMap();
 
-  var _SPARQLET = new WeakMap();
-
   var _USER_KEY = new WeakMap();
 
   var _USER_IDS = new WeakMap();
 
   var _fetch = new WeakSet();
 
-  var UploadIDsView = // #PRIMARY_KEY;
-  function UploadIDsView(elm) {
+  var UploadIDsView = function UploadIDsView(elm) {
     var _this = this;
 
     _classCallCheck(this, UploadIDsView);
@@ -2582,11 +2582,6 @@
     _fetch.add(this);
 
     _ROOT$1.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _SPARQLET.set(this, {
       writable: true,
       value: void 0
     });
@@ -2602,9 +2597,6 @@
     });
 
     _classPrivateFieldSet(this, _ROOT$1, elm);
-
-    _classPrivateFieldSet(this, _SPARQLET, elm.querySelector('#UploadIDsSparqlet')); // this.#PRIMARY_KEY = elm.querySelector('#UploadIDsPrimaryKey');
-
 
     _classPrivateFieldSet(this, _USER_KEY, elm.querySelector('#UploadIDsUserKey'));
 
@@ -2627,20 +2619,17 @@
   };
 
   function _fetch2() {
-    console.log(Records$1.properties);
-    console.log(ConditionBuilder$1);
     var togoKey = ConditionBuilder$1.currentTogoKey;
     var queryTemplate = "".concat(PATH + DATA_FROM_USER_IDS, "?sparqlet=@@sparqlet@@&primaryKey=").concat(togoKey, "&categoryIds=&userKey=").concat(_classPrivateFieldGet(this, _USER_KEY).value, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
     console.log(queryTemplate);
     Records$1.properties.forEach(function (property) {
       var propertyId = property.propertyId;
-      console.log(propertyId);
       fetch(queryTemplate.replace('@@sparqlet@@', encodeURIComponent(PATH + propertyId))).then(function (responce) {
         return responce.json();
       }).then(function (values) {
         console.log(values); // dispatch event
 
-        var event = new CustomEvent('userValues', {
+        var event = new CustomEvent(USER_VALUES, {
           detail: {
             propertyId: propertyId,
             values: values
@@ -2648,19 +2637,7 @@
         });
         DefaultEventEmitter$1.dispatchEvent(event);
       });
-    }); // const propertyId = this.#SPARQLET.value;
-    // const togoKey = ConditionBuilder.currentTogoKey;
-    // fetch(`${PATH + DATA_FROM_USER_IDS}?sparqlet=${encodeURIComponent(PATH + propertyId)}&primaryKey=${togoKey}&categoryIds=&userKey=${this.#USER_KEY.value}&userIds=${encodeURIComponent(this.#USER_IDS.value)}`)
-    // .then(responce => responce.json())
-    // .then(values => {
-    //   console.log(values)
-    //   // dispatch event
-    //   const event = new CustomEvent('userValues', {detail: {
-    //     propertyId,
-    //     values
-    //   }});
-    //   DefaultEventEmitter.dispatchEvent(event);
-    // });
+    });
   }
 
   var MIN_SIZE = 8;
@@ -2754,7 +2731,7 @@
           checkbox.addEventListener('click', function () {
             if (checkbox.value === 'heatmap') body.dataset.heatmap = checkbox.checked;
             _classPrivateFieldGet(_this, _viewModes)[checkbox.value] = checkbox.checked;
-            var event = new CustomEvent('changeViewModes', {
+            var event = new CustomEvent(CHANGE_VIEW_MODES, {
               detail: _classPrivateFieldGet(_this, _viewModes)
             });
             DefaultEventEmitter$1.dispatchEvent(event);

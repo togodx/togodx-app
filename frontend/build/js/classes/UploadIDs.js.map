@@ -1,1 +1,0 @@
-{"version":3,"file":"UploadIDs.js","sources":["../../../source/js/classes/UploadIDs.js"],"sourcesContent":["\nexport default class UploadIDsView {\n\n  constructor(elm) {\n    console.log(elm)\n\n  }\n\n}\n"],"names":["UploadIDsView","elm","console","log"],"mappings":";;;;;;;;;MACqBA,gBAEnB,uBAAYC,GAAZ,EAAiB;EAAA;;EACfC,EAAAA,OAAO,CAACC,GAAR,CAAYF,GAAZ;EAED;;;;;;;;"}
