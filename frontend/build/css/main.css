@@ -1140,11 +1140,11 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   position: absolute;
   top: 0;
   left: 0;
+  transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
 }
 .track-view > .row.-upper > .right > .overview > .inner > .value > .heatmap {
   background-color: var(--color-lamp-black);
   opacity: 0;
-  transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
 }
 body[data-heatmap=true] .track-view > .row.-upper > .right > .overview > .inner > .value > .heatmap {
   opacity: 1;
@@ -1159,6 +1159,7 @@ body[data-heatmap=true] .track-view > .row.-upper > .right > .overview > .inner 
   overflow: hidden;
   position: relative;
   text-align: center;
+  transition: opacity var(--transition-wipe);
 }
 .track-view > .row.-upper > .right > .overview > .inner > .value > p > .label {
   font-size: 1.2rem;
@@ -1180,6 +1181,15 @@ body[data-heatmap=true] .track-view > .row.-upper > .right > .overview > .inner 
   height: 100%;
   border: solid 1px white;
   z-index: var(--z-track-item-selected);
+}
+.track-view > .row.-upper > .right > .overview > .inner.-pinsticking > :not(.value.-pinsticking) > .color {
+  background-color: var(--color-gray) !important;
+}
+.track-view > .row.-upper > .right > .overview > .inner.-pinsticking > :not(.value.-pinsticking) > .heatmap {
+  opacity: 0 !important;
+}
+.track-view > .row.-upper > .right > .overview > .inner.-pinsticking > :not(.value.-pinsticking) > p {
+  opacity: 0.25;
 }
 .track-view > .row.-upper > .right > .overview > .error {
   padding-left: 0.4rem;
@@ -1325,43 +1335,40 @@ body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .
   left: 0;
 }
 #PinsView > .pin {
-  --size: .8rem;
+  --height-drop: 15rem;
   position: absolute;
   border-radius: 100%;
-  width: var(--size);
-  height: var(--size);
   background: radial-gradient(farthest-corner at 50% 25%, white 15%, #bbbbc2 85%, #d0d1d1 100%);
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
-  box-shadow: 0 0.2rem 0.2rem black;
-  -webkit-animation: sticking 1s cubic-bezier(0.11, 0, 0.5, 0);
-          animation: sticking 1s cubic-bezier(0.11, 0, 0.5, 0);
+  -webkit-animation: sticking 0.5s cubic-bezier(0.11, 0, 0.5, 0) forwards;
+          animation: sticking 0.5s cubic-bezier(0.11, 0, 0.5, 0) forwards;
 }
 @-webkit-keyframes sticking {
   from {
-    -webkit-transform: translate(-50%, calc(-50% - 10rem));
-            transform: translate(-50%, calc(-50% - 10rem));
-    box-shadow: 0 10.2rem 1rem rgba(0, 0, 0, 0);
+    -webkit-transform: translate(-50%, calc(-50% - var(--height-drop)));
+            transform: translate(-50%, calc(-50% - var(--height-drop)));
+    box-shadow: 0 calc(.2rem + var(--height-drop)) 1rem rgba(0, 0, 0, 0);
     opacity: 0;
   }
   to {
     -webkit-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
-    box-shadow: 0 0.2rem 0.2rem black;
+    box-shadow: 0 0.2rem 0.2rem rgba(0, 0, 0, 0.5);
     opacity: 1;
   }
 }
 @keyframes sticking {
   from {
-    -webkit-transform: translate(-50%, calc(-50% - 10rem));
-            transform: translate(-50%, calc(-50% - 10rem));
-    box-shadow: 0 10.2rem 1rem rgba(0, 0, 0, 0);
+    -webkit-transform: translate(-50%, calc(-50% - var(--height-drop)));
+            transform: translate(-50%, calc(-50% - var(--height-drop)));
+    box-shadow: 0 calc(.2rem + var(--height-drop)) 1rem rgba(0, 0, 0, 0);
     opacity: 0;
   }
   to {
     -webkit-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
-    box-shadow: 0 0.2rem 0.2rem black;
+    box-shadow: 0 0.2rem 0.2rem rgba(0, 0, 0, 0.5);
     opacity: 1;
   }
 }

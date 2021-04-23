@@ -64,10 +64,10 @@
                 position: absolute
                 top: 0
                 left: 0
+                transition: background-color var(--transition-wipe), opacity var(--transition-wipe)
               > .heatmap
                 background-color: var(--color-lamp-black)
                 opacity: 0
-                transition: background-color var(--transition-wipe), opacity var(--transition-wipe)
                 body[data-heatmap="true"] &
                   opacity: 1
               > p
@@ -80,6 +80,7 @@
                 overflow: hidden
                 position: relative
                 text-align: center
+                transition: opacity var(--transition-wipe)
                 > .label
                   font-size: 1.2rem
                 > .count
@@ -98,6 +99,14 @@
                   height: 100%
                   border: solid 1px white
                   z-index: var(--z-track-item-selected)
+            &.-pinsticking
+              > :not(.value.-pinsticking)
+                > .color
+                  background-color: var(--color-gray) !important
+                > .heatmap
+                  opacity: 0 !important
+                > p
+                  opacity: .25
           > .error
             padding-left: .4rem
             color: var(--color-lamp-black)

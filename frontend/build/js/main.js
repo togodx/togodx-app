@@ -1224,6 +1224,10 @@
 
   var _values = new WeakMap();
 
+  var _color = new WeakMap();
+
+  var _ROOT$6 = new WeakMap();
+
   var _update = new WeakSet();
 
   var _plotUserIdValues = new WeakSet();
@@ -1252,6 +1256,18 @@
       value: void 0
     });
 
+    _color.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _ROOT$6.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _classPrivateFieldSet(this, _ROOT$6, elm);
+
     _classPrivateFieldSet(this, _subject$1, subject);
 
     _classPrivateFieldSet(this, _property$1, property);
@@ -1268,10 +1284,12 @@
 
     var _width = 100 / values.length;
 
+    _classPrivateFieldSet(this, _color, "hsla(".concat(360 * index / values.length, ", 70%, 50%, .075)"));
+
     elm.innerHTML = _classPrivateFieldGet(this, _values).map(function (value, index) {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / _sum * 100;
-      return "\n        <li class=\"value\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / values.length, ", 70%, 50%, .075);\"></div>\n          <div class=\"heatmap\"></div>\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n          <div class=\"pin\"></div>\n        </li>");
+      return "\n        <li class=\"value\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"color\" style=\"background-color: ").concat(_classPrivateFieldGet(_this, _color), ";\"></div>\n          <div class=\"heatmap\"></div>\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n          <div class=\"pin\"></div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .value').forEach(function (node, index) {
       return _classPrivateFieldGet(_this, _values)[index].elm = node;
@@ -1394,13 +1412,16 @@
 
   function _plotUserIdValues2(detail) {
     if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
+      _classPrivateFieldGet(this, _ROOT$6).classList.add('-pinsticking');
+
       _classPrivateFieldGet(this, _values).forEach(function (value) {
         var userValue = detail.values.find(function (userValue) {
           return userValue.categoryId === value.categoryId;
         });
 
         if (userValue) {
-          // dispatch event
+          value.elm.classList.add('-pinsticking'); // dispatch event
+
           var event = new CustomEvent('stickUserValue', {
             detail: {
               view: value.elm,
@@ -1409,6 +1430,8 @@
             }
           });
           DefaultEventEmitter$1.dispatchEvent(event);
+        } else {
+          value.elm.classList.remove('-pinsticking');
         }
       });
     }
