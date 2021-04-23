@@ -65,13 +65,26 @@
     metastanzaDiv.appendChild(header);
   }
 
-  const addHashTable = (id, type) => {
+  const generateColumnSetting = async (id, type) => {
+    const data = await fetchJSON(dataUrl(id, type));
+    return Object.entries(data[0]).map(([key, value]) => {
+      const obj = {};
+      obj.id = key;
+      if (/^http(s|)\:\/\//.test(value)) {
+        obj.link = key;
+      }
+      return obj;
+    });
+  }
+
+  const addHashTable = async (id, type) => {
     const hashTable = document.createElement('togostanza-hash-table');
+    const columnSetting = await generateColumnSetting(id, type);
     updateAttributes(hashTable, {
       'data-url': dataUrl(id, type),
       'data-type': 'json',
       'format-key': true,
-      columns: ''
+      columns: JSON.stringify(columnSetting)
     });
     metastanzaDiv.appendChild(hashTable);
   }
