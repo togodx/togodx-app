@@ -1,7 +1,7 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
 import ConditionBuilder from './ConditionBuilder';
-import {USER_VALUES} from '../events';
+import {EVENT_setUserValues} from '../events';
 
 const PATH = 'https://integbio.jp/togosite/sparqlist/api/';
 const DATA_FROM_USER_IDS = 'data_from_user_ids';
@@ -44,7 +44,7 @@ export default class UploadIDsView {
       .then(values => {
         console.log(values)
         // dispatch event
-        const event = new CustomEvent(USER_VALUES, {detail: {
+        const event = new CustomEvent(EVENT_setUserValues, {detail: {
           propertyId,
           values
         }});

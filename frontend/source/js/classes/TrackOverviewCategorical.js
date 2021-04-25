@@ -1,7 +1,7 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
-import {USER_VALUES, CHANGE_VIEW_MODES, ENTER_PROPERTY_VALUE_ITEM_VIEW, MUTATE_PROPERTY_VALUE_CONDITION, STICK_USER_VALUE, LEAVE_PROPERTY_VALUE_ITEM_VIEW} from '../events';
+import {EVENT_setUserValues, EVENT_changeViewModes, EVENT_enterPropertyValueItemView, EVENT_mutatePropertyValueCondition, EVENT_stickUserValue, EVENT_leavePropertyValueItemView} from '../events';
 
 export default class TrackOverviewCategorical {
 
@@ -45,7 +45,7 @@ export default class TrackOverviewCategorical {
       // show tooltip
       valueElm.addEventListener('mouseenter', () => {
         const valueData = this.#values.find(valueData => valueData.elm === valueElm);
-        const event = new CustomEvent(ENTER_PROPERTY_VALUE_ITEM_VIEW, {detail: {
+        const event = new CustomEvent(EVENT_enterPropertyValueItemView, {detail: {
           label: `<span style="color: ${App.getHslColor(this.#subject.hue)}">${valueElm.querySelector(':scope > p > .label').textContent}</span>`,
           values: [
             {
@@ -58,7 +58,7 @@ export default class TrackOverviewCategorical {
         DefaultEventEmitter.dispatchEvent(event);
       });
       valueElm.addEventListener('mouseleave', () => {
-        const event = new CustomEvent(LEAVE_PROPERTY_VALUE_ITEM_VIEW);
+        const event = new CustomEvent(EVENT_leavePropertyValueItemView);
         DefaultEventEmitter.dispatchEvent(event);
       });
 
@@ -85,7 +85,7 @@ export default class TrackOverviewCategorical {
     });
 
     // event listener
-    DefaultEventEmitter.addEventListener(MUTATE_PROPERTY_VALUE_CONDITION, e => {
+    DefaultEventEmitter.addEventListener(EVENT_mutatePropertyValueCondition, e => {
       let propertyId, categoryId;
       switch (e.detail.action) {
         case 'add':
@@ -112,8 +112,8 @@ export default class TrackOverviewCategorical {
         });
       }
     });
-    DefaultEventEmitter.addEventListener(CHANGE_VIEW_MODES, e => this.#update(e.detail));
-    DefaultEventEmitter.addEventListener(USER_VALUES, e => this.#plotUserIdValues(e.detail));
+    DefaultEventEmitter.addEventListener(EVENT_changeViewModes, e => this.#update(e.detail));
+    DefaultEventEmitter.addEventListener(EVENT_setUserValues, e => this.#plotUserIdValues(e.detail));
   }
 
   #update(viewModes) {
@@ -142,7 +142,7 @@ export default class TrackOverviewCategorical {
         if (userValue) {
           value.elm.classList.add('-pinsticking');
           // dispatch event
-          const event = new CustomEvent(STICK_USER_VALUE, {detail: {
+          const event = new CustomEvent(EVENT_stickUserValue, {detail: {
             view: value.elm,
             userValue,
             value

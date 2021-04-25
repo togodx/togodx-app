@@ -1,5 +1,5 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
-import {ENTER_PROPERTY_VALUE_ITEM_VIEW, LEAVE_PROPERTY_VALUE_ITEM_VIEW} from '../events';
+import {EVENT_enterPropertyValueItemView, EVENT_leavePropertyValueItemView} from '../events';
 
 export default class BalloonView {
 
@@ -16,7 +16,7 @@ export default class BalloonView {
     this.#CONTAINER = this.#ROOT.querySelector(':scope > .container');
 
     // event listener
-    DefaultEventEmitter.addEventListener(ENTER_PROPERTY_VALUE_ITEM_VIEW, e => {
+    DefaultEventEmitter.addEventListener(EVENT_enterPropertyValueItemView, e => {
       this.#CONTAINER.innerHTML = `
         <header>${e.detail.label}</header>
         ${e.detail.values.map(value => `<dl>
@@ -36,7 +36,7 @@ export default class BalloonView {
       }
       this.#ROOT.classList.add('-showing');
     });
-    DefaultEventEmitter.addEventListener(LEAVE_PROPERTY_VALUE_ITEM_VIEW, e => {
+    DefaultEventEmitter.addEventListener(EVENT_leavePropertyValueItemView, e => {
       this.#ROOT.classList.remove('-showing');
     });
   }

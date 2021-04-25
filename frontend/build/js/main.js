@@ -352,20 +352,27 @@
 
   var DefaultEventEmitter$1 = new DefaultEventEmitter();
 
-  var USER_VALUES = 'userValues';
-  var CHANGE_VIEW_MODES = 'changeViewModes';
-  var MUTATE_PROPERTY_CONDITION = 'mutatePropertyCondition';
-  var MUTATE_PROPERTY_VALUE_CONDITION = 'mutatePropertyValueCondition';
-  var MUTATE_ESTABLISH_CONDITIONS = 'mutateEstablishConditions';
-  var COMPLETE_QUERY_PARAMETER = 'completeQueryParameter';
-  var HIDE_STANZA = 'hideStanza';
-  var SHOW_STANZA = 'showStanza';
-  var FAILED_FETCH_TABLE_DATA_IDS = 'failedFetchTableDataIds';
-  var ADD_NEXT_ROWS = 'addNextRows';
-  var SELECT_TABLE_DATA = 'selectTableData';
-  var ENTER_PROPERTY_VALUE_ITEM_VIEW = 'enterPropertyValueItemView';
-  var LEAVE_PROPERTY_VALUE_ITEM_VIEW = 'leavePropertyValueItemView';
-  var STICK_USER_VALUE = 'stickUserValue';
+  // User IDs
+  var EVENT_setUserValues = 'setUserValues';
+  var EVENT_stickUserValue = 'stickUserValue'; // View mode
+
+  var EVENT_changeViewModes = 'changeViewModes'; // Condition
+
+  var EVENT_mutatePropertyCondition = 'mutatePropertyCondition';
+  var EVENT_mutatePropertyValueCondition = 'mutatePropertyValueCondition';
+  var EVENT_mutateEstablishConditions = 'mutateEstablishConditions';
+  var EVENT_completeQueryParameter = 'completeQueryParameter'; // Stanza
+
+  var EVENT_hideStanza = 'hideStanza';
+  var EVENT_showStanza = 'showStanza'; // Polling
+
+  var EVENT_failedFetchTableDataIds = 'failedFetchTableDataIds';
+  var EVENT_addNextRows = 'addNextRows'; // Table
+
+  var EVENT_selectTableData = 'selectTableData'; // Track
+
+  var EVENT_enterPropertyValueItemView = 'enterPropertyValueItemView';
+  var EVENT_leavePropertyValueItemView = 'leavePropertyValueItemView';
 
   var _propertyConditions = new WeakMap();
 
@@ -420,7 +427,7 @@
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
 
-        var event = new CustomEvent(MUTATE_PROPERTY_CONDITION, {
+        var event = new CustomEvent(EVENT_mutatePropertyCondition, {
           detail: {
             action: 'add',
             condition: condition
@@ -439,7 +446,7 @@
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
 
-        var event = new CustomEvent(MUTATE_PROPERTY_VALUE_CONDITION, {
+        var event = new CustomEvent(EVENT_mutatePropertyValueCondition, {
           detail: {
             action: 'add',
             condition: condition
@@ -461,7 +468,7 @@
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
 
-        var event = new CustomEvent(MUTATE_PROPERTY_CONDITION, {
+        var event = new CustomEvent(EVENT_mutatePropertyCondition, {
           detail: {
             action: 'remove',
             propertyId: propertyId
@@ -483,7 +490,7 @@
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
 
-        var event = new CustomEvent(MUTATE_PROPERTY_VALUE_CONDITION, {
+        var event = new CustomEvent(EVENT_mutatePropertyValueCondition, {
           detail: {
             action: 'remove',
             propertyId: propertyId,
@@ -532,7 +539,7 @@
           };
         }); // emmit event
 
-        var event = new CustomEvent(COMPLETE_QUERY_PARAMETER, {
+        var event = new CustomEvent(EVENT_completeQueryParameter, {
           detail: {
             togoKey: _classPrivateFieldGet(this, _togoKey),
             subjectId: _classPrivateFieldGet(this, _subjectId),
@@ -567,7 +574,7 @@
 
   function _satisfyAggregation2() {
     var established = _classPrivateFieldGet(this, _togoKey) && _classPrivateFieldGet(this, _subjectId) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
-    var event = new CustomEvent(MUTATE_ESTABLISH_CONDITIONS, {
+    var event = new CustomEvent(EVENT_mutateEstablishConditions, {
       detail: established
     });
     DefaultEventEmitter$1.dispatchEvent(event);
@@ -647,7 +654,7 @@
       }); // event listeners
 
 
-      DefaultEventEmitter$1.addEventListener(MUTATE_PROPERTY_CONDITION, function (e) {
+      DefaultEventEmitter$1.addEventListener(EVENT_mutatePropertyCondition, function (e) {
         switch (e.detail.action) {
           case 'add':
             _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, e.detail.condition.subject, e.detail.condition.property);
@@ -660,7 +667,7 @@
             break;
         }
       });
-      DefaultEventEmitter$1.addEventListener(MUTATE_PROPERTY_VALUE_CONDITION, function (e) {
+      DefaultEventEmitter$1.addEventListener(EVENT_mutatePropertyValueCondition, function (e) {
         switch (e.detail.action) {
           case 'add':
             _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, e.detail.condition.subject, e.detail.condition.property, e.detail.condition.value);
@@ -673,7 +680,7 @@
             break;
         }
       });
-      DefaultEventEmitter$1.addEventListener(MUTATE_ESTABLISH_CONDITIONS, function (e) {
+      DefaultEventEmitter$1.addEventListener(EVENT_mutateEstablishConditions, function (e) {
         _classPrivateFieldGet(_this, _execButton).disabled = !e.detail;
       });
     } // public methods
@@ -897,10 +904,10 @@
         _classPrivateFieldGet(_this, _BODY).dataset.display = 'properties';
       }); // event listener
 
-      DefaultEventEmitter$1.addEventListener(SHOW_STANZA, function (e) {
+      DefaultEventEmitter$1.addEventListener(EVENT_showStanza, function (e) {
         _classPrivateMethodGet(_this, _showStanza, _showStanza2).call(_this, e.detail.subject, e.detail.properties);
       });
-      DefaultEventEmitter$1.addEventListener(HIDE_STANZA, function (e) {
+      DefaultEventEmitter$1.addEventListener(EVENT_hideStanza, function (e) {
         _classPrivateMethodGet(_this, _hideStanza, _hideStanza2).call(_this);
       });
     } // private methods
@@ -975,7 +982,7 @@
       this._container = this._view.querySelector(':scope > .columns > .inner');
       this._loadingView = this._view.querySelector(':scope > .loading-view'); // even listener
 
-      DefaultEventEmitter$1.addEventListener(MUTATE_PROPERTY_VALUE_CONDITION, function (e) {
+      DefaultEventEmitter$1.addEventListener(EVENT_mutatePropertyValueCondition, function (e) {
         var propertyId, categoryId;
 
         switch (e.detail.action) {
@@ -1149,7 +1156,7 @@
           });
         }); // event listener
 
-        DefaultEventEmitter$1.addEventListener(CHANGE_VIEW_MODES, function (e) {
+        DefaultEventEmitter$1.addEventListener(EVENT_changeViewModes, function (e) {
           return _this2._update(e.detail.log10);
         });
       }
@@ -1221,7 +1228,7 @@
       this._update(); // event
 
 
-      DefaultEventEmitter$1.addEventListener(CHANGE_VIEW_MODES, function (e) {
+      DefaultEventEmitter$1.addEventListener(EVENT_changeViewModes, function (e) {
         return _this._update();
       });
     }
@@ -1323,7 +1330,7 @@
           return valueData.elm === valueElm;
         });
 
-        var event = new CustomEvent(ENTER_PROPERTY_VALUE_ITEM_VIEW, {
+        var event = new CustomEvent(EVENT_enterPropertyValueItemView, {
           detail: {
             label: "<span style=\"color: ".concat(App$1.getHslColor(_classPrivateFieldGet(_this, _subject$1).hue), "\">").concat(valueElm.querySelector(':scope > p > .label').textContent, "</span>"),
             values: [{
@@ -1336,7 +1343,7 @@
         DefaultEventEmitter$1.dispatchEvent(event);
       });
       valueElm.addEventListener('mouseleave', function () {
-        var event = new CustomEvent(LEAVE_PROPERTY_VALUE_ITEM_VIEW);
+        var event = new CustomEvent(EVENT_leavePropertyValueItemView);
         DefaultEventEmitter$1.dispatchEvent(event);
       }); // select/deselect a value
 
@@ -1364,7 +1371,7 @@
       });
     }); // event listener
 
-    DefaultEventEmitter$1.addEventListener(MUTATE_PROPERTY_VALUE_CONDITION, function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_mutatePropertyValueCondition, function (e) {
       var propertyId, categoryId;
 
       switch (e.detail.action) {
@@ -1395,10 +1402,10 @@
         });
       }
     });
-    DefaultEventEmitter$1.addEventListener(CHANGE_VIEW_MODES, function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_changeViewModes, function (e) {
       return _classPrivateMethodGet(_this, _update, _update2).call(_this, e.detail);
     });
-    DefaultEventEmitter$1.addEventListener(USER_VALUES, function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_setUserValues, function (e) {
       return _classPrivateMethodGet(_this, _plotUserIdValues, _plotUserIdValues2).call(_this, e.detail);
     });
   };
@@ -1440,7 +1447,7 @@
         if (userValue) {
           value.elm.classList.add('-pinsticking'); // dispatch event
 
-          var event = new CustomEvent(STICK_USER_VALUE, {
+          var event = new CustomEvent(EVENT_stickUserValue, {
             detail: {
               view: value.elm,
               userValue: userValue,
@@ -1572,7 +1579,7 @@
     }); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener(MUTATE_PROPERTY_CONDITION, function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_mutatePropertyCondition, function (e) {
       if (e.detail.action === 'remove') {
         if (e.detail.propertyId === _classPrivateFieldGet(_this, _property).propertyId) {
           _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = false;
@@ -1690,7 +1697,7 @@
     _classPrivateFieldSet(this, _TICKS, container.querySelector(':scope > .ticks')); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener(ADD_NEXT_ROWS, function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_addNextRows, function (e) {
       return _classPrivateMethodGet(_this, _draw, _draw2).call(_this, e.detail);
     });
   }
@@ -1873,13 +1880,13 @@
     })); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener(SELECT_TABLE_DATA, function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_selectTableData, function (e) {
       return _classPrivateMethodGet(_this, _setupTable, _setupTable2).call(_this, e.detail);
     });
-    DefaultEventEmitter$1.addEventListener(ADD_NEXT_ROWS, function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_addNextRows, function (e) {
       return _classPrivateMethodGet(_this, _addTableRows, _addTableRows2).call(_this, e.detail);
     });
-    DefaultEventEmitter$1.addEventListener(FAILED_FETCH_TABLE_DATA_IDS, function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_failedFetchTableDataIds, function (e) {
       return _classPrivateMethodGet(_this, _failed, _failed2).call(_this, e.detail);
     }); // turnoff intersection observer after display transition
 
@@ -1922,7 +1929,7 @@
 
     _classPrivateFieldGet(this, _LOADING_VIEW).classList.add('-shown');
 
-    DefaultEventEmitter$1.dispatchEvent(new CustomEvent(HIDE_STANZA)); // make table header
+    DefaultEventEmitter$1.dispatchEvent(new CustomEvent(EVENT_hideStanza)); // make table header
 
     _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(tableData.condition.togoKey, "</div>\n        </div>\n      </th>\n      ").concat(tableData.condition.attributes.map(function (property) {
       return "\n      <th>\n        <div class=\"inner -propertyvalue\" style=\"background-color: ".concat(App$1.getHslColor(property.subject.hue), "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
@@ -1992,7 +1999,7 @@
         if (tr.classList.contains('-selected')) {
           // hide stanza
           tr.classList.remove('-selected');
-          DefaultEventEmitter$1.dispatchEvent(new CustomEvent(HIDE_STANZA));
+          DefaultEventEmitter$1.dispatchEvent(new CustomEvent(EVENT_hideStanza));
         } else {
           // show stanza
           _classPrivateFieldGet(_this2, _TBODY).querySelectorAll(':scope > tr').forEach(function (tr) {
@@ -2001,7 +2008,7 @@
 
           tr.classList.add('-selected'); // dispatch event
 
-          var event = new CustomEvent(SHOW_STANZA, {
+          var event = new CustomEvent(EVENT_showStanza, {
             detail: {
               subject: {
                 togoKey: _classPrivateFieldGet(_this2, _tableData$1).togoKey,
@@ -2054,7 +2061,7 @@
     _classPrivateFieldSet(this, _CONTAINER, _classPrivateFieldGet(this, _ROOT$3).querySelector(':scope > .container')); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener(ENTER_PROPERTY_VALUE_ITEM_VIEW, function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_enterPropertyValueItemView, function (e) {
       _classPrivateFieldGet(_this, _CONTAINER).innerHTML = "\n        <header>".concat(e.detail.label, "</header>\n        ").concat(e.detail.values.map(function (value) {
         return "<dl>\n          <dt>".concat(value.key, ":</dt>\n          <dd>").concat(value.value, "</dd>\n        </dl>");
       }).join('')); // geography
@@ -2075,7 +2082,7 @@
 
       _classPrivateFieldGet(_this, _ROOT$3).classList.add('-showing');
     });
-    DefaultEventEmitter$1.addEventListener(LEAVE_PROPERTY_VALUE_ITEM_VIEW, function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_leavePropertyValueItemView, function (e) {
       _classPrivateFieldGet(_this, _ROOT$3).classList.remove('-showing');
     });
   };
@@ -2271,7 +2278,7 @@
         _classPrivateFieldGet(this, _ROOT$2).classList.add('-current'); // dispatch event
 
 
-        var event1 = new CustomEvent(SELECT_TABLE_DATA, {
+        var event1 = new CustomEvent(EVENT_selectTableData, {
           detail: this
         });
         DefaultEventEmitter$1.dispatchEvent(event1); // send rows
@@ -2279,7 +2286,7 @@
         if (_classPrivateFieldGet(this, _ROOT$2).dataset.status !== 'load ids') {
           var done = this.offset >= _classPrivateFieldGet(this, _queryIds).length;
 
-          var event2 = new CustomEvent(ADD_NEXT_ROWS, {
+          var event2 = new CustomEvent(EVENT_addNextRows, {
             detail: {
               tableData: this,
               rows: _classPrivateFieldGet(this, _rows),
@@ -2395,7 +2402,7 @@
     }).catch(function (error) {
       // TODO:
       console.error(error);
-      var event = new CustomEvent(FAILED_FETCH_TABLE_DATA_IDS, {
+      var event = new CustomEvent(EVENT_failedFetchTableDataIds, {
         detail: _this2
       });
       DefaultEventEmitter$1.dispatchEvent(event);
@@ -2434,7 +2441,7 @@
       _classPrivateFieldGet(_this3, _INDICATOR_TEXT).innerHTML = "".concat(_this3.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this3, _queryIds).length.toLocaleString());
       _classPrivateFieldGet(_this3, _INDICATOR_BAR).style.width = "".concat(_this3.offset / _classPrivateFieldGet(_this3, _queryIds).length * 100, "%"); // dispatch event
 
-      var event = new CustomEvent(ADD_NEXT_ROWS, {
+      var event = new CustomEvent(EVENT_addNextRows, {
         detail: {
           tableData: _this3,
           rows: rows,
@@ -2512,10 +2519,10 @@
     _classPrivateFieldSet(this, _body, document.querySelector('body')); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener(COMPLETE_QUERY_PARAMETER, function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_completeQueryParameter, function (e) {
       return _classPrivateMethodGet(_this, _setTableData, _setTableData2).call(_this, e.detail);
     });
-    DefaultEventEmitter$1.addEventListener(SELECT_TABLE_DATA, function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_selectTableData, function (e) {
       return _classPrivateMethodGet(_this, _selectTableData, _selectTableData2).call(_this, e.detail);
     });
   }
@@ -2643,7 +2650,7 @@
       }).then(function (values) {
         console.log(values); // dispatch event
 
-        var event = new CustomEvent(USER_VALUES, {
+        var event = new CustomEvent(EVENT_setUserValues, {
           detail: {
             propertyId: propertyId,
             values: values
@@ -2678,7 +2685,7 @@
 
     _classPrivateFieldSet(this, _ROOT, elm);
 
-    DefaultEventEmitter$1.addEventListener(STICK_USER_VALUE, function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_stickUserValue, function (e) {
       _classPrivateMethodGet(_this, _stick, _stick2).call(_this, e.detail); // Element.getBoundingClientRect
 
     });
@@ -2745,7 +2752,7 @@
           checkbox.addEventListener('click', function () {
             if (checkbox.value === 'heatmap') body.dataset.heatmap = checkbox.checked;
             _classPrivateFieldGet(_this, _viewModes)[checkbox.value] = checkbox.checked;
-            var event = new CustomEvent(CHANGE_VIEW_MODES, {
+            var event = new CustomEvent(EVENT_changeViewModes, {
               detail: _classPrivateFieldGet(_this, _viewModes)
             });
             DefaultEventEmitter$1.dispatchEvent(event);

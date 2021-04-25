@@ -1,5 +1,5 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
-import {STICK_USER_VALUE} from '../events';
+import {EVENT_stickUserValue} from '../events';
 
 const MIN_SIZE = 8;
 const MAX_SIZE = 20;
@@ -13,7 +13,7 @@ export default class PinsView {
     console.log(elm)
     this.#ROOT = elm;
 
-    DefaultEventEmitter.addEventListener(STICK_USER_VALUE, e => {
+    DefaultEventEmitter.addEventListener(EVENT_stickUserValue, e => {
       this.#stick(e.detail)
 
       // Element.getBoundingClientRect

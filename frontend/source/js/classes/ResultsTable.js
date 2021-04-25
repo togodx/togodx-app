@@ -1,7 +1,7 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import StatisticsView from "./StatisticsView";
-import {HIDE_STANZA, SHOW_STANZA, SELECT_TABLE_DATA, ADD_NEXT_ROWS, FAILED_FETCH_TABLE_DATA_IDS} from '../events';
+import {EVENT_hideStanza, EVENT_showStanza, EVENT_selectTableData, EVENT_addNextRows, EVENT_failedFetchTableDataIds} from '../events';
 
 export default class ResultsTable {
 
@@ -37,9 +37,9 @@ export default class ResultsTable {
     });
 
     // event listener
-    DefaultEventEmitter.addEventListener(SELECT_TABLE_DATA, e => this.#setupTable(e.detail));
-    DefaultEventEmitter.addEventListener(ADD_NEXT_ROWS, e => this.#addTableRows(e.detail));
-    DefaultEventEmitter.addEventListener(FAILED_FETCH_TABLE_DATA_IDS, e => this.#failed(e.detail));
+    DefaultEventEmitter.addEventListener(EVENT_selectTableData, e => this.#setupTable(e.detail));
+    DefaultEventEmitter.addEventListener(EVENT_addNextRows, e => this.#addTableRows(e.detail));
+    DefaultEventEmitter.addEventListener(EVENT_failedFetchTableDataIds, e => this.#failed(e.detail));
 
     // turnoff intersection observer after display transition
     const mutationObserver = new MutationObserver(mutations => {
@@ -78,7 +78,7 @@ export default class ResultsTable {
     this.#THEAD.innerHTML = '';
     this.#TBODY.innerHTML = '';
     this.#LOADING_VIEW.classList.add('-shown');
-    DefaultEventEmitter.dispatchEvent(new CustomEvent(HIDE_STANZA));
+    DefaultEventEmitter.dispatchEvent(new CustomEvent(EVENT_hideStanza));
 
     // make table header
     this.#THEAD.innerHTML = `
@@ -168,13 +168,13 @@ export default class ResultsTable {
         if (tr.classList.contains('-selected')) {
           // hide stanza
           tr.classList.remove('-selected');
-          DefaultEventEmitter.dispatchEvent(new CustomEvent(HIDE_STANZA));
+          DefaultEventEmitter.dispatchEvent(new CustomEvent(EVENT_hideStanza));
         } else {
           // show stanza
           this.#TBODY.querySelectorAll(':scope > tr').forEach(tr => tr.classList.remove('-selected'));
           tr.classList.add('-selected');
           // dispatch event
-          const event = new CustomEvent(SHOW_STANZA, {detail: {
+          const event = new CustomEvent(EVENT_showStanza, {detail: {
             subject: {
               togoKey: this.#tableData.togoKey,
               id: this.#tableData.subjectId,

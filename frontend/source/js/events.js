@@ -1,14 +1,28 @@
-export const USER_VALUES = 'userValues';
-export const CHANGE_VIEW_MODES = 'changeViewModes';
-export const MUTATE_PROPERTY_CONDITION = 'mutatePropertyCondition';
-export const MUTATE_PROPERTY_VALUE_CONDITION = 'mutatePropertyValueCondition';
-export const MUTATE_ESTABLISH_CONDITIONS = 'mutateEstablishConditions';
-export const COMPLETE_QUERY_PARAMETER = 'completeQueryParameter';
-export const HIDE_STANZA = 'hideStanza';
-export const SHOW_STANZA = 'showStanza';
-export const FAILED_FETCH_TABLE_DATA_IDS = 'failedFetchTableDataIds';
-export const ADD_NEXT_ROWS = 'addNextRows';
-export const SELECT_TABLE_DATA = 'selectTableData';
-export const ENTER_PROPERTY_VALUE_ITEM_VIEW = 'enterPropertyValueItemView';
-export const LEAVE_PROPERTY_VALUE_ITEM_VIEW = 'leavePropertyValueItemView';
-export const STICK_USER_VALUE = 'stickUserValue';
+
+// User IDs
+export const EVENT_setUserValues = 'setUserValues';
+export const EVENT_stickUserValue = 'stickUserValue';
+
+// View mode
+export const EVENT_changeViewModes = 'changeViewModes';
+
+// Condition
+export const EVENT_mutatePropertyCondition = 'mutatePropertyCondition';
+export const EVENT_mutatePropertyValueCondition = 'mutatePropertyValueCondition';
+export const EVENT_mutateEstablishConditions = 'mutateEstablishConditions';
+export const EVENT_completeQueryParameter = 'completeQueryParameter';
+
+// Stanza
+export const EVENT_hideStanza = 'hideStanza';
+export const EVENT_showStanza = 'showStanza';
+
+// Polling
+export const EVENT_failedFetchTableDataIds = 'failedFetchTableDataIds';
+export const EVENT_addNextRows = 'addNextRows';
+
+// Table
+export const EVENT_selectTableData = 'selectTableData';
+
+// Track
+export const EVENT_enterPropertyValueItemView = 'enterPropertyValueItemView';
+export const EVENT_leavePropertyValueItemView = 'leavePropertyValueItemView';
