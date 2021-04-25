@@ -57,10 +57,16 @@
 
   const metastanzaDiv = document.getElementById("metastanza");
   const dataUrl = (id, type) => dataUrlEndpoint + '?id=' + id + '&type=' + type;
+  const titleDict = {
+    'mondo': 'Mondo',
+    'nando': 'NANDO',
+    'hp': 'HP',
+    'mesh': 'MeSH'
+  };
 
   const addHeader = (id, type) => {
     const header = document.createElement('h2');
-    const headerText = document.createTextNode(type + ': ' + id);
+    const headerText = document.createTextNode(titleDict[type] + ': ' + id);
     header.appendChild(headerText);
     metastanzaDiv.appendChild(header);
   }
