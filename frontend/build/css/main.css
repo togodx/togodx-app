@@ -355,6 +355,7 @@ template {
   --z-track-balloon: 2;
   --z-track-tracks-header: 3;
   --z-track-pin: 4;
+  --z-upload-user-ids: 5;
   --z-results-header: 1;
 }
 
@@ -1575,6 +1576,7 @@ body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .
   text-align: left;
   left: 0;
   top: 26px;
+  z-index: var(--z-upload-user-ids);
 }
 #UploadIDsView.-showingmenu > form {
   display: inherit;
