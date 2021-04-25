@@ -3,6 +3,10 @@ import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
 import {EVENT_setUserValues, EVENT_changeViewModes, EVENT_enterPropertyValueItemView, EVENT_mutatePropertyValueCondition, EVENT_stickUserValue, EVENT_leavePropertyValueItemView} from '../events';
 
+const MIN_PIN_SIZE = 8;
+const MAX_PIN_SIZE = 20;
+const RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
+
 export default class TrackOverviewCategorical {
 
   #subject;
@@ -36,7 +40,11 @@ export default class TrackOverviewCategorical {
           <div class="pin"></div>
         </li>`;
     }).join('');
-    elm.querySelectorAll(':scope > .value').forEach((node, index) =>  this.#values[index].elm = node);
+    elm.querySelectorAll(':scope > .value').forEach((node, index) => {
+      this.#values[index].elm = node;
+      this.#values[index].pin = node.querySelector(':scope > .pin');
+    });
+    console.log(this.#values)
     this.#update(App.viewModes);
 
     // attach event
@@ -137,17 +145,27 @@ export default class TrackOverviewCategorical {
   #plotUserIdValues(detail) {
     if (this.#property.propertyId === detail.propertyId) {
       this.#ROOT.classList.add('-pinsticking');
+
       this.#values.forEach(value => {
         const userValue = detail.values.find(userValue => userValue.categoryId === value.categoryId);
         if (userValue) {
+          console.log(userValue)
           value.elm.classList.add('-pinsticking');
-          // dispatch event
-          const event = new CustomEvent(EVENT_stickUserValue, {detail: {
-            view: value.elm,
-            userValue,
-            value
-          }});
-          DefaultEventEmitter.dispatchEvent(event);
+          // pin
+          const ratio = userValue.count / value.count;
+          const size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
+          value.pin.style.width = size + 'px';
+          value.pin.style.height = size + 'px';
+          value.pin.style.top = -size + 'px';
+          value.pin.style.left = (-size / 2) + 'px';
+          
+          // // dispatch event
+          // const event = new CustomEvent(EVENT_stickUserValue, {detail: {
+          //   view: value.elm,
+          //   userValue,
+          //   value
+          // }});
+          // DefaultEventEmitter.dispatchEvent(event);
         } else {
           value.elm.classList.remove('-pinsticking');
         }

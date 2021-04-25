@@ -8,12 +8,14 @@ const DATA_FROM_USER_IDS = 'data_from_user_ids';
 
 export default class UploadIDsView {
 
+  #BODY;
   #ROOT;
   #USER_KEY;
   #USER_IDS;
 
   constructor(elm) {
 
+    this.#BODY = document.querySelector('body');
     this.#ROOT = elm;
     this.#USER_KEY = elm.querySelector('#UploadIDsUserKey');
     this.#USER_IDS = elm.querySelector('#UploadIDsUserIDs');
@@ -43,6 +45,7 @@ export default class UploadIDsView {
       .then(responce => responce.json())
       .then(values => {
         console.log(values)
+        this.#BODY.classList.add('-showuserids');
         // dispatch event
         const event = new CustomEvent(EVENT_setUserValues, {detail: {
           propertyId,

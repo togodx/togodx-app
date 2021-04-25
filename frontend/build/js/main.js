@@ -353,8 +353,7 @@
   var DefaultEventEmitter$1 = new DefaultEventEmitter();
 
   // User IDs
-  var EVENT_setUserValues = 'setUserValues';
-  var EVENT_stickUserValue = 'stickUserValue'; // View mode
+  var EVENT_setUserValues = 'setUserValues'; // View mode
 
   var EVENT_changeViewModes = 'changeViewModes'; // Condition
 
@@ -855,7 +854,7 @@
 
   var _templates = new WeakMap();
 
-  var _BODY = new WeakMap();
+  var _BODY$1 = new WeakMap();
 
   var _STANZAS_CONTAINER = new WeakMap();
 
@@ -882,7 +881,7 @@
         value: void 0
       });
 
-      _BODY.set(this, {
+      _BODY$1.set(this, {
         writable: true,
         value: void 0
       });
@@ -894,14 +893,14 @@
 
       this._stanzas = {}; // references
 
-      _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
+      _classPrivateFieldSet(this, _BODY$1, document.querySelector('body'));
 
       _classPrivateFieldSet(this, _STANZAS_CONTAINER, elm.querySelector(':scope > .stanzas'));
 
       var returnButton = elm.querySelector(':scope > footer > button.return'); // attach event
 
       returnButton.addEventListener('click', function () {
-        _classPrivateFieldGet(_this, _BODY).dataset.display = 'properties';
+        _classPrivateFieldGet(_this, _BODY$1).dataset.display = 'properties';
       }); // event listener
 
       DefaultEventEmitter$1.addEventListener(EVENT_showStanza, function (e) {
@@ -1251,6 +1250,10 @@
     return HistogramRangeSelectorView;
   }();
 
+  var MIN_PIN_SIZE = 8;
+  var MAX_PIN_SIZE = 20;
+  var RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
+
   var _subject$1 = new WeakMap();
 
   var _property$1 = new WeakMap();
@@ -1317,8 +1320,10 @@
       return "\n        <li class=\"value\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"color\" style=\"background-color: ").concat(value.color, ";\"></div>\n          <div class=\"heatmap\"></div>\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n          <div class=\"pin\"></div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .value').forEach(function (node, index) {
-      return _classPrivateFieldGet(_this, _values)[index].elm = node;
+      _classPrivateFieldGet(_this, _values)[index].elm = node;
+      _classPrivateFieldGet(_this, _values)[index].pin = node.querySelector(':scope > .pin');
     });
+    console.log(_classPrivateFieldGet(this, _values));
 
     _classPrivateMethodGet(this, _update, _update2).call(this, App$1.viewModes); // attach event
 
@@ -1445,16 +1450,21 @@
         });
 
         if (userValue) {
-          value.elm.classList.add('-pinsticking'); // dispatch event
+          console.log(userValue);
+          value.elm.classList.add('-pinsticking'); // pin
 
-          var event = new CustomEvent(EVENT_stickUserValue, {
-            detail: {
-              view: value.elm,
-              userValue: userValue,
-              value: value
-            }
-          });
-          DefaultEventEmitter$1.dispatchEvent(event);
+          var ratio = userValue.count / value.count;
+          var size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
+          value.pin.style.width = size + 'px';
+          value.pin.style.height = size + 'px';
+          value.pin.style.top = -size + 'px';
+          value.pin.style.left = -size / 2 + 'px'; // // dispatch event
+          // const event = new CustomEvent(EVENT_stickUserValue, {detail: {
+          //   view: value.elm,
+          //   userValue,
+          //   value
+          // }});
+          // DefaultEventEmitter.dispatchEvent(event);
         } else {
           value.elm.classList.remove('-pinsticking');
         }
@@ -2587,6 +2597,8 @@
   var PATH = 'https://integbio.jp/togosite/sparqlist/api/';
   var DATA_FROM_USER_IDS = 'data_from_user_ids';
 
+  var _BODY = new WeakMap();
+
   var _ROOT$1 = new WeakMap();
 
   var _USER_KEY = new WeakMap();
@@ -2602,6 +2614,11 @@
 
     _fetch.add(this);
 
+    _BODY.set(this, {
+      writable: true,
+      value: void 0
+    });
+
     _ROOT$1.set(this, {
       writable: true,
       value: void 0
@@ -2616,6 +2633,8 @@
       writable: true,
       value: void 0
     });
+
+    _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
 
     _classPrivateFieldSet(this, _ROOT$1, elm);
 
@@ -2640,6 +2659,8 @@
   };
 
   function _fetch2() {
+    var _this2 = this;
+
     var togoKey = ConditionBuilder$1.currentTogoKey;
     var queryTemplate = "".concat(PATH + DATA_FROM_USER_IDS, "?sparqlet=@@sparqlet@@&primaryKey=").concat(togoKey, "&categoryIds=&userKey=").concat(_classPrivateFieldGet(this, _USER_KEY).value, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
     console.log(queryTemplate);
@@ -2648,7 +2669,10 @@
       fetch(queryTemplate.replace('@@sparqlet@@', encodeURIComponent(PATH + propertyId))).then(function (responce) {
         return responce.json();
       }).then(function (values) {
-        console.log(values); // dispatch event
+        console.log(values);
+
+        _classPrivateFieldGet(_this2, _BODY).classList.add('-showuserids'); // dispatch event
+
 
         var event = new CustomEvent(EVENT_setUserValues, {
           detail: {
@@ -2661,17 +2685,11 @@
     });
   }
 
-  var MIN_SIZE = 8;
-  var MAX_SIZE = 20;
-  var RANGE_SIZE = MAX_SIZE - MIN_SIZE;
-
   var _ROOT = new WeakMap();
 
   var _stick = new WeakSet();
 
   var PinsView = function PinsView(elm) {
-    var _this = this;
-
     _classCallCheck(this, PinsView);
 
     _stick.add(this);
@@ -2683,31 +2701,12 @@
 
     console.log(elm);
 
-    _classPrivateFieldSet(this, _ROOT, elm);
+    _classPrivateFieldSet(this, _ROOT, elm); // DefaultEventEmitter.addEventListener(EVENT_stickUserValue, e => {
+    //   this.#stick(e.detail)
+    //   // Element.getBoundingClientRect
+    // });
 
-    DefaultEventEmitter$1.addEventListener(EVENT_stickUserValue, function (e) {
-      _classPrivateMethodGet(_this, _stick, _stick2).call(_this, e.detail); // Element.getBoundingClientRect
-
-    });
   };
-
-  function _stick2(detail) {
-    console.log(detail);
-    var rect = detail.view.getBoundingClientRect();
-    var ratio = detail.userValue.count / detail.value.count;
-    var size = MIN_SIZE + RANGE_SIZE * ratio;
-    console.log(rect);
-    var pin = document.createElement('div');
-    pin.classList.add('pin');
-    pin.style.top = rect.top - size - 2 + 'px';
-    pin.style.left = rect.left + 'px';
-    pin.style.width = size + 'px';
-    pin.style.height = size + 'px';
-
-    _classPrivateFieldGet(this, _ROOT).insertAdjacentElement('beforeend', pin);
-
-    console.log(ratio, Math.log10(ratio));
-  }
 
   var CONF_PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
   var CONF_TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';

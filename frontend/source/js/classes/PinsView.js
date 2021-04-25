@@ -13,14 +13,15 @@ export default class PinsView {
     console.log(elm)
     this.#ROOT = elm;
 
-    DefaultEventEmitter.addEventListener(EVENT_stickUserValue, e => {
-      this.#stick(e.detail)
+    // DefaultEventEmitter.addEventListener(EVENT_stickUserValue, e => {
+    //   this.#stick(e.detail)
 
-      // Element.getBoundingClientRect
-    });
+    //   // Element.getBoundingClientRect
+    // });
   }
 
   #stick(detail) {
+    return;
     console.log(detail)
     const rect = detail.view.getBoundingClientRect();
     const ratio = detail.userValue.count / detail.value.count;
