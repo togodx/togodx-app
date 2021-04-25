@@ -1317,19 +1317,13 @@
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / _sum * 100;
       value.color = "hsla(".concat(360 * index / values.length, ", 70%, 50%, .075)");
-      return "\n        <li class=\"value\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"color\" style=\"background-color: ").concat(value.color, ";\"></div>\n          <div class=\"heatmap\"></div>\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n          <div class=\"pin\"></div>\n        </li>");
+      return "\n        <li class=\"track-value-view\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"color\" style=\"background-color: ").concat(value.color, ";\"></div>\n          <div class=\"heatmap\"></div>\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n          <div class=\"pin\"></div>\n        </li>");
     }).join('');
-    elm.querySelectorAll(':scope > .value').forEach(function (node, index) {
-      _classPrivateFieldGet(_this, _values)[index].elm = node;
-      _classPrivateFieldGet(_this, _values)[index].pin = node.querySelector(':scope > .pin');
-    });
-    console.log(_classPrivateFieldGet(this, _values));
+    elm.querySelectorAll(':scope > .track-value-view').forEach(function (valueElm, index) {
+      // reference
+      _classPrivateFieldGet(_this, _values)[index].elm = valueElm;
+      _classPrivateFieldGet(_this, _values)[index].pin = valueElm.querySelector(':scope > .pin'); // attach event: show tooltip
 
-    _classPrivateMethodGet(this, _update, _update2).call(this, App$1.viewModes); // attach event
-
-
-    elm.querySelectorAll(':scope > .value').forEach(function (valueElm) {
-      // show tooltip
       valueElm.addEventListener('mouseenter', function () {
         var valueData = _classPrivateFieldGet(_this, _values).find(function (valueData) {
           return valueData.elm === valueElm;
@@ -1350,7 +1344,7 @@
       valueElm.addEventListener('mouseleave', function () {
         var event = new CustomEvent(EVENT_leavePropertyValueItemView);
         DefaultEventEmitter$1.dispatchEvent(event);
-      }); // select/deselect a value
+      }); // attach event: select/deselect a value
 
       valueElm.addEventListener('click', function () {
         var valueData = _classPrivateFieldGet(_this, _values).find(function (valueData) {
@@ -1413,6 +1407,8 @@
     DefaultEventEmitter$1.addEventListener(EVENT_setUserValues, function (e) {
       return _classPrivateMethodGet(_this, _plotUserIdValues, _plotUserIdValues2).call(_this, e.detail);
     });
+
+    _classPrivateMethodGet(this, _update, _update2).call(this, App$1.viewModes);
   };
 
   function _update2(viewModes) {
@@ -1450,7 +1446,6 @@
         });
 
         if (userValue) {
-          console.log(userValue);
           value.elm.classList.add('-pinsticking'); // pin
 
           var ratio = userValue.count / value.count;

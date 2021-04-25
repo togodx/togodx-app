@@ -30,7 +30,7 @@ export default class TrackOverviewCategorical {
       value.width = value.count / sum * 100;
       value.color = `hsla(${360 * index / values.length}, 70%, 50%, .075)`;
       return `
-        <li class="value" style="width: ${width}%;" data-category-id="${value.categoryId}">
+        <li class="track-value-view" style="width: ${width}%;" data-category-id="${value.categoryId}">
           <div class="color" style="background-color: ${value.color};"></div>
           <div class="heatmap"></div>
           <p>
@@ -40,17 +40,14 @@ export default class TrackOverviewCategorical {
           <div class="pin"></div>
         </li>`;
     }).join('');
-    elm.querySelectorAll(':scope > .value').forEach((node, index) => {
-      this.#values[index].elm = node;
-      this.#values[index].pin = node.querySelector(':scope > .pin');
-    });
-    console.log(this.#values)
-    this.#update(App.viewModes);
 
-    // attach event
-    elm.querySelectorAll(':scope > .value').forEach(valueElm => {
+    elm.querySelectorAll(':scope > .track-value-view').forEach((valueElm, index) => {
 
-      // show tooltip
+      // reference
+      this.#values[index].elm = valueElm;
+      this.#values[index].pin = valueElm.querySelector(':scope > .pin');
+
+      // attach event: show tooltip
       valueElm.addEventListener('mouseenter', () => {
         const valueData = this.#values.find(valueData => valueData.elm === valueElm);
         const event = new CustomEvent(EVENT_enterPropertyValueItemView, {detail: {
@@ -70,7 +67,7 @@ export default class TrackOverviewCategorical {
         DefaultEventEmitter.dispatchEvent(event);
       });
 
-      // select/deselect a value
+      // attach event: select/deselect a value
       valueElm.addEventListener('click', () => {
         const valueData = this.#values.find(valueData => valueData.categoryId === valueElm.dataset.categoryId);
         if (valueElm.classList.contains('-selected')) {
@@ -122,6 +119,8 @@ export default class TrackOverviewCategorical {
     });
     DefaultEventEmitter.addEventListener(EVENT_changeViewModes, e => this.#update(e.detail));
     DefaultEventEmitter.addEventListener(EVENT_setUserValues, e => this.#plotUserIdValues(e.detail));
+
+    this.#update(App.viewModes);
   }
 
   #update(viewModes) {
@@ -149,7 +148,6 @@ export default class TrackOverviewCategorical {
       this.#values.forEach(value => {
         const userValue = detail.values.find(userValue => userValue.categoryId === value.categoryId);
         if (userValue) {
-          console.log(userValue)
           value.elm.classList.add('-pinsticking');
           // pin
           const ratio = userValue.count / value.count;
