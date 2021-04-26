@@ -12,9 +12,12 @@ export default class TableData {
   #abortController;
   #isAutoLoad;
   #isLoaded;
+  #startTime;
+  #endTime;
   #ROOT;
   #STATUS;
-  #INDICATOR_TEXT;
+  #INDICATOR_TEXT_AMOUNT;
+  #INDICATOR_TEXT_TIME;
   #INDICATOR_BAR;
   #BUTTON_PREPARE_DOWNLOAD;
 
@@ -46,19 +49,24 @@ export default class TableData {
       ${condition.properties.map(property => `<div class="condiiton -value" style="color: hsl(${property.subject.hue}, 45%, 50%)">
         <p title="${property.property.label}">${property.property.label}</p>
       </div>`).join('')}
+      
     </div>
+    <div class="close-button" title="Delete" data-button="delete"></div>
     <div class="status">
       <p>Getting id list</p>
     </div>
     <div class="indicator">
-      <div class="text"></div>
+      <div class="text">
+        <div class="amount-of-data"></div>
+        <div class="remaining-time"></div>
+      </div>
       <div class="progress">
         <div class="bar"></div>
       </div>
     </div>
     <div class="controller">
-      <div class="button" title="Prepare for download" data-button="prepare-download">
-        <span class="material-icons-outlined">download</span>
+      <div class="button autorenew" title="Prepare for download" data-button="prepare-download">
+        <span class="material-icons-outlined" id="autorenew">autorenew</span>
       </div>
       <div class="button" title="Restore as condition" data-button="restore">
         <span class="material-icons-outlined">settings_backup_restore</span>
@@ -78,11 +86,12 @@ export default class TableData {
       </div>
     </div>`;
 
-    // reference
+    // reference　
     this.#ROOT = elm;
     this.#STATUS = elm.querySelector(':scope > .status > p');
     const INDICATOR = elm.querySelector(':scope > .indicator');
-    this.#INDICATOR_TEXT = INDICATOR.querySelector(':scope > .text');
+    this.#INDICATOR_TEXT_AMOUNT = INDICATOR.querySelector(':scope > .text > .amount-of-data');
+    this.#INDICATOR_TEXT_TIME = INDICATOR.querySelector(':scope > .text > .remaining-time');
     this.#INDICATOR_BAR = INDICATOR.querySelector(':scope > .progress > .bar');
     const BUTTONS = [...elm.querySelectorAll(':scope > .controller > .button')];
     this.#BUTTON_PREPARE_DOWNLOAD = BUTTONS.find(button => button.dataset.button === 'prepare-download');
@@ -94,7 +103,14 @@ export default class TableData {
     });
     this.#BUTTON_PREPARE_DOWNLOAD.addEventListener('click', e => {
       e.stopPropagation();
-      this.#autoLoad();
+      if (this.#isAutoLoad == false && this.#ROOT.dataset.status != 'complete') {
+        this.#isAutoLoad == true;
+        this.#autoLoad();
+        document.getElementById('autorenew').classList.add('lotation');
+      } else {
+        this.#isAutoLoad = false;
+        document.getElementById('autorenew').classList.remove('lotation');
+      }
     });
     BUTTONS.find(button => button.dataset.button === 'restore').addEventListener('click', e => {
       e.stopPropagation();
@@ -104,18 +120,22 @@ export default class TableData {
       e.stopPropagation();
       console.log('delete')
     });
+    
 
     this.select();
     this.#getQueryIds();
   }
+  
 
   /* private methods */
+
 
   #getQueryIds() {
     // reset
     this.#abortController = new AbortController();
     this.#ROOT.classList.add('-fetching');
     // set parameters
+    this.#startTime = Date.now();
     fetch(
       `${App.aggregatePrimaryKeys}?togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(JSON.stringify(this.#condition.attributes.map(property => property.query)))}`,
       {
@@ -141,15 +161,10 @@ export default class TableData {
       .then(queryIds => {
         console.log(queryIds)
         this.#queryIds = queryIds;
-        if (queryIds.length === 0) {
-          console.log('****** 0 ken')
-          this.#complete();
-          return;
-        }
         // display
         this.#ROOT.dataset.status = 'load rows';
         this.#STATUS.textContent = '';
-        this.#INDICATOR_TEXT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
+        this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
         this.#getProperties();
       })
       .catch(error => {
@@ -179,7 +194,7 @@ export default class TableData {
         // display
         this.#ROOT.classList.remove('-fetching');
         this.#STATUS.textContent = 'Awaiting';
-        this.#INDICATOR_TEXT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
+        this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
         this.#INDICATOR_BAR.style.width = `${(this.offset / this.#queryIds.length) * 100}%`;
         // dispatch event
         const event = new CustomEvent('addNextRows', {detail: {
@@ -199,8 +214,34 @@ export default class TableData {
         this.#ROOT.classList.remove('-fetching');
         console.error(error) // TODO:
       });
-  }
-
+      // 終了時間を取得
+    this.#endTime = Date.now();
+    this.#getRemainingTime();
+  };
+  
+  #getRemainingTime() {
+    // １データあたりの取得時間
+    let singleTime = (this.#endTime - this.#startTime) / this.offset; 
+    // 残り時間
+    let remainingTime;
+    if (this.offset == 0) {
+      remainingTime = "no result.";
+    } else if (this.offset >= this.#queryIds.length) {
+      remainingTime = 0;
+    } else {
+      remainingTime = singleTime * this.#queryIds.length * (this.#queryIds.length - this.offset) / this.#queryIds.length / 1000;
+    }
+    if (remainingTime >= 3600) {
+      this.#INDICATOR_TEXT_TIME.innerHTML = `${Math.round(remainingTime / 3600)} hr.`;
+    } else if (remainingTime >= 60) {
+      this.#INDICATOR_TEXT_TIME.innerHTML = `${Math.round(remainingTime / 60)} min.`;
+    } else if (remainingTime >= 0) {
+      this.#INDICATOR_TEXT_TIME.innerHTML = `${Math.floor(remainingTime)} sec.`;
+    } else {
+      this.#INDICATOR_TEXT_TIME.innerHTML = ``;
+    }
+  };
+  
   #autoLoad() {
     if (this.#isLoaded) return;
     this.#isAutoLoad = true;
@@ -211,6 +252,7 @@ export default class TableData {
   #complete() {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = 'Complete';
+    document.getElementById('autorenew').classList.remove('lotation');
   }
 
   /* public methods */
@@ -264,5 +306,4 @@ export default class TableData {
   get rateOfProgress() {
     return this.#rows.length / this.#queryIds.length;
   }
-
 }

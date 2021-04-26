@@ -359,23 +359,19 @@ template {
 
 @-webkit-keyframes enter-stacking-item {
   from {
-    -webkit-transform: scaleY(0);
-            transform: scaleY(0);
+    transform: scaleY(0);
   }
   to {
-    -webkit-transform: scaleY(1);
-            transform: scaleY(1);
+    transform: scaleY(1);
   }
 }
 
 @keyframes enter-stacking-item {
   from {
-    -webkit-transform: scaleY(0);
-            transform: scaleY(0);
+    transform: scaleY(0);
   }
   to {
-    -webkit-transform: scaleY(1);
-            transform: scaleY(1);
+    transform: scaleY(1);
   }
 }
 @-webkit-keyframes fetching {
@@ -424,8 +420,7 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   -webkit-filter: drop-shadow(var(--shadow-normal));
           filter: drop-shadow(var(--shadow-normal));
   z-index: var(--z-track-balloon);
-  -webkit-transform: translate(-50%, calc(-100% + -5px));
-          transform: translate(-50%, calc(-100% + -5px));
+  transform: translate(-50%, calc(-100% + -5px));
   pointer-events: none;
   border-radius: 0.2rem;
 }
@@ -444,8 +439,7 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   height: 0;
 }
 .balloon-view.-below {
-  -webkit-transform: translate(-50%, calc(100% - 14px));
-          transform: translate(-50%, calc(100% - 14px));
+  transform: translate(-50%, calc(100% - 14px));
 }
 .balloon-view.-below::before {
   top: -1.4rem;
@@ -462,13 +456,11 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   font-weight: bold;
 }
 .balloon-view > .container > dl {
-  display: -webkit-flex;
   display: flex;
   margin: 0;
 }
 .balloon-view > .container > dl > dt {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
 }
 .balloon-view > .container > dl > dd {
   margin: 0;
@@ -477,7 +469,6 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
 }
 
 .concept-view {
-  display: -webkit-flex;
   display: flex;
 }
 .concept-view > .title {
@@ -502,9 +493,7 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   width: 1em;
   height: 1em;
   cursor: pointer;
-  transition: -webkit-transform var(--transition-instant);
   transition: transform var(--transition-instant);
-  transition: transform var(--transition-instant), -webkit-transform var(--transition-instant);
 }
 .collapse-view .collapsebutton::before {
   content: "";
@@ -514,16 +503,14 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   border-right: solid 0.1rem var(--color-black);
   border-top: solid 0.1rem var(--color-black);
   position: absolute;
-  -webkit-transform: translate(0.1rem, 0.3rem) rotate(45deg);
-          transform: translate(0.1rem, 0.3rem) rotate(45deg);
+  transform: translate(0.1rem, 0.3rem) rotate(45deg);
 }
 .collapse-view .collapsebutton.-white::before {
   border-right-color: white;
   border-top-color: white;
 }
 .collapse-view .collapsebutton.-spread::before {
-  -webkit-transform: translate(0.2rem, 0.2rem) rotate(135deg);
-          transform: translate(0.2rem, 0.2rem) rotate(135deg);
+  transform: translate(0.2rem, 0.2rem) rotate(135deg);
 }
 .collapse-view .collapsingcontent {
   max-height: 0;
@@ -570,7 +557,6 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   line-height: 1;
   cursor: pointer;
   transition: background var(--transition-instant);
-  display: -webkit-flex;
   display: flex;
 }
 .column-selector-view > .columns > .inner > .column > .item.-haschild::after {
@@ -600,8 +586,7 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
 }
 .column-selector-view > .columns > .inner > .column > .item > .count {
   padding-left: 1.2rem;
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
   text-align: right;
 }
 .column-selector-view > .loading-view {
@@ -624,10 +609,8 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   border-bottom: solid 0.1rem var(--color-separator);
 }
 .histogram-range-selector-view > .histogram > .graph {
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: flex-end;
-          align-items: flex-end;
+  align-items: flex-end;
 }
 .histogram-range-selector-view > .histogram > .graph > .bar {
   transition: height var(--transition-instant);
@@ -694,23 +677,19 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
 
 @-webkit-keyframes loading {
   from {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
+    transform: rotate(0deg);
   }
   to {
-    -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
 @keyframes loading {
   from {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
+    transform: rotate(0deg);
   }
   to {
-    -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 .rounded-button-view {
@@ -764,8 +743,7 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   box-shadow: var(--shadow-shallow);
   -webkit-animation: var(--transition-instant) enter-stacking-item;
           animation: var(--transition-instant) enter-stacking-item;
-  -webkit-transform-origin: 0 0;
-          transform-origin: 0 0;
+  transform-origin: 0 0;
   margin-top: 0.4rem;
 }
 .stacking-condition-view > .closebutton {
@@ -786,12 +764,10 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   height: 0.8rem;
 }
 .stacking-condition-view > .closebutton::before {
-  -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 .stacking-condition-view > .closebutton::after {
-  -webkit-transform: rotate(-45deg);
-          transform: rotate(-45deg);
+  transform: rotate(-45deg);
 }
 .stacking-condition-view > .path {
   margin: 0;
@@ -810,8 +786,7 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   display: inline-block;
   border-left: solid 0.1rem var(--color-gray);
   height: 1.4rem;
-  -webkit-transform: rotate(20deg);
-          transform: rotate(20deg);
+  transform: rotate(20deg);
   margin: -0.6rem 0.4rem 0 0.4rem;
 }
 .stacking-condition-view > .label {
@@ -857,10 +832,8 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   font-size: 1rem;
   bottom: 0;
   left: 0.9rem;
-  -webkit-transform-origin: 0% 0%;
-          transform-origin: 0% 0%;
-  -webkit-transform: rotate(30deg);
-          transform: rotate(30deg);
+  transform-origin: 0% 0%;
+  transform: rotate(30deg);
 }
 .statistics-view > .statistics > * > .bar > .value {
   color: white;
@@ -901,15 +874,14 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   font-size: 1rem;
   -webkit-animation: var(--transition-instant) enter-stacking-item;
           animation: var(--transition-instant) enter-stacking-item;
-  -webkit-transform-origin: 0 0;
-          transform-origin: 0 0;
+  transform-origin: 0 0;
   margin-top: 0.6rem;
   opacity: 0.6;
   cursor: pointer;
   transition: opacity var(--transition-instant);
+  position: relative;
 }
 .table-data-controller-view > .conditions {
-  display: -webkit-flex;
   display: flex;
   font-weight: bold;
   border-bottom: solid 0.1rem var(--color-separator);
@@ -917,8 +889,7 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
 .table-data-controller-view > .conditions > .condiiton {
   padding: 0.2rem 0.4rem;
   overflow: hidden;
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
 }
 .table-data-controller-view > .conditions > .condiiton:first-child {
   color: white;
@@ -932,6 +903,9 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+}
+.table-data-controller-view > .conditions > .condiiton:last-child {
+  padding-right: 1.9rem;
 }
 .table-data-controller-view > .status {
   padding: 0.3rem 0;
@@ -953,6 +927,8 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
 }
 .table-data-controller-view > .indicator > .text {
   line-height: 1;
+  display: flex;
+  justify-content: space-between;
 }
 .table-data-controller-view > .indicator > .progress {
   margin: 0.4rem 0;
@@ -974,8 +950,7 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
 }
 .table-data-controller-view > .controller > .button, .table-data-controller-view > .downloads > .button {
   padding: 0.2rem 0;
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
   background-color: var(--color-translucent-lamp-black2);
   transition: background-color var(--transition-instant);
   cursor: pointer;
@@ -990,12 +965,15 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   vertical-align: middle;
 }
 .table-data-controller-view > .controller {
-  display: -webkit-flex;
   display: flex;
 }
 [data-display=results] .table-data-controller-view > .controller > .button[data-button=restore] {
   cursor: not-allowed;
   opacity: 0.5;
+}
+.table-data-controller-view > .controller > .button > .lotation {
+  -webkit-animation: lotation 3s linear infinite;
+          animation: lotation 3s linear infinite;
 }
 .table-data-controller-view > .downloads {
   border-top: solid 1px var(--color-translucent-lamp-black3);
@@ -1030,7 +1008,6 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   display: block;
 }
 .table-data-controller-view[data-status="load rows"] > .controller {
-  display: -webkit-flex;
   display: flex;
 }
 .table-data-controller-view[data-status=complete] > .status > p {
@@ -1040,7 +1017,6 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   display: block;
 }
 .table-data-controller-view[data-status=complete] > .controller, .table-data-controller-view[data-status=complete] > .downloads {
-  display: -webkit-flex;
   display: flex;
 }
 .table-data-controller-view[data-status=complete] > .controller > .button[data-button=prepare-download] {
@@ -1048,6 +1024,23 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   opacity: 0.5;
 }
 
+@-webkit-keyframes lotation {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes lotation {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 .togo-key-view {
   color: white;
   background-color: var(--color-translucent-lamp-black2);
@@ -1069,28 +1062,23 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   opacity: 0.2;
 }
 .track-view > .row {
-  display: -webkit-flex;
   display: flex;
   height: var(--height-track);
 }
 .track-view > .row > .left {
-  -webkit-flex-basis: var(--width-track-column-property);
-          flex-basis: var(--width-track-column-property);
+  flex-basis: var(--width-track-column-property);
   min-width: var(--width-track-column-property);
 }
 .track-view > .row > .right {
-  -webkit-flex-basis: calc(100% - var(--width-track-column-property));
-          flex-basis: calc(100% - var(--width-track-column-property));
+  flex-basis: calc(100% - var(--width-track-column-property));
   max-width: calc(100% - var(--width-track-column-property));
 }
 .track-view > .row.-upper > .left {
   padding-left: 1.6rem;
   position: relative;
   padding-top: 0;
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: center;
-          align-items: center;
+  align-items: center;
   line-height: 1;
   overflow: hidden;
 }
@@ -1218,6 +1206,30 @@ body[data-heatmap=true] .track-view > .row.-upper > .right > .overview > .inner 
   box-shadow: 0 0 0 0.1rem rgba(255, 255, 255, 0.5) inset;
 }
 
+.close-button {
+  width: 1.2rem;
+  height: 1.2rem;
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  cursor: pointer;
+}
+.close-button::before, .close-button::after {
+  content: "";
+  border-left: solid 0.1rem var(--color-black);
+  position: absolute;
+  top: 0.1rem;
+  left: 0.6rem;
+  display: block;
+  height: 0.8rem;
+}
+.close-button::before {
+  transform: rotate(45deg);
+}
+.close-button::after {
+  transform: rotate(-45deg);
+}
+
 #App {
   height: 100%;
   overflow: hidden;
@@ -1225,15 +1237,11 @@ body[data-heatmap=true] .track-view > .row.-upper > .right > .overview > .inner 
 #App > .inner {
   height: 100%;
   width: calc(200vw - var(--width-condition));
-  display: -webkit-flex;
   display: flex;
-  transition: -webkit-transform var(--transition-wipe);
   transition: transform var(--transition-wipe);
-  transition: transform var(--transition-wipe), -webkit-transform var(--transition-wipe);
 }
 body[data-display=results] #App > .inner {
-  -webkit-transform: translateX(calc(-100vw + var(--width-condition)));
-          transform: translateX(calc(-100vw + var(--width-condition)));
+  transform: translateX(calc(-100vw + var(--width-condition)));
 }
 
 #ConditionBuilder > .togoKey {
@@ -1248,8 +1256,7 @@ body[data-display=results] #ConditionBuilder > .togoKey {
   opacity: 0.5;
 }
 #ConditionBuilder > .conditions {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
 }
 #ConditionBuilder > .conditions > * {
   padding: 0.7rem 0.6rem;
@@ -1284,16 +1291,12 @@ body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .
   position: fixed;
   top: 0;
   right: 0;
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
 }
 #FixedArea > div > section {
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
   padding: var(--padding-block-start) var(--padding-inline-start);
 }
 #FixedArea > div > section > header {
@@ -1327,10 +1330,8 @@ body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .
 #Properties > .header {
   padding: var(--padding-track-block-start) var(--padding-track-inline-start);
   border-bottom: solid 0.1rem var(--color-black);
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: center;
-          align-items: center;
+  align-items: center;
   height: var(--height-track);
   line-height: calc(var(--height-track) - var(--padding-track-block-start) * 2);
   position: -webkit-sticky;
@@ -1350,8 +1351,7 @@ body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .
   width: calc(var(--width-track-column-subject) + var(--width-track-column-property) - var(--padding-track-inline-start));
 }
 #Properties > .header > nav {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
   text-align: right;
 }
 #Properties > .header > nav > ul {
@@ -1383,8 +1383,7 @@ body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .
 }
 
 #Reports > .stanzas {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
 }
 
 #Results {

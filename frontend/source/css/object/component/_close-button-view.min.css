@@ -1,0 +1,1 @@
+.close-button{width:1.2rem;height:1.2rem;position:absolute;top:.4rem;right:.4rem;cursor:pointer}.close-button::before,.close-button::after{content:"";border-left:solid 0.1rem var(--color-black);position:absolute;top:.1rem;left:.6rem;display:block;height:.8rem}.close-button::before{transform:rotate(45deg)}.close-button::after{transform:rotate(-45deg)}
