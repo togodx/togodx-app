@@ -1,6 +1,5 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
-import ConditionBuilder from './ConditionBuilder';
 import {EVENT_setUserValues, EVENT_clearUserValues} from '../events';
 
 const PATH = 'https://integbio.jp/togosite/sparqlist/api/';
@@ -43,12 +42,14 @@ export default class UploadUserIDsView {
 
   #fetch() {
 
-    const togoKey = ConditionBuilder.currentTogoKey;
-    const queryTemplate = `${PATH + DATA_FROM_USER_IDS}?sparqlet=@@sparqlet@@&primaryKey=${togoKey}&categoryIds=&userKey=${this.#USER_KEY.value}&userIds=${encodeURIComponent(this.#USER_IDS.value)}`;
+    const queryTemplate = `${PATH + DATA_FROM_USER_IDS}?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=${this.#USER_KEY.value}&userIds=${encodeURIComponent(this.#USER_IDS.value)}`;
 
     Records.properties.forEach(property => {
+      console.log(property)
       const propertyId = property.propertyId;
-      fetch(queryTemplate.replace('@@sparqlet@@', encodeURIComponent(PATH + propertyId)))
+      fetch(queryTemplate
+        .replace('@@sparqlet@@', encodeURIComponent(property.data))
+        .replace('@@primaryKey@@', encodeURIComponent(property.primaryKey)))
       .then(responce => responce.json())
       .then(values => {
         console.log(values)

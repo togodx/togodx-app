@@ -2699,11 +2699,11 @@
   function _fetch2() {
     var _this2 = this;
 
-    var togoKey = ConditionBuilder$1.currentTogoKey;
-    var queryTemplate = "".concat(PATH + DATA_FROM_USER_IDS, "?sparqlet=@@sparqlet@@&primaryKey=").concat(togoKey, "&categoryIds=&userKey=").concat(_classPrivateFieldGet(this, _USER_KEY).value, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
+    var queryTemplate = "".concat(PATH + DATA_FROM_USER_IDS, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(_classPrivateFieldGet(this, _USER_KEY).value, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
     Records$1.properties.forEach(function (property) {
+      console.log(property);
       var propertyId = property.propertyId;
-      fetch(queryTemplate.replace('@@sparqlet@@', encodeURIComponent(PATH + propertyId))).then(function (responce) {
+      fetch(queryTemplate.replace('@@sparqlet@@', encodeURIComponent(property.data)).replace('@@primaryKey@@', encodeURIComponent(property.primaryKey))).then(function (responce) {
         return responce.json();
       }).then(function (values) {
         console.log(values);
