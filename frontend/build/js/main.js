@@ -1251,7 +1251,7 @@
     return HistogramRangeSelectorView;
   }();
 
-  var MIN_PIN_SIZE = 8;
+  var MIN_PIN_SIZE = 12;
   var MAX_PIN_SIZE = 20;
   var RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
 
@@ -1324,50 +1324,64 @@
       value.color = "hsla(".concat(360 * index / values.length, ", 70%, 50%, .075)");
       return "\n        <li class=\"track-value-view\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"color\" style=\"background-color: ").concat(value.color, ";\"></div>\n          <div class=\"heatmap\"></div>\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n          <div class=\"pin\"></div>\n        </li>");
     }).join('');
-    elm.querySelectorAll(':scope > .track-value-view').forEach(function (valueElm, index) {
+    elm.querySelectorAll(':scope > .track-value-view').forEach(function (elm, index) {
       // reference
-      _classPrivateFieldGet(_this, _values)[index].elm = valueElm;
-      _classPrivateFieldGet(_this, _values)[index].pin = valueElm.querySelector(':scope > .pin'); // attach event: show tooltip
+      var value = _classPrivateFieldGet(_this, _values)[index];
 
-      valueElm.addEventListener('mouseenter', function () {
-        var valueData = _classPrivateFieldGet(_this, _values).find(function (valueData) {
-          return valueData.elm === valueElm;
-        });
+      value.elm = elm;
+      var pin = elm.querySelector(':scope > .pin');
+      value.pin = pin; // attach event: show tooltip
 
+      var label = "<span style=\"color: ".concat(App$1.getHslColor(_classPrivateFieldGet(_this, _subject$1).hue), "\">").concat(value.label, "</span>");
+      elm.addEventListener('mouseenter', function () {
         var event = new CustomEvent(EVENT_enterPropertyValueItemView, {
           detail: {
-            label: "<span style=\"color: ".concat(App$1.getHslColor(_classPrivateFieldGet(_this, _subject$1).hue), "\">").concat(valueElm.querySelector(':scope > p > .label').textContent, "</span>"),
+            label: label,
             values: [{
               key: 'Count',
-              value: valueData.count.toLocaleString()
+              value: value.count.toLocaleString()
             }],
-            elm: valueElm
+            elm: elm
           }
         });
         DefaultEventEmitter$1.dispatchEvent(event);
       });
-      valueElm.addEventListener('mouseleave', function () {
+      elm.addEventListener('mouseleave', function () {
+        var event = new CustomEvent(EVENT_leavePropertyValueItemView);
+        DefaultEventEmitter$1.dispatchEvent(event);
+      }); // attach event: show tooltip of pin
+
+      pin.addEventListener('mouseenter', function () {
+        var event = new CustomEvent(EVENT_enterPropertyValueItemView, {
+          detail: {
+            label: label,
+            values: [{
+              key: 'Count',
+              value: "".concat(value.userValueCount.toLocaleString(), " / ").concat(value.count.toLocaleString())
+            }],
+            elm: pin
+          }
+        });
+        DefaultEventEmitter$1.dispatchEvent(event);
+      });
+      pin.addEventListener('mouseleave', function () {
         var event = new CustomEvent(EVENT_leavePropertyValueItemView);
         DefaultEventEmitter$1.dispatchEvent(event);
       }); // attach event: select/deselect a value
 
-      valueElm.addEventListener('click', function () {
-        var valueData = _classPrivateFieldGet(_this, _values).find(function (valueData) {
-          return valueData.categoryId === valueElm.dataset.categoryId;
-        });
-
-        if (valueElm.classList.contains('-selected')) {
-          valueElm.classList.remove('-selected');
-          ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this, _property$1).propertyId, valueData.categoryId);
+      elm.addEventListener('click', function () {
+        if (elm.classList.contains('-selected')) {
+          elm.classList.remove('-selected');
+          ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this, _property$1).propertyId, value.categoryId);
         } else {
-          valueElm.classList.add('-selected');
+          elm.classList.add('-selected');
           ConditionBuilder$1.addPropertyValue({
             subject: _classPrivateFieldGet(_this, _subject$1),
             property: _classPrivateFieldGet(_this, _property$1),
             value: {
-              categoryId: valueData.categoryId,
-              label: valueData.label,
-              count: valueData.count,
+              categoryId: value.categoryId,
+              label: value.label,
+              count: value.count,
               ancestors: []
             }
           });
@@ -1461,7 +1475,8 @@
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
           value.pin.style.top = -size + 'px';
-          value.pin.style.left = -size / 2 + 'px'; // // dispatch event
+          value.pin.style.left = -size / 2 + 'px';
+          value.userValueCount = userValue.count; // // dispatch event
           // const event = new CustomEvent(EVENT_stickUserValue, {detail: {
           //   view: value.elm,
           //   userValue,

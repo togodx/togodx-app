@@ -3,7 +3,7 @@ import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
 import {EVENT_setUserValues, EVENT_changeViewModes, EVENT_enterPropertyValueItemView, EVENT_mutatePropertyValueCondition, EVENT_clearUserValues, EVENT_leavePropertyValueItemView} from '../events';
 
-const MIN_PIN_SIZE = 8;
+const MIN_PIN_SIZE = 12;
 const MAX_PIN_SIZE = 20;
 const RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
 
@@ -41,47 +41,67 @@ export default class TrackOverviewCategorical {
         </li>`;
     }).join('');
 
-    elm.querySelectorAll(':scope > .track-value-view').forEach((valueElm, index) => {
+    elm.querySelectorAll(':scope > .track-value-view').forEach((elm, index) => {
 
       // reference
-      this.#values[index].elm = valueElm;
-      this.#values[index].pin = valueElm.querySelector(':scope > .pin');
+      const value = this.#values[index];
+      value.elm = elm;
+      const pin = elm.querySelector(':scope > .pin');
+      value.pin = pin;
 
       // attach event: show tooltip
-      valueElm.addEventListener('mouseenter', () => {
-        const valueData = this.#values.find(valueData => valueData.elm === valueElm);
+      const label = `<span style="color: ${App.getHslColor(this.#subject.hue)}">${value.label}</span>`;
+      elm.addEventListener('mouseenter', () => {
         const event = new CustomEvent(EVENT_enterPropertyValueItemView, {detail: {
-          label: `<span style="color: ${App.getHslColor(this.#subject.hue)}">${valueElm.querySelector(':scope > p > .label').textContent}</span>`,
+          label,
           values: [
             {
               key: 'Count',
-              value: valueData.count.toLocaleString()
+              value: value.count.toLocaleString()
             }
           ],
-          elm: valueElm
+          elm
         }});
         DefaultEventEmitter.dispatchEvent(event);
       });
-      valueElm.addEventListener('mouseleave', () => {
+      elm.addEventListener('mouseleave', () => {
+        const event = new CustomEvent(EVENT_leavePropertyValueItemView);
+        DefaultEventEmitter.dispatchEvent(event);
+      });
+
+      // attach event: show tooltip of pin
+      pin.addEventListener('mouseenter', () => {
+        const event = new CustomEvent(EVENT_enterPropertyValueItemView, {detail: {
+          label,
+          values: [
+            {
+              key: 'Count',
+              value: `${value.userValueCount.toLocaleString()} / ${value.count.toLocaleString()}`
+            }
+          ],
+          elm: pin
+        }});
+        DefaultEventEmitter.dispatchEvent(event);
+      });
+      pin.addEventListener('mouseleave', () => {
         const event = new CustomEvent(EVENT_leavePropertyValueItemView);
         DefaultEventEmitter.dispatchEvent(event);
       });
 
       // attach event: select/deselect a value
-      valueElm.addEventListener('click', () => {
-        const valueData = this.#values.find(valueData => valueData.categoryId === valueElm.dataset.categoryId);
-        if (valueElm.classList.contains('-selected')) {
-          valueElm.classList.remove('-selected');
-          ConditionBuilder.removePropertyValue(this.#property.propertyId, valueData.categoryId);
+      elm.addEventListener('click', () => {
+        if (elm.classList.contains('-selected')) {
+          elm.classList.remove('-selected');
+          ConditionBuilder.removePropertyValue(this.#property.propertyId, value.categoryId);
         } else {
-          valueElm.classList.add('-selected');
+          elm.classList.add('-selected');
           ConditionBuilder.addPropertyValue({
             subject: this.#subject,
             property: this.#property,
             value: {
-              categoryId: valueData.categoryId,
-              label: valueData.label,
-              count: valueData.count,
+              categoryId: value.categoryId,
+              label: value.label,
+              count: value.count,
               ancestors: []
             }
           });
@@ -157,6 +177,7 @@ export default class TrackOverviewCategorical {
           value.pin.style.height = size + 'px';
           value.pin.style.top = -size + 'px';
           value.pin.style.left = (-size / 2) + 'px';
+          value.userValueCount =  userValue.count;
           
           // // dispatch event
           // const event = new CustomEvent(EVENT_stickUserValue, {detail: {
