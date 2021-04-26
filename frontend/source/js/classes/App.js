@@ -6,7 +6,7 @@ import ConceptView from './ConceptView.js';
 import ResultsTable from './ResultsTable.js';
 import BalloonView from './BalloonView.js';
 import ConditionsController from "./ConditionsController";
-import UploadIDsView from "./UploadIDsView";
+import UploadUserIDsView from "./UploadUserIDsView";
 import PinsView from "./PinsView";
 import {EVENT_changeViewModes} from '../events';
 
@@ -45,7 +45,7 @@ class App {
     const reportsView = new ReportsView(document.querySelector('#Reports'));
     new ResultsTable(document.querySelector('#ResultsTable'));
     new BalloonView();
-    new UploadIDsView(document.querySelector('#UploadIDsView'));
+    new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
     new PinsView(document.querySelector('#PinsView'));
 
     // load config json

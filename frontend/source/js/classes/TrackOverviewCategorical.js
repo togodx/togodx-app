@@ -1,7 +1,7 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
-import {EVENT_setUserValues, EVENT_changeViewModes, EVENT_enterPropertyValueItemView, EVENT_mutatePropertyValueCondition, EVENT_stickUserValue, EVENT_leavePropertyValueItemView} from '../events';
+import {EVENT_setUserValues, EVENT_changeViewModes, EVENT_enterPropertyValueItemView, EVENT_mutatePropertyValueCondition, EVENT_clearUserValues, EVENT_leavePropertyValueItemView} from '../events';
 
 const MIN_PIN_SIZE = 8;
 const MAX_PIN_SIZE = 20;
@@ -119,6 +119,7 @@ export default class TrackOverviewCategorical {
     });
     DefaultEventEmitter.addEventListener(EVENT_changeViewModes, e => this.#update(e.detail));
     DefaultEventEmitter.addEventListener(EVENT_setUserValues, e => this.#plotUserIdValues(e.detail));
+    DefaultEventEmitter.addEventListener(EVENT_clearUserValues, e => this.#clearUserIdValues(e.detail));
 
     this.#update(App.viewModes);
   }
@@ -169,6 +170,10 @@ export default class TrackOverviewCategorical {
         }
       });
     }
+  }
+
+  #clearUserIdValues() {
+    this.#values.forEach(value => value.elm.classList.remove('-pinsticking'));
   }
 
 }

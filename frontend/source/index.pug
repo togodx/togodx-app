@@ -29,17 +29,18 @@ html.no-js(lang='')
               h2.attributes Values
             nav
               ul
-                li#UploadIDsView
+                li#UploadUserIDsView
                   span.material-icons-outlined file_upload
                   span Upload IDs
                   form
                     label
                       | userKey
-                      input#UploadIDsUserKey(type="text" value="uniprot")
+                      input#UploadUserIDsUserKey(type="text" value="uniprot")
                     label
                       | userIds
-                      input#UploadIDsUserIDs(type="text" value="Q9NYF8,Q4V339,A6NCE7,A7E2F4,P69849,A6NN73,Q92928,Q5T1J5,P0C7P4,Q6DN03,P09874,Q08211,Q5T4S7,P12270,Q9UPN3,P07814,P53621,P49321,P0C629,Q9BZK8,Q9BY65")
-                    button(type="button") Submit
+                      input#UploadUserIDsUserIDs(type="text" value="Q9NYF8,Q4V339,A6NCE7,A7E2F4,P69849,A6NN73,Q92928,Q5T1J5,P0C7P4,Q6DN03,P09874,Q08211,Q5T4S7,P12270,Q9UPN3,P07814,P53621,P49321,P0C629,Q9BZK8,Q9BY65")
+                    button#UploadUserIDsSubmit(type="button") Submit
+                    button#UploadUserIDsClear(type="button") Clear
                       
                 li.viewmodecontroller
                   label

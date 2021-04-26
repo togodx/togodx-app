@@ -1565,10 +1565,10 @@ body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .
   display: none;
 }
 
-#UploadIDsView {
+#UploadUserIDsView {
   position: relative;
 }
-#UploadIDsView > form {
+#UploadUserIDsView > form {
   display: none;
   position: absolute;
   background-color: white;
@@ -1578,7 +1578,7 @@ body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .
   top: 26px;
   z-index: var(--z-upload-user-ids);
 }
-#UploadIDsView.-showingmenu > form {
+#UploadUserIDsView.-showingmenu > form {
   display: inherit;
 }
 

@@ -353,7 +353,8 @@
   var DefaultEventEmitter$1 = new DefaultEventEmitter();
 
   // User IDs
-  var EVENT_setUserValues = 'setUserValues'; // View mode
+  var EVENT_setUserValues = 'setUserValues';
+  var EVENT_clearUserValues = 'clearUserValues'; // View mode
 
   var EVENT_changeViewModes = 'changeViewModes'; // Condition
 
@@ -1266,10 +1267,14 @@
 
   var _plotUserIdValues = new WeakSet();
 
+  var _clearUserIdValues = new WeakSet();
+
   var TrackOverviewCategorical = function TrackOverviewCategorical(elm, subject, property, values) {
     var _this = this;
 
     _classCallCheck(this, TrackOverviewCategorical);
+
+    _clearUserIdValues.add(this);
 
     _plotUserIdValues.add(this);
 
@@ -1407,6 +1412,9 @@
     DefaultEventEmitter$1.addEventListener(EVENT_setUserValues, function (e) {
       return _classPrivateMethodGet(_this, _plotUserIdValues, _plotUserIdValues2).call(_this, e.detail);
     });
+    DefaultEventEmitter$1.addEventListener(EVENT_clearUserValues, function (e) {
+      return _classPrivateMethodGet(_this, _clearUserIdValues, _clearUserIdValues2).call(_this, e.detail);
+    });
 
     _classPrivateMethodGet(this, _update, _update2).call(this, App$1.viewModes);
   };
@@ -1465,6 +1473,12 @@
         }
       });
     }
+  }
+
+  function _clearUserIdValues2() {
+    _classPrivateFieldGet(this, _values).forEach(function (value) {
+      return value.elm.classList.remove('-pinsticking');
+    });
   }
 
   var _subject = new WeakMap();
@@ -2602,10 +2616,14 @@
 
   var _fetch = new WeakSet();
 
-  var UploadIDsView = function UploadIDsView(elm) {
+  var _clear = new WeakSet();
+
+  var UploadUserIDsView = function UploadUserIDsView(elm) {
     var _this = this;
 
-    _classCallCheck(this, UploadIDsView);
+    _classCallCheck(this, UploadUserIDsView);
+
+    _clear.add(this);
 
     _fetch.add(this);
 
@@ -2633,21 +2651,31 @@
 
     _classPrivateFieldSet(this, _ROOT$1, elm);
 
-    _classPrivateFieldSet(this, _USER_KEY, elm.querySelector('#UploadIDsUserKey'));
+    _classPrivateFieldSet(this, _USER_KEY, elm.querySelector('#UploadUserIDsUserKey'));
 
-    _classPrivateFieldSet(this, _USER_IDS, elm.querySelector('#UploadIDsUserIDs'));
+    _classPrivateFieldSet(this, _USER_IDS, elm.querySelector('#UploadUserIDsUserIDs'));
 
     elm.querySelectorAll(':scope > span').forEach(function (elm) {
       elm.addEventListener('click', function () {
         _classPrivateFieldGet(_this, _ROOT$1).classList.toggle('-showingmenu');
       });
-    });
-    elm.querySelector(':scope > form > button').addEventListener('click', function (e) {
+    }); // atache events
+
+    elm.querySelector(':scope > form > button#UploadUserIDsSubmit').addEventListener('click', function (e) {
       e.stopPropagation();
 
       _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-showingmenu');
 
       _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
+
+      return false;
+    });
+    elm.querySelector(':scope > form > button#UploadUserIDsClear').addEventListener('click', function (e) {
+      e.stopPropagation();
+
+      _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-showingmenu');
+
+      _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
 
       return false;
     });
@@ -2658,7 +2686,6 @@
 
     var togoKey = ConditionBuilder$1.currentTogoKey;
     var queryTemplate = "".concat(PATH + DATA_FROM_USER_IDS, "?sparqlet=@@sparqlet@@&primaryKey=").concat(togoKey, "&categoryIds=&userKey=").concat(_classPrivateFieldGet(this, _USER_KEY).value, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
-    console.log(queryTemplate);
     Records$1.properties.forEach(function (property) {
       var propertyId = property.propertyId;
       fetch(queryTemplate.replace('@@sparqlet@@', encodeURIComponent(PATH + propertyId))).then(function (responce) {
@@ -2678,6 +2705,13 @@
         DefaultEventEmitter$1.dispatchEvent(event);
       });
     });
+  }
+
+  function _clear2() {
+    _classPrivateFieldGet(this, _BODY).classList.remove('-showuserids');
+
+    var event = new CustomEvent(EVENT_clearUserValues);
+    DefaultEventEmitter$1.dispatchEvent(event);
   }
 
   var _ROOT = new WeakMap();
@@ -2758,7 +2792,7 @@
         var reportsView = new ReportsView(document.querySelector('#Reports'));
         new ResultsTable(document.querySelector('#ResultsTable'));
         new BalloonView();
-        new UploadIDsView(document.querySelector('#UploadIDsView'));
+        new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
         new PinsView(document.querySelector('#PinsView')); // load config json
 
         var stanzaTtemplates;

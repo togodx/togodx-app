@@ -1,6 +1,7 @@
 
 // User IDs
 export const EVENT_setUserValues = 'setUserValues';
+export const EVENT_clearUserValues = 'clearUserValues';
 
 // View mode
 export const EVENT_changeViewModes = 'changeViewModes';

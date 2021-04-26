@@ -1,12 +1,12 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
 import ConditionBuilder from './ConditionBuilder';
-import {EVENT_setUserValues} from '../events';
+import {EVENT_setUserValues, EVENT_clearUserValues} from '../events';
 
 const PATH = 'https://integbio.jp/togosite/sparqlist/api/';
 const DATA_FROM_USER_IDS = 'data_from_user_ids';
 
-export default class UploadIDsView {
+export default class UploadUserIDsView {
 
   #BODY;
   #ROOT;
@@ -17,18 +17,26 @@ export default class UploadIDsView {
 
     this.#BODY = document.querySelector('body');
     this.#ROOT = elm;
-    this.#USER_KEY = elm.querySelector('#UploadIDsUserKey');
-    this.#USER_IDS = elm.querySelector('#UploadIDsUserIDs');
+    this.#USER_KEY = elm.querySelector('#UploadUserIDsUserKey');
+    this.#USER_IDS = elm.querySelector('#UploadUserIDsUserIDs');
 
     elm.querySelectorAll(':scope > span').forEach(elm => {
       elm.addEventListener('click', () => {
         this.#ROOT.classList.toggle('-showingmenu');
       });
     });
-    elm.querySelector(':scope > form > button').addEventListener('click', e => {
+
+    // atache events
+    elm.querySelector(':scope > form > button#UploadUserIDsSubmit').addEventListener('click', e => {
       e.stopPropagation();
       this.#ROOT.classList.remove('-showingmenu');
       this.#fetch();
+      return false;
+    });
+    elm.querySelector(':scope > form > button#UploadUserIDsClear').addEventListener('click', e => {
+      e.stopPropagation();
+      this.#ROOT.classList.remove('-showingmenu');
+      this.#clear();
       return false;
     });
   }
@@ -37,7 +45,6 @@ export default class UploadIDsView {
 
     const togoKey = ConditionBuilder.currentTogoKey;
     const queryTemplate = `${PATH + DATA_FROM_USER_IDS}?sparqlet=@@sparqlet@@&primaryKey=${togoKey}&categoryIds=&userKey=${this.#USER_KEY.value}&userIds=${encodeURIComponent(this.#USER_IDS.value)}`;
-    console.log( queryTemplate )
 
     Records.properties.forEach(property => {
       const propertyId = property.propertyId;
@@ -57,8 +64,10 @@ export default class UploadIDsView {
 
   }
 
-
-
-
+  #clear() {
+    this.#BODY.classList.remove('-showuserids');
+    const event = new CustomEvent(EVENT_clearUserValues);
+    DefaultEventEmitter.dispatchEvent(event);
+  }
 
 }

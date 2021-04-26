@@ -377,7 +377,7 @@
       "pg" : 0,
       "sct" : 0
     },
-    "\/source\/css\/object\/project\/_UploadIDsView.sass" : {
+    "\/source\/css\/object\/project\/_UploadUserIDsView.sass" : {
       "aP" : 1,
       "bl" : 0,
       "dP" : 10,
@@ -385,7 +385,7 @@
       "ft" : 2,
       "ma" : 1,
       "oA" : 1,
-      "oAP" : "\/build\/css\/object\/project\/_UploadIDsView.css",
+      "oAP" : "\/build\/css\/object\/project\/_UploadUserIDsView.css",
       "oF" : 0,
       "oS" : 1,
       "pg" : 0,
@@ -588,13 +588,13 @@
       "sC" : 3,
       "tS" : 1
     },
-    "\/source\/js\/classes\/UploadIDsView.js" : {
+    "\/source\/js\/classes\/UploadUserIDsView.js" : {
       "bF" : 4,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
       "oA" : 1,
-      "oAP" : "\/build\/js\/classes\/UploadIDsView.js",
+      "oAP" : "\/build\/js\/classes\/UploadUserIDsView.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 1
