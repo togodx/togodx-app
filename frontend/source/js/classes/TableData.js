@@ -13,7 +13,6 @@ export default class TableData {
   #isAutoLoad;
   #isLoaded;
   #startTime;
-  #endTime;
   #ROOT;
   #STATUS;
   #INDICATOR_TEXT_AMOUNT;
@@ -120,8 +119,6 @@ export default class TableData {
       e.stopPropagation();
       console.log('delete')
     });
-    
-
     this.select();
     this.#getQueryIds();
   }
@@ -134,8 +131,6 @@ export default class TableData {
     // reset
     this.#abortController = new AbortController();
     this.#ROOT.classList.add('-fetching');
-    // set parameters
-    this.#startTime = Date.now();
     fetch(
       `${App.aggregatePrimaryKeys}?togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(JSON.stringify(this.#condition.attributes.map(property => property.query)))}`,
       {
@@ -165,6 +160,7 @@ export default class TableData {
         this.#ROOT.dataset.status = 'load rows';
         this.#STATUS.textContent = '';
         this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
+        this.#startTime = Date.now();
         this.#getProperties();
       })
       .catch(error => {
@@ -196,6 +192,7 @@ export default class TableData {
         this.#STATUS.textContent = 'Awaiting';
         this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
         this.#INDICATOR_BAR.style.width = `${(this.offset / this.#queryIds.length) * 100}%`;
+        this.#updateRemainingTime();
         // dispatch event
         const event = new CustomEvent('addNextRows', {detail: {
           tableData: this,
@@ -214,18 +211,13 @@ export default class TableData {
         this.#ROOT.classList.remove('-fetching');
         console.error(error) // TODO:
       });
-      // 終了時間を取得
-    this.#endTime = Date.now();
-    this.#getRemainingTime();
   };
   
-  #getRemainingTime() {
-    // １データあたりの取得時間
-    let singleTime = (this.#endTime - this.#startTime) / this.offset; 
-    // 残り時間
+  #updateRemainingTime() {
+    let singleTime = (Date.now() - this.#startTime) / this.offset; 
     let remainingTime;
     if (this.offset == 0) {
-      remainingTime = "no result.";
+      remainingTime = '';
     } else if (this.offset >= this.#queryIds.length) {
       remainingTime = 0;
     } else {

@@ -2015,8 +2015,6 @@
 
   var _startTime = new WeakMap();
 
-  var _endTime = new WeakMap();
-
   var _ROOT$3 = new WeakMap();
 
   var _STATUS = new WeakMap();
@@ -2033,7 +2031,7 @@
 
   var _getProperties = new WeakSet();
 
-  var _getRemainingTime = new WeakSet();
+  var _updateRemainingTime = new WeakSet();
 
   var _autoLoad = new WeakSet();
 
@@ -2049,7 +2047,7 @@
 
       _autoLoad.add(this);
 
-      _getRemainingTime.add(this);
+      _updateRemainingTime.add(this);
 
       _getProperties.add(this);
 
@@ -2091,11 +2089,6 @@
       });
 
       _startTime.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _endTime.set(this, {
         writable: true,
         value: void 0
       });
@@ -2303,10 +2296,7 @@
     // reset
     _classPrivateFieldSet(this, _abortController, new AbortController());
 
-    _classPrivateFieldGet(this, _ROOT$3).classList.add('-fetching'); // set parameters
-
-
-    _classPrivateFieldSet(this, _startTime, Date.now());
+    _classPrivateFieldGet(this, _ROOT$3).classList.add('-fetching');
 
     fetch("".concat(App$1.aggregatePrimaryKeys, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
       return property.query;
@@ -2338,6 +2328,8 @@
       _classPrivateFieldGet(_this2, _ROOT$3).dataset.status = 'load rows';
       _classPrivateFieldGet(_this2, _STATUS).textContent = '';
       _classPrivateFieldGet(_this2, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this2.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this2, _queryIds).length.toLocaleString());
+
+      _classPrivateFieldSet(_this2, _startTime, Date.now());
 
       _classPrivateMethodGet(_this2, _getProperties, _getProperties2).call(_this2);
     }).catch(function (error) {
@@ -2380,7 +2372,10 @@
 
       _classPrivateFieldGet(_this3, _STATUS).textContent = 'Awaiting';
       _classPrivateFieldGet(_this3, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this3.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this3, _queryIds).length.toLocaleString());
-      _classPrivateFieldGet(_this3, _INDICATOR_BAR).style.width = "".concat(_this3.offset / _classPrivateFieldGet(_this3, _queryIds).length * 100, "%"); // dispatch event
+      _classPrivateFieldGet(_this3, _INDICATOR_BAR).style.width = "".concat(_this3.offset / _classPrivateFieldGet(_this3, _queryIds).length * 100, "%");
+
+      _classPrivateMethodGet(_this3, _updateRemainingTime, _updateRemainingTime2).call(_this3); // dispatch event
+
 
       var event = new CustomEvent('addNextRows', {
         detail: {
@@ -2400,21 +2395,15 @@
       _classPrivateFieldGet(_this3, _ROOT$3).classList.remove('-fetching');
 
       console.error(error); // TODO:
-    }); // 終了時間を取得
-
-    _classPrivateFieldSet(this, _endTime, Date.now());
-
-    _classPrivateMethodGet(this, _getRemainingTime, _getRemainingTime2).call(this);
+    });
   };
 
-  var _getRemainingTime2 = function _getRemainingTime2() {
-    // １データあたりの取得時間
-    var singleTime = (_classPrivateFieldGet(this, _endTime) - _classPrivateFieldGet(this, _startTime)) / this.offset; // 残り時間
-
+  var _updateRemainingTime2 = function _updateRemainingTime2() {
+    var singleTime = (Date.now() - _classPrivateFieldGet(this, _startTime)) / this.offset;
     var remainingTime;
 
     if (this.offset == 0) {
-      remainingTime = "no result.";
+      remainingTime = '';
     } else if (this.offset >= _classPrivateFieldGet(this, _queryIds).length) {
       remainingTime = 0;
     } else {
