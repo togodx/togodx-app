@@ -67,23 +67,22 @@ export default class TableData {
       <div class="button autorenew" title="Prepare for download" data-button="prepare-download">
         <span class="material-icons-outlined" id="autorenew">autorenew</span>
       </div>
-      <div class="button" title="Restore as condition" data-button="restore">
-        <span class="material-icons-outlined">settings_backup_restore</span>
-      </div>
-      <div class="button" title="Delete" data-button="delete">
-        <span class="material-icons-outlined">delete</span>
-      </div>
-    </div>
-    <div class="downloads">
-      <div class="button" title="Download CSV">
+      <div class="button downloads" title="Download CSV">
         <span class="material-icons-outlined">download</span>
         CSV
       </div>
-      <div class="button" title="Download JSON ">
+      <div class="button downloads" title="Download JSON ">
         <span class="material-icons-outlined">download</span>
         JSON
       </div>
-    </div>`;
+      <div class="button" title="Restore as condition" data-button="restore">
+        <span class="material-icons-outlined">settings_backup_restore</span>
+      </div>
+      <div class="button none" title="Delete" data-button="delete">
+        <span class="material-icons-outlined">delete</span>
+      </div>
+    </div>
+    `;
 
     // reference　
     this.#ROOT = elm;

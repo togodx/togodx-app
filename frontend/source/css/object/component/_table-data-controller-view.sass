@@ -66,8 +66,13 @@
         top: 0
         left: 0
         transition: width var(--transition-wipe)
-  > .controller, > .downloads
+  > .controller
+    display: flex
     color: white
+    > .downloads
+      // border-top: solid 1px var(--color-translucent-lamp-black3)
+      display: none
+
     > .button
       padding: .2rem 0
       flex-grow: 1
@@ -76,23 +81,18 @@
       cursor: pointer
       &:hover
         background-color: var(--color-lamp-black)
+      &[data-button="restore"]
+        [data-display="results"] &
+          +button-disabled
+      &.none
+        display: none
       > .material-icons-outlined
         position: relative
         top: -.1rem
         font-size: 1.4rem
         vertical-align: middle
-  > .controller
-    display: flex
-    > .button
-      &[data-button="restore"]
-        [data-display="results"] &
-          +button-disabled
       > .lotation
         animation: lotation 3s linear infinite
-
-  > .downloads
-    border-top: solid 1px var(--color-translucent-lamp-black3)
-    display: none
   &.-current, &:hover
     opacity: 1
   &.-current
@@ -127,8 +127,12 @@
         opacity: 1
     > .indicator
       display: block
-    > .controller, > .downloads
+    > .controller
       display: flex
+      > .autorenew
+        display: none
+      > .downloads
+        display: block
     > .controller
       > .button
         &[data-button="prepare-download"]

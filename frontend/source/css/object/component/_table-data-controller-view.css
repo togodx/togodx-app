@@ -89,11 +89,16 @@
   transition: width var(--transition-wipe);
 }
 
-.table-data-controller-view > .controller, .table-data-controller-view > .downloads {
+.table-data-controller-view > .controller {
+  display: flex;
   color: white;
 }
 
-.table-data-controller-view > .controller > .button, .table-data-controller-view > .downloads > .button {
+.table-data-controller-view > .controller > .downloads {
+  display: none;
+}
+
+.table-data-controller-view > .controller > .button {
   padding: .2rem 0;
   flex-grow: 1;
   background-color: var(--color-translucent-lamp-black2);
@@ -101,19 +106,8 @@
   cursor: pointer;
 }
 
-.table-data-controller-view > .controller > .button:hover, .table-data-controller-view > .downloads > .button:hover {
+.table-data-controller-view > .controller > .button:hover {
   background-color: var(--color-lamp-black);
-}
-
-.table-data-controller-view > .controller > .button > .material-icons-outlined, .table-data-controller-view > .downloads > .button > .material-icons-outlined {
-  position: relative;
-  top: -.1rem;
-  font-size: 1.4rem;
-  vertical-align: middle;
-}
-
-.table-data-controller-view > .controller {
-  display: flex;
 }
 
 [data-display="results"] .table-data-controller-view > .controller > .button[data-button="restore"] {
@@ -121,13 +115,19 @@
   opacity: .5;
 }
 
-.table-data-controller-view > .controller > .button > .lotation {
-  animation: lotation 3s linear infinite;
+.table-data-controller-view > .controller > .button.none {
+  display: none;
 }
 
-.table-data-controller-view > .downloads {
-  border-top: solid 1px var(--color-translucent-lamp-black3);
-  display: none;
+.table-data-controller-view > .controller > .button > .material-icons-outlined {
+  position: relative;
+  top: -.1rem;
+  font-size: 1.4rem;
+  vertical-align: middle;
+}
+
+.table-data-controller-view > .controller > .button > .lotation {
+  animation: lotation 3s linear infinite;
 }
 
 .table-data-controller-view.-current, .table-data-controller-view:hover {
@@ -176,8 +176,16 @@
   display: block;
 }
 
-.table-data-controller-view[data-status="complete"] > .controller, .table-data-controller-view[data-status="complete"] > .downloads {
+.table-data-controller-view[data-status="complete"] > .controller {
   display: flex;
+}
+
+.table-data-controller-view[data-status="complete"] > .controller > .autorenew {
+  display: none;
+}
+
+.table-data-controller-view[data-status="complete"] > .controller > .downloads {
+  display: block;
 }
 
 .table-data-controller-view[data-status="complete"] > .controller > .button[data-button="prepare-download"] {
