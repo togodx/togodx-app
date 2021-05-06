@@ -50,7 +50,7 @@ export default class TableData {
       </div>`).join('')}
       
     </div>
-    <div class="close-button" title="Delete" data-button="delete"></div>
+    <div class="button close-button" title="Delete" data-button="delete"></div>
     <div class="status">
       <p>Getting id list</p>
     </div>
@@ -78,9 +78,7 @@ export default class TableData {
       <div class="button" title="Restore as condition" data-button="restore">
         <span class="material-icons-outlined">settings_backup_restore</span>
       </div>
-      <div class="button none" title="Delete" data-button="delete">
-        <span class="material-icons-outlined">delete</span>
-      </div>
+      
     </div>
     `;
 
@@ -91,7 +89,7 @@ export default class TableData {
     this.#INDICATOR_TEXT_AMOUNT = INDICATOR.querySelector(':scope > .text > .amount-of-data');
     this.#INDICATOR_TEXT_TIME = INDICATOR.querySelector(':scope > .text > .remaining-time');
     this.#INDICATOR_BAR = INDICATOR.querySelector(':scope > .progress > .bar');
-    const BUTTONS = [...elm.querySelectorAll(':scope > .controller > .button')];
+    const BUTTONS = [...elm.querySelectorAll('.button')];
     this.#BUTTON_PREPARE_DOWNLOAD = BUTTONS.find(button => button.dataset.button === 'prepare-download');
 
     // events
@@ -117,6 +115,9 @@ export default class TableData {
     BUTTONS.find(button => button.dataset.button === 'delete').addEventListener('click', e => {
       e.stopPropagation();
       console.log('delete')
+      let element = document.querySelector('.table-data-controller-view');
+      element.parentNode.removeChild(element)
+      console.log('実行',element.parentNode.removeChild(element));
     });
     this.select();
     this.#getQueryIds();
