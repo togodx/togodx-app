@@ -352,8 +352,10 @@ template {
   --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3);
   --z-track-item-selected: 1;
   --z-track-collapse-button: 1;
-  --z-track-balloon: 2;
   --z-track-tracks-header: 3;
+  --z-track-pin: 4;
+  --z-track-balloon: 5;
+  --z-upload-user-ids: 5;
   --z-results-header: 1;
 }
 
@@ -1051,6 +1053,99 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   font-size: 1.2rem;
 }
 
+.track-value-view {
+  color: white;
+  line-height: calc(var(--height-track) - var(--padding-track-block-start) * 2);
+  position: absolute;
+  transition: width var(--transition-wipe), left var(--transition-wipe);
+  cursor: pointer;
+}
+.track-value-view::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  border-left: solid 0.01rem rgba(255, 255, 255, 0.2);
+}
+.track-value-view > .color, .track-value-view > .heatmap {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
+}
+.track-value-view > .heatmap {
+  background-color: var(--color-lamp-black);
+  opacity: 0;
+}
+body[data-heatmap=true] .track-value-view > .heatmap {
+  opacity: 1;
+}
+.track-value-view > p {
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
+  padding-top: var(--padding-track-block-start);
+  margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  transition: opacity var(--transition-wipe);
+}
+.track-value-view > p > .label {
+  font-size: 1.2rem;
+}
+.track-value-view > p > .count {
+  padding-left: 0.8rem;
+  font-size: 1rem;
+  font-weight: lighter;
+}
+.track-value-view > .pin {
+  position: absolute;
+  top: -20px;
+  left: calc(0px - 10px);
+  width: 20px;
+  height: 20px;
+  border: solid 1px rgba(255, 255, 255, 0.5);
+  background-color: var(--color-lamp-black);
+  -webkit-transform: rotate(45deg) skew(5deg, 5deg);
+          transform: rotate(45deg) skew(5deg, 5deg);
+  border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%;
+  border-top-right-radius: 50%;
+  z-index: var(--z-track-pin);
+  display: none;
+}
+.track-value-view:hover > .color, .track-value-view:hover > .heatmap, .track-value-view.-selected > .color, .track-value-view.-selected > .heatmap {
+  opacity: 0 !important;
+  transition: opacity var(--transition-instant);
+}
+.track-value-view:hover::before, .track-value-view.-selected::before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: solid 1px white;
+  z-index: var(--z-track-item-selected);
+}
+.-showuserids .track-value-view:not(.-pinsticking) > .color {
+  background-color: var(--color-gray) !important;
+}
+.-showuserids .track-value-view:not(.-pinsticking) > .heatmap {
+  opacity: 0 !important;
+}
+.-showuserids .track-value-view:not(.-pinsticking) > p {
+  opacity: 0.25;
+}
+.-showuserids .track-value-view.-pinsticking > .pin {
+  display: block;
+}
+
 .track-view {
   border-bottom: solid 0.1rem var(--color-separator);
   font-size: 1.2rem;
@@ -1105,70 +1200,6 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
   margin: 0;
   padding: 0;
 }
-.track-view > .row.-upper > .right > .overview > .inner > .value {
-  color: white;
-  overflow: hidden;
-  line-height: calc(var(--height-track) - var(--padding-track-block-start) * 2);
-  position: absolute;
-  transition: width var(--transition-wipe), left var(--transition-wipe);
-  cursor: pointer;
-}
-.track-view > .row.-upper > .right > .overview > .inner > .value::after {
-  content: "";
-  display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  border-left: solid 0.01rem rgba(255, 255, 255, 0.2);
-}
-.track-view > .row.-upper > .right > .overview > .inner > .value > .color, .track-view > .row.-upper > .right > .overview > .inner > .value > .heatmap {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-.track-view > .row.-upper > .right > .overview > .inner > .value > .heatmap {
-  background-color: var(--color-lamp-black);
-  opacity: 0;
-  transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
-}
-body[data-heatmap=true] .track-view > .row.-upper > .right > .overview > .inner > .value > .heatmap {
-  opacity: 1;
-}
-.track-view > .row.-upper > .right > .overview > .inner > .value > p {
-  padding-left: 0.2rem;
-  padding-right: 0.2rem;
-  padding-top: var(--padding-track-block-start);
-  margin: 0;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  position: relative;
-  text-align: center;
-}
-.track-view > .row.-upper > .right > .overview > .inner > .value > p > .label {
-  font-size: 1.2rem;
-}
-.track-view > .row.-upper > .right > .overview > .inner > .value > p > .count {
-  padding-left: 0.8rem;
-  font-size: 1rem;
-  font-weight: lighter;
-}
-.track-view > .row.-upper > .right > .overview > .inner > .value:hover > .color, .track-view > .row.-upper > .right > .overview > .inner > .value:hover > .heatmap, .track-view > .row.-upper > .right > .overview > .inner > .value.-selected > .color, .track-view > .row.-upper > .right > .overview > .inner > .value.-selected > .heatmap {
-  opacity: 0 !important;
-  transition: opacity var(--transition-instant);
-}
-.track-view > .row.-upper > .right > .overview > .inner > .value:hover::before, .track-view > .row.-upper > .right > .overview > .inner > .value.-selected::before {
-  content: "";
-  display: block;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: solid 1px white;
-  z-index: var(--z-track-item-selected);
-}
 .track-view > .row.-upper > .right > .overview > .error {
   padding-left: 0.4rem;
   color: var(--color-lamp-black);
@@ -1204,6 +1235,7 @@ body[data-heatmap=true] .track-view > .row.-upper > .right > .overview > .inner 
   height: 100%;
   border: solid 0.1rem black;
   box-shadow: 0 0 0 0.1rem rgba(255, 255, 255, 0.5) inset;
+  pointer-events: none;
 }
 
 .close-button {
@@ -1322,10 +1354,55 @@ body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .
   border-top: solid 0.1rem rgba(255, 255, 255, 0.2);
 }
 
+#PinsView {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+#PinsView > .pin {
+  --height-drop: 15rem;
+  position: absolute;
+  border-radius: 100%;
+  background: radial-gradient(farthest-corner at 50% 25%, white 15%, #bbbbc2 85%, #d0d1d1 100%);
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  -webkit-animation: sticking 0.5s cubic-bezier(0.11, 0, 0.5, 0) forwards;
+          animation: sticking 0.5s cubic-bezier(0.11, 0, 0.5, 0) forwards;
+}
+@-webkit-keyframes sticking {
+  from {
+    -webkit-transform: translate(-50%, calc(-50% - var(--height-drop)));
+            transform: translate(-50%, calc(-50% - var(--height-drop)));
+    box-shadow: 0 calc(.4rem + var(--height-drop)) 1rem rgba(0, 0, 0, 0);
+    opacity: 0;
+  }
+  to {
+    -webkit-transform: translate(-50%, 50%);
+            transform: translate(-50%, 50%);
+    box-shadow: 0 0.4rem 0.2rem rgba(0, 0, 0, 0.5);
+    opacity: 1;
+  }
+}
+@keyframes sticking {
+  from {
+    -webkit-transform: translate(-50%, calc(-50% - var(--height-drop)));
+            transform: translate(-50%, calc(-50% - var(--height-drop)));
+    box-shadow: 0 calc(.4rem + var(--height-drop)) 1rem rgba(0, 0, 0, 0);
+    opacity: 0;
+  }
+  to {
+    -webkit-transform: translate(-50%, 50%);
+            transform: translate(-50%, 50%);
+    box-shadow: 0 0.4rem 0.2rem rgba(0, 0, 0, 0.5);
+    opacity: 1;
+  }
+}
+
 #Properties {
   width: calc(100vw - var(--width-condition));
   min-width: calc(var(--min-width-app) - var(--width-condition));
   overflow-y: auto;
+  position: relative;
 }
 #Properties > .header {
   padding: var(--padding-track-block-start) var(--padding-track-inline-start);
@@ -1485,6 +1562,23 @@ body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .
 }
 #ResultsTable.-complete > .body > .tableend {
   display: none;
+}
+
+#UploadUserIDsView {
+  position: relative;
+}
+#UploadUserIDsView > form {
+  display: none;
+  position: absolute;
+  background-color: white;
+  padding: 0.8rem 1rem;
+  text-align: left;
+  left: 0;
+  top: 26px;
+  z-index: var(--z-upload-user-ids);
+}
+#UploadUserIDsView.-showingmenu > form {
+  display: inherit;
 }
 
 /*# sourceMappingURL=main.css.map */

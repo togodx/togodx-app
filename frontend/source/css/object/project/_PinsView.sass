@@ -1,0 +1,22 @@
+#PinsView
+  position: absolute
+  top: 0
+  left: 0
+  > .pin
+    --height-drop: 15rem
+    position: absolute
+    border-radius: 100%
+    background: radial-gradient(farthest-corner at 50% 25%, white 15%, #bbbbc2 85%, #d0d1d1 100%)
+    transform: translate(-50%, -50%)
+    // box-shadow: 0 .2rem .2rem rgba(0,0,0,1)
+    animation: sticking .5s cubic-bezier(0.11, 0, 0.5, 0) forwards
+
+  @keyframes sticking
+    from
+      transform: translate(-50%, calc(-50% - var(--height-drop)))
+      box-shadow: 0 calc(.4rem + var(--height-drop)) 1rem rgba(0, 0, 0, 0)
+      opacity: 0
+    to
+      transform: translate(-50%, 50%)
+      box-shadow: 0 .4rem .2rem rgba(0, 0, 0, .5)
+      opacity: 1

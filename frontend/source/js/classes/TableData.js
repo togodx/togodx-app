@@ -1,5 +1,6 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import {EVENT_failedFetchTableDataIds, EVENT_addNextRows, EVENT_selectTableData} from '../events';
 
 const LIMIT = 10;
 
@@ -166,7 +167,7 @@ export default class TableData {
       .catch(error => {
         // TODO:
         console.error(error)
-        const event = new CustomEvent('failedFetchTableDataIds', {detail: this});
+        const event = new CustomEvent(EVENT_failedFetchTableDataIds, {detail: this});
         DefaultEventEmitter.dispatchEvent(event);
       })
       .finally(() => {
@@ -194,7 +195,7 @@ export default class TableData {
         this.#INDICATOR_BAR.style.width = `${(this.offset / this.#queryIds.length) * 100}%`;
         this.#updateRemainingTime();
         // dispatch event
-        const event = new CustomEvent('addNextRows', {detail: {
+        const event = new CustomEvent(EVENT_addNextRows, {detail: {
           tableData: this,
           rows,
           done: this.#isLoaded
@@ -252,12 +253,12 @@ export default class TableData {
   select() {
     this.#ROOT.classList.add('-current');
     // dispatch event
-    const event1 = new CustomEvent('selectTableData', {detail: this});
+    const event1 = new CustomEvent(EVENT_selectTableData, {detail: this});
     DefaultEventEmitter.dispatchEvent(event1);
     // send rows
     if (this.#ROOT.dataset.status !== 'load ids') {
       const done = this.offset >= this.#queryIds.length;
-      const event2 = new CustomEvent('addNextRows', {detail: {
+      const event2 = new CustomEvent(EVENT_addNextRows, {detail: {
         tableData: this, 
         rows: this.#rows,
         done

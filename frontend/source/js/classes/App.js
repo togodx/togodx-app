@@ -6,6 +6,9 @@ import ConceptView from './ConceptView.js';
 import ResultsTable from './ResultsTable.js';
 import BalloonView from './BalloonView.js';
 import ConditionsController from "./ConditionsController";
+import UploadUserIDsView from "./UploadUserIDsView";
+import PinsView from "./PinsView";
+import {EVENT_changeViewModes} from '../events';
 
 const CONF_PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
 const CONF_TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
@@ -31,7 +34,7 @@ class App {
       checkbox.addEventListener('click', () => {
         if (checkbox.value === 'heatmap')  body.dataset.heatmap = checkbox.checked;
         this.#viewModes[checkbox.value] = checkbox.checked;
-        const event = new CustomEvent('changeViewModes', {detail: this.#viewModes});
+        const event = new CustomEvent(EVENT_changeViewModes, {detail: this.#viewModes});
         DefaultEventEmitter.dispatchEvent(event);
       });
     });
@@ -42,6 +45,8 @@ class App {
     const reportsView = new ReportsView(document.querySelector('#Reports'));
     new ResultsTable(document.querySelector('#ResultsTable'));
     new BalloonView();
+    new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
+    new PinsView(document.querySelector('#PinsView'));
 
     // load config json
     let stanzaTtemplates;

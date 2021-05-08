@@ -344,6 +344,28 @@
 
   var DefaultEventEmitter$1 = new DefaultEventEmitter();
 
+  // User IDs
+  var EVENT_setUserValues = 'setUserValues';
+  var EVENT_clearUserValues = 'clearUserValues'; // View mode
+
+  var EVENT_changeViewModes = 'changeViewModes'; // Condition
+
+  var EVENT_mutatePropertyCondition = 'mutatePropertyCondition';
+  var EVENT_mutatePropertyValueCondition = 'mutatePropertyValueCondition';
+  var EVENT_mutateEstablishConditions = 'mutateEstablishConditions';
+  var EVENT_completeQueryParameter = 'completeQueryParameter'; // Stanza
+
+  var EVENT_hideStanza = 'hideStanza';
+  var EVENT_showStanza = 'showStanza'; // Polling
+
+  var EVENT_failedFetchTableDataIds = 'failedFetchTableDataIds';
+  var EVENT_addNextRows = 'addNextRows'; // Table
+
+  var EVENT_selectTableData = 'selectTableData'; // Track
+
+  var EVENT_enterPropertyValueItemView = 'enterPropertyValueItemView';
+  var EVENT_leavePropertyValueItemView = 'leavePropertyValueItemView';
+
   var _propertyConditions = new WeakMap();
 
   var _attributeConditions = new WeakMap();
@@ -397,7 +419,7 @@
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
 
-        var event = new CustomEvent('mutatePropertyCondition', {
+        var event = new CustomEvent(EVENT_mutatePropertyCondition, {
           detail: {
             action: 'add',
             condition: condition
@@ -416,7 +438,7 @@
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
 
-        var event = new CustomEvent('mutatePropertyValueCondition', {
+        var event = new CustomEvent(EVENT_mutatePropertyValueCondition, {
           detail: {
             action: 'add',
             condition: condition
@@ -438,7 +460,7 @@
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
 
-        var event = new CustomEvent('mutatePropertyCondition', {
+        var event = new CustomEvent(EVENT_mutatePropertyCondition, {
           detail: {
             action: 'remove',
             propertyId: propertyId
@@ -460,7 +482,7 @@
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
 
-        var event = new CustomEvent('mutatePropertyValueCondition', {
+        var event = new CustomEvent(EVENT_mutatePropertyValueCondition, {
           detail: {
             action: 'remove',
             propertyId: propertyId,
@@ -509,7 +531,7 @@
           };
         }); // emmit event
 
-        var event = new CustomEvent('completeQueryParameter', {
+        var event = new CustomEvent(EVENT_completeQueryParameter, {
           detail: {
             togoKey: _classPrivateFieldGet(this, _togoKey),
             subjectId: _classPrivateFieldGet(this, _subjectId),
@@ -529,6 +551,12 @@
         _classPrivateFieldSet(this, _subjectId, subjectId);
 
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this);
+      } // public accessor
+
+    }, {
+      key: "currentTogoKey",
+      get: function get() {
+        return _classPrivateFieldGet(this, _togoKey);
       } // private methods
 
     }]);
@@ -538,7 +566,7 @@
 
   var _satisfyAggregation2 = function _satisfyAggregation2() {
     var established = _classPrivateFieldGet(this, _togoKey) && _classPrivateFieldGet(this, _subjectId) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
-    var event = new CustomEvent('mutateEstablishConditions', {
+    var event = new CustomEvent(EVENT_mutateEstablishConditions, {
       detail: established
     });
     DefaultEventEmitter$1.dispatchEvent(event);
@@ -618,7 +646,7 @@
       }); // event listeners
 
 
-      DefaultEventEmitter$1.addEventListener('mutatePropertyCondition', function (e) {
+      DefaultEventEmitter$1.addEventListener(EVENT_mutatePropertyCondition, function (e) {
         switch (e.detail.action) {
           case 'add':
             _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, e.detail.condition.subject, e.detail.condition.property);
@@ -631,7 +659,7 @@
             break;
         }
       });
-      DefaultEventEmitter$1.addEventListener('mutatePropertyValueCondition', function (e) {
+      DefaultEventEmitter$1.addEventListener(EVENT_mutatePropertyValueCondition, function (e) {
         switch (e.detail.action) {
           case 'add':
             _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, e.detail.condition.subject, e.detail.condition.property, e.detail.condition.value);
@@ -644,7 +672,7 @@
             break;
         }
       });
-      DefaultEventEmitter$1.addEventListener('mutateEstablishConditions', function (e) {
+      DefaultEventEmitter$1.addEventListener(EVENT_mutateEstablishConditions, function (e) {
         _classPrivateFieldGet(_this, _execButton).disabled = !e.detail;
       });
     } // public methods
@@ -780,10 +808,13 @@
     }, {
       key: "getProperty",
       value: function getProperty(propertyId) {
+        console.log(propertyId);
+
         var property = _classPrivateFieldGet(this, _properties).find(function (property) {
           return property.propertyId === propertyId;
         });
 
+        console.log(property);
         return property;
       }
     }, {
@@ -802,6 +833,11 @@
       get: function get() {
         return _classPrivateFieldGet(this, _subjects);
       }
+    }, {
+      key: "properties",
+      get: function get() {
+        return _classPrivateFieldGet(this, _properties);
+      }
     }]);
 
     return Records;
@@ -811,7 +847,7 @@
 
   var _templates = new WeakMap();
 
-  var _BODY = new WeakMap();
+  var _BODY$1 = new WeakMap();
 
   var _STANZAS_CONTAINER = new WeakMap();
 
@@ -838,7 +874,7 @@
         value: void 0
       });
 
-      _BODY.set(this, {
+      _BODY$1.set(this, {
         writable: true,
         value: void 0
       });
@@ -850,20 +886,20 @@
 
       this._stanzas = {}; // references
 
-      _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
+      _classPrivateFieldSet(this, _BODY$1, document.querySelector('body'));
 
       _classPrivateFieldSet(this, _STANZAS_CONTAINER, elm.querySelector(':scope > .stanzas'));
 
       var returnButton = elm.querySelector(':scope > footer > button.return'); // attach event
 
       returnButton.addEventListener('click', function () {
-        _classPrivateFieldGet(_this, _BODY).dataset.display = 'properties';
+        _classPrivateFieldGet(_this, _BODY$1).dataset.display = 'properties';
       }); // event listener
 
-      DefaultEventEmitter$1.addEventListener('showStanza', function (e) {
+      DefaultEventEmitter$1.addEventListener(EVENT_showStanza, function (e) {
         _classPrivateMethodGet(_this, _showStanza, _showStanza2).call(_this, e.detail.subject, e.detail.properties);
       });
-      DefaultEventEmitter$1.addEventListener('hideStanza', function (e) {
+      DefaultEventEmitter$1.addEventListener(EVENT_hideStanza, function (e) {
         _classPrivateMethodGet(_this, _hideStanza, _hideStanza2).call(_this);
       });
     } // private methods
@@ -938,7 +974,7 @@
       this._container = this._view.querySelector(':scope > .columns > .inner');
       this._loadingView = this._view.querySelector(':scope > .loading-view'); // even listener
 
-      DefaultEventEmitter$1.addEventListener('mutatePropertyValueCondition', function (e) {
+      DefaultEventEmitter$1.addEventListener(EVENT_mutatePropertyValueCondition, function (e) {
         var propertyId, categoryId;
 
         switch (e.detail.action) {
@@ -1112,7 +1148,7 @@
           });
         }); // event listener
 
-        DefaultEventEmitter$1.addEventListener('changeViewModes', function (e) {
+        DefaultEventEmitter$1.addEventListener(EVENT_changeViewModes, function (e) {
           return _this2._update(e.detail.log10);
         });
       }
@@ -1184,7 +1220,7 @@
       this._update(); // event
 
 
-      DefaultEventEmitter$1.addEventListener('changeViewModes', function (e) {
+      DefaultEventEmitter$1.addEventListener(EVENT_changeViewModes, function (e) {
         return _this._update();
       });
     }
@@ -1213,12 +1249,22 @@
 
   var _values = new WeakMap();
 
+  var _ROOT$6 = new WeakMap();
+
   var _update = new WeakSet();
+
+  var _plotUserIdValues = new WeakSet();
+
+  var _clearUserIdValues = new WeakSet();
 
   var TrackOverviewCategorical = function TrackOverviewCategorical(elm, subject, property, values) {
     var _this = this;
 
     _classCallCheck(this, TrackOverviewCategorical);
+
+    _clearUserIdValues.add(this);
+
+    _plotUserIdValues.add(this);
 
     _update.add(this);
 
@@ -1256,56 +1302,66 @@
     elm.innerHTML = _classPrivateFieldGet(this, _values).map(function (value, index) {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / _sum * 100;
-      return "\n        <li class=\"value\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / values.length, ", 70%, 50%, .075);\"></div>\n          <div class=\"heatmap\"></div>\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n        </li>");
+      value.color = "hsla(".concat(360 * index / values.length, ", 70%, 50%, .075)");
+      return "\n        <li class=\"track-value-view\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"color\" style=\"background-color: ").concat(value.color, ";\"></div>\n          <div class=\"heatmap\"></div>\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n          <div class=\"pin\"></div>\n        </li>");
     }).join('');
-    elm.querySelectorAll(':scope > .value').forEach(function (node, index) {
-      return _classPrivateFieldGet(_this, _values)[index].elm = node;
-    });
+    elm.querySelectorAll(':scope > .track-value-view').forEach(function (elm, index) {
+      // reference
+      var value = _classPrivateFieldGet(_this, _values)[index];
 
-    _classPrivateMethodGet(this, _update, _update2).call(this, App$1.viewModes); // attach event
+      value.elm = elm;
+      var pin = elm.querySelector(':scope > .pin');
+      value.pin = pin; // attach event: show tooltip
 
-
-    elm.querySelectorAll(':scope > .value').forEach(function (valueElm) {
-      // show tooltip
-      valueElm.addEventListener('mouseenter', function () {
-        var valueData = _classPrivateFieldGet(_this, _values).find(function (valueData) {
-          return valueData.elm === valueElm;
-        });
-
-        var event = new CustomEvent('enterPropertyValueItemView', {
+      var label = "<span style=\"color: ".concat(App$1.getHslColor(_classPrivateFieldGet(_this, _subject$1).hue), "\">").concat(value.label, "</span>");
+      elm.addEventListener('mouseenter', function () {
+        var event = new CustomEvent(EVENT_enterPropertyValueItemView, {
           detail: {
             label: "<span style=\"color: ".concat(App$1.getHslColor(_classPrivateFieldGet(_this, _subject).hue), "\">").concat(valueElm.querySelector(':scope > p > .label').textContent, "</span>"),
             values: [{
               key: 'Count',
-              value: valueData.count.toLocaleString()
+              value: value.count.toLocaleString()
             }],
-            elm: valueElm
+            elm: elm
           }
         });
         DefaultEventEmitter$1.dispatchEvent(event);
       });
-      valueElm.addEventListener('mouseleave', function () {
-        var event = new CustomEvent('leavePropertyValueItemView');
+      elm.addEventListener('mouseleave', function () {
+        var event = new CustomEvent(EVENT_leavePropertyValueItemView);
         DefaultEventEmitter$1.dispatchEvent(event);
-      }); // select/deselect a value
+      }); // attach event: show tooltip of pin
 
-      valueElm.addEventListener('click', function () {
-        var valueData = _classPrivateFieldGet(_this, _values).find(function (valueData) {
-          return valueData.categoryId === valueElm.dataset.categoryId;
+      pin.addEventListener('mouseenter', function () {
+        var event = new CustomEvent(EVENT_enterPropertyValueItemView, {
+          detail: {
+            label: label,
+            values: [{
+              key: 'Count',
+              value: "".concat(value.userValueCount.toLocaleString(), " / ").concat(value.count.toLocaleString())
+            }],
+            elm: pin
+          }
         });
+        DefaultEventEmitter$1.dispatchEvent(event);
+      });
+      pin.addEventListener('mouseleave', function () {
+        var event = new CustomEvent(EVENT_leavePropertyValueItemView);
+        DefaultEventEmitter$1.dispatchEvent(event);
+      }); // attach event: select/deselect a value
 
         if (valueElm.classList.contains('-selected')) {
           valueElm.classList.remove('-selected');
           ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this, _property).propertyId, valueData.categoryId);
         } else {
-          valueElm.classList.add('-selected');
+          elm.classList.add('-selected');
           ConditionBuilder$1.addPropertyValue({
             subject: _classPrivateFieldGet(_this, _subject),
             property: _classPrivateFieldGet(_this, _property),
             value: {
-              categoryId: valueData.categoryId,
-              label: valueData.label,
-              count: valueData.count,
+              categoryId: value.categoryId,
+              label: value.label,
+              count: value.count,
               ancestors: []
             }
           });
@@ -1313,7 +1369,7 @@
       });
     }); // event listener
 
-    DefaultEventEmitter$1.addEventListener('mutatePropertyValueCondition', function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_mutatePropertyValueCondition, function (e) {
       var propertyId, categoryId;
 
       switch (e.detail.action) {
@@ -1344,9 +1400,17 @@
         });
       }
     });
-    DefaultEventEmitter$1.addEventListener('changeViewModes', function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_changeViewModes, function (e) {
       return _classPrivateMethodGet(_this, _update, _update2).call(_this, e.detail);
     });
+    DefaultEventEmitter$1.addEventListener(EVENT_setUserValues, function (e) {
+      return _classPrivateMethodGet(_this, _plotUserIdValues, _plotUserIdValues2).call(_this, e.detail);
+    });
+    DefaultEventEmitter$1.addEventListener(EVENT_clearUserValues, function (e) {
+      return _classPrivateMethodGet(_this, _clearUserIdValues, _clearUserIdValues2).call(_this, e.detail);
+    });
+
+    _classPrivateMethodGet(this, _update, _update2).call(this, App$1.viewModes);
   };
 
   var _update2 = function _update2(viewModes) {
@@ -1491,10 +1555,12 @@
     }); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener('mutatePropertyCondition', function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_mutatePropertyCondition, function (e) {
       if (e.detail.action === 'remove') {
         if (e.detail.propertyId === _classPrivateFieldGet(_this, _property$1).propertyId) {
           _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = false;
+
+          _classPrivateFieldGet(_this, _ROOT$5).classList.remove('-allselected');
         }
       }
     }); // get property data
@@ -1607,7 +1673,7 @@
     _classPrivateFieldSet(this, _TICKS, container.querySelector(':scope > .ticks')); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener('addNextRows', function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_addNextRows, function (e) {
       return _classPrivateMethodGet(_this, _draw, _draw2).call(_this, e.detail);
     });
   }
@@ -1790,13 +1856,13 @@
     })); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener('selectTableData', function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_selectTableData, function (e) {
       return _classPrivateMethodGet(_this, _setupTable, _setupTable2).call(_this, e.detail);
     });
-    DefaultEventEmitter$1.addEventListener('addNextRows', function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_addNextRows, function (e) {
       return _classPrivateMethodGet(_this, _addTableRows, _addTableRows2).call(_this, e.detail);
     });
-    DefaultEventEmitter$1.addEventListener('failedFetchTableDataIds', function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_failedFetchTableDataIds, function (e) {
       return _classPrivateMethodGet(_this, _failed, _failed2).call(_this, e.detail);
     }); // turnoff intersection observer after display transition
 
@@ -1839,7 +1905,7 @@
 
     _classPrivateFieldGet(this, _LOADING_VIEW$1).classList.add('-shown');
 
-    DefaultEventEmitter$1.dispatchEvent(new CustomEvent('hideStanza')); // make table header
+    DefaultEventEmitter$1.dispatchEvent(new CustomEvent(EVENT_hideStanza)); // make table header
 
     _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(tableData.condition.togoKey, "</div>\n        </div>\n      </th>\n      ").concat(tableData.condition.attributes.map(function (property) {
       return "\n      <th>\n        <div class=\"inner -propertyvalue\" style=\"background-color: ".concat(App$1.getHslColor(property.subject.hue), "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
@@ -1909,7 +1975,7 @@
         if (tr.classList.contains('-selected')) {
           // hide stanza
           tr.classList.remove('-selected');
-          DefaultEventEmitter$1.dispatchEvent(new CustomEvent('hideStanza'));
+          DefaultEventEmitter$1.dispatchEvent(new CustomEvent(EVENT_hideStanza));
         } else {
           // show stanza
           _classPrivateFieldGet(_this2, _TBODY).querySelectorAll(':scope > tr').forEach(function (tr) {
@@ -1918,7 +1984,7 @@
 
           tr.classList.add('-selected'); // dispatch event
 
-          var event = new CustomEvent('showStanza', {
+          var event = new CustomEvent(EVENT_showStanza, {
             detail: {
               subject: {
                 togoKey: _classPrivateFieldGet(_this2, _tableData).togoKey,
@@ -1971,7 +2037,7 @@
     _classPrivateFieldSet(this, _CONTAINER, _classPrivateFieldGet(this, _ROOT$2).querySelector(':scope > .container')); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener('enterPropertyValueItemView', function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_enterPropertyValueItemView, function (e) {
       _classPrivateFieldGet(_this, _CONTAINER).innerHTML = "\n        <header>".concat(e.detail.label, "</header>\n        ").concat(e.detail.values.map(function (value) {
         return "<dl>\n          <dt>".concat(value.key, ":</dt>\n          <dd>").concat(value.value, "</dd>\n        </dl>");
       }).join('')); // geography
@@ -2218,7 +2284,7 @@
         _classPrivateFieldGet(this, _ROOT$3).classList.add('-current'); // dispatch event
 
 
-        var event1 = new CustomEvent('selectTableData', {
+        var event1 = new CustomEvent(EVENT_selectTableData, {
           detail: this
         });
         DefaultEventEmitter$1.dispatchEvent(event1); // send rows
@@ -2226,7 +2292,7 @@
         if (_classPrivateFieldGet(this, _ROOT$3).dataset.status !== 'load ids') {
           var done = this.offset >= _classPrivateFieldGet(this, _queryIds).length;
 
-          var event2 = new CustomEvent('addNextRows', {
+          var event2 = new CustomEvent(EVENT_addNextRows, {
             detail: {
               tableData: this,
               rows: _classPrivateFieldGet(this, _rows),
@@ -2335,7 +2401,7 @@
     }).catch(function (error) {
       // TODO:
       console.error(error);
-      var event = new CustomEvent('failedFetchTableDataIds', {
+      var event = new CustomEvent(EVENT_failedFetchTableDataIds, {
         detail: _this2
       });
       DefaultEventEmitter$1.dispatchEvent(event);
@@ -2377,7 +2443,7 @@
       _classPrivateMethodGet(_this3, _updateRemainingTime, _updateRemainingTime2).call(_this3); // dispatch event
 
 
-      var event = new CustomEvent('addNextRows', {
+      var event = new CustomEvent(EVENT_addNextRows, {
         detail: {
           tableData: _this3,
           rows: rows,
@@ -2479,10 +2545,10 @@
     _classPrivateFieldSet(this, _body, document.querySelector('body')); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener('completeQueryParameter', function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_completeQueryParameter, function (e) {
       return _classPrivateMethodGet(_this, _setTableData, _setTableData2).call(_this, e.detail);
     });
-    DefaultEventEmitter$1.addEventListener('selectTableData', function (e) {
+    DefaultEventEmitter$1.addEventListener(EVENT_selectTableData, function (e) {
       return _classPrivateMethodGet(_this, _selectTableData, _selectTableData2).call(_this, e.detail);
     });
   }
@@ -2544,6 +2610,140 @@
     }
   };
 
+  var PATH = 'https://integbio.jp/togosite/sparqlist/api/';
+  var DATA_FROM_USER_IDS = 'data_from_user_ids';
+
+  var _BODY = new WeakMap();
+
+  var _ROOT$1 = new WeakMap();
+
+  var _USER_KEY = new WeakMap();
+
+  var _USER_IDS = new WeakMap();
+
+  var _fetch = new WeakSet();
+
+  var _clear = new WeakSet();
+
+  var UploadUserIDsView = function UploadUserIDsView(elm) {
+    var _this = this;
+
+    _classCallCheck(this, UploadUserIDsView);
+
+    _clear.add(this);
+
+    _fetch.add(this);
+
+    _BODY.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _ROOT$1.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _USER_KEY.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _USER_IDS.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
+
+    _classPrivateFieldSet(this, _ROOT$1, elm);
+
+    _classPrivateFieldSet(this, _USER_KEY, elm.querySelector('#UploadUserIDsUserKey'));
+
+    _classPrivateFieldSet(this, _USER_IDS, elm.querySelector('#UploadUserIDsUserIDs'));
+
+    elm.querySelectorAll(':scope > span').forEach(function (elm) {
+      elm.addEventListener('click', function () {
+        _classPrivateFieldGet(_this, _ROOT$1).classList.toggle('-showingmenu');
+      });
+    }); // atache events
+
+    elm.querySelector(':scope > form > button#UploadUserIDsSubmit').addEventListener('click', function (e) {
+      e.stopPropagation();
+
+      _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-showingmenu');
+
+      _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
+
+      return false;
+    });
+    elm.querySelector(':scope > form > button#UploadUserIDsClear').addEventListener('click', function (e) {
+      e.stopPropagation();
+
+      _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-showingmenu');
+
+      _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
+
+      return false;
+    });
+  };
+
+  function _fetch2() {
+    var _this2 = this;
+
+    var queryTemplate = "".concat(PATH + DATA_FROM_USER_IDS, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(_classPrivateFieldGet(this, _USER_KEY).value, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
+    Records$1.properties.forEach(function (property) {
+      console.log(property);
+      var propertyId = property.propertyId;
+      fetch(queryTemplate.replace('@@sparqlet@@', encodeURIComponent(property.data)).replace('@@primaryKey@@', encodeURIComponent(property.primaryKey))).then(function (responce) {
+        return responce.json();
+      }).then(function (values) {
+        console.log(values);
+
+        _classPrivateFieldGet(_this2, _BODY).classList.add('-showuserids'); // dispatch event
+
+
+        var event = new CustomEvent(EVENT_setUserValues, {
+          detail: {
+            propertyId: propertyId,
+            values: values
+          }
+        });
+        DefaultEventEmitter$1.dispatchEvent(event);
+      });
+    });
+  }
+
+  function _clear2() {
+    _classPrivateFieldGet(this, _BODY).classList.remove('-showuserids');
+
+    var event = new CustomEvent(EVENT_clearUserValues);
+    DefaultEventEmitter$1.dispatchEvent(event);
+  }
+
+  var _ROOT = new WeakMap();
+
+  var _stick = new WeakSet();
+
+  var PinsView = function PinsView(elm) {
+    _classCallCheck(this, PinsView);
+
+    _stick.add(this);
+
+    _ROOT.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    console.log(elm);
+
+    _classPrivateFieldSet(this, _ROOT, elm); // DefaultEventEmitter.addEventListener(EVENT_stickUserValue, e => {
+    //   this.#stick(e.detail)
+    //   // Element.getBoundingClientRect
+    // });
+
+  };
+
   var CONF_PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
   var CONF_TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
   var CONF_AGGREGATE = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/aggregate.json';
@@ -2587,7 +2787,7 @@
           checkbox.addEventListener('click', function () {
             if (checkbox.value === 'heatmap') body.dataset.heatmap = checkbox.checked;
             _classPrivateFieldGet(_this, _viewModes)[checkbox.value] = checkbox.checked;
-            var event = new CustomEvent('changeViewModes', {
+            var event = new CustomEvent(EVENT_changeViewModes, {
               detail: _classPrivateFieldGet(_this, _viewModes)
             });
             DefaultEventEmitter$1.dispatchEvent(event);
@@ -2598,7 +2798,9 @@
         new ConditionsController(document.querySelector('#Conditions'));
         var reportsView = new ReportsView(document.querySelector('#Reports'));
         new ResultsTable(document.querySelector('#ResultsTable'));
-        new BalloonView(); // load config json
+        new BalloonView();
+        new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
+        new PinsView(document.querySelector('#PinsView')); // load config json
 
         var stanzaTtemplates;
         Promise.all([fetch(CONF_PROPERTIES), fetch(CONF_TEMPLATES), fetch(CONF_AGGREGATE)]).then(function (responces) {
