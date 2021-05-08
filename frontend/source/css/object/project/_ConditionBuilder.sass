@@ -21,8 +21,24 @@
         font-size: 1.2rem
         font-weight: normal
       > .conditions
+        &.-empty
+          &::after
+            font-size: 1rem
+            line-height: 1.2
+            display: block
+            margin-top: .4rem
         > .stacking-condition-view
           > .closebutton
             body[data-display="results"] &
               display: none
+    > .attributes
+      > .conditions
+        &.-empty
+          &::after
+            content: "Add classification/distribution as many as ..."
+    > .properties
+      > .conditions
+        &.-empty
+          &::after
+            content: "Specify additional attributes integrated into resulting table ..."
 

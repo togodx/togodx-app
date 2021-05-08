@@ -5,25 +5,23 @@ import {EVENT_mutatePropertyCondition, EVENT_mutatePropertyValueCondition, EVENT
 
 export default class ConditionBuilderView {
 
-  #select;
-  #propertiesConditionsContainer;
-  #attributesConditionsContainer;
-  #execButton;
+  #SELECT;
+  #PROPERTIES_CONDITIONS_CONTAINER;
+  #ATTRIBUTES_CONDITIONS_CONTAINER;
+  #EXEC_BUTTON;
 
   constructor(elm) {
 
     // references
     const body = document.querySelector('body');
-    this.#select = elm.querySelector(':scope > select');
+    this.#SELECT = elm.querySelector(':scope > select');
     const conditionsContainer = elm.querySelector(':scope > .conditions');
-    this.#propertiesConditionsContainer = conditionsContainer.querySelector(':scope > .properties > .conditions');
-    this.#attributesConditionsContainer = conditionsContainer.querySelector(':scope > .attributes > .conditions');
-    this.#execButton = elm.querySelector(':scope > footer > button.exec');
+    this.#PROPERTIES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .properties > .conditions');
+    this.#ATTRIBUTES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .attributes > .conditions');
+    this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
 
     // attach event
-    this.#execButton.addEventListener('click', () => {
-      // this.#propertiesConditionsContainer.innerHTML = '';
-      // this.#attributesConditionsContainer.innerHTML = '';
+    this.#EXEC_BUTTON.addEventListener('click', () => {
       body.dataset.display = 'results';
       ConditionBuilder.makeQueryParameter();
     });
@@ -50,7 +48,7 @@ export default class ConditionBuilderView {
       }
     });
     DefaultEventEmitter.addEventListener(EVENT_mutateEstablishConditions, e => {
-      this.#execButton.disabled = !e.detail;
+      this.#EXEC_BUTTON.disabled = !e.detail;
     });
 
   }
@@ -59,10 +57,10 @@ export default class ConditionBuilderView {
 
   defineTogoKeys(togoKeys) {
     // make options
-    this.#select.insertAdjacentHTML('beforeend', togoKeys.map(togoKey => `<option value="${togoKey.togoKey}" data-subject-id="${togoKeys.subjectId}">${togoKey.label} (${togoKey.togoKey})</option>`).join(''));
-    this.#select.disabled = false;
+    this.#SELECT.insertAdjacentHTML('beforeend', togoKeys.map(togoKey => `<option value="${togoKey.togoKey}" data-subject-id="${togoKeys.subjectId}">${togoKey.label} (${togoKey.togoKey})</option>`).join(''));
+    this.#SELECT.disabled = false;
     // attach event
-    this.#select.addEventListener('change', e => {
+    this.#SELECT.addEventListener('change', e => {
       const togoKey = togoKeys.find(togoKey => togoKey.togoKey === e.target.value);
       ConditionBuilder.setSubject(e.target.value, togoKey.subjectId);
     });
@@ -81,7 +79,8 @@ export default class ConditionBuilderView {
       <li>${subject.subject}</li>
     </ul>
     <div class="label" style="color: ${App.getHslColor(subject.hue)};">${property.label}</div>`;
-    this.#propertiesConditionsContainer.insertAdjacentElement('beforeend', view);
+    this.#PROPERTIES_CONDITIONS_CONTAINER.insertAdjacentElement('beforeend', view);
+    this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // event
     view.querySelector(':scope > .closebutton').addEventListener('click', () => {
       ConditionBuilder.removeProperty(view.dataset.propertyId);
@@ -89,8 +88,10 @@ export default class ConditionBuilderView {
   }
   
   #removeProperty(propertyId) {
-    const view = this.#propertiesConditionsContainer.querySelector(`[data-property-id="${propertyId}"]`);
+    const view = this.#PROPERTIES_CONDITIONS_CONTAINER.querySelector(`[data-property-id="${propertyId}"]`);
     view.parentNode.removeChild(view);
+    console.log()
+    if (this.#PROPERTIES_CONDITIONS_CONTAINER.childNodes.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
   #addPropertyValue(subject, property, value) {
@@ -110,7 +111,8 @@ export default class ConditionBuilderView {
       ${value.ancestors.map(ancestor => `<li>${ancestor}</li>`).join('')}
     </ul>
     <div class="label">${value.label}</div>`;
-    this.#attributesConditionsContainer.insertAdjacentElement('beforeend', view);
+    this.#ATTRIBUTES_CONDITIONS_CONTAINER.insertAdjacentElement('beforeend', view);
+    this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // event
     view.querySelector(':scope > .closebutton').addEventListener('click', () => {
       ConditionBuilder.removePropertyValue(view.dataset.propertyId, view.dataset.categoryId);
@@ -118,8 +120,9 @@ export default class ConditionBuilderView {
   }
 
   #removePropertyValue(propertyId, categoryId) {
-    const view = this.#attributesConditionsContainer.querySelector(`[data-property-id="${propertyId}"][data-category-id="${categoryId}"]`);
+    const view = this.#ATTRIBUTES_CONDITIONS_CONTAINER.querySelector(`[data-property-id="${propertyId}"][data-category-id="${categoryId}"]`);
     view.parentNode.removeChild(view);
+    if (this.#ATTRIBUTES_CONDITIONS_CONTAINER.childNodes.length === 0) this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
 }
