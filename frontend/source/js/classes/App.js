@@ -7,7 +7,6 @@ import ResultsTable from './ResultsTable.js';
 import BalloonView from './BalloonView.js';
 import ConditionsController from "./ConditionsController";
 import UploadUserIDsView from "./UploadUserIDsView";
-import PinsView from "./PinsView";
 import {defineTogoKey, changeViewModes} from '../events';
 
 const CONF_PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
@@ -46,7 +45,6 @@ class App {
     new ResultsTable(document.querySelector('#ResultsTable'));
     new BalloonView();
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
-    new PinsView(document.querySelector('#PinsView'));
 
     // load config json
     let stanzaTtemplates;
