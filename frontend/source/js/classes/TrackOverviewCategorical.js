@@ -1,7 +1,7 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
-import {EVENT_setUserValues, EVENT_changeViewModes, EVENT_enterPropertyValueItemView, EVENT_mutatePropertyValueCondition, EVENT_clearUserValues, EVENT_leavePropertyValueItemView} from '../events';
+import * as event from '../events';
 
 const MIN_PIN_SIZE = 12;
 const MAX_PIN_SIZE = 20;
@@ -52,7 +52,7 @@ export default class TrackOverviewCategorical {
       // attach event: show tooltip
       const label = `<span style="color: ${App.getHslColor(this.#subject.hue)}">${value.label}</span>`;
       elm.addEventListener('mouseenter', () => {
-        const event = new CustomEvent(EVENT_enterPropertyValueItemView, {detail: {
+        const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {
           label,
           values: [
             {
@@ -62,16 +62,16 @@ export default class TrackOverviewCategorical {
           ],
           elm
         }});
-        DefaultEventEmitter.dispatchEvent(event);
+        DefaultEventEmitter.dispatchEvent(customEvent);
       });
       elm.addEventListener('mouseleave', () => {
-        const event = new CustomEvent(EVENT_leavePropertyValueItemView);
-        DefaultEventEmitter.dispatchEvent(event);
+        const customEvent = new CustomEvent(event.leavePropertyValueItemView);
+        DefaultEventEmitter.dispatchEvent(customEvent);
       });
 
       // attach event: show tooltip of pin
       pin.addEventListener('mouseenter', () => {
-        const event = new CustomEvent(EVENT_enterPropertyValueItemView, {detail: {
+        const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {
           label,
           values: [
             {
@@ -81,11 +81,11 @@ export default class TrackOverviewCategorical {
           ],
           elm: pin
         }});
-        DefaultEventEmitter.dispatchEvent(event);
+        DefaultEventEmitter.dispatchEvent(customEvent);
       });
       pin.addEventListener('mouseleave', () => {
-        const event = new CustomEvent(EVENT_leavePropertyValueItemView);
-        DefaultEventEmitter.dispatchEvent(event);
+        const customEvent = new CustomEvent(event.leavePropertyValueItemView);
+        DefaultEventEmitter.dispatchEvent(customEvent);
       });
 
       // attach event: select/deselect a value
@@ -110,7 +110,7 @@ export default class TrackOverviewCategorical {
     });
 
     // event listener
-    DefaultEventEmitter.addEventListener(EVENT_mutatePropertyValueCondition, e => {
+    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, e => {
       let propertyId, categoryId;
       switch (e.detail.action) {
         case 'add':
@@ -137,9 +137,9 @@ export default class TrackOverviewCategorical {
         });
       }
     });
-    DefaultEventEmitter.addEventListener(EVENT_changeViewModes, e => this.#update(e.detail));
-    DefaultEventEmitter.addEventListener(EVENT_setUserValues, e => this.#plotUserIdValues(e.detail));
-    DefaultEventEmitter.addEventListener(EVENT_clearUserValues, e => this.#clearUserIdValues(e.detail));
+    DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail));
+    DefaultEventEmitter.addEventListener(event.setUserValues, e => this.#plotUserIdValues(e.detail));
+    DefaultEventEmitter.addEventListener(event.clearUserValues, e => this.#clearUserIdValues(e.detail));
 
     this.#update(App.viewModes);
   }
@@ -180,14 +180,6 @@ export default class TrackOverviewCategorical {
           value.pin.style.top = -size + 'px';
           value.pin.style.left = (-size / 2) + 'px';
           value.userValueCount =  userValue.count;
-          
-          // // dispatch event
-          // const event = new CustomEvent(EVENT_stickUserValue, {detail: {
-          //   view: value.elm,
-          //   userValue,
-          //   value
-          // }});
-          // DefaultEventEmitter.dispatchEvent(event);
         } else {
           value.elm.classList.remove('-pinsticking');
         }

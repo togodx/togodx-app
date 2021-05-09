@@ -1,30 +1,30 @@
 // TogoKey
-export const EVENT_defineTogoKey = 'defineTogoKey';
+export const defineTogoKey = 'defineTogoKey';
 
 // User IDs
-export const EVENT_setUserValues = 'setUserValues';
-export const EVENT_clearUserValues = 'clearUserValues';
+export const setUserValues = 'setUserValues';
+export const clearUserValues = 'clearUserValues';
 
 // View mode
-export const EVENT_changeViewModes = 'changeViewModes';
+export const changeViewModes = 'changeViewModes';
 
 // Condition
-export const EVENT_mutatePropertyCondition = 'mutatePropertyCondition';
-export const EVENT_mutatePropertyValueCondition = 'mutatePropertyValueCondition';
-export const EVENT_mutateEstablishConditions = 'mutateEstablishConditions';
-export const EVENT_completeQueryParameter = 'completeQueryParameter';
+export const mutatePropertyCondition = 'mutatePropertyCondition';
+export const mutatePropertyValueCondition = 'mutatePropertyValueCondition';
+export const mutateEstablishConditions = 'mutateEstablishConditions';
+export const completeQueryParameter = 'completeQueryParameter';
 
 // Stanza
-export const EVENT_hideStanza = 'hideStanza';
-export const EVENT_showStanza = 'showStanza';
+export const hideStanza = 'hideStanza';
+export const showStanza = 'showStanza';
 
 // Polling
-export const EVENT_failedFetchTableDataIds = 'failedFetchTableDataIds';
-export const EVENT_addNextRows = 'addNextRows';
+export const failedFetchTableDataIds = 'failedFetchTableDataIds';
+export const addNextRows = 'addNextRows';
 
 // Table
-export const EVENT_selectTableData = 'selectTableData';
+export const selectTableData = 'selectTableData';
 
 // Track
-export const EVENT_enterPropertyValueItemView = 'enterPropertyValueItemView';
-export const EVENT_leavePropertyValueItemView = 'leavePropertyValueItemView';
+export const enterPropertyValueItemView = 'enterPropertyValueItemView';
+export const leavePropertyValueItemView = 'leavePropertyValueItemView';

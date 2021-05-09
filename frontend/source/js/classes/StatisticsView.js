@@ -1,7 +1,7 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import Records from './Records.js';
-import {EVENT_addNextRows} from '../events';
+import * as event from '../events';
 
 export default class StatisticsView {
 
@@ -33,7 +33,7 @@ export default class StatisticsView {
     this.#TICKS = container.querySelector(':scope > .ticks');
 
     // event listener
-    DefaultEventEmitter.addEventListener(EVENT_addNextRows, e => this.#draw(e.detail));
+    DefaultEventEmitter.addEventListener(event.addNextRows, e => this.#draw(e.detail));
   }
 
   /**

@@ -8,7 +8,7 @@ import BalloonView from './BalloonView.js';
 import ConditionsController from "./ConditionsController";
 import UploadUserIDsView from "./UploadUserIDsView";
 import PinsView from "./PinsView";
-import {EVENT_defineTogoKey, EVENT_changeViewModes} from '../events';
+import {defineTogoKey, changeViewModes} from '../events';
 
 const CONF_PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
 const CONF_TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
@@ -34,7 +34,7 @@ class App {
       checkbox.addEventListener('click', () => {
         if (checkbox.value === 'heatmap')  body.dataset.heatmap = checkbox.checked;
         this.#viewModes[checkbox.value] = checkbox.checked;
-        const event = new CustomEvent(EVENT_changeViewModes, {detail: this.#viewModes});
+        const event = new CustomEvent(changeViewModes, {detail: this.#viewModes});
         DefaultEventEmitter.dispatchEvent(event);
       });
     });
@@ -68,7 +68,7 @@ class App {
             subjectId: subject.subjectId
           }
         });
-        const event = new CustomEvent(EVENT_defineTogoKey, {detail: togoKeys});
+        const event = new CustomEvent(defineTogoKey, {detail: togoKeys});
         DefaultEventEmitter.dispatchEvent(event);
 
         // set stanza scripts

@@ -1,7 +1,7 @@
 import App from "./App";
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
-import {EVENT_mutatePropertyCondition, EVENT_mutatePropertyValueCondition, EVENT_mutateEstablishConditions, EVENT_defineTogoKey} from '../events';
+import * as event from '../events';
 
 export default class ConditionBuilderView {
 
@@ -28,7 +28,7 @@ export default class ConditionBuilderView {
     });
 
     // event listeners
-    DefaultEventEmitter.addEventListener(EVENT_mutatePropertyCondition, e => {
+    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, e => {
       switch (e.detail.action) {
         case 'add':
           this.#addProperty(e.detail.condition.subject, e.detail.condition.property);
@@ -38,7 +38,7 @@ export default class ConditionBuilderView {
           break;
       }
     });
-    DefaultEventEmitter.addEventListener(EVENT_mutatePropertyValueCondition, e => {
+    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, e => {
       switch (e.detail.action) {
         case 'add':
           this.#addPropertyValue(e.detail.condition.subject, e.detail.condition.property, e.detail.condition.value);
@@ -48,10 +48,10 @@ export default class ConditionBuilderView {
           break;
       }
     });
-    DefaultEventEmitter.addEventListener(EVENT_defineTogoKey, e => {
+    DefaultEventEmitter.addEventListener(event.defineTogoKey, e => {
       this.#defineTogoKeys(e.detail);
     });
-    DefaultEventEmitter.addEventListener(EVENT_mutateEstablishConditions, e => {
+    DefaultEventEmitter.addEventListener(event.mutateEstablishConditions, e => {
       this.#EXEC_BUTTON.disabled = !e.detail;
     });
 

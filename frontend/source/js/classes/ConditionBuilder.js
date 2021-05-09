@@ -1,5 +1,5 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
-import {EVENT_mutatePropertyCondition, EVENT_completeQueryParameter, EVENT_mutatePropertyValueCondition, EVENT_mutateEstablishConditions} from '../events';
+import * as event from '../events';
 
 class ConditionBuilder {
 
@@ -22,11 +22,11 @@ class ConditionBuilder {
     // evaluate
     this.#satisfyAggregation();
     // dispatch event
-    const event = new CustomEvent(EVENT_mutatePropertyCondition, {detail: {
+    const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {
       action: 'add', 
       condition
     }});
-    DefaultEventEmitter.dispatchEvent(event);
+    DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
   addPropertyValue(condition) {
@@ -36,11 +36,11 @@ class ConditionBuilder {
     // evaluate
     this.#satisfyAggregation();
     // dispatch event
-    const event = new CustomEvent(EVENT_mutatePropertyValueCondition, {detail: {
+    const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {
       action: 'add', 
       condition
     }});
-    DefaultEventEmitter.dispatchEvent(event);
+    DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
   removeProperty(propertyId) {
@@ -51,8 +51,8 @@ class ConditionBuilder {
     // evaluate
     this.#satisfyAggregation();
     // dispatch event
-    const event = new CustomEvent(EVENT_mutatePropertyCondition, {detail: {action: 'remove', propertyId}});
-    DefaultEventEmitter.dispatchEvent(event);
+    const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {action: 'remove', propertyId}});
+    DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
   removePropertyValue(propertyId, categoryId, range) {
@@ -63,8 +63,8 @@ class ConditionBuilder {
     // evaluate
     this.#satisfyAggregation();
     // dispatch event
-    const event = new CustomEvent(EVENT_mutatePropertyValueCondition, {detail: {action: 'remove', propertyId, categoryId}});
-    DefaultEventEmitter.dispatchEvent(event);
+    const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {action: 'remove', propertyId, categoryId}});
+    DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
   makeQueryParameter() {
@@ -96,13 +96,13 @@ class ConditionBuilder {
       };
     });
     // emmit event
-    const event = new CustomEvent(EVENT_completeQueryParameter, {detail: {
+    const customEvent = new CustomEvent(event.completeQueryParameter, {detail: {
       togoKey: this.#togoKey,
       subjectId: this.#subjectId,
       properties,
       attributes
     }});
-    DefaultEventEmitter.dispatchEvent(event);
+    DefaultEventEmitter.dispatchEvent(customEvent);
 
     // clear condition
     // this.#propertyConditions = [];
@@ -127,8 +127,8 @@ class ConditionBuilder {
     const established 
       = (this.#togoKey && this.#subjectId)
       && (this.#propertyConditions.length > 0 || this.#attributeConditions.length > 0);
-    const event = new CustomEvent(EVENT_mutateEstablishConditions, {detail: established});
-    DefaultEventEmitter.dispatchEvent(event);
+    const customEvent = new CustomEvent(event.mutateEstablishConditions, {detail: established});
+    DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
 }

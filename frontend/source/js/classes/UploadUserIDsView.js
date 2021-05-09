@@ -1,6 +1,6 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
-import * as eve_nt from '../events';
+import * as event from '../events';
 
 const PATH = 'https://integbio.jp/togosite/sparqlist/api/';
 const DATA_FROM_USER_IDS = 'data_from_user_ids';
@@ -33,7 +33,7 @@ export default class UploadUserIDsView {
     });
 
     // event listeners
-    DefaultEventEmitter.addEventListener(eve_nt.EVENT_defineTogoKey, e => {
+    DefaultEventEmitter.addEventListener(event.defineTogoKey, e => {
       this.#defineTogoKeys(e.detail);
     });
 
@@ -62,11 +62,11 @@ export default class UploadUserIDsView {
         console.log(values)
         this.#BODY.classList.add('-showuserids');
         // dispatch event
-        const event = new CustomEvent(eve_nt.EVENT_setUserValues, {detail: {
+        const customEvent = new CustomEvent(event.setUserValues, {detail: {
           propertyId,
           values
         }});
-        DefaultEventEmitter.dispatchEvent(event);
+        DefaultEventEmitter.dispatchEvent(customEvent);
       });
     });
 
@@ -74,8 +74,8 @@ export default class UploadUserIDsView {
 
   #clear() {
     this.#BODY.classList.remove('-showuserids');
-    const event = new CustomEvent(eve_nt.EVENT_clearUserValues);
-    DefaultEventEmitter.dispatchEvent(event);
+    const customEvent = new CustomEvent(event.clearUserValues);
+    DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
 }

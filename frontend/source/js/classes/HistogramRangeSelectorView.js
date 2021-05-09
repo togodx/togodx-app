@@ -1,6 +1,6 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
-import {EVENT_changeViewModes} from '../events';
+import * as event from '../events';
 
 export default class HistogramRangeSelectorView {
 
@@ -42,7 +42,7 @@ export default class HistogramRangeSelectorView {
     this._update();
 
     // event
-    DefaultEventEmitter.addEventListener(EVENT_changeViewModes, e => this._update());
+    DefaultEventEmitter.addEventListener(event.changeViewModes, e => this._update());
   }
 
   _update() {

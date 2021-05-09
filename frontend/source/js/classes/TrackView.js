@@ -6,7 +6,7 @@ import collapseView from '../functions/collapseView.js';
 import ColumnSelectorView from './ColumnSelectorView.js';
 import HistogramRangeSelectorView from './HistogramRangeSelectorView.js';
 import TrackOverviewCategorical from './TrackOverviewCategorical.js';
-import {EVENT_mutatePropertyCondition} from '../events';
+import * as event from '../events';
 
 export default class TrackView {
 
@@ -80,7 +80,7 @@ export default class TrackView {
       }
     });
     // event listener
-    DefaultEventEmitter.addEventListener(EVENT_mutatePropertyCondition, e => {
+    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, e => {
       if (e.detail.action === 'remove') {
         if (e.detail.propertyId === this.#property.propertyId) {
           this.#CHECKBOX_ALL_PROPERTIES.checked = false;

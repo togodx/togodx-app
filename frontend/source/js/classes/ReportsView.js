@@ -1,6 +1,6 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import Records from './Records.js';
-import {EVENT_hideStanza, EVENT_showStanza} from '../events';
+import * as event from '../events';
 
 export default class ReportsView {
 
@@ -23,10 +23,10 @@ export default class ReportsView {
     });
 
     // event listener
-    DefaultEventEmitter.addEventListener(EVENT_showStanza, e => {
+    DefaultEventEmitter.addEventListener(event.showStanza, e => {
       this.#showStanza(e.detail.subject, e.detail.properties);
     });
-    DefaultEventEmitter.addEventListener(EVENT_hideStanza, e => {
+    DefaultEventEmitter.addEventListener(event.hideStanza, e => {
       this.#hideStanza();
     });
   }
