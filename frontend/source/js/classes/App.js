@@ -93,8 +93,6 @@ class App {
 
   #makeConceptViews() {
     const conceptsContainer = document.querySelector('#Properties > .concepts');
-    console.log(Records)
-    console.log(Records.subjects)
     Records.subjects.forEach(subject => {
       const elm = document.createElement('section');
       new ConceptView(subject, elm);

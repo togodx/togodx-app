@@ -2930,8 +2930,6 @@
 
   function _makeConceptViews2() {
     var conceptsContainer = document.querySelector('#Properties > .concepts');
-    console.log(Records$1);
-    console.log(Records$1.subjects);
     Records$1.subjects.forEach(function (subject) {
       var elm = document.createElement('section');
       new ConceptView(subject, elm);
