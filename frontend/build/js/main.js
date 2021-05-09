@@ -2001,7 +2001,7 @@
     }); // make table
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
-      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(JSON.stringify(row), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div class=\"togo-key-view\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column) {
+      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div class=\"togo-key-view\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column) {
         // console.log(column)
         if (column) {
           return "\n              <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute) {
@@ -2818,8 +2818,6 @@
         writable: true,
         value: void 0
       });
-
-      window.app = this;
     }
 
     _createClass(App, [{
@@ -2877,7 +2875,7 @@
           DefaultEventEmitter$1.dispatchEvent(event); // set stanza scripts
 
           document.querySelector('head').insertAdjacentHTML('beforeend', templates.stanzas.map(function (stanza) {
-            return "<script type=\"module\" src=\"".concat(stanza, "\"></script>");
+            return "<script type=\"module\" src=\"".concat(stanza, "\" async></script>");
           }).join('')); // aggregate
 
           _classPrivateFieldSet(_this, _aggregate, Object.freeze(aggregate)); // get stanza templates

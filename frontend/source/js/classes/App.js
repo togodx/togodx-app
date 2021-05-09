@@ -19,7 +19,6 @@ class App {
   #aggregate;
 
   constructor() {
-    window.app = this;
   }
 
   ready() {
@@ -70,7 +69,7 @@ class App {
         DefaultEventEmitter.dispatchEvent(event);
 
         // set stanza scripts
-        document.querySelector('head').insertAdjacentHTML('beforeend', templates.stanzas.map(stanza => `<script type="module" src="${stanza}"></script>`).join(''));
+        document.querySelector('head').insertAdjacentHTML('beforeend', templates.stanzas.map(stanza => `<script type="module" src="${stanza}" async></script>`).join(''));
         // aggregate
         this.#aggregate = Object.freeze(aggregate);
 
