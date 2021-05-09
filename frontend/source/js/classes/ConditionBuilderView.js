@@ -1,11 +1,11 @@
 import App from "./App";
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
-import {EVENT_mutatePropertyCondition, EVENT_mutatePropertyValueCondition, EVENT_mutateEstablishConditions} from '../events';
+import {EVENT_mutatePropertyCondition, EVENT_mutatePropertyValueCondition, EVENT_mutateEstablishConditions, EVENT_defineTogoKey} from '../events';
 
 export default class ConditionBuilderView {
 
-  #SELECT;
+  #TOGO_KEYS;
   #PROPERTIES_CONDITIONS_CONTAINER;
   #ATTRIBUTES_CONDITIONS_CONTAINER;
   #EXEC_BUTTON;
@@ -14,8 +14,9 @@ export default class ConditionBuilderView {
 
     // references
     const body = document.querySelector('body');
-    this.#SELECT = elm.querySelector(':scope > select');
     const conditionsContainer = elm.querySelector(':scope > .conditions');
+    this.#TOGO_KEYS = conditionsContainer.querySelector(':scope > .togoKey > select');
+    console.log(this.#TOGO_KEYS)
     this.#PROPERTIES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .properties > .conditions');
     this.#ATTRIBUTES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .attributes > .conditions');
     this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
@@ -47,26 +48,28 @@ export default class ConditionBuilderView {
           break;
       }
     });
+    DefaultEventEmitter.addEventListener(EVENT_defineTogoKey, e => {
+      this.#defineTogoKeys(e.detail);
+    });
     DefaultEventEmitter.addEventListener(EVENT_mutateEstablishConditions, e => {
       this.#EXEC_BUTTON.disabled = !e.detail;
     });
 
   }
 
-  // public methods
+  // private methods
 
-  defineTogoKeys(togoKeys) {
+  #defineTogoKeys(togoKeys) {
     // make options
-    this.#SELECT.insertAdjacentHTML('beforeend', togoKeys.map(togoKey => `<option value="${togoKey.togoKey}" data-subject-id="${togoKeys.subjectId}">${togoKey.label} (${togoKey.togoKey})</option>`).join(''));
-    this.#SELECT.disabled = false;
+    this.#TOGO_KEYS.innerHTML = togoKeys.map(togoKey => `<option value="${togoKey.togoKey}" data-subject-id="${togoKeys.subjectId}">${togoKey.label} (${togoKey.togoKey})</option>`).join('');
+    this.#TOGO_KEYS.disabled = false;
     // attach event
-    this.#SELECT.addEventListener('change', e => {
+    this.#TOGO_KEYS.addEventListener('change', e => {
       const togoKey = togoKeys.find(togoKey => togoKey.togoKey === e.target.value);
       ConditionBuilder.setSubject(e.target.value, togoKey.subjectId);
     });
+    this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }
-
-  // private methods
 
   #addProperty(subject, property) {
     // make view

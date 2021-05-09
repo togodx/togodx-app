@@ -8,7 +8,7 @@ import BalloonView from './BalloonView.js';
 import ConditionsController from "./ConditionsController";
 import UploadUserIDsView from "./UploadUserIDsView";
 import PinsView from "./PinsView";
-import {EVENT_changeViewModes} from '../events';
+import {EVENT_defineTogoKey, EVENT_changeViewModes} from '../events';
 
 const CONF_PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
 const CONF_TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
@@ -40,7 +40,7 @@ class App {
     });
 
     // set up views
-    const conditionBuilderView = new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
+    new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
     new ConditionsController(document.querySelector('#Conditions'));
     const reportsView = new ReportsView(document.querySelector('#Reports'));
     new ResultsTable(document.querySelector('#ResultsTable'));
@@ -59,6 +59,7 @@ class App {
       .then(([subjects, templates, aggregate]) => {
         stanzaTtemplates = templates;
         Records.setSubjects(subjects);
+
         // define primary keys
         const togoKeys = subjects.map(subject => {
           return {
@@ -67,7 +68,9 @@ class App {
             subjectId: subject.subjectId
           }
         });
-        conditionBuilderView.defineTogoKeys(togoKeys);
+        const event = new CustomEvent(EVENT_defineTogoKey, {detail: togoKeys});
+        DefaultEventEmitter.dispatchEvent(event);
+
         // set stanza scripts
         document.querySelector('head').insertAdjacentHTML('beforeend', templates.stanzas.map(stanza => `<script type="module" src="${stanza}"></script>`).join(''));
         // aggregate

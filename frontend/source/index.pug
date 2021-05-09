@@ -29,18 +29,18 @@ html.no-js(lang='')
               h2.attributes Values
             nav
               ul
-                li#UploadUserIDsView
-                  span.material-icons-outlined file_upload
-                  span Upload IDs
-                  form
-                    label
-                      | userKey
-                      input#UploadUserIDsUserKey(type="text" value="uniprot")
-                    label
-                      | userIds
-                      input#UploadUserIDsUserIDs(type="text" value="Q9NYF8,Q4V339,A6NCE7,A7E2F4,P69849,A6NN73,Q92928,Q5T1J5,P0C7P4,Q6DN03,P09874,Q08211,Q5T4S7,P12270,Q9UPN3,P07814,P53621,P49321,P0C629,Q9BZK8,Q9BY65")
-                    button#UploadUserIDsSubmit(type="button") Submit
-                    button#UploadUserIDsClear(type="button") Clear
+                //- li#UploadUserIDsView
+                //-   span.material-icons-outlined file_upload
+                //-   span Upload IDs
+                //-   form
+                //-     label
+                //-       | userKey
+                //-       input#UploadUserIDsUserKey(type="text" value="uniprot")
+                //-     label
+                //-       | userIds
+                //-       input#UploadUserIDsUserIDs(type="text" value="Q9NYF8,Q4V339,A6NCE7,A7E2F4,P69849,A6NN73,Q92928,Q5T1J5,P0C7P4,Q6DN03,P09874,Q08211,Q5T4S7,P12270,Q9UPN3,P07814,P53621,P49321,P0C629,Q9BZK8,Q9BY65")
+                //-     button#UploadUserIDsSubmit(type="button") Submit
+                //-     button#UploadUserIDsClear(type="button") Clear
                       
                 li.viewmodecontroller
                   label
@@ -242,12 +242,11 @@ html.no-js(lang='')
               //-   .item Relations
               //- h2.title(data-hidden-by="properties") Results
               h2.title Condition builder
-            select.togoKey.rounded-button-view(disabled)
-              option(value="") Select a TOGO key
-              //- option(val="gene") Gene
             .conditions
               .attributes
-                h2.title Select filters
+                h2.title
+                  span.material-icons-outlined west
+                  | Select filters
                 .conditions.-empty
                 //-
                   .stacking-condition-view.-attribute
@@ -258,7 +257,9 @@ html.no-js(lang='')
                       li.end Genital
                     .label Testis
               .properties
-                h2.title Additional attributes
+                h2.title
+                  span.material-icons-outlined west
+                  | Additional attributes
                 .conditions.-empty
                 //-
                   .stacking-condition-view
@@ -266,11 +267,32 @@ html.no-js(lang='')
                     ul.path
                       li.end Expression
                     .label Testis
+              #UploadUserIDsView
+                h2.title
+                  span.material-icons-outlined file_upload
+                  | Upload IDs
+                form
+                  label
+                    p userKey
+                    //- input#UploadUserIDsUserKey(type="text" value="uniprot")
+                    select
+                  label
+                    p userIds
+                    input(type="text" value="Q9NYF8,Q4V339,A6NCE7,A7E2F4,P69849,A6NN73,Q92928,Q5T1J5,P0C7P4,Q6DN03,P09874,Q08211,Q5T4S7,P12270,Q9UPN3,P07814,P53621,P49321,P0C629,Q9BZK8,Q9BY65")
+                  .buttons
+                    button.rounded-button-view.-small(type="button") Submit
+                    button.rounded-button-view.-small(type="button") Clear
+              .togoKey
+                h2.title
+                  span.material-icons-outlined layers
+                  | Select target category
+                select(disabled)
+                  //- option(val="gene") Gene
                 
             footer
               button.exec.rounded-button-view.-black.-spread(disabled)
                 span.material-icons-outlined table_view
-                | TOGO data
+                | Preview integrated data
 
           section#Reports(data-hidden-by="properties")
             header

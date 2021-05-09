@@ -1,3 +1,5 @@
+// TogoKey
+export const EVENT_defineTogoKey = 'defineTogoKey';
 
 // User IDs
 export const EVENT_setUserValues = 'setUserValues';

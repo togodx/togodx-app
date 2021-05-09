@@ -1,6 +1,6 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
-import {EVENT_setUserValues, EVENT_clearUserValues} from '../events';
+import * as eve_nt from '../events';
 
 const PATH = 'https://integbio.jp/togosite/sparqlist/api/';
 const DATA_FROM_USER_IDS = 'data_from_user_ids';
@@ -16,32 +16,39 @@ export default class UploadUserIDsView {
 
     this.#BODY = document.querySelector('body');
     this.#ROOT = elm;
-    this.#USER_KEY = elm.querySelector('#UploadUserIDsUserKey');
-    this.#USER_IDS = elm.querySelector('#UploadUserIDsUserIDs');
-
-    elm.querySelectorAll(':scope > span').forEach(elm => {
-      elm.addEventListener('click', () => {
-        this.#ROOT.classList.toggle('-showingmenu');
-      });
-    });
+    const form = elm.querySelector(':scope > form');
+    this.#USER_KEY = form.querySelector(':scope > label > select');
+    this.#USER_IDS = form.querySelector(':scope > label > input');
 
     // atache events
-    elm.querySelector(':scope > form > button#UploadUserIDsSubmit').addEventListener('click', e => {
+    form.querySelector(':scope > .buttons > button:nth-child(1)').addEventListener('click', e => {
       e.stopPropagation();
-      this.#ROOT.classList.remove('-showingmenu');
       this.#fetch();
       return false;
     });
-    elm.querySelector(':scope > form > button#UploadUserIDsClear').addEventListener('click', e => {
+    form.querySelector(':scope > .buttons > button:nth-child(2)').addEventListener('click', e => {
       e.stopPropagation();
-      this.#ROOT.classList.remove('-showingmenu');
       this.#clear();
       return false;
     });
+
+    // event listeners
+    DefaultEventEmitter.addEventListener(eve_nt.EVENT_defineTogoKey, e => {
+      this.#defineTogoKeys(e.detail);
+    });
+
+  }
+
+  // private methods
+
+  #defineTogoKeys(togoKeys) {
+    console.log(togoKeys)
+    this.#USER_KEY.innerHTML = togoKeys.map(togoKey => `<option value="${togoKey.togoKey}" data-subject-id="${togoKeys.subjectId}">${togoKey.label} (${togoKey.togoKey})</option>`).join('');
   }
 
   #fetch() {
 
+    console.log(this.#USER_KEY.value)
     const queryTemplate = `${PATH + DATA_FROM_USER_IDS}?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=${this.#USER_KEY.value}&userIds=${encodeURIComponent(this.#USER_IDS.value)}`;
 
     Records.properties.forEach(property => {
@@ -55,7 +62,7 @@ export default class UploadUserIDsView {
         console.log(values)
         this.#BODY.classList.add('-showuserids');
         // dispatch event
-        const event = new CustomEvent(EVENT_setUserValues, {detail: {
+        const event = new CustomEvent(eve_nt.EVENT_setUserValues, {detail: {
           propertyId,
           values
         }});
@@ -67,7 +74,7 @@ export default class UploadUserIDsView {
 
   #clear() {
     this.#BODY.classList.remove('-showuserids');
-    const event = new CustomEvent(EVENT_clearUserValues);
+    const event = new CustomEvent(eve_nt.EVENT_clearUserValues);
     DefaultEventEmitter.dispatchEvent(event);
   }
 

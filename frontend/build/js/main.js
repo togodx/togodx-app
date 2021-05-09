@@ -352,7 +352,9 @@
 
   var DefaultEventEmitter$1 = new DefaultEventEmitter();
 
-  // User IDs
+  // TogoKey
+  var EVENT_defineTogoKey = 'defineTogoKey'; // User IDs
+
   var EVENT_setUserValues = 'setUserValues';
   var EVENT_clearUserValues = 'clearUserValues'; // View mode
 
@@ -582,13 +584,15 @@
 
   var ConditionBuilder$1 = new ConditionBuilder();
 
-  var _SELECT = new WeakMap();
+  var _TOGO_KEYS = new WeakMap();
 
   var _PROPERTIES_CONDITIONS_CONTAINER = new WeakMap();
 
   var _ATTRIBUTES_CONDITIONS_CONTAINER = new WeakMap();
 
   var _EXEC_BUTTON = new WeakMap();
+
+  var _defineTogoKeys$1 = new WeakSet();
 
   var _addProperty = new WeakSet();
 
@@ -598,114 +602,113 @@
 
   var _removePropertyValue = new WeakSet();
 
-  var ConditionBuilderView = /*#__PURE__*/function () {
-    function ConditionBuilderView(elm) {
-      var _this = this;
+  var ConditionBuilderView = function ConditionBuilderView(elm) {
+    var _this = this;
 
-      _classCallCheck(this, ConditionBuilderView);
+    _classCallCheck(this, ConditionBuilderView);
 
-      _removePropertyValue.add(this);
+    _removePropertyValue.add(this);
 
-      _addPropertyValue.add(this);
+    _addPropertyValue.add(this);
 
-      _removeProperty.add(this);
+    _removeProperty.add(this);
 
-      _addProperty.add(this);
+    _addProperty.add(this);
 
-      _SELECT.set(this, {
-        writable: true,
-        value: void 0
+    _defineTogoKeys$1.add(this);
+
+    _TOGO_KEYS.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _PROPERTIES_CONDITIONS_CONTAINER.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _ATTRIBUTES_CONDITIONS_CONTAINER.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _EXEC_BUTTON.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    // references
+    var body = document.querySelector('body');
+    var conditionsContainer = elm.querySelector(':scope > .conditions');
+
+    _classPrivateFieldSet(this, _TOGO_KEYS, conditionsContainer.querySelector(':scope > .togoKey > select'));
+
+    console.log(_classPrivateFieldGet(this, _TOGO_KEYS));
+
+    _classPrivateFieldSet(this, _PROPERTIES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .properties > .conditions'));
+
+    _classPrivateFieldSet(this, _ATTRIBUTES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .attributes > .conditions'));
+
+    _classPrivateFieldSet(this, _EXEC_BUTTON, elm.querySelector(':scope > footer > button.exec')); // attach event
+
+
+    _classPrivateFieldGet(this, _EXEC_BUTTON).addEventListener('click', function () {
+      body.dataset.display = 'results';
+      ConditionBuilder$1.makeQueryParameter();
+    }); // event listeners
+
+
+    DefaultEventEmitter$1.addEventListener(EVENT_mutatePropertyCondition, function (e) {
+      switch (e.detail.action) {
+        case 'add':
+          _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, e.detail.condition.subject, e.detail.condition.property);
+
+          break;
+
+        case 'remove':
+          _classPrivateMethodGet(_this, _removeProperty, _removeProperty2).call(_this, e.detail.propertyId);
+
+          break;
+      }
+    });
+    DefaultEventEmitter$1.addEventListener(EVENT_mutatePropertyValueCondition, function (e) {
+      switch (e.detail.action) {
+        case 'add':
+          _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, e.detail.condition.subject, e.detail.condition.property, e.detail.condition.value);
+
+          break;
+
+        case 'remove':
+          _classPrivateMethodGet(_this, _removePropertyValue, _removePropertyValue2).call(_this, e.detail.propertyId, e.detail.categoryId);
+
+          break;
+      }
+    });
+    DefaultEventEmitter$1.addEventListener(EVENT_defineTogoKey, function (e) {
+      _classPrivateMethodGet(_this, _defineTogoKeys$1, _defineTogoKeys2$1).call(_this, e.detail);
+    });
+    DefaultEventEmitter$1.addEventListener(EVENT_mutateEstablishConditions, function (e) {
+      _classPrivateFieldGet(_this, _EXEC_BUTTON).disabled = !e.detail;
+    });
+  } // private methods
+  ;
+
+  function _defineTogoKeys2$1(togoKeys) {
+    // make options
+    _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = togoKeys.map(function (togoKey) {
+      return "<option value=\"".concat(togoKey.togoKey, "\" data-subject-id=\"").concat(togoKeys.subjectId, "\">").concat(togoKey.label, " (").concat(togoKey.togoKey, ")</option>");
+    }).join('');
+    _classPrivateFieldGet(this, _TOGO_KEYS).disabled = false; // attach event
+
+    _classPrivateFieldGet(this, _TOGO_KEYS).addEventListener('change', function (e) {
+      var togoKey = togoKeys.find(function (togoKey) {
+        return togoKey.togoKey === e.target.value;
       });
+      ConditionBuilder$1.setSubject(e.target.value, togoKey.subjectId);
+    });
 
-      _PROPERTIES_CONDITIONS_CONTAINER.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _ATTRIBUTES_CONDITIONS_CONTAINER.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _EXEC_BUTTON.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      // references
-      var body = document.querySelector('body');
-
-      _classPrivateFieldSet(this, _SELECT, elm.querySelector(':scope > select'));
-
-      var conditionsContainer = elm.querySelector(':scope > .conditions');
-
-      _classPrivateFieldSet(this, _PROPERTIES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .properties > .conditions'));
-
-      _classPrivateFieldSet(this, _ATTRIBUTES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .attributes > .conditions'));
-
-      _classPrivateFieldSet(this, _EXEC_BUTTON, elm.querySelector(':scope > footer > button.exec')); // attach event
-
-
-      _classPrivateFieldGet(this, _EXEC_BUTTON).addEventListener('click', function () {
-        body.dataset.display = 'results';
-        ConditionBuilder$1.makeQueryParameter();
-      }); // event listeners
-
-
-      DefaultEventEmitter$1.addEventListener(EVENT_mutatePropertyCondition, function (e) {
-        switch (e.detail.action) {
-          case 'add':
-            _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, e.detail.condition.subject, e.detail.condition.property);
-
-            break;
-
-          case 'remove':
-            _classPrivateMethodGet(_this, _removeProperty, _removeProperty2).call(_this, e.detail.propertyId);
-
-            break;
-        }
-      });
-      DefaultEventEmitter$1.addEventListener(EVENT_mutatePropertyValueCondition, function (e) {
-        switch (e.detail.action) {
-          case 'add':
-            _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, e.detail.condition.subject, e.detail.condition.property, e.detail.condition.value);
-
-            break;
-
-          case 'remove':
-            _classPrivateMethodGet(_this, _removePropertyValue, _removePropertyValue2).call(_this, e.detail.propertyId, e.detail.categoryId);
-
-            break;
-        }
-      });
-      DefaultEventEmitter$1.addEventListener(EVENT_mutateEstablishConditions, function (e) {
-        _classPrivateFieldGet(_this, _EXEC_BUTTON).disabled = !e.detail;
-      });
-    } // public methods
-
-
-    _createClass(ConditionBuilderView, [{
-      key: "defineTogoKeys",
-      value: function defineTogoKeys(togoKeys) {
-        // make options
-        _classPrivateFieldGet(this, _SELECT).insertAdjacentHTML('beforeend', togoKeys.map(function (togoKey) {
-          return "<option value=\"".concat(togoKey.togoKey, "\" data-subject-id=\"").concat(togoKeys.subjectId, "\">").concat(togoKey.label, " (").concat(togoKey.togoKey, ")</option>");
-        }).join(''));
-
-        _classPrivateFieldGet(this, _SELECT).disabled = false; // attach event
-
-        _classPrivateFieldGet(this, _SELECT).addEventListener('change', function (e) {
-          var togoKey = togoKeys.find(function (togoKey) {
-            return togoKey.togoKey === e.target.value;
-          });
-          ConditionBuilder$1.setSubject(e.target.value, togoKey.subjectId);
-        });
-      } // private methods
-
-    }]);
-
-    return ConditionBuilderView;
-  }();
+    _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));
+  }
 
   function _addProperty2(subject, property) {
     // make view
@@ -1466,6 +1469,8 @@
   function _plotUserIdValues2(detail) {
     if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
       _classPrivateFieldGet(this, _ROOT$6).classList.add('-pinsticking');
+
+      console.log(detail, _classPrivateFieldGet(this, _values));
 
       _classPrivateFieldGet(this, _values).forEach(function (value) {
         var userValue = detail.values.find(function (userValue) {
@@ -2684,6 +2689,8 @@
 
   var _USER_IDS = new WeakMap();
 
+  var _defineTogoKeys = new WeakSet();
+
   var _fetch = new WeakSet();
 
   var _clear = new WeakSet();
@@ -2696,6 +2703,8 @@
     _clear.add(this);
 
     _fetch.add(this);
+
+    _defineTogoKeys.add(this);
 
     _BODY.set(this, {
       writable: true,
@@ -2721,39 +2730,45 @@
 
     _classPrivateFieldSet(this, _ROOT$1, elm);
 
-    _classPrivateFieldSet(this, _USER_KEY, elm.querySelector('#UploadUserIDsUserKey'));
+    var form = elm.querySelector(':scope > form');
 
-    _classPrivateFieldSet(this, _USER_IDS, elm.querySelector('#UploadUserIDsUserIDs'));
+    _classPrivateFieldSet(this, _USER_KEY, form.querySelector(':scope > label > select'));
 
-    elm.querySelectorAll(':scope > span').forEach(function (elm) {
-      elm.addEventListener('click', function () {
-        _classPrivateFieldGet(_this, _ROOT$1).classList.toggle('-showingmenu');
-      });
-    }); // atache events
+    _classPrivateFieldSet(this, _USER_IDS, form.querySelector(':scope > label > input')); // atache events
 
-    elm.querySelector(':scope > form > button#UploadUserIDsSubmit').addEventListener('click', function (e) {
+
+    form.querySelector(':scope > .buttons > button:nth-child(1)').addEventListener('click', function (e) {
       e.stopPropagation();
-
-      _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-showingmenu');
 
       _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
 
       return false;
     });
-    elm.querySelector(':scope > form > button#UploadUserIDsClear').addEventListener('click', function (e) {
+    form.querySelector(':scope > .buttons > button:nth-child(2)').addEventListener('click', function (e) {
       e.stopPropagation();
-
-      _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-showingmenu');
 
       _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
 
       return false;
+    }); // event listeners
+
+    DefaultEventEmitter$1.addEventListener(EVENT_defineTogoKey, function (e) {
+      _classPrivateMethodGet(_this, _defineTogoKeys, _defineTogoKeys2).call(_this, e.detail);
     });
-  };
+  } // private methods
+  ;
+
+  function _defineTogoKeys2(togoKeys) {
+    console.log(togoKeys);
+    _classPrivateFieldGet(this, _USER_KEY).innerHTML = togoKeys.map(function (togoKey) {
+      return "<option value=\"".concat(togoKey.togoKey, "\" data-subject-id=\"").concat(togoKeys.subjectId, "\">").concat(togoKey.label, " (").concat(togoKey.togoKey, ")</option>");
+    }).join('');
+  }
 
   function _fetch2() {
     var _this2 = this;
 
+    console.log(_classPrivateFieldGet(this, _USER_KEY).value);
     var queryTemplate = "".concat(PATH + DATA_FROM_USER_IDS, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(_classPrivateFieldGet(this, _USER_KEY).value, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
     Records$1.properties.forEach(function (property) {
       console.log(property);
@@ -2857,7 +2872,7 @@
           });
         }); // set up views
 
-        var conditionBuilderView = new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
+        new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
         new ConditionsController(document.querySelector('#Conditions'));
         var reportsView = new ReportsView(document.querySelector('#Reports'));
         new ResultsTable(document.querySelector('#ResultsTable'));
@@ -2886,7 +2901,10 @@
               subjectId: subject.subjectId
             };
           });
-          conditionBuilderView.defineTogoKeys(togoKeys); // set stanza scripts
+          var event = new CustomEvent(EVENT_defineTogoKey, {
+            detail: togoKeys
+          });
+          DefaultEventEmitter$1.dispatchEvent(event); // set stanza scripts
 
           document.querySelector('head').insertAdjacentHTML('beforeend', templates.stanzas.map(function (stanza) {
             return "<script type=\"module\" src=\"".concat(stanza, "\"></script>");

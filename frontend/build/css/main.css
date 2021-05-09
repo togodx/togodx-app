@@ -354,8 +354,8 @@ template {
   --z-track-collapse-button: 1;
   --z-track-tracks-header: 3;
   --z-track-pin: 4;
-  --z-track-balloon: 5;
-  --z-upload-user-ids: 5;
+  --z-fixed-area: 5;
+  --z-track-balloon: 6;
   --z-results-header: 1;
 }
 
@@ -739,6 +739,11 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
 }
 .rounded-button-view.-spread {
   width: calc(100% + .2rem);
+}
+.rounded-button-view.-small {
+  font-size: 1.2rem;
+  line-height: 1.8rem;
+  border-radius: 0.9em;
 }
 .rounded-button-view.-verysmall {
   font-size: 1rem;
@@ -1327,40 +1332,39 @@ body[data-display=results] #App > .inner {
           transform: translateX(calc(-100vw + var(--width-condition)));
 }
 
-#ConditionBuilder > .togoKey {
-  margin-bottom: 1rem;
-  transition: opacity var(--transition-wipe);
-}
-#ConditionBuilder > .togoKey:hover {
-  top: auto;
-}
-body[data-display=results] #ConditionBuilder > .togoKey {
-  pointer-events: none;
-  opacity: 0.5;
-}
 #ConditionBuilder > .conditions {
   -webkit-flex-grow: 1;
           flex-grow: 1;
 }
 #ConditionBuilder > .conditions > * {
   padding: 0.7rem 0.6rem;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: var(--color-lamp-black);
+  border-radius: 0.4rem;
 }
 #ConditionBuilder > .conditions > * + * {
-  margin-top: 0.2rem;
+  margin-top: 0.4rem;
 }
 #ConditionBuilder > .conditions > * > .title {
-  margin-bottom: 0;
+  margin-bottom: -0.2rem;
   line-height: 1;
   color: white;
-  font-size: 1.2rem;
-  font-weight: normal;
+  font-size: 1.4rem;
+}
+#ConditionBuilder > .conditions > * > .title > .material-icons-outlined {
+  font-size: 1.4rem;
+  vertical-align: middle;
+  -webkit-margin-end: 0.3rem;
+          margin-inline-end: 0.3rem;
+  position: relative;
+  top: -0.1rem;
 }
 #ConditionBuilder > .conditions > * > .conditions.-empty::after {
-  font-size: 1rem;
+  font-size: 1.2rem;
   line-height: 1.2;
   display: block;
   margin-top: 0.4rem;
+  color: white;
+  font-weight: lighter;
 }
 body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .stacking-condition-view > .closebutton {
   display: none;
@@ -1370,6 +1374,21 @@ body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .
 }
 #ConditionBuilder > .conditions > .properties > .conditions.-empty::after {
   content: "Specify additional attributes integrated into resulting table ...";
+}
+#ConditionBuilder > .conditions > .togoKey {
+  width: 100%;
+  transition: opacity var(--transition-wipe);
+}
+#ConditionBuilder > .conditions > .togoKey > select {
+  width: 100%;
+  margin-top: 0.4rem;
+}
+body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
+  pointer-events: none;
+  opacity: 0.5;
+}
+#ConditionBuilder > footer > button {
+  font-weight: bold;
 }
 
 #Conditions > header {
@@ -1391,6 +1410,7 @@ body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .
   display: flex;
   -webkit-flex-direction: column;
           flex-direction: column;
+  z-index: var(--z-fixed-area);
 }
 #FixedArea > div > section {
   display: -webkit-flex;
@@ -1636,21 +1656,26 @@ body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .
   display: none;
 }
 
-#UploadUserIDsView {
-  position: relative;
-}
 #UploadUserIDsView > form {
-  display: none;
-  position: absolute;
-  background-color: white;
-  padding: 0.8rem 1rem;
-  text-align: left;
-  left: 0;
-  top: 26px;
-  z-index: var(--z-upload-user-ids);
+  margin-top: 0.2rem;
 }
-#UploadUserIDsView.-showingmenu > form {
-  display: inherit;
+#UploadUserIDsView > form > label {
+  color: white;
+  display: block;
+}
+#UploadUserIDsView > form > label > p {
+  margin-bottom: 0;
+}
+#UploadUserIDsView > form > label > select, #UploadUserIDsView > form > label input {
+  width: 100%;
+  display: block;
+}
+#UploadUserIDsView > form > .buttons {
+  padding-top: 0.4rem;
+  text-align: center;
+}
+#UploadUserIDsView > form > .buttons > .rounded-button-view + .rounded-button-view {
+  margin-left: 0.4rem;
 }
 
 /*# sourceMappingURL=main.css.map */

@@ -1,14 +1,17 @@
 #UploadUserIDsView
-  position: relative
   > form
-    display: none
-    position: absolute
-    background-color: white
-    padding: .8rem 1rem
-    text-align: left
-    left: 0
-    top: 26px
-    z-index: var(--z-upload-user-ids)
-  &.-showingmenu
-    > form
-      display: inherit
+    margin-top: .2rem
+    > label
+      color: white
+      display: block
+      > p
+        margin-bottom: 0
+      > select, input
+        width: 100%
+        display: block
+    > .buttons
+      padding-top: .4rem
+      text-align: center
+      > .rounded-button-view
+        + .rounded-button-view
+          margin-left: .4rem

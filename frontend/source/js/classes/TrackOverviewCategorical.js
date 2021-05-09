@@ -166,6 +166,8 @@ export default class TrackOverviewCategorical {
     if (this.#property.propertyId === detail.propertyId) {
       this.#ROOT.classList.add('-pinsticking');
 
+      console.log(detail, this.#values)
+
       this.#values.forEach(value => {
         const userValue = detail.values.find(userValue => userValue.categoryId === value.categoryId);
         if (userValue) {

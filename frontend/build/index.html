@@ -31,18 +31,6 @@
             </div>
             <nav>
               <ul>
-                <li id="UploadUserIDsView"><span class="material-icons-outlined">file_upload</span><span>Upload IDs</span>
-                  <form>
-                    <label>userKey
-                      <input id="UploadUserIDsUserKey" type="text" value="uniprot">
-                    </label>
-                    <label>userIds
-                      <input id="UploadUserIDsUserIDs" type="text" value="Q9NYF8,Q4V339,A6NCE7,A7E2F4,P69849,A6NN73,Q92928,Q5T1J5,P0C7P4,Q6DN03,P09874,Q08211,Q5T4S7,P12270,Q9UPN3,P07814,P53621,P49321,P0C629,Q9BZK8,Q9BY65">
-                    </label>
-                    <button id="UploadUserIDsSubmit" type="button">Submit</button>
-                    <button id="UploadUserIDsClear" type="button">Clear</button>
-                  </form>
-                </li>
                 <li class="viewmodecontroller">
                   <label>
                     <input type="checkbox" value="log10">Log scale
@@ -85,21 +73,39 @@
             <header>
               <h2 class="title">Condition builder</h2>
             </header>
-            <select class="togoKey rounded-button-view" disabled>
-              <option value="">Select a TOGO key</option>
-            </select>
             <div class="conditions">
               <div class="attributes">
-                <h2 class="title">Select filters</h2>
+                <h2 class="title"><span class="material-icons-outlined">west</span>Select filters</h2>
                 <div class="conditions -empty"></div>
               </div>
               <div class="properties">
-                <h2 class="title">Additional attributes</h2>
+                <h2 class="title"><span class="material-icons-outlined">west</span>Additional attributes</h2>
                 <div class="conditions -empty"></div>
+              </div>
+              <div id="UploadUserIDsView">
+                <h2 class="title"><span class="material-icons-outlined">file_upload</span>Upload IDs</h2>
+                <form>
+                  <label>
+                    <p>userKey</p>
+                    <select></select>
+                  </label>
+                  <label>
+                    <p>userIds</p>
+                    <input type="text" value="Q9NYF8,Q4V339,A6NCE7,A7E2F4,P69849,A6NN73,Q92928,Q5T1J5,P0C7P4,Q6DN03,P09874,Q08211,Q5T4S7,P12270,Q9UPN3,P07814,P53621,P49321,P0C629,Q9BZK8,Q9BY65">
+                  </label>
+                  <div class="buttons">
+                    <button class="rounded-button-view -small" type="button">Submit</button>
+                    <button class="rounded-button-view -small" type="button">Clear</button>
+                  </div>
+                </form>
+              </div>
+              <div class="togoKey">
+                <h2 class="title"><span class="material-icons-outlined">layers</span>Select target category</h2>
+                <select disabled></select>
               </div>
             </div>
             <footer>
-              <button class="exec rounded-button-view -black -spread" disabled><span class="material-icons-outlined">table_view</span>TOGO data</button>
+              <button class="exec rounded-button-view -black -spread" disabled><span class="material-icons-outlined">table_view</span>Preview integrated data</button>
             </footer>
           </section>
           <section id="Reports" data-hidden-by="properties">
