@@ -643,8 +643,6 @@
 
     _classPrivateFieldSet(this, _TOGO_KEYS, conditionsContainer.querySelector(':scope > .togoKey > select'));
 
-    console.log(_classPrivateFieldGet(this, _TOGO_KEYS));
-
     _classPrivateFieldSet(this, _PROPERTIES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .properties > .conditions'));
 
     _classPrivateFieldSet(this, _ATTRIBUTES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .attributes > .conditions'));
@@ -731,7 +729,6 @@
     var view = _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).querySelector("[data-property-id=\"".concat(propertyId, "\"]"));
 
     view.parentNode.removeChild(view);
-    console.log();
     if (_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).childNodes.length === 0) _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.add('-empty');
   }
 
@@ -2793,9 +2790,9 @@
     DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
 
-  var CONF_PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
-  var CONF_TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
-  var CONF_AGGREGATE = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/aggregate.json';
+  var PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
+  var TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
+  var AGGREGATE = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/aggregate.json';
 
   var _viewModes = new WeakMap();
 
@@ -2834,10 +2831,10 @@
           checkbox.addEventListener('click', function () {
             if (checkbox.value === 'heatmap') body.dataset.heatmap = checkbox.checked;
             _classPrivateFieldGet(_this, _viewModes)[checkbox.value] = checkbox.checked;
-            var event = new CustomEvent(changeViewModes, {
+            var customEvent = new CustomEvent(changeViewModes, {
               detail: _classPrivateFieldGet(_this, _viewModes)
             });
-            DefaultEventEmitter$1.dispatchEvent(event);
+            DefaultEventEmitter$1.dispatchEvent(customEvent);
           });
         }); // set up views
 
@@ -2849,7 +2846,7 @@
         new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
 
         var stanzaTtemplates;
-        Promise.all([fetch(CONF_PROPERTIES), fetch(CONF_TEMPLATES), fetch(CONF_AGGREGATE)]).then(function (responces) {
+        Promise.all([fetch(PROPERTIES), fetch(TEMPLATES), fetch(AGGREGATE)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
           }));
@@ -2869,10 +2866,10 @@
               subjectId: subject.subjectId
             };
           });
-          var event = new CustomEvent(defineTogoKey, {
+          var customEvent = new CustomEvent(defineTogoKey, {
             detail: togoKeys
           });
-          DefaultEventEmitter$1.dispatchEvent(event); // set stanza scripts
+          DefaultEventEmitter$1.dispatchEvent(customEvent); // set stanza scripts
 
           document.querySelector('head').insertAdjacentHTML('beforeend', templates.stanzas.map(function (stanza) {
             return "<script type=\"module\" src=\"".concat(stanza, "\" async></script>");

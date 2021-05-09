@@ -16,7 +16,6 @@ export default class ConditionBuilderView {
     const body = document.querySelector('body');
     const conditionsContainer = elm.querySelector(':scope > .conditions');
     this.#TOGO_KEYS = conditionsContainer.querySelector(':scope > .togoKey > select');
-    console.log(this.#TOGO_KEYS)
     this.#PROPERTIES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .properties > .conditions');
     this.#ATTRIBUTES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .attributes > .conditions');
     this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
@@ -93,7 +92,6 @@ export default class ConditionBuilderView {
   #removeProperty(propertyId) {
     const view = this.#PROPERTIES_CONDITIONS_CONTAINER.querySelector(`[data-property-id="${propertyId}"]`);
     view.parentNode.removeChild(view);
-    console.log()
     if (this.#PROPERTIES_CONDITIONS_CONTAINER.childNodes.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 

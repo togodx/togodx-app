@@ -1,7 +1,5 @@
 import Records from './Records.js';
-
-const CONF_PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
-const CONF_TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
+import * as api from '../api'
 
 class ReportApp {
 
@@ -15,8 +13,8 @@ class ReportApp {
     let stanzaTtemplates;
     // load config json
     Promise.all([
-      fetch(CONF_PROPERTIES),
-      fetch(CONF_TEMPLATES)
+      fetch(api.PROPERTIES),
+      fetch(api.TEMPLATES)
     ])
       .then(responces => Promise.all(responces.map(responce => responce.json())))
       .then(([subjects, templates]) => {

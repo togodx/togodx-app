@@ -225,8 +225,8 @@
 
   var Records$1 = new Records();
 
-  var CONF_PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
-  var CONF_TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
+  var PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
+  var TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
 
   var _templates = new WeakMap();
 
@@ -255,7 +255,7 @@
 
         var stanzaTtemplates; // load config json
 
-        Promise.all([fetch(CONF_PROPERTIES), fetch(CONF_TEMPLATES)]).then(function (responces) {
+        Promise.all([fetch(PROPERTIES), fetch(TEMPLATES)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
           }));

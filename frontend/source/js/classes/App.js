@@ -7,11 +7,8 @@ import ResultsTable from './ResultsTable.js';
 import BalloonView from './BalloonView.js';
 import ConditionsController from "./ConditionsController";
 import UploadUserIDsView from "./UploadUserIDsView";
-import {defineTogoKey, changeViewModes} from '../events';
-
-const CONF_PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
-const CONF_TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
-const CONF_AGGREGATE = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/aggregate.json';
+import * as event from '../events'
+import * as api from '../api'
 
 class App {
 
@@ -32,8 +29,8 @@ class App {
       checkbox.addEventListener('click', () => {
         if (checkbox.value === 'heatmap')  body.dataset.heatmap = checkbox.checked;
         this.#viewModes[checkbox.value] = checkbox.checked;
-        const event = new CustomEvent(changeViewModes, {detail: this.#viewModes});
-        DefaultEventEmitter.dispatchEvent(event);
+        const customEvent = new CustomEvent(event.changeViewModes, {detail: this.#viewModes});
+        DefaultEventEmitter.dispatchEvent(customEvent);
       });
     });
 
@@ -48,9 +45,9 @@ class App {
     // load config json
     let stanzaTtemplates;
     Promise.all([
-      fetch(CONF_PROPERTIES),
-      fetch(CONF_TEMPLATES),
-      fetch(CONF_AGGREGATE)
+      fetch(api.PROPERTIES),
+      fetch(api.TEMPLATES),
+      fetch(api.AGGREGATE)
     ])
       .then(responces => Promise.all(responces.map(responce => responce.json())))
       .then(([subjects, templates, aggregate]) => {
@@ -65,8 +62,8 @@ class App {
             subjectId: subject.subjectId
           }
         });
-        const event = new CustomEvent(defineTogoKey, {detail: togoKeys});
-        DefaultEventEmitter.dispatchEvent(event);
+        const customEvent = new CustomEvent(event.defineTogoKey, {detail: togoKeys});
+        DefaultEventEmitter.dispatchEvent(customEvent);
 
         // set stanza scripts
         document.querySelector('head').insertAdjacentHTML('beforeend', templates.stanzas.map(stanza => `<script type="module" src="${stanza}" async></script>`).join(''));
