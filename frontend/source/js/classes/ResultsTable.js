@@ -5,14 +5,14 @@ import * as event from '../events';
 
 export default class ResultsTable {
 
+  #intersctionObserver;
+  #tableData;
   #ROOT;
   #THEAD;
   #STATS;
   #TBODY;
   #TABLE_END;
   #LOADING_VIEW;
-  #intersctionObserver;
-  #tableData;
 
   constructor(elm) {
 
@@ -125,6 +125,7 @@ export default class ResultsTable {
       return `<tr data-index="${detail.tableData.offset + index}" data-togo-id="${detail.rows[index].id}">
         <th>
           <div class="inner">
+            <a class="toreportpage" href="report.html?togoKey=${detail.tableData.togoKey}&id=${detail.rows[index].id}&properties=${JSON.stringify(row)}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
             <div class="togo-key-view">${detail.rows[index].id}</div>
           </div>
         </th>

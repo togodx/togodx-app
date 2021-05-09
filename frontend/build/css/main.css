@@ -1589,6 +1589,26 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
 #ResultsTable > .body > table > tbody > tr > th, #ResultsTable > .body > table > tbody > tr > td {
   vertical-align: top;
 }
+#ResultsTable > .body > table > tbody > tr > th > .inner > .toreportpage {
+  display: inline-block;
+  background-color: var(--color-lamp-black);
+  color: white;
+  padding: 0 0.8rem;
+  border-radius: 0.2rem;
+  font-weight: normal;
+  margin-right: 0.2rem;
+}
+#ResultsTable > .body > table > tbody > tr > th > .inner > .toreportpage::before {
+  content: "Report";
+}
+#ResultsTable > .body > table > tbody > tr > th > .inner > .toreportpage > .material-icons-outlined {
+  font-size: 1rem;
+  vertical-align: middle;
+  margin-left: 0.3rem;
+  position: relative;
+  top: -0.1rem;
+  margin-right: -0.1rem;
+}
 #ResultsTable > .body > table > tbody > tr > td > .inner > ul {
   margin: 0;
   -webkit-padding-start: 0;

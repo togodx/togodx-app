@@ -50,6 +50,25 @@
             border-bottom-color: white
           > th, > td
             vertical-align: top
+          > th
+            > .inner
+              > .toreportpage
+                display: inline-block
+                background-color: var(--color-lamp-black)
+                color: white
+                padding: 0 .8rem
+                border-radius: .2rem
+                font-weight: normal
+                margin-right: .2rem
+                &::before
+                  content: "Report"
+                > .material-icons-outlined
+                  font-size: 1rem
+                  vertical-align: middle
+                  margin-left: .3rem
+                  position: relative
+                  top: -.1rem
+                  margin-right: -.1rem
           > td
             > .inner
               > ul

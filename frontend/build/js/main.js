@@ -1803,6 +1803,10 @@
     }).join('');
   }
 
+  var _intersctionObserver = new WeakMap();
+
+  var _tableData$1 = new WeakMap();
+
   var _ROOT$3 = new WeakMap();
 
   var _THEAD = new WeakMap();
@@ -1814,10 +1818,6 @@
   var _TABLE_END = new WeakMap();
 
   var _LOADING_VIEW = new WeakMap();
-
-  var _intersctionObserver = new WeakMap();
-
-  var _tableData$1 = new WeakMap();
 
   var _enterTableEnd = new WeakSet();
 
@@ -1839,6 +1839,16 @@
     _setupTable.add(this);
 
     _enterTableEnd.add(this);
+
+    _intersctionObserver.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _tableData$1.set(this, {
+      writable: true,
+      value: void 0
+    });
 
     _ROOT$3.set(this, {
       writable: true,
@@ -1866,16 +1876,6 @@
     });
 
     _LOADING_VIEW.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _intersctionObserver.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _tableData$1.set(this, {
       writable: true,
       value: void 0
     });
@@ -2001,7 +2001,7 @@
     }); // make table
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
-      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <div class=\"togo-key-view\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column) {
+      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(JSON.stringify(row), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div class=\"togo-key-view\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column) {
         // console.log(column)
         if (column) {
           return "\n              <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute) {
