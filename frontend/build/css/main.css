@@ -1510,6 +1510,9 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   vertical-align: middle;
   margin-right: 0.4rem;
 }
+#Properties > .header > nav > ul > li.viewmodecontroller > .area, #Properties > .header > nav > ul > li.viewmodecontroller > .heatmap {
+  display: none;
+}
 
 #Reports > .stanzas {
   -webkit-flex-grow: 1;

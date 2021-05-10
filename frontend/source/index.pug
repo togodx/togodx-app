@@ -20,8 +20,8 @@ html.no-js(lang='')
         section#Properties
           header.header
             .title
-              h2.properties Properties
-              h2.attributes Values
+              h2.properties Attribute
+              h2.attributes Classification / Distribution
             nav
               ul
                 //- li#UploadUserIDsView
@@ -38,13 +38,13 @@ html.no-js(lang='')
                 //-     button#UploadUserIDsClear(type="button") Clear
                       
                 li.viewmodecontroller
-                  label
+                  label.log10
                     input(type="checkbox" value="log10")
                     | Log scale
-                  label
+                  label.area
                     input(type="checkbox" value="area" checked)
                     | Area
-                  label
+                  label.heatmap
                     input(type="checkbox" value="heatmap" checked)
                     | Heatmap
               //-
