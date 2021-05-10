@@ -118,6 +118,13 @@
         "primaryKey": "uniprot"
       },
       {
+        "propertyId": "uniprot_isolated_tissue",
+        "label": "Tissue expression",
+        "description": "Tissues from which the protein was isolated, from UniProt",
+        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_isolated_tissue",
+        "primaryKey": "uniprot"
+      },
+      {
         "propertyId": "uniprot_keywords_domain",
         "label": "Protein domains",
         "description": "Protein domains from UniProt",
