@@ -91,7 +91,7 @@ export default class ResultsTable {
       <th>
         <div class="inner -propertyvalue" style="background-color: ${App.getHslColor(property.subject.hue)}">
           <div class="togo-key-view">${property.property.primaryKey}</div>
-          <span>${property.property.label}</span>
+          <span>${property.subject.subject}</span>
         </div>
       </th>`).join('')}
       ${tableData.condition.properties.map(property => `
