@@ -1593,19 +1593,13 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
 }
 #ResultsTable > .body > table > thead > tr.header > th > .inner {
   background-color: white;
-  border-bottom: solid 0.1rem var(--color-separator);
+  border-bottom: solid 0.1rem var(--color-black);
 }
 #ResultsTable > .body > table > thead > tr.header > th:first-child > .inner {
   background-color: var(--color-lamp-black);
 }
-#ResultsTable > .body > table > thead > tr.statistics > td {
-  position: -webkit-sticky;
-  position: sticky;
-  top: calc(var(--padding-track-block-start) * 2 + 1.6rem);
-}
 #ResultsTable > .body > table > thead > tr.statistics > td > .inner {
   background-color: white;
-  border-bottom: solid 0.1rem var(--color-black);
 }
 #ResultsTable > .body > table > tbody > tr {
   border-bottom: solid 0.1rem var(--color-separator);
