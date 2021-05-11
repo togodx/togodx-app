@@ -1343,7 +1343,7 @@ body[data-display=results] #App > .inner {
 }
 #ConditionBuilder > .conditions > * {
   padding: 0.7rem 0.6rem;
-  background-color: var(--color-lamp-black);
+  background-color: white;
   border-radius: 0.4rem;
 }
 #ConditionBuilder > .conditions > * + * {
@@ -1352,7 +1352,6 @@ body[data-display=results] #App > .inner {
 #ConditionBuilder > .conditions > * > .title {
   margin-bottom: -0.2rem;
   line-height: 1;
-  color: white;
   font-size: 1.4rem;
 }
 #ConditionBuilder > .conditions > * > .title > .material-icons-outlined {
@@ -1368,7 +1367,6 @@ body[data-display=results] #App > .inner {
   line-height: 1.2;
   display: block;
   margin-top: 0.4rem;
-  color: white;
   font-weight: lighter;
 }
 body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .stacking-condition-view > .closebutton {
@@ -1660,7 +1658,6 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   margin-top: 0.2rem;
 }
 #UploadUserIDsView > form > label {
-  color: white;
   display: block;
 }
 #UploadUserIDsView > form > label > p {
