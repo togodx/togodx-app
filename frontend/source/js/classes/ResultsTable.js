@@ -111,6 +111,7 @@ export default class ResultsTable {
   }
 
   #addTableRows(detail) {
+    console.log(detail)
 
     this.#tableData = detail.tableData;
 
@@ -122,11 +123,13 @@ export default class ResultsTable {
 
     // make table
     this.#TBODY.insertAdjacentHTML('beforeend', rows.map((row, index) => {
+      console.log(row)
       return `<tr data-index="${detail.tableData.offset + index}" data-togo-id="${detail.rows[index].id}">
         <th>
           <div class="inner">
             <a class="toreportpage" href="report.html?togoKey=${detail.tableData.togoKey}&id=${detail.rows[index].id}&properties=${encodeURIComponent(JSON.stringify(row))}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
             <div class="togo-key-view">${detail.rows[index].id}</div>
+            <span>${detail.rows[index].label}</span>
           </div>
         </th>
         ${row.map(column => {
