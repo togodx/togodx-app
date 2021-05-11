@@ -1343,7 +1343,7 @@ body[data-display=results] #App > .inner {
 }
 #ConditionBuilder > .conditions > * {
   padding: 0.7rem 0.6rem;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.8);
   border-radius: 0.4rem;
 }
 #ConditionBuilder > .conditions > * + * {
@@ -1352,7 +1352,7 @@ body[data-display=results] #App > .inner {
 #ConditionBuilder > .conditions > * > .title {
   margin-bottom: -0.2rem;
   line-height: 1;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
 }
 #ConditionBuilder > .conditions > * > .title > .material-icons-outlined {
   font-size: 1.4rem;
