@@ -1671,8 +1671,5 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   padding-top: 0.4rem;
   text-align: center;
 }
-#UploadUserIDsView > form > .buttons > .rounded-button-view + .rounded-button-view {
-  margin-left: 0.4rem;
-}
 
 /*# sourceMappingURL=main.css.map */
