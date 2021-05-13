@@ -35,7 +35,7 @@
       },
       {
         "propertyId": "ensembl-transcript-category",
-        "label": "transcript-category",
+        "label": "Transcript-category",
         "description": "transcript category",
         "data": "https://integbio.jp/togosite/sparqlist/api/Ensembl_transcript_description",
         "primaryKey": "ensembl_transcript"
