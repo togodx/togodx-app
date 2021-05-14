@@ -88,12 +88,13 @@ export default class ResultsTable {
         </div>
       </th>
       ${tableData.condition.attributes.map(property => `
-      <th>
-        <div class="inner -propertyvalue" style="background-color: ${App.getHslColor(property.subject.hue)}">
+      <th data-subject-id="${property.subject.subjectId}" data-property-label="${property.property.label}">
+        <div class="inner -propertyvalue"  style="background-color: ${App.getHslColor(property.subject.hue)}">
           <div class="togo-key-view">${property.property.primaryKey}</div>
           <span>${property.subject.subject}</span>
         </div>
-      </th>`).join('')}
+      </th>`).join('')
+    }
       ${tableData.condition.properties.map(property => `
       <th>
         <div class="inner -property" style="color: ${App.getHslColor(property.subject.hue)}">
@@ -130,7 +131,6 @@ export default class ResultsTable {
           </div>
         </th>
         ${row.map(column => {
-          // console.log(column)
           if (column) {
             return `
               <td><div class="inner"><ul>${column.attributes.map(attribute => {
