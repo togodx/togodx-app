@@ -1206,55 +1206,88 @@
     return ColumnSelectorView;
   }();
 
-  var HistogramRangeSelectorView = /*#__PURE__*/function () {
-    function HistogramRangeSelectorView(elm, subject, property, items, sparqlist) {
-      var _this = this;
+  var _items = new WeakMap();
 
-      _classCallCheck(this, HistogramRangeSelectorView);
+  var _property$2 = new WeakMap();
 
-      // console.log(elm, subject, property, items, sparqlist)
-      this._subject = subject;
-      this._property = property;
-      this._sparqlist = sparqlist;
-      this._items = items.map(function (item) {
-        return Object.assign({}, item);
-      }); // make container
+  var _OVERVIEW_CONTAINER$1 = new WeakMap();
 
-      elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"histogram\">\n        <div class=\"grid\"></div>\n        <div class=\"graph\"></div>\n      </div>\n      <div class=\"controller\">\n        <div class=\"selector\">\n          <div class=\"slider -min\"></div>\n          <div class=\"slider -max\"></div>\n        </div>\n        <div class=\"form\">\n          <input type=\"number\" data-range=\"min\">\n          ~\n          <input type=\"number\" data-range=\"max\">\n        </div>\n      </div>"; // make graph
+  var _update$1 = new WeakSet();
 
-      var width = 100 / this._items.length;
-      elm.querySelector('.graph').innerHTML = this._items.map(function (item, index) {
-        return "<div class=\"bar\" style=\"width: ".concat(width, "%; background-color: ").concat(App$1.getHslColor(subject.hue), ";\" data-count=\"").concat(item.count, "\">\n      <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / _this._items.length, ", 70%, 50%, .075);\"></div>\n    </div>");
-      }).join('');
-      elm.querySelectorAll('.graph > .bar').forEach(function (item, index) {
-        _this._items[index].elm = item;
-      });
+  var _indicateValue = new WeakSet();
 
-      this._update(); // event
+  var HistogramRangeSelectorView = function HistogramRangeSelectorView(elm, subject, property, items, sparqlist, overview) {
+    var _this = this;
+
+    _classCallCheck(this, HistogramRangeSelectorView);
+
+    _indicateValue.add(this);
+
+    _update$1.add(this);
+
+    _items.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _property$2.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _OVERVIEW_CONTAINER$1.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    console.log(elm, subject, property, items, sparqlist);
+    this._subject = subject;
+
+    _classPrivateFieldSet(this, _property$2, property);
+
+    this._sparqlist = sparqlist;
+
+    _classPrivateFieldSet(this, _OVERVIEW_CONTAINER$1, overview);
+
+    _classPrivateFieldSet(this, _items, items.map(function (item) {
+      return Object.assign({}, item);
+    })); // make container
 
 
-      DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
-        return _this._update();
-      });
-    }
+    elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"histogram\">\n        <div class=\"grid\"></div>\n        <div class=\"graph\"></div>\n        <svg class=\"additionalline\"></svg>\n      </div>\n      <div class=\"controller\">\n        <div class=\"selector\">\n          <div class=\"slider -min\"></div>\n          <div class=\"slider -max\"></div>\n        </div>\n        <div class=\"form\">\n          <input type=\"number\" data-range=\"min\">\n          ~\n          <input type=\"number\" data-range=\"max\">\n        </div>\n      </div>"; // make graph
 
-    _createClass(HistogramRangeSelectorView, [{
-      key: "_update",
-      value: function _update() {
-        var isLog10 = App$1.viewModes.log10;
-        var max = Math.max.apply(Math, _toConsumableArray(Array.from(this._items).map(function (item) {
-          return item.count;
-        })));
-        max = isLog10 ? Math.log10(max) : max;
+    var graph = elm.querySelector('.graph');
 
-        this._items.forEach(function (item) {
-          item.elm.style.height = (isLog10 ? Math.log10(item.count) : item.count) / max * 100 + '%';
-        });
-      }
-    }]);
+    var width = 100 / _classPrivateFieldGet(this, _items).length;
 
-    return HistogramRangeSelectorView;
-  }();
+    graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
+      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(width, "%;\">\n      <div class=\"actual\" style=\"background-color: ").concat(App$1.getHslColor(subject.hue), ";\">\n        <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / _classPrivateFieldGet(_this, _items).length, ", 70%, 50%, .075);\"></div>\n      </div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
+    }).join('');
+    elm.querySelectorAll('.graph > .bar').forEach(function (item, index) {
+      _classPrivateFieldGet(_this, _items)[index].elm = item;
+    });
+
+    _classPrivateMethodGet(this, _update$1, _update2$1).call(this); // event
+
+
+    DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
+      return _classPrivateMethodGet(_this, _update$1, _update2$1).call(_this);
+    });
+    graph.querySelectorAll(':scope > .bar');
+  } // private methods
+  ;
+
+  function _update2$1() {
+    var isLog10 = App$1.viewModes.log10;
+    var max = Math.max.apply(Math, _toConsumableArray(Array.from(_classPrivateFieldGet(this, _items)).map(function (item) {
+      return item.count;
+    })));
+    max = isLog10 ? Math.log10(max) : max;
+
+    _classPrivateFieldGet(this, _items).forEach(function (item) {
+      item.elm.querySelector(':scope > .actual').style.height = (isLog10 ? Math.log10(item.count) : item.count) / max * 100 + '%';
+    });
+  }
 
   var MIN_PIN_SIZE = 12;
   var MAX_PIN_SIZE = 20;
@@ -1648,7 +1681,7 @@
     new TrackOverviewCategorical(_classPrivateFieldGet(this, _OVERVIEW_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values); // make selector view
 
     if (_classPrivateFieldGet(this, _property).viewMethod && _classPrivateFieldGet(this, _property).viewMethod === 'histogram') {
-      new HistogramRangeSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values, _classPrivateFieldGet(this, _sparqlist));
+      new HistogramRangeSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values, _classPrivateFieldGet(this, _sparqlist), _classPrivateFieldGet(this, _OVERVIEW_CONTAINER));
     } else {
       new ColumnSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values, _classPrivateFieldGet(this, _sparqlist));
     }
