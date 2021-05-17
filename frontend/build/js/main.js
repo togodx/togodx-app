@@ -1206,11 +1206,15 @@
     return ColumnSelectorView;
   }();
 
+  var NUM_OF_GRID = 4;
+
   var _items = new WeakMap();
 
   var _property$2 = new WeakMap();
 
   var _OVERVIEW_CONTAINER$1 = new WeakMap();
+
+  var _GRIDS = new WeakMap();
 
   var _update$1 = new WeakSet();
 
@@ -1240,6 +1244,11 @@
       value: void 0
     });
 
+    _GRIDS.set(this, {
+      writable: true,
+      value: void 0
+    });
+
     console.log(elm, subject, property, items, sparqlist);
     this._subject = subject;
 
@@ -1254,7 +1263,7 @@
     })); // make container
 
 
-    elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"histogram\">\n        <div class=\"grid\"></div>\n        <div class=\"graph\"></div>\n        <svg class=\"additionalline\"></svg>\n      </div>\n      <div class=\"controller\">\n        <div class=\"selector\">\n          <div class=\"slider -min\"></div>\n          <div class=\"slider -max\"></div>\n        </div>\n        <div class=\"form\">\n          <input type=\"number\" data-range=\"min\">\n          ~\n          <input type=\"number\" data-range=\"max\">\n        </div>\n      </div>"; // make graph
+    elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ".concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>\n      <div class=\"controller\">\n        <div class=\"selector\">\n          <div class=\"slider -min\"></div>\n          <div class=\"slider -max\"></div>\n        </div>\n        <!--\n        <div class=\"form\">\n          <input type=\"number\" data-range=\"min\">\n          ~\n          <input type=\"number\" data-range=\"max\">\n        </div>\n        -->\n      </div>"); // make graph
 
     var graph = elm.querySelector('.graph');
 
@@ -1262,10 +1271,14 @@
 
     graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
       return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(width, "%;\">\n      <div class=\"actual\" style=\"background-color: ").concat(App$1.getHslColor(subject.hue), ";\">\n        <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / _classPrivateFieldGet(_this, _items).length, ", 70%, 50%, .075);\"></div>\n      </div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
-    }).join('');
-    elm.querySelectorAll('.graph > .bar').forEach(function (item, index) {
+    }).join(''); // reference
+
+    var histogram = elm.querySelector(':scope > .histogram-range-selector-view > .histogram');
+    histogram.querySelectorAll(':scope > .graph > .bar').forEach(function (item, index) {
       _classPrivateFieldGet(_this, _items)[index].elm = item;
     });
+
+    _classPrivateFieldSet(this, _GRIDS, histogram.querySelectorAll(':scope > .gridcontainer > .grid'));
 
     _classPrivateMethodGet(this, _update$1, _update2$1).call(this); // event
 
@@ -1278,14 +1291,24 @@
   ;
 
   function _update2$1() {
-    var isLog10 = App$1.viewModes.log10;
     var max = Math.max.apply(Math, _toConsumableArray(Array.from(_classPrivateFieldGet(this, _items)).map(function (item) {
       return item.count;
     })));
-    max = isLog10 ? Math.log10(max) : max;
+    var isLog10 = App$1.viewModes.log10;
+    var processedMax = isLog10 ? Math.log10(max) : max; // grid
+
+    var digits = String(Math.ceil(max)).length;
+    var unit = Number(String(Number(String(max).charAt(0)) + 1).padEnd(digits, '0')) / NUM_OF_GRID;
+
+    _classPrivateFieldGet(this, _GRIDS).forEach(function (grid, index) {
+      var scale = unit * index;
+      grid.style.bottom = "".concat((isLog10 ? Math.log10(scale) : scale) / processedMax * 100, "%");
+      grid.querySelector(':scope > .label').textContent = scale.toLocaleString();
+    }); // graph
+
 
     _classPrivateFieldGet(this, _items).forEach(function (item) {
-      item.elm.querySelector(':scope > .actual').style.height = (isLog10 ? Math.log10(item.count) : item.count) / max * 100 + '%';
+      item.elm.querySelector(':scope > .actual').style.height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100 + '%';
     });
   }
 

@@ -3,12 +3,14 @@ import DefaultEventEmitter from "./DefaultEventEmitter";
 import * as event from '../events';
 
 const PADDING = 10;
+const NUM_OF_GRID = 4;
 
 export default class HistogramRangeSelectorView {
 
   #items;
   #property;
   #OVERVIEW_CONTAINER;
+  #GRIDS;
 
   constructor(elm, subject, property, items, sparqlist, overview) {
     console.log(elm, subject, property, items, sparqlist)
@@ -23,8 +25,10 @@ export default class HistogramRangeSelectorView {
     elm.innerHTML = `
     <div class="histogram-range-selector-view">
       <div class="histogram">
-        <div class="grid"></div>
         <div class="graph"></div>
+        <div class="gridcontainer">
+          ${'<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID)}
+        </div>
         <svg class="additionalline"></svg>
       </div>
       <div class="controller">
@@ -32,11 +36,13 @@ export default class HistogramRangeSelectorView {
           <div class="slider -min"></div>
           <div class="slider -max"></div>
         </div>
+        <!--
         <div class="form">
           <input type="number" data-range="min">
           ~
           <input type="number" data-range="max">
         </div>
+        -->
       </div>`;
 
     // make graph
@@ -48,9 +54,14 @@ export default class HistogramRangeSelectorView {
       </div>
       <p class="label">${item.label}</p>
     </div>`).join('');
-    elm.querySelectorAll('.graph > .bar').forEach((item, index) => {
+
+    // reference
+    const histogram = elm.querySelector(':scope > .histogram-range-selector-view > .histogram');
+    histogram.querySelectorAll(':scope > .graph > .bar').forEach((item, index) => {
       this.#items[index].elm = item;
     })
+    this.#GRIDS = histogram.querySelectorAll(':scope > .gridcontainer > .grid');
+    
     this.#update();
 
     // event
@@ -58,14 +69,27 @@ export default class HistogramRangeSelectorView {
     graph.querySelectorAll(':scope > .bar')
   }
 
+
   // private methods
 
   #update() {
+
+    const max = Math.max(...Array.from(this.#items).map(item => item.count));
     const isLog10 = App.viewModes.log10;
-    let max = Math.max(...Array.from(this.#items).map(item => item.count));
-    max = isLog10 ? Math.log10(max) : max;
+    const processedMax = isLog10 ? Math.log10(max) : max;
+
+    // grid
+    const digits = String(Math.ceil(max)).length;
+    const unit = Number(String((Number(String(max).charAt(0)) + 1)).padEnd(digits, '0')) / NUM_OF_GRID;
+    this.#GRIDS.forEach((grid, index) => {
+      const scale = unit * index;
+      grid.style.bottom = `${(isLog10 ? Math.log10(scale) : scale) / processedMax * 100}%`;
+      grid.querySelector(':scope > .label').textContent = (scale).toLocaleString();
+    });
+
+    // graph
     this.#items.forEach(item => {
-      item.elm.querySelector(':scope > .actual').style.height = (isLog10 ? Math.log10(item.count) : item.count) / max * 100 + '%';
+      item.elm.querySelector(':scope > .actual').style.height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100 + '%';
     });
   }
 
