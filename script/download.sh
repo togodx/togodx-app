@@ -64,7 +64,7 @@ download() {
 create_date_triple() {
   local graph_name="${1}"
   local date=$(date +'%Y-%m-%d')
-  echo "<${graph_name}> <http://purl.org/dc/terms/date> \"${date}\"^^<http://www.w3.org/2001/XMLSchema#date> ."
+  echo "<${graph_name}> <http://purl.org/dc/terms/date> \"${date}\"^^<http://www.w3.org/2001/XMLSchema#date> ." > "date.ttl"
 }
 
 create_db_dir() {
