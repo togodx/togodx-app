@@ -26,7 +26,10 @@ parallel_download() {
     local graph_name=$(echo "${line}" | cut -f 2)
     local url=$(echo "${line}" | cut -f 3)
 
-    download "${db_name}" "${url}" &
+    if [[ ! -z ${url} ]]; then
+      download "${db_name}" "${url}" &
+    fi
+
     [ $( jobs | wc -l ) -ge $( nproc ) ] && wait ||:
   done
   wait
@@ -37,12 +40,20 @@ download() {
   local url=${2}
 
   create_db_dir ${db_name}
+  local opt="--quiet"
+
   if [[ ! -z "${DEBUG}" ]]; then
-    local opt="--spider -m -np -k -nd"
-  else
-    local opt="-m -np -k -A nt,ttl,owl -nd"
+    local opt="${opt} --spider"
   fi
-  eval wget ${opt} "${url}"
+
+  if [[ ! -z $(echo ${url} | awk '/\/$/') ]]; then
+    local opt="${opt} -m -np -nd --accept '*.nt*','*.ttl*','*.owl*'"
+  fi
+
+  local cmd="wget ${opt} ${url}"
+  echo "Start Downloading: ${db_name}"
+  echo "  Command: ${cmd}"
+  eval ${cmd}
 }
 
 create_db_dir() {
