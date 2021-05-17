@@ -1343,7 +1343,7 @@ body[data-display=results] #App > .inner {
 }
 #ConditionBuilder > .conditions > * {
   padding: 0.7rem 0.6rem;
-  background-color: var(--color-lamp-black);
+  background-color: rgba(255, 255, 255, 0.8);
   border-radius: 0.4rem;
 }
 #ConditionBuilder > .conditions > * + * {
@@ -1352,8 +1352,7 @@ body[data-display=results] #App > .inner {
 #ConditionBuilder > .conditions > * > .title {
   margin-bottom: -0.2rem;
   line-height: 1;
-  color: white;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
 }
 #ConditionBuilder > .conditions > * > .title > .material-icons-outlined {
   font-size: 1.4rem;
@@ -1368,7 +1367,6 @@ body[data-display=results] #App > .inner {
   line-height: 1.2;
   display: block;
   margin-top: 0.4rem;
-  color: white;
   font-weight: lighter;
 }
 body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .stacking-condition-view > .closebutton {
@@ -1660,7 +1658,6 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   margin-top: 0.2rem;
 }
 #UploadUserIDsView > form > label {
-  color: white;
   display: block;
 }
 #UploadUserIDsView > form > label > p {
@@ -1673,9 +1670,6 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
 #UploadUserIDsView > form > .buttons {
   padding-top: 0.4rem;
   text-align: center;
-}
-#UploadUserIDsView > form > .buttons > .rounded-button-view + .rounded-button-view {
-  margin-left: 0.4rem;
 }
 
 /*# sourceMappingURL=main.css.map */
