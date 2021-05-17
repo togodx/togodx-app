@@ -41,10 +41,12 @@ download() {
   local url=${3}
 
   create_db_dir ${db_name}
-  local opt="--quiet"
+  local opt=""
 
   if [[ ! -z "${DEBUG}" ]]; then
     local opt="${opt} --spider"
+  else
+    local opt="${opt} --quiet"
   fi
 
   if [[ ! -z $(echo ${url} | awk '/\/$/') ]]; then
