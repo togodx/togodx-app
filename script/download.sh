@@ -27,7 +27,7 @@ parallel_download() {
     local url=$(echo "${line}" | cut -f 3)
 
     if [[ ! -z ${url} ]]; then
-      download "${db_name}" "${url}" &
+      download "${db_name}" "${graph_name}" "${url}" &
     fi
 
     [ $( jobs | wc -l ) -ge $( nproc ) ] && wait ||:
@@ -37,7 +37,8 @@ parallel_download() {
 
 download() {
   local db_name=${1}
-  local url=${2}
+  local graph_name=${2}
+  local url=${3}
 
   create_db_dir ${db_name}
   local opt="--quiet"
@@ -54,6 +55,14 @@ download() {
   echo "Start Downloading: ${db_name}"
   echo "  Command: ${cmd}"
   eval ${cmd}
+
+  create_date_triple ${graph_name}
+}
+
+create_date_triple() {
+  local graph_name="${1}"
+  local date=$(date +'%Y-%m-%d')
+  echo "<${graph_name}> <http://purl.org/dc/terms/date> \"${date}\"^^<http://www.w3.org/2001/XMLSchema#date> ."
 }
 
 create_db_dir() {
