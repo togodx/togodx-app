@@ -46,7 +46,7 @@ download() {
   if [[ ! -z "${DEBUG}" ]]; then
     local opt="${opt} --spider"
   else
-    local opt="${opt} --quiet"
+    local opt="${opt} --quiet --show-progress"
   fi
 
   if [[ ! -z $(echo ${url} | awk '/\/$/') ]]; then
