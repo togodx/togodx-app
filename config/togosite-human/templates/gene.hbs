@@ -28,6 +28,8 @@
   // const subjectIdType = 'ncbigene';
   // const subjectId = "2019";
   // const subjectIdType = 'hgnc';
+  // const subjectId = "ENSG00000130234";
+  // const subjectIdType = 'ensembl_gene';
 
   // access API and return JSON
   const fetchJSON = async (api) => {
@@ -55,7 +57,7 @@
   // access convert APi endpoint and create ID Object
   const convertId = async (subjectId, subjectIdType) => {
     const targets = await targetIdTypes(subjectIdType);
-    const array = [];
+    const array = [{'type': subjectIdType, 'ids': [subjectId]}];
     for (const targetIdType of targets) {
       const url = togoidAPIURL + '/convert?format=json&ids=' + subjectId + '&route=' + subjectIdType + ',' + targetIdType;
       const json = await fetchJSON(url);
@@ -182,7 +184,7 @@
   }
 
   const createMetastanza = async () => {
-    addMainSubject();
+    //addMainSubject();
     const array = await convertId(subjectId, subjectIdType);
     for (const idObj of array) {
       for (const id of idObj.ids) {
