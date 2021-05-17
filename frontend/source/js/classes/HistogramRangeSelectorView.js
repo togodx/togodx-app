@@ -9,21 +9,29 @@ export default class HistogramRangeSelectorView {
 
   #items;
   #property;
+  #selectedBarsStart;
+  #selectedBarsEnd;
   #OVERVIEW_CONTAINER;
+  #ROOT;
+  #SELECTOR_BARS;
   #GRIDS;
 
   constructor(elm, subject, property, items, sparqlist, overview) {
     console.log(elm, subject, property, items, sparqlist)
 
     this._subject = subject;
-    this.#property = property;
     this._sparqlist = sparqlist;
+    this.#property = property;
     this.#OVERVIEW_CONTAINER = overview;
     this.#items = items.map(item => Object.assign({}, item));
 
     // make container
     elm.innerHTML = `
     <div class="histogram-range-selector-view">
+      <div class="selector">
+        <div class="overview"></div>
+        <div class="controller"></div>
+      </div>
       <div class="histogram">
         <div class="graph"></div>
         <div class="gridcontainer">
@@ -44,10 +52,14 @@ export default class HistogramRangeSelectorView {
         </div>
         -->
       </div>`;
+    this.#ROOT = elm.querySelector(':scope > .histogram-range-selector-view');
+    const histogram = this.#ROOT.querySelector(':scope > .histogram');
+    const selector = this.#ROOT.querySelector(':scope > .selector');
 
     // make graph
-    const graph = elm.querySelector('.graph');
     const width = 100 / this.#items.length;
+    selector.querySelector(':scope > .overview').innerHTML = this.#items.map(item => `<div class="bar" data-category-id="${item.categoryId}" data-count="${item.count}" style="width: ${width}%; background-color: ${App.getHslColor(subject.hue)};"></div>`).join('');
+    const graph = histogram.querySelector(':scope > .graph');
     graph.innerHTML = this.#items.map((item, index) => `<div class="bar" data-category-id="${item.categoryId}" data-count="${item.count}" style="width: ${width}%;">
       <div class="actual" style="background-color: ${App.getHslColor(subject.hue)};">
         <div class="color" style="background-color: hsla(${360 * index / this.#items.length}, 70%, 50%, .075);"></div>
@@ -56,21 +68,50 @@ export default class HistogramRangeSelectorView {
     </div>`).join('');
 
     // reference
-    const histogram = elm.querySelector(':scope > .histogram-range-selector-view > .histogram');
-    histogram.querySelectorAll(':scope > .graph > .bar').forEach((item, index) => {
-      this.#items[index].elm = item;
-    })
+    histogram.querySelectorAll(':scope > .graph > .bar').forEach((item, index) => this.#items[index].elm = item);
     this.#GRIDS = histogram.querySelectorAll(':scope > .gridcontainer > .grid');
-    
-    this.#update();
+    this.#SELECTOR_BARS = Array.from(selector.querySelectorAll(':scope > .overview > .bar'));
 
     // event
     DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update());
-    graph.querySelectorAll(':scope > .bar')
+    
+    this.#setupRangeSelector();
+    this.#update();
   }
 
 
   // private methods
+
+  #setupRangeSelector() {
+    const selectorController = this.#ROOT.querySelector(':scope > .selector > .controller')
+
+    let isMouseDown = false, startX, width, unit;
+    selectorController.addEventListener('mousedown', e => {
+      width = e.target.getBoundingClientRect().width;
+      unit = width / this.#items.length;
+      isMouseDown = true;
+      startX = e.layerX;
+    });
+    selectorController.addEventListener('mousemove', e => {
+      if (isMouseDown) {
+        const selectedWidth = e.layerX - startX;
+        if (selectedWidth > 0) {
+          this.#selectedBarsStart = Math.floor(startX / unit);
+          this.#selectedBarsEnd = Math.floor(e.layerX / unit)
+        } else {
+          this.#selectedBarsStart = Math.floor(e.layerX / unit);
+          this.#selectedBarsEnd = Math.floor(startX / unit)
+        }
+        // TODO:
+      }
+    });
+    selectorController.addEventListener('mouseup', e => {
+      if (isMouseDown) {
+        isMouseDown = false;
+      }
+    });
+    // graph.querySelectorAll(':scope > .bar')
+  }
 
   #update() {
 
@@ -80,7 +121,7 @@ export default class HistogramRangeSelectorView {
 
     // grid
     const digits = String(Math.ceil(max)).length;
-    const unit = Number(String((Number(String(max).charAt(0)) + 1)).padEnd(digits, '0')) / NUM_OF_GRID;
+    const unit = Number(String(max).charAt(0).padEnd(digits, '0')) / NUM_OF_GRID;
     this.#GRIDS.forEach((grid, index) => {
       const scale = unit * index;
       grid.style.bottom = `${(isLog10 ? Math.log10(scale) : scale) / processedMax * 100}%`;
@@ -89,7 +130,9 @@ export default class HistogramRangeSelectorView {
 
     // graph
     this.#items.forEach(item => {
-      item.elm.querySelector(':scope > .actual').style.height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100 + '%';
+      const height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100;
+      item.elm.querySelector(':scope > .actual').style.height = `${height}%`;
+      this.#SELECTOR_BARS.find(bar => bar.dataset.categoryId === item.categoryId).style.height = `${height}%`;
     });
   }
 

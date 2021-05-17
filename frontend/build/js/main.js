@@ -1212,9 +1212,19 @@
 
   var _property$2 = new WeakMap();
 
+  var _selectedBarsStart = new WeakMap();
+
+  var _selectedBarsEnd = new WeakMap();
+
   var _OVERVIEW_CONTAINER$1 = new WeakMap();
 
+  var _ROOT$6 = new WeakMap();
+
+  var _SELECTOR_BARS = new WeakMap();
+
   var _GRIDS = new WeakMap();
+
+  var _setupRangeSelector = new WeakSet();
 
   var _update$1 = new WeakSet();
 
@@ -1229,6 +1239,8 @@
 
     _update$1.add(this);
 
+    _setupRangeSelector.add(this);
+
     _items.set(this, {
       writable: true,
       value: void 0
@@ -1239,7 +1251,27 @@
       value: void 0
     });
 
+    _selectedBarsStart.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _selectedBarsEnd.set(this, {
+      writable: true,
+      value: void 0
+    });
+
     _OVERVIEW_CONTAINER$1.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _ROOT$6.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _SELECTOR_BARS.set(this, {
       writable: true,
       value: void 0
     });
@@ -1251,10 +1283,9 @@
 
     console.log(elm, subject, property, items, sparqlist);
     this._subject = subject;
+    this._sparqlist = sparqlist;
 
     _classPrivateFieldSet(this, _property$2, property);
-
-    this._sparqlist = sparqlist;
 
     _classPrivateFieldSet(this, _OVERVIEW_CONTAINER$1, overview);
 
@@ -1263,34 +1294,85 @@
     })); // make container
 
 
-    elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ".concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>\n      <div class=\"controller\">\n        <div class=\"selector\">\n          <div class=\"slider -min\"></div>\n          <div class=\"slider -max\"></div>\n        </div>\n        <!--\n        <div class=\"form\">\n          <input type=\"number\" data-range=\"min\">\n          ~\n          <input type=\"number\" data-range=\"max\">\n        </div>\n        -->\n      </div>"); // make graph
+    elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"selector\">\n        <div class=\"overview\"></div>\n        <div class=\"controller\"></div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ".concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>\n      <div class=\"controller\">\n        <div class=\"selector\">\n          <div class=\"slider -min\"></div>\n          <div class=\"slider -max\"></div>\n        </div>\n        <!--\n        <div class=\"form\">\n          <input type=\"number\" data-range=\"min\">\n          ~\n          <input type=\"number\" data-range=\"max\">\n        </div>\n        -->\n      </div>");
 
-    var graph = elm.querySelector('.graph');
+    _classPrivateFieldSet(this, _ROOT$6, elm.querySelector(':scope > .histogram-range-selector-view'));
 
-    var width = 100 / _classPrivateFieldGet(this, _items).length;
+    var histogram = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .histogram');
 
+    var selector = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .selector'); // make graph
+
+
+    var _width = 100 / _classPrivateFieldGet(this, _items).length;
+
+    selector.querySelector(':scope > .overview').innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
+      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(_width, "%; background-color: ").concat(App$1.getHslColor(subject.hue), ";\"></div>");
+    }).join('');
+    var graph = histogram.querySelector(':scope > .graph');
     graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
-      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(width, "%;\">\n      <div class=\"actual\" style=\"background-color: ").concat(App$1.getHslColor(subject.hue), ";\">\n        <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / _classPrivateFieldGet(_this, _items).length, ", 70%, 50%, .075);\"></div>\n      </div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
+      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(_width, "%;\">\n      <div class=\"actual\" style=\"background-color: ").concat(App$1.getHslColor(subject.hue), ";\">\n        <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / _classPrivateFieldGet(_this, _items).length, ", 70%, 50%, .075);\"></div>\n      </div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
     }).join(''); // reference
 
-    var histogram = elm.querySelector(':scope > .histogram-range-selector-view > .histogram');
     histogram.querySelectorAll(':scope > .graph > .bar').forEach(function (item, index) {
-      _classPrivateFieldGet(_this, _items)[index].elm = item;
+      return _classPrivateFieldGet(_this, _items)[index].elm = item;
     });
 
     _classPrivateFieldSet(this, _GRIDS, histogram.querySelectorAll(':scope > .gridcontainer > .grid'));
 
-    _classPrivateMethodGet(this, _update$1, _update2$1).call(this); // event
+    _classPrivateFieldSet(this, _SELECTOR_BARS, Array.from(selector.querySelectorAll(':scope > .overview > .bar'))); // event
 
 
     DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
       return _classPrivateMethodGet(_this, _update$1, _update2$1).call(_this);
     });
-    graph.querySelectorAll(':scope > .bar');
+
+    _classPrivateMethodGet(this, _setupRangeSelector, _setupRangeSelector2).call(this);
+
+    _classPrivateMethodGet(this, _update$1, _update2$1).call(this);
   } // private methods
   ;
 
+  function _setupRangeSelector2() {
+    var _this2 = this;
+
+    var selectorController = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .selector > .controller');
+
+    var isMouseDown = false,
+        startX,
+        width,
+        unit;
+    selectorController.addEventListener('mousedown', function (e) {
+      width = e.target.getBoundingClientRect().width;
+      unit = width / _classPrivateFieldGet(_this2, _items).length;
+      isMouseDown = true;
+      startX = e.layerX;
+    });
+    selectorController.addEventListener('mousemove', function (e) {
+      if (isMouseDown) {
+        var selectedWidth = e.layerX - startX;
+
+        if (selectedWidth > 0) {
+          _classPrivateFieldSet(_this2, _selectedBarsStart, Math.floor(startX / unit));
+
+          _classPrivateFieldSet(_this2, _selectedBarsEnd, Math.floor(e.layerX / unit));
+        } else {
+          _classPrivateFieldSet(_this2, _selectedBarsStart, Math.floor(e.layerX / unit));
+
+          _classPrivateFieldSet(_this2, _selectedBarsEnd, Math.floor(startX / unit));
+        } // TODO:
+
+      }
+    });
+    selectorController.addEventListener('mouseup', function (e) {
+      if (isMouseDown) {
+        isMouseDown = false;
+      }
+    }); // graph.querySelectorAll(':scope > .bar')
+  }
+
   function _update2$1() {
+    var _this3 = this;
+
     var max = Math.max.apply(Math, _toConsumableArray(Array.from(_classPrivateFieldGet(this, _items)).map(function (item) {
       return item.count;
     })));
@@ -1298,7 +1380,7 @@
     var processedMax = isLog10 ? Math.log10(max) : max; // grid
 
     var digits = String(Math.ceil(max)).length;
-    var unit = Number(String(Number(String(max).charAt(0)) + 1).padEnd(digits, '0')) / NUM_OF_GRID;
+    var unit = Number(String(max).charAt(0).padEnd(digits, '0')) / NUM_OF_GRID;
 
     _classPrivateFieldGet(this, _GRIDS).forEach(function (grid, index) {
       var scale = unit * index;
@@ -1308,7 +1390,11 @@
 
 
     _classPrivateFieldGet(this, _items).forEach(function (item) {
-      item.elm.querySelector(':scope > .actual').style.height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100 + '%';
+      var height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100;
+      item.elm.querySelector(':scope > .actual').style.height = "".concat(height, "%");
+      _classPrivateFieldGet(_this3, _SELECTOR_BARS).find(function (bar) {
+        return bar.dataset.categoryId === item.categoryId;
+      }).style.height = "".concat(height, "%");
     });
   }
 
