@@ -1,0 +1,45 @@
+Database name	Graph name	URL
+ChEBI	http://rdf.integbio.jp/dataset/togosite/chebi	ftp://ftp.ebi.ac.uk/pub/databases/chebi/ontology/
+ChEMBL	http://rdf.integbio.jp/dataset/togosite/chembl	ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/latest/
+Reactome	http://rdf.integbio.jp/dataset/togosite/reactome	ftp://ftp.ebi.ac.uk/pub/databases/RDF/reactome/
+Rhea	http://rdf.integbio.jp/dataset/togosite/rhea	ftp://ftp.ebi.ac.uk/pub/databases/rhea/rdf/
+Ensembl	http://rdf.integbio.jp/dataset/togosite/ensembl	ftp://ftp.ensembl.org/pub/current_rdf/
+neXtProt	http://rdf.integbio.jp/dataset/togosite/nextprot	ftp://ftp.nextprot.org/pub/current_release/rdf/ttl
+TogoID	http://rdf.integbio.jp/dataset/togosite/togoid	http://ep6.dbcls.jp/togoid/link/togosite/
+dbcatalog	http://rdf.integbio.jp/dataset/togosite/dbcatalog/main	http://integbio.jp/rdf/download/dbcatalog/2021-03-17/all/dbcatalog.tar.gz
+NANDO	http://rdf.integbio.jp/dataset/togosite/nando	http://integbio.jp/rdf/download/nando/2020-11-11/all/nand.tar.gz
+wwPDB	http://rdf.integbio.jp/dataset/togosite/pdbj	http://integbio.jp/rdf/download/pdbj/2021-01-20/all/pdbj.tar.gz
+PubcaseFinder	http://rdf.integbio.jp/dataset/togosite/pubcasefinder	http://integbio.jp/rdf/download/pubcasefinder/2021-03-19/all/pubcasefinder.tar.gz
+RO	http://rdf.integbio.jp/dataset/togosite/ro	http://purl.obolibrary.org/obo/ro.owl
+UBERON	http://rdf.integbio.jp/dataset/togosite/uberon	http://purl.obolibrary.org/obo/uberon.owl
+EFO	http://rdf.integbio.jp/dataset/togosite/efo	http://www.ebi.ac.uk/efo/efo.owl
+ATC	http://rdf.integbio.jp/dataset/togosite/atc	https://data.bioontology.org/ontologies/ATC/submissions/14/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
+GO	http://rdf.integbio.jp/dataset/togosite/go	https://data.bioontology.org/ontologies/GO/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb&download_format=rdf
+hOP	http://rdf.integbio.jp/dataset/togosite/hop	https://github.com/hchiba1/hop-rdf/blob/main/created_rdf/hop2.ttl
+ChIP-Atlas gene cross reference	http://rdf.integbio.jp/dataset/togosite/chip_atlas_ncbigene_ensembl	https://github.com/hchiba1/togosite/blob/main/create_rdf/ncbigene-ensembl.ttl
+Sequence Ontology	http://rdf.integbio.jp/dataset/togosite/so	https://github.com/The-Sequence-Ontology/SO-Ontologies/archive/refs/tags/v3.1.zip
+RefEx GTEx v8	http://rdf.integbio.jp/dataset/togosite/refex_gtex_v8_summary	https://orth.dbcls.jp/rdf/210329_gtex_v8_sum.ttl
+RefEx sample GTEx v8	http://rdf.integbio.jp/dataset/togosite/refexsample_gtex_v8_summary	https://orth.dbcls.jp/rdf/210513_refexsample_gtex_v8_sum.ttl
+ChIP-Atlas	http://rdf.integbio.jp/dataset/togosite/chip_atlas	https://orth.dbcls.jp/rdf/chip_atlas_target_gene.ttl
+Homo_sapiens.gene_info	http://rdf.integbio.jp/dataset/togosite/homo_sapiens_gene_info	https://orth.dbcls.jp/rdf/Homo_sapiens.gene_info.ttl
+HomoloGene Data	http://rdf.integbio.jp/dataset/togosite/homologene/data	https://orth.dbcls.jp/rdf/homologene.ttl
+RefEx tissue classifications for GTEx v6	http://rdf.integbio.jp/dataset/togosite/refexo_tissue_classifications	https://orth.dbcls.jp/rdf/refexo_tissue_classifications.ttl
+GTEx v6	http://rdf.integbio.jp/dataset/togosite/refex_tissue_specific_genes_gtex_v6	https://orth.dbcls.jp/rdf/tissue_specific_genes_gtex_v6.ttl
+HomoloGene Ontology	http://rdf.integbio.jp/dataset/togosite/homologene/ontology	https://raw.githubusercontent.com/hchiba1/homologene-rdf/master/created_rdf/homologene_branchtime.ttl
+RefEx ver1 gene cross reference	http://rdf.integbio.jp/dataset/togosite/refex_id_relation_human	https://raw.githubusercontent.com/hchiba1/refex-add-rdf/main/created_rdf/RefEx_ID_Relation_human.ttl
+RefEx ver1 GeneChip	http://rdf.integbio.jp/dataset/togosite/refex_tissue_specific_genechip_human_GSE7307	https://raw.githubusercontent.com/hchiba1/refex-add-rdf/main/created_rdf/RefEx_tissue_specific_genechip_human_GSE7307.ttl
+RefEx ver1 RNA-seq	http://rdf.integbio.jp/dataset/togosite/refex_tissue_specific_rnaseq_human_PRJEB2445	https://raw.githubusercontent.com/hchiba1/refex-add-rdf/main/created_rdf/RefEx_tissue_specific_RNAseq_human_PRJEB2445.ttl
+RefEx Ontology modified version	http://rdf.integbio.jp/dataset/togosite/refexo	https://raw.githubusercontent.com/hchiba1/refex-add-rdf/main/created_rdf/refexo_v0.06.ttl
+RefEx Ontology additional terms	http://rdf.integbio.jp/dataset/togosite/refexo_add	https://raw.githubusercontent.com/hchiba1/refex-add-rdf/main/created_rdf/refexo-add.ttl
+MEDGEN	http://rdf.integbio.jp/dataset/togosite/medgen	https://togovar-stg.biosciencedbc.jp/public/virtuoso/medgen/latest/
+ClinVar	http://rdf.integbio.jp/dataset/togosite/clinvar	https://togovar.biosciencedbc.jp/public/virtuoso/clinvar/latest/
+HGNC symbol report	http://rdf.integbio.jp/dataset/togosite/hgnc	https://togovar.biosciencedbc.jp/public/virtuoso/hgnc/latest/
+HPO	http://rdf.integbio.jp/dataset/togosite/hpo	https://togovar.biosciencedbc.jp/public/virtuoso/HPO/20210217/hp.owl
+MESH	http://rdf.integbio.jp/dataset/togosite/mesh	https://togovar.biosciencedbc.jp/public/virtuoso/mesh/20210305/mesh.nt.gz
+MONDO	http://rdf.integbio.jp/dataset/togosite/mondo	https://togovar.biosciencedbc.jp/public/virtuoso/mondo/20210415/
+TogoVar Variant VEP annotation	http://rdf.integbio.jp/dataset/togosite/variation/annotation/clinvar	https://togovar.biosciencedbc.jp/public/virtuoso/variant_condition/clinvar/latest/
+TogoVar Variant Position and Allele	http://rdf.integbio.jp/dataset/togosite/variation	https://togovar.biosciencedbc.jp/public/virtuoso/variant/v3/
+UniProt	http://rdf.integbio.jp/dataset/togosite/uniprot	https://www.uniprot.org/uniprot/?query=organism:9606&format=rdf&compress=yes
+PubChem	http://rdf.integbio.jp/dataset/togosite/pubchem	
+UniProt keywords	http://rdf.integbio.jp/dataset/togosite/uniprot/keywords	ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/rdf/keywords.rdf.xz
+UniProt tissues	http://rdf.integbio.jp/dataset/togosite/uniprot/tissues	ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/rdf/tissues.rdf.xz
