@@ -1359,8 +1359,9 @@
           _classPrivateFieldSet(_this2, _selectedBarsStart, Math.floor(e.layerX / unit));
 
           _classPrivateFieldSet(_this2, _selectedBarsEnd, Math.floor(startX / unit));
-        } // TODO:
+        }
 
+        console.log(_classPrivateFieldGet(_this2, _selectedBarsStart), '-', _classPrivateFieldGet(_this2, _selectedBarsEnd)); // TODO:
       }
     });
     selectorController.addEventListener('mouseup', function (e) {

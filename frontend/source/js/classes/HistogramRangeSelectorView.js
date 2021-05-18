@@ -102,6 +102,7 @@ export default class HistogramRangeSelectorView {
           this.#selectedBarsStart = Math.floor(e.layerX / unit);
           this.#selectedBarsEnd = Math.floor(startX / unit)
         }
+        console.log(this.#selectedBarsStart, '-', this.#selectedBarsEnd)
         // TODO:
       }
     });
