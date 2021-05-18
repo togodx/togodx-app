@@ -104,10 +104,11 @@ get_modification_date() {
   if [[ ! -z ${oldest_file_in_the_dir} ]]; then
     if [[ ${OSTYPE} =~ ^darwin ]]; then
       local date_epoc=$(stat -f %m "${oldest_file_in_the_dir}" )
+      local date=$(date -r "${date_epoc}" '+%Y-%m-%d')
     else
       local date_epoc=$(stat -c '%Y' "${oldest_file_in_the_dir}" )
+      local date=$(date --date "@${date_epoc}" '+%Y-%m-%d')
     fi
-    local date=$(date -r "${date_epoc}" '+%Y-%m-%d')
   else
     local date=$(date '+%Y-%m-%d')
   fi
