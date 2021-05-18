@@ -19,10 +19,25 @@ create_download_dir() {
 #
 # Download
 #
-parallel_download() {
+download_all() {
+  echo "Starting download using single thread.."
   IFS=$'\n'
-  for line in $(awk 'NR != 1 && NF == 3' ${DATALIST}); do
-    local db_name=$(echo "${line}" | cut -f 1)
+  for line in $(awk -F'\t' 'NR != 1 && NF == 3' ${DATALIST}); do
+    local db_name=$(echo "${line}" | cut -f 1 | sed -e 's: :_:g')
+    local graph_name=$(echo "${line}" | cut -f 2)
+    local url=$(echo "${line}" | cut -f 3)
+
+    if [[ ! -z ${url} ]]; then
+      download "${db_name}" "${graph_name}" "${url}"
+    fi
+  done
+}
+
+parallel_download() {
+  echo "Starting parallel download using $(nproc) threads.."
+  IFS=$'\n'
+  for line in $(awk -F'\t' 'NR != 1 && NF == 3' ${DATALIST}); do
+    local db_name=$(echo "${line}" | cut -f 1 | sed -e 's: :_:g')
     local graph_name=$(echo "${line}" | cut -f 2)
     local url=$(echo "${line}" | cut -f 3)
 
@@ -36,15 +51,36 @@ parallel_download() {
 }
 
 download() {
-  local db_name=${1}
-  local graph_name=${2}
-  local url=${3}
+  local db_name="${1}"
+  local graph_name="${2}"
+  local url="${3}"
+  local db_dir=$(create_db_dir ${db_name})
+  cd ${db_dir}
 
-  create_db_dir ${db_name}
+  echo ""
+  echo "Start Downloading: ${db_name} at ${db_dir}"
+  echo "  Graph name: ${graph_name}"
+
+  local cmd=$(generate_wget_command "${url}")
+  echo "  Command: ${cmd}"
+  eval ${cmd}
+
+  create_date_triple ${graph_name} ${db_dir}
+}
+
+create_db_dir() {
+  local db_name="${1}"
+  local db_dir="${DOWNLOAD_DIR}/${db_name}"
+  mkdir -p "${db_dir}"
+  echo "${db_dir}"
+}
+
+generate_wget_command() {
+  local url="${1}"
   local opt=""
 
   if [[ ! -z "${DEBUG}" ]]; then
-    local opt="${opt} --spider"
+    local opt="${opt} --spider --quiet"
   else
     local opt="${opt} --quiet"
   fi
@@ -53,25 +89,29 @@ download() {
     local opt="${opt} -m -np -nd --accept '*.nt*','*.ttl*','*.owl*'"
   fi
 
-  local cmd="wget ${opt} ${url}"
-  echo "Start Downloading: ${db_name}"
-  echo "  Command: ${cmd}"
-  eval ${cmd}
-
-  create_date_triple ${graph_name}
+  echo "wget ${opt} ${url}"
 }
 
 create_date_triple() {
   local graph_name="${1}"
-  local date=$(date +'%Y-%m-%d')
-  echo "<${graph_name}> <http://purl.org/dc/terms/date> \"${date}\"^^<http://www.w3.org/2001/XMLSchema#date> ." > "date.ttl"
+  local db_dir="${2}"
+  local date=$(get_modification_date)
+  echo "<${graph_name}> <http://purl.org/dc/terms/date> \"${date}\"^^<http://www.w3.org/2001/XMLSchema#date> ." > "${db_dir}/date.ttl"
 }
 
-create_db_dir() {
-  local db_name="${1}"
-  local db_dir="${DOWNLOAD_DIR}/${db_name}"
-  mkdir -p "${db_dir}"
-  cd "${db_dir}"
+get_modification_date() {
+  local oldest_file_in_the_dir=$(ls -lt | tail -1 | awk '{ print $NF }')
+  if [[ ! -z ${oldest_file_in_the_dir} ]]; then
+    if [[ ${OSTYPE} =~ ^darwin ]]; then
+      local date_epoc=$(stat -f %m "${oldest_file_in_the_dir}" )
+    else
+      local date_epoc=$(stat -c '%Y' "${oldest_file_in_the_dir}" )
+    fi
+    local date=$(date -d "@${date_epoc}" '+%Y-%m-%d')
+  else
+    local date=$(date '+%Y-%m-%d')
+  fi
+  echo "${date}"
 }
 
 #
@@ -83,7 +123,11 @@ main() {
     exit 1
   fi
   create_download_dir
-  parallel_download
+  if [[ -z ${NO_PARALLEL} ]]; then
+    download_all
+  else
+    parallel_download
+  fi
 }
 
 #
@@ -95,6 +139,9 @@ while [[ $# -gt 0 ]]; do
     --debug)
       set -eux
       DEBUG="true"
+      ;;
+    --no-parallel)
+      NO_PARALLEL="true"
       ;;
     -O | --outdir)
       OUTDIR="${2}"
