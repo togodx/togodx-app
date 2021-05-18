@@ -1967,7 +1967,7 @@
     DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
     _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(tableData.condition.togoKey, "</div>\n        </div>\n      </th>\n      ").concat(tableData.condition.attributes.map(function (property) {
-      return "\n      <th>\n        <div class=\"inner -propertyvalue\" style=\"background-color: ".concat(App$1.getHslColor(property.subject.hue), "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.subject.subject, "</span>\n        </div>\n      </th>");
+      return "\n      <th>\n        <div class=\"inner -propertyvalue\" style=\"background-color: ".concat(App$1.getHslColor(property.subject.hue), "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
     }).join(''), "\n      ").concat(tableData.condition.properties.map(function (property) {
       return "\n      <th>\n        <div class=\"inner -property\" style=\"color: ".concat(App$1.getHslColor(property.subject.hue), "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
     }).join('')); // make stats
@@ -1998,12 +1998,13 @@
     }); // make table
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
-      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div class=\"togo-key-view\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column) {
+      console.log(row);
+      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div class=\"togo-key-view\" data-key=\"").concat(detail.tableData.condition.togoKey, "\" data-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column) {
         // console.log(column)
         if (column) {
           return "\n              <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute) {
             if (!attribute.attribute) console.error(attribute);
-            return "\n              <li>\n                <div class=\"togo-key-view\">".concat(attribute.id, "</div>\n                <a\n                  href=\"").concat(attribute.attribute ? attribute.attribute.uri : '', "\"\n                  title=\"").concat(attribute.attribute ? attribute.attribute.uri : '', "\"\n                  target=\"_blank\">").concat(attribute.attribute ? attribute.attribute.label : attribute, "</a>\n              </li>");
+            return "\n              <li>\n                <div class=\"togo-key-view\" data-key=\"".concat(column.propertyKey, "\" data-id=\"").concat(attribute.id, "\">").concat(attribute.id, "</div>\n                <a\n                  href=\"").concat(attribute.attribute ? attribute.attribute.uri : '', "\"\n                  title=\"").concat(attribute.attribute ? attribute.attribute.uri : '', "\"\n                  target=\"_blank\">").concat(attribute.attribute ? attribute.attribute.label : attribute, "</a>\n              </li>");
           }).join(''), "</ul></div></td>");
         } else {
           return '<td><div class="inner -empty"></div></td>';
