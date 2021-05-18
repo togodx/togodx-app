@@ -86,7 +86,7 @@ generate_wget_command() {
   fi
 
   if [[ ! -z $(echo ${url} | awk '/\/$/') ]]; then
-    local opt="${opt} -m -np -nd --accept '*.nt*','*.ttl*','*.owl*'"
+    local opt="${opt} -m -np -nd --accept '*.nt*','*.ttl*','*.owl*','*.tar*', '*.rdf*'"
   fi
 
   echo "wget ${opt} ${url}"
