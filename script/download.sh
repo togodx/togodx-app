@@ -80,13 +80,13 @@ generate_wget_command() {
   local opt=""
 
   if [[ ! -z "${DEBUG}" ]]; then
-    local opt="${opt} --spider --quiet"
+    local opt="${opt} --spider"
   else
     local opt="${opt} --quiet"
   fi
 
   if [[ ! -z $(echo ${url} | awk '/\/$/') ]]; then
-    local opt="${opt} -m -np -nd --accept '*.nt*','*.ttl*','*.owl*','*.tar*', '*.rdf*'"
+    local opt="${opt} -m -np -nd --accept '*.nt*','*.ttl*','*.owl*','*.tar*','*.rdf*'"
   fi
 
   echo "wget ${opt} ${url}"
