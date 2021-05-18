@@ -111,6 +111,7 @@ export default class ResultsTable {
   }
 
   #addTableRows(detail) {
+    console.log(detail)
 
     this.#tableData = detail.tableData;
 
