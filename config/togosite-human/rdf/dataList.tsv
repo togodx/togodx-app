@@ -1,9 +1,9 @@
 Database name	Graph name	URL
 ChEBI	http://rdf.integbio.jp/dataset/togosite/chebi	ftp://ftp.ebi.ac.uk/pub/databases/chebi/ontology/
 ChEMBL	http://rdf.integbio.jp/dataset/togosite/chembl	ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/latest/
-Reactome	http://rdf.integbio.jp/dataset/togosite/reactome	ftp://ftp.ebi.ac.uk/pub/databases/RDF/reactome/
+Reactome	http://rdf.integbio.jp/dataset/togosite/reactome	ftp://ftp.ebi.ac.uk/pub/databases/RDF/reactome/r71/
 Rhea	http://rdf.integbio.jp/dataset/togosite/rhea	ftp://ftp.ebi.ac.uk/pub/databases/rhea/rdf/
-Ensembl	http://rdf.integbio.jp/dataset/togosite/ensembl	ftp://ftp.ensembl.org//pub/release-102/rdf/homo_sapiens/
+Ensembl	http://rdf.integbio.jp/dataset/togosite/ensembl	ftp://ftp.ensembl.org/pub/release-102/rdf/homo_sapiens/
 neXtProt	http://rdf.integbio.jp/dataset/togosite/nextprot	ftp://ftp.nextprot.org/pub/current_release/rdf/ttl
 TogoID	http://rdf.integbio.jp/dataset/togosite/togoid	http://ep6.dbcls.jp/togoid/link/togosite/
 dbcatalog	http://rdf.integbio.jp/dataset/togosite/dbcatalog/main	http://integbio.jp/rdf/download/dbcatalog/2021-03-17/all/dbcatalog.tar.gz
@@ -40,6 +40,6 @@ MONDO	http://rdf.integbio.jp/dataset/togosite/mondo	https://togovar.biosciencedb
 TogoVar Variant VEP annotation	http://rdf.integbio.jp/dataset/togosite/variation/annotation/clinvar	https://togovar.biosciencedbc.jp/public/virtuoso/variant_condition/clinvar/latest/
 TogoVar Variant Position and Allele	http://rdf.integbio.jp/dataset/togosite/variation	https://togovar.biosciencedbc.jp/public/virtuoso/variant/v3/
 UniProt	http://rdf.integbio.jp/dataset/togosite/uniprot	https://www.uniprot.org/uniprot/?query=organism:9606&format=rdf&compress=yes
-PubChem	http://rdf.integbio.jp/dataset/togosite/pubchem	
+PubChem	http://rdf.integbio.jp/dataset/togosite/pubchem
 UniProt keywords	http://rdf.integbio.jp/dataset/togosite/uniprot/keywords	ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/rdf/keywords.rdf.xz
 UniProt tissues	http://rdf.integbio.jp/dataset/togosite/uniprot/tissues	ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/rdf/tissues.rdf.xz
