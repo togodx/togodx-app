@@ -1,5 +1,6 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import ConditionBuilder from "./ConditionBuilder";
 
 const LIMIT = 10;
 
@@ -22,6 +23,7 @@ export default class TableData {
 
   constructor(condition, elm) {
     console.log(condition)
+    console.log(ConditionBuilder)
 
     this.#isAutoLoad = false;
     this.#isLoaded = false;
@@ -50,7 +52,7 @@ export default class TableData {
       </div>`).join('')}
       
     </div>
-    <div class="button close-button" title="Delete" data-button="delete"></div>
+    <div class="button close-button-view" title="Delete" data-button="delete"></div>
     <div class="status">
       <p>Getting id list</p>
     </div>
@@ -67,18 +69,15 @@ export default class TableData {
       <div class="button autorenew" title="Prepare for download" data-button="prepare-download">
         <span class="material-icons-outlined" id="autorenew">autorenew</span>
       </div>
-      <div class="button downloads" title="Download CSV">
-        <span class="material-icons-outlined">download</span>
-        CSV
-      </div>
       <div class="button downloads" title="Download JSON ">
-        <span class="material-icons-outlined">download</span>
-        JSON
+        <a id="JSON" href="" download="sample.json">
+          <span class="material-icons-outlined">download</span>
+          <span class="text">JSON</span>
+        </a>
       </div>
       <div class="button" title="Restore as condition" data-button="restore">
         <span class="material-icons-outlined">settings_backup_restore</span>
       </div>
-      
     </div>
     `;
 
@@ -107,10 +106,6 @@ export default class TableData {
         this.#isAutoLoad = false;
         document.getElementById('autorenew').classList.remove('lotation');
       }
-    });
-    BUTTONS.find(button => button.dataset.button === 'restore').addEventListener('click', e => {
-      e.stopPropagation();
-      console.log('restore')
     });
     BUTTONS.find(button => button.dataset.button === 'delete').addEventListener('click', e => {
       e.stopPropagation();
@@ -245,6 +240,9 @@ export default class TableData {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = 'Complete';
     document.getElementById('autorenew').classList.remove('lotation');
+    let jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {type : 'application/json'});
+    let jsonUrl = URL.createObjectURL(jsonBlob)
+    document.getElementById('JSON').setAttribute('href', jsonUrl);
   }
 
   /* public methods */

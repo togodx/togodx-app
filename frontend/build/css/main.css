@@ -952,6 +952,17 @@ body[data-display=results] [data-hidden-by=results], body[data-display=propertie
 .table-data-controller-view > .controller > .downloads {
   display: none;
 }
+.table-data-controller-view > .controller > .downloads > a {
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+.table-data-controller-view > .controller > .downloads > a > span {
+  vertical-align: middle;
+}
+.table-data-controller-view > .controller > .downloads > a > .material-icons-outlined {
+  font-size: 1.4rem;
+}
 .table-data-controller-view > .controller > .button {
   padding: 0.2rem 0;
   flex-grow: 1;
@@ -1212,7 +1223,7 @@ body[data-heatmap=true] .track-view > .row.-upper > .right > .overview > .inner 
   box-shadow: 0 0 0 0.1rem rgba(255, 255, 255, 0.5) inset;
 }
 
-.close-button {
+.close-button-view {
   width: 1.2rem;
   height: 1.2rem;
   position: absolute;
@@ -1220,7 +1231,7 @@ body[data-heatmap=true] .track-view > .row.-upper > .right > .overview > .inner 
   right: 0.4rem;
   cursor: pointer;
 }
-.close-button::before, .close-button::after {
+.close-button-view::before, .close-button-view::after {
   content: "";
   border-left: solid 0.1rem var(--color-black);
   position: absolute;
@@ -1229,10 +1240,10 @@ body[data-heatmap=true] .track-view > .row.-upper > .right > .overview > .inner 
   display: block;
   height: 0.8rem;
 }
-.close-button::before {
+.close-button-view::before {
   transform: rotate(45deg);
 }
-.close-button::after {
+.close-button-view::after {
   transform: rotate(-45deg);
 }
 

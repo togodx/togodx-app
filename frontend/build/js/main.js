@@ -2124,6 +2124,7 @@
       });
 
       console.log(condition);
+      console.log(ConditionBuilder$1);
 
       _classPrivateFieldSet(this, _isAutoLoad, false);
 
@@ -2148,7 +2149,7 @@
         return "<div class=\"condiiton -value\" style=\"background-color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         return "<div class=\"condiiton -value\" style=\"color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
-      }).join(''), "\n      \n    </div>\n    <div class=\"button close-button\" title=\"Delete\" data-button=\"delete\"></div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button autorenew\" title=\"Prepare for download\" data-button=\"prepare-download\">\n        <span class=\"material-icons-outlined\" id=\"autorenew\">autorenew</span>\n      </div>\n      <div class=\"button downloads\" title=\"Download CSV\">\n        <span class=\"material-icons-outlined\">download</span>\n        CSV\n      </div>\n      <div class=\"button downloads\" title=\"Download JSON \">\n        <span class=\"material-icons-outlined\">download</span>\n        JSON\n      </div>\n      <div class=\"button\" title=\"Restore as condition\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n      </div>\n      \n    </div>\n    "); // reference　
+      }).join(''), "\n      \n    </div>\n    <div class=\"button close-button-view\" title=\"Delete\" data-button=\"delete\"></div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button autorenew\" title=\"Prepare for download\" data-button=\"prepare-download\">\n        <span class=\"material-icons-outlined\" id=\"autorenew\">autorenew</span>\n      </div>\n      <div class=\"button downloads\" title=\"Download JSON \">\n        <a id=\"JSON\" href=\"\" download=\"sample.json\">\n          <span class=\"material-icons-outlined\">download</span>\n          <span class=\"text\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" title=\"Restore as condition\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n      </div>\n    </div>\n    "); // reference　
 
       _classPrivateFieldSet(this, _ROOT$3, elm);
 
@@ -2191,12 +2192,6 @@
         }
       });
 
-      BUTTONS.find(function (button) {
-        return button.dataset.button === 'restore';
-      }).addEventListener('click', function (e) {
-        e.stopPropagation();
-        console.log('restore');
-      });
       BUTTONS.find(function (button) {
         return button.dataset.button === 'delete';
       }).addEventListener('click', function (e) {
@@ -2438,6 +2433,11 @@
     _classPrivateFieldGet(this, _ROOT$3).dataset.status = 'complete';
     _classPrivateFieldGet(this, _STATUS).textContent = 'Complete';
     document.getElementById('autorenew').classList.remove('lotation');
+    var jsonBlob = new Blob([JSON.stringify(_classPrivateFieldGet(this, _rows), null, 2)], {
+      type: 'application/json'
+    });
+    var jsonUrl = URL.createObjectURL(jsonBlob);
+    document.getElementById('JSON').setAttribute('href', jsonUrl);
   };
 
   var _tableData$1 = new WeakMap();
