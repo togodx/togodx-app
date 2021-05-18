@@ -1206,55 +1206,198 @@
     return ColumnSelectorView;
   }();
 
-  var HistogramRangeSelectorView = /*#__PURE__*/function () {
-    function HistogramRangeSelectorView(elm, subject, property, items, sparqlist) {
-      var _this = this;
+  var NUM_OF_GRID = 4;
 
-      _classCallCheck(this, HistogramRangeSelectorView);
+  var _items = new WeakMap();
 
-      // console.log(elm, subject, property, items, sparqlist)
-      this._subject = subject;
-      this._property = property;
-      this._sparqlist = sparqlist;
-      this._items = items.map(function (item) {
-        return Object.assign({}, item);
-      }); // make container
+  var _property$2 = new WeakMap();
 
-      elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"histogram\">\n        <div class=\"grid\"></div>\n        <div class=\"graph\"></div>\n      </div>\n      <div class=\"controller\">\n        <div class=\"selector\">\n          <div class=\"slider -min\"></div>\n          <div class=\"slider -max\"></div>\n        </div>\n        <div class=\"form\">\n          <input type=\"number\" data-range=\"min\">\n          ~\n          <input type=\"number\" data-range=\"max\">\n        </div>\n      </div>"; // make graph
+  var _selectedBarsStart = new WeakMap();
 
-      var width = 100 / this._items.length;
-      elm.querySelector('.graph').innerHTML = this._items.map(function (item, index) {
-        return "<div class=\"bar\" style=\"width: ".concat(width, "%; background-color: ").concat(App$1.getHslColor(subject.hue), ";\" data-count=\"").concat(item.count, "\">\n      <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / _this._items.length, ", 70%, 50%, .075);\"></div>\n    </div>");
-      }).join('');
-      elm.querySelectorAll('.graph > .bar').forEach(function (item, index) {
-        _this._items[index].elm = item;
-      });
+  var _selectedBarsEnd = new WeakMap();
 
-      this._update(); // event
+  var _OVERVIEW_CONTAINER$1 = new WeakMap();
+
+  var _ROOT$6 = new WeakMap();
+
+  var _SELECTOR_BARS = new WeakMap();
+
+  var _GRIDS = new WeakMap();
+
+  var _setupRangeSelector = new WeakSet();
+
+  var _update$1 = new WeakSet();
+
+  var _indicateValue = new WeakSet();
+
+  var HistogramRangeSelectorView = function HistogramRangeSelectorView(elm, subject, property, items, sparqlist, overview) {
+    var _this = this;
+
+    _classCallCheck(this, HistogramRangeSelectorView);
+
+    _indicateValue.add(this);
+
+    _update$1.add(this);
+
+    _setupRangeSelector.add(this);
+
+    _items.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _property$2.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _selectedBarsStart.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _selectedBarsEnd.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _OVERVIEW_CONTAINER$1.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _ROOT$6.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _SELECTOR_BARS.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _GRIDS.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    console.log(elm, subject, property, items, sparqlist);
+    this._subject = subject;
+    this._sparqlist = sparqlist;
+
+    _classPrivateFieldSet(this, _property$2, property);
+
+    _classPrivateFieldSet(this, _OVERVIEW_CONTAINER$1, overview);
+
+    _classPrivateFieldSet(this, _items, items.map(function (item) {
+      return Object.assign({}, item);
+    })); // make container
 
 
-      DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
-        return _this._update();
-      });
-    }
+    elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"selector\">\n        <div class=\"overview\"></div>\n        <div class=\"controller\"></div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ".concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>\n      <div class=\"controller\">\n        <div class=\"selector\">\n          <div class=\"slider -min\"></div>\n          <div class=\"slider -max\"></div>\n        </div>\n        <!--\n        <div class=\"form\">\n          <input type=\"number\" data-range=\"min\">\n          ~\n          <input type=\"number\" data-range=\"max\">\n        </div>\n        -->\n      </div>");
 
-    _createClass(HistogramRangeSelectorView, [{
-      key: "_update",
-      value: function _update() {
-        var isLog10 = App$1.viewModes.log10;
-        var max = Math.max.apply(Math, _toConsumableArray(Array.from(this._items).map(function (item) {
-          return item.count;
-        })));
-        max = isLog10 ? Math.log10(max) : max;
+    _classPrivateFieldSet(this, _ROOT$6, elm.querySelector(':scope > .histogram-range-selector-view'));
 
-        this._items.forEach(function (item) {
-          item.elm.style.height = (isLog10 ? Math.log10(item.count) : item.count) / max * 100 + '%';
-        });
+    var histogram = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .histogram');
+
+    var selector = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .selector'); // make graph
+
+
+    var _width = 100 / _classPrivateFieldGet(this, _items).length;
+
+    selector.querySelector(':scope > .overview').innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
+      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(_width, "%; background-color: ").concat(App$1.getHslColor(subject.hue), ";\"></div>");
+    }).join('');
+    var graph = histogram.querySelector(':scope > .graph');
+    graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
+      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(_width, "%;\">\n      <div class=\"actual\" style=\"background-color: ").concat(App$1.getHslColor(subject.hue), ";\">\n        <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / _classPrivateFieldGet(_this, _items).length, ", 70%, 50%, .075);\"></div>\n      </div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
+    }).join(''); // reference
+
+    histogram.querySelectorAll(':scope > .graph > .bar').forEach(function (item, index) {
+      return _classPrivateFieldGet(_this, _items)[index].elm = item;
+    });
+
+    _classPrivateFieldSet(this, _GRIDS, histogram.querySelectorAll(':scope > .gridcontainer > .grid'));
+
+    _classPrivateFieldSet(this, _SELECTOR_BARS, Array.from(selector.querySelectorAll(':scope > .overview > .bar'))); // event
+
+
+    DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
+      return _classPrivateMethodGet(_this, _update$1, _update2$1).call(_this);
+    });
+
+    _classPrivateMethodGet(this, _setupRangeSelector, _setupRangeSelector2).call(this);
+
+    _classPrivateMethodGet(this, _update$1, _update2$1).call(this);
+  } // private methods
+  ;
+
+  function _setupRangeSelector2() {
+    var _this2 = this;
+
+    var selectorController = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .selector > .controller');
+
+    var isMouseDown = false,
+        startX,
+        width,
+        unit;
+    selectorController.addEventListener('mousedown', function (e) {
+      width = e.target.getBoundingClientRect().width;
+      unit = width / _classPrivateFieldGet(_this2, _items).length;
+      isMouseDown = true;
+      startX = e.layerX;
+    });
+    selectorController.addEventListener('mousemove', function (e) {
+      if (isMouseDown) {
+        var selectedWidth = e.layerX - startX;
+
+        if (selectedWidth > 0) {
+          _classPrivateFieldSet(_this2, _selectedBarsStart, Math.floor(startX / unit));
+
+          _classPrivateFieldSet(_this2, _selectedBarsEnd, Math.floor(e.layerX / unit));
+        } else {
+          _classPrivateFieldSet(_this2, _selectedBarsStart, Math.floor(e.layerX / unit));
+
+          _classPrivateFieldSet(_this2, _selectedBarsEnd, Math.floor(startX / unit));
+        }
+
+        console.log(_classPrivateFieldGet(_this2, _selectedBarsStart), '-', _classPrivateFieldGet(_this2, _selectedBarsEnd)); // TODO:
       }
-    }]);
+    });
+    selectorController.addEventListener('mouseup', function (e) {
+      if (isMouseDown) {
+        isMouseDown = false;
+      }
+    }); // graph.querySelectorAll(':scope > .bar')
+  }
 
-    return HistogramRangeSelectorView;
-  }();
+  function _update2$1() {
+    var _this3 = this;
+
+    var max = Math.max.apply(Math, _toConsumableArray(Array.from(_classPrivateFieldGet(this, _items)).map(function (item) {
+      return item.count;
+    })));
+    var isLog10 = App$1.viewModes.log10;
+    var processedMax = isLog10 ? Math.log10(max) : max; // grid
+
+    var digits = String(Math.ceil(max)).length;
+    var unit = Number(String(max).charAt(0).padEnd(digits, '0')) / NUM_OF_GRID;
+
+    _classPrivateFieldGet(this, _GRIDS).forEach(function (grid, index) {
+      var scale = unit * index;
+      grid.style.bottom = "".concat((isLog10 ? Math.log10(scale) : scale) / processedMax * 100, "%");
+      grid.querySelector(':scope > .label').textContent = scale.toLocaleString();
+    }); // graph
+
+
+    _classPrivateFieldGet(this, _items).forEach(function (item) {
+      var height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100;
+      item.elm.querySelector(':scope > .actual').style.height = "".concat(height, "%");
+      _classPrivateFieldGet(_this3, _SELECTOR_BARS).find(function (bar) {
+        return bar.dataset.categoryId === item.categoryId;
+      }).style.height = "".concat(height, "%");
+    });
+  }
 
   var MIN_PIN_SIZE = 12;
   var MAX_PIN_SIZE = 20;
@@ -1648,7 +1791,7 @@
     new TrackOverviewCategorical(_classPrivateFieldGet(this, _OVERVIEW_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values); // make selector view
 
     if (_classPrivateFieldGet(this, _property).viewMethod && _classPrivateFieldGet(this, _property).viewMethod === 'histogram') {
-      new HistogramRangeSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values, _classPrivateFieldGet(this, _sparqlist));
+      new HistogramRangeSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values, _classPrivateFieldGet(this, _sparqlist), _classPrivateFieldGet(this, _OVERVIEW_CONTAINER));
     } else {
       new ColumnSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values, _classPrivateFieldGet(this, _sparqlist));
     }
@@ -1967,7 +2110,7 @@
     DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
     _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(tableData.condition.togoKey, "</div>\n        </div>\n      </th>\n      ").concat(tableData.condition.attributes.map(function (property) {
-      return "\n      <th>\n        <div class=\"inner -propertyvalue\" style=\"background-color: ".concat(App$1.getHslColor(property.subject.hue), "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.subject.subject, "</span>\n        </div>\n      </th>");
+      return "\n      <th>\n        <div class=\"inner -propertyvalue\" style=\"background-color: ".concat(App$1.getHslColor(property.subject.hue), "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
     }).join(''), "\n      ").concat(tableData.condition.properties.map(function (property) {
       return "\n      <th>\n        <div class=\"inner -property\" style=\"color: ".concat(App$1.getHslColor(property.subject.hue), "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
     }).join('')); // make stats
@@ -1985,6 +2128,8 @@
   function _addTableRows2(detail) {
     var _this2 = this;
 
+    console.log(detail);
+
     _classPrivateFieldSet(this, _tableData$1, detail.tableData); // normalize
 
 
@@ -1998,12 +2143,13 @@
     }); // make table
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
-      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div class=\"togo-key-view\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column) {
+      console.log(row);
+      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div class=\"togo-key-view\" data-key=\"").concat(detail.tableData.condition.togoKey, "\" data-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column) {
         // console.log(column)
         if (column) {
           return "\n              <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute) {
             if (!attribute.attribute) console.error(attribute);
-            return "\n              <li>\n                <div class=\"togo-key-view\">".concat(attribute.id, "</div>\n                <a\n                  href=\"").concat(attribute.attribute ? attribute.attribute.uri : '', "\"\n                  title=\"").concat(attribute.attribute ? attribute.attribute.uri : '', "\"\n                  target=\"_blank\">").concat(attribute.attribute ? attribute.attribute.label : attribute, "</a>\n              </li>");
+            return "\n              <li>\n                <div class=\"togo-key-view\" data-key=\"".concat(column.propertyKey, "\" data-id=\"").concat(attribute.id, "\">").concat(attribute.id, "</div>\n                <a\n                  href=\"").concat(attribute.attribute ? attribute.attribute.uri : '', "\"\n                  title=\"").concat(attribute.attribute ? attribute.attribute.uri : '', "\"\n                  target=\"_blank\">").concat(attribute.attribute ? attribute.attribute.label : attribute, "</a>\n              </li>");
           }).join(''), "</ul></div></td>");
         } else {
           return '<td><div class="inner -empty"></div></td>';

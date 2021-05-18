@@ -91,7 +91,7 @@ export default class ResultsTable {
       <th data-subject-id="${property.subject.subjectId}" data-property-label="${property.property.label}">
         <div class="inner -propertyvalue"  style="background-color: ${App.getHslColor(property.subject.hue)}">
           <div class="togo-key-view">${property.property.primaryKey}</div>
-          <span>${property.subject.subject}</span>
+          <span>${property.property.label}</span>
         </div>
       </th>`).join('')
     }
@@ -112,6 +112,7 @@ export default class ResultsTable {
   }
 
   #addTableRows(detail) {
+    console.log(detail)
 
     this.#tableData = detail.tableData;
 
@@ -123,11 +124,12 @@ export default class ResultsTable {
 
     // make table
     this.#TBODY.insertAdjacentHTML('beforeend', rows.map((row, index) => {
+      console.log(row)
       return `<tr data-index="${detail.tableData.offset + index}" data-togo-id="${detail.rows[index].id}">
         <th>
           <div class="inner">
             <a class="toreportpage" href="report.html?togoKey=${detail.tableData.togoKey}&id=${detail.rows[index].id}&properties=${encodeURIComponent(JSON.stringify(row))}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
-            <div class="togo-key-view">${detail.rows[index].id}</div>
+            <div class="togo-key-view" data-key="${detail.tableData.condition.togoKey}" data-id="${detail.rows[index].id}">${detail.rows[index].id}</div>
           </div>
         </th>
         ${row.map(column => {
@@ -137,7 +139,7 @@ export default class ResultsTable {
               if (!attribute.attribute) console.error(attribute);
               return `
               <li>
-                <div class="togo-key-view">${attribute.id}</div>
+                <div class="togo-key-view" data-key="${column.propertyKey}" data-id="${attribute.id}">${attribute.id}</div>
                 <a
                   href="${attribute.attribute ? attribute.attribute.uri : ''}"
                   title="${attribute.attribute ? attribute.attribute.uri : ''}"
