@@ -1,5 +1,6 @@
 import TableData from "./TableData";
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import * as event from '../events';
 
 export default class ConditionsController {
 
@@ -16,8 +17,8 @@ export default class ConditionsController {
     this.#body = document.querySelector('body');
 
     // event listener
-    DefaultEventEmitter.addEventListener('completeQueryParameter', e => this.#setTableData(e.detail));
-    DefaultEventEmitter.addEventListener('selectTableData', e => this.#selectTableData(e.detail));
+    DefaultEventEmitter.addEventListener(event.completeQueryParameter, e => this.#setTableData(e.detail));
+    DefaultEventEmitter.addEventListener(event.selectTableData, e => this.#selectTableData(e.detail));
   }
 
   /* private methods */

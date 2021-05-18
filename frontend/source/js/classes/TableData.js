@@ -1,6 +1,7 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
+import * as event from '../events';
 
 const LIMIT = 10;
 
@@ -161,8 +162,8 @@ export default class TableData {
       .catch(error => {
         // TODO:
         console.error(error)
-        const event = new CustomEvent('failedFetchTableDataIds', {detail: this});
-        DefaultEventEmitter.dispatchEvent(event);
+        const customEvent = new CustomEvent(event.failedFetchTableDataIds, {detail: this});
+        DefaultEventEmitter.dispatchEvent(customEvent);
       })
       .finally(() => {
         this.#ROOT.classList.remove('-fetching');
@@ -189,12 +190,12 @@ export default class TableData {
         this.#INDICATOR_BAR.style.width = `${(this.offset / this.#queryIds.length) * 100}%`;
         this.#updateRemainingTime();
         // dispatch event
-        const event = new CustomEvent('addNextRows', {detail: {
+        const customEvent = new CustomEvent(event.addNextRows, {detail: {
           tableData: this,
           rows,
           done: this.#isLoaded
         }});
-        DefaultEventEmitter.dispatchEvent(event);
+        DefaultEventEmitter.dispatchEvent(customEvent);
         // turn off after finished
         if (this.#isLoaded) {
           this.#complete();
@@ -250,17 +251,17 @@ export default class TableData {
   select() {
     this.#ROOT.classList.add('-current');
     // dispatch event
-    const event1 = new CustomEvent('selectTableData', {detail: this});
-    DefaultEventEmitter.dispatchEvent(event1);
+    const customEvent1 = new CustomEvent(event.selectTableData, {detail: this});
+    DefaultEventEmitter.dispatchEvent(customEvent1);
     // send rows
     if (this.#ROOT.dataset.status !== 'load ids') {
       const done = this.offset >= this.#queryIds.length;
-      const event2 = new CustomEvent('addNextRows', {detail: {
+      const customEvent2 = new CustomEvent(event.addNextRows, {detail: {
         tableData: this, 
         rows: this.#rows,
         done
       }});
-      DefaultEventEmitter.dispatchEvent(event2);
+      DefaultEventEmitter.dispatchEvent(customEvent2);
     }
   }
 

@@ -344,6 +344,30 @@
 
   var DefaultEventEmitter$1 = new DefaultEventEmitter();
 
+  // TogoKey
+  var defineTogoKey = 'defineTogoKey'; // User IDs
+
+  var setUserValues = 'setUserValues';
+  var clearUserValues = 'clearUserValues'; // View mode
+
+  var changeViewModes = 'changeViewModes'; // Condition
+
+  var mutatePropertyCondition = 'mutatePropertyCondition';
+  var mutatePropertyValueCondition = 'mutatePropertyValueCondition';
+  var mutateEstablishConditions = 'mutateEstablishConditions';
+  var completeQueryParameter = 'completeQueryParameter'; // Stanza
+
+  var hideStanza = 'hideStanza';
+  var showStanza = 'showStanza'; // Polling
+
+  var failedFetchTableDataIds = 'failedFetchTableDataIds';
+  var addNextRows = 'addNextRows'; // Table
+
+  var selectTableData = 'selectTableData'; // Track
+
+  var enterPropertyValueItemView = 'enterPropertyValueItemView';
+  var leavePropertyValueItemView = 'leavePropertyValueItemView';
+
   var _propertyConditions = new WeakMap();
 
   var _attributeConditions = new WeakMap();
@@ -397,13 +421,13 @@
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
 
-        var event = new CustomEvent('mutatePropertyCondition', {
+        var customEvent = new CustomEvent(mutatePropertyCondition, {
           detail: {
             action: 'add',
             condition: condition
           }
         });
-        DefaultEventEmitter$1.dispatchEvent(event);
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
       key: "addPropertyValue",
@@ -416,13 +440,13 @@
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
 
-        var event = new CustomEvent('mutatePropertyValueCondition', {
+        var customEvent = new CustomEvent(mutatePropertyValueCondition, {
           detail: {
             action: 'add',
             condition: condition
           }
         });
-        DefaultEventEmitter$1.dispatchEvent(event);
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
       key: "removeProperty",
@@ -438,13 +462,13 @@
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
 
-        var event = new CustomEvent('mutatePropertyCondition', {
+        var customEvent = new CustomEvent(mutatePropertyCondition, {
           detail: {
             action: 'remove',
             propertyId: propertyId
           }
         });
-        DefaultEventEmitter$1.dispatchEvent(event);
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
       key: "removePropertyValue",
@@ -460,14 +484,14 @@
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
 
-        var event = new CustomEvent('mutatePropertyValueCondition', {
+        var customEvent = new CustomEvent(mutatePropertyValueCondition, {
           detail: {
             action: 'remove',
             propertyId: propertyId,
             categoryId: categoryId
           }
         });
-        DefaultEventEmitter$1.dispatchEvent(event);
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
       key: "makeQueryParameter",
@@ -509,7 +533,7 @@
           };
         }); // emmit event
 
-        var event = new CustomEvent('completeQueryParameter', {
+        var customEvent = new CustomEvent(completeQueryParameter, {
           detail: {
             togoKey: _classPrivateFieldGet(this, _togoKey),
             subjectId: _classPrivateFieldGet(this, _subjectId),
@@ -517,7 +541,7 @@
             attributes: attributes
           }
         });
-        DefaultEventEmitter$1.dispatchEvent(event); // clear condition
+        DefaultEventEmitter$1.dispatchEvent(customEvent); // clear condition
         // this.#propertyConditions = [];
         // this.#attributeConditions = [];
       }
@@ -529,6 +553,12 @@
         _classPrivateFieldSet(this, _subjectId, subjectId);
 
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this);
+      } // public accessor
+
+    }, {
+      key: "currentTogoKey",
+      get: function get() {
+        return _classPrivateFieldGet(this, _togoKey);
       } // private methods
 
     }]);
@@ -538,21 +568,23 @@
 
   var _satisfyAggregation2 = function _satisfyAggregation2() {
     var established = _classPrivateFieldGet(this, _togoKey) && _classPrivateFieldGet(this, _subjectId) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
-    var event = new CustomEvent('mutateEstablishConditions', {
+    var customEvent = new CustomEvent(mutateEstablishConditions, {
       detail: established
     });
-    DefaultEventEmitter$1.dispatchEvent(event);
+    DefaultEventEmitter$1.dispatchEvent(customEvent);
   };
 
   var ConditionBuilder$1 = new ConditionBuilder();
 
-  var _select = new WeakMap();
+  var _TOGO_KEYS = new WeakMap();
 
-  var _propertiesConditionsContainer = new WeakMap();
+  var _PROPERTIES_CONDITIONS_CONTAINER = new WeakMap();
 
-  var _attributesConditionsContainer = new WeakMap();
+  var _ATTRIBUTES_CONDITIONS_CONTAINER = new WeakMap();
 
-  var _execButton = new WeakMap();
+  var _EXEC_BUTTON = new WeakMap();
+
+  var _defineTogoKeys = new WeakSet();
 
   var _addProperty = new WeakSet();
 
@@ -562,116 +594,111 @@
 
   var _removePropertyValue = new WeakSet();
 
-  var ConditionBuilderView = /*#__PURE__*/function () {
-    function ConditionBuilderView(elm) {
-      var _this = this;
+  var ConditionBuilderView = function ConditionBuilderView(elm) {
+    var _this = this;
 
-      _classCallCheck(this, ConditionBuilderView);
+    _classCallCheck(this, ConditionBuilderView);
 
-      _removePropertyValue.add(this);
+    _removePropertyValue.add(this);
 
-      _addPropertyValue.add(this);
+    _addPropertyValue.add(this);
 
-      _removeProperty.add(this);
+    _removeProperty.add(this);
 
-      _addProperty.add(this);
+    _addProperty.add(this);
 
-      _select.set(this, {
-        writable: true,
-        value: void 0
+    _defineTogoKeys.add(this);
+
+    _TOGO_KEYS.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _PROPERTIES_CONDITIONS_CONTAINER.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _ATTRIBUTES_CONDITIONS_CONTAINER.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _EXEC_BUTTON.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    // references
+    var body = document.querySelector('body');
+    var conditionsContainer = elm.querySelector(':scope > .conditions');
+
+    _classPrivateFieldSet(this, _TOGO_KEYS, conditionsContainer.querySelector(':scope > .togoKey > select'));
+
+    _classPrivateFieldSet(this, _PROPERTIES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .properties > .conditions'));
+
+    _classPrivateFieldSet(this, _ATTRIBUTES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .attributes > .conditions'));
+
+    _classPrivateFieldSet(this, _EXEC_BUTTON, elm.querySelector(':scope > footer > button.exec')); // attach event
+
+
+    _classPrivateFieldGet(this, _EXEC_BUTTON).addEventListener('click', function () {
+      body.dataset.display = 'results';
+      ConditionBuilder$1.makeQueryParameter();
+    }); // event listeners
+
+
+    DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
+      switch (e.detail.action) {
+        case 'add':
+          _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, e.detail.condition.subject, e.detail.condition.property);
+
+          break;
+
+        case 'remove':
+          _classPrivateMethodGet(_this, _removeProperty, _removeProperty2).call(_this, e.detail.propertyId);
+
+          break;
+      }
+    });
+    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (e) {
+      switch (e.detail.action) {
+        case 'add':
+          _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, e.detail.condition.subject, e.detail.condition.property, e.detail.condition.value);
+
+          break;
+
+        case 'remove':
+          _classPrivateMethodGet(_this, _removePropertyValue, _removePropertyValue2).call(_this, e.detail.propertyId, e.detail.categoryId);
+
+          break;
+      }
+    });
+    DefaultEventEmitter$1.addEventListener(defineTogoKey, function (e) {
+      _classPrivateMethodGet(_this, _defineTogoKeys, _defineTogoKeys2).call(_this, e.detail);
+    });
+    DefaultEventEmitter$1.addEventListener(mutateEstablishConditions, function (e) {
+      _classPrivateFieldGet(_this, _EXEC_BUTTON).disabled = !e.detail;
+    });
+  } // private methods
+  ;
+
+  var _defineTogoKeys2 = function _defineTogoKeys2(togoKeys) {
+    // make options
+    _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = togoKeys.map(function (togoKey) {
+      return "<option value=\"".concat(togoKey.togoKey, "\" data-subject-id=\"").concat(togoKeys.subjectId, "\">").concat(togoKey.label, " (").concat(togoKey.togoKey, ")</option>");
+    }).join('');
+    _classPrivateFieldGet(this, _TOGO_KEYS).disabled = false; // attach event
+
+    _classPrivateFieldGet(this, _TOGO_KEYS).addEventListener('change', function (e) {
+      var togoKey = togoKeys.find(function (togoKey) {
+        return togoKey.togoKey === e.target.value;
       });
+      ConditionBuilder$1.setSubject(e.target.value, togoKey.subjectId);
+    });
 
-      _propertiesConditionsContainer.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _attributesConditionsContainer.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _execButton.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      // references
-      var body = document.querySelector('body');
-
-      _classPrivateFieldSet(this, _select, elm.querySelector(':scope > select'));
-
-      var conditionsContainer = elm.querySelector(':scope > .conditions');
-
-      _classPrivateFieldSet(this, _propertiesConditionsContainer, conditionsContainer.querySelector(':scope > .properties > .conditions'));
-
-      _classPrivateFieldSet(this, _attributesConditionsContainer, conditionsContainer.querySelector(':scope > .attributes > .conditions'));
-
-      _classPrivateFieldSet(this, _execButton, elm.querySelector(':scope > footer > button.exec')); // attach event
-
-
-      _classPrivateFieldGet(this, _execButton).addEventListener('click', function () {
-        // this.#propertiesConditionsContainer.innerHTML = '';
-        // this.#attributesConditionsContainer.innerHTML = '';
-        body.dataset.display = 'results';
-        ConditionBuilder$1.makeQueryParameter();
-      }); // event listeners
-
-
-      DefaultEventEmitter$1.addEventListener('mutatePropertyCondition', function (e) {
-        switch (e.detail.action) {
-          case 'add':
-            _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, e.detail.condition.subject, e.detail.condition.property);
-
-            break;
-
-          case 'remove':
-            _classPrivateMethodGet(_this, _removeProperty, _removeProperty2).call(_this, e.detail.propertyId);
-
-            break;
-        }
-      });
-      DefaultEventEmitter$1.addEventListener('mutatePropertyValueCondition', function (e) {
-        switch (e.detail.action) {
-          case 'add':
-            _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, e.detail.condition.subject, e.detail.condition.property, e.detail.condition.value);
-
-            break;
-
-          case 'remove':
-            _classPrivateMethodGet(_this, _removePropertyValue, _removePropertyValue2).call(_this, e.detail.propertyId, e.detail.categoryId);
-
-            break;
-        }
-      });
-      DefaultEventEmitter$1.addEventListener('mutateEstablishConditions', function (e) {
-        _classPrivateFieldGet(_this, _execButton).disabled = !e.detail;
-      });
-    } // public methods
-
-
-    _createClass(ConditionBuilderView, [{
-      key: "defineTogoKeys",
-      value: function defineTogoKeys(togoKeys) {
-        // make options
-        _classPrivateFieldGet(this, _select).insertAdjacentHTML('beforeend', togoKeys.map(function (togoKey) {
-          return "<option value=\"".concat(togoKey.togoKey, "\" data-subject-id=\"").concat(togoKeys.subjectId, "\">").concat(togoKey.label, " (").concat(togoKey.togoKey, ")</option>");
-        }).join(''));
-
-        _classPrivateFieldGet(this, _select).disabled = false; // attach event
-
-        _classPrivateFieldGet(this, _select).addEventListener('change', function (e) {
-          var togoKey = togoKeys.find(function (togoKey) {
-            return togoKey.togoKey === e.target.value;
-          });
-          ConditionBuilder$1.setSubject(e.target.value, togoKey.subjectId);
-        });
-      } // private methods
-
-    }]);
-
-    return ConditionBuilderView;
-  }();
+    _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));
+  };
 
   var _addProperty2 = function _addProperty2(subject, property) {
     // make view
@@ -680,7 +707,9 @@
     view.dataset.propertyId = property.propertyId;
     view.innerHTML = "\n    <div class=\"closebutton\"></div>\n    <ul class=\"path\">\n      <li>".concat(subject.subject, "</li>\n    </ul>\n    <div class=\"label\" style=\"color: ").concat(App$1.getHslColor(subject.hue), ";\">").concat(property.label, "</div>");
 
-    _classPrivateFieldGet(this, _propertiesConditionsContainer).insertAdjacentElement('beforeend', view); // event
+    _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).insertAdjacentElement('beforeend', view);
+
+    _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.remove('-empty'); // event
 
 
     view.querySelector(':scope > .closebutton').addEventListener('click', function () {
@@ -689,9 +718,10 @@
   };
 
   var _removeProperty2 = function _removeProperty2(propertyId) {
-    var view = _classPrivateFieldGet(this, _propertiesConditionsContainer).querySelector("[data-property-id=\"".concat(propertyId, "\"]"));
+    var view = _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).querySelector("[data-property-id=\"".concat(propertyId, "\"]"));
 
     view.parentNode.removeChild(view);
+    if (_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).childNodes.length === 0) _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.add('-empty');
   };
 
   var _addPropertyValue2 = function _addPropertyValue2(subject, property, value) {
@@ -707,7 +737,9 @@
       return "<li>".concat(ancestor, "</li>");
     }).join(''), "\n    </ul>\n    <div class=\"label\">").concat(value.label, "</div>");
 
-    _classPrivateFieldGet(this, _attributesConditionsContainer).insertAdjacentElement('beforeend', view); // event
+    _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).insertAdjacentElement('beforeend', view);
+
+    _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.remove('-empty'); // event
 
 
     view.querySelector(':scope > .closebutton').addEventListener('click', function () {
@@ -716,9 +748,10 @@
   };
 
   var _removePropertyValue2 = function _removePropertyValue2(propertyId, categoryId) {
-    var view = _classPrivateFieldGet(this, _attributesConditionsContainer).querySelector("[data-property-id=\"".concat(propertyId, "\"][data-category-id=\"").concat(categoryId, "\"]"));
+    var view = _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).querySelector("[data-property-id=\"".concat(propertyId, "\"][data-category-id=\"").concat(categoryId, "\"]"));
 
     view.parentNode.removeChild(view);
+    if (_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).childNodes.length === 0) _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.add('-empty');
   };
 
   var _subjects = new WeakMap();
@@ -780,10 +813,13 @@
     }, {
       key: "getProperty",
       value: function getProperty(propertyId) {
+        console.log(propertyId);
+
         var property = _classPrivateFieldGet(this, _properties).find(function (property) {
           return property.propertyId === propertyId;
         });
 
+        console.log(property);
         return property;
       }
     }, {
@@ -801,6 +837,11 @@
       key: "subjects",
       get: function get() {
         return _classPrivateFieldGet(this, _subjects);
+      }
+    }, {
+      key: "properties",
+      get: function get() {
+        return _classPrivateFieldGet(this, _properties);
       }
     }]);
 
@@ -860,10 +901,10 @@
         _classPrivateFieldGet(_this, _BODY).dataset.display = 'properties';
       }); // event listener
 
-      DefaultEventEmitter$1.addEventListener('showStanza', function (e) {
+      DefaultEventEmitter$1.addEventListener(showStanza, function (e) {
         _classPrivateMethodGet(_this, _showStanza, _showStanza2).call(_this, e.detail.subject, e.detail.properties);
       });
-      DefaultEventEmitter$1.addEventListener('hideStanza', function (e) {
+      DefaultEventEmitter$1.addEventListener(hideStanza, function (e) {
         _classPrivateMethodGet(_this, _hideStanza, _hideStanza2).call(_this);
       });
     } // private methods
@@ -938,7 +979,7 @@
       this._container = this._view.querySelector(':scope > .columns > .inner');
       this._loadingView = this._view.querySelector(':scope > .loading-view'); // even listener
 
-      DefaultEventEmitter$1.addEventListener('mutatePropertyValueCondition', function (e) {
+      DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (e) {
         var propertyId, categoryId;
 
         switch (e.detail.action) {
@@ -1112,7 +1153,7 @@
           });
         }); // event listener
 
-        DefaultEventEmitter$1.addEventListener('changeViewModes', function (e) {
+        DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
           return _this2._update(e.detail.log10);
         });
       }
@@ -1184,7 +1225,7 @@
       this._update(); // event
 
 
-      DefaultEventEmitter$1.addEventListener('changeViewModes', function (e) {
+      DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
         return _this._update();
       });
     }
@@ -1207,18 +1248,32 @@
     return HistogramRangeSelectorView;
   }();
 
+  var MIN_PIN_SIZE = 12;
+  var MAX_PIN_SIZE = 20;
+  var RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
+
   var _subject = new WeakMap();
 
   var _property = new WeakMap();
 
   var _values = new WeakMap();
 
+  var _ROOT = new WeakMap();
+
   var _update = new WeakSet();
+
+  var _plotUserIdValues = new WeakSet();
+
+  var _clearUserIdValues = new WeakSet();
 
   var TrackOverviewCategorical = function TrackOverviewCategorical(elm, subject, property, values) {
     var _this = this;
 
     _classCallCheck(this, TrackOverviewCategorical);
+
+    _clearUserIdValues.add(this);
+
+    _plotUserIdValues.add(this);
 
     _update.add(this);
 
@@ -1236,6 +1291,13 @@
       writable: true,
       value: void 0
     });
+
+    _ROOT.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _classPrivateFieldSet(this, _ROOT, elm);
 
     _classPrivateFieldSet(this, _subject, subject);
 
@@ -1256,56 +1318,67 @@
     elm.innerHTML = _classPrivateFieldGet(this, _values).map(function (value, index) {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / _sum * 100;
-      return "\n        <li class=\"value\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / values.length, ", 70%, 50%, .075);\"></div>\n          <div class=\"heatmap\"></div>\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n        </li>");
+      value.color = "hsla(".concat(360 * index / values.length, ", 70%, 50%, .075)");
+      return "\n        <li class=\"track-value-view\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"color\" style=\"background-color: ").concat(value.color, ";\"></div>\n          <div class=\"heatmap\"></div>\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n          <div class=\"pin\"></div>\n        </li>");
     }).join('');
-    elm.querySelectorAll(':scope > .value').forEach(function (node, index) {
-      return _classPrivateFieldGet(_this, _values)[index].elm = node;
-    });
+    elm.querySelectorAll(':scope > .track-value-view').forEach(function (elm, index) {
+      // reference
+      var value = _classPrivateFieldGet(_this, _values)[index];
 
-    _classPrivateMethodGet(this, _update, _update2).call(this, App$1.viewModes); // attach event
+      value.elm = elm;
+      var pin = elm.querySelector(':scope > .pin');
+      value.pin = pin; // attach event: show tooltip
 
-
-    elm.querySelectorAll(':scope > .value').forEach(function (valueElm) {
-      // show tooltip
-      valueElm.addEventListener('mouseenter', function () {
-        var valueData = _classPrivateFieldGet(_this, _values).find(function (valueData) {
-          return valueData.elm === valueElm;
-        });
-
-        var event = new CustomEvent('enterPropertyValueItemView', {
+      var label = "<span style=\"color: ".concat(App$1.getHslColor(_classPrivateFieldGet(_this, _subject).hue), "\">").concat(value.label, "</span>");
+      elm.addEventListener('mouseenter', function () {
+        var customEvent = new CustomEvent(enterPropertyValueItemView, {
           detail: {
-            label: "<span style=\"color: ".concat(App$1.getHslColor(_classPrivateFieldGet(_this, _subject).hue), "\">").concat(valueElm.querySelector(':scope > p > .label').textContent, "</span>"),
+            label: label,
             values: [{
               key: 'Count',
-              value: valueData.count.toLocaleString()
+              value: value.count.toLocaleString()
             }],
-            elm: valueElm
+            elm: elm
           }
         });
-        DefaultEventEmitter$1.dispatchEvent(event);
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
       });
-      valueElm.addEventListener('mouseleave', function () {
-        var event = new CustomEvent('leavePropertyValueItemView');
-        DefaultEventEmitter$1.dispatchEvent(event);
-      }); // select/deselect a value
+      elm.addEventListener('mouseleave', function () {
+        var customEvent = new CustomEvent(leavePropertyValueItemView);
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
+      }); // attach event: show tooltip of pin
 
-      valueElm.addEventListener('click', function () {
-        var valueData = _classPrivateFieldGet(_this, _values).find(function (valueData) {
-          return valueData.categoryId === valueElm.dataset.categoryId;
+      pin.addEventListener('mouseenter', function () {
+        var customEvent = new CustomEvent(enterPropertyValueItemView, {
+          detail: {
+            label: label,
+            values: [{
+              key: 'Count',
+              value: "".concat(value.userValueCount.toLocaleString(), " / ").concat(value.count.toLocaleString())
+            }],
+            elm: pin
+          }
         });
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
+      });
+      pin.addEventListener('mouseleave', function () {
+        var customEvent = new CustomEvent(leavePropertyValueItemView);
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
+      }); // attach event: select/deselect a value
 
-        if (valueElm.classList.contains('-selected')) {
-          valueElm.classList.remove('-selected');
-          ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this, _property).propertyId, valueData.categoryId);
+      elm.addEventListener('click', function () {
+        if (elm.classList.contains('-selected')) {
+          elm.classList.remove('-selected');
+          ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this, _property).propertyId, value.categoryId);
         } else {
-          valueElm.classList.add('-selected');
+          elm.classList.add('-selected');
           ConditionBuilder$1.addPropertyValue({
             subject: _classPrivateFieldGet(_this, _subject),
             property: _classPrivateFieldGet(_this, _property),
             value: {
-              categoryId: valueData.categoryId,
-              label: valueData.label,
-              count: valueData.count,
+              categoryId: value.categoryId,
+              label: value.label,
+              count: value.count,
               ancestors: []
             }
           });
@@ -1313,7 +1386,7 @@
       });
     }); // event listener
 
-    DefaultEventEmitter$1.addEventListener('mutatePropertyValueCondition', function (e) {
+    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (e) {
       var propertyId, categoryId;
 
       switch (e.detail.action) {
@@ -1344,9 +1417,17 @@
         });
       }
     });
-    DefaultEventEmitter$1.addEventListener('changeViewModes', function (e) {
+    DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
       return _classPrivateMethodGet(_this, _update, _update2).call(_this, e.detail);
     });
+    DefaultEventEmitter$1.addEventListener(setUserValues, function (e) {
+      return _classPrivateMethodGet(_this, _plotUserIdValues, _plotUserIdValues2).call(_this, e.detail);
+    });
+    DefaultEventEmitter$1.addEventListener(clearUserValues, function (e) {
+      return _classPrivateMethodGet(_this, _clearUserIdValues, _clearUserIdValues2).call(_this, e.detail);
+    });
+
+    _classPrivateMethodGet(this, _update, _update2).call(this, App$1.viewModes);
   };
 
   var _update2 = function _update2(viewModes) {
@@ -1374,13 +1455,47 @@
     });
   };
 
+  var _plotUserIdValues2 = function _plotUserIdValues2(detail) {
+    if (_classPrivateFieldGet(this, _property).propertyId === detail.propertyId) {
+      _classPrivateFieldGet(this, _ROOT).classList.add('-pinsticking');
+
+      console.log(detail, _classPrivateFieldGet(this, _values));
+
+      _classPrivateFieldGet(this, _values).forEach(function (value) {
+        var userValue = detail.values.find(function (userValue) {
+          return userValue.categoryId === value.categoryId;
+        });
+
+        if (userValue) {
+          value.elm.classList.add('-pinsticking'); // pin
+
+          var ratio = userValue.count / value.count;
+          var size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
+          value.pin.style.width = size + 'px';
+          value.pin.style.height = size + 'px';
+          value.pin.style.top = -size + 'px';
+          value.pin.style.left = -size / 2 + 'px';
+          value.userValueCount = userValue.count;
+        } else {
+          value.elm.classList.remove('-pinsticking');
+        }
+      });
+    }
+  };
+
+  var _clearUserIdValues2 = function _clearUserIdValues2() {
+    _classPrivateFieldGet(this, _values).forEach(function (value) {
+      return value.elm.classList.remove('-pinsticking');
+    });
+  };
+
   var _subject$1 = new WeakMap();
 
   var _property$1 = new WeakMap();
 
   var _sparqlist = new WeakMap();
 
-  var _ROOT = new WeakMap();
+  var _ROOT$1 = new WeakMap();
 
   var _LOADING_VIEW = new WeakMap();
 
@@ -1414,7 +1529,7 @@
       value: void 0
     });
 
-    _ROOT.set(this, {
+    _ROOT$1.set(this, {
       writable: true,
       value: void 0
     });
@@ -1443,7 +1558,7 @@
     var elm = document.createElement('div');
     container.insertAdjacentElement('beforeend', elm);
 
-    _classPrivateFieldSet(this, _ROOT, elm);
+    _classPrivateFieldSet(this, _ROOT$1, elm);
 
     _classPrivateFieldSet(this, _subject$1, subject);
 
@@ -1481,20 +1596,22 @@
           property: _classPrivateFieldGet(_this, _property$1)
         });
 
-        _classPrivateFieldGet(_this, _ROOT).classList.add('-allselected');
+        _classPrivateFieldGet(_this, _ROOT$1).classList.add('-allselected');
       } else {
         // remove
         ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this, _property$1).propertyId);
 
-        _classPrivateFieldGet(_this, _ROOT).classList.remove('-allselected');
+        _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-allselected');
       }
     }); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener('mutatePropertyCondition', function (e) {
+    DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
       if (e.detail.action === 'remove') {
         if (e.detail.propertyId === _classPrivateFieldGet(_this, _property$1).propertyId) {
           _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = false;
+
+          _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-allselected');
         }
       }
     }); // get property data
@@ -1514,7 +1631,7 @@
   ;
 
   var _makeValues2 = function _makeValues2(values) {
-    _classPrivateFieldGet(this, _ROOT).classList.remove('-preparing');
+    _classPrivateFieldGet(this, _ROOT$1).classList.remove('-preparing');
 
     _classPrivateFieldGet(this, _LOADING_VIEW).classList.remove('-shown');
 
@@ -1607,7 +1724,7 @@
     _classPrivateFieldSet(this, _TICKS, container.querySelector(':scope > .ticks')); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener('addNextRows', function (e) {
+    DefaultEventEmitter$1.addEventListener(addNextRows, function (e) {
       return _classPrivateMethodGet(_this, _draw, _draw2).call(_this, e.detail);
     });
   }
@@ -1675,7 +1792,11 @@
     }).join('');
   };
 
-  var _ROOT$1 = new WeakMap();
+  var _intersctionObserver = new WeakMap();
+
+  var _tableData = new WeakMap();
+
+  var _ROOT$2 = new WeakMap();
 
   var _THEAD = new WeakMap();
 
@@ -1686,10 +1807,6 @@
   var _TABLE_END = new WeakMap();
 
   var _LOADING_VIEW$1 = new WeakMap();
-
-  var _intersctionObserver = new WeakMap();
-
-  var _tableData = new WeakMap();
 
   var _enterTableEnd = new WeakSet();
 
@@ -1712,7 +1829,17 @@
 
     _enterTableEnd.add(this);
 
-    _ROOT$1.set(this, {
+    _intersctionObserver.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _tableData.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _ROOT$2.set(this, {
       writable: true,
       value: void 0
     });
@@ -1742,18 +1869,8 @@
       value: void 0
     });
 
-    _intersctionObserver.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _tableData.set(this, {
-      writable: true,
-      value: void 0
-    });
-
     // references
-    _classPrivateFieldSet(this, _ROOT$1, _elm);
+    _classPrivateFieldSet(this, _ROOT$2, _elm);
 
     var TABLE = _elm.querySelector(':scope > .body > table');
 
@@ -1790,13 +1907,13 @@
     })); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener('selectTableData', function (e) {
+    DefaultEventEmitter$1.addEventListener(selectTableData, function (e) {
       return _classPrivateMethodGet(_this, _setupTable, _setupTable2).call(_this, e.detail);
     });
-    DefaultEventEmitter$1.addEventListener('addNextRows', function (e) {
+    DefaultEventEmitter$1.addEventListener(addNextRows, function (e) {
       return _classPrivateMethodGet(_this, _addTableRows, _addTableRows2).call(_this, e.detail);
     });
-    DefaultEventEmitter$1.addEventListener('failedFetchTableDataIds', function (e) {
+    DefaultEventEmitter$1.addEventListener(failedFetchTableDataIds, function (e) {
       return _classPrivateMethodGet(_this, _failed, _failed2).call(_this, e.detail);
     }); // turnoff intersection observer after display transition
 
@@ -1832,17 +1949,17 @@
 
     _classPrivateFieldGet(this, _intersctionObserver).unobserve(_classPrivateFieldGet(this, _TABLE_END));
 
-    _classPrivateFieldGet(this, _ROOT$1).classList.remove('-complete');
+    _classPrivateFieldGet(this, _ROOT$2).classList.remove('-complete');
 
     _classPrivateFieldGet(this, _THEAD).innerHTML = '';
     _classPrivateFieldGet(this, _TBODY).innerHTML = '';
 
     _classPrivateFieldGet(this, _LOADING_VIEW$1).classList.add('-shown');
 
-    DefaultEventEmitter$1.dispatchEvent(new CustomEvent('hideStanza')); // make table header
+    DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
     _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(tableData.condition.togoKey, "</div>\n        </div>\n      </th>\n      ").concat(tableData.condition.attributes.map(function (property) {
-      return "\n      <th>\n        <div class=\"inner -propertyvalue\" style=\"background-color: ".concat(App$1.getHslColor(property.subject.hue), "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
+      return "\n      <th>\n        <div class=\"inner -propertyvalue\" style=\"background-color: ".concat(App$1.getHslColor(property.subject.hue), "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.subject.subject, "</span>\n        </div>\n      </th>");
     }).join(''), "\n      ").concat(tableData.condition.properties.map(function (property) {
       return "\n      <th>\n        <div class=\"inner -property\" style=\"color: ".concat(App$1.getHslColor(property.subject.hue), "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
     }).join('')); // make stats
@@ -1873,7 +1990,7 @@
     }); // make table
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
-      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <div class=\"togo-key-view\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column) {
+      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div class=\"togo-key-view\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column) {
         // console.log(column)
         if (column) {
           return "\n              <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute) {
@@ -1888,11 +2005,11 @@
 
 
     if (detail.done) {
-      _classPrivateFieldGet(this, _ROOT$1).classList.add('-complete');
+      _classPrivateFieldGet(this, _ROOT$2).classList.add('-complete');
 
       _classPrivateFieldGet(this, _LOADING_VIEW$1).classList.remove('-shown');
     } else {
-      _classPrivateFieldGet(this, _ROOT$1).classList.remove('-complete');
+      _classPrivateFieldGet(this, _ROOT$2).classList.remove('-complete');
 
       _classPrivateFieldGet(this, _LOADING_VIEW$1).classList.add('-shown');
 
@@ -1909,7 +2026,7 @@
         if (tr.classList.contains('-selected')) {
           // hide stanza
           tr.classList.remove('-selected');
-          DefaultEventEmitter$1.dispatchEvent(new CustomEvent('hideStanza'));
+          DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza));
         } else {
           // show stanza
           _classPrivateFieldGet(_this2, _TBODY).querySelectorAll(':scope > tr').forEach(function (tr) {
@@ -1918,7 +2035,7 @@
 
           tr.classList.add('-selected'); // dispatch event
 
-          var event = new CustomEvent('showStanza', {
+          var customEvent = new CustomEvent(showStanza, {
             detail: {
               subject: {
                 togoKey: _classPrivateFieldGet(_this2, _tableData).togoKey,
@@ -1928,7 +2045,7 @@
               properties: row
             }
           });
-          DefaultEventEmitter$1.dispatchEvent(event);
+          DefaultEventEmitter$1.dispatchEvent(customEvent);
         }
       });
     });
@@ -1937,12 +2054,12 @@
   var _failed2 = function _failed2(tableData) {
     console.log(tableData);
 
-    _classPrivateFieldGet(this, _ROOT$1).classList.add('-complete');
+    _classPrivateFieldGet(this, _ROOT$2).classList.add('-complete');
 
     _classPrivateFieldGet(this, _LOADING_VIEW$1).classList.remove('-shown');
   };
 
-  var _ROOT$2 = new WeakMap();
+  var _ROOT$3 = new WeakMap();
 
   var _CONTAINER = new WeakMap();
 
@@ -1951,7 +2068,7 @@
 
     _classCallCheck(this, BalloonView);
 
-    _ROOT$2.set(this, {
+    _ROOT$3.set(this, {
       writable: true,
       value: void 0
     });
@@ -1962,38 +2079,38 @@
     });
 
     // make element
-    _classPrivateFieldSet(this, _ROOT$2, document.createElement('div'));
+    _classPrivateFieldSet(this, _ROOT$3, document.createElement('div'));
 
-    _classPrivateFieldGet(this, _ROOT$2).className = 'balloon-view';
-    document.querySelector('body').insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$2));
-    _classPrivateFieldGet(this, _ROOT$2).innerHTML = '<div class="container"></div>';
+    _classPrivateFieldGet(this, _ROOT$3).className = 'balloon-view';
+    document.querySelector('body').insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$3));
+    _classPrivateFieldGet(this, _ROOT$3).innerHTML = '<div class="container"></div>';
 
-    _classPrivateFieldSet(this, _CONTAINER, _classPrivateFieldGet(this, _ROOT$2).querySelector(':scope > .container')); // event listener
+    _classPrivateFieldSet(this, _CONTAINER, _classPrivateFieldGet(this, _ROOT$3).querySelector(':scope > .container')); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener('enterPropertyValueItemView', function (e) {
+    DefaultEventEmitter$1.addEventListener(enterPropertyValueItemView, function (e) {
       _classPrivateFieldGet(_this, _CONTAINER).innerHTML = "\n        <header>".concat(e.detail.label, "</header>\n        ").concat(e.detail.values.map(function (value) {
         return "<dl>\n          <dt>".concat(value.key, ":</dt>\n          <dd>").concat(value.value, "</dd>\n        </dl>");
       }).join('')); // geography
 
       var rect = e.detail.elm.getBoundingClientRect();
       var isBelow = window.innerHeight * .3 > rect.top;
-      _classPrivateFieldGet(_this, _ROOT$2).style.left = rect.left + rect.width * .5 + 'px';
+      _classPrivateFieldGet(_this, _ROOT$3).style.left = rect.left + rect.width * .5 + 'px';
 
       if (isBelow) {
-        _classPrivateFieldGet(_this, _ROOT$2).classList.add('-below');
+        _classPrivateFieldGet(_this, _ROOT$3).classList.add('-below');
 
-        _classPrivateFieldGet(_this, _ROOT$2).style.top = rect.top + 10 + 'px';
+        _classPrivateFieldGet(_this, _ROOT$3).style.top = rect.top + 10 + 'px';
       } else {
-        _classPrivateFieldGet(_this, _ROOT$2).classList.remove('-below');
+        _classPrivateFieldGet(_this, _ROOT$3).classList.remove('-below');
 
-        _classPrivateFieldGet(_this, _ROOT$2).style.top = rect.top + 'px';
+        _classPrivateFieldGet(_this, _ROOT$3).style.top = rect.top + 'px';
       }
 
-      _classPrivateFieldGet(_this, _ROOT$2).classList.add('-showing');
+      _classPrivateFieldGet(_this, _ROOT$3).classList.add('-showing');
     });
-    DefaultEventEmitter$1.addEventListener('leavePropertyValueItemView', function (e) {
-      _classPrivateFieldGet(_this, _ROOT$2).classList.remove('-showing');
+    DefaultEventEmitter$1.addEventListener(leavePropertyValueItemView, function (e) {
+      _classPrivateFieldGet(_this, _ROOT$3).classList.remove('-showing');
     });
   };
 
@@ -2015,7 +2132,7 @@
 
   var _startTime = new WeakMap();
 
-  var _ROOT$3 = new WeakMap();
+  var _ROOT$4 = new WeakMap();
 
   var _STATUS = new WeakMap();
 
@@ -2093,7 +2210,7 @@
         value: void 0
       });
 
-      _ROOT$3.set(this, {
+      _ROOT$4.set(this, {
         writable: true,
         value: void 0
       });
@@ -2151,7 +2268,7 @@
         return "<div class=\"condiiton -value\" style=\"color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
       }).join(''), "\n      \n    </div>\n    <div class=\"button close-button-view\" title=\"Delete\" data-button=\"delete\"></div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button autorenew\" title=\"Prepare for download\" data-button=\"prepare-download\">\n        <span class=\"material-icons-outlined\" id=\"autorenew\">autorenew</span>\n      </div>\n      <div class=\"button downloads\" title=\"Download JSON \">\n        <a id=\"JSON\" href=\"\" download=\"sample.json\">\n          <span class=\"material-icons-outlined\">download</span>\n          <span class=\"text\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" title=\"Restore as condition\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n      </div>\n    </div>\n    "); // reference　
 
-      _classPrivateFieldSet(this, _ROOT$3, elm);
+      _classPrivateFieldSet(this, _ROOT$4, elm);
 
       _classPrivateFieldSet(this, _STATUS, elm.querySelector(':scope > .status > p'));
 
@@ -2179,7 +2296,7 @@
       _classPrivateFieldGet(this, _BUTTON_PREPARE_DOWNLOAD).addEventListener('click', function (e) {
         e.stopPropagation();
 
-        if (_classPrivateFieldGet(_this, _isAutoLoad) == false && _classPrivateFieldGet(_this, _ROOT$3).dataset.status != 'complete') {
+        if (_classPrivateFieldGet(_this, _isAutoLoad) == false && _classPrivateFieldGet(_this, _ROOT$4).dataset.status != 'complete') {
           _classPrivateFieldGet(_this, _isAutoLoad) == true;
 
           _classPrivateMethodGet(_this, _autoLoad, _autoLoad2).call(_this);
@@ -2213,31 +2330,31 @@
 
       /* public methods */
       value: function select() {
-        _classPrivateFieldGet(this, _ROOT$3).classList.add('-current'); // dispatch event
+        _classPrivateFieldGet(this, _ROOT$4).classList.add('-current'); // dispatch event
 
 
-        var event1 = new CustomEvent('selectTableData', {
+        var customEvent1 = new CustomEvent(selectTableData, {
           detail: this
         });
-        DefaultEventEmitter$1.dispatchEvent(event1); // send rows
+        DefaultEventEmitter$1.dispatchEvent(customEvent1); // send rows
 
-        if (_classPrivateFieldGet(this, _ROOT$3).dataset.status !== 'load ids') {
+        if (_classPrivateFieldGet(this, _ROOT$4).dataset.status !== 'load ids') {
           var done = this.offset >= _classPrivateFieldGet(this, _queryIds).length;
 
-          var event2 = new CustomEvent('addNextRows', {
+          var customEvent2 = new CustomEvent(addNextRows, {
             detail: {
               tableData: this,
               rows: _classPrivateFieldGet(this, _rows),
               done: done
             }
           });
-          DefaultEventEmitter$1.dispatchEvent(event2);
+          DefaultEventEmitter$1.dispatchEvent(customEvent2);
         }
       }
     }, {
       key: "deselect",
       value: function deselect() {
-        _classPrivateFieldGet(this, _ROOT$3).classList.remove('-current');
+        _classPrivateFieldGet(this, _ROOT$4).classList.remove('-current');
       }
     }, {
       key: "next",
@@ -2294,7 +2411,7 @@
     // reset
     _classPrivateFieldSet(this, _abortController, new AbortController());
 
-    _classPrivateFieldGet(this, _ROOT$3).classList.add('-fetching');
+    _classPrivateFieldGet(this, _ROOT$4).classList.add('-fetching');
 
     fetch("".concat(App$1.aggregatePrimaryKeys, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
       return property.query;
@@ -2323,7 +2440,7 @@
       _classPrivateFieldSet(_this2, _queryIds, queryIds); // display
 
 
-      _classPrivateFieldGet(_this2, _ROOT$3).dataset.status = 'load rows';
+      _classPrivateFieldGet(_this2, _ROOT$4).dataset.status = 'load rows';
       _classPrivateFieldGet(_this2, _STATUS).textContent = '';
       _classPrivateFieldGet(_this2, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this2.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this2, _queryIds).length.toLocaleString());
 
@@ -2333,19 +2450,19 @@
     }).catch(function (error) {
       // TODO:
       console.error(error);
-      var event = new CustomEvent('failedFetchTableDataIds', {
+      var customEvent = new CustomEvent(failedFetchTableDataIds, {
         detail: _this2
       });
-      DefaultEventEmitter$1.dispatchEvent(event);
+      DefaultEventEmitter$1.dispatchEvent(customEvent);
     }).finally(function () {
-      _classPrivateFieldGet(_this2, _ROOT$3).classList.remove('-fetching');
+      _classPrivateFieldGet(_this2, _ROOT$4).classList.remove('-fetching');
     });
   };
 
   var _getProperties2 = function _getProperties2() {
     var _this3 = this;
 
-    _classPrivateFieldGet(this, _ROOT$3).classList.add('-fetching');
+    _classPrivateFieldGet(this, _ROOT$4).classList.add('-fetching');
 
     _classPrivateFieldGet(this, _STATUS).textContent = 'Getting data';
     fetch("".concat(App$1.aggregateRows, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
@@ -2366,7 +2483,7 @@
       _classPrivateFieldSet(_this3, _isLoaded, _this3.offset >= _classPrivateFieldGet(_this3, _queryIds).length); // display
 
 
-      _classPrivateFieldGet(_this3, _ROOT$3).classList.remove('-fetching');
+      _classPrivateFieldGet(_this3, _ROOT$4).classList.remove('-fetching');
 
       _classPrivateFieldGet(_this3, _STATUS).textContent = 'Awaiting';
       _classPrivateFieldGet(_this3, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this3.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this3, _queryIds).length.toLocaleString());
@@ -2375,14 +2492,14 @@
       _classPrivateMethodGet(_this3, _updateRemainingTime, _updateRemainingTime2).call(_this3); // dispatch event
 
 
-      var event = new CustomEvent('addNextRows', {
+      var customEvent = new CustomEvent(addNextRows, {
         detail: {
           tableData: _this3,
           rows: rows,
           done: _classPrivateFieldGet(_this3, _isLoaded)
         }
       });
-      DefaultEventEmitter$1.dispatchEvent(event); // turn off after finished
+      DefaultEventEmitter$1.dispatchEvent(customEvent); // turn off after finished
 
       if (_classPrivateFieldGet(_this3, _isLoaded)) {
         _classPrivateMethodGet(_this3, _complete, _complete2).call(_this3);
@@ -2390,7 +2507,7 @@
         _classPrivateMethodGet(_this3, _getProperties, _getProperties2).call(_this3);
       }
     }).catch(function (error) {
-      _classPrivateFieldGet(_this3, _ROOT$3).classList.remove('-fetching');
+      _classPrivateFieldGet(_this3, _ROOT$4).classList.remove('-fetching');
 
       console.error(error); // TODO:
     });
@@ -2424,13 +2541,13 @@
 
     _classPrivateFieldSet(this, _isAutoLoad, true);
 
-    _classPrivateFieldGet(this, _ROOT$3).classList.add('-autoload');
+    _classPrivateFieldGet(this, _ROOT$4).classList.add('-autoload');
 
     _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
   };
 
   var _complete2 = function _complete2() {
-    _classPrivateFieldGet(this, _ROOT$3).dataset.status = 'complete';
+    _classPrivateFieldGet(this, _ROOT$4).dataset.status = 'complete';
     _classPrivateFieldGet(this, _STATUS).textContent = 'Complete';
     document.getElementById('autorenew').classList.remove('lotation');
     var jsonBlob = new Blob([JSON.stringify(_classPrivateFieldGet(this, _rows), null, 2)], {
@@ -2482,10 +2599,10 @@
     _classPrivateFieldSet(this, _body, document.querySelector('body')); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener('completeQueryParameter', function (e) {
+    DefaultEventEmitter$1.addEventListener(completeQueryParameter, function (e) {
       return _classPrivateMethodGet(_this, _setTableData, _setTableData2).call(_this, e.detail);
     });
-    DefaultEventEmitter$1.addEventListener('selectTableData', function (e) {
+    DefaultEventEmitter$1.addEventListener(selectTableData, function (e) {
       return _classPrivateMethodGet(_this, _selectTableData, _selectTableData2).call(_this, e.detail);
     });
   }
@@ -2547,9 +2664,130 @@
     }
   };
 
-  var CONF_PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
-  var CONF_TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
-  var CONF_AGGREGATE = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/aggregate.json';
+  var PATH = 'https://integbio.jp/togosite/sparqlist/api/';
+  var DATA_FROM_USER_IDS = 'data_from_user_ids';
+
+  var _BODY$1 = new WeakMap();
+
+  var _ROOT$5 = new WeakMap();
+
+  var _USER_KEY = new WeakMap();
+
+  var _USER_IDS = new WeakMap();
+
+  var _defineTogoKeys$1 = new WeakSet();
+
+  var _fetch = new WeakSet();
+
+  var _clear = new WeakSet();
+
+  var UploadUserIDsView = function UploadUserIDsView(elm) {
+    var _this = this;
+
+    _classCallCheck(this, UploadUserIDsView);
+
+    _clear.add(this);
+
+    _fetch.add(this);
+
+    _defineTogoKeys$1.add(this);
+
+    _BODY$1.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _ROOT$5.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _USER_KEY.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _USER_IDS.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _classPrivateFieldSet(this, _BODY$1, document.querySelector('body'));
+
+    _classPrivateFieldSet(this, _ROOT$5, elm);
+
+    var form = elm.querySelector(':scope > form');
+
+    _classPrivateFieldSet(this, _USER_KEY, form.querySelector(':scope > label > select'));
+
+    _classPrivateFieldSet(this, _USER_IDS, form.querySelector(':scope > label > input')); // atache events
+
+
+    form.querySelector(':scope > .buttons > button:nth-child(1)').addEventListener('click', function (e) {
+      e.stopPropagation();
+
+      _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
+
+      return false;
+    });
+    form.querySelector(':scope > .buttons > button:nth-child(2)').addEventListener('click', function (e) {
+      e.stopPropagation();
+
+      _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
+
+      return false;
+    }); // event listeners
+
+    DefaultEventEmitter$1.addEventListener(defineTogoKey, function (e) {
+      _classPrivateMethodGet(_this, _defineTogoKeys$1, _defineTogoKeys2$1).call(_this, e.detail);
+    });
+  } // private methods
+  ;
+
+  var _defineTogoKeys2$1 = function _defineTogoKeys2(togoKeys) {
+    console.log(togoKeys);
+    _classPrivateFieldGet(this, _USER_KEY).innerHTML = togoKeys.map(function (togoKey) {
+      return "<option value=\"".concat(togoKey.togoKey, "\" data-subject-id=\"").concat(togoKeys.subjectId, "\">").concat(togoKey.label, " (").concat(togoKey.togoKey, ")</option>");
+    }).join('');
+  };
+
+  var _fetch2 = function _fetch2() {
+    var _this2 = this;
+
+    console.log(_classPrivateFieldGet(this, _USER_KEY).value);
+    var queryTemplate = "".concat(PATH + DATA_FROM_USER_IDS, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(_classPrivateFieldGet(this, _USER_KEY).value, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
+    Records$1.properties.forEach(function (property) {
+      console.log(property);
+      var propertyId = property.propertyId;
+      fetch(queryTemplate.replace('@@sparqlet@@', encodeURIComponent(property.data)).replace('@@primaryKey@@', encodeURIComponent(property.primaryKey))).then(function (responce) {
+        return responce.json();
+      }).then(function (values) {
+        console.log(values);
+
+        _classPrivateFieldGet(_this2, _BODY$1).classList.add('-showuserids'); // dispatch event
+
+
+        var customEvent = new CustomEvent(setUserValues, {
+          detail: {
+            propertyId: propertyId,
+            values: values
+          }
+        });
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
+      });
+    });
+  };
+
+  var _clear2 = function _clear2() {
+    _classPrivateFieldGet(this, _BODY$1).classList.remove('-showuserids');
+
+    var customEvent = new CustomEvent(clearUserValues);
+    DefaultEventEmitter$1.dispatchEvent(customEvent);
+  };
+
+  var PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
+  var TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
+  var AGGREGATE = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/aggregate.json';
 
   var _viewModes = new WeakMap();
 
@@ -2572,8 +2810,6 @@
         writable: true,
         value: void 0
       });
-
-      window.app = this;
     }
 
     _createClass(App, [{
@@ -2590,21 +2826,22 @@
           checkbox.addEventListener('click', function () {
             if (checkbox.value === 'heatmap') body.dataset.heatmap = checkbox.checked;
             _classPrivateFieldGet(_this, _viewModes)[checkbox.value] = checkbox.checked;
-            var event = new CustomEvent('changeViewModes', {
+            var customEvent = new CustomEvent(changeViewModes, {
               detail: _classPrivateFieldGet(_this, _viewModes)
             });
-            DefaultEventEmitter$1.dispatchEvent(event);
+            DefaultEventEmitter$1.dispatchEvent(customEvent);
           });
         }); // set up views
 
-        var conditionBuilderView = new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
+        new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
         new ConditionsController(document.querySelector('#Conditions'));
         var reportsView = new ReportsView(document.querySelector('#Reports'));
         new ResultsTable(document.querySelector('#ResultsTable'));
-        new BalloonView(); // load config json
+        new BalloonView();
+        new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
 
         var stanzaTtemplates;
-        Promise.all([fetch(CONF_PROPERTIES), fetch(CONF_TEMPLATES), fetch(CONF_AGGREGATE)]).then(function (responces) {
+        Promise.all([fetch(PROPERTIES), fetch(TEMPLATES), fetch(AGGREGATE)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
           }));
@@ -2624,10 +2861,13 @@
               subjectId: subject.subjectId
             };
           });
-          conditionBuilderView.defineTogoKeys(togoKeys); // set stanza scripts
+          var customEvent = new CustomEvent(defineTogoKey, {
+            detail: togoKeys
+          });
+          DefaultEventEmitter$1.dispatchEvent(customEvent); // set stanza scripts
 
           document.querySelector('head').insertAdjacentHTML('beforeend', templates.stanzas.map(function (stanza) {
-            return "<script type=\"module\" src=\"".concat(stanza, "\"></script>");
+            return "<script type=\"module\" src=\"".concat(stanza, "\" async></script>");
           }).join('')); // aggregate
 
           _classPrivateFieldSet(_this, _aggregate, Object.freeze(aggregate)); // get stanza templates
@@ -2682,8 +2922,6 @@
 
   var _makeConceptViews2 = function _makeConceptViews2() {
     var conceptsContainer = document.querySelector('#Properties > .concepts');
-    console.log(Records$1);
-    console.log(Records$1.subjects);
     Records$1.subjects.forEach(function (subject) {
       var elm = document.createElement('section');
       new ConceptView(subject, elm);
