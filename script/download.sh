@@ -107,7 +107,7 @@ get_modification_date() {
     else
       local date_epoc=$(stat -c '%Y' "${oldest_file_in_the_dir}" )
     fi
-    local date=$(date -d "@${date_epoc}" '+%Y-%m-%d')
+    local date=$(date -r "${date_epoc}" '+%Y-%m-%d')
   else
     local date=$(date '+%Y-%m-%d')
   fi
@@ -123,7 +123,7 @@ main() {
     exit 1
   fi
   create_download_dir
-  if [[ -z ${NO_PARALLEL} ]]; then
+  if [[ ! -z ${NO_PARALLEL} ]]; then
     download_all
   else
     parallel_download
