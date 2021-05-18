@@ -3,7 +3,7 @@ ChEBI	http://rdf.integbio.jp/dataset/togosite/chebi	ftp://ftp.ebi.ac.uk/pub/data
 ChEMBL	http://rdf.integbio.jp/dataset/togosite/chembl	ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/latest/
 Reactome	http://rdf.integbio.jp/dataset/togosite/reactome	ftp://ftp.ebi.ac.uk/pub/databases/RDF/reactome/
 Rhea	http://rdf.integbio.jp/dataset/togosite/rhea	ftp://ftp.ebi.ac.uk/pub/databases/rhea/rdf/
-Ensembl	http://rdf.integbio.jp/dataset/togosite/ensembl	ftp://ftp.ensembl.org/pub/current_rdf/
+Ensembl	http://rdf.integbio.jp/dataset/togosite/ensembl	ftp://ftp.ensembl.org//pub/release-102/rdf/homo_sapiens/
 neXtProt	http://rdf.integbio.jp/dataset/togosite/nextprot	ftp://ftp.nextprot.org/pub/current_release/rdf/ttl
 TogoID	http://rdf.integbio.jp/dataset/togosite/togoid	http://ep6.dbcls.jp/togoid/link/togosite/
 dbcatalog	http://rdf.integbio.jp/dataset/togosite/dbcatalog/main	http://integbio.jp/rdf/download/dbcatalog/2021-03-17/all/dbcatalog.tar.gz
