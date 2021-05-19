@@ -34,11 +34,11 @@
         "viewMethod": "histogram"
       },
       {
-        "propertyId": "ensembl-transcript-category",
-        "label": "Transcript-category",
-        "description": "transcript category",
-        "data": "https://integbio.jp/togosite/sparqlist/api/Ensembl_transcript_description",
-        "primaryKey": "ensembl_transcript"
+        "propertyId": "ensembl-gene-biotype",
+        "label": "Gene biotype",
+        "description": "Biotypes of genes annotated in Ensembl",
+        "data": "https://integbio.jp/togosite/sparqlist/api/Ensembl_gene_type",
+        "primaryKey": "ensembl_gene"
       },
       {
         "propertyId": "homologene_human_paralog_count",
