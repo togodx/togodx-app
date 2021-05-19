@@ -24,6 +24,8 @@ export default class HistogramRangeSelectorView {
     this.#property = property;
     this.#OVERVIEW_CONTAINER = overview;
     this.#items = items.map(item => Object.assign({}, item));
+    this.#selectedBarsStart = undefined;
+    this.#selectedBarsEnd = undefined;
 
     // make container
     elm.innerHTML = `
@@ -39,19 +41,19 @@ export default class HistogramRangeSelectorView {
         </div>
         <svg class="additionalline"></svg>
       </div>
+      <!--
       <div class="controller">
         <div class="selector">
           <div class="slider -min"></div>
           <div class="slider -max"></div>
         </div>
-        <!--
         <div class="form">
           <input type="number" data-range="min">
           ~
           <input type="number" data-range="max">
         </div>
-        -->
-      </div>`;
+      </div>
+      -->`;
     this.#ROOT = elm.querySelector(':scope > .histogram-range-selector-view');
     const histogram = this.#ROOT.querySelector(':scope > .histogram');
     const selector = this.#ROOT.querySelector(':scope > .selector');
@@ -94,6 +96,7 @@ export default class HistogramRangeSelectorView {
     });
     selectorController.addEventListener('mousemove', e => {
       if (isMouseDown) {
+        // selection range
         const selectedWidth = e.layerX - startX;
         if (selectedWidth > 0) {
           this.#selectedBarsStart = Math.floor(startX / unit);
@@ -102,8 +105,15 @@ export default class HistogramRangeSelectorView {
           this.#selectedBarsStart = Math.floor(e.layerX / unit);
           this.#selectedBarsEnd = Math.floor(startX / unit)
         }
-        console.log(this.#selectedBarsStart, '-', this.#selectedBarsEnd)
-        // TODO:
+        // select overview by range
+        this.#ROOT.querySelectorAll(':scope > .selector > .overview > .bar').forEach((bar, index) => {
+          if (this.#selectedBarsStart <= index && index <= this.#selectedBarsEnd) {
+            bar.classList.add('-selected');
+          } else {
+            bar.classList.remove('-selected');
+          }
+        });
+        this.#update();
       }
     });
     selectorController.addEventListener('mouseup', e => {
@@ -116,9 +126,26 @@ export default class HistogramRangeSelectorView {
 
   #update() {
 
-    const max = Math.max(...Array.from(this.#items).map(item => item.count));
+    // filter
+    let items;
+    if (this.#selectedBarsStart) {
+      items = this.#items.filter((item, index) => {
+        if (this.#selectedBarsStart <= index && index <= this.#selectedBarsEnd) {
+          return true;
+        } else {
+          item.elm.style.width = 0;
+          return false;
+        }
+      });
+    } else {
+      items = this.#items;
+    }
+    console.log(items)
+
+    const max = Math.max(...items.map(item => item.count));
     const isLog10 = App.viewModes.log10;
     const processedMax = isLog10 ? Math.log10(max) : max;
+    const width = 100 / items.length;
 
     // grid
     const digits = String(Math.ceil(max)).length;
@@ -130,8 +157,9 @@ export default class HistogramRangeSelectorView {
     });
 
     // graph
-    this.#items.forEach(item => {
+    items.forEach(item => {
       const height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100;
+      item.elm.style.width = `${width}%`;
       item.elm.querySelector(':scope > .actual').style.height = `${height}%`;
       this.#SELECTOR_BARS.find(bar => bar.dataset.categoryId === item.categoryId).style.height = `${height}%`;
     });

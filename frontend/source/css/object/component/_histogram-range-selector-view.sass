@@ -1,12 +1,13 @@
 .histogram-range-selector-view
   --padding-horizontal: 1rem
   --padding-vertical: 0
+  --height-selector: 3rem
   > .selector
     margin: 1rem var(--padding-horizontal)
     width: calc(100% - var(--padding-horizontal) * 2)
-    height: 3rem
+    height: var(--height-selector)
     position: relative
-    overflow: hidden
+    // overflow: hidden
     > *
       position: absolute
       top: 0
@@ -20,6 +21,14 @@
         opacity: .2
         &.-selected
           opacity: 1
+          position: relative
+          &::before
+            content: ""
+            position: absolute
+            bottom: -.2rem
+            width: 100%
+            height: calc(var(--height-selector) + .4rem)
+            background-color: var(--color-selected)
     > .controller
       cursor: col-resize
   > .histogram
@@ -76,17 +85,17 @@
           right: 4px
     > .gridcontainer, > .additionalline
       pointer-events: none
-  > .controller
-    height: 5rem
-    > .selector
-      position: relative
-      > .slider
-        position: absolute
-        width: 0
-        height: 0
-        border-style: solid
-        border-width: 0 .4rem .8rem .4rem
-        border-color: transparent transparent var(--color-black) transparent
-        cursor: pointer
-    > .form
-      text-align: center
+  // > .controller
+  //   height: 5rem
+  //   > .selector
+  //     position: relative
+  //     > .slider
+  //       position: absolute
+  //       width: 0
+  //       height: 0
+  //       border-style: solid
+  //       border-width: 0 .4rem .8rem .4rem
+  //       border-color: transparent transparent var(--color-black) transparent
+  //       cursor: pointer
+  //   > .form
+  //     text-align: center

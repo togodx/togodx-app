@@ -1230,7 +1230,7 @@
 
   var _indicateValue = new WeakSet();
 
-  var HistogramRangeSelectorView = function HistogramRangeSelectorView(elm, subject, property, items, sparqlist, overview) {
+  var HistogramRangeSelectorView = function HistogramRangeSelectorView(elm, subject, property, _items2, sparqlist, overview) {
     var _this = this;
 
     _classCallCheck(this, HistogramRangeSelectorView);
@@ -1281,7 +1281,7 @@
       value: void 0
     });
 
-    console.log(elm, subject, property, items, sparqlist);
+    console.log(elm, subject, property, _items2, sparqlist);
     this._subject = subject;
     this._sparqlist = sparqlist;
 
@@ -1289,12 +1289,16 @@
 
     _classPrivateFieldSet(this, _OVERVIEW_CONTAINER$1, overview);
 
-    _classPrivateFieldSet(this, _items, items.map(function (item) {
+    _classPrivateFieldSet(this, _items, _items2.map(function (item) {
       return Object.assign({}, item);
-    })); // make container
+    }));
+
+    _classPrivateFieldSet(this, _selectedBarsStart, undefined);
+
+    _classPrivateFieldSet(this, _selectedBarsEnd, undefined); // make container
 
 
-    elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"selector\">\n        <div class=\"overview\"></div>\n        <div class=\"controller\"></div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ".concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>\n      <div class=\"controller\">\n        <div class=\"selector\">\n          <div class=\"slider -min\"></div>\n          <div class=\"slider -max\"></div>\n        </div>\n        <!--\n        <div class=\"form\">\n          <input type=\"number\" data-range=\"min\">\n          ~\n          <input type=\"number\" data-range=\"max\">\n        </div>\n        -->\n      </div>");
+    elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"selector\">\n        <div class=\"overview\"></div>\n        <div class=\"controller\"></div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ".concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>\n      <!--\n      <div class=\"controller\">\n        <div class=\"selector\">\n          <div class=\"slider -min\"></div>\n          <div class=\"slider -max\"></div>\n        </div>\n        <div class=\"form\">\n          <input type=\"number\" data-range=\"min\">\n          ~\n          <input type=\"number\" data-range=\"max\">\n        </div>\n      </div>\n      -->");
 
     _classPrivateFieldSet(this, _ROOT$6, elm.querySelector(':scope > .histogram-range-selector-view'));
 
@@ -1349,6 +1353,7 @@
     });
     selectorController.addEventListener('mousemove', function (e) {
       if (isMouseDown) {
+        // selection range
         var selectedWidth = e.layerX - startX;
 
         if (selectedWidth > 0) {
@@ -1359,9 +1364,18 @@
           _classPrivateFieldSet(_this2, _selectedBarsStart, Math.floor(e.layerX / unit));
 
           _classPrivateFieldSet(_this2, _selectedBarsEnd, Math.floor(startX / unit));
-        }
+        } // select overview by range
 
-        console.log(_classPrivateFieldGet(_this2, _selectedBarsStart), '-', _classPrivateFieldGet(_this2, _selectedBarsEnd)); // TODO:
+
+        _classPrivateFieldGet(_this2, _ROOT$6).querySelectorAll(':scope > .selector > .overview > .bar').forEach(function (bar, index) {
+          if (_classPrivateFieldGet(_this2, _selectedBarsStart) <= index && index <= _classPrivateFieldGet(_this2, _selectedBarsEnd)) {
+            bar.classList.add('-selected');
+          } else {
+            bar.classList.remove('-selected');
+          }
+        });
+
+        _classPrivateMethodGet(_this2, _update$1, _update2$1).call(_this2);
       }
     });
     selectorController.addEventListener('mouseup', function (e) {
@@ -1374,11 +1388,29 @@
   function _update2$1() {
     var _this3 = this;
 
-    var max = Math.max.apply(Math, _toConsumableArray(Array.from(_classPrivateFieldGet(this, _items)).map(function (item) {
+    // filter
+    var items;
+
+    if (_classPrivateFieldGet(this, _selectedBarsStart)) {
+      items = _classPrivateFieldGet(this, _items).filter(function (item, index) {
+        if (_classPrivateFieldGet(_this3, _selectedBarsStart) <= index && index <= _classPrivateFieldGet(_this3, _selectedBarsEnd)) {
+          return true;
+        } else {
+          item.elm.style.width = 0;
+          return false;
+        }
+      });
+    } else {
+      items = _classPrivateFieldGet(this, _items);
+    }
+
+    console.log(items);
+    var max = Math.max.apply(Math, _toConsumableArray(items.map(function (item) {
       return item.count;
     })));
     var isLog10 = App$1.viewModes.log10;
-    var processedMax = isLog10 ? Math.log10(max) : max; // grid
+    var processedMax = isLog10 ? Math.log10(max) : max;
+    var width = 100 / items.length; // grid
 
     var digits = String(Math.ceil(max)).length;
     var unit = Number(String(max).charAt(0).padEnd(digits, '0')) / NUM_OF_GRID;
@@ -1390,8 +1422,9 @@
     }); // graph
 
 
-    _classPrivateFieldGet(this, _items).forEach(function (item) {
+    items.forEach(function (item) {
       var height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100;
+      item.elm.style.width = "".concat(width, "%");
       item.elm.querySelector(':scope > .actual').style.height = "".concat(height, "%");
       _classPrivateFieldGet(_this3, _SELECTOR_BARS).find(function (bar) {
         return bar.dataset.categoryId === item.categoryId;
