@@ -2046,6 +2046,8 @@
 
   var _tableData$1 = new WeakMap();
 
+  var _header = new WeakMap();
+
   var _ROOT$3 = new WeakMap();
 
   var _THEAD = new WeakMap();
@@ -2085,6 +2087,11 @@
     });
 
     _tableData$1.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _header.set(this, {
       writable: true,
       value: void 0
     });
@@ -2192,12 +2199,18 @@
   }
 
   function _setupTable2(tableData) {
-    var properties = tableData.condition.attributes.concat(tableData.condition.properties);
-    console.log(properties); // reset
+    var properties = tableData.condition.attributes.concat(tableData.condition.properties); // reset
 
     _classPrivateFieldSet(this, _tableData$1, tableData);
 
     _classPrivateFieldGet(this, _intersctionObserver).unobserve(_classPrivateFieldGet(this, _TABLE_END));
+
+    _classPrivateFieldSet(this, _header, properties.map(function (property) {
+      return {
+        subjectId: property.subject.subjectId,
+        propertyId: property.property.propertyId
+      };
+    }));
 
     _classPrivateFieldGet(this, _ROOT$3).classList.remove('-complete');
 
@@ -2243,17 +2256,12 @@
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
       console.log(row);
-      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div\n              class=\"togo-key-view\"\n              data-subject-id=\"").concat(detail.tableData.condition.subjectId, "\"\n              data-key=\"").concat(detail.tableData.condition.togoKey, "\"\n              data-category-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column) {
+      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div\n              class=\"togo-key-view\"\n              data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n              data-key=\"").concat(detail.tableData.togoKey, "\"\n              data-category-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column, columnIndex) {
         // console.log(column)
         if (column) {
           return "\n              <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute) {
             if (!attribute.attribute) console.error(attribute);
-            var subject = Records$1.subjects.find(function (subject) {
-              return subject.properties.some(function (subjectProperty) {
-                return subjectProperty.propertyId === column.propertyId;
-              });
-            });
-            return "\n              <li>\n                <div\n                  class=\"togo-key-view\"\n                  data-subject-id=\"".concat(subject.subjectId, "\"\n                  data-key=\"").concat(column.propertyKey, "\"\n                  data-category-id=\"").concat(attribute.id, "\">").concat(attribute.id, "</div>\n                <a\n                  href=\"").concat(attribute.attribute ? attribute.attribute.uri : '', "\"\n                  title=\"").concat(attribute.attribute ? attribute.attribute.uri : '', "\"\n                  target=\"_blank\">").concat(attribute.attribute ? attribute.attribute.label : attribute, "</a>\n              </li>");
+            return "\n              <li>\n                <div\n                  class=\"togo-key-view\"\n                  data-subject-id=\"".concat(_classPrivateFieldGet(_this2, _header)[columnIndex].subjectId, "\"\n                  data-key=\"").concat(column.propertyKey, "\"\n                  data-category-id=\"").concat(attribute.id, "\">").concat(attribute.id, "</div>\n                <a\n                  href=\"").concat(attribute.attribute ? attribute.attribute.uri : '', "\"\n                  title=\"").concat(attribute.attribute ? attribute.attribute.uri : '', "\"\n                  target=\"_blank\">").concat(attribute.attribute ? attribute.attribute.label : attribute, "</a>\n              </li>");
           }).join(''), "</ul></div></td>");
         } else {
           return '<td><div class="inner -empty"></div></td>';

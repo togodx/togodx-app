@@ -8,6 +8,7 @@ export default class ResultsTable {
 
   #intersctionObserver;
   #tableData;
+  #header;
   #ROOT;
   #THEAD;
   #STATS;
@@ -70,11 +71,16 @@ export default class ResultsTable {
   #setupTable(tableData) {
 
     const properties = tableData.condition.attributes.concat(tableData.condition.properties);
-    console.log(properties)
 
     // reset
     this.#tableData = tableData;
     this.#intersctionObserver.unobserve(this.#TABLE_END);
+    this.#header = properties.map(property => {
+      return {
+        subjectId: property.subject.subjectId,
+        propertyId: property.property.propertyId
+      };
+    });
     this.#ROOT.classList.remove('-complete');
     this.#THEAD.innerHTML = '';
     this.#TBODY.innerHTML = '';
@@ -131,23 +137,22 @@ export default class ResultsTable {
             <a class="toreportpage" href="report.html?togoKey=${detail.tableData.togoKey}&id=${detail.rows[index].id}&properties=${encodeURIComponent(JSON.stringify(row))}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
             <div
               class="togo-key-view"
-              data-subject-id="${detail.tableData.condition.subjectId}"
-              data-key="${detail.tableData.condition.togoKey}"
+              data-subject-id="${detail.tableData.subjectId}"
+              data-key="${detail.tableData.togoKey}"
               data-category-id="${detail.rows[index].id}">${detail.rows[index].id}</div>
           </div>
         </th>
-        ${row.map(column => {
+        ${row.map((column, columnIndex) => {
           // console.log(column)
           if (column) {
             return `
               <td><div class="inner"><ul>${column.attributes.map(attribute => {
               if (!attribute.attribute) console.error(attribute);
-              const subject = Records.subjects.find(subject => subject.properties.some(subjectProperty => subjectProperty.propertyId === column.propertyId));
               return `
               <li>
                 <div
                   class="togo-key-view"
-                  data-subject-id="${subject.subjectId}"
+                  data-subject-id="${this.#header[columnIndex].subjectId}"
                   data-key="${column.propertyKey}"
                   data-category-id="${attribute.id}">${attribute.id}</div>
                 <a
