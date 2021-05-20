@@ -1,54 +1,120 @@
-<togostanza-hash-table
-  data-url="https://integbio.jp/togosite/sparqlist/api/disease_hpo_details?hp={{id}}"
-  data-type="json"
-  width="800"
-  height="400"
-  padding="0"
-  columns=""
-  format-key="true"
-></togostanza-hash-table>
+<div id="metastanza">
+  <h1>Disease: {{type}}: {{id}}</h1>
+</div>
+<script>
+  // togoid endpoint
+  const togoidAPIURL = 'https://api.togoid.dbcls.jp.il3c.com';
+  const dataUrlEndpoint = 'https://integbio.jp/togosite/sparqlist/api/test_disease_template_2';
+  const idTypes = ['mondo', 'nando', 'hp', 'mesh'];
 
-<h2>MeSH Descriptor {{id}}</h2>
-<togostanza-hash-table
-  data-url="https://integbio.jp/togosite/sparqlist/api/mesh_descriptor?queryId={{id}}"
-  data-type="json"
-  width="800"
-  height="400"
-  padding="0"
-  columns="[{&quot;id&quot;: &quot;id&quot;, &quot;label&quot;: &quot;MeSH UID&quot;},
-            {&quot;id&quot;: &quot;label&quot;}, {&quot;id&quot;: &quot;scope_note&quot;},
-            {&quot;id&quot;: &quot;tree_numbers&quot;}]"
-  format-key="true"
-></togostanza-hash-table>
+  // embed the id and id type via handlebars variable
+  const subjectId = "{{id}}";
+  const subjectIdType = "{{type}}";
 
-<h2> mondo {{id}} summary</h2>
+  // for testing
+  // const subjectId = "0011514";
+  // const subjectIdType = 'mondo';
 
-togostanza-hash-table {
-    --key-font-size: 16px;
+  // access API and return JSON
+  const fetchJSON = async (api) => {
+    const response = await fetch(api);
+    const json = await response.json();
+    return json;
   }
 
-<togostanza-hash-table
-  data-url="https://integbio.jp/togosite/sparqlist/api/disease-mondo?mondo={{id}}"
-  data-type="json"
-  width="800"
-  height="400"
-  padding="0"
-  columns="[{&quot;id&quot;: &quot;ID&quot;,&quot;label&quot;:&quot;Mondo ID&quot;}, {&quot;id&quot;: &quot;label&quot;,&quot;label&quot;:&quot;Disease name&quot;},{&quot;id&quot;: &quot;synonym_label&quot;,&quot;label&quot;:&quot;Synonym(s)&quot;},{&quot;id&quot;: &quot;difinition&quot;,&quot;label&quot;:&quot;Disease difinition&quot;},{&quot;id&quot;: &quot;related_databases&quot;,&quot;label&quot;:&quot;Other related database ID(s)&quot;},{&quot;id&quot;: &quot;Upper_classID&quot;,&quot;label&quot;:&quot;Mondo upper disease ID&quot;},{&quot;id&quot;: &quot;Upper_class_label&quot;,&quot;label&quot;:&quot;Mondo upper class disase&quot;}]"
-  format-key="true"
-></togostanza-hash-table>
-
-<h2> nando {{id}} summary</h2>
-
-  togostanza-hash-table {
-    --key-font-size: 16px;
+  // helper function to set multiple attributes
+  const updateAttributes = (element, attributes) => {
+    for (let key in attributes) {
+      element.setAttribute(key, attributes[key]);
+    }
   }
 
-<togostanza-hash-table
-  data-url="https://integbio.jp/togosite/sparqlist/api/Disease-nando?nando={{id}}"
-  data-type="json"
-  width="800"
-  height="400"
-  padding="0"
-  columns="[{&quot;id&quot;: &quot;ID&quot;,&quot;label&quot;:&quot;NANDO ID&quot;}, {&quot;id&quot;: &quot;label_e&quot;,&quot;label&quot;:&quot;Disease name(E)&quot;}, {&quot;id&quot;: &quot;label_j&quot;,&quot;label&quot;:&quot;Disease name(J)&quot;}, {&quot;id&quot;: &quot;synonym_label&quot;,&quot;label&quot;:&quot;Synonym(s)&quot;}, {&quot;id&quot;: &quot;description&quot;,&quot;label&quot;:&quot;Disease description&quot;}, {&quot;id&quot;: &quot;mondo&quot;,&quot;label&quot;:&quot;Related Mondo ID&quot;,&quot;link&quot;:&quot;mondo&quot;}, {&quot;id&quot;: &quot;source&quot;,&quot;label&quot;:&quot;Source document&quot;,&quot;link&quot;:&quot;source&quot;}, {&quot;id&quot;: &quot;upper&quot;,&quot;label&quot;:&quot;NANDO upper disease ID&quot;}, {&quot;id&quot;: &quot;upper_label&quot;,&quot;label&quot;:&quot;NANDO upper class disase&quot;}]"
-  format-key="true"
-></togostanza-hash-table>
+  // create a list of target ID types by removing the subject ID type
+  const targetIdTypes = async (subjectIdType) => {
+    const index = idTypes.indexOf(subjectIdType);
+    if (index > -1) {
+      idTypes.splice(index, 1);
+    }
+    return idTypes;
+  }
+
+  // access convert APi endpoint and create ID Object
+  const convertId = async (subjectId, subjectIdType) => {
+    const targets = await targetIdTypes(subjectIdType);
+    const array = [];
+    for (const targetIdType of targets) {
+      const url = togoidAPIURL + '/convert?format=json&ids=' + subjectId + '&route=' + subjectIdType + ',' + targetIdType;
+      const json = await fetchJSON(url);
+      if (json.results.length != 0) {
+        array.push({
+          'type': targetIdType,
+          'ids': json.results
+        });
+      }
+    }
+    return array;
+  }
+
+  const metastanzaDiv = document.getElementById("metastanza");
+  const dataUrl = (id, type) => dataUrlEndpoint + '?id=' + id + '&type=' + type;
+  const titleDict = {
+    'mondo': 'Mondo',
+    'nando': 'NANDO',
+    'hp': 'HP',
+    'mesh': 'MeSH'
+  };
+
+  const addHeader = (id, type) => {
+    const header = document.createElement('h2');
+    const headerText = document.createTextNode(titleDict[type] + ': ' + id);
+    header.appendChild(headerText);
+    metastanzaDiv.appendChild(header);
+  }
+
+  const generateColumnSetting = async (id, type) => {
+    const data = await fetchJSON(dataUrl(id, type));
+    return Object.entries(data[0]).map(([key, value]) => {
+      const obj = {};
+      obj.id = key;
+      if (/^http(s|)\:\/\//.test(value)) {
+        obj.link = key;
+      }
+      return obj;
+    });
+  }
+
+  const addHashTable = async (id, type) => {
+    const hashTable = document.createElement('togostanza-hash-table');
+    const columnSetting = await generateColumnSetting(id, type);
+    updateAttributes(hashTable, {
+      'data-url': dataUrl(id, type),
+      'data-type': 'json',
+      'format-key': true,
+      columns: JSON.stringify(columnSetting)
+    });
+    metastanzaDiv.appendChild(hashTable);
+  }
+
+  const addMainSubject = () => {
+    addHeader(subjectId, subjectIdType);
+    addHashTable(subjectId, subjectIdType);
+  }
+
+  const createMetastanza = async () => {
+    addMainSubject();
+    const array = await convertId(subjectId, subjectIdType);
+    for (const idObj of array) {
+      for (const id of idObj.ids) {
+        const type = idObj.type;
+        const data = await fetchJSON(dataUrl(id, type));
+        if (data.length > 0) {
+          addHeader(id, type);
+          addHashTable(id, type);
+        }
+      }
+    }
+  }
+
+  // exec
+  createMetastanza();
+</script>
