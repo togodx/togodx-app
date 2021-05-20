@@ -931,9 +931,9 @@
 
       _classPrivateFieldSet(this, _REPORT_MODAL, document.querySelector(".report-modal"));
 
-      _classPrivateFieldSet(this, _EXIT_BUTTON, document.createElement("button"));
+      _classPrivateFieldSet(this, _EXIT_BUTTON, document.createElement("div"));
 
-      _classPrivateFieldGet(this, _EXIT_BUTTON).className = 'close-button';
+      _classPrivateFieldGet(this, _EXIT_BUTTON).className = "close-button";
       var returnButton = elm.querySelector(":scope > footer > button.return"); // attach event
 
       returnButton.addEventListener("click", function () {
@@ -981,8 +981,8 @@
 
   function _header2(subject) {
     var header = document.createElement("header");
-    header.innerHTML = "\n      <span class=\"name\">".concat(subject.value, " </span>\n      <span class=\"type\"> Main category / Subcategory</span>\n      <span class=\"links\"> </span>\n    ");
-    header.appendChild(_classPrivateFieldGet(this, _EXIT_BUTTON));
+    header.innerHTML = "\n      <div>\n        <strong>".concat(subject.value, " </strong>\n        <span class=\"type\"> Main category / Subcategory</span>\n      </div>\n      <div>\n        <a class=\"toreportpage\" href=\"report.html?togoKey\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n        <a class=\"external-link\"href=\"#\">External Link</span>\n      </span>\n    ");
+    header.childNodes[3].appendChild(_classPrivateFieldGet(this, _EXIT_BUTTON));
     return header;
   }
 
@@ -991,7 +991,7 @@
 
     console.log(subject, properties); // make stanzas
 
-    stanzaContainer.className = 'stanzas';
+    stanzaContainer.className = "stanzas";
     stanzaContainer.innerHTML = _classPrivateMethodGet(this, _stanza, _stanza2).call(this, subject.id, subject.value) + properties.map(function (property) {
       if (property === undefined) {
         return "";
@@ -1005,7 +1005,9 @@
 
         return _classPrivateMethodGet(_this2, _stanza, _stanza2).call(_this2, _subject.subjectId, property.attributes[0].id);
       }
-    }).join("");
+    }).join(""); // set navigation buttons
+
+    stanzaContainer.innerHTML += "\n        <div class=\"arrow up\"></div>\n        <div class=\"arrow right\"></div>\n        <div class=\"arrow down\"></div>\n        <div class=\"arrow left\"></div>\n      ";
     return stanzaContainer;
   }
 

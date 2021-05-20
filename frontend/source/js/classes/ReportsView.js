@@ -21,8 +21,8 @@ export default class ReportsView {
     this._stanzas = {};
     this.#BODY = document.querySelector("body");
     this.#REPORT_MODAL = document.querySelector(".report-modal");
-    this.#EXIT_BUTTON = document.createElement("button");
-    this.#EXIT_BUTTON.className = 'close-button'
+    this.#EXIT_BUTTON = document.createElement("div");
+    this.#EXIT_BUTTON.className = "close-button";
     const returnButton = elm.querySelector(":scope > footer > button.return");
 
     // attach event
@@ -59,11 +59,16 @@ export default class ReportsView {
   #header(subject) {
     const header = document.createElement("header");
     header.innerHTML = `
-      <span class="name">${subject.value} </span>
-      <span class="type"> Main category / Subcategory</span>
-      <span class="links"> </span>
+      <div>
+        <strong>${subject.value} </strong>
+        <span class="type"> Main category / Subcategory</span>
+      </div>
+      <div>
+        <a class="toreportpage" href="report.html?togoKey" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
+        <a class="external-link"href="#">External Link</span>
+      </span>
     `;
-    header.appendChild(this.#EXIT_BUTTON);
+    header.childNodes[3].appendChild(this.#EXIT_BUTTON);
 
     return header;
   }
@@ -71,7 +76,7 @@ export default class ReportsView {
   #stanzaContainer(subject, properties, stanzaContainer) {
     console.log(subject, properties);
     // make stanzas
-    stanzaContainer.className = 'stanzas'
+    stanzaContainer.className = "stanzas";
     stanzaContainer.innerHTML =
       this.#stanza(subject.id, subject.value) +
       properties
@@ -90,7 +95,13 @@ export default class ReportsView {
           }
         })
         .join("");
-
+    // set navigation buttons
+    stanzaContainer.innerHTML += `
+        <div class="arrow up"></div>
+        <div class="arrow right"></div>
+        <div class="arrow down"></div>
+        <div class="arrow left"></div>
+      `;
     return stanzaContainer;
   }
 
@@ -106,7 +117,6 @@ export default class ReportsView {
   }
 
   // public methods
-
   defineTemplates(templates) {
     console.log(templates);
     this.#templates = templates;
