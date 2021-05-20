@@ -183,7 +183,7 @@
       "dP" : 10,
       "ec" : 1,
       "ft" : 2,
-      "ma" : 1,
+      "ma" : 0,
       "oA" : 1,
       "oAP" : "\/build\/css\/object\/component\/_rounded-button-view.css",
       "oF" : 0,
@@ -598,8 +598,8 @@
     "\/source\/js\/classes\/ReportsView.js" : {
       "bF" : 4,
       "ft" : 64,
-      "ma" : 1,
-      "mi" : 0,
+      "ma" : 0,
+      "mi" : 1,
       "oA" : 1,
       "oAP" : "\/build\/js\/classes\/ReportsView.js",
       "oF" : 0,
@@ -609,8 +609,8 @@
     "\/source\/js\/classes\/ResultsTable.js" : {
       "bF" : 4,
       "ft" : 64,
-      "ma" : 1,
-      "mi" : 0,
+      "ma" : 0,
+      "mi" : 1,
       "oA" : 1,
       "oAP" : "\/build\/js\/classes\/ResultsTable.js",
       "oF" : 0,
@@ -738,7 +738,8 @@
     "displayValue" : "NBDC Togo Site",
     "displayValueWasSetByUser" : 1,
     "iconImageName" : "brackets-koamaru",
-    "iconImageWasSetByUser" : 0
+    "iconImageWasSetByUser" : 0,
+    "lastBuiltDate" : 643086337.74521005
   },
   "projectSettings" : {
     "abortBuildOnError" : 1,
@@ -1032,7 +1033,7 @@
     "bowerUseExactVersion" : 0,
     "browserRefreshDelay" : 0,
     "browserslistString" : ">0.2%, last 2 versions, Firefox ESR, not dead",
-    "buildEnvironment" : 0,
+    "buildEnvironment" : 1,
     "buildFolderActive" : 1,
     "buildFolderName" : "build",
     "cleanBuild" : 1,
@@ -1177,7 +1178,7 @@
     "cssoForceMediaMerge" : 0,
     "cssoRestructure" : 1,
     "environmentVariableEntries" : [
-      "NODE_ENV:::production"
+      "NODE_ENV:::development"
     ],
     "esLintConfigFileHandlingType" : 0,
     "esLintECMAVersion" : 8,
@@ -2581,8 +2582,8 @@
       "autoOutputPathReplace2" : "",
       "autoOutputPathStyle" : 0,
       "bundleFormat" : 4,
-      "minifierStyle" : 0,
-      "sourceMapStyle" : 1,
+      "minifierStyle" : 1,
+      "sourceMapStyle" : 0,
       "syntaxCheckerStyle" : 3,
       "transpilerStyle" : 1
     },
@@ -2696,7 +2697,7 @@
       "purgeCSSStyle" : 0,
       "shouldRunAutoprefixer" : 1,
       "shouldRunBless" : 0,
-      "sourceMapStyle" : 1
+      "sourceMapStyle" : 0
     },
     "languageDefaultsSLIM" : {
       "autoOutputAction" : 0,

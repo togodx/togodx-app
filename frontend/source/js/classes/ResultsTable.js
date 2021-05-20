@@ -129,7 +129,7 @@ export default class ResultsTable {
         <th>
           <div class="inner">
             <a class="toreportpage" href="report.html?togoKey=${detail.tableData.togoKey}&id=${detail.rows[index].id}&properties=${encodeURIComponent(JSON.stringify(row))}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
-            <div class="togo-key-view" data-key="${detail.tableData.condition.togoKey}" data-id="${detail.rows[index].id}">${detail.rows[index].id}</div>
+            <div class="togo-key-view"ß data-key="${detail.tableData.condition.togoKey}" data-id="${detail.rows[index].id}">${detail.rows[index].id}</div>
           </div>
         </th>
         ${row.map(column => {

@@ -1,68 +1,114 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
-import Records from './Records.js';
-import * as event from '../events';
+import Records from "./Records.js";
+import * as event from "../events";
 
 export default class ReportsView {
-
   #templates;
   #BODY;
-  #STANZAS_CONTAINER;
+  #ROOT;
+  #REPORT_MODAL;
+  #EXIT_BUTTON;
 
   constructor(elm) {
-
-    this._stanzas = {};
+    // make popup element
+    this.#ROOT = document.createElement("section");
+    this.#ROOT.className = "report-modal";
+    document
+      .querySelector("body")
+      .insertAdjacentElement("beforeend", this.#ROOT);
 
     // references
-    this.#BODY = document.querySelector('body');
-    this.#STANZAS_CONTAINER = elm.querySelector(':scope > .stanzas');
-    const returnButton = elm.querySelector(':scope > footer > button.return');
+    this._stanzas = {};
+    this.#BODY = document.querySelector("body");
+    this.#REPORT_MODAL = document.querySelector(".report-modal");
+    this.#EXIT_BUTTON = document.createElement("button");
+    this.#EXIT_BUTTON.className = 'close-button'
+    const returnButton = elm.querySelector(":scope > footer > button.return");
 
     // attach event
-    returnButton.addEventListener('click', () => {
-      this.#BODY.dataset.display = 'properties';
+    returnButton.addEventListener("click", () => {
+      this.#BODY.dataset.display = "properties";
+    });
+
+    this.#EXIT_BUTTON.addEventListener("click", () => {
+      this.#hidePopUp();
     });
 
     // event listener
-    DefaultEventEmitter.addEventListener(event.showStanza, e => {
-      this.#showStanza(e.detail.subject, e.detail.properties);
+    DefaultEventEmitter.addEventListener(event.showStanza, (e) => {
+      this.#showPopUp(e.detail.subject, e.detail.properties);
     });
-    DefaultEventEmitter.addEventListener(event.hideStanza, e => {
-      this.#hideStanza();
+    DefaultEventEmitter.addEventListener(event.hideStanza, (e) => {
+      this.#hidePopUp();
     });
   }
 
   // private methods
 
-  #showStanza(subject, properties) {
-    console.log(subject, properties)
+  #showPopUp(subject, properties) {
+    const stanzaDiv = document.createElement("div");
+    const popupDiv = document.createElement("div");
+    popupDiv.className = "popup";
+    popupDiv.appendChild(this.#header(subject));
+    popupDiv.appendChild(this.#stanzaContainer(subject, properties, stanzaDiv));
+
+    this.#REPORT_MODAL.appendChild(popupDiv);
+    this.#REPORT_MODAL.classList.add("-showing", "overlay");
+  }
+
+  #header(subject) {
+    const header = document.createElement("header");
+    header.innerHTML = `
+      <span class="name">${subject.value} </span>
+      <span class="type"> Main category / Subcategory</span>
+      <span class="links"> </span>
+    `;
+    header.appendChild(this.#EXIT_BUTTON);
+
+    return header;
+  }
+
+  #stanzaContainer(subject, properties, stanzaContainer) {
+    console.log(subject, properties);
     // make stanzas
-    this.#STANZAS_CONTAINER.innerHTML
-      = this.#stanza(subject.id, subject.value)
-      +　properties
-        .map(property => {
+    stanzaContainer.className = 'stanzas'
+    stanzaContainer.innerHTML =
+      this.#stanza(subject.id, subject.value) +
+      properties
+        .map((property) => {
           if (property === undefined) {
-            return '';
+            return "";
           } else {
-            const subject = Records.subjects.find(subject => subject.properties.some(subjectProperty => subjectProperty.propertyId === property.propertyId));
+            const subject = Records.subjects.find((subject) =>
+              subject.properties.some(
+                (subjectProperty) =>
+                  subjectProperty.propertyId === property.propertyId
+              )
+            );
             // TODO: 1個目のアトリビュートしか返していない
             return this.#stanza(subject.subjectId, property.attributes[0].id);
           }
-        }).join('');
+        })
+        .join("");
+
+    return stanzaContainer;
   }
 
-  #hideStanza() {
-    this.#STANZAS_CONTAINER.innerHTML = '';
+  #stanza(subjectId, propertyId, value) {
+    return `<div class="stanza-view" data-subject-id="${subjectId}" data-property-id=${propertyId}">${this.#templates[
+      subjectId
+    ].replace(/{{id}}/g, value)}</div>`;
   }
 
-  #stanza(subjectId, value) {
-    return `<div class="stanza-view">${this.#templates[subjectId].replace(/{{id}}/g, value)}</div>`;
+  #hidePopUp() {
+    this.#REPORT_MODAL.classList.remove("-showing", "overlay");
+    this.#REPORT_MODAL.innerHTML = "";
   }
 
   // public methods
 
   defineTemplates(templates) {
-    console.log(templates)
+    console.log(templates);
     this.#templates = templates;
   }
-
 }

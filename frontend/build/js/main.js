@@ -862,13 +862,21 @@
 
   var _BODY$1 = new WeakMap();
 
-  var _STANZAS_CONTAINER = new WeakMap();
+  var _ROOT$7 = new WeakMap();
 
-  var _showStanza = new WeakSet();
+  var _REPORT_MODAL = new WeakMap();
 
-  var _hideStanza = new WeakSet();
+  var _EXIT_BUTTON = new WeakMap();
+
+  var _showPopUp = new WeakSet();
+
+  var _header = new WeakSet();
+
+  var _stanzaContainer = new WeakSet();
 
   var _stanza = new WeakSet();
+
+  var _hidePopUp = new WeakSet();
 
   var ReportsView = /*#__PURE__*/function () {
     function ReportsView(elm) {
@@ -876,11 +884,15 @@
 
       _classCallCheck(this, ReportsView);
 
+      _hidePopUp.add(this);
+
       _stanza.add(this);
 
-      _hideStanza.add(this);
+      _stanzaContainer.add(this);
 
-      _showStanza.add(this);
+      _header.add(this);
+
+      _showPopUp.add(this);
 
       _templates.set(this, {
         writable: true,
@@ -892,28 +904,52 @@
         value: void 0
       });
 
-      _STANZAS_CONTAINER.set(this, {
+      _ROOT$7.set(this, {
         writable: true,
         value: void 0
       });
 
-      this._stanzas = {}; // references
+      _REPORT_MODAL.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-      _classPrivateFieldSet(this, _BODY$1, document.querySelector('body'));
+      _EXIT_BUTTON.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-      _classPrivateFieldSet(this, _STANZAS_CONTAINER, elm.querySelector(':scope > .stanzas'));
+      // make popup element
+      _classPrivateFieldSet(this, _ROOT$7, document.createElement("section"));
 
-      var returnButton = elm.querySelector(':scope > footer > button.return'); // attach event
+      _classPrivateFieldGet(this, _ROOT$7).className = "report-modal";
+      document.querySelector("body").insertAdjacentElement("beforeend", _classPrivateFieldGet(this, _ROOT$7)); // references
 
-      returnButton.addEventListener('click', function () {
-        _classPrivateFieldGet(_this, _BODY$1).dataset.display = 'properties';
+      this._stanzas = {};
+
+      _classPrivateFieldSet(this, _BODY$1, document.querySelector("body"));
+
+      _classPrivateFieldSet(this, _REPORT_MODAL, document.querySelector(".report-modal"));
+
+      _classPrivateFieldSet(this, _EXIT_BUTTON, document.createElement("button"));
+
+      _classPrivateFieldGet(this, _EXIT_BUTTON).className = 'close-button';
+      var returnButton = elm.querySelector(":scope > footer > button.return"); // attach event
+
+      returnButton.addEventListener("click", function () {
+        _classPrivateFieldGet(_this, _BODY$1).dataset.display = "properties";
+      });
+
+      _classPrivateFieldGet(this, _EXIT_BUTTON).addEventListener("click", function () {
+        _classPrivateMethodGet(_this, _hidePopUp, _hidePopUp2).call(_this);
       }); // event listener
 
+
       DefaultEventEmitter$1.addEventListener(showStanza, function (e) {
-        _classPrivateMethodGet(_this, _showStanza, _showStanza2).call(_this, e.detail.subject, e.detail.properties);
+        _classPrivateMethodGet(_this, _showPopUp, _showPopUp2).call(_this, e.detail.subject, e.detail.properties);
       });
       DefaultEventEmitter$1.addEventListener(hideStanza, function (e) {
-        _classPrivateMethodGet(_this, _hideStanza, _hideStanza2).call(_this);
+        _classPrivateMethodGet(_this, _hidePopUp, _hidePopUp2).call(_this);
       });
     } // private methods
 
@@ -931,14 +967,34 @@
     return ReportsView;
   }();
 
-  function _showStanza2(subject, properties) {
+  function _showPopUp2(subject, properties) {
+    var stanzaDiv = document.createElement("div");
+    var popupDiv = document.createElement("div");
+    popupDiv.className = "popup";
+    popupDiv.appendChild(_classPrivateMethodGet(this, _header, _header2).call(this, subject));
+    popupDiv.appendChild(_classPrivateMethodGet(this, _stanzaContainer, _stanzaContainer2).call(this, subject, properties, stanzaDiv));
+
+    _classPrivateFieldGet(this, _REPORT_MODAL).appendChild(popupDiv);
+
+    _classPrivateFieldGet(this, _REPORT_MODAL).classList.add("-showing", "overlay");
+  }
+
+  function _header2(subject) {
+    var header = document.createElement("header");
+    header.innerHTML = "\n      <span class=\"name\">".concat(subject.value, " </span>\n      <span class=\"type\"> Main category / Subcategory</span>\n      <span class=\"links\"> </span>\n    ");
+    header.appendChild(_classPrivateFieldGet(this, _EXIT_BUTTON));
+    return header;
+  }
+
+  function _stanzaContainer2(subject, properties, stanzaContainer) {
     var _this2 = this;
 
     console.log(subject, properties); // make stanzas
 
-    _classPrivateFieldGet(this, _STANZAS_CONTAINER).innerHTML = _classPrivateMethodGet(this, _stanza, _stanza2).call(this, subject.id, subject.value) + properties.map(function (property) {
+    stanzaContainer.className = 'stanzas';
+    stanzaContainer.innerHTML = _classPrivateMethodGet(this, _stanza, _stanza2).call(this, subject.id, subject.value) + properties.map(function (property) {
       if (property === undefined) {
-        return '';
+        return "";
       } else {
         var _subject = Records$1.subjects.find(function (subject) {
           return subject.properties.some(function (subjectProperty) {
@@ -949,15 +1005,18 @@
 
         return _classPrivateMethodGet(_this2, _stanza, _stanza2).call(_this2, _subject.subjectId, property.attributes[0].id);
       }
-    }).join('');
+    }).join("");
+    return stanzaContainer;
   }
 
-  function _hideStanza2() {
-    _classPrivateFieldGet(this, _STANZAS_CONTAINER).innerHTML = '';
+  function _stanza2(subjectId, propertyId, value) {
+    return "<div class=\"stanza-view\" data-subject-id=\"".concat(subjectId, "\" data-property-id=").concat(propertyId, "\">").concat(_classPrivateFieldGet(this, _templates)[subjectId].replace(/{{id}}/g, value), "</div>");
   }
 
-  function _stanza2(subjectId, value) {
-    return "<div class=\"stanza-view\">".concat(_classPrivateFieldGet(this, _templates)[subjectId].replace(/{{id}}/g, value), "</div>");
+  function _hidePopUp2() {
+    _classPrivateFieldGet(this, _REPORT_MODAL).classList.remove("-showing", "overlay");
+
+    _classPrivateFieldGet(this, _REPORT_MODAL).innerHTML = "";
   }
 
   function collapseView(elm) {
@@ -2110,7 +2169,7 @@
     DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
     _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(tableData.condition.togoKey, "</div>\n        </div>\n      </th>\n      ").concat(tableData.condition.attributes.map(function (property) {
-      return "\n      <th>\n        <div class=\"inner -propertyvalue\" style=\"background-color: ".concat(App$1.getHslColor(property.subject.hue), "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
+      return "\n      <th data-subject-id=\"".concat(property.subject.subjectId, "\" data-property-label=\"").concat(property.property.label, "\">\n        <div class=\"inner -propertyvalue\"  style=\"background-color: ").concat(App$1.getHslColor(property.subject.hue), "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
     }).join(''), "\n      ").concat(tableData.condition.properties.map(function (property) {
       return "\n      <th>\n        <div class=\"inner -property\" style=\"color: ".concat(App$1.getHslColor(property.subject.hue), "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
     }).join('')); // make stats
@@ -2144,8 +2203,7 @@
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
       console.log(row);
-      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div class=\"togo-key-view\" data-key=\"").concat(detail.tableData.condition.togoKey, "\" data-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column) {
-        // console.log(column)
+      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div class=\"togo-key-view\"\xDF data-key=\"").concat(detail.tableData.condition.togoKey, "\" data-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column) {
         if (column) {
           return "\n              <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute) {
             if (!attribute.attribute) console.error(attribute);
