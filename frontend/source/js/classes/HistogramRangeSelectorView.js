@@ -119,14 +119,14 @@ export default class HistogramRangeSelectorView {
         this.#update();
         // set condition
         const selectedItems = this.#selectedItems;
-        console.log(this.#property)
         ConditionBuilder.setPropertyValues({
           subject: this.#subject,
           property: this.#property,
           values: selectedItems.map(item => {
             return {
               categoryId: item.categoryId,
-              label: item.label
+              label: item.label,
+              ancestors: []
             }
           })
         });

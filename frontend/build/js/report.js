@@ -188,13 +188,10 @@
     }, {
       key: "getProperty",
       value: function getProperty(propertyId) {
-        console.log(propertyId);
-
         var property = _classPrivateFieldGet(this, _properties).find(function (property) {
           return property.propertyId === propertyId;
         });
 
-        console.log(property);
         return property;
       }
     }, {

@@ -352,6 +352,99 @@
 
   var DefaultEventEmitter$1 = new DefaultEventEmitter();
 
+  var _subjects = new WeakMap();
+
+  var _properties = new WeakMap();
+
+  var Records = /*#__PURE__*/function () {
+    function Records() {
+      _classCallCheck(this, Records);
+
+      _subjects.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _properties.set(this, {
+        writable: true,
+        value: void 0
+      });
+    } // public methods
+
+
+    _createClass(Records, [{
+      key: "setSubjects",
+      value: function setSubjects(subjects) {
+        var _this = this;
+
+        // define subjects
+        for (var i = 0; i < subjects.length; i++) {
+          var hue = 360 - 360 * i / subjects.length + 180;
+          hue -= hue > 360 ? 360 : 0;
+          subjects[i].hue = hue;
+        }
+
+        _classPrivateFieldSet(this, _subjects, Object.freeze(subjects)); // set properties
+
+
+        _classPrivateFieldSet(this, _properties, []);
+
+        subjects.forEach(function (subject) {
+          subject.properties.forEach(function (property) {
+            _classPrivateFieldGet(_this, _properties).push(Object.assign({
+              subjectId: subject.subjectId
+            }, property));
+          });
+        });
+        console.log(_classPrivateFieldGet(this, _subjects));
+        console.log(_classPrivateFieldGet(this, _properties));
+      }
+    }, {
+      key: "setValues",
+      value: function setValues(propertyId, values) {
+        var property = _classPrivateFieldGet(this, _properties).find(function (property) {
+          return property.propertyId === propertyId;
+        });
+
+        property.values = values;
+      }
+    }, {
+      key: "getProperty",
+      value: function getProperty(propertyId) {
+        var property = _classPrivateFieldGet(this, _properties).find(function (property) {
+          return property.propertyId === propertyId;
+        });
+
+        return property;
+      }
+    }, {
+      key: "getValue",
+      value: function getValue(propertyId, categoryId) {
+        // const property = this.#properties.find(property => property.propertyId === propertyId);
+        var property = this.getProperty(propertyId);
+        var value = property.values.find(function (value) {
+          return value.categoryId === categoryId;
+        });
+        return value;
+      } // public accessors
+
+    }, {
+      key: "subjects",
+      get: function get() {
+        return _classPrivateFieldGet(this, _subjects);
+      }
+    }, {
+      key: "properties",
+      get: function get() {
+        return _classPrivateFieldGet(this, _properties);
+      }
+    }]);
+
+    return Records;
+  }();
+
+  var Records$1 = new Records();
+
   // TogoKey
   var defineTogoKey = 'defineTogoKey'; // User IDs
 
@@ -460,12 +553,12 @@
       key: "removeProperty",
       value: function removeProperty(propertyId) {
         // remove from store
-        var position = _classPrivateFieldGet(this, _propertyConditions).findIndex(function (condition) {
+        var index = _classPrivateFieldGet(this, _propertyConditions).findIndex(function (condition) {
           return condition.property.propertyId === propertyId;
         });
 
-        if (position === -1) return;
-        _classPrivateFieldGet(this, _propertyConditions).splice(position, 1)[0]; // evaluate
+        if (index === -1) return;
+        _classPrivateFieldGet(this, _propertyConditions).splice(index, 1)[0]; // evaluate
 
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
@@ -482,12 +575,12 @@
       key: "removePropertyValue",
       value: function removePropertyValue(propertyId, categoryId) {
         // remove from store
-        var position = _classPrivateFieldGet(this, _attributeConditions).findIndex(function (condition) {
+        var index = _classPrivateFieldGet(this, _attributeConditions).findIndex(function (condition) {
           return condition.property.propertyId === propertyId && condition.value.categoryId === categoryId;
         });
 
-        if (position === -1) return;
-        _classPrivateFieldGet(this, _attributeConditions).splice(position, 1)[0]; // evaluate
+        if (index === -1) return;
+        _classPrivateFieldGet(this, _attributeConditions).splice(index, 1)[0]; // evaluate
 
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
@@ -504,12 +597,39 @@
     }, {
       key: "setPropertyValues",
       value: function setPropertyValues(condition) {
-        console.log(condition);
+        var _this = this;
+
+        var originalValues = Records$1.getProperty(condition.property.propertyId).values;
+        var startIndex = originalValues.findIndex(function (originalValue) {
+          return originalValue.categoryId === condition.values[0].categoryId;
+        });
+        originalValues.forEach(function (originalValue, originalIndex) {
+          var index = _classPrivateFieldGet(_this, _attributeConditions).findIndex(function (attrCondition) {
+            return attrCondition.property.propertyId === condition.property.propertyId && attrCondition.value.categoryId === originalValue.categoryId;
+          });
+
+          if (startIndex <= originalIndex && originalIndex < startIndex + condition.values.length) {
+            var value = condition.values[originalIndex - startIndex]; // add
+
+            if (index === -1) {
+              _this.addPropertyValue({
+                subject: condition.subject,
+                property: condition.property,
+                value: value
+              });
+            }
+          } else {
+            // remove
+            if (index !== -1) {
+              _this.removePropertyValue(condition.property.propertyId, originalValue.categoryId);
+            }
+          }
+        });
       }
     }, {
       key: "makeQueryParameter",
       value: function makeQueryParameter() {
-        var _this = this;
+        var _this2 = this;
 
         // create properties
         var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (condition) {
@@ -537,10 +657,10 @@
               propertyId: propertyId,
               categoryIds: attributesForEachProperties[propertyId]
             },
-            property: _classPrivateFieldGet(_this, _attributeConditions).find(function (condition) {
+            property: _classPrivateFieldGet(_this2, _attributeConditions).find(function (condition) {
               return condition.property.propertyId === propertyId;
             }).property,
-            subject: _classPrivateFieldGet(_this, _attributeConditions).find(function (condition) {
+            subject: _classPrivateFieldGet(_this2, _attributeConditions).find(function (condition) {
               return condition.property.propertyId === propertyId;
             }).subject
           };
@@ -764,102 +884,6 @@
     view.parentNode.removeChild(view);
     if (_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).childNodes.length === 0) _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.add('-empty');
   }
-
-  var _subjects = new WeakMap();
-
-  var _properties = new WeakMap();
-
-  var Records = /*#__PURE__*/function () {
-    function Records() {
-      _classCallCheck(this, Records);
-
-      _subjects.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _properties.set(this, {
-        writable: true,
-        value: void 0
-      });
-    } // public methods
-
-
-    _createClass(Records, [{
-      key: "setSubjects",
-      value: function setSubjects(subjects) {
-        var _this = this;
-
-        // define subjects
-        for (var i = 0; i < subjects.length; i++) {
-          var hue = 360 - 360 * i / subjects.length + 180;
-          hue -= hue > 360 ? 360 : 0;
-          subjects[i].hue = hue;
-        }
-
-        _classPrivateFieldSet(this, _subjects, Object.freeze(subjects)); // set properties
-
-
-        _classPrivateFieldSet(this, _properties, []);
-
-        subjects.forEach(function (subject) {
-          subject.properties.forEach(function (property) {
-            _classPrivateFieldGet(_this, _properties).push(Object.assign({
-              subjectId: subject.subjectId
-            }, property));
-          });
-        });
-        console.log(_classPrivateFieldGet(this, _subjects));
-        console.log(_classPrivateFieldGet(this, _properties));
-      }
-    }, {
-      key: "setValues",
-      value: function setValues(propertyId, values) {
-        var property = _classPrivateFieldGet(this, _properties).find(function (property) {
-          return property.propertyId === propertyId;
-        });
-
-        property.values = values;
-      }
-    }, {
-      key: "getProperty",
-      value: function getProperty(propertyId) {
-        console.log(propertyId);
-
-        var property = _classPrivateFieldGet(this, _properties).find(function (property) {
-          return property.propertyId === propertyId;
-        });
-
-        console.log(property);
-        return property;
-      }
-    }, {
-      key: "getValue",
-      value: function getValue(propertyId, categoryId) {
-        // const property = this.#properties.find(property => property.propertyId === propertyId);
-        var property = this.getProperty(propertyId);
-        var value = property.values.find(function (value) {
-          return value.categoryId === categoryId;
-        });
-        return value;
-      } // public accessors
-
-    }, {
-      key: "subjects",
-      get: function get() {
-        return _classPrivateFieldGet(this, _subjects);
-      }
-    }, {
-      key: "properties",
-      get: function get() {
-        return _classPrivateFieldGet(this, _properties);
-      }
-    }]);
-
-    return Records;
-  }();
-
-  var Records$1 = new Records();
 
   var _templates = new WeakMap();
 
@@ -1403,14 +1427,14 @@
 
         var selectedItems = _classPrivateFieldGet(_this2, _selectedItems);
 
-        console.log(_classPrivateFieldGet(_this2, _property$2));
         ConditionBuilder$1.setPropertyValues({
           subject: _classPrivateFieldGet(_this2, _subject$2),
           property: _classPrivateFieldGet(_this2, _property$2),
           values: selectedItems.map(function (item) {
             return {
               categoryId: item.categoryId,
-              label: item.label
+              label: item.label,
+              ancestors: []
             };
           })
         });

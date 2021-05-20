@@ -34,9 +34,7 @@ class Records {
   }
 
   getProperty(propertyId) {
-    console.log(propertyId)
     const property = this.#properties.find(property => property.propertyId === propertyId);
-    console.log(property)
     return property;
   }
 
