@@ -2243,12 +2243,17 @@
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
       console.log(row);
-      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div class=\"togo-key-view\" data-key=\"").concat(detail.tableData.condition.togoKey, "\" data-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column) {
+      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div\n              class=\"togo-key-view\"\n              data-subject-id=\"").concat(detail.tableData.condition.subjectId, "\"\n              data-key=\"").concat(detail.tableData.condition.togoKey, "\"\n              data-category-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column) {
         // console.log(column)
         if (column) {
           return "\n              <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute) {
             if (!attribute.attribute) console.error(attribute);
-            return "\n              <li>\n                <div class=\"togo-key-view\" data-key=\"".concat(column.propertyKey, "\" data-id=\"").concat(attribute.id, "\">").concat(attribute.id, "</div>\n                <a\n                  href=\"").concat(attribute.attribute ? attribute.attribute.uri : '', "\"\n                  title=\"").concat(attribute.attribute ? attribute.attribute.uri : '', "\"\n                  target=\"_blank\">").concat(attribute.attribute ? attribute.attribute.label : attribute, "</a>\n              </li>");
+            var subject = Records$1.subjects.find(function (subject) {
+              return subject.properties.some(function (subjectProperty) {
+                return subjectProperty.propertyId === column.propertyId;
+              });
+            });
+            return "\n              <li>\n                <div\n                  class=\"togo-key-view\"\n                  data-subject-id=\"".concat(subject.subjectId, "\"\n                  data-key=\"").concat(column.propertyKey, "\"\n                  data-category-id=\"").concat(attribute.id, "\">").concat(attribute.id, "</div>\n                <a\n                  href=\"").concat(attribute.attribute ? attribute.attribute.uri : '', "\"\n                  title=\"").concat(attribute.attribute ? attribute.attribute.uri : '', "\"\n                  target=\"_blank\">").concat(attribute.attribute ? attribute.attribute.label : attribute, "</a>\n              </li>");
           }).join(''), "</ul></div></td>");
         } else {
           return '<td><div class="inner -empty"></div></td>';

@@ -1,6 +1,7 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import StatisticsView from "./StatisticsView";
+import Records from './Records.js';
 import * as event from '../events';
 
 export default class ResultsTable {
@@ -128,7 +129,11 @@ export default class ResultsTable {
         <th>
           <div class="inner">
             <a class="toreportpage" href="report.html?togoKey=${detail.tableData.togoKey}&id=${detail.rows[index].id}&properties=${encodeURIComponent(JSON.stringify(row))}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
-            <div class="togo-key-view" data-key="${detail.tableData.condition.togoKey}" data-id="${detail.rows[index].id}">${detail.rows[index].id}</div>
+            <div
+              class="togo-key-view"
+              data-subject-id="${detail.tableData.condition.subjectId}"
+              data-key="${detail.tableData.condition.togoKey}"
+              data-category-id="${detail.rows[index].id}">${detail.rows[index].id}</div>
           </div>
         </th>
         ${row.map(column => {
@@ -137,9 +142,14 @@ export default class ResultsTable {
             return `
               <td><div class="inner"><ul>${column.attributes.map(attribute => {
               if (!attribute.attribute) console.error(attribute);
+              const subject = Records.subjects.find(subject => subject.properties.some(subjectProperty => subjectProperty.propertyId === column.propertyId));
               return `
               <li>
-                <div class="togo-key-view" data-key="${column.propertyKey}" data-id="${attribute.id}">${attribute.id}</div>
+                <div
+                  class="togo-key-view"
+                  data-subject-id="${subject.subjectId}"
+                  data-key="${column.propertyKey}"
+                  data-category-id="${attribute.id}">${attribute.id}</div>
                 <a
                   href="${attribute.attribute ? attribute.attribute.uri : ''}"
                   title="${attribute.attribute ? attribute.attribute.uri : ''}"
