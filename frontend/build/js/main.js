@@ -352,6 +352,99 @@
 
   var DefaultEventEmitter$1 = new DefaultEventEmitter();
 
+  var _subjects = new WeakMap();
+
+  var _properties = new WeakMap();
+
+  var Records = /*#__PURE__*/function () {
+    function Records() {
+      _classCallCheck(this, Records);
+
+      _subjects.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _properties.set(this, {
+        writable: true,
+        value: void 0
+      });
+    } // public methods
+
+
+    _createClass(Records, [{
+      key: "setSubjects",
+      value: function setSubjects(subjects) {
+        var _this = this;
+
+        // define subjects
+        for (var i = 0; i < subjects.length; i++) {
+          var hue = 360 - 360 * i / subjects.length + 180;
+          hue -= hue > 360 ? 360 : 0;
+          subjects[i].hue = hue;
+        }
+
+        _classPrivateFieldSet(this, _subjects, Object.freeze(subjects)); // set properties
+
+
+        _classPrivateFieldSet(this, _properties, []);
+
+        subjects.forEach(function (subject) {
+          subject.properties.forEach(function (property) {
+            _classPrivateFieldGet(_this, _properties).push(Object.assign({
+              subjectId: subject.subjectId
+            }, property));
+          });
+        });
+        console.log(_classPrivateFieldGet(this, _subjects));
+        console.log(_classPrivateFieldGet(this, _properties));
+      }
+    }, {
+      key: "setValues",
+      value: function setValues(propertyId, values) {
+        var property = _classPrivateFieldGet(this, _properties).find(function (property) {
+          return property.propertyId === propertyId;
+        });
+
+        property.values = values;
+      }
+    }, {
+      key: "getProperty",
+      value: function getProperty(propertyId) {
+        var property = _classPrivateFieldGet(this, _properties).find(function (property) {
+          return property.propertyId === propertyId;
+        });
+
+        return property;
+      }
+    }, {
+      key: "getValue",
+      value: function getValue(propertyId, categoryId) {
+        // const property = this.#properties.find(property => property.propertyId === propertyId);
+        var property = this.getProperty(propertyId);
+        var value = property.values.find(function (value) {
+          return value.categoryId === categoryId;
+        });
+        return value;
+      } // public accessors
+
+    }, {
+      key: "subjects",
+      get: function get() {
+        return _classPrivateFieldGet(this, _subjects);
+      }
+    }, {
+      key: "properties",
+      get: function get() {
+        return _classPrivateFieldGet(this, _properties);
+      }
+    }]);
+
+    return Records;
+  }();
+
+  var Records$1 = new Records();
+
   // TogoKey
   var defineTogoKey = 'defineTogoKey'; // User IDs
 
@@ -460,12 +553,12 @@
       key: "removeProperty",
       value: function removeProperty(propertyId) {
         // remove from store
-        var position = _classPrivateFieldGet(this, _propertyConditions).findIndex(function (condition) {
+        var index = _classPrivateFieldGet(this, _propertyConditions).findIndex(function (condition) {
           return condition.property.propertyId === propertyId;
         });
 
-        if (position === -1) return;
-        _classPrivateFieldGet(this, _propertyConditions).splice(position, 1)[0]; // evaluate
+        if (index === -1) return;
+        _classPrivateFieldGet(this, _propertyConditions).splice(index, 1)[0]; // evaluate
 
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
@@ -480,14 +573,14 @@
       }
     }, {
       key: "removePropertyValue",
-      value: function removePropertyValue(propertyId, categoryId, range) {
+      value: function removePropertyValue(propertyId, categoryId) {
         // remove from store
-        var position = _classPrivateFieldGet(this, _attributeConditions).findIndex(function (condition) {
+        var index = _classPrivateFieldGet(this, _attributeConditions).findIndex(function (condition) {
           return condition.property.propertyId === propertyId && condition.value.categoryId === categoryId;
         });
 
-        if (position === -1) return;
-        _classPrivateFieldGet(this, _attributeConditions).splice(position, 1)[0]; // evaluate
+        if (index === -1) return;
+        _classPrivateFieldGet(this, _attributeConditions).splice(index, 1)[0]; // evaluate
 
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
@@ -502,9 +595,41 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
+      key: "setPropertyValues",
+      value: function setPropertyValues(condition) {
+        var _this = this;
+
+        var originalValues = Records$1.getProperty(condition.property.propertyId).values;
+        var startIndex = originalValues.findIndex(function (originalValue) {
+          return originalValue.categoryId === condition.values[0].categoryId;
+        });
+        originalValues.forEach(function (originalValue, originalIndex) {
+          var index = _classPrivateFieldGet(_this, _attributeConditions).findIndex(function (attrCondition) {
+            return attrCondition.property.propertyId === condition.property.propertyId && attrCondition.value.categoryId === originalValue.categoryId;
+          });
+
+          if (startIndex <= originalIndex && originalIndex < startIndex + condition.values.length) {
+            var value = condition.values[originalIndex - startIndex]; // add
+
+            if (index === -1) {
+              _this.addPropertyValue({
+                subject: condition.subject,
+                property: condition.property,
+                value: value
+              });
+            }
+          } else {
+            // remove
+            if (index !== -1) {
+              _this.removePropertyValue(condition.property.propertyId, originalValue.categoryId);
+            }
+          }
+        });
+      }
+    }, {
       key: "makeQueryParameter",
       value: function makeQueryParameter() {
-        var _this = this;
+        var _this2 = this;
 
         // create properties
         var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (condition) {
@@ -532,10 +657,10 @@
               propertyId: propertyId,
               categoryIds: attributesForEachProperties[propertyId]
             },
-            property: _classPrivateFieldGet(_this, _attributeConditions).find(function (condition) {
+            property: _classPrivateFieldGet(_this2, _attributeConditions).find(function (condition) {
               return condition.property.propertyId === propertyId;
             }).property,
-            subject: _classPrivateFieldGet(_this, _attributeConditions).find(function (condition) {
+            subject: _classPrivateFieldGet(_this2, _attributeConditions).find(function (condition) {
               return condition.property.propertyId === propertyId;
             }).subject
           };
@@ -549,9 +674,7 @@
             attributes: attributes
           }
         });
-        DefaultEventEmitter$1.dispatchEvent(customEvent); // clear condition
-        // this.#propertyConditions = [];
-        // this.#attributeConditions = [];
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
       key: "setSubject",
@@ -761,102 +884,6 @@
     view.parentNode.removeChild(view);
     if (_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).childNodes.length === 0) _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.add('-empty');
   }
-
-  var _subjects = new WeakMap();
-
-  var _properties = new WeakMap();
-
-  var Records = /*#__PURE__*/function () {
-    function Records() {
-      _classCallCheck(this, Records);
-
-      _subjects.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _properties.set(this, {
-        writable: true,
-        value: void 0
-      });
-    } // public methods
-
-
-    _createClass(Records, [{
-      key: "setSubjects",
-      value: function setSubjects(subjects) {
-        var _this = this;
-
-        // define subjects
-        for (var i = 0; i < subjects.length; i++) {
-          var hue = 360 - 360 * i / subjects.length + 180;
-          hue -= hue > 360 ? 360 : 0;
-          subjects[i].hue = hue;
-        }
-
-        _classPrivateFieldSet(this, _subjects, Object.freeze(subjects)); // set properties
-
-
-        _classPrivateFieldSet(this, _properties, []);
-
-        subjects.forEach(function (subject) {
-          subject.properties.forEach(function (property) {
-            _classPrivateFieldGet(_this, _properties).push(Object.assign({
-              subjectId: subject.subjectId
-            }, property));
-          });
-        });
-        console.log(_classPrivateFieldGet(this, _subjects));
-        console.log(_classPrivateFieldGet(this, _properties));
-      }
-    }, {
-      key: "setValues",
-      value: function setValues(propertyId, values) {
-        var property = _classPrivateFieldGet(this, _properties).find(function (property) {
-          return property.propertyId === propertyId;
-        });
-
-        property.values = values;
-      }
-    }, {
-      key: "getProperty",
-      value: function getProperty(propertyId) {
-        console.log(propertyId);
-
-        var property = _classPrivateFieldGet(this, _properties).find(function (property) {
-          return property.propertyId === propertyId;
-        });
-
-        console.log(property);
-        return property;
-      }
-    }, {
-      key: "getValue",
-      value: function getValue(propertyId, categoryId) {
-        // const property = this.#properties.find(property => property.propertyId === propertyId);
-        var property = this.getProperty(propertyId);
-        var value = property.values.find(function (value) {
-          return value.categoryId === categoryId;
-        });
-        return value;
-      } // public accessors
-
-    }, {
-      key: "subjects",
-      get: function get() {
-        return _classPrivateFieldGet(this, _subjects);
-      }
-    }, {
-      key: "properties",
-      get: function get() {
-        return _classPrivateFieldGet(this, _properties);
-      }
-    }]);
-
-    return Records;
-  }();
-
-  var Records$1 = new Records();
 
   var _templates = new WeakMap();
 
@@ -1210,6 +1237,8 @@
 
   var _items = new WeakMap();
 
+  var _subject$2 = new WeakMap();
+
   var _property$2 = new WeakMap();
 
   var _selectedBarsStart = new WeakMap();
@@ -1230,10 +1259,17 @@
 
   var _indicateValue = new WeakSet();
 
-  var HistogramRangeSelectorView = function HistogramRangeSelectorView(elm, subject, property, items, sparqlist, overview) {
+  var _selectedItems = new WeakMap();
+
+  var HistogramRangeSelectorView = function HistogramRangeSelectorView(elm, subject, property, _items2, sparqlist, overview) {
     var _this = this;
 
     _classCallCheck(this, HistogramRangeSelectorView);
+
+    _selectedItems.set(this, {
+      get: _get_selectedItems,
+      set: void 0
+    });
 
     _indicateValue.add(this);
 
@@ -1242,6 +1278,11 @@
     _setupRangeSelector.add(this);
 
     _items.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _subject$2.set(this, {
       writable: true,
       value: void 0
     });
@@ -1281,20 +1322,26 @@
       value: void 0
     });
 
-    console.log(elm, subject, property, items, sparqlist);
-    this._subject = subject;
+    console.log(elm, subject, property, _items2, sparqlist);
+
+    _classPrivateFieldSet(this, _subject$2, subject);
+
     this._sparqlist = sparqlist;
 
     _classPrivateFieldSet(this, _property$2, property);
 
     _classPrivateFieldSet(this, _OVERVIEW_CONTAINER$1, overview);
 
-    _classPrivateFieldSet(this, _items, items.map(function (item) {
+    _classPrivateFieldSet(this, _items, _items2.map(function (item) {
       return Object.assign({}, item);
-    })); // make container
+    }));
+
+    _classPrivateFieldSet(this, _selectedBarsStart, undefined);
+
+    _classPrivateFieldSet(this, _selectedBarsEnd, undefined); // make container
 
 
-    elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"selector\">\n        <div class=\"overview\"></div>\n        <div class=\"controller\"></div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ".concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>\n      <div class=\"controller\">\n        <div class=\"selector\">\n          <div class=\"slider -min\"></div>\n          <div class=\"slider -max\"></div>\n        </div>\n        <!--\n        <div class=\"form\">\n          <input type=\"number\" data-range=\"min\">\n          ~\n          <input type=\"number\" data-range=\"max\">\n        </div>\n        -->\n      </div>");
+    elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"selector\">\n        <div class=\"overview\"></div>\n        <div class=\"controller\"></div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ".concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>\n      <!--\n      <div class=\"controller\">\n        <div class=\"selector\">\n          <div class=\"slider -min\"></div>\n          <div class=\"slider -max\"></div>\n        </div>\n        <div class=\"form\">\n          <input type=\"number\" data-range=\"min\">\n          ~\n          <input type=\"number\" data-range=\"max\">\n        </div>\n      </div>\n      -->");
 
     _classPrivateFieldSet(this, _ROOT$6, elm.querySelector(':scope > .histogram-range-selector-view'));
 
@@ -1303,14 +1350,18 @@
     var selector = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .selector'); // make graph
 
 
+    var _max = Math.max.apply(Math, _toConsumableArray(_classPrivateFieldGet(this, _items).map(function (item) {
+      return item.count;
+    })));
+
     var _width = 100 / _classPrivateFieldGet(this, _items).length;
 
     selector.querySelector(':scope > .overview').innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
-      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(_width, "%; background-color: ").concat(App$1.getHslColor(subject.hue), ";\"></div>");
+      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(_width, "%; height: ").concat(item.count / _max * 100, "%; background-color: ").concat(App$1.getHslColor(subject.hue), ";\"></div>");
     }).join('');
     var graph = histogram.querySelector(':scope > .graph');
     graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
-      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(_width, "%;\">\n      <div class=\"actual\" style=\"background-color: ").concat(App$1.getHslColor(subject.hue), ";\">\n        <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / _classPrivateFieldGet(_this, _items).length, ", 70%, 50%, .075);\"></div>\n      </div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
+      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\">\n      <div class=\"actual\" style=\"background-color: ").concat(App$1.getHslColor(subject.hue), ";\">\n        <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / _classPrivateFieldGet(_this, _items).length, ", 70%, 50%, .075);\"></div>\n      </div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
     }).join(''); // reference
 
     histogram.querySelectorAll(':scope > .graph > .bar').forEach(function (item, index) {
@@ -1349,6 +1400,7 @@
     });
     selectorController.addEventListener('mousemove', function (e) {
       if (isMouseDown) {
+        // selection range
         var selectedWidth = e.layerX - startX;
 
         if (selectedWidth > 0) {
@@ -1359,26 +1411,50 @@
           _classPrivateFieldSet(_this2, _selectedBarsStart, Math.floor(e.layerX / unit));
 
           _classPrivateFieldSet(_this2, _selectedBarsEnd, Math.floor(startX / unit));
-        }
+        } // select overview by range
 
-        console.log(_classPrivateFieldGet(_this2, _selectedBarsStart), '-', _classPrivateFieldGet(_this2, _selectedBarsEnd)); // TODO:
+
+        _classPrivateFieldGet(_this2, _ROOT$6).querySelectorAll(':scope > .selector > .overview > .bar').forEach(function (bar, index) {
+          if (_classPrivateFieldGet(_this2, _selectedBarsStart) <= index && index <= _classPrivateFieldGet(_this2, _selectedBarsEnd)) {
+            bar.classList.add('-selected');
+          } else {
+            bar.classList.remove('-selected');
+          }
+        });
+
+        _classPrivateMethodGet(_this2, _update$1, _update2$1).call(_this2); // set condition
+
+
+        var selectedItems = _classPrivateFieldGet(_this2, _selectedItems);
+
+        ConditionBuilder$1.setPropertyValues({
+          subject: _classPrivateFieldGet(_this2, _subject$2),
+          property: _classPrivateFieldGet(_this2, _property$2),
+          values: selectedItems.map(function (item) {
+            return {
+              categoryId: item.categoryId,
+              label: item.label,
+              ancestors: []
+            };
+          })
+        });
       }
     });
     selectorController.addEventListener('mouseup', function (e) {
       if (isMouseDown) {
         isMouseDown = false;
       }
-    }); // graph.querySelectorAll(':scope > .bar')
+    });
   }
 
   function _update2$1() {
-    var _this3 = this;
-
-    var max = Math.max.apply(Math, _toConsumableArray(Array.from(_classPrivateFieldGet(this, _items)).map(function (item) {
+    var selectedItems = _classPrivateFieldGet(this, _selectedBarsStart) ? _classPrivateFieldGet(this, _selectedItems) : _classPrivateFieldGet(this, _items);
+    var max = Math.max.apply(Math, _toConsumableArray(selectedItems.map(function (item) {
       return item.count;
     })));
     var isLog10 = App$1.viewModes.log10;
-    var processedMax = isLog10 ? Math.log10(max) : max; // grid
+    var processedMax = isLog10 ? Math.log10(max) : max;
+    var width = 100 / selectedItems.length; // grid
 
     var digits = String(Math.ceil(max)).length;
     var unit = Number(String(max).charAt(0).padEnd(digits, '0')) / NUM_OF_GRID;
@@ -1391,12 +1467,35 @@
 
 
     _classPrivateFieldGet(this, _items).forEach(function (item) {
-      var height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100;
-      item.elm.querySelector(':scope > .actual').style.height = "".concat(height, "%");
-      _classPrivateFieldGet(_this3, _SELECTOR_BARS).find(function (bar) {
-        return bar.dataset.categoryId === item.categoryId;
-      }).style.height = "".concat(height, "%");
+      if (selectedItems.indexOf(item) === -1) {
+        item.elm.classList.add('-filtered');
+      } else {
+        item.elm.classList.remove('-filtered');
+        var height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100;
+        item.elm.style.width = "".concat(width, "%");
+        item.elm.querySelector(':scope > .actual').style.height = "".concat(height, "%");
+      }
     });
+  }
+
+  function _get_selectedItems() {
+    var _this3 = this;
+
+    var items;
+
+    if (_classPrivateFieldGet(this, _selectedBarsStart)) {
+      items = _classPrivateFieldGet(this, _items).filter(function (item_, index) {
+        if (_classPrivateFieldGet(_this3, _selectedBarsStart) <= index && index <= _classPrivateFieldGet(_this3, _selectedBarsEnd)) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    } else {
+      items = [];
+    }
+
+    return items;
   }
 
   var MIN_PIN_SIZE = 12;
