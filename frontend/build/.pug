@@ -1,4 +1,9 @@
 doctype html
+html
+  head
+    link()
+
+doctype html
 html.no-js(lang='')
   head
     meta(charset='utf-8')
@@ -13,15 +18,15 @@ html.no-js(lang='')
     link(rel='apple-touch-icon' href='icon.png')
     // Place favicon.ico in the root directory
     link(rel='stylesheet' href='css/main.css')
-  body(data-heatmap="true" data-display="properties" data-page="top")
+  body(data-heatmap="true" data-display="properties")
     header
     main#App
       .inner
         section#Properties
           header.header
             .title
-              h2.properties Attribute
-              h2.attributes Classification / Distribution
+              h2.properties Properties
+              h2.attributes Values
             nav
               ul
                 //- li#UploadUserIDsView
@@ -38,13 +43,13 @@ html.no-js(lang='')
                 //-     button#UploadUserIDsClear(type="button") Clear
                       
                 li.viewmodecontroller
-                  label.log10
+                  label
                     input(type="checkbox" value="log10")
                     | Log scale
-                  label.area
+                  label
                     input(type="checkbox" value="area" checked)
                     | Area
-                  label.heatmap
+                  label
                     input(type="checkbox" value="heatmap" checked)
                     | Heatmap
               //-
@@ -168,7 +173,6 @@ html.no-js(lang='')
               .body
                 table
                   thead
-                    tr.statistics
                     tr.header
                     //-
                       th Foo
@@ -177,6 +181,7 @@ html.no-js(lang='')
                       th Qux
                       th Quux
                       th Quuux
+                    tr.statistics
                   tbody
                   //-
                     tr
@@ -274,8 +279,8 @@ html.no-js(lang='')
                     p userIds
                     input(type="text" value="Q9NYF8,Q4V339,A6NCE7,A7E2F4,P69849,A6NN73,Q92928,Q5T1J5,P0C7P4,Q6DN03,P09874,Q08211,Q5T4S7,P12270,Q9UPN3,P07814,P53621,P49321,P0C629,Q9BZK8,Q9BY65")
                   .buttons
-                    button.rounded-button-view.-small.-black(type="button") Submit
-                    button.rounded-button-view.-small.-black(type="button") Clear
+                    button.rounded-button-view.-small(type="button") Submit
+                    button.rounded-button-view.-small(type="button") Clear
               .togoKey
                 h2.title
                   span.material-icons-outlined layers
@@ -297,7 +302,7 @@ html.no-js(lang='')
             footer
               button.return.rounded-button-view.-black.-spread
                 span.material-icons-outlined keyboard_return
-                | Return
+                | Return to tracks
 
         .lower
           
@@ -307,6 +312,11 @@ html.no-js(lang='')
             .conditions
 
 
-    script(src="js/vendor/d3.js")
     script(src="js/vendor/lodash.js")
     script(src="js/main.js")
+
+    script(type="module" src="https://togostanza.github.io/metastanza/hash-table.js" async)
+    script(type="module" src="https://togostanza.github.io/metastanza/barchart.js" async)
+
+    //- script(type="module" src="https://penqe.github.io/nbdc-togosite-stanza/test.js" async)
+    //- togostanza-test(say-to="world")

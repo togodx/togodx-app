@@ -11,6 +11,7 @@
   --color-separator: rgba(0,0,0,.2)
   --color-hover: rgba(0,0,0,.05)
   --color-active: rgba(0,0,0,.1)
+  --color-selected: #ffee0048
   // geometrics
   --padding-track-block-start: .4rem
   --padding-track-inline-start: .8rem
@@ -31,8 +32,10 @@
   --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3)
   --z-track-item-selected: 1
   --z-track-collapse-button: 1
-  --z-track-balloon: 2
   --z-track-tracks-header: 3
+  --z-track-pin: 4
+  --z-fixed-area: 5
+  --z-track-balloon: 6
   --z-results-header: 1
 
 @keyframes enter-stacking-item
@@ -58,10 +61,13 @@ body
   font-family: 'Roboto Condensed', sans-serif
   font-size: 1.2rem
   line-height: 1.5
-  overflow: hidden
-  &[data-display="results"] [data-hidden-by="results"], &[data-display="properties"] [data-hidden-by="properties"]
-    display: none
-    opacity: 0
-    pointer-events: none
-    position: absolute
-    transition: opacity var(--transition-wipe)
+  &[data-page="top"]
+    overflow: hidden
+    &[data-display="results"] [data-hidden-by="results"], &[data-display="properties"] [data-hidden-by="properties"]
+      display: none
+      opacity: 0
+      pointer-events: none
+      position: absolute
+      transition: opacity var(--transition-wipe)
+  &[data-page="report"]
+    background-color: var(--color-gray)

@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <link>
-  </head>
-</html><!DOCTYPE html>
 <html class="no-js" lang="">
   <head>
     <meta charset="utf-8">
@@ -19,27 +14,26 @@
     <!-- Place favicon.ico in the root directory-->
     <link rel="stylesheet" href="css/main.css">
   </head>
-  <body data-heatmap="true" data-display="properties">
+  <body data-heatmap="true" data-display="properties" data-page="top">
     <header></header>
     <main id="App">
       <div class="inner">
         <section id="Properties">
           <header class="header">
             <div class="title">
-              <h2 class="properties">Properties</h2>
-              <h2 class="attributes">Values</h2>
+              <h2 class="properties">Attribute</h2>
+              <h2 class="attributes">Classification / Distribution</h2>
             </div>
             <nav>
               <ul>
-                <li><span class="material-icons-outlined">file_upload</span>Upload IDs</li>
                 <li class="viewmodecontroller">
-                  <label>
+                  <label class="log10">
                     <input type="checkbox" value="log10">Log scale
                   </label>
-                  <label>
+                  <label class="area">
                     <input type="checkbox" value="area" checked>Area
                   </label>
-                  <label>
+                  <label class="heatmap">
                     <input type="checkbox" value="heatmap" checked>Heatmap
                   </label>
                 </li>
@@ -54,8 +48,8 @@
               <div class="body">
                 <table>
                   <thead>
-                    <tr class="header"></tr>
                     <tr class="statistics"></tr>
+                    <tr class="header"></tr>
                   </thead>
                   <tbody></tbody>
                 </table>
@@ -73,21 +67,39 @@
             <header>
               <h2 class="title">Condition builder</h2>
             </header>
-            <select class="togoKey rounded-button-view" disabled>
-              <option value="">Select a TOGO key</option>
-            </select>
             <div class="conditions">
               <div class="attributes">
-                <h2 class="title">Property values</h2>
-                <div class="conditions"></div>
+                <h2 class="title"><span class="material-icons-outlined">west</span>Select filters</h2>
+                <div class="conditions -empty"></div>
               </div>
               <div class="properties">
-                <h2 class="title">Properties</h2>
-                <div class="conditions"></div>
+                <h2 class="title"><span class="material-icons-outlined">west</span>Additional attributes</h2>
+                <div class="conditions -empty"></div>
+              </div>
+              <div id="UploadUserIDsView">
+                <h2 class="title"><span class="material-icons-outlined">file_upload</span>Upload IDs</h2>
+                <form>
+                  <label>
+                    <p>userKey</p>
+                    <select></select>
+                  </label>
+                  <label>
+                    <p>userIds</p>
+                    <input type="text" value="Q9NYF8,Q4V339,A6NCE7,A7E2F4,P69849,A6NN73,Q92928,Q5T1J5,P0C7P4,Q6DN03,P09874,Q08211,Q5T4S7,P12270,Q9UPN3,P07814,P53621,P49321,P0C629,Q9BZK8,Q9BY65">
+                  </label>
+                  <div class="buttons">
+                    <button class="rounded-button-view -small -black" type="button">Submit</button>
+                    <button class="rounded-button-view -small -black" type="button">Clear</button>
+                  </div>
+                </form>
+              </div>
+              <div class="togoKey">
+                <h2 class="title"><span class="material-icons-outlined">layers</span>Select target category</h2>
+                <select disabled></select>
               </div>
             </div>
             <footer>
-              <button class="exec rounded-button-view -black -spread" disabled><span class="material-icons-outlined">table_view</span>TOGO data</button>
+              <button class="exec rounded-button-view -black -spread" disabled><span class="material-icons-outlined">table_view</span>Preview integrated data</button>
             </footer>
           </section>
           <section id="Reports" data-hidden-by="properties">
@@ -96,7 +108,7 @@
             </header>
             <div class="stanzas"></div>
             <footer>
-              <button class="return rounded-button-view -black -spread"><span class="material-icons-outlined">keyboard_return</span>Return to tracks</button>
+              <button class="return rounded-button-view -black -spread"><span class="material-icons-outlined">keyboard_return</span>Return</button>
             </footer>
           </section>
         </div>
@@ -110,9 +122,8 @@
         </div>
       </section>
     </main>
+    <script src="js/vendor/d3.js"></script>
     <script src="js/vendor/lodash.js"></script>
     <script src="js/main.js"></script>
-    <script type="module" src="https://togostanza.github.io/metastanza/hash-table.js" async></script>
-    <script type="module" src="https://togostanza.github.io/metastanza/barchart.js" async></script>
   </body>
 </html>

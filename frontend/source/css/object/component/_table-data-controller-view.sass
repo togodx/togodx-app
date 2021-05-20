@@ -13,10 +13,12 @@
   opacity: .6
   cursor: pointer
   transition: opacity var(--transition-instant)
+  position: relative
   > .conditions
     display: flex
     font-weight: bold
     border-bottom: solid .1rem var(--color-separator)
+    
     > .condiiton
       padding: .2rem .4rem
       overflow: hidden
@@ -31,6 +33,8 @@
         text-overflow: ellipsis
         white-space: nowrap
         overflow: hidden
+      &:last-child
+        padding-right: 1.9rem
   > .status
     padding: .3rem 0
     border-bottom: solid .1rem var(--color-separator)
@@ -47,6 +51,8 @@
     display: none
     > .text
       line-height: 1
+      display: flex
+      justify-content: space-between
     > .progress
       margin: .4rem 0
       position: relative
@@ -81,6 +87,9 @@
       &[data-button="restore"]
         [data-display="results"] &
           +button-disabled
+      > .lotation
+        animation: lotation 3s linear infinite
+
   > .downloads
     border-top: solid 1px var(--color-translucent-lamp-black3)
     display: none
@@ -124,3 +133,10 @@
       > .button
         &[data-button="prepare-download"]
           +button-disabled
+
+
+@keyframes lotation
+  0%  
+    transform: rotate(0)
+  100%  
+    transform: rotate(360deg)

@@ -1,17 +1,18 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import StatisticsView from "./StatisticsView";
+import * as event from '../events';
 
 export default class ResultsTable {
 
+  #intersctionObserver;
+  #tableData;
   #ROOT;
   #THEAD;
   #STATS;
   #TBODY;
   #TABLE_END;
   #LOADING_VIEW;
-  #intersctionObserver;
-  #tableData;
 
   constructor(elm) {
 
@@ -36,9 +37,9 @@ export default class ResultsTable {
     });
 
     // event listener
-    DefaultEventEmitter.addEventListener('selectTableData', e => this.#setupTable(e.detail));
-    DefaultEventEmitter.addEventListener('addNextRows', e => this.#addTableRows(e.detail));
-    DefaultEventEmitter.addEventListener('failedFetchTableDataIds', e => this.#failed(e.detail));
+    DefaultEventEmitter.addEventListener(event.selectTableData, e => this.#setupTable(e.detail));
+    DefaultEventEmitter.addEventListener(event.addNextRows, e => this.#addTableRows(e.detail));
+    DefaultEventEmitter.addEventListener(event.failedFetchTableDataIds, e => this.#failed(e.detail));
 
     // turnoff intersection observer after display transition
     const mutationObserver = new MutationObserver(mutations => {
@@ -77,7 +78,7 @@ export default class ResultsTable {
     this.#THEAD.innerHTML = '';
     this.#TBODY.innerHTML = '';
     this.#LOADING_VIEW.classList.add('-shown');
-    DefaultEventEmitter.dispatchEvent(new CustomEvent('hideStanza'));
+    DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
 
     // make table header
     this.#THEAD.innerHTML = `
@@ -90,7 +91,7 @@ export default class ResultsTable {
       <th>
         <div class="inner -propertyvalue" style="background-color: ${App.getHslColor(property.subject.hue)}">
           <div class="togo-key-view">${property.property.primaryKey}</div>
-          <span>${property.property.label}</span>
+          <span>${property.subject.subject}</span>
         </div>
       </th>`).join('')}
       ${tableData.condition.properties.map(property => `
@@ -110,6 +111,7 @@ export default class ResultsTable {
   }
 
   #addTableRows(detail) {
+    console.log(detail)
 
     this.#tableData = detail.tableData;
 
@@ -121,10 +123,13 @@ export default class ResultsTable {
 
     // make table
     this.#TBODY.insertAdjacentHTML('beforeend', rows.map((row, index) => {
+      console.log(row)
       return `<tr data-index="${detail.tableData.offset + index}" data-togo-id="${detail.rows[index].id}">
         <th>
           <div class="inner">
+            <a class="toreportpage" href="report.html?togoKey=${detail.tableData.togoKey}&id=${detail.rows[index].id}&properties=${encodeURIComponent(JSON.stringify(row))}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
             <div class="togo-key-view">${detail.rows[index].id}</div>
+            <span>${detail.rows[index].label}</span>
           </div>
         </th>
         ${row.map(column => {
@@ -167,13 +172,13 @@ export default class ResultsTable {
         if (tr.classList.contains('-selected')) {
           // hide stanza
           tr.classList.remove('-selected');
-          DefaultEventEmitter.dispatchEvent(new CustomEvent('hideStanza'));
+          DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
         } else {
           // show stanza
           this.#TBODY.querySelectorAll(':scope > tr').forEach(tr => tr.classList.remove('-selected'));
           tr.classList.add('-selected');
           // dispatch event
-          const event = new CustomEvent('showStanza', {detail: {
+          const customEvent = new CustomEvent(event.showStanza, {detail: {
             subject: {
               togoKey: this.#tableData.togoKey,
               id: this.#tableData.subjectId,
@@ -181,7 +186,7 @@ export default class ResultsTable {
             },
             properties: row
           }});
-          DefaultEventEmitter.dispatchEvent(event);
+          DefaultEventEmitter.dispatchEvent(customEvent);
         }
       })
     });

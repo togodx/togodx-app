@@ -2,6 +2,7 @@
   width: calc(100vw - var(--width-condition))
   min-width: calc(var(--min-width-app) - var(--width-condition))
   overflow-y: auto
+  position: relative
   > .header
     padding: var(--padding-track-block-start) var(--padding-track-inline-start)
     border-bottom: solid .1rem var(--color-black)
@@ -44,3 +45,6 @@
             > input[type="checkbox"]
               vertical-align: middle
               margin-right: .4rem
+          &.viewmodecontroller
+            > .area, > .heatmap
+              display: none

@@ -51,6 +51,10 @@ class Records {
     return this.#subjects;
   }
 
+  get properties() {
+    return this.#properties;
+  }
+
 }
 
 export default new Records();

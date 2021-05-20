@@ -1,4 +1,6 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import Records from "./Records";
+import * as event from '../events';
 
 class ConditionBuilder {
 
@@ -21,11 +23,11 @@ class ConditionBuilder {
     // evaluate
     this.#satisfyAggregation();
     // dispatch event
-    const event = new CustomEvent('mutatePropertyCondition', {detail: {
+    const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {
       action: 'add', 
       condition
     }});
-    DefaultEventEmitter.dispatchEvent(event);
+    DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
   addPropertyValue(condition) {
@@ -35,35 +37,59 @@ class ConditionBuilder {
     // evaluate
     this.#satisfyAggregation();
     // dispatch event
-    const event = new CustomEvent('mutatePropertyValueCondition', {detail: {
+    const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {
       action: 'add', 
       condition
     }});
-    DefaultEventEmitter.dispatchEvent(event);
+    DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
   removeProperty(propertyId) {
     // remove from store
-    const position = this.#propertyConditions.findIndex(condition => condition.property.propertyId === propertyId);
-    if (position === -1) return;
-    this.#propertyConditions.splice(position, 1)[0];
+    const index = this.#propertyConditions.findIndex(condition => condition.property.propertyId === propertyId);
+    if (index === -1) return;
+    this.#propertyConditions.splice(index, 1)[0];
     // evaluate
     this.#satisfyAggregation();
     // dispatch event
-    const event = new CustomEvent('mutatePropertyCondition', {detail: {action: 'remove', propertyId}});
-    DefaultEventEmitter.dispatchEvent(event);
+    const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {action: 'remove', propertyId}});
+    DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  removePropertyValue(propertyId, categoryId, range) {
+  removePropertyValue(propertyId, categoryId) {
     // remove from store
-    const position = this.#attributeConditions.findIndex(condition => condition.property.propertyId === propertyId && condition.value.categoryId === categoryId);
-    if (position === -1) return;
-    this.#attributeConditions.splice(position, 1)[0];
+    const index = this.#attributeConditions.findIndex(condition => condition.property.propertyId === propertyId && condition.value.categoryId === categoryId);
+    if (index === -1) return;
+    this.#attributeConditions.splice(index, 1)[0];
     // evaluate
     this.#satisfyAggregation();
     // dispatch event
-    const event = new CustomEvent('mutatePropertyValueCondition', {detail: {action: 'remove', propertyId, categoryId}});
-    DefaultEventEmitter.dispatchEvent(event);
+    const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {action: 'remove', propertyId, categoryId}});
+    DefaultEventEmitter.dispatchEvent(customEvent);
+  }
+
+  setPropertyValues(condition) {
+    const originalValues = Records.getProperty(condition.property.propertyId).values;
+    const startIndex = originalValues.findIndex(originalValue => originalValue.categoryId === condition.values[0].categoryId);
+    originalValues.forEach((originalValue, originalIndex) => {
+      const index = this.#attributeConditions.findIndex(attrCondition => attrCondition.property.propertyId === condition.property.propertyId && attrCondition.value.categoryId === originalValue.categoryId);
+      if (startIndex <= originalIndex && originalIndex < startIndex + condition.values.length) {
+        const value = condition.values[originalIndex - startIndex];
+        // add
+        if (index === -1) {
+          this.addPropertyValue({
+            subject: condition.subject,
+            property: condition.property,
+            value 
+          });
+        }
+      } else {
+        // remove
+        if (index !== -1) {
+          this.removePropertyValue(condition.property.propertyId, originalValue.categoryId);
+        }
+      }
+    });
   }
 
   makeQueryParameter() {
@@ -95,17 +121,13 @@ class ConditionBuilder {
       };
     });
     // emmit event
-    const event = new CustomEvent('completeQueryParameter', {detail: {
+    const customEvent = new CustomEvent(event.completeQueryParameter, {detail: {
       togoKey: this.#togoKey,
       subjectId: this.#subjectId,
       properties,
       attributes
     }});
-    DefaultEventEmitter.dispatchEvent(event);
-
-    // clear condition
-    // this.#propertyConditions = [];
-    // this.#attributeConditions = [];
+    DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
   setSubject(togoKey, subjectId) {
@@ -114,14 +136,20 @@ class ConditionBuilder {
     this.#satisfyAggregation();
   }
 
+  // public accessor
+
+  get currentTogoKey() {
+    return this.#togoKey;
+  }
+
   // private methods
 
   #satisfyAggregation() {
     const established 
       = (this.#togoKey && this.#subjectId)
       && (this.#propertyConditions.length > 0 || this.#attributeConditions.length > 0);
-    const event = new CustomEvent('mutateEstablishConditions', {detail: established});
-    DefaultEventEmitter.dispatchEvent(event);
+    const customEvent = new CustomEvent(event.mutateEstablishConditions, {detail: established});
+    DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
 }

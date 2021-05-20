@@ -1,38 +1,108 @@
 .histogram-range-selector-view
+  --padding-horizontal: 1rem
+  --padding-vertical: 0
+  --height-selector: 3rem
+  padding-bottom: 5rem
+  > .selector
+    margin: 1rem var(--padding-horizontal)
+    width: calc(100% - var(--padding-horizontal) * 2)
+    height: var(--height-selector)
+    position: relative
+    // overflow: hidden
+    > *
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+    > .overview
+      display: flex
+      align-items: flex-end
+      > .bar
+        opacity: .2
+        &.-selected
+          opacity: 1
+          position: relative
+          &::before
+            content: ""
+            position: absolute
+            bottom: -.2rem
+            width: 100%
+            height: calc(var(--height-selector) + .4rem)
+            background-color: var(--color-selected)
+    > .controller
+      cursor: col-resize
   > .histogram
-    width: 100%
+    width: calc(100% - var(--padding-horizontal) * 2)
     height: 18rem
     position: relative
-    > .grid, > .graph
+    margin: var(--padding-vertical) var(--padding-horizontal) 0
+    > *
       position: absolute
       width: 100%
       height: 100%
       top: 0
       left: 0
-    > .grid
-      border-bottom: solid .1rem var(--color-separator)
     > .graph
       display: flex
       align-items: flex-end
       > .bar
-        transition: height var(--transition-instant)
         position: relative
-        > .color
-          width: 100%
-          height: 100%
-          top: 0
-          left: 0
-  > .controller
-    height: 3rem
-    > .selector
-      position: relative
-      > .slider
-        position: absolute
-        width: 0
-        height: 0
-        border-style: solid
-        border-width: 0 .4rem .8rem .4rem
-        border-color: transparent transparent var(--color-black) transparent
         cursor: pointer
-    > .form
-      text-align: center
+        height: 100%
+        transition: width var(--transition-instant)
+        > .actual
+          position: absolute
+          bottom: 0
+          width: 100%
+          transition: height var(--transition-instant)
+          > .color
+            height: 100%
+        > .label
+          position: absolute
+          bottom: 0
+          font-size: 1rem
+          line-height: 1rem
+          margin: 0
+          left: 50%
+          white-space: nowrap
+          transform: translate(0, 1rem) rotate(90deg)
+          transform-origin: 0 50%
+        &.-filtered
+          height: 0%
+          width: 0% !important
+          > .label
+            display: none
+    > .gridcontainer
+      width: calc(100% + var(--padding-horizontal) * 2)
+      border-bottom: solid .1rem var(--color-separator)
+      margin: 0 calc(var(--padding-horizontal) * -1)
+      > .grid
+        width: 100%
+        position: absolute
+        border-bottom: dotted .1rem var(--color-separator)
+        transform: translateY(.1rem)
+        transition: bottom var(--transition-instant)
+        > .label
+          font-size: 1rem
+          line-height: 1
+          margin: 0
+          text-align: right
+          position: relative
+          right: 4px
+    > .gridcontainer, > .additionalline
+      pointer-events: none
+  // > .controller
+  //   height: 5rem
+  //   > .selector
+  //     position: relative
+  //     > .slider
+  //       position: absolute
+  //       width: 0
+  //       height: 0
+  //       border-style: solid
+  //       border-width: 0 .4rem .8rem .4rem
+  //       border-color: transparent transparent var(--color-black) transparent
+  //       cursor: pointer
+  //   > .form
+  //     text-align: center

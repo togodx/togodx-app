@@ -1,28 +1,53 @@
 #ConditionBuilder
-  > .togoKey
-    margin-bottom: 1rem
-    transition: opacity var(--transition-wipe)
-    &:hover
-      top: auto
-    body[data-display="results"] &
-      pointer-events: none
-      opacity: .5
   > .conditions
     flex-grow: 1
     > *
       padding: .7rem .6rem
-      background-color: rgba(0, 0, 0, .1)
+      background-color: rgba(white, .8)
+      border-radius: .4rem
       + *
-        margin-top: .2rem
+        margin-top: .4rem
       > .title
-        margin-bottom: 0
+        margin-bottom: -.2rem
         line-height: 1
-        color: white
         font-size: 1.2rem
-        font-weight: normal
+        > .material-icons-outlined
+          font-size: 1.4rem
+          vertical-align: middle
+          margin-inline-end: .3rem
+          position: relative
+          top: -.1rem
       > .conditions
+        &.-empty
+          &::after
+            font-size: 1.2rem
+            line-height: 1.2
+            display: block
+            margin-top: .4rem
+            font-weight: lighter
         > .stacking-condition-view
           > .closebutton
             body[data-display="results"] &
               display: none
-
+    > .attributes
+      > .conditions
+        &.-empty
+          &::after
+            content: "Add classification/distribution as many as ..."
+    > .properties
+      > .conditions
+        &.-empty
+          &::after
+            content: "Specify additional attributes integrated into resulting table ..."
+    > .togoKey
+      width: 100%
+      transition: opacity var(--transition-wipe)
+      > select
+        width: 100%
+        margin-top: .4rem
+      body[data-display="results"] &
+        pointer-events: none
+        opacity: .5
+  > footer
+    > button
+      font-weight: bold
