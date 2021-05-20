@@ -55,7 +55,7 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  removePropertyValue(propertyId, categoryId, range) {
+  removePropertyValue(propertyId, categoryId) {
     // remove from store
     const position = this.#attributeConditions.findIndex(condition => condition.property.propertyId === propertyId && condition.value.categoryId === categoryId);
     if (position === -1) return;
@@ -65,6 +65,10 @@ class ConditionBuilder {
     // dispatch event
     const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {action: 'remove', propertyId, categoryId}});
     DefaultEventEmitter.dispatchEvent(customEvent);
+  }
+
+  setPropertyValues(condition) {
+    console.log(condition)
   }
 
   makeQueryParameter() {
@@ -103,10 +107,6 @@ class ConditionBuilder {
       attributes
     }});
     DefaultEventEmitter.dispatchEvent(customEvent);
-
-    // clear condition
-    // this.#propertyConditions = [];
-    // this.#attributeConditions = [];
   }
 
   setSubject(togoKey, subjectId) {

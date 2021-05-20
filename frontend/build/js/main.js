@@ -480,7 +480,7 @@
       }
     }, {
       key: "removePropertyValue",
-      value: function removePropertyValue(propertyId, categoryId, range) {
+      value: function removePropertyValue(propertyId, categoryId) {
         // remove from store
         var position = _classPrivateFieldGet(this, _attributeConditions).findIndex(function (condition) {
           return condition.property.propertyId === propertyId && condition.value.categoryId === categoryId;
@@ -500,6 +500,11 @@
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
+      }
+    }, {
+      key: "setPropertyValues",
+      value: function setPropertyValues(condition) {
+        console.log(condition);
       }
     }, {
       key: "makeQueryParameter",
@@ -549,9 +554,7 @@
             attributes: attributes
           }
         });
-        DefaultEventEmitter$1.dispatchEvent(customEvent); // clear condition
-        // this.#propertyConditions = [];
-        // this.#attributeConditions = [];
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
       key: "setSubject",
@@ -1210,6 +1213,8 @@
 
   var _items = new WeakMap();
 
+  var _subject$2 = new WeakMap();
+
   var _property$2 = new WeakMap();
 
   var _selectedBarsStart = new WeakMap();
@@ -1230,10 +1235,17 @@
 
   var _indicateValue = new WeakSet();
 
+  var _selectedItems = new WeakMap();
+
   var HistogramRangeSelectorView = function HistogramRangeSelectorView(elm, subject, property, _items2, sparqlist, overview) {
     var _this = this;
 
     _classCallCheck(this, HistogramRangeSelectorView);
+
+    _selectedItems.set(this, {
+      get: _get_selectedItems,
+      set: void 0
+    });
 
     _indicateValue.add(this);
 
@@ -1242,6 +1254,11 @@
     _setupRangeSelector.add(this);
 
     _items.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _subject$2.set(this, {
       writable: true,
       value: void 0
     });
@@ -1282,7 +1299,9 @@
     });
 
     console.log(elm, subject, property, _items2, sparqlist);
-    this._subject = subject;
+
+    _classPrivateFieldSet(this, _subject$2, subject);
+
     this._sparqlist = sparqlist;
 
     _classPrivateFieldSet(this, _property$2, property);
@@ -1307,14 +1326,18 @@
     var selector = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .selector'); // make graph
 
 
+    var _max = Math.max.apply(Math, _toConsumableArray(_classPrivateFieldGet(this, _items).map(function (item) {
+      return item.count;
+    })));
+
     var _width = 100 / _classPrivateFieldGet(this, _items).length;
 
     selector.querySelector(':scope > .overview').innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
-      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(_width, "%; background-color: ").concat(App$1.getHslColor(subject.hue), ";\"></div>");
+      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(_width, "%; height: ").concat(item.count / _max * 100, "%; background-color: ").concat(App$1.getHslColor(subject.hue), ";\"></div>");
     }).join('');
     var graph = histogram.querySelector(':scope > .graph');
     graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
-      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(_width, "%;\">\n      <div class=\"actual\" style=\"background-color: ").concat(App$1.getHslColor(subject.hue), ";\">\n        <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / _classPrivateFieldGet(_this, _items).length, ", 70%, 50%, .075);\"></div>\n      </div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
+      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\">\n      <div class=\"actual\" style=\"background-color: ").concat(App$1.getHslColor(subject.hue), ";\">\n        <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / _classPrivateFieldGet(_this, _items).length, ", 70%, 50%, .075);\"></div>\n      </div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
     }).join(''); // reference
 
     histogram.querySelectorAll(':scope > .graph > .bar').forEach(function (item, index) {
@@ -1375,42 +1398,39 @@
           }
         });
 
-        _classPrivateMethodGet(_this2, _update$1, _update2$1).call(_this2);
+        _classPrivateMethodGet(_this2, _update$1, _update2$1).call(_this2); // set condition
+
+
+        var selectedItems = _classPrivateFieldGet(_this2, _selectedItems);
+
+        console.log(_classPrivateFieldGet(_this2, _property$2));
+        ConditionBuilder$1.setPropertyValues({
+          subject: _classPrivateFieldGet(_this2, _subject$2),
+          property: _classPrivateFieldGet(_this2, _property$2),
+          values: selectedItems.map(function (item) {
+            return {
+              categoryId: item.categoryId,
+              label: item.label
+            };
+          })
+        });
       }
     });
     selectorController.addEventListener('mouseup', function (e) {
       if (isMouseDown) {
         isMouseDown = false;
       }
-    }); // graph.querySelectorAll(':scope > .bar')
+    });
   }
 
   function _update2$1() {
-    var _this3 = this;
-
-    // filter
-    var items;
-
-    if (_classPrivateFieldGet(this, _selectedBarsStart)) {
-      items = _classPrivateFieldGet(this, _items).filter(function (item, index) {
-        if (_classPrivateFieldGet(_this3, _selectedBarsStart) <= index && index <= _classPrivateFieldGet(_this3, _selectedBarsEnd)) {
-          return true;
-        } else {
-          item.elm.style.width = 0;
-          return false;
-        }
-      });
-    } else {
-      items = _classPrivateFieldGet(this, _items);
-    }
-
-    console.log(items);
-    var max = Math.max.apply(Math, _toConsumableArray(items.map(function (item) {
+    var selectedItems = _classPrivateFieldGet(this, _selectedBarsStart) ? _classPrivateFieldGet(this, _selectedItems) : _classPrivateFieldGet(this, _items);
+    var max = Math.max.apply(Math, _toConsumableArray(selectedItems.map(function (item) {
       return item.count;
     })));
     var isLog10 = App$1.viewModes.log10;
     var processedMax = isLog10 ? Math.log10(max) : max;
-    var width = 100 / items.length; // grid
+    var width = 100 / selectedItems.length; // grid
 
     var digits = String(Math.ceil(max)).length;
     var unit = Number(String(max).charAt(0).padEnd(digits, '0')) / NUM_OF_GRID;
@@ -1422,14 +1442,36 @@
     }); // graph
 
 
-    items.forEach(function (item) {
-      var height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100;
-      item.elm.style.width = "".concat(width, "%");
-      item.elm.querySelector(':scope > .actual').style.height = "".concat(height, "%");
-      _classPrivateFieldGet(_this3, _SELECTOR_BARS).find(function (bar) {
-        return bar.dataset.categoryId === item.categoryId;
-      }).style.height = "".concat(height, "%");
+    _classPrivateFieldGet(this, _items).forEach(function (item) {
+      if (selectedItems.indexOf(item) === -1) {
+        item.elm.classList.add('-filtered');
+      } else {
+        item.elm.classList.remove('-filtered');
+        var height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100;
+        item.elm.style.width = "".concat(width, "%");
+        item.elm.querySelector(':scope > .actual').style.height = "".concat(height, "%");
+      }
     });
+  }
+
+  function _get_selectedItems() {
+    var _this3 = this;
+
+    var items;
+
+    if (_classPrivateFieldGet(this, _selectedBarsStart)) {
+      items = _classPrivateFieldGet(this, _items).filter(function (item_, index) {
+        if (_classPrivateFieldGet(_this3, _selectedBarsStart) <= index && index <= _classPrivateFieldGet(_this3, _selectedBarsEnd)) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    } else {
+      items = [];
+    }
+
+    return items;
   }
 
   var MIN_PIN_SIZE = 12;

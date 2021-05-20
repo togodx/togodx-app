@@ -1,4 +1,5 @@
 import App from "./App";
+import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import * as event from '../events';
 
@@ -8,6 +9,7 @@ const NUM_OF_GRID = 4;
 export default class HistogramRangeSelectorView {
 
   #items;
+  #subject;
   #property;
   #selectedBarsStart;
   #selectedBarsEnd;
@@ -19,7 +21,7 @@ export default class HistogramRangeSelectorView {
   constructor(elm, subject, property, items, sparqlist, overview) {
     console.log(elm, subject, property, items, sparqlist)
 
-    this._subject = subject;
+    this.#subject = subject;
     this._sparqlist = sparqlist;
     this.#property = property;
     this.#OVERVIEW_CONTAINER = overview;
@@ -59,10 +61,11 @@ export default class HistogramRangeSelectorView {
     const selector = this.#ROOT.querySelector(':scope > .selector');
 
     // make graph
+    const max = Math.max(...this.#items.map(item => item.count));
     const width = 100 / this.#items.length;
-    selector.querySelector(':scope > .overview').innerHTML = this.#items.map(item => `<div class="bar" data-category-id="${item.categoryId}" data-count="${item.count}" style="width: ${width}%; background-color: ${App.getHslColor(subject.hue)};"></div>`).join('');
+    selector.querySelector(':scope > .overview').innerHTML = this.#items.map(item => `<div class="bar" data-category-id="${item.categoryId}" data-count="${item.count}" style="width: ${width}%; height: ${(item.count / max) * 100}%; background-color: ${App.getHslColor(subject.hue)};"></div>`).join('');
     const graph = histogram.querySelector(':scope > .graph');
-    graph.innerHTML = this.#items.map((item, index) => `<div class="bar" data-category-id="${item.categoryId}" data-count="${item.count}" style="width: ${width}%;">
+    graph.innerHTML = this.#items.map((item, index) => `<div class="bar" data-category-id="${item.categoryId}" data-count="${item.count}">
       <div class="actual" style="background-color: ${App.getHslColor(subject.hue)};">
         <div class="color" style="background-color: hsla(${360 * index / this.#items.length}, 70%, 50%, .075);"></div>
       </div>
@@ -114,6 +117,19 @@ export default class HistogramRangeSelectorView {
           }
         });
         this.#update();
+        // set condition
+        const selectedItems = this.#selectedItems;
+        console.log(this.#property)
+        ConditionBuilder.setPropertyValues({
+          subject: this.#subject,
+          property: this.#property,
+          values: selectedItems.map(item => {
+            return {
+              categoryId: item.categoryId,
+              label: item.label
+            }
+          })
+        });
       }
     });
     selectorController.addEventListener('mouseup', e => {
@@ -121,31 +137,16 @@ export default class HistogramRangeSelectorView {
         isMouseDown = false;
       }
     });
-    // graph.querySelectorAll(':scope > .bar')
   }
 
   #update() {
 
-    // filter
-    let items;
-    if (this.#selectedBarsStart) {
-      items = this.#items.filter((item, index) => {
-        if (this.#selectedBarsStart <= index && index <= this.#selectedBarsEnd) {
-          return true;
-        } else {
-          item.elm.style.width = 0;
-          return false;
-        }
-      });
-    } else {
-      items = this.#items;
-    }
-    console.log(items)
+    const selectedItems = this.#selectedBarsStart ? this.#selectedItems : this.#items;
 
-    const max = Math.max(...items.map(item => item.count));
+    const max = Math.max(...selectedItems.map(item => item.count));
     const isLog10 = App.viewModes.log10;
     const processedMax = isLog10 ? Math.log10(max) : max;
-    const width = 100 / items.length;
+    const width = 100 / selectedItems.length;
 
     // grid
     const digits = String(Math.ceil(max)).length;
@@ -157,16 +158,37 @@ export default class HistogramRangeSelectorView {
     });
 
     // graph
-    items.forEach(item => {
-      const height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100;
-      item.elm.style.width = `${width}%`;
-      item.elm.querySelector(':scope > .actual').style.height = `${height}%`;
-      this.#SELECTOR_BARS.find(bar => bar.dataset.categoryId === item.categoryId).style.height = `${height}%`;
+    this.#items.forEach(item => {
+      if (selectedItems.indexOf(item) === -1) {
+        item.elm.classList.add('-filtered');
+      } else {
+        item.elm.classList.remove('-filtered');
+        const height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100;
+        item.elm.style.width = `${width}%`;
+        item.elm.querySelector(':scope > .actual').style.height = `${height}%`;
+        }
     });
   }
 
   #indicateValue() {
 
+  }
+
+  // private accessor
+  get #selectedItems() {
+    let items;
+    if (this.#selectedBarsStart) {
+      items = this.#items.filter((item_, index) => {
+        if (this.#selectedBarsStart <= index && index <= this.#selectedBarsEnd) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    } else {
+      items = [];
+    }
+    return items;
   }
 
 }
