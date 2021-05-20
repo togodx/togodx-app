@@ -161,7 +161,7 @@
         "description": "Protein existence obtained from neXtProt",
         "data": "https://integbio.jp/togosite/sparqlist/api/nextprot_protein_existence",
         "primaryKey": "uniprot"
-      },
+      }
     ]
   },
   {
@@ -206,7 +206,7 @@
         "description": "Nonpeptide molecules related protein structures in PDB",
         "data": "https://integbio.jp/togosite/sparqlist/api/pdb_nonpeptide",
         "primaryKey": "pdb"
-      }
+      },
       {
         "propertyId": "pdb_experimental_methods",
         "label": "Analysis methods",
@@ -227,7 +227,7 @@
         "description": "pH value of the crystallization solution in PDB",
         "data": "https://integbio.jp/togosite/sparqlist/api/pdb_pH",
         "primaryKey": "pdb"
-      },
+      }
     ]
   },
     {
@@ -298,7 +298,7 @@
         "description": "Drug development phase in ChEMBL",
         "data": "https://integbio.jp/togosite/sparqlist/api/chembl_development_phase",
         "primaryKey": "chembl_compound"
-      }
+      },
       {
         "propertyId": "atc_classification_pubchem",
         "label": "PubChem ATC classification",
@@ -356,8 +356,8 @@
         "primaryKey": "hp"
       }
     ]
-  }
-    {
+  },
+  {
     "subject": "Variant",
     "subjectId": "variant",
     "togoKey": "togovar",
@@ -377,5 +377,5 @@
         "primaryKey": "togovar"
       }
     ]
-  },
+  }
 ]
