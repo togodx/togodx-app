@@ -3,7 +3,7 @@ import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
 import * as event from '../events';
 
-const LIMIT = 10;
+const LIMIT = 100;
 
 export default class TableData {
 
@@ -21,6 +21,7 @@ export default class TableData {
   #INDICATOR_TEXT_TIME;
   #INDICATOR_BAR;
   #BUTTON_PREPARE_DOWNLOAD;
+  #BUTTON_START_DOWNLOAD;
 
   constructor(condition, elm) {
     console.log(condition)
@@ -68,10 +69,10 @@ export default class TableData {
     </div>
     <div class="controller">
       <div class="button autorenew" title="Prepare for download" data-button="prepare-download">
-        <span class="material-icons-outlined" id="autorenew">autorenew</span>
+        <span class="material-icons-outlined autorenew">autorenew</span>
       </div>
-      <div class="button downloads" title="Download JSON ">
-        <a id="JSON" href="" download="sample.json">
+      <div class="button downloads" title="Download JSON " data-button="start-download">
+        <a class="JSON" href="" download="sample.json">
           <span class="material-icons-outlined">download</span>
           <span class="text">JSON</span>
         </a>
@@ -89,8 +90,9 @@ export default class TableData {
     this.#INDICATOR_TEXT_AMOUNT = INDICATOR.querySelector(':scope > .text > .amount-of-data');
     this.#INDICATOR_TEXT_TIME = INDICATOR.querySelector(':scope > .text > .remaining-time');
     this.#INDICATOR_BAR = INDICATOR.querySelector(':scope > .progress > .bar');
-    const BUTTONS = [...elm.querySelectorAll('.button')];
+    const BUTTONS = [...elm.querySelectorAll(':scope > .controller > .button')];
     this.#BUTTON_PREPARE_DOWNLOAD = BUTTONS.find(button => button.dataset.button === 'prepare-download');
+    this.#BUTTON_START_DOWNLOAD = BUTTONS.find(button => button.dataset.button === 'start-download');
 
     // events
     elm.addEventListener('click', () => {
@@ -102,19 +104,19 @@ export default class TableData {
       if (this.#isAutoLoad == false && this.#ROOT.dataset.status != 'complete') {
         this.#isAutoLoad == true;
         this.#autoLoad();
-        document.getElementById('autorenew').classList.add('lotation');
+        this.#BUTTON_PREPARE_DOWNLOAD.querySelector('.autorenew').classList.add('lotation');
       } else {
         this.#isAutoLoad = false;
-        document.getElementById('autorenew').classList.remove('lotation');
+        this.#BUTTON_PREPARE_DOWNLOAD.querySelector('.autorenew').classList.remove('lotation');
       }
     });
-    BUTTONS.find(button => button.dataset.button === 'delete').addEventListener('click', e => {
-      e.stopPropagation();
-      console.log('delete')
-      let element = document.querySelector('.table-data-controller-view');
-      element.parentNode.removeChild(element)
-      console.log('実行',element.parentNode.removeChild(element));
-    });
+    // delete button
+    // BUTTONS.find(button => button.dataset.button === 'delete').addEventListener('click', e => {
+    //   e.stopPropagation();
+    //   console.log('delete')
+    //   const element = document.querySelector('.table-data-controller-view');
+    //   element.parentNode.removeChild(element)
+    // });
     this.select();
     this.#getQueryIds();
   }
@@ -240,10 +242,10 @@ export default class TableData {
   #complete() {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = 'Complete';
-    document.getElementById('autorenew').classList.remove('lotation');
-    let jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {type : 'application/json'});
-    let jsonUrl = URL.createObjectURL(jsonBlob)
-    document.getElementById('JSON').setAttribute('href', jsonUrl);
+    this.#BUTTON_PREPARE_DOWNLOAD.querySelector('.autorenew').classList.add('lotation');
+    const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {type : 'application/json'});
+    const jsonUrl = URL.createObjectURL(jsonBlob);
+    this.#BUTTON_START_DOWNLOAD.querySelector('.JSON').setAttribute('href', jsonUrl);
   }
 
   /* public methods */

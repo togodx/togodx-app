@@ -2114,7 +2114,7 @@
     });
   };
 
-  var LIMIT = 10;
+  var LIMIT = 100;
 
   var _condition = new WeakMap();
 
@@ -2143,6 +2143,8 @@
   var _INDICATOR_BAR = new WeakMap();
 
   var _BUTTON_PREPARE_DOWNLOAD = new WeakMap();
+
+  var _BUTTON_START_DOWNLOAD = new WeakMap();
 
   var _getQueryIds = new WeakSet();
 
@@ -2240,6 +2242,11 @@
         value: void 0
       });
 
+      _BUTTON_START_DOWNLOAD.set(this, {
+        writable: true,
+        value: void 0
+      });
+
       console.log(condition);
       console.log(ConditionBuilder$1);
 
@@ -2266,7 +2273,7 @@
         return "<div class=\"condiiton -value\" style=\"background-color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         return "<div class=\"condiiton -value\" style=\"color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
-      }).join(''), "\n      \n    </div>\n    <div class=\"button close-button-view\" title=\"Delete\" data-button=\"delete\"></div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button autorenew\" title=\"Prepare for download\" data-button=\"prepare-download\">\n        <span class=\"material-icons-outlined\" id=\"autorenew\">autorenew</span>\n      </div>\n      <div class=\"button downloads\" title=\"Download JSON \">\n        <a id=\"JSON\" href=\"\" download=\"sample.json\">\n          <span class=\"material-icons-outlined\">download</span>\n          <span class=\"text\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" title=\"Restore as condition\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n      </div>\n    </div>\n    "); // reference　
+      }).join(''), "\n      \n    </div>\n    <div class=\"button close-button-view\" title=\"Delete\" data-button=\"delete\"></div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button autorenew\" title=\"Prepare for download\" data-button=\"prepare-download\">\n        <span class=\"material-icons-outlined autorenew\">autorenew</span>\n      </div>\n      <div class=\"button downloads\" title=\"Download JSON \" data-button=\"start-download\">\n        <a class=\"JSON\" href=\"\" download=\"sample.json\">\n          <span class=\"material-icons-outlined\">download</span>\n          <span class=\"text\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" title=\"Restore as condition\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n      </div>\n    </div>\n    "); // reference　
 
       _classPrivateFieldSet(this, _ROOT$4, elm);
 
@@ -2280,10 +2287,14 @@
 
       _classPrivateFieldSet(this, _INDICATOR_BAR, INDICATOR.querySelector(':scope > .progress > .bar'));
 
-      var BUTTONS = _toConsumableArray(elm.querySelectorAll('.button'));
+      var BUTTONS = _toConsumableArray(elm.querySelectorAll(':scope > .controller > .button'));
 
       _classPrivateFieldSet(this, _BUTTON_PREPARE_DOWNLOAD, BUTTONS.find(function (button) {
         return button.dataset.button === 'prepare-download';
+      }));
+
+      _classPrivateFieldSet(this, _BUTTON_START_DOWNLOAD, BUTTONS.find(function (button) {
+        return button.dataset.button === 'start-download';
       })); // events
 
 
@@ -2301,23 +2312,21 @@
 
           _classPrivateMethodGet(_this, _autoLoad, _autoLoad2).call(_this);
 
-          document.getElementById('autorenew').classList.add('lotation');
+          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DOWNLOAD).querySelector('.autorenew').classList.add('lotation');
         } else {
           _classPrivateFieldSet(_this, _isAutoLoad, false);
 
-          document.getElementById('autorenew').classList.remove('lotation');
+          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DOWNLOAD).querySelector('.autorenew').classList.remove('lotation');
         }
-      });
+      }); // delete button
+      // BUTTONS.find(button => button.dataset.button === 'delete').addEventListener('click', e => {
+      //   e.stopPropagation();
+      //   console.log('delete')
+      //   const element = document.querySelector('.table-data-controller-view');
+      //   element.parentNode.removeChild(element)
+      // });
 
-      BUTTONS.find(function (button) {
-        return button.dataset.button === 'delete';
-      }).addEventListener('click', function (e) {
-        e.stopPropagation();
-        console.log('delete');
-        var element = document.querySelector('.table-data-controller-view');
-        element.parentNode.removeChild(element);
-        console.log('実行', element.parentNode.removeChild(element));
-      });
+
       this.select();
 
       _classPrivateMethodGet(this, _getQueryIds, _getQueryIds2).call(this);
@@ -2549,12 +2558,15 @@
   var _complete2 = function _complete2() {
     _classPrivateFieldGet(this, _ROOT$4).dataset.status = 'complete';
     _classPrivateFieldGet(this, _STATUS).textContent = 'Complete';
-    document.getElementById('autorenew').classList.remove('lotation');
+
+    _classPrivateFieldGet(this, _BUTTON_PREPARE_DOWNLOAD).querySelector('.autorenew').classList.add('lotation');
+
     var jsonBlob = new Blob([JSON.stringify(_classPrivateFieldGet(this, _rows), null, 2)], {
       type: 'application/json'
     });
     var jsonUrl = URL.createObjectURL(jsonBlob);
-    document.getElementById('JSON').setAttribute('href', jsonUrl);
+
+    _classPrivateFieldGet(this, _BUTTON_START_DOWNLOAD).querySelector('.JSON').setAttribute('href', jsonUrl);
   };
 
   var _tableData$1 = new WeakMap();
