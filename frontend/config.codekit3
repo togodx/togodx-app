@@ -122,7 +122,7 @@
 		"dP": 10,
 		"ec": 1,
 		"ft": 2,
-		"ma": 1,
+		"ma": 0,
 		"oA": 1,
 		"oAP": "/build/css/object/component/_histogram-range-selector-view.css",
 		"oF": 0,

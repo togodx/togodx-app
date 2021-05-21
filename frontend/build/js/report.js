@@ -1,1 +1,337 @@
-!function(){"use strict";function t(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function e(t,e){for(var n=0;n<e.length;n++){var r=e[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(t,r.key,r)}}function n(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}function r(t,e){return function(t){if(Array.isArray(t))return t}(t)||function(t,e){if("undefined"==typeof Symbol||!(Symbol.iterator in Object(t)))return;var n=[],r=!0,o=!1,i=void 0;try{for(var a,u=t[Symbol.iterator]();!(r=(a=u.next()).done)&&(n.push(a.value),!e||n.length!==e);r=!0);}catch(t){o=!0,i=t}finally{try{r||null==u.return||u.return()}finally{if(o)throw i}}return n}(t,e)||function(t,e){if(!t)return;if("string"==typeof t)return o(t,e);var n=Object.prototype.toString.call(t).slice(8,-1);"Object"===n&&t.constructor&&(n=t.constructor.name);if("Map"===n||"Set"===n)return Array.from(t);if("Arguments"===n||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))return o(t,e)}(t,e)||function(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function o(t,e){(null==e||e>t.length)&&(e=t.length);for(var n=0,r=new Array(e);n<e;n++)r[n]=t[n];return r}function i(t,e){var n=e.get(t);if(!n)throw new TypeError("attempted to get private field on non-instance");return n.get?n.get.call(t):n.value}function a(t,e,n){var r=e.get(t);if(!r)throw new TypeError("attempted to set private field on non-instance");if(r.set)r.set.call(t,n);else{if(!r.writable)throw new TypeError("attempted to set read only private field");r.value=n}return n}function u(t,e,n){if(!e.has(t))throw new TypeError("attempted to get private field on non-instance");return n}var c=new WeakMap,s=new WeakMap,l=new(function(){function e(){t(this,e),c.set(this,{writable:!0,value:void 0}),s.set(this,{writable:!0,value:void 0})}return n(e,[{key:"setSubjects",value:function(t){for(var e=this,n=0;n<t.length;n++){var r=360-360*n/t.length+180;r-=r>360?360:0,t[n].hue=r}a(this,c,Object.freeze(t)),a(this,s,[]),t.forEach((function(t){t.properties.forEach((function(n){i(e,s).push(Object.assign({subjectId:t.subjectId},n))}))})),console.log(i(this,c)),console.log(i(this,s))}},{key:"setValues",value:function(t,e){i(this,s).find((function(e){return e.propertyId===t})).values=e}},{key:"getProperty",value:function(t){console.log(t);var e=i(this,s).find((function(e){return e.propertyId===t}));return console.log(e),e}},{key:"getValue",value:function(t,e){return this.getProperty(t).values.find((function(t){return t.categoryId===e}))}},{key:"subjects",get:function(){return i(this,c)}},{key:"properties",get:function(){return i(this,s)}}]),e}()),f=new WeakMap,p=new WeakSet,d=new WeakSet,h=function(){function e(){t(this,e),d.add(this),p.add(this),f.set(this,{writable:!0,value:void 0})}return n(e,[{key:"ready",value:function(){var t,e=this;Promise.all([fetch("https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json"),fetch("https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json")]).then((function(t){return Promise.all(t.map((function(t){return t.json()})))})).then((function(e){var n=r(e,2),o=n[0],i=n[1];return t=i,l.setSubjects(o),document.querySelector("head").insertAdjacentHTML("beforeend",i.stanzas.map((function(t){return'<script type="module" src="'.concat(t,'"><\/script>')})).join("")),Promise.all(Object.keys(i.templates).map((function(t){return fetch(i.templates[t])})))})).then((function(t){return Promise.all(t.map((function(t){return t.text()})))})).then((function(n){a(e,f,Object.fromEntries(Object.keys(t.templates).map((function(t,e){return[t,n[e]]})))),u(e,p,y).call(e)}))}},{key:"getHslColor",value:function(t){return"hsl(".concat(t,", 50%, 55%)")}}]),e}(),y=function(){var t=this,e=Object.fromEntries(window.location.search.substr(1).split("&").map((function(t){return t.split("=")}))),n=JSON.parse(decodeURIComponent(e.properties)),r=document.querySelector("main"),o=l.subjects.find((function(t){return t.togoKey===e.togoKey})).subjectId;r.innerHTML=u(this,d,v).call(this,o,e.id,e.togoKey)+n.map((function(e){if(void 0===e)return"";var n=l.subjects.find((function(t){return t.properties.some((function(t){return t.propertyId===e.propertyId}))})),r=n.properties.find((function(t){return t.propertyId==t.propertyId}));return'<hr>\n          <div class="attributes">\n            <header style="background-color: '.concat(t.getHslColor(n.hue),';">').concat(r.label,"</header>\n            ").concat(e.attributes.map((function(r){return u(t,d,v).call(t,n.subjectId,r.id,e.propertyKey)})).join(""),"\n          </div>")})).join("")},v=function(t,e,n){return'<div class="stanza">'.concat(i(this,f)[t].replace(/{{id}}/g,e).replace(/{{type}}/g,n),"</div>")},b=new h;globalThis.togositeapp=b,b.ready()}();
+(function () {
+  'use strict';
+
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    return Constructor;
+  }
+
+  function _slicedToArray(arr, i) {
+    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+  }
+
+  function _arrayWithHoles(arr) {
+    if (Array.isArray(arr)) return arr;
+  }
+
+  function _iterableToArrayLimit(arr, i) {
+    if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _e = undefined;
+
+    try {
+      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+        _arr.push(_s.value);
+
+        if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;
+      _e = err;
+    } finally {
+      try {
+        if (!_n && _i["return"] != null) _i["return"]();
+      } finally {
+        if (_d) throw _e;
+      }
+    }
+
+    return _arr;
+  }
+
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+  }
+
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+
+    for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+    return arr2;
+  }
+
+  function _nonIterableRest() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  function _classPrivateFieldGet(receiver, privateMap) {
+    var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get");
+
+    return _classApplyDescriptorGet(receiver, descriptor);
+  }
+
+  function _classPrivateFieldSet(receiver, privateMap, value) {
+    var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set");
+
+    _classApplyDescriptorSet(receiver, descriptor, value);
+
+    return value;
+  }
+
+  function _classExtractFieldDescriptor(receiver, privateMap, action) {
+    if (!privateMap.has(receiver)) {
+      throw new TypeError("attempted to " + action + " private field on non-instance");
+    }
+
+    return privateMap.get(receiver);
+  }
+
+  function _classApplyDescriptorGet(receiver, descriptor) {
+    if (descriptor.get) {
+      return descriptor.get.call(receiver);
+    }
+
+    return descriptor.value;
+  }
+
+  function _classApplyDescriptorSet(receiver, descriptor, value) {
+    if (descriptor.set) {
+      descriptor.set.call(receiver, value);
+    } else {
+      if (!descriptor.writable) {
+        throw new TypeError("attempted to set read only private field");
+      }
+
+      descriptor.value = value;
+    }
+  }
+
+  function _classPrivateMethodGet(receiver, privateSet, fn) {
+    if (!privateSet.has(receiver)) {
+      throw new TypeError("attempted to get private field on non-instance");
+    }
+
+    return fn;
+  }
+
+  var _subjects = new WeakMap();
+
+  var _properties = new WeakMap();
+
+  var Records = /*#__PURE__*/function () {
+    function Records() {
+      _classCallCheck(this, Records);
+
+      _subjects.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _properties.set(this, {
+        writable: true,
+        value: void 0
+      });
+    } // public methods
+
+
+    _createClass(Records, [{
+      key: "setSubjects",
+      value: function setSubjects(subjects) {
+        var _this = this;
+
+        // define subjects
+        for (var i = 0; i < subjects.length; i++) {
+          var hue = 360 - 360 * i / subjects.length + 130;
+          hue -= hue > 360 ? 360 : 0;
+          subjects[i].hue = hue;
+        }
+
+        _classPrivateFieldSet(this, _subjects, Object.freeze(subjects)); // set properties
+
+
+        _classPrivateFieldSet(this, _properties, []);
+
+        subjects.forEach(function (subject) {
+          subject.properties.forEach(function (property) {
+            _classPrivateFieldGet(_this, _properties).push(Object.assign({
+              subjectId: subject.subjectId
+            }, property));
+          });
+        });
+        console.log(_classPrivateFieldGet(this, _subjects));
+        console.log(_classPrivateFieldGet(this, _properties));
+      }
+    }, {
+      key: "setValues",
+      value: function setValues(propertyId, values) {
+        var property = _classPrivateFieldGet(this, _properties).find(function (property) {
+          return property.propertyId === propertyId;
+        });
+
+        property.values = values;
+      }
+    }, {
+      key: "getProperty",
+      value: function getProperty(propertyId) {
+        var property = _classPrivateFieldGet(this, _properties).find(function (property) {
+          return property.propertyId === propertyId;
+        });
+
+        return property;
+      }
+    }, {
+      key: "getValue",
+      value: function getValue(propertyId, categoryId) {
+        // const property = this.#properties.find(property => property.propertyId === propertyId);
+        var property = this.getProperty(propertyId);
+        var value = property.values.find(function (value) {
+          return value.categoryId === categoryId;
+        });
+        return value;
+      } // public accessors
+
+    }, {
+      key: "subjects",
+      get: function get() {
+        return _classPrivateFieldGet(this, _subjects);
+      }
+    }, {
+      key: "properties",
+      get: function get() {
+        return _classPrivateFieldGet(this, _properties);
+      }
+    }]);
+
+    return Records;
+  }();
+
+  var Records$1 = new Records();
+
+  var PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
+  var TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
+
+  var _templates = new WeakMap();
+
+  var _drawStanzas = new WeakSet();
+
+  var _stanza = new WeakSet();
+
+  var ReportApp = /*#__PURE__*/function () {
+    function ReportApp() {
+      _classCallCheck(this, ReportApp);
+
+      _stanza.add(this);
+
+      _drawStanzas.add(this);
+
+      _templates.set(this, {
+        writable: true,
+        value: void 0
+      });
+    }
+
+    _createClass(ReportApp, [{
+      key: "ready",
+      value: function ready() {
+        var _this = this;
+
+        var stanzaTtemplates; // load config json
+
+        Promise.all([fetch(PROPERTIES), fetch(TEMPLATES)]).then(function (responces) {
+          return Promise.all(responces.map(function (responce) {
+            return responce.json();
+          }));
+        }).then(function (_ref) {
+          var _ref2 = _slicedToArray(_ref, 2),
+              subjects = _ref2[0],
+              templates = _ref2[1];
+
+          stanzaTtemplates = templates;
+          Records$1.setSubjects(subjects); // set stanza scripts
+
+          document.querySelector('head').insertAdjacentHTML('beforeend', templates.stanzas.map(function (stanza) {
+            return "<script type=\"module\" src=\"".concat(stanza, "\"></script>");
+          }).join('')); // get stanza templates
+
+          return Promise.all(Object.keys(templates.templates).map(function (key) {
+            return fetch(templates.templates[key]);
+          }));
+        }).then(function (responces) {
+          return Promise.all(responces.map(function (responce) {
+            return responce.text();
+          }));
+        }).then(function (templates) {
+          _classPrivateFieldSet(_this, _templates, Object.fromEntries(Object.keys(stanzaTtemplates.templates).map(function (stanza, index) {
+            return [stanza, templates[index]];
+          })));
+
+          _classPrivateMethodGet(_this, _drawStanzas, _drawStanzas2).call(_this);
+        });
+      }
+    }, {
+      key: "getHslColor",
+      value: // utilities
+      function getHslColor(hue) {
+        return "hsl(".concat(hue, ", 50%, 55%)");
+      }
+    }]);
+
+    return ReportApp;
+  }();
+
+  function _drawStanzas2() {
+    var _this2 = this;
+
+    var urlVars = Object.fromEntries(window.location.search.substr(1).split('&').map(function (keyValue) {
+      return keyValue.split('=');
+    }));
+    var properties = JSON.parse(decodeURIComponent(urlVars.properties));
+    var main = document.querySelector('main');
+    var subjectId = Records$1.subjects.find(function (subject) {
+      return subject.togoKey === urlVars.togoKey;
+    }).subjectId;
+    main.innerHTML = _classPrivateMethodGet(this, _stanza, _stanza2).call(this, subjectId, urlVars.id, urlVars.togoKey) + properties.map(function (property) {
+      if (property === undefined) {
+        return '';
+      } else {
+        var subject = Records$1.subjects.find(function (subject) {
+          return subject.properties.some(function (subjectProperty) {
+            return subjectProperty.propertyId === property.propertyId;
+          });
+        });
+        var property2 = subject.properties.find(function (property) {
+          return property.propertyId === property.propertyId;
+        });
+        return "<hr>\n          <div class=\"attributes\">\n            <header style=\"background-color: ".concat(_this2.getHslColor(subject.hue), ";\">").concat(property2.label, "</header>\n            ").concat(property.attributes.map(function (attribute) {
+          return _classPrivateMethodGet(_this2, _stanza, _stanza2).call(_this2, subject.subjectId, attribute.id, property.propertyKey);
+        }).join(''), "\n          </div>");
+      }
+    }).join('');
+  }
+
+  function _stanza2(subjectId, id, key) {
+    return "<div class=\"stanza\">".concat(_classPrivateFieldGet(this, _templates)[subjectId].replace(/{{id}}/g, id).replace(/{{type}}/g, key), "</div>");
+  }
+
+  var ReportApp$1 = new ReportApp();
+
+  globalThis.togositeapp = ReportApp$1;
+  ReportApp$1.ready();
+
+}());
+//# sourceMappingURL=report.js.map

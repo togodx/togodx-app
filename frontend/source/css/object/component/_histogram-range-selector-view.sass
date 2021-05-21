@@ -1,12 +1,14 @@
 .histogram-range-selector-view
   --padding-horizontal: 1rem
   --padding-vertical: 0
+  --height-selector: 3rem
+  padding-bottom: 5rem
   > .selector
     margin: 1rem var(--padding-horizontal)
     width: calc(100% - var(--padding-horizontal) * 2)
-    height: 3rem
+    height: var(--height-selector)
     position: relative
-    overflow: hidden
+    // overflow: hidden
     > *
       position: absolute
       top: 0
@@ -20,6 +22,14 @@
         opacity: .2
         &.-selected
           opacity: 1
+          position: relative
+          &::before
+            content: ""
+            position: absolute
+            bottom: -.2rem
+            width: 100%
+            height: calc(var(--height-selector) + .4rem)
+            background-color: var(--color-selected)
     > .controller
       cursor: col-resize
   > .histogram
@@ -37,14 +47,15 @@
       display: flex
       align-items: flex-end
       > .bar
-        transition: height var(--transition-instant)
         position: relative
         cursor: pointer
         height: 100%
+        transition: width var(--transition-instant)
         > .actual
           position: absolute
           bottom: 0
           width: 100%
+          transition: height var(--transition-instant)
           > .color
             height: 100%
         > .label
@@ -57,6 +68,11 @@
           white-space: nowrap
           transform: translate(0, 1rem) rotate(90deg)
           transform-origin: 0 50%
+        &.-filtered
+          height: 0%
+          width: 0% !important
+          > .label
+            display: none
     > .gridcontainer
       width: calc(100% + var(--padding-horizontal) * 2)
       border-bottom: solid .1rem var(--color-separator)
@@ -76,17 +92,17 @@
           right: 4px
     > .gridcontainer, > .additionalline
       pointer-events: none
-  > .controller
-    height: 5rem
-    > .selector
-      position: relative
-      > .slider
-        position: absolute
-        width: 0
-        height: 0
-        border-style: solid
-        border-width: 0 .4rem .8rem .4rem
-        border-color: transparent transparent var(--color-black) transparent
-        cursor: pointer
-    > .form
-      text-align: center
+  // > .controller
+  //   height: 5rem
+  //   > .selector
+  //     position: relative
+  //     > .slider
+  //       position: absolute
+  //       width: 0
+  //       height: 0
+  //       border-style: solid
+  //       border-width: 0 .4rem .8rem .4rem
+  //       border-color: transparent transparent var(--color-black) transparent
+  //       cursor: pointer
+  //   > .form
+  //     text-align: center
