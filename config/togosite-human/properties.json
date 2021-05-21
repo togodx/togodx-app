@@ -237,14 +237,14 @@
     "properties": [
       {
         "propertyId": "uniprot_reactome",
-        "label" : "# of proteins in a pathway",
+        "label" : "Proteins in pathway",
         "description": "The number of proteins in each pathway from Reactome",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_reactome",
         "primaryKey": "uniprot"
       },
       {
         "propertyId": "chebi_reactome",
-        "label" : "# of compounds in a pathway",
+        "label" : "Compounds in pathway",
         "description": "The number of chemical compounds in each pathway from Reactome",
         "data": "https://integbio.jp/togosite/sparqlist/api/chebi_reactome",
         "primaryKey": "chebi"
