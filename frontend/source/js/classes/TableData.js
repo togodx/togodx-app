@@ -104,10 +104,10 @@ export default class TableData {
       if (this.#isAutoLoad == false && this.#ROOT.dataset.status != 'complete') {
         this.#isAutoLoad == true;
         this.#autoLoad();
-        this.#BUTTON_PREPARE_DOWNLOAD.querySelector('.autorenew').classList.add('lotation');
+        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.add('lotation');
       } else {
         this.#isAutoLoad = false;
-        this.#BUTTON_PREPARE_DOWNLOAD.querySelector('.autorenew').classList.remove('lotation');
+        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.remove('lotation');
       }
     });
     // delete button
@@ -242,7 +242,7 @@ export default class TableData {
   #complete() {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = 'Complete';
-    this.#BUTTON_PREPARE_DOWNLOAD.querySelector('.autorenew').classList.add('lotation');
+    this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.add('lotation');
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {type : 'application/json'});
     const jsonUrl = URL.createObjectURL(jsonBlob);
     this.#BUTTON_START_DOWNLOAD.querySelector('.JSON').setAttribute('href', jsonUrl);
