@@ -156,7 +156,7 @@
 
         // define subjects
         for (var i = 0; i < subjects.length; i++) {
-          var hue = 360 - 360 * i / subjects.length + 180;
+          var hue = 360 - 360 * i / subjects.length + 130;
           hue -= hue > 360 ? 360 : 0;
           subjects[i].hue = hue;
         }
@@ -188,13 +188,10 @@
     }, {
       key: "getProperty",
       value: function getProperty(propertyId) {
-        console.log(propertyId);
-
         var property = _classPrivateFieldGet(this, _properties).find(function (property) {
           return property.propertyId === propertyId;
         });
 
-        console.log(property);
         return property;
       }
     }, {

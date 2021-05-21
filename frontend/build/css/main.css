@@ -336,6 +336,7 @@ template {
   --color-separator: rgba(0,0,0,.2);
   --color-hover: rgba(0,0,0,.05);
   --color-active: rgba(0,0,0,.1);
+  --color-selected: #ffee0048;
   --padding-track-block-start: .4rem;
   --padding-track-inline-start: .8rem;
   --width-track-column-subject: 2rem;
@@ -618,13 +619,14 @@ body[data-page=report] {
 .histogram-range-selector-view {
   --padding-horizontal: 1rem;
   --padding-vertical: 0;
+  --height-selector: 3rem;
+  padding-bottom: 5rem;
 }
 .histogram-range-selector-view > .selector {
   margin: 1rem var(--padding-horizontal);
   width: calc(100% - var(--padding-horizontal) * 2);
-  height: 3rem;
+  height: var(--height-selector);
   position: relative;
-  overflow: hidden;
 }
 .histogram-range-selector-view > .selector > * {
   position: absolute;
@@ -644,6 +646,15 @@ body[data-page=report] {
 }
 .histogram-range-selector-view > .selector > .overview > .bar.-selected {
   opacity: 1;
+  position: relative;
+}
+.histogram-range-selector-view > .selector > .overview > .bar.-selected::before {
+  content: "";
+  position: absolute;
+  bottom: -0.2rem;
+  width: 100%;
+  height: calc(var(--height-selector) + .4rem);
+  background-color: var(--color-selected);
 }
 .histogram-range-selector-view > .selector > .controller {
   cursor: col-resize;
@@ -668,15 +679,16 @@ body[data-page=report] {
           align-items: flex-end;
 }
 .histogram-range-selector-view > .histogram > .graph > .bar {
-  transition: height var(--transition-instant);
   position: relative;
   cursor: pointer;
   height: 100%;
+  transition: width var(--transition-instant);
 }
 .histogram-range-selector-view > .histogram > .graph > .bar > .actual {
   position: absolute;
   bottom: 0;
   width: 100%;
+  transition: height var(--transition-instant);
 }
 .histogram-range-selector-view > .histogram > .graph > .bar > .actual > .color {
   height: 100%;
@@ -693,6 +705,13 @@ body[data-page=report] {
           transform: translate(0, 1rem) rotate(90deg);
   -webkit-transform-origin: 0 50%;
           transform-origin: 0 50%;
+}
+.histogram-range-selector-view > .histogram > .graph > .bar.-filtered {
+  height: 0%;
+  width: 0% !important;
+}
+.histogram-range-selector-view > .histogram > .graph > .bar.-filtered > .label {
+  display: none;
 }
 .histogram-range-selector-view > .histogram > .gridcontainer {
   width: calc(100% + var(--padding-horizontal) * 2);
@@ -717,24 +736,6 @@ body[data-page=report] {
 }
 .histogram-range-selector-view > .histogram > .gridcontainer, .histogram-range-selector-view > .histogram > .additionalline {
   pointer-events: none;
-}
-.histogram-range-selector-view > .controller {
-  height: 5rem;
-}
-.histogram-range-selector-view > .controller > .selector {
-  position: relative;
-}
-.histogram-range-selector-view > .controller > .selector > .slider {
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 0 0.4rem 0.8rem 0.4rem;
-  border-color: transparent transparent var(--color-black) transparent;
-  cursor: pointer;
-}
-.histogram-range-selector-view > .controller > .form {
-  text-align: center;
 }
 
 .loading-view {

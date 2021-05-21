@@ -12,7 +12,7 @@ class Records {
   setSubjects(subjects) {
     // define subjects
     for (let i = 0; i < subjects.length; i++) {
-      let hue = 360 - (360 * i / subjects.length) + 180;
+      let hue = 360 - (360 * i / subjects.length) + 130;
       hue -= hue > 360 ? 360 : 0;
       subjects[i].hue = hue;
     }
@@ -34,9 +34,7 @@ class Records {
   }
 
   getProperty(propertyId) {
-    console.log(propertyId)
     const property = this.#properties.find(property => property.propertyId === propertyId);
-    console.log(property)
     return property;
   }
 
