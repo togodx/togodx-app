@@ -266,13 +266,12 @@ html.no-js(lang='')
                   span.material-icons-outlined file_upload
                   | Upload IDs
                 form
+                  //- label
+                  //-   p userKey
+                  //-   //- input#UploadUserIDsUserKey(type="text" value="uniprot")
+                  //-   select
                   label
-                    p userKey
-                    //- input#UploadUserIDsUserKey(type="text" value="uniprot")
-                    select
-                  label
-                    p userIds
-                    input(type="text" value="Q9NYF8,Q4V339,A6NCE7,A7E2F4,P69849,A6NN73,Q92928,Q5T1J5,P0C7P4,Q6DN03,P09874,Q08211,Q5T4S7,P12270,Q9UPN3,P07814,P53621,P49321,P0C629,Q9BZK8,Q9BY65")
+                    input(type="text" placeholder="Enter comma-separated IDs")
                   .buttons
                     button.rounded-button-view.-small.-black(type="button") Submit
                     button.rounded-button-view.-small.-black(type="button") Clear

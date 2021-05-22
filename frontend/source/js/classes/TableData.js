@@ -1,5 +1,6 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import ConditionBuilder from "./ConditionBuilder";
 import * as event from '../events';
 
 const LIMIT = 10;
@@ -132,8 +133,9 @@ export default class TableData {
     // reset
     this.#abortController = new AbortController();
     this.#ROOT.classList.add('-fetching');
+    console.log(ConditionBuilder.userIds)
     fetch(
-      `${App.aggregatePrimaryKeys}?togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(JSON.stringify(this.#condition.attributes.map(property => property.query)))}`,
+      `${App.aggregatePrimaryKeys}?togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(JSON.stringify(this.#condition.attributes.map(property => property.query)))}${ConditionBuilder.userIds ? `&inputIds=${encodeURIComponent(JSON.stringify(ConditionBuilder.userIds.split(',')))}` : ''}`,
       {
         signal: this.#abortController.signal
       })
