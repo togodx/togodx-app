@@ -15,6 +15,16 @@
       "oAP" : "\/build\/build",
       "oF" : 0
     },
+    "\/source\/_include\/_layout.pug" : {
+      "cB" : 0,
+      "cOD" : 1,
+      "ft" : 512,
+      "hM" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/_include\/_layout.html",
+      "oF" : 0,
+      "oS" : 0
+    },
     "\/source\/css\/foundation\/_base.sass" : {
       "aP" : 1,
       "bl" : 0,
