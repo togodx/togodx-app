@@ -412,6 +412,7 @@ body {
   font-family: "Roboto Condensed", sans-serif;
   font-size: 1.2rem;
   line-height: 1.5;
+  background-color: var(--color-gray);
 }
 body[data-page=top] {
   overflow: hidden;
@@ -423,8 +424,9 @@ body[data-page=top][data-display=results] [data-hidden-by=results], body[data-pa
   position: absolute;
   transition: opacity var(--transition-wipe);
 }
-body[data-page=report] {
-  background-color: var(--color-gray);
+
+main {
+  padding-top: var(--height-header);
 }
 
 .balloon-view {
@@ -1397,7 +1399,7 @@ body[data-heatmap=true] .track-value-view > .heatmap {
 #App {
   height: 100%;
   overflow: hidden;
-  padding-top: var(--height-header);
+  background-color: white;
 }
 #App > .inner {
   height: 100%;
@@ -1472,6 +1474,13 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
 
 #Conditions > header {
   margin-bottom: -0.6rem;
+}
+
+#Document {
+  margin: 1rem auto;
+  padding: 1rem 2rem;
+  width: 102.4rem;
+  background-color: white;
 }
 
 #FixedArea {
