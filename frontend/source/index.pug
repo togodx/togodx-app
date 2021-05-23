@@ -230,6 +230,12 @@ block main
             //- h2.title(data-hidden-by="properties") Results
             h2.title Condition builder
           .conditions
+            .togoKey
+              h2.title
+                span.material-icons-outlined layers
+                | Select target category
+              select(disabled)
+                //- option(val="gene") Gene
             .attributes
               h2.title
                 span.material-icons-outlined west
@@ -268,12 +274,6 @@ block main
                 .buttons
                   button.rounded-button-view.-small.-black(type="button") Submit
                   button.rounded-button-view.-small.-black(type="button") Clear
-            .togoKey
-              h2.title
-                span.material-icons-outlined layers
-                | Select target category
-              select(disabled)
-                //- option(val="gene") Gene
               
           footer
             button.exec.rounded-button-view.-black.-spread(disabled)

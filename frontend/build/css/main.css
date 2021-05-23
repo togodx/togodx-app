@@ -1292,6 +1292,7 @@ body[data-heatmap=true] .track-value-view > .heatmap {
   -webkit-flex-basis: var(--width-track-column-property);
           flex-basis: var(--width-track-column-property);
   min-width: var(--width-track-column-property);
+  background-color: white;
 }
 .track-view > .row > .right {
   -webkit-flex-basis: calc(100% - var(--width-track-column-property));
@@ -1399,7 +1400,6 @@ body[data-heatmap=true] .track-value-view > .heatmap {
 #App {
   height: 100%;
   overflow: hidden;
-  background-color: white;
 }
 #App > .inner {
   height: 100%;
@@ -1486,6 +1486,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
 #FixedArea {
   --padding-inline-start: 1.2rem;
   --padding-block-start: 1rem;
+  border-left: solid 0.1rem var(--color-lamp-black);
   background-color: var(--color-gray);
   width: var(--width-condition);
   min-width: var(--width-condition);
@@ -1574,8 +1575,8 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   display: flex;
   -webkit-align-items: center;
           align-items: center;
-  height: var(--height-track);
-  line-height: calc(var(--height-track) - var(--padding-track-block-start) * 2);
+  height: var(--height-header);
+  line-height: calc(var(--height-header) - var(--padding-track-block-start) * 2);
   position: -webkit-sticky;
   position: sticky;
   top: 0;
@@ -1583,7 +1584,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   z-index: var(--z-track-tracks-header);
 }
 #Properties > .header > .title > * {
-  font-size: var(--font-size-title);
+  font-size: 1.2rem;
   margin-bottom: 0;
   display: inline-block;
 }
@@ -1605,14 +1606,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   display: inline-block;
 }
 #Properties > .header > nav > ul > li + li {
-  margin-left: 1.6rem;
-}
-#Properties > .header > nav > ul > li > .material-icons-outlined {
-  font-size: 1.4rem;
-  vertical-align: middle;
-  position: relative;
-  top: -0.1rem;
-  margin-right: 0.2rem;
+  margin-left: 1.4rem;
 }
 #Properties > .header > nav > ul > li > label {
   margin-bottom: 0;
