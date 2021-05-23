@@ -14,7 +14,17 @@ html.no-js(lang='')
     // Place favicon.ico in the root directory
     link(rel='stylesheet' href='css/main.css')
   body(data-heatmap="true" data-display="properties" data-page="top")
-    header
+    header#Header
+      h1
+        a(href="./") Togo Site
+      nav
+        ul
+          li
+            a(href="./about.html") About
+          li
+            a(href="./help.html") Help
+          li
+            a(href="./contact.html") Contact
     main#App
       .inner
         section#Properties
