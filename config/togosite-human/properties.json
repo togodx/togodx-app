@@ -269,7 +269,7 @@
   {
     "subject": "Chemical compound",
     "subjectId": "chemicalCompound",
-    "togoKey": "chembl_compound",
+    "togoKey": "pubchem_compound",
     "properties": [
       {
         "propertyId": "chembl_mechanism_action_type",
