@@ -1,313 +1,299 @@
-doctype html
-html.no-js(lang='')
-  head
-    meta(charset='utf-8')
-    title
-    meta(name='description' content='')
-    meta(name='viewport' content='width=device-width, initial-scale=1')
-    meta(property='og:title' content='')
-    meta(property='og:type' content='')
-    meta(property='og:url' content='')
-    meta(property='og:image' content='')
-    link(rel='manifest' href='site.webmanifest')
-    link(rel='apple-touch-icon' href='icon.png')
-    // Place favicon.ico in the root directory
-    link(rel='stylesheet' href='css/main.css')
-  body(data-heatmap="true" data-display="properties" data-page="top")
-    header
-    main#App
-      .inner
-        section#Properties
-          header.header
-            .title
-              h2.properties Attribute
-              h2.attributes Classification / Distribution
-            nav
-              ul
-                //- li#UploadUserIDsView
-                //-   span.material-icons-outlined file_upload
-                //-   span Upload IDs
-                //-   form
-                //-     label
-                //-       | userKey
-                //-       input#UploadUserIDsUserKey(type="text" value="uniprot")
-                //-     label
-                //-       | userIds
-                //-       input#UploadUserIDsUserIDs(type="text" value="Q9NYF8,Q4V339,A6NCE7,A7E2F4,P69849,A6NN73,Q92928,Q5T1J5,P0C7P4,Q6DN03,P09874,Q08211,Q5T4S7,P12270,Q9UPN3,P07814,P53621,P49321,P0C629,Q9BZK8,Q9BY65")
-                //-     button#UploadUserIDsSubmit(type="button") Submit
-                //-     button#UploadUserIDsClear(type="button") Clear
-                      
-                li.viewmodecontroller
-                  label.log10
-                    input(type="checkbox" value="log10")
-                    | Log scale
-                  label.area
-                    input(type="checkbox" value="area" checked)
-                    | Area
-                  label.heatmap
-                    input(type="checkbox" value="heatmap" checked)
-                    | Heatmap
-              //-
-                li
-                  .switch-view
-                    .item Area
-                    .item.-current Heatmap
-          section.concepts
-          //-
-            section.concept-view
-              h3.title
-                span Gene
-              .properties
-                .track-view.collapse-view(data-concept="gene" data-collapse="gene")
-                  .collapsebutton(data-collapse="gene")
-                  header.title Type
-                  .items
-                    ul.overview
-                      li.item
-                        p Digestive
-                      li.item
-                        p Endocrine
-                      li.item
-                        p Nerve
-                      li.item
-                        p Urinary
-                      li.item
-                        p Circulatory
-                      li.item
-                        p Respiratory
-                      li.item
-                        p Genital
-                      li.item
-                        p Integumentary
-                      li.item
-                        p Locomotorium
-                      li.item
-                        p Others
-                    .selector.collapsing(data-collapse="gene")
-                      .column-selector-view
-                        ul.column
-                          li.item
-                            label
-                              input(type="checkbox" name="depth1")
-                              span.label Digestive
-                              span.count 11,673
-                          li.item
-                            label
-                              input(type="checkbox" name="depth1")
-                              span.label Endocrine
-                              span.count 12,800
-                          li.item
-                            label
-                              input(type="checkbox" name="depth1")
-                              span.label Nerve
-                              span.count 14,579
-                          li.item
-                            label
-                              input(type="checkbox" name="depth1")
-                              span.label Urinary
-                              span.count 8,329
-                          li.item
-                            label
-                              input(type="checkbox" name="depth1")
-                              span.label Circulatory
-                              span.count 8,283
-                          li.item
-                            label
-                              input(type="checkbox" name="depth1")
-                              span.label Respiratory
-                              span.count 2,704
-                          li.item.-selecting
-                            label
-                              input(type="checkbox" name="depth1" checked)
-                              span.label Genital
-                              span.count 5,861
-                          li.item
-                            label
-                              input(type="checkbox" name="depth1")
-                              span.label Integumentary
-                              span.count 20,784
-                          li.item
-                            label
-                              input(type="checkbox" name="depth1")
-                              span.label Locomotorium
-                              span.count 1,105
-                          li.item
-                            label
-                              input(type="checkbox" name="depth1")
-                              span.label Others
-                              span.count 10,154
-                        ul.column
-                          li.item
-                            label
-                              input(type="checkbox" name="depth2")
-                              span.label Testis
-                              span.count 18,718
-                          li.item
-                            label
-                              input(type="checkbox" name="depth2")
-                              span.label Prostate
-                              span.count 2,066
+extends _include/_layout.pug
 
-        section#Results
-          .inner
-            //- section#ResultsStatistics.collapse-view.-spread(data-collapse="results statistics" data-views-count="0")
-            //-   header
-            //-     .collapsebutton.-white.-spread(data-collapse="results statistics")
-            //-     h2.title Statistics
-            //-   .body.collapsingcontent.-spread(data-collapse="results statistics")
-            //-     .statisticscontainer
-            section#ResultsTable
-              //- header
-              //-   h2.title
-              //-     | Data
-              //-     span.numofdata
-              //-   nav.remainingspace
-              //-     //- .button.-download
-              //-     //-   span.material-icons-outlined file_download
-              //-     //-   | Download
-              .body
-                table
-                  thead
-                    tr.statistics
-                    tr.header
-                    //-
-                      th Foo
-                      th Baa
-                      th Baz
-                      th Qux
-                      th Quux
-                      th Quuux
-                  tbody
+block var
+  - page = "top"
+
+block script
+  script(src="js/main.js")
+
+block main
+
+  main#App
+    .inner
+      section#Properties
+        header.header
+          .title
+            h2.properties Attribute
+            h2.attributes Classification / Distribution
+          nav
+            ul
+              //- li#UploadUserIDsView
+              //-   span.material-icons-outlined file_upload
+              //-   span Upload IDs
+              //-   form
+              //-     label
+              //-       | userKey
+              //-       input#UploadUserIDsUserKey(type="text" value="uniprot")
+              //-     label
+              //-       | userIds
+              //-       input#UploadUserIDsUserIDs(type="text" value="Q9NYF8,Q4V339,A6NCE7,A7E2F4,P69849,A6NN73,Q92928,Q5T1J5,P0C7P4,Q6DN03,P09874,Q08211,Q5T4S7,P12270,Q9UPN3,P07814,P53621,P49321,P0C629,Q9BZK8,Q9BY65")
+              //-     button#UploadUserIDsSubmit(type="button") Submit
+              //-     button#UploadUserIDsClear(type="button") Clear
+                    
+              li.viewmodecontroller
+                label.log10
+                  input(type="checkbox" value="log10")
+                  | Log scale
+                label.area
+                  input(type="checkbox" value="area" checked)
+                  | Area
+                label.heatmap
+                  input(type="checkbox" value="heatmap" checked)
+                  | Heatmap
+            //-
+              li
+                .switch-view
+                  .item Area
+                  .item.-current Heatmap
+        section.concepts
+        //-
+          section.concept-view
+            h3.title
+              span Gene
+            .properties
+              .track-view.collapse-view(data-concept="gene" data-collapse="gene")
+                .collapsebutton(data-collapse="gene")
+                header.title Type
+                .items
+                  ul.overview
+                    li.item
+                      p Digestive
+                    li.item
+                      p Endocrine
+                    li.item
+                      p Nerve
+                    li.item
+                      p Urinary
+                    li.item
+                      p Circulatory
+                    li.item
+                      p Respiratory
+                    li.item
+                      p Genital
+                    li.item
+                      p Integumentary
+                    li.item
+                      p Locomotorium
+                    li.item
+                      p Others
+                  .selector.collapsing(data-collapse="gene")
+                    .column-selector-view
+                      ul.column
+                        li.item
+                          label
+                            input(type="checkbox" name="depth1")
+                            span.label Digestive
+                            span.count 11,673
+                        li.item
+                          label
+                            input(type="checkbox" name="depth1")
+                            span.label Endocrine
+                            span.count 12,800
+                        li.item
+                          label
+                            input(type="checkbox" name="depth1")
+                            span.label Nerve
+                            span.count 14,579
+                        li.item
+                          label
+                            input(type="checkbox" name="depth1")
+                            span.label Urinary
+                            span.count 8,329
+                        li.item
+                          label
+                            input(type="checkbox" name="depth1")
+                            span.label Circulatory
+                            span.count 8,283
+                        li.item
+                          label
+                            input(type="checkbox" name="depth1")
+                            span.label Respiratory
+                            span.count 2,704
+                        li.item.-selecting
+                          label
+                            input(type="checkbox" name="depth1" checked)
+                            span.label Genital
+                            span.count 5,861
+                        li.item
+                          label
+                            input(type="checkbox" name="depth1")
+                            span.label Integumentary
+                            span.count 20,784
+                        li.item
+                          label
+                            input(type="checkbox" name="depth1")
+                            span.label Locomotorium
+                            span.count 1,105
+                        li.item
+                          label
+                            input(type="checkbox" name="depth1")
+                            span.label Others
+                            span.count 10,154
+                      ul.column
+                        li.item
+                          label
+                            input(type="checkbox" name="depth2")
+                            span.label Testis
+                            span.count 18,718
+                        li.item
+                          label
+                            input(type="checkbox" name="depth2")
+                            span.label Prostate
+                            span.count 2,066
+
+      section#Results
+        .inner
+          //- section#ResultsStatistics.collapse-view.-spread(data-collapse="results statistics" data-views-count="0")
+          //-   header
+          //-     .collapsebutton.-white.-spread(data-collapse="results statistics")
+          //-     h2.title Statistics
+          //-   .body.collapsingcontent.-spread(data-collapse="results statistics")
+          //-     .statisticscontainer
+          section#ResultsTable
+            //- header
+            //-   h2.title
+            //-     | Data
+            //-     span.numofdata
+            //-   nav.remainingspace
+            //-     //- .button.-download
+            //-     //-   span.material-icons-outlined file_download
+            //-     //-   | Download
+            .body
+              table
+                thead
+                  tr.statistics
+                  tr.header
                   //-
-                    tr
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                    tr
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                    tr
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                    tr
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                    tr
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                    tr
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                      td hoge
-                .tableend
-                  .loading-view
-
-      section#FixedArea
-
-        .upper
-
-          section#ConditionBuilder(data-hidden-by="results")
-
-            header
-              //- nav.tabmenu(data-hidden-by="results")
-              //-   .item.-current Condition
-              //-   .item Relations
-              //- h2.title(data-hidden-by="properties") Results
-              h2.title Condition builder
-            .conditions
-              .attributes
-                h2.title
-                  span.material-icons-outlined west
-                  | Select filters
-                .conditions.-empty
+                    th Foo
+                    th Baa
+                    th Baz
+                    th Qux
+                    th Quux
+                    th Quuux
+                tbody
                 //-
-                  .stacking-condition-view.-attribute
-                    .closebutton
-                    ul.path
-                      li Expression
-                      li Position
-                      li.end Genital
-                    .label Testis
-              .properties
-                h2.title
-                  span.material-icons-outlined west
-                  | Additional attributes
-                .conditions.-empty
-                //-
-                  .stacking-condition-view
-                    .closebutton
-                    ul.path
-                      li.end Expression
-                    .label Testis
-              #UploadUserIDsView
-                h2.title
-                  span.material-icons-outlined file_upload
-                  | Upload IDs
-                form
-                  label
-                    p userKey
-                    //- input#UploadUserIDsUserKey(type="text" value="uniprot")
-                    select
-                  label
-                    p userIds
-                    input(type="text" value="Q9NYF8,Q4V339,A6NCE7,A7E2F4,P69849,A6NN73,Q92928,Q5T1J5,P0C7P4,Q6DN03,P09874,Q08211,Q5T4S7,P12270,Q9UPN3,P07814,P53621,P49321,P0C629,Q9BZK8,Q9BY65")
-                  .buttons
-                    button.rounded-button-view.-small.-black(type="button") Submit
-                    button.rounded-button-view.-small.-black(type="button") Clear
-              .togoKey
-                h2.title
-                  span.material-icons-outlined layers
-                  | Select target category
-                select(disabled)
-                  //- option(val="gene") Gene
-                
-            footer
-              button.exec.rounded-button-view.-black.-spread(disabled)
-                span.material-icons-outlined table_view
-                | Preview integrated data
+                  tr
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                  tr
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                  tr
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                  tr
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                  tr
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                  tr
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+                    td hoge
+              .tableend
+                .loading-view
 
-          section#Reports(data-hidden-by="properties")
-            header
-              h2.title Reports
+    section#FixedArea
 
+      .upper
 
-            footer
-              button.return.rounded-button-view.-black.-spread
-                span.material-icons-outlined keyboard_return
-                | Return
+        section#ConditionBuilder(data-hidden-by="results")
 
-        .lower
-          
-          section#Conditions
-            header
-              h2.title Conditions
-            .conditions
+          header
+            //- nav.tabmenu(data-hidden-by="results")
+            //-   .item.-current Condition
+            //-   .item Relations
+            //- h2.title(data-hidden-by="properties") Results
+            h2.title Condition builder
+          .conditions
+            .togoKey
+              h2.title
+                span.material-icons-outlined layers
+                | Select target category
+              select(disabled)
+                //- option(val="gene") Gene
+            .attributes
+              h2.title
+                span.material-icons-outlined west
+                | Select filters
+              .conditions.-empty
+              //-
+                .stacking-condition-view.-attribute
+                  .closebutton
+                  ul.path
+                    li Expression
+                    li Position
+                    li.end Genital
+                  .label Testis
+            .properties
+              h2.title
+                span.material-icons-outlined west
+                | Additional attributes
+              .conditions.-empty
+              //-
+                .stacking-condition-view
+                  .closebutton
+                  ul.path
+                    li.end Expression
+                  .label Testis
+            #UploadUserIDsView
+              h2.title
+                span.material-icons-outlined file_upload
+                | Upload IDs
+              form
+                //- label
+                //-   p userKey
+                //-   //- input#UploadUserIDsUserKey(type="text" value="uniprot")
+                //-   select
+                label
+                  input(type="text" placeholder="Enter comma-separated IDs")
+                .buttons
+                  button.rounded-button-view.-small.-black(type="button") Submit
+                  button.rounded-button-view.-small.-black(type="button") Clear
+              
+          footer
+            button.exec.rounded-button-view.-black.-spread(disabled)
+              span.material-icons-outlined table_view
+              | Preview integrated data
 
+        section#Reports(data-hidden-by="properties")
+          header
+            h2.title Reports
 
-    script(src="js/vendor/d3.js")
-    script(src="js/vendor/lodash.js")
-    script(src="js/main.js")
-    script(type="module" src="https://togostanza.github.io/metastanza/hash-table.js" async)
-    script(type="module" src="https://togostanza.github.io/metastanza/barchart.js" async)
+          .stanzas
+
+          footer
+            button.return.rounded-button-view.-black.-spread
+              span.material-icons-outlined keyboard_return
+              | Return
+
+      .lower
+        
+        section#Conditions
+          header
+            h2.title Conditions
+          .conditions

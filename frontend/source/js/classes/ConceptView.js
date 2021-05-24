@@ -1,5 +1,5 @@
 import App from "./App";
-import TrackView from './TrackView.js';
+import TrackView from './TrackView';
 
 export default class ConceptView {
 

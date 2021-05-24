@@ -4,7 +4,7 @@ import ConditionBuilder from "./ConditionBuilder";
 import * as event from '../events';
 
 const MIN_PIN_SIZE = 12;
-const MAX_PIN_SIZE = 20;
+const MAX_PIN_SIZE = 36;
 const RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
 
 export default class TrackOverviewCategorical {
@@ -173,7 +173,8 @@ export default class TrackOverviewCategorical {
         if (userValue) {
           value.elm.classList.add('-pinsticking');
           // pin
-          const ratio = userValue.count / value.count;
+          let ratio = userValue.count / value.count;
+          ratio = ratio > 1 ? 1 : ratio;
           const size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
