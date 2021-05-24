@@ -72,7 +72,7 @@ export default class TableData {
         <span class="material-icons-outlined autorenew">autorenew</span>
       </div>
       <div class="button downloads" title="Download JSON " data-button="start-download">
-        <a class="JSON" href="" download="sample.json">
+        <a class="json" href="" download="sample.json">
           <span class="material-icons-outlined">download</span>
           <span class="text">JSON</span>
         </a>
@@ -245,7 +245,7 @@ export default class TableData {
     this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.add('lotation');
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {type : 'application/json'});
     const jsonUrl = URL.createObjectURL(jsonBlob);
-    this.#BUTTON_START_DOWNLOAD.querySelector('.JSON').setAttribute('href', jsonUrl);
+    this.#BUTTON_START_DOWNLOAD.querySelector(':scope > .json').setAttribute('href', jsonUrl);
   }
 
   /* public methods */
