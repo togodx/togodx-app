@@ -203,6 +203,7 @@ export default class ResultsTable {
                   data-key="${column.propertyKey}"
                   data-property-id="${this.#header[columnIndex].propertyId}"
                   data-category-id="${attribute.attribute.categoryId}"
+                  data-attribute-uri="${attribute.attribute.uri}"
                   data-attribute-id="${attribute.id}">${attribute.id}</div>
                 <a
                   href="${attribute.attribute ? attribute.attribute.uri : ""}"
@@ -271,8 +272,6 @@ export default class ResultsTable {
           if (tr.classList.contains("-selected")) {
             tr.classList.remove("-selected");
           } else {
-            // TODO: delete when this is done in ResultsDetailModal
-            this.#TBODY.querySelectorAll(':scope > tr').forEach(tr => tr.classList.remove('-selected'));
             // show popup
             tr.classList.add("-selected");
             // dispatch event
@@ -282,13 +281,14 @@ export default class ResultsTable {
                   dataKey: togoKey.getAttribute("data-key"),
                   propertyId: togoKey.getAttribute("data-property-id"),
                   togoKey: this.#tableData.togoKey,
-                  // id: this.#tableData.subjectId,
                   attributeId: togoKey.getAttribute("data-attribute-id"),
                   categoryId: togoKey.getAttribute("data-category-id"),
                   subjectId: togoKey.getAttribute("data-subject-id"),
                 },
                 properties: {
+                  row: row,
                   isReport: togoKey.classList.contains("report"),
+                  link: togoKey.getAttribute("data-attribute-uri"),
                   stanza: tr.dataset.togoId,
                   dataOrder: togoKey.getAttribute("data-order"),
                 },

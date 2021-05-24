@@ -5,7 +5,7 @@ import * as event from "../events";
 
 export default class ResultDetailModal {
   #templates;
-  #BODY;
+  #RESULTS_TABLE 
   #ROOT;
   #RESULT_MODAL;
   #EXIT_BUTTON;
@@ -20,7 +20,7 @@ export default class ResultDetailModal {
 
     // references
     this._stanzas = {};
-    this.#BODY = document.querySelector("body");
+    this.#RESULTS_TABLE = document.querySelector("#ResultsTable");
     this.#RESULT_MODAL = document.querySelector(".result-detail-modal");
     this.#EXIT_BUTTON = document.createElement("div");
     this.#EXIT_BUTTON.className = "close-button";
@@ -66,6 +66,7 @@ export default class ResultDetailModal {
     const popupDiv = document.createElement("div");
     popupDiv.className = "popup";
     popupDiv.appendChild(this.#header(e.detail.subject , e.detail.properties));
+    // DELETE WHEN FINISHED
     // const prop = Records.getProperty(e.detail.subject.propertyId);
     // const value = Records.getValue(e.detail.subject.propertyId, e.detail.subject.categoryId);
     // console.log(prop);
@@ -81,7 +82,7 @@ export default class ResultDetailModal {
 
   #header(subject, properties) {
     const isReport = properties.isReport;
-    const extLink = isReport ? ``: `<a class="external-link"href=${subject.dataKey}>External Link`;
+    const extLink = isReport ? ``: `<a class="external-link" href=${properties.link}>External Link`;
     const categories = isReport ? subject.categoryId : `<span class="type"> ${subject.subjectId} / ${Records.getProperty(subject.propertyId).label}</span>`
     const header = document.createElement("header");
     header.style.backgroundColor = App.getHslColor(subject.subjectId);
@@ -91,7 +92,9 @@ export default class ResultDetailModal {
         ${categories}
       </div>
       <div>
-        <a class="toreportpage" href="report.html?togoKey=${subject.togoKey}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
+        <a class="toreportpage" href="report.html?togoKey=${subject.togoKey}&id=${subject.categoryId}&properties=${encodeURIComponent(
+          JSON.stringify(properties.row)
+        )}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
         ${extLink}
     `;
   //   header.innerHTML = `
@@ -150,6 +153,7 @@ export default class ResultDetailModal {
   #hidePopUp() {
     this.#RESULT_MODAL.classList.remove("-showing", "overlay");
     this.#RESULT_MODAL.innerHTML = "";
+    this.#RESULTS_TABLE .querySelectorAll('tr').forEach(tr => tr.classList.remove('-selected'));
   }
 
 // dragElement(elmnt) {
