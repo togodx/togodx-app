@@ -4,6 +4,7 @@ import Records from './Records';
 import ReportsView from './ReportsView';
 import ConceptView from './ConceptView';
 import ResultsTable from './ResultsTable';
+import ResultDetailModal from "./ResultDetailModal";
 import BalloonView from './BalloonView';
 import ConditionsController from "./ConditionsController";
 import UploadUserIDsView from "./UploadUserIDsView";
@@ -38,6 +39,7 @@ class App {
     new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
     new ConditionsController(document.querySelector('#Conditions'));
     const reportsView = new ReportsView(document.querySelector('#Reports'));
+    new ResultDetailModal();
     new ResultsTable(document.querySelector('#ResultsTable'));
     new BalloonView();
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
