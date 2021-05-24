@@ -1,10 +1,10 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
-import ConditionBuilderView from './ConditionBuilderView.js';
-import Records from './Records.js';
-import ReportsView from './ReportsView.js';
-import ConceptView from './ConceptView.js';
-import ResultsTable from './ResultsTable.js';
-import BalloonView from './BalloonView.js';
+import ConditionBuilderView from './ConditionBuilderView';
+import Records from './Records';
+import ReportsView from './ReportsView';
+import ConceptView from './ConceptView';
+import ResultsTable from './ResultsTable';
+import BalloonView from './BalloonView';
 import ConditionsController from "./ConditionsController";
 import UploadUserIDsView from "./UploadUserIDsView";
 import * as event from '../events'

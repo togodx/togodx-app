@@ -1,6 +1,6 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
-import Records from './Records.js';
+import Records from './Records';
 import * as event from '../events';
 
 export default class StatisticsView {

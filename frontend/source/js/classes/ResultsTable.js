@@ -1,7 +1,7 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import StatisticsView from "./StatisticsView";
-import Records from './Records.js';
+// import Records from './Records';
 import * as event from '../events';
 
 export default class ResultsTable {

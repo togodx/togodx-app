@@ -2,10 +2,10 @@ import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import Records from "./Records";
 import ConditionBuilder from "./ConditionBuilder";
-import collapseView from '../functions/collapseView.js';
-import ColumnSelectorView from './ColumnSelectorView.js';
-import HistogramRangeSelectorView from './HistogramRangeSelectorView.js';
-import TrackOverviewCategorical from './TrackOverviewCategorical.js';
+import collapseView from '../functions/collapseView';
+import ColumnSelectorView from './ColumnSelectorView';
+import HistogramRangeSelectorView from './HistogramRangeSelectorView';
+import TrackOverviewCategorical from './TrackOverviewCategorical';
 import * as event from '../events';
 
 export default class TrackView {
