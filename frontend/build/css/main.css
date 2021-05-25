@@ -1283,21 +1283,24 @@ main {
   max-width: calc(100% - var(--width-track-column-property));
 }
 .track-view > .row.-upper > .left {
-  padding-left: 1.6rem;
   position: relative;
   padding-top: 0;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-align-items: center;
-          align-items: center;
   line-height: 1;
   overflow: hidden;
 }
 .track-view > .row.-upper > .left > .collapsebutton {
+  padding-left: 1.2rem;
+  width: 100%;
+  height: var(--height-track);
   z-index: var(--z-track-collapse-button);
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+          align-items: center;
 }
 .track-view > .row.-upper > .left > .collapsebutton::before {
-  left: -1.1rem;
+  top: 0.8rem;
+  left: 0.2rem;
 }
 .track-view > .row.-upper > .left > .collapsebutton > .title {
   width: calc(var(--width-track-column-property) - 1.6rem);

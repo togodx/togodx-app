@@ -10,6 +10,7 @@ export default class ColumnSelectorView {
   #sparqlist;
   #itemStatus;
   #columns;
+  #items;
   #ROOT;
   #CONTAINER;
   #LOADING_VIEW;
@@ -47,10 +48,10 @@ export default class ColumnSelectorView {
           categoryId = e.detail.categoryId;
           break;
       }
-      if (this.#property.propertyId === propertyId) { // TODO: Number型になればこの処理は厳密比較に
+      if (this.#property.propertyId === propertyId) {
         this.#columns.forEach(ul => {
           ul.querySelectorAll('li').forEach(li => {
-            if (li.dataset.id === categoryId) { // TODO: Number型になればこの処理は厳密比較に
+            if (li.dataset.id === categoryId) {
               const isChecked = e.detail.action === 'add';
               li.querySelector(':scope > input[type="checkbox"]').checked = isChecked;
               this.#itemStatus[li.dataset.id].checked = isChecked;
@@ -80,13 +81,11 @@ export default class ColumnSelectorView {
         this.#itemStatus[item.categoryId].children = [];
       }
     }
-    // console.log(this.#itemStatus)
   }
 
   #makeColumn(items, depth) {
-    // console.log(items)
 
-    this._items = items.map(item => Object.assign({}, item));
+    this.#items = items.map(item => Object.assign({}, item));
 
     // get column element
     let ul;
@@ -99,7 +98,7 @@ export default class ColumnSelectorView {
     }
 
     // make items
-    ul.innerHTML = this._items.map(item => {
+    ul.innerHTML = this.#items.map(item => {
       return `<li class="item${item.hasChild ? ' -haschild' : ''}" data-id="${item.categoryId}">
         <input type="checkbox" value="${item.categoryId}"/>
         <span class="label">${item.label}</span>
@@ -108,7 +107,7 @@ export default class ColumnSelectorView {
     }).join('');
     this.#CONTAINER.insertAdjacentElement('beforeend', ul);
     ul.querySelectorAll(':scope > .item').forEach((item, index) => {
-      this._items[index].elm = item;
+      this.#items[index].elm = item;
     })
     this.#update(App.viewModes.log10);
 
@@ -168,9 +167,9 @@ export default class ColumnSelectorView {
   }
 
   #update(isLog10) {
-    let max = Math.max(...Array.from(this._items).map(item => item.count));
+    let max = Math.max(...Array.from(this.#items).map(item => item.count));
     max = isLog10 ? Math.log10(max) : max;
-    this._items.forEach(item => {
+    this.#items.forEach(item => {
       item.elm.style.backgroundColor = `hsl(${this.#subject.hue}, 75%, ${100 - (isLog10 ? Math.log10(item.count) : item.count) / max * 40}%)`;
     });
   }

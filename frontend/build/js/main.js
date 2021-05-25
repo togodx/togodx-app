@@ -3380,6 +3380,8 @@
 
   var _columns = new WeakMap();
 
+  var _items$1 = new WeakMap();
+
   var _ROOT$6 = new WeakMap();
 
   var _CONTAINER$1 = new WeakMap();
@@ -3394,7 +3396,7 @@
 
   var _getChildren = new WeakSet();
 
-  var ColumnSelectorView = function ColumnSelectorView(elm, subject, property, _items, sparqlist) {
+  var ColumnSelectorView = function ColumnSelectorView(elm, subject, property, _items2, sparqlist) {
     var _this = this;
 
     _classCallCheck(this, ColumnSelectorView);
@@ -3428,6 +3430,11 @@
     });
 
     _columns.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _items$1.set(this, {
       writable: true,
       value: void 0
     });
@@ -3483,11 +3490,9 @@
       }
 
       if (_classPrivateFieldGet(_this, _property$3).propertyId === propertyId) {
-        // TODO: Number型になればこの処理は厳密比較に
         _classPrivateFieldGet(_this, _columns).forEach(function (ul) {
           ul.querySelectorAll('li').forEach(function (li) {
             if (li.dataset.id === categoryId) {
-              // TODO: Number型になればこの処理は厳密比較に
               var isChecked = e.detail.action === 'add';
               li.querySelector(':scope > input[type="checkbox"]').checked = isChecked;
               _classPrivateFieldGet(_this, _itemStatus)[li.dataset.id].checked = isChecked;
@@ -3497,9 +3502,9 @@
       }
     });
 
-    _classPrivateMethodGet(this, _addItems, _addItems2).call(this, _items, 0);
+    _classPrivateMethodGet(this, _addItems, _addItems2).call(this, _items2, 0);
 
-    _classPrivateMethodGet(this, _makeColumn, _makeColumn2).call(this, _items, 0);
+    _classPrivateMethodGet(this, _makeColumn, _makeColumn2).call(this, _items2, 0);
   };
 
   function _addItems2(items, depth, parent) {
@@ -3523,8 +3528,7 @@
         if (hasChild) {
           _classPrivateFieldGet(this, _itemStatus)[item.categoryId].children = [];
         }
-      } // console.log(this.#itemStatus)
-
+      }
     } catch (err) {
       _iterator.e(err);
     } finally {
@@ -3535,10 +3539,10 @@
   function _makeColumn2(items, depth) {
     var _this2 = this;
 
-    // console.log(items)
-    this._items = items.map(function (item) {
+    _classPrivateFieldSet(this, _items$1, items.map(function (item) {
       return Object.assign({}, item);
-    }); // get column element
+    })); // get column element
+
 
     var ul;
 
@@ -3551,14 +3555,14 @@
     } // make items
 
 
-    ul.innerHTML = this._items.map(function (item) {
+    ul.innerHTML = _classPrivateFieldGet(this, _items$1).map(function (item) {
       return "<li class=\"item".concat(item.hasChild ? ' -haschild' : '', "\" data-id=\"").concat(item.categoryId, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");
     }).join('');
 
     _classPrivateFieldGet(this, _CONTAINER$1).insertAdjacentElement('beforeend', ul);
 
     ul.querySelectorAll(':scope > .item').forEach(function (item, index) {
-      _this2._items[index].elm = item;
+      _classPrivateFieldGet(_this2, _items$1)[index].elm = item;
     });
 
     _classPrivateMethodGet(this, _update$2, _update2$2).call(this, App$1.viewModes.log10); // drill down event
@@ -3646,12 +3650,12 @@
   function _update2$2(isLog10) {
     var _this3 = this;
 
-    var max = Math.max.apply(Math, _toConsumableArray(Array.from(this._items).map(function (item) {
+    var max = Math.max.apply(Math, _toConsumableArray(Array.from(_classPrivateFieldGet(this, _items$1)).map(function (item) {
       return item.count;
     })));
     max = isLog10 ? Math.log10(max) : max;
 
-    this._items.forEach(function (item) {
+    _classPrivateFieldGet(this, _items$1).forEach(function (item) {
       item.elm.style.backgroundColor = "hsl(".concat(_classPrivateFieldGet(_this3, _subject$3).hue, ", 75%, ").concat(100 - (isLog10 ? Math.log10(item.count) : item.count) / max * 40, "%)");
     });
   }
