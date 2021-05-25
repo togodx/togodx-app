@@ -18,6 +18,13 @@ class TogoSite
       markdown = markdown_template
       get_subjects_config(url).each do |subject|
         markdown << "## Subject: #{subject["subject"]}\n\n"
+
+        subject["properties"].each do |property|
+          markdown << "### #{property["label"]}\n\n"
+          markdown << "#{property["description"]}\n\n"
+          markdown << "- Identifier: #{property["primaryKey"]}\n"
+          markdown << "- SPARQList endpoint: #{property["data"]}\n\n"
+        end
       end
       markdown
     end
