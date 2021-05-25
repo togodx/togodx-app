@@ -609,10 +609,11 @@ main {
   --padding-horizontal: 1rem;
   --padding-vertical: 0;
   --height-selector: 3rem;
-  padding-bottom: 5rem;
+  padding: 1rem 0 5rem;
+  background-color: white;
 }
 .histogram-range-selector-view > .selector {
-  margin: 1rem var(--padding-horizontal);
+  margin: 0 var(--padding-horizontal);
   width: calc(100% - var(--padding-horizontal) * 2);
   height: var(--height-selector);
   position: relative;
@@ -676,9 +677,6 @@ main {
   bottom: 0;
   width: 100%;
   transition: height var(--transition-instant);
-}
-.histogram-range-selector-view > .histogram > .graph > .bar > .actual > .color {
-  height: 100%;
 }
 .histogram-range-selector-view > .histogram > .graph > .bar > .label {
   position: absolute;
@@ -1163,6 +1161,7 @@ main {
   position: absolute;
   transition: width var(--transition-wipe), left var(--transition-wipe);
   cursor: pointer;
+  transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
 }
 .track-value-view::after {
   content: "";
@@ -1172,21 +1171,6 @@ main {
   right: 0;
   height: 100%;
   border-left: solid 0.01rem rgba(255, 255, 255, 0.2);
-}
-.track-value-view > .color, .track-value-view > .heatmap {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
-}
-.track-value-view > .heatmap {
-  background-color: var(--color-lamp-black);
-  opacity: 0;
-}
-body[data-heatmap=true] .track-value-view > .heatmap {
-  opacity: 1;
 }
 .track-value-view > p {
   padding-left: 0.2rem;
@@ -1223,9 +1207,8 @@ body[data-heatmap=true] .track-value-view > .heatmap {
   z-index: var(--z-track-pin);
   display: none;
 }
-.track-value-view:hover > .color, .track-value-view:hover > .heatmap, .track-value-view.-selected > .color, .track-value-view.-selected > .heatmap {
-  opacity: 0 !important;
-  transition: opacity var(--transition-instant);
+.track-value-view:hover, .track-value-view.-selected {
+  background-color: transparent !important;
 }
 .track-value-view:hover::before, .track-value-view.-selected::before {
   content: "";
@@ -1236,11 +1219,8 @@ body[data-heatmap=true] .track-value-view > .heatmap {
   border: solid 1px white;
   z-index: var(--z-track-item-selected);
 }
-.-showuserids .track-value-view:not(.-pinsticking) > .color {
+.-showuserids .track-value-view:not(.-pinsticking) {
   background-color: var(--color-gray) !important;
-}
-.-showuserids .track-value-view:not(.-pinsticking) > .heatmap {
-  opacity: 0 !important;
 }
 .-showuserids .track-value-view:not(.-pinsticking) > p {
   opacity: 0.25;
@@ -1258,6 +1238,9 @@ body[data-heatmap=true] .track-value-view > .heatmap {
 .track-view.-preparing {
   pointer-events: none;
   opacity: 0.2;
+}
+.track-view.-preparing > .row.-upper > .right > .overview {
+  background-color: transparent !important;
 }
 .track-view > .row {
   display: flex;

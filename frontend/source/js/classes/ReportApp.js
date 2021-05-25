@@ -53,7 +53,7 @@ class ReportApp {
           const property2 = subject.properties.find(property => property.propertyId === property.propertyId);
           return `<hr>
           <div class="attributes">
-            <header style="background-color: ${this.getHslColor(subject.hue)};">${property2.label}</header>
+            <header style="background-color: ${this.getHslColor(subject.colorCSSValue)};">${property2.label}</header>
             ${property.attributes.map(attribute => this.#stanza(subject.subjectId, attribute.id, property.propertyKey)).join('')}
           </div>`;
         }

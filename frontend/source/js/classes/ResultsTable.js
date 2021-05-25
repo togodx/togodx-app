@@ -1,7 +1,5 @@
-import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import StatisticsView from "./StatisticsView";
-// import Records from './Records';
 import * as event from '../events';
 
 export default class ResultsTable {
@@ -96,14 +94,14 @@ export default class ResultsTable {
       </th>
       ${tableData.condition.attributes.map(property => `
       <th>
-        <div class="inner -propertyvalue" style="background-color: ${App.getHslColor(property.subject.hue)}">
+        <div class="inner -propertyvalue" style="background-color: ${property.subject.colorCSSValue}">
           <div class="togo-key-view">${property.property.primaryKey}</div>
           <span>${property.property.label}</span>
         </div>
       </th>`).join('')}
       ${tableData.condition.properties.map(property => `
       <th>
-        <div class="inner -property" style="color: ${App.getHslColor(property.subject.hue)}">
+        <div class="inner -property" style="color: ${property.subject.colorCSSValue}">
           <div class="togo-key-view">${property.property.primaryKey}</div>
           <span>${property.property.label}</span>
         </div>
