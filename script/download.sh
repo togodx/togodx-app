@@ -65,7 +65,7 @@ download() {
   echo "  Command: ${cmd}"
   eval ${cmd}
 
-  decompress_tarfiles "${db_dir}"
+  decompress_files "${db_dir}"
   create_date_triple ${graph_name} ${db_dir}
 }
 
@@ -76,9 +76,26 @@ create_db_dir() {
   echo "${db_dir}"
 }
 
+decompress_files() {
+  local db_dir="${1}"
+  decompress_zipfiles "${db_dir}"
+  decompress_tarfiles "${db_dir}"
+  decompress_xz "${db_dir}"
+}
+
+decompress_zipfiles() {
+  local db_dir="${1}"
+  cd "${db_dir}" && unzip *zip
+}
+
 decompress_tarfiles() {
   local db_dir="${1}"
   cd "${db_dir}" && tar xf *.tar*
+}
+
+decompress_xz() {
+  local db_dir="${1}"
+  cd "${db_dir}" && unxz *.xz*
 }
 
 generate_wget_command() {
