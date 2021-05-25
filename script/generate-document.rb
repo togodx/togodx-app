@@ -3,25 +3,39 @@ require 'open-uri'
 require 'json'
 
 class TogoSite
-  module Properties
-    def get_properties(url)
+  module Subjects
+    def get_subjects_config(url)
       JSON.load(open(url).read)
+    end
+
+    def markdown_template
+      markdown = ''
+      markdown << "# TogoSite Data sources\n\n"
+      markdown
+    end
+
+    def generate_markdown(url)
+      markdown = markdown_template
+      get_subjects_config(url).each do |subject|
+        markdown << "## Subject: #{subject["subject"]}\n\n"
+      end
+      markdown
     end
   end
 
   module Human
-    PROPERTIES_JSON_URL = "https://github.com/dbcls/togosite/raw/develop/config/togosite-human/properties.json"
+    SUBJECTS_JSON_URL = "https://github.com/dbcls/togosite/raw/develop/config/togosite-human/properties.json"
 
     class << self
-      include Properties
+      include Subjects
 
       def generate
-        get_properties(PROPERTIES_JSON_URL)
+        generate_markdown(SUBJECTS_JSON_URL)
       end
     end
   end
 end
 
 if __FILE__ == $0
-  p TogoSite::Human.generate
+  puts TogoSite::Human.generate
 end
