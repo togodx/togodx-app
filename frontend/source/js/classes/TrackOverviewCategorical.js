@@ -1,6 +1,7 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
+import Color from "./Color";
 import * as event from '../events';
 
 const MIN_PIN_SIZE = 12;
@@ -25,14 +26,13 @@ export default class TrackOverviewCategorical {
     // TODO: ヒストグラムは別処理
     const sum = values.reduce((acc, value) => acc + value.count, 0);
     const width = 100 / values.length;
+    const baseColor = new Color('hsv', App.getHSVColor(subject.hue));
     elm.innerHTML = this.#values.map((value, index) => {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / sum * 100;
-      value.color = `hsla(${360 * index / values.length}, 70%, 50%, .075)`;
+      value.baseColor = baseColor.mix(new Color('hsv', [360 * index / values.length, 70, 50]), .2).to('srgb').set({lightness: lightness => lightness * 1.2});
       return `
         <li class="track-value-view" style="width: ${width}%;" data-category-id="${value.categoryId}">
-          <div class="color" style="background-color: ${value.color};"></div>
-          <div class="heatmap"></div>
           <p>
             <span class="label">${value.label}</span>
             <span class="count">${value.count.toLocaleString()}</span>
@@ -151,13 +151,12 @@ export default class TrackOverviewCategorical {
     let max = Math.max(...this.#values.map(value => value.count));
     max = isLog10 ? Math.log10(max) : max;
     const fixedWidth = isArea ? 0 : 100 / this.#values.length;
-    let width;
     let left = 0;
     this.#values.forEach(value => {
-      width = isArea ? (isLog10 ? Math.log10(value.count) : value.count) / sum * 100 : fixedWidth;
+      const width = isArea ? (isLog10 ? Math.log10(value.count) : value.count) / sum * 100 : fixedWidth;
+      value.elm.style.backgroundColor = `rgb(${value.baseColor.mix(App.colorLampBlack, 1 - (isLog10 ? value.countLog10 : value.count) / max).coords.map(cood => cood * 256).join(',')})`;
       value.elm.style.width = width + '%';
       value.elm.style.left = left + '%';
-      value.elm.querySelector(':scope > .heatmap').style.backgroundColor = `rgba(51, 50, 48, ${1 - (isLog10 ? value.countLog10 : value.count) / max})`;
       left += width;
     });
   }

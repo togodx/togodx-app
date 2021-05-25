@@ -43,7 +43,7 @@ export default class TrackView {
         </div>
       </div>
       <div class="right values">
-        <div class="overview" style="background-color: ${App.getHslColor(subject.hue)};">
+        <!--<div class="overview" style="background-color: ${App.getHslColor(subject.hue)};">-->
           <ul class="inner"></ul>
           <div class="loading-view -shown"></div>
         </div>

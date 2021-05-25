@@ -4,6 +4,7 @@
   position: absolute
   transition: width var(--transition-wipe), left var(--transition-wipe)
   cursor: pointer
+  transition: background-color var(--transition-wipe), opacity var(--transition-wipe)
   &::after
     content: ""
     display: block
@@ -12,18 +13,6 @@
     right: 0
     height: 100%
     border-left: solid .01rem rgba(255, 255, 255, .2)
-  > .color, > .heatmap
-    width: 100%
-    height: 100%
-    position: absolute
-    top: 0
-    left: 0
-    transition: background-color var(--transition-wipe), opacity var(--transition-wipe)
-  > .heatmap
-    background-color: var(--color-lamp-black)
-    opacity: 0
-    body[data-heatmap="true"] &
-      opacity: 1
   > p
     padding-left: .2rem
     padding-right: .2rem
@@ -56,9 +45,6 @@
     z-index: var(--z-track-pin)
     display: none
   &:hover, &.-selected
-    > .color, > .heatmap
-      opacity: 0 !important
-      transition: opacity var(--transition-instant)
     &::before
       content: ""
       display: block
@@ -69,10 +55,7 @@
       z-index: var(--z-track-item-selected)
   .-showuserids &
     &:not(.-pinsticking)
-      > .color
-        background-color: var(--color-gray) !important
-      > .heatmap
-        opacity: 0 !important
+      background-color: var(--color-gray) !important
       > p
         opacity: .25
     &.-pinsticking

@@ -7,6 +7,7 @@ import ResultsTable from './ResultsTable.js';
 import BalloonView from './BalloonView.js';
 import ConditionsController from "./ConditionsController";
 import UploadUserIDsView from "./UploadUserIDsView";
+import Color from "./Color";
 import * as event from '../events'
 import * as api from '../api'
 
@@ -14,8 +15,10 @@ class App {
 
   #viewModes;
   #aggregate;
+  #colorLampBlack;
 
   constructor() {
+    this.#colorLampBlack = new Color('--color-lamp-black').to('srgb');
   }
 
   ready() {
@@ -103,6 +106,9 @@ class App {
   getHslColor(hue) {
     return `hsl(${hue}, 50%, 55%)`;
   }
+  getHSVColor(hue) {
+    return [hue, 85, 70];
+  }
 
   // accessor
   get viewModes() {
@@ -113,6 +119,9 @@ class App {
   }
   get aggregateRows() {
     return this.#aggregate.table.url;
+  }
+  get colorLampBlack() {
+    return this.#colorLampBlack;
   }
 
 }
