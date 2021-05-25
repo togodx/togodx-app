@@ -1231,6 +1231,9 @@ main {
   z-index: var(--z-track-pin);
   display: none;
 }
+.track-value-view:hover, .track-value-view.-selected {
+  background-color: transparent !important;
+}
 .track-value-view:hover::before, .track-value-view.-selected::before {
   content: "";
   display: block;
@@ -1259,6 +1262,9 @@ main {
 .track-view.-preparing {
   pointer-events: none;
   opacity: 0.2;
+}
+.track-view.-preparing > .row.-upper > .right > .overview {
+  background-color: transparent !important;
 }
 .track-view > .row {
   display: -webkit-flex;

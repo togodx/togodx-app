@@ -42,8 +42,7 @@ export default class TrackView {
         </div>
       </div>
       <div class="right values">
-        <!--<div class="overview" style="background-color: ${subject.colorCSSValue};">-->
-        <div class="overview">
+        <div class="overview" style="background-color: ${subject.colorCSSValue};">
           <ul class="inner"></ul>
           <div class="loading-view -shown"></div>
         </div>
