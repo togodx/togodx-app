@@ -1,5 +1,5 @@
 .track-value-view
-  color: white
+  // color: white
   line-height: calc(var(--height-track) - var(--padding-track-block-start) * 2)
   position: absolute
   transition: width var(--transition-wipe), left var(--transition-wipe)
@@ -12,7 +12,7 @@
     top: 0
     right: 0
     height: 100%
-    border-left: solid .01rem rgba(255, 255, 255, .2)
+    border-left: solid .005rem var(--color-dark-gray)
   > p
     padding-left: .2rem
     padding-right: .2rem
@@ -23,6 +23,7 @@
     overflow: hidden
     position: relative
     text-align: center
+    // text-shadow: var(--text-shadow-value)
     transition: opacity var(--transition-wipe)
     > .label
       font-size: 1.2rem

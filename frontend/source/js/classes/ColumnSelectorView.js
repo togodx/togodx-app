@@ -170,7 +170,7 @@ export default class ColumnSelectorView {
     let max = Math.max(...Array.from(this.#items).map(item => item.count));
     max = isLog10 ? Math.log10(max) : max;
     this.#items.forEach(item => {
-      item.elm.style.backgroundColor = `hsl(${this.#subject.hue}, 75%, ${100 - (isLog10 ? Math.log10(item.count) : item.count) / max * 40}%)`;
+      item.elm.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorDarkGray, 1 - (isLog10 ? Math.log10(item.count) : item.count) / max).coords.map(cood => cood * 256).join(',')})`;
     });
   }
 

@@ -328,6 +328,7 @@ template {
   --color-light-gray: #CCC;
   --color-warm-gray: #f7f5f4;
   --color-gray: #999;
+  --color-dark-gray: #787776;
   --color-lamp-black: #333230;
   --color-translucent-lamp-black1: #33323044;
   --color-translucent-lamp-black2: #33323099;
@@ -347,6 +348,7 @@ template {
   --min-width-app: 102.4rem;
   --height-results-statistics: 20rem;
   --font-size-title: 1.5rem;
+  --text-shadow-value: 0 0 .2rem var(--color-lamp-black);
   --transition-instant: .2s;
   --transition-wipe: .5s;
   --transition-fetching: 1s;
@@ -550,7 +552,7 @@ main {
 .column-selector-view {
   height: 100%;
   position: relative;
-  background-color: var(--lamp-black);
+  border-top: solid 0.1rem var(--color-gray);
 }
 .column-selector-view > .columns {
   white-space: nowrap;
@@ -564,7 +566,7 @@ main {
   display: inline-block;
   border-left: solid 0.1rem var(--color-separator);
   margin: 0;
-  padding: 0.4rem 0;
+  padding: 0;
   list-style: none;
   max-height: 29.5rem;
   height: 100%;
@@ -596,7 +598,7 @@ main {
   right: 0.3rem;
 }
 .column-selector-view > .columns > .inner > .column > .item.-haschild:hover::after, .column-selector-view > .columns > .inner > .column > .item.-haschild.-selected::after {
-  border-color: transparent transparent transparent var(--color-black);
+  border-color: transparent transparent transparent var(--color-lamp-black);
 }
 .column-selector-view > .columns > .inner > .column > .item > label, .column-selector-view > .columns > .inner > .column > .item > .count {
   padding-top: 0.1rem;
@@ -608,9 +610,9 @@ main {
 }
 .column-selector-view > .columns > .inner > .column > .item > .label {
   padding-right: 0.4rem;
-  font-weight: bold;
 }
 .column-selector-view > .columns > .inner > .column > .item > .count {
+  font-weight: lighter;
   padding-left: 1.2rem;
   -webkit-flex-grow: 1;
           flex-grow: 1;
@@ -1179,7 +1181,6 @@ main {
 }
 
 .track-value-view {
-  color: white;
   line-height: calc(var(--height-track) - var(--padding-track-block-start) * 2);
   position: absolute;
   transition: width var(--transition-wipe), left var(--transition-wipe);
@@ -1193,7 +1194,7 @@ main {
   top: 0;
   right: 0;
   height: 100%;
-  border-left: solid 0.01rem rgba(255, 255, 255, 0.2);
+  border-left: solid 0.005rem var(--color-dark-gray);
 }
 .track-value-view > p {
   padding-left: 0.2rem;
@@ -1555,6 +1556,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   position: relative;
 }
 #Properties > .header {
+  border-bottom: solid 0.1rem var(--color-lamp-black);
   padding: var(--padding-track-block-start) var(--padding-track-inline-start);
   display: -webkit-flex;
   display: flex;
@@ -1565,7 +1567,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   position: -webkit-sticky;
   position: sticky;
   top: 0;
-  background-color: var(--color-lamp-black);
+  background-color: var(--color-dark-gray);
   color: white;
   z-index: var(--z-track-tracks-header);
 }

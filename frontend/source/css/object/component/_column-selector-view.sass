@@ -1,25 +1,25 @@
 .column-selector-view
   height: 100%
   position: relative
-  // color: white
-  background-color: var(--lamp-black)
+  border-top: solid .1rem var(--color-gray)
   > .columns
     white-space: nowrap
     overflow-x: auto
     height: 100%
-    // border-right: solid .1rem var(--color-separator)
     > .inner
       height: 100%
       > .column
         display: inline-block
         border-left: solid .1rem var(--color-separator)
         margin: 0
-        padding: .4rem 0
+        padding: 0
         list-style: none
         max-height: 29.5rem
         height: 100%
         overflow-y: auto
         vertical-align: top
+        // color: white
+        // text-shadow: var(--text-shadow-value)
         &:last-child
           border-right: solid .1rem var(--color-separator)
         > .item
@@ -38,12 +38,12 @@
               display: block
               border-style: solid
               border-width: .3rem 0 .3rem .4rem
-              border-color: transparent transparent transparent rgba(0, 0, 0, .2)
+              border-color: transparent transparent transparent rgba(black, .2)
               top: .6rem
               right: .3rem
             &:hover, &.-selected
               &::after
-                border-color: transparent transparent transparent var(--color-black)
+                border-color: transparent transparent transparent var(--color-lamp-black)
           > label, > .count
             padding-top: .1rem
             padding-bottom: .1rem
@@ -51,8 +51,9 @@
             margin-inline-end: .4rem
           > .label
             padding-right: .4rem
-            font-weight: bold
+            // font-weight: bold
           > .count
+            font-weight: lighter
             padding-left: 1.2rem
             flex-grow: 1
             text-align: right

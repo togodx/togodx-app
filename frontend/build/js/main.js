@@ -3656,7 +3656,9 @@
     max = isLog10 ? Math.log10(max) : max;
 
     _classPrivateFieldGet(this, _items$1).forEach(function (item) {
-      item.elm.style.backgroundColor = "hsl(".concat(_classPrivateFieldGet(_this3, _subject$3).hue, ", 75%, ").concat(100 - (isLog10 ? Math.log10(item.count) : item.count) / max * 40, "%)");
+      item.elm.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this3, _subject$3).color.mix(App$1.colorDarkGray, 1 - (isLog10 ? Math.log10(item.count) : item.count) / max).coords.map(function (cood) {
+        return cood * 256;
+      }).join(','), ")");
     });
   }
 
@@ -4162,7 +4164,7 @@
 
     _classPrivateFieldGet(this, _values).forEach(function (value) {
       var width = isArea ? (isLog10 ? Math.log10(value.count) : value.count) / sum * 100 : fixedWidth;
-      value.elm.style.backgroundColor = "rgb(".concat(value.baseColor.mix(App$1.colorLampBlack, 1 - (isLog10 ? value.countLog10 : value.count) / max).coords.map(function (cood) {
+      value.elm.style.backgroundColor = "rgb(".concat(value.baseColor.mix(App$1.colorDarkGray, 1 - (isLog10 ? value.countLog10 : value.count) / max).coords.map(function (cood) {
         return cood * 256;
       }).join(','), ")");
       value.elm.style.width = width + '%';
@@ -5507,6 +5509,10 @@
 
   var _aggregate = new WeakMap();
 
+  var _colorGray = new WeakMap();
+
+  var _colorDarkGray = new WeakMap();
+
   var _colorLampBlack = new WeakMap();
 
   var _makeConceptViews = new WeakSet();
@@ -5527,10 +5533,24 @@
         value: void 0
       });
 
+      _colorGray.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _colorDarkGray.set(this, {
+        writable: true,
+        value: void 0
+      });
+
       _colorLampBlack.set(this, {
         writable: true,
         value: void 0
       });
+
+      _classPrivateFieldSet(this, _colorGray, new h('--color-gray').to('srgb'));
+
+      _classPrivateFieldSet(this, _colorDarkGray, new h('--color-dark-gray').to('srgb'));
 
       _classPrivateFieldSet(this, _colorLampBlack, new h('--color-lamp-black').to('srgb'));
     }
@@ -5631,6 +5651,16 @@
       key: "aggregateRows",
       get: function get() {
         return _classPrivateFieldGet(this, _aggregate).table.url;
+      }
+    }, {
+      key: "colorGray",
+      get: function get() {
+        return _classPrivateFieldGet(this, _colorGray);
+      }
+    }, {
+      key: "colorDarkGray",
+      get: function get() {
+        return _classPrivateFieldGet(this, _colorDarkGray);
       }
     }, {
       key: "colorLampBlack",
