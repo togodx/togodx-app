@@ -10,13 +10,13 @@ class TogoSite
   end
 
   module Human
-    def properties_json_url
-      "https://github.com/dbcls/togosite/raw/develop/config/togosite-human/properties.json"
-    end
+    PROPERTIES_JSON_URL = "https://github.com/dbcls/togosite/raw/develop/config/togosite-human/properties.json"
 
     class << self
+      include Properties
+
       def generate
-        "markdown"
+        get_properties(PROPERTIES_JSON_URL)
       end
     end
   end
