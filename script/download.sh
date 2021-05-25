@@ -65,8 +65,8 @@ download() {
   echo "  Command: ${cmd}"
   eval ${cmd}
 
-  decompress_files "${db_dir}"
-  create_date_triple ${graph_name} ${db_dir}
+  post_download "${graph_name}" "${db_dir}"
+
 }
 
 create_db_dir() {
@@ -74,6 +74,37 @@ create_db_dir() {
   local db_dir="${DOWNLOAD_DIR}/${db_name}"
   mkdir -p "${db_dir}"
   echo "${db_dir}"
+}
+
+generate_wget_command() {
+  local url="${1}"
+  local opt=""
+
+  if [[ ! -z "${DEBUG}" ]]; then
+    local opt="${opt} --spider"
+  else
+    local opt="${opt} --quiet"
+  fi
+
+  if [[ ! -z $(echo ${url} | awk '/\/$/') ]]; then
+    local opt="${opt} -m -np -nd --accept '*.nt*','*.ttl*','*.owl*','*.tar*','*.rdf*'"
+  fi
+
+  echo "wget ${opt} ${url}"
+}
+
+post_download() {
+  local graph_name="${1}"
+  local db_dir="${2}"
+
+  remove_robotstxt "${db_dir}"
+  decompress_files "${db_dir}"
+  create_date_triple "${graph_name}" "${db_dir}"
+}
+
+remove_robotstxt() {
+  local db_dir="${1}"
+  cd "${db_dir}" && rm -f "robots.txt"
 }
 
 decompress_files() {
@@ -96,23 +127,6 @@ decompress_tarfiles() {
 decompress_xz() {
   local db_dir="${1}"
   cd "${db_dir}" && unxz *.xz*
-}
-
-generate_wget_command() {
-  local url="${1}"
-  local opt=""
-
-  if [[ ! -z "${DEBUG}" ]]; then
-    local opt="${opt} --spider"
-  else
-    local opt="${opt} --quiet"
-  fi
-
-  if [[ ! -z $(echo ${url} | awk '/\/$/') ]]; then
-    local opt="${opt} -m -np -nd --accept '*.nt*','*.ttl*','*.owl*','*.tar*','*.rdf*'"
-  fi
-
-  echo "wget ${opt} ${url}"
 }
 
 create_date_triple() {
