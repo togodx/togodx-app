@@ -33,11 +33,19 @@ class Records {
     property.values = values;
   }
 
+  // Naming needs improvement but there is a hierarcy like below
+  // Togo-key   (Uniprot)
+	//  → Subject  (Gene)
+  //    → Main-Category  (Expressed in tissues)
+  //      → Sub-Category  (Thyroid Gland)
+  //        → Unique-Entry (ENSG00000139304)
+
+  // Main-Category
   getProperty(propertyId) {
     const property = this.#properties.find(property => property.propertyId === propertyId);
     return property;
   }
-
+  // Sub-Category 
   getValue(propertyId, categoryId) {
     // const property = this.#properties.find(property => property.propertyId === propertyId);
     const property = this.getProperty(propertyId);
@@ -45,6 +53,14 @@ class Records {
     return value;
   }
 
+  // TODO: set getter for Subject with hue and label info
+  getSubject(subjectId) {
+    return {
+      hue:  234,
+      label: "SUBJECT-LABEL: " + subjectId,
+    }
+  }
+ 
   // public accessors
 
   get subjects() {

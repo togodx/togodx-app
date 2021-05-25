@@ -65,12 +65,7 @@ export default class ResultDetailModal {
 
     const popupDiv = document.createElement("div");
     popupDiv.className = "popup";
-    popupDiv.appendChild(this.#header(e.detail.subject , e.detail.properties));
-    // DELETE WHEN FINISHED
-    // const prop = Records.getProperty(e.detail.subject.propertyId);
-    // const value = Records.getValue(e.detail.subject.propertyId, e.detail.subject.categoryId);
-    // console.log(prop);
-    // console.log(value);
+    popupDiv.appendChild(this.#header(e.detail.keys , e.detail.properties));
     popupDiv.appendChild(stanzaDiv);
     // popupDiv.appendChild(this.#stanzaContainer(e.detail.subject, e.detail.properties, stanzaDiv));
 
@@ -80,75 +75,66 @@ export default class ResultDetailModal {
     }
   }
 
-  #header(subject, properties) {
-    const isReport = properties.isReport;
-    const extLink = isReport ? ``: `<a class="external-link" href=${properties.link}>External Link`;
-    const categories = isReport ? subject.categoryId : `<span class="type"> ${subject.subjectId} / ${Records.getProperty(subject.propertyId).label}</span>`
+  #header(keys, props) {
+    const subject = Records.getSubject(keys.subjectId);
+    const mainCategory = props.isReport ? ``: Records.getProperty(keys.mainCategoryId);
+    const subCategory = props.isReport ? ``: Records.getValue(keys.mainCategoryId, keys.subCategoryId);
+
+    const extLink = props.isReport ? ``: `<a class="external-link" href=${props.externalLink}>External Link`;
+    const parentInfo = props.isReport ? keys.dataKey : `<span style="color: ${App.getHslColor(subject.hue + 30)}">${subject.label}　/　${mainCategory.label}</span>`
     const header = document.createElement("header");
-    header.style.backgroundColor = App.getHslColor(subject.subjectId);
+    header.style.backgroundColor = App.getHslColor(subject.hue);
     header.innerHTML = `
       <div>
-        <strong>${isReport?  ''  : Records.getValue(subject.propertyId, subject.categoryId).label } </strong>
-        ${categories}
+        <strong>${props.isReport?  keys.uniqueEntryId  : subCategory.label } </strong>
+        ${parentInfo}
       </div>
       <div>
-        <a class="toreportpage" href="report.html?togoKey=${subject.togoKey}&id=${subject.categoryId}&properties=${encodeURIComponent(
-          JSON.stringify(properties.row)
-        )}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
+        <a class="toreportpage" href="${props.reportLink}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
         ${extLink}
     `;
-  //   header.innerHTML = `
-  //   <div>
-  //     <strong>${isReport? subject.categoryId : properties.label } </strong>
-  //     ${title}
-  //   </div>
-  //   <div>
-  //     <a class="toreportpage" href="report.html?togoKey=${properties.reportLink}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
-  //     ${extLink}
-  // `;
-    // TODO: improve getting nodes based on num
-    header.childNodes[3].appendChild(this.#EXIT_BUTTON);
+    header.lastChild.appendChild(this.#EXIT_BUTTON);
 
     return header;
   }
 
-  // #stanzaContainer(subject, properties, stanzaContainer) {
-  //   console.log(subject, properties);
-  //   // make stanzas
-  //   stanzaContainer.className = "stanzas";
-  //   stanzaContainer.innerHTML =
-  //     this.#stanza(subject.id, subject.value) +
-  //     properties
-  //       .map((property) => {
-  //         if (property === undefined) {
-  //           return "";
-  //         } else {
-  //           const subject = Records.subjects.find((subject) =>
-  //             subject.properties.some(
-  //               (subjectProperty) =>
-  //                 subjectProperty.propertyId === property.propertyId
-  //             )
-  //           );
-  //           // TODO: 1個目のアトリビュートしか返していない
-  //           return this.#stanza(subject.subjectId, property.attributes[0].id);
-  //         }
-  //       })
-  //       .join("");
-  //   // set navigation buttons
-  //   stanzaContainer.innerHTML += `
-  //       <div class="arrow up"></div>
-  //       <div class="arrow right"></div>
-  //       <div class="arrow down"></div>
-  //       <div class="arrow left"></div>
-  //     `;
-  //   return stanzaContainer;
-  // }
+  #stanzaContainer(subject, properties, stanzaContainer) {
+    console.log(subject, properties);
+    // make stanzas
+    stanzaContainer.className = "stanzas";
+    stanzaContainer.innerHTML =
+      this.#stanza(subject.id, subject.value) +
+      properties
+        .map((property) => {
+          if (property === undefined) {
+            return "";
+          } else {
+            const subject = Records.subjects.find((subject) =>
+              subject.properties.some(
+                (subjectProperty) =>
+                  subjectProperty.propertyId === property.propertyId
+              )
+            );
+            // TODO: 1個目のアトリビュートしか返していない
+            return this.#stanza(subject.subjectId, property.attributes[0].id);
+          }
+        })
+        .join("");
+    // set navigation buttons
+    stanzaContainer.innerHTML += `
+        <div class="arrow up"></div>
+        <div class="arrow right"></div>
+        <div class="arrow down"></div>
+        <div class="arrow left"></div>
+      `;
+    return stanzaContainer;
+  }
 
-  // #stanza(subjectId, propertyId, value) {
-  //   return `<div class="stanza-view" data-subject-id="${subjectId}" data-property-id=${propertyId}">${this.#templates[
-  //     subjectId
-  //   ].replace(/{{id}}/g, value)}</div>`;
-  // }
+  #stanza(subjectId, propertyId, value) {
+    return `<div class="stanza-view" data-subject-id="${subjectId}" data-property-id=${propertyId}">${this.#templates[
+      subjectId
+    ].replace(/{{id}}/g, value)}</div>`;
+  }
 
   #hidePopUp() {
     this.#RESULT_MODAL.classList.remove("-showing", "overlay");

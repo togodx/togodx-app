@@ -1,7 +1,7 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import StatisticsView from "./StatisticsView";
-// import Records from './Records';
+import Records from './Records';
 import * as event from "../events";
 
 export default class ResultsTable {
@@ -179,9 +179,9 @@ export default class ResultsTable {
           )}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
             <div
               class="togo-key-view report"
-              data-subject-id="${detail.tableData.subjectId}"
               data-key="${detail.tableData.togoKey}"
-              data-category-id="${detail.rows[index].id}">${
+              data-subject-id="${detail.tableData.subjectId}"
+              data-unique-entry-id="${detail.rows[index].id}">${
             detail.rows[index].id
           }</div>
           </div>
@@ -199,12 +199,13 @@ export default class ResultsTable {
                 <div
                   class="togo-key-view"
                   data-order = "x,y"
-                  data-subject-id="${this.#header[columnIndex].subjectId}"
                   data-key="${column.propertyKey}"
-                  data-property-id="${this.#header[columnIndex].propertyId}"
-                  data-category-id="${attribute.attribute.categoryId}"
-                  data-attribute-uri="${attribute.attribute.uri}"
-                  data-attribute-id="${attribute.id}">${attribute.id}</div>
+                  data-subject-id="${this.#header[columnIndex].subjectId}"
+                  data-main-category-id="${this.#header[columnIndex].propertyId}"
+                  data-sub-category-id="${attribute.attribute.categoryId ? attribute.attribute.categoryId : attribute.attribute.categoryIds }"
+                  data-unique-entry-id="${attribute.id}"
+                  data-unique-entry-uri="${attribute.attribute.uri}"
+                  >${attribute.id}</div>
                 <a
                   href="${attribute.attribute ? attribute.attribute.uri : ""}"
                   title="${attribute.attribute ? attribute.attribute.uri : ""}"
@@ -266,9 +267,9 @@ export default class ResultsTable {
       const tr = this.#TBODY.querySelector(
         `:scope > tr[data-index="${actualIndex}"]`
       );
-      const togoKeys = tr.querySelectorAll(".togo-key-view");
-      togoKeys.forEach((togoKey) => {
-        togoKey.addEventListener("click", () => {
+      const uniqueEntries = tr.querySelectorAll(".togo-key-view");
+      uniqueEntries.forEach((uniqueEntry) => {
+        uniqueEntry.addEventListener("click", () => {
           if (tr.classList.contains("-selected")) {
             tr.classList.remove("-selected");
           } else {
@@ -277,20 +278,19 @@ export default class ResultsTable {
             // dispatch event
             const customEvent = new CustomEvent(event.showPopup, {
               detail: {
-                subject: {
-                  dataKey: togoKey.getAttribute("data-key"),
-                  propertyId: togoKey.getAttribute("data-property-id"),
-                  togoKey: this.#tableData.togoKey,
-                  attributeId: togoKey.getAttribute("data-attribute-id"),
-                  categoryId: togoKey.getAttribute("data-category-id"),
-                  subjectId: togoKey.getAttribute("data-subject-id"),
+                keys: {
+                  dataKey: uniqueEntry.getAttribute("data-key"),
+                  subjectId: uniqueEntry.getAttribute("data-subject-id"),
+                  mainCategoryId: uniqueEntry.getAttribute("data-main-category-id"),
+                  subCategoryId: uniqueEntry.getAttribute("data-sub-category-id"),
+                  uniqueEntryId: uniqueEntry.getAttribute("data-unique-entry-id"),
                 },
                 properties: {
-                  row: row,
-                  isReport: togoKey.classList.contains("report"),
-                  link: togoKey.getAttribute("data-attribute-uri"),
+                  isReport: uniqueEntry.classList.contains("report"),
+                  externalLink: uniqueEntry.getAttribute("data-unique-entry-uri"),
+                  reportLink: `report.html?togoKey=${this.#tableData.togoKey}&id=${tr.getAttribute("data-togo-id")}&properties=${encodeURIComponent(JSON.stringify(row))}`, 
                   stanza: tr.dataset.togoId,
-                  dataOrder: togoKey.getAttribute("data-order"),
+                  dataOrder: uniqueEntry.getAttribute("data-order"),
                 },
               },
             });
