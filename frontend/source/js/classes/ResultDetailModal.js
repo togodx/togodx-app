@@ -57,15 +57,16 @@ export default class ResultDetailModal {
     stanzaDiv.className = "stanzas"
     stanzaDiv.innerHTML += `
       STANZAS HERE
+    `
+    const popupDiv = document.createElement("div");
+    popupDiv.className = "popup";
+    popupDiv.appendChild(this.#header(e.detail.keys , e.detail.properties));
+    popupDiv.innerHTML+= `      
       <div class="arrow up"></div>
       <div class="arrow right"></div>
       <div class="arrow down"></div>
       <div class="arrow left"></div>
     `
-
-    const popupDiv = document.createElement("div");
-    popupDiv.className = "popup";
-    popupDiv.appendChild(this.#header(e.detail.keys , e.detail.properties));
     popupDiv.appendChild(stanzaDiv);
     // popupDiv.appendChild(this.#stanzaContainer(e.detail.subject, e.detail.properties, stanzaDiv));
 
@@ -81,7 +82,7 @@ export default class ResultDetailModal {
     const subCategory = props.isReport ? ``: Records.getValue(keys.mainCategoryId, keys.subCategoryId);
 
     const extLink = props.isReport ? ``: `<a class="external-link" href=${props.externalLink}>External Link`;
-    const parentInfo = props.isReport ? keys.dataKey : `<span style="color: ${App.getHslColor(subject.hue + 30)}">${subject.label}　/　${mainCategory.label}</span>`
+    const parentInfo = props.isReport ? keys.dataKey : `<span style="color: ${App.getHslColor(subject.hue + 90)}">${subject.label}　/　${mainCategory.label}</span>`
     const header = document.createElement("header");
     header.style.backgroundColor = App.getHslColor(subject.hue);
     header.innerHTML = `

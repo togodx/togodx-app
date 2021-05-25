@@ -34,8 +34,8 @@
     > header
       display: flex
       justify-content: space-between
-      align-items: baseline
-      height: 6%
+      align-items: center
+      height: 7%
       width: 100%
       color: white
       font-weight: 20
@@ -49,7 +49,7 @@
         font-weight: bold
       div
         display: flex
-        align-self: baseline
+        align-items: center
         &> *
           margin-right: 1rem !important
         > .close-button
@@ -64,37 +64,39 @@
         > .external-link
           text-decoration: underline
           color: white
-
+    > .arrow
+      position: absolute
+      width: 0
+      height: 0
+      border-color: var(--color-lamp-black)
+      &.up
+        top: 9%
+        left: 50%
+        border-left: 5px solid transparent
+        border-right: 5px solid transparent
+        border-bottom: 9.5px solid
+      &.right
+        left: 96%
+        top: 54.5%
+        border-top: 5px solid transparent
+        border-bottom: 5px solid transparent
+        border-left: 9.5px solid
+      &.down
+        top: 96%
+        left: 50%
+        border-left: 5px solid transparent
+        border-right: 5px solid transparent
+        border-top: 9.5px solid
+      &.left
+        right: 96%
+        top: 54.5%
+        border-top: 5px solid transparent
+        border-bottom: 5px solid transparent
+        border-right: 9.5px solid
+        
     > .stanzas
       overflow: auto
       width: 93%
       margin: 4rem 0
-      > .arrow
-        position: absolute
-        width: 0
-        height: 0
-        border-color: var(--color-lamp-black)
-        &.up
-          top: 8%
-          left: 50%
-          border-left: 5px solid transparent
-          border-right: 5px solid transparent
-          border-bottom: 9.5px solid
-        &.right
-          left: 96%
-          top: 54.5%
-          border-top: 5px solid transparent
-          border-bottom: 5px solid transparent
-          border-left: 9.5px solid
-        &.down
-          top: 96%
-          left: 50%
-          border-left: 5px solid transparent
-          border-right: 5px solid transparent
-          border-top: 9.5px solid
-        &.left
-          right: 96%
-          top: 54.5%
-          border-top: 5px solid transparent
-          border-bottom: 5px solid transparent
-          border-right: 9.5px solid
+    
+      
