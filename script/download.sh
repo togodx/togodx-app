@@ -65,6 +65,7 @@ download() {
   echo "  Command: ${cmd}"
   eval ${cmd}
 
+  decompress_tarfiles "${db_dir}"
   create_date_triple ${graph_name} ${db_dir}
 }
 
@@ -73,6 +74,11 @@ create_db_dir() {
   local db_dir="${DOWNLOAD_DIR}/${db_name}"
   mkdir -p "${db_dir}"
   echo "${db_dir}"
+}
+
+decompress_tarfiles() {
+  local db_dir="${1}"
+  cd "${db_dir}" && tar xf *.tar*
 }
 
 generate_wget_command() {
