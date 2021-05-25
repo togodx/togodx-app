@@ -63,10 +63,10 @@ export default class HistogramRangeSelectorView {
     // make graph
     const max = Math.max(...this.#items.map(item => item.count));
     const width = 100 / this.#items.length;
-    selector.querySelector(':scope > .overview').innerHTML = this.#items.map(item => `<div class="bar" data-category-id="${item.categoryId}" data-count="${item.count}" style="width: ${width}%; height: ${(item.count / max) * 100}%; background-color: ${App.getHslColor(subject.hue)};"></div>`).join('');
+    selector.querySelector(':scope > .overview').innerHTML = this.#items.map(item => `<div class="bar" data-category-id="${item.categoryId}" data-count="${item.count}" style="width: ${width}%; height: ${(item.count / max) * 100}%; background-color: ${subject.colorCSSValue};"></div>`).join('');
     const graph = histogram.querySelector(':scope > .graph');
     graph.innerHTML = this.#items.map((item, index) => `<div class="bar" data-category-id="${item.categoryId}" data-count="${item.count}">
-      <div class="actual" style="background-color: ${App.getHslColor(subject.hue)};">
+      <div class="actual" style="background-color: ${subject.colorCSSValue};">
         <div class="color" style="background-color: hsla(${360 * index / this.#items.length}, 70%, 50%, .075);"></div>
       </div>
       <p class="label">${item.label}</p>

@@ -102,14 +102,6 @@ class App {
 
   // public methods
 
-  // utilities
-  getHslColor(hue) {
-    return `hsl(${hue}, 50%, 55%)`;
-  }
-  getHSVColor(hue) {
-    return [hue, 85, 70];
-  }
-
   // accessor
   get viewModes() {
     return this.#viewModes;

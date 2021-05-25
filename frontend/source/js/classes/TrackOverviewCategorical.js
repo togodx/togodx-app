@@ -26,11 +26,10 @@ export default class TrackOverviewCategorical {
     // TODO: ヒストグラムは別処理
     const sum = values.reduce((acc, value) => acc + value.count, 0);
     const width = 100 / values.length;
-    const baseColor = new Color('hsv', App.getHSVColor(subject.hue));
     elm.innerHTML = this.#values.map((value, index) => {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / sum * 100;
-      value.baseColor = baseColor.mix(new Color('hsv', [360 * index / values.length, 70, 50]), .2).to('srgb').set({lightness: lightness => lightness * 1.2});
+      value.baseColor = subject.color.mix(new Color('hsv', [360 * index / values.length, 70, 50]), .2).to('srgb').set({lightness: lightness => lightness * 1.2});
       return `
         <li class="track-value-view" style="width: ${width}%;" data-category-id="${value.categoryId}">
           <p>
@@ -50,7 +49,7 @@ export default class TrackOverviewCategorical {
       value.pin = pin;
 
       // attach event: show tooltip
-      const label = `<span style="color: ${App.getHslColor(this.#subject.hue)}">${value.label}</span>`;
+      const label = `<span style="color: ${this.#subject.colorCSSValue}">${value.label}</span>`;
       elm.addEventListener('mouseenter', () => {
         const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {
           label,
