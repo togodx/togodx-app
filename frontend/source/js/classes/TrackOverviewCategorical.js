@@ -1,8 +1,8 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
-import Color from "./Color";
 import * as event from '../events';
+import * as util from '../functions/util';
 
 const MIN_PIN_SIZE = 12;
 const MAX_PIN_SIZE = 36;
@@ -29,7 +29,7 @@ export default class TrackOverviewCategorical {
     elm.innerHTML = this.#values.map((value, index) => {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / sum * 100;
-      value.baseColor = subject.color.mix(new Color('hsv', [360 * index / values.length, 70, 50]), .2).to('srgb').set({lightness: lightness => lightness * 1.2});
+      value.baseColor = util.colorTintByHue(subject.color, 360 * index / values.length);
       return `
         <li class="track-value-view" style="width: ${width}%;" data-category-id="${value.categoryId}">
           <p>

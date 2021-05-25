@@ -3606,6 +3606,20 @@
     return ColumnSelectorView;
   }();
 
+  /**
+   * 
+   * @param {Color} baseColor 
+   * @param {Color} tintColor 
+   */
+
+  function colorTintByHue(baseColor, hue) {
+    return baseColor.mix(new h('hsv', [hue, 70, 50]), .2).set({
+      lightness: function lightness(_lightness) {
+        return _lightness * 1.2;
+      }
+    }).to('srgb');
+  }
+
   var NUM_OF_GRID = 4;
 
   var _items = new WeakMap();
@@ -3734,7 +3748,9 @@
     }).join('');
     var graph = histogram.querySelector(':scope > .graph');
     graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
-      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\">\n      <div class=\"actual\" style=\"background-color: ").concat(subject.colorCSSValue, ";\">\n        <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / _classPrivateFieldGet(_this, _items).length, ", 70%, 50%, .075);\"></div>\n      </div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
+      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\">\n      <div class=\"actual\" style=\"background-color: rgb(").concat(colorTintByHue(subject.color, 360 * index / _classPrivateFieldGet(_this, _items).length).coords.map(function (cood) {
+        return cood * 256;
+      }).join(','), ");\"></div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
     }).join(''); // reference
 
     histogram.querySelectorAll(':scope > .graph > .bar').forEach(function (item, index) {
@@ -3941,11 +3957,7 @@
     elm.innerHTML = _classPrivateFieldGet(this, _values).map(function (value, index) {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / _sum * 100;
-      value.baseColor = subject.color.mix(new h('hsv', [360 * index / values.length, 70, 50]), .2).to('srgb').set({
-        lightness: function lightness(_lightness) {
-          return _lightness * 1.2;
-        }
-      });
+      value.baseColor = colorTintByHue(subject.color, 360 * index / values.length);
       return "\n        <li class=\"track-value-view\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n          <div class=\"pin\"></div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .track-value-view').forEach(function (elm, index) {

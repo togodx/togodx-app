@@ -695,9 +695,6 @@ main {
   width: 100%;
   transition: height var(--transition-instant);
 }
-.histogram-range-selector-view > .histogram > .graph > .bar > .actual > .color {
-  height: 100%;
-}
 .histogram-range-selector-view > .histogram > .graph > .bar > .label {
   position: absolute;
   bottom: 0;

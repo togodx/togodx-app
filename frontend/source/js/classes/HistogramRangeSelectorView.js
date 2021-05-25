@@ -2,8 +2,8 @@ import App from "./App";
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import * as event from '../events';
+import * as util from '../functions/util';
 
-const PADDING = 10;
 const NUM_OF_GRID = 4;
 
 export default class HistogramRangeSelectorView {
@@ -66,9 +66,7 @@ export default class HistogramRangeSelectorView {
     selector.querySelector(':scope > .overview').innerHTML = this.#items.map(item => `<div class="bar" data-category-id="${item.categoryId}" data-count="${item.count}" style="width: ${width}%; height: ${(item.count / max) * 100}%; background-color: ${subject.colorCSSValue};"></div>`).join('');
     const graph = histogram.querySelector(':scope > .graph');
     graph.innerHTML = this.#items.map((item, index) => `<div class="bar" data-category-id="${item.categoryId}" data-count="${item.count}">
-      <div class="actual" style="background-color: ${subject.colorCSSValue};">
-        <div class="color" style="background-color: hsla(${360 * index / this.#items.length}, 70%, 50%, .075);"></div>
-      </div>
+      <div class="actual" style="background-color: rgb(${util.colorTintByHue(subject.color, 360 * index / this.#items.length).coords.map(cood => cood * 256).join(',')});"></div>
       <p class="label">${item.label}</p>
     </div>`).join('');
 
