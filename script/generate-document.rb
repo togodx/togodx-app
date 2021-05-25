@@ -4,7 +4,7 @@ require 'json'
 
 class TogoSite
   module Subjects
-    def get_subjects_config(url)
+    def get_json(url)
       JSON.load(open(url).read)
     end
 
@@ -14,16 +14,25 @@ class TogoSite
       markdown
     end
 
-    def generate_markdown(url)
+    def sparqlist_description(sparqlist_api_url)
+      sparqlet = get_json(sparqlist_api_url.sub("/api/","/-api/sparqlets/"))["data"]["attributes"]["src"]
+      sparqlet.split(/\R#+ /).select{|node| node =~ /^Description/}[0].sub(/^Description\n+/,"")
+    rescue NoMethodError
+      "- No description\n"
+    end
+
+    def generate_markdown(subject_config_url)
       markdown = markdown_template
-      get_subjects_config(url).each do |subject|
+      get_json(subject_config_url).each do |subject|
         markdown << "## Subject: #{subject["subject"]}\n\n"
 
         subject["properties"].each do |property|
           markdown << "### #{property["label"]}\n\n"
           markdown << "#{property["description"]}\n\n"
           markdown << "- Identifier: #{property["primaryKey"]}\n"
-          markdown << "- SPARQList endpoint: #{property["data"]}\n\n"
+          markdown << "- SPARQList endpoint: #{property["data"]}\n"
+          markdown << sparqlist_description(property["data"])
+          markdown << "\n"
         end
       end
       markdown
