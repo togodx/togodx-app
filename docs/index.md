@@ -1,11 +1,6 @@
 # TogoSite Documentation
 
-## Index
-
-- [Background](#background)
-- [Usage](usage.md)
-- [Tracks and Data sources](tracks-and-data-sources.md)
-- [Examples](examples.md)
+Documentation of the implementation of TogoSite and the usage/examples for the Human instance.
 
 ## Background
 
@@ -14,3 +9,11 @@
 - We provide the web interface to:
   - provide overview of integrated database entries
   - generate table data (dataframe) for statistical analysis
+
+## Togosite Human instance
+
+Avaialable at https://togosite-beta.integbio.jp/
+
+- [Usage](togo-human/usage.md)
+- [Data sources](togo-human/data-sources.md)
+- [Examples](togo-human/examples.md)
