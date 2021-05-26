@@ -112,11 +112,12 @@ decompress_files() {
   decompress_zipfiles "${db_dir}"
   decompress_tarfiles "${db_dir}"
   decompress_xz "${db_dir}"
+  remove_files "${db_dir}"
 }
 
 decompress_zipfiles() {
   local db_dir="${1}"
-  cd "${db_dir}" && unzip *zip
+  cd "${db_dir}" && unzip *.zip
 }
 
 decompress_tarfiles() {
@@ -127,6 +128,11 @@ decompress_tarfiles() {
 decompress_xz() {
   local db_dir="${1}"
   cd "${db_dir}" && unxz *.xz*
+}
+
+remove_files() {
+  local db_dir="${1}"
+  cd "${db_dir}" && rm -fr *.zip *.tar* *.xz
 }
 
 create_date_triple() {
