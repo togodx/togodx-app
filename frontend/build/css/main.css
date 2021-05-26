@@ -587,18 +587,30 @@ main {
   display: -webkit-flex;
   display: flex;
 }
-.column-selector-view > .columns > .inner > .column > .item.-haschild::after {
+.column-selector-view > .columns > .inner > .column > .item.-haschild::before, .column-selector-view > .columns > .inner > .column > .item.-haschild::after {
   content: "";
   position: absolute;
   display: block;
+}
+.column-selector-view > .columns > .inner > .column > .item.-haschild::before {
+  width: 1rem;
+  height: 1rem;
+  top: 0.4rem;
+  right: 0.1rem;
+  border-radius: 100%;
+}
+.column-selector-view > .columns > .inner > .column > .item.-haschild::after {
   border-style: solid;
   border-width: 0.3rem 0 0.3rem 0.4rem;
-  border-color: transparent transparent transparent rgba(0, 0, 0, 0.2);
+  border-color: transparent transparent transparent var(--color-lamp-black);
   top: 0.6rem;
   right: 0.3rem;
 }
+.column-selector-view > .columns > .inner > .column > .item.-haschild:hover::before, .column-selector-view > .columns > .inner > .column > .item.-haschild.-selected::before {
+  background-color: var(--color-lamp-black);
+}
 .column-selector-view > .columns > .inner > .column > .item.-haschild:hover::after, .column-selector-view > .columns > .inner > .column > .item.-haschild.-selected::after {
-  border-color: transparent transparent transparent var(--color-lamp-black);
+  border-color: transparent transparent transparent white;
 }
 .column-selector-view > .columns > .inner > .column > .item > label, .column-selector-view > .columns > .inner > .column > .item > .count {
   padding-top: 0.1rem;
