@@ -355,7 +355,8 @@ template {
   --shadow-shallow: 0 .1rem .1rem rgba(0,0,0,.3);
   --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3);
   --z-results-header: 1;
-  --z-track-item-selected: 1;
+  --z-track-item-border: 1;
+  --z-track-item-selected: 2;
   --z-track-collapse-button: 1;
   --z-track-tracks-header: 3;
   --z-track-pin: 4;
@@ -1204,9 +1205,10 @@ main {
   display: block;
   position: absolute;
   top: 0;
-  right: 0;
+  right: -0.05rem;
   height: 100%;
   border-left: solid 0.005rem var(--color-dark-gray);
+  z-index: var(--z-track-item-border);
 }
 .track-value-view > p {
   padding-left: 0.2rem;
