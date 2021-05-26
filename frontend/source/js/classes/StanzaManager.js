@@ -10,7 +10,14 @@ class StanzaManager {
   init(data) {
 
     // embed modules
-    document.querySelector('head').insertAdjacentHTML('beforeend', data.stanzas.map(stanza => `<script type="module" src="${stanza}"></script>`).join(''));
+    const head = document.querySelector('head');
+    data.stanzas.forEach(stanza => {
+      const script = document.createElement('script');
+      script.setAttribute('type', 'module');
+      script.setAttribute('src', stanza);
+      script.setAttribute('async', 1);
+      head.appendChild(script);
+    });
 
     // fetch templates
     Promise.all(Object.keys(data.templates).map(key => fetch(data.templates[key])))

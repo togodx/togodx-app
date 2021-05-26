@@ -5465,9 +5465,14 @@
         var _this = this;
 
         // embed modules
-        document.querySelector('head').insertAdjacentHTML('beforeend', data.stanzas.map(function (stanza) {
-          return "<script type=\"module\" src=\"".concat(stanza, "\"></script>");
-        }).join('')); // fetch templates
+        var head = document.querySelector('head');
+        data.stanzas.forEach(function (stanza) {
+          var script = document.createElement('script');
+          script.setAttribute('type', 'module');
+          script.setAttribute('src', stanza);
+          script.setAttribute('async', 1);
+          head.appendChild(script);
+        }); // fetch templates
 
         Promise.all(Object.keys(data.templates).map(function (key) {
           return fetch(data.templates[key]);
