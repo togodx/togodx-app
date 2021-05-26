@@ -1079,10 +1079,26 @@ main {
   left: 0;
   transition: width var(--transition-wipe);
 }
-.table-data-controller-view > .controller, .table-data-controller-view > .downloads {
+.table-data-controller-view > .controller {
+  display: -webkit-flex;
+  display: flex;
   color: white;
 }
-.table-data-controller-view > .controller > .button, .table-data-controller-view > .downloads > .button {
+.table-data-controller-view > .controller > .downloads {
+  display: none;
+}
+.table-data-controller-view > .controller > .downloads > a {
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+.table-data-controller-view > .controller > .downloads > a > span {
+  vertical-align: middle;
+}
+.table-data-controller-view > .controller > .downloads > a > .material-icons-outlined {
+  font-size: 1.4rem;
+}
+.table-data-controller-view > .controller > .button {
   padding: 0.2rem 0;
   -webkit-flex-grow: 1;
           flex-grow: 1;
@@ -1090,30 +1106,25 @@ main {
   transition: background-color var(--transition-instant);
   cursor: pointer;
 }
-.table-data-controller-view > .controller > .button:hover, .table-data-controller-view > .downloads > .button:hover {
+.table-data-controller-view > .controller > .button:hover {
   background-color: var(--color-lamp-black);
-}
-.table-data-controller-view > .controller > .button > .material-icons-outlined, .table-data-controller-view > .downloads > .button > .material-icons-outlined {
-  position: relative;
-  top: -0.1rem;
-  font-size: 1.4rem;
-  vertical-align: middle;
-}
-.table-data-controller-view > .controller {
-  display: -webkit-flex;
-  display: flex;
 }
 [data-display=results] .table-data-controller-view > .controller > .button[data-button=restore] {
   cursor: not-allowed;
   opacity: 0.5;
 }
+.table-data-controller-view > .controller > .button.none {
+  display: none;
+}
+.table-data-controller-view > .controller > .button > .material-icons-outlined {
+  position: relative;
+  top: -0.1rem;
+  font-size: 1.4rem;
+  vertical-align: middle;
+}
 .table-data-controller-view > .controller > .button > .lotation {
   -webkit-animation: lotation 3s linear infinite;
           animation: lotation 3s linear infinite;
-}
-.table-data-controller-view > .downloads {
-  border-top: solid 1px var(--color-translucent-lamp-black3);
-  display: none;
 }
 .table-data-controller-view.-current, .table-data-controller-view:hover {
   opacity: 1;
@@ -1153,9 +1164,15 @@ main {
 .table-data-controller-view[data-status=complete] > .indicator {
   display: block;
 }
-.table-data-controller-view[data-status=complete] > .controller, .table-data-controller-view[data-status=complete] > .downloads {
+.table-data-controller-view[data-status=complete] > .controller {
   display: -webkit-flex;
   display: flex;
+}
+.table-data-controller-view[data-status=complete] > .controller > .autorenew {
+  display: none;
+}
+.table-data-controller-view[data-status=complete] > .controller > .downloads {
+  display: block;
 }
 .table-data-controller-view[data-status=complete] > .controller > .button[data-button=prepare-download] {
   cursor: not-allowed;
@@ -1372,7 +1389,7 @@ main {
   pointer-events: none;
 }
 
-.close-button {
+.close-button-view {
   width: 1.2rem;
   height: 1.2rem;
   position: absolute;
@@ -1380,7 +1397,7 @@ main {
   right: 0.4rem;
   cursor: pointer;
 }
-.close-button::before, .close-button::after {
+.close-button-view::before, .close-button-view::after {
   content: "";
   border-left: solid 0.1rem var(--color-black);
   position: absolute;
@@ -1389,11 +1406,11 @@ main {
   display: block;
   height: 0.8rem;
 }
-.close-button::before {
+.close-button-view::before {
   -webkit-transform: rotate(45deg);
           transform: rotate(45deg);
 }
-.close-button::after {
+.close-button-view::after {
   -webkit-transform: rotate(-45deg);
           transform: rotate(-45deg);
 }
@@ -1668,6 +1685,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   height: 100%;
   font-size: 1.2rem;
   line-height: 1.2;
+  background-color: white;
 }
 #ResultsTable > .body > table th, #ResultsTable > .body > table td {
   padding: 0;

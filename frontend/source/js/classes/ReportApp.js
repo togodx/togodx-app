@@ -1,4 +1,4 @@
-import Records from './Records.js';
+import Records from './Records';
 import * as api from '../api'
 
 class ReportApp {
