@@ -3260,6 +3260,76 @@
 
   var _templates$1 = new WeakMap();
 
+  var _isReady = new WeakMap();
+
+  var StanzaManager = /*#__PURE__*/function () {
+    function StanzaManager() {
+      _classCallCheck(this, StanzaManager);
+
+      _templates$1.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _isReady.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldSet(this, _isReady, false);
+    }
+
+    _createClass(StanzaManager, [{
+      key: "init",
+      value: function init(data) {
+        var _this = this;
+
+        // embed modules
+        var head = document.querySelector('head');
+        data.stanzas.forEach(function (stanza) {
+          var script = document.createElement('script');
+          script.setAttribute('type', 'module');
+          script.setAttribute('src', stanza);
+          script.setAttribute('async', 1);
+          head.appendChild(script);
+        }); // fetch templates
+
+        Promise.all(Object.keys(data.templates).map(function (key) {
+          return fetch(data.templates[key]);
+        })).then(function (responces) {
+          return Promise.all(responces.map(function (responce) {
+            return responce.text();
+          }));
+        }).then(function (templates) {
+          // set stanza templates
+          _classPrivateFieldSet(_this, _templates$1, Object.fromEntries(Object.keys(data.templates).map(function (stanza, index) {
+            return [stanza, templates[index]];
+          })));
+
+          _classPrivateFieldSet(_this, _isReady, true);
+
+          console.log(_classPrivateFieldGet(_this, _templates$1));
+        });
+      }
+    }, {
+      key: "draw",
+      value: function draw(subjectId, id, key) {
+        return "<div class=\"stanza\">".concat(_classPrivateFieldGet(this, _templates$1)[subjectId].replace(/{{id}}/g, id).replace(/{{type}}/g, key), "</div>");
+      }
+    }, {
+      key: "isReady",
+      get: function get() {
+        return _classPrivateFieldGet(this, _isReady);
+      }
+    }]);
+
+    return StanzaManager;
+  }();
+
+  var StanzaManager$1 = new StanzaManager();
+
+  var _templates = new WeakMap();
+
   var _BODY$1 = new WeakMap();
 
   var _STANZAS_CONTAINER = new WeakMap();
@@ -3268,21 +3338,17 @@
 
   var _hideStanza = new WeakSet();
 
-  var _stanza = new WeakSet();
-
   var ReportsView = /*#__PURE__*/function () {
     function ReportsView(elm) {
       var _this = this;
 
       _classCallCheck(this, ReportsView);
 
-      _stanza.add(this);
-
       _hideStanza.add(this);
 
       _showStanza.add(this);
 
-      _templates$1.set(this, {
+      _templates.set(this, {
         writable: true,
         value: void 0
       });
@@ -3320,11 +3386,14 @@
 
     _createClass(ReportsView, [{
       key: "defineTemplates",
-      value: // public methods
+      value: // #stanza(subjectId, value) {
+      //   return `<div class="stanza-view">${this.#templates[subjectId].replace(/{{id}}/g, value)}</div>`;
+      // }
+      // public methods
       function defineTemplates(templates) {
         console.log(templates);
 
-        _classPrivateFieldSet(this, _templates$1, templates);
+        _classPrivateFieldSet(this, _templates, templates);
       }
     }]);
 
@@ -3332,11 +3401,9 @@
   }();
 
   function _showStanza2(subject, properties) {
-    var _this2 = this;
-
     console.log(subject, properties); // make stanzas
 
-    _classPrivateFieldGet(this, _STANZAS_CONTAINER).innerHTML = _classPrivateMethodGet(this, _stanza, _stanza2).call(this, subject.id, subject.value) + properties.map(function (property) {
+    _classPrivateFieldGet(this, _STANZAS_CONTAINER).innerHTML = StanzaManager$1.draw(subject.id, subject.value, 'uniplot') + properties.map(function (property) {
       if (property === undefined) {
         return '';
       } else {
@@ -3347,17 +3414,13 @@
         }); // TODO: 1個目のアトリビュートしか返していない
 
 
-        return _classPrivateMethodGet(_this2, _stanza, _stanza2).call(_this2, _subject.subjectId, property.attributes[0].id);
+        return StanzaManager$1.draw(_subject.subjectId, property.attributes[0].id, 'uniplot');
       }
     }).join('');
   }
 
   function _hideStanza2() {
     _classPrivateFieldGet(this, _STANZAS_CONTAINER).innerHTML = '';
-  }
-
-  function _stanza2(subjectId, value) {
-    return "<div class=\"stanza-view\">".concat(_classPrivateFieldGet(this, _templates$1)[subjectId].replace(/{{id}}/g, value), "</div>");
   }
 
   function collapseView(elm) {
@@ -5437,76 +5500,6 @@
     var customEvent = new CustomEvent(clearUserValues);
     DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
-
-  var _templates = new WeakMap();
-
-  var _isReady = new WeakMap();
-
-  var StanzaManager = /*#__PURE__*/function () {
-    function StanzaManager() {
-      _classCallCheck(this, StanzaManager);
-
-      _templates.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _isReady.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _classPrivateFieldSet(this, _isReady, false);
-    }
-
-    _createClass(StanzaManager, [{
-      key: "init",
-      value: function init(data) {
-        var _this = this;
-
-        // embed modules
-        var head = document.querySelector('head');
-        data.stanzas.forEach(function (stanza) {
-          var script = document.createElement('script');
-          script.setAttribute('type', 'module');
-          script.setAttribute('src', stanza);
-          script.setAttribute('async', 1);
-          head.appendChild(script);
-        }); // fetch templates
-
-        Promise.all(Object.keys(data.templates).map(function (key) {
-          return fetch(data.templates[key]);
-        })).then(function (responces) {
-          return Promise.all(responces.map(function (responce) {
-            return responce.text();
-          }));
-        }).then(function (templates) {
-          // set stanza templates
-          _classPrivateFieldSet(_this, _templates, Object.fromEntries(Object.keys(data.templates).map(function (stanza, index) {
-            return [stanza, templates[index]];
-          })));
-
-          _classPrivateFieldSet(_this, _isReady, true);
-
-          console.log(_classPrivateFieldGet(_this, _templates));
-        });
-      }
-    }, {
-      key: "draw",
-      value: function draw(subjectId, id, key) {
-        return "<div class=\"stanza\">".concat(_classPrivateFieldGet(this, _templates)[subjectId].replace(/{{id}}/g, id).replace(/{{type}}/g, key), "</div>");
-      }
-    }, {
-      key: "isReady",
-      get: function get() {
-        return _classPrivateFieldGet(this, _isReady);
-      }
-    }]);
-
-    return StanzaManager;
-  }();
-
-  var StanzaManager$1 = new StanzaManager();
 
   var PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
   var TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
