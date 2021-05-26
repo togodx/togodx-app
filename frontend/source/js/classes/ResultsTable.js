@@ -168,7 +168,7 @@ export default class ResultsTable {
             JSON.stringify(row)
           )}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
             <div
-              class="togo-key-view report"
+              class="togo-key-view primarykey"
               data-key="${detail.tableData.togoKey}"
               data-subject-id="${detail.tableData.subjectId}"
               data-unique-entry-id="${detail.rows[index].id}">${
@@ -276,7 +276,7 @@ export default class ResultsTable {
                   uniqueEntryId: uniqueEntry.getAttribute("data-unique-entry-id"),
                 },
                 properties: {
-                  isReport: uniqueEntry.classList.contains("report"),
+                  isPrimaryKey: uniqueEntry.classList.contains("primarykey"),
                   externalLink: uniqueEntry.getAttribute("data-unique-entry-uri"),
                   reportLink: `report.html?togoKey=${this.#tableData.togoKey}&id=${tr.getAttribute("data-togo-id")}&properties=${encodeURIComponent(JSON.stringify(row))}`, 
                   stanza: tr.dataset.togoId,

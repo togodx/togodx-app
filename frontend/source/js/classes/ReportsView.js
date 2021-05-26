@@ -19,13 +19,6 @@ export default class ReportsView {
       this.#BODY.dataset.display = "properties";
     });
 
-    // event listener
-    // DefaultEventEmitter.addEventListener(event.showStanza, (e) => {
-    //   this.#stanzaContainer(e.detail.subject, e.detail.properties);
-    // });
-    // DefaultEventEmitter.addEventListener(event.hideStanza, (e) => {
-    //   this.#hideStanza();
-    // });
   }
 
   // private methods

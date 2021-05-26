@@ -60,10 +60,11 @@ class Records {
 
   // TODO: set getter for Subject with hue and label info
   getSubject(subjectId) {
-    return {
-      hue:  234,
-      label: "SUBJECT-LABEL: " + subjectId,
-    }
+    // return {
+    //   hue:  234,
+    //   label: "SUBJECT-LABEL: " + subjectId,
+    // }
+    return this.#subjects.find(subject => subject.subjectId === subjectId );
   }
  
   // public accessors
