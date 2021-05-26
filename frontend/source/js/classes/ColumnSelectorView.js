@@ -106,9 +106,7 @@ export default class ColumnSelectorView {
       </li>`;
     }).join('');
     this.#CONTAINER.insertAdjacentElement('beforeend', ul);
-    ul.querySelectorAll(':scope > .item').forEach((item, index) => {
-      this.#items[index].elm = item;
-    })
+    ul.querySelectorAll(':scope > .item').forEach((item, index) => this.#items[index].elm = item);
     this.#update(App.viewModes.log10);
 
     // drill down event

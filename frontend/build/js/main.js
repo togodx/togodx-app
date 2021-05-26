@@ -3562,7 +3562,7 @@
     _classPrivateFieldGet(this, _CONTAINER$1).insertAdjacentElement('beforeend', ul);
 
     ul.querySelectorAll(':scope > .item').forEach(function (item, index) {
-      _classPrivateFieldGet(_this2, _items$1)[index].elm = item;
+      return _classPrivateFieldGet(_this2, _items$1)[index].elm = item;
     });
 
     _classPrivateMethodGet(this, _update$2, _update2$2).call(this, App$1.viewModes.log10); // drill down event
