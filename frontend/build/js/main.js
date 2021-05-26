@@ -3258,7 +3258,7 @@
     if (_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).childNodes.length === 0) _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.add('-empty');
   }
 
-  var _templates = new WeakMap();
+  var _templates$1 = new WeakMap();
 
   var _BODY$1 = new WeakMap();
 
@@ -3282,7 +3282,7 @@
 
       _showStanza.add(this);
 
-      _templates.set(this, {
+      _templates$1.set(this, {
         writable: true,
         value: void 0
       });
@@ -3324,7 +3324,7 @@
       function defineTemplates(templates) {
         console.log(templates);
 
-        _classPrivateFieldSet(this, _templates, templates);
+        _classPrivateFieldSet(this, _templates$1, templates);
       }
     }]);
 
@@ -3357,7 +3357,7 @@
   }
 
   function _stanza2(subjectId, value) {
-    return "<div class=\"stanza-view\">".concat(_classPrivateFieldGet(this, _templates)[subjectId].replace(/{{id}}/g, value), "</div>");
+    return "<div class=\"stanza-view\">".concat(_classPrivateFieldGet(this, _templates$1)[subjectId].replace(/{{id}}/g, value), "</div>");
   }
 
   function collapseView(elm) {
@@ -5438,6 +5438,71 @@
     DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
 
+  var _templates = new WeakMap();
+
+  var _isReady = new WeakMap();
+
+  var StanzaManager = /*#__PURE__*/function () {
+    function StanzaManager() {
+      _classCallCheck(this, StanzaManager);
+
+      _templates.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _isReady.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldSet(this, _isReady, false);
+    }
+
+    _createClass(StanzaManager, [{
+      key: "init",
+      value: function init(data) {
+        var _this = this;
+
+        // embed modules
+        document.querySelector('head').insertAdjacentHTML('beforeend', data.stanzas.map(function (stanza) {
+          return "<script type=\"module\" src=\"".concat(stanza, "\"></script>");
+        }).join('')); // fetch templates
+
+        Promise.all(Object.keys(data.templates).map(function (key) {
+          return fetch(data.templates[key]);
+        })).then(function (responces) {
+          return Promise.all(responces.map(function (responce) {
+            return responce.text();
+          }));
+        }).then(function (templates) {
+          // set stanza templates
+          _classPrivateFieldSet(_this, _templates, Object.fromEntries(Object.keys(data.templates).map(function (stanza, index) {
+            return [stanza, templates[index]];
+          })));
+
+          _classPrivateFieldSet(_this, _isReady, true);
+
+          console.log(_classPrivateFieldGet(_this, _templates));
+        });
+      }
+    }, {
+      key: "draw",
+      value: function draw(subjectId, id, key) {
+        return "<div class=\"stanza\">".concat(_classPrivateFieldGet(this, _templates)[subjectId].replace(/{{id}}/g, id).replace(/{{type}}/g, key), "</div>");
+      }
+    }, {
+      key: "isReady",
+      get: function get() {
+        return _classPrivateFieldGet(this, _isReady);
+      }
+    }]);
+
+    return StanzaManager;
+  }();
+
+  var StanzaManager$1 = new StanzaManager();
+
   var PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
   var TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
   var AGGREGATE = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/aggregate.json';
@@ -5497,12 +5562,10 @@
 
         new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
         new ConditionsController(document.querySelector('#Conditions'));
-        var reportsView = new ReportsView(document.querySelector('#Reports'));
+        new ReportsView(document.querySelector('#Reports'));
         new ResultsTable(document.querySelector('#ResultsTable'));
         new BalloonView();
         new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
-
-        var stanzaTtemplates;
         Promise.all([fetch(PROPERTIES), fetch(TEMPLATES), fetch(AGGREGATE)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
@@ -5513,7 +5576,7 @@
               templates = _ref2[1],
               aggregate = _ref2[2];
 
-          stanzaTtemplates = templates;
+          // stanzaTtemplates = templates;
           Records$1.setSubjects(subjects); // define primary keys
 
           var togoKeys = subjects.map(function (subject) {
@@ -5526,31 +5589,13 @@
           var customEvent = new CustomEvent(defineTogoKey, {
             detail: togoKeys
           });
-          DefaultEventEmitter$1.dispatchEvent(customEvent); // set stanza scripts
+          DefaultEventEmitter$1.dispatchEvent(customEvent); // initialize stanza manager
 
-          document.querySelector('head').insertAdjacentHTML('beforeend', templates.stanzas.map(function (stanza) {
-            return "<script type=\"module\" src=\"".concat(stanza, "\" async></script>");
-          }).join('')); // aggregate
+          StanzaManager$1.init(templates); // aggregate
 
-          _classPrivateFieldSet(_this, _aggregate, Object.freeze(aggregate)); // get stanza templates
+          _classPrivateFieldSet(_this, _aggregate, Object.freeze(aggregate));
 
-
-          return Promise.all(Object.keys(templates.templates).map(function (key) {
-            return fetch(templates.templates[key]);
-          }));
-        }).then(function (responces) {
-          return Promise.all(responces.map(function (responce) {
-            return responce.text();
-          }));
-        }).then(function (templates) {
-          // set stanza templates
-          var stanzaTemplates = Object.fromEntries(Object.keys(stanzaTtemplates.templates).map(function (stanza, index) {
-            return [stanza, templates[index]];
-          }));
-          reportsView.defineTemplates(stanzaTemplates); // define properties (app start)
-
-          _classPrivateMethodGet(_this, _makeConceptViews, _makeConceptViews2).call(_this); // Records.setSubjects(this.#subjects);
-
+          _classPrivateMethodGet(_this, _makeConceptViews, _makeConceptViews2).call(_this);
         });
       } // private methods
 

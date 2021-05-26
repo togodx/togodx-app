@@ -2688,6 +2688,71 @@
 
   var Records$1 = new Records();
 
+  var _templates$1 = new WeakMap();
+
+  var _isReady = new WeakMap();
+
+  var StanzaManager = /*#__PURE__*/function () {
+    function StanzaManager() {
+      _classCallCheck(this, StanzaManager);
+
+      _templates$1.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _isReady.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldSet(this, _isReady, false);
+    }
+
+    _createClass(StanzaManager, [{
+      key: "init",
+      value: function init(data) {
+        var _this = this;
+
+        // embed modules
+        document.querySelector('head').insertAdjacentHTML('beforeend', data.stanzas.map(function (stanza) {
+          return "<script type=\"module\" src=\"".concat(stanza, "\"></script>");
+        }).join('')); // fetch templates
+
+        Promise.all(Object.keys(data.templates).map(function (key) {
+          return fetch(data.templates[key]);
+        })).then(function (responces) {
+          return Promise.all(responces.map(function (responce) {
+            return responce.text();
+          }));
+        }).then(function (templates) {
+          // set stanza templates
+          _classPrivateFieldSet(_this, _templates$1, Object.fromEntries(Object.keys(data.templates).map(function (stanza, index) {
+            return [stanza, templates[index]];
+          })));
+
+          _classPrivateFieldSet(_this, _isReady, true);
+
+          console.log(_classPrivateFieldGet(_this, _templates$1));
+        });
+      }
+    }, {
+      key: "draw",
+      value: function draw(subjectId, id, key) {
+        return "<div class=\"stanza\">".concat(_classPrivateFieldGet(this, _templates$1)[subjectId].replace(/{{id}}/g, id).replace(/{{type}}/g, key), "</div>");
+      }
+    }, {
+      key: "isReady",
+      get: function get() {
+        return _classPrivateFieldGet(this, _isReady);
+      }
+    }]);
+
+    return StanzaManager;
+  }();
+
+  var StanzaManager$1 = new StanzaManager();
+
   var PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
   var TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
 
@@ -2695,13 +2760,9 @@
 
   var _drawStanzas = new WeakSet();
 
-  var _stanza = new WeakSet();
-
   var ReportApp = /*#__PURE__*/function () {
     function ReportApp() {
       _classCallCheck(this, ReportApp);
-
-      _stanza.add(this);
 
       _drawStanzas.add(this);
 
@@ -2716,8 +2777,6 @@
       value: function ready() {
         var _this = this;
 
-        var stanzaTtemplates; // load config json
-
         Promise.all([fetch(PROPERTIES), fetch(TEMPLATES)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
@@ -2727,26 +2786,20 @@
               subjects = _ref2[0],
               templates = _ref2[1];
 
-          stanzaTtemplates = templates;
-          Records$1.setSubjects(subjects); // set stanza scripts
+          // stanzaTtemplates = templates;
+          Records$1.setSubjects(subjects); // initialize stanza manager
 
-          document.querySelector('head').insertAdjacentHTML('beforeend', templates.stanzas.map(function (stanza) {
-            return "<script type=\"module\" src=\"".concat(stanza, "\"></script>");
-          }).join('')); // get stanza templates
+          StanzaManager$1.init(templates); // wait ready stanza manager
 
-          return Promise.all(Object.keys(templates.templates).map(function (key) {
-            return fetch(templates.templates[key]);
-          }));
-        }).then(function (responces) {
-          return Promise.all(responces.map(function (responce) {
-            return responce.text();
-          }));
-        }).then(function (templates) {
-          _classPrivateFieldSet(_this, _templates, Object.fromEntries(Object.keys(stanzaTtemplates.templates).map(function (stanza, index) {
-            return [stanza, templates[index]];
-          })));
+          var intervalId = window.setInterval(function () {
+            console.log(StanzaManager$1.isReady);
 
-          _classPrivateMethodGet(_this, _drawStanzas, _drawStanzas2).call(_this);
+            if (StanzaManager$1.isReady) {
+              window.clearInterval(intervalId);
+
+              _classPrivateMethodGet(_this, _drawStanzas, _drawStanzas2).call(_this);
+            }
+          }, 100);
         });
       }
     }, {
@@ -2771,7 +2824,7 @@
     var subjectId = Records$1.subjects.find(function (subject) {
       return subject.togoKey === urlVars.togoKey;
     }).subjectId;
-    main.innerHTML = _classPrivateMethodGet(this, _stanza, _stanza2).call(this, subjectId, urlVars.id, urlVars.togoKey) + properties.map(function (property) {
+    main.innerHTML = StanzaManager$1.draw(subjectId, urlVars.id, urlVars.togoKey) + properties.map(function (property) {
       if (property === undefined) {
         return '';
       } else {
@@ -2784,14 +2837,10 @@
           return property.propertyId === property.propertyId;
         });
         return "<hr>\n          <div class=\"attributes\">\n            <header style=\"background-color: ".concat(_this2.getHslColor(subject.colorCSSValue), ";\">").concat(property2.label, "</header>\n            ").concat(property.attributes.map(function (attribute) {
-          return _classPrivateMethodGet(_this2, _stanza, _stanza2).call(_this2, subject.subjectId, attribute.id, property.propertyKey);
+          return StanzaManager$1.draw(subject.subjectId, attribute.id, property.propertyKey);
         }).join(''), "\n          </div>");
       }
     }).join('');
-  }
-
-  function _stanza2(subjectId, id, key) {
-    return "<div class=\"stanza\">".concat(_classPrivateFieldGet(this, _templates)[subjectId].replace(/{{id}}/g, id).replace(/{{type}}/g, key), "</div>");
   }
 
   var ReportApp$1 = new ReportApp();
