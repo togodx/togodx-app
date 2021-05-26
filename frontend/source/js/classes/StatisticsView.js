@@ -1,4 +1,3 @@
-import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import Records from './Records';
 import * as event from '../events';
@@ -6,7 +5,7 @@ import * as event from '../events';
 export default class StatisticsView {
 
   #propertyId;
-  #hue;
+  #color;
   #COUNTS;
   #RATES;
   #TICKS;
@@ -15,7 +14,7 @@ export default class StatisticsView {
     console.log(property)
 
     this.#propertyId = property.property.propertyId;
-    this.#hue = App.getHslColor(property.subject.hue);
+    this.#color = property.subject.colorCSSValue;
 
     elm.classList.add('statistics-view');
 
@@ -60,7 +59,7 @@ export default class StatisticsView {
     this.#COUNTS.innerHTML = counts.map(count => {
       const position = (count / countMax < .5) ? ' -below' : '';
       return `
-      <div class="bar" style="height: ${count / countMax * 100}%; background-color: ${this.#hue};">
+      <div class="bar" style="height: ${count / countMax * 100}%; background-color: ${this.#color};">
         <div class="value${position}">${count.toLocaleString()}</div>
       </div>`;
     }).join('');
@@ -76,7 +75,7 @@ export default class StatisticsView {
     this.#RATES.innerHTML = rates.map(rate => {
       const position = (rate / rateMax < .5) ? ' -below' : '';
       return `
-      <div class="bar" style="height: ${rate / rateMax * 100}%; background-color: ${this.#hue};">
+      <div class="bar" style="height: ${rate / rateMax * 100}%; background-color: ${this.#color};">
         <div class="value${position}">${rate.toLocaleString()}</div>
       </div>`;
     }).join('');

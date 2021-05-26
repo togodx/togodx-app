@@ -1,12 +1,11 @@
-import App from "./App";
-import TrackView from './TrackView';
+import TrackView from './TrackView.js';
 
 export default class ConceptView {
 
   constructor(subject, elm) {
     elm.classList.add('concept-view');
     elm.innerHTML = `
-    <h3 class="title" style="background-color: ${App.getHslColor(subject.hue)};">
+    <h3 class="title" style="background-color: ${subject.colorCSSValue};">
       <span>${subject.subject}</span>
     </h3>
     <div class="properties"></div>`;

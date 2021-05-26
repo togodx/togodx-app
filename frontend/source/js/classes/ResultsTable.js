@@ -1,8 +1,6 @@
-import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import StatisticsView from "./StatisticsView";
-import Records from './Records';
-import * as event from "../events";
+import * as event from '../events';
 
 export default class ResultsTable {
   #intersctionObserver;
@@ -103,15 +101,9 @@ export default class ResultsTable {
           <div class="togo-key-view">${tableData.condition.togoKey}</div>
         </div>
       </th>
-      ${tableData.condition.attributes
-        .map(
-          (property) => `
-      <th data-subject-id="${
-        property.subject.subjectId
-      }" data-property-label="${property.property.label}">
-        <div class="inner -propertyvalue"  style="background-color: ${App.getHslColor(
-          property.subject.hue
-        )}">
+      ${tableData.condition.attributes.map(property => `
+      <th>
+        <div class="inner -propertyvalue" style="background-color: ${property.subject.colorCSSValue}">
           <div class="togo-key-view">${property.property.primaryKey}</div>
           <span>${property.property.label}</span>
         </div>
@@ -122,9 +114,7 @@ export default class ResultsTable {
         .map(
           (property) => `
       <th>
-        <div class="inner -property" style="color: ${App.getHslColor(
-          property.subject.hue
-        )}">
+        <div class="inner -property" style="color: ${property.subject.colorCSSValue}">
           <div class="togo-key-view">${property.property.primaryKey}</div>
           <span>${property.property.label}</span>
         </div>
