@@ -77,21 +77,21 @@
       },{
         "propertyId": "uniprot_keywords_cellular_component",
         "label": "Cellular component",
-        "description": "Classification of GO terms in the cellular component domain provided by the Gene Ontology (GO) project",
+        "description": "Gene Ontology (GO) terms of the cellular component domain",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_cellular_component",
         "primaryKey": "uniprot"
       },
       {
         "propertyId": "uniprot_keywords_biological_process",
         "label": "Biological process",
-        "description": "Classification of GO terms in the biological process domain provided by the Gene Ontology (GO) project",
+        "description": "Gene Ontology (GO) terms of the biological process domain",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_biological_process",
         "primaryKey": "uniprot"
       },
       {
         "propertyId": "uniprot_keywords_molecular_function",
         "label": "Molecular function",
-        "description": "Classification of GO terms in the molecular function domain provided by the Gene Ontology (GO) project",
+        "description": "Gene Ontology (GO) terms of the molecular function domain",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_molecular_function",
         "primaryKey": "uniprot"
       },
