@@ -3524,16 +3524,15 @@
           selected: false,
           checked: false
         };
-
-        if (hasChild) {
-          _classPrivateFieldGet(this, _itemStatus)[item.categoryId].children = [];
-        }
+        if (hasChild) _classPrivateFieldGet(this, _itemStatus)[item.categoryId].children = [];
       }
     } catch (err) {
       _iterator.e(err);
     } finally {
       _iterator.f();
     }
+
+    console.log(_classPrivateFieldGet(this, _itemStatus));
   }
 
   function _makeColumn2(items, depth) {
@@ -3541,8 +3540,9 @@
 
     _classPrivateFieldSet(this, _items$1, items.map(function (item) {
       return Object.assign({}, item);
-    })); // get column element
+    }));
 
+    console.log(_classPrivateFieldGet(this, _items$1)); // get column element
 
     var ul;
 
@@ -3619,6 +3619,7 @@
           var parent;
 
           do {
+            // find ancestors
             parent = _classPrivateFieldGet(_this2, _itemStatus)[id].parent;
             if (parent) ancestors.unshift(_classPrivateFieldGet(_this2, _itemStatus)[parent]);
             id = parent;
@@ -3635,6 +3636,7 @@
               })
             }
           });
+          console.log(ancestors);
         } else {
           // remove
           ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this2, _property$3).propertyId, checkbox.value);

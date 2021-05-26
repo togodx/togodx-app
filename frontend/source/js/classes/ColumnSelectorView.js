@@ -77,15 +77,15 @@ export default class ColumnSelectorView {
         selected: false,
         checked: false
       }
-      if (hasChild) {
-        this.#itemStatus[item.categoryId].children = [];
-      }
+      if (hasChild) this.#itemStatus[item.categoryId].children = [];
     }
+    console.log(this.#itemStatus)
   }
 
   #makeColumn(items, depth) {
 
     this.#items = items.map(item => Object.assign({}, item));
+    console.log(this.#items)
 
     // get column element
     let ul;
@@ -140,7 +140,7 @@ export default class ColumnSelectorView {
           const ancestors = [];
           let id = checkbox.value;
           let parent;
-          do {
+          do { // find ancestors
             parent = this.#itemStatus[id].parent;
             if (parent) ancestors.unshift(this.#itemStatus[parent]);
             id = parent;
@@ -154,6 +154,7 @@ export default class ColumnSelectorView {
               ancestors: ancestors.map(ancestor => ancestor.label)
             }
           });
+          console.log(ancestors)
         } else { // remove
           ConditionBuilder.removePropertyValue(this.#property.propertyId, checkbox.value);
         }
