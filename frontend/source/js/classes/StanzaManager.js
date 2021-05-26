@@ -30,6 +30,13 @@ class StanzaManager {
     });
   }
 
+  /**
+   * 
+   * @param {String} subjectId  e.g. gene, protein (category name)
+   * @param {String} id  ID of dataset
+   * @param {String} key  e.g. hgnc, uniplot (dataset name)
+   * @returns {String} HTML
+   */
   draw(subjectId, id, key) {
     return `<div class="stanza">${this.#templates[subjectId].replace(/{{id}}/g, id).replace(/{{type}}/g, key)}</div>`;
   }

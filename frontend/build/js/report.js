@@ -2741,6 +2741,14 @@
           console.log(_classPrivateFieldGet(_this, _templates$1));
         });
       }
+      /**
+       * 
+       * @param {String} subjectId  e.g. gene, protein (category name)
+       * @param {String} id  ID of dataset
+       * @param {String} key  e.g. hgnc, uniplot (dataset name)
+       * @returns {String} HTML
+       */
+
     }, {
       key: "draw",
       value: function draw(subjectId, id, key) {
