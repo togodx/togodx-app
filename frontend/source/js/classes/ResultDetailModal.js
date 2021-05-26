@@ -1,7 +1,7 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import Records from "./Records.js";
-import ReportApp from "./ReportApp";
+import StanzaManager from "./StanzaManager";
 import * as event from "../events";
 
 export default class ResultDetailModal {
@@ -44,11 +44,10 @@ export default class ResultDetailModal {
       const keys = e.detail.keys;
       const props = e.detail.properties;
       // TODO getStanzaData
-      const stanzaDiv = document.createElement("div");
-      stanzaDiv.className = "stanza";
-      stanzaDiv.innerHTML += `
-      STANZAS HERE
-    `;
+      const stanzas = document.createElement("div");
+      stanzas.className = "stanzas";
+      stanzas.innerHTML += StanzaManager.draw(keys.subjectId, keys.uniqueEntryId, keys.dataKey);
+      
       const container = document.createElement("div");
       container.className = "container";
       container.innerHTML += `      
@@ -57,13 +56,11 @@ export default class ResultDetailModal {
       <div class="arrow down"></div>
       <div class="arrow left"></div>
     `;
-      container.appendChild(stanzaDiv);
+      container.appendChild(stanzas);
       // SubjectId = Gene (Subject)
       // id = ENSXXXX (Unique-Entry)
       // key = uniprot DB (Togo-key)
-      // container.appendChild(
-      //   ReportApp.stanza(keys.subjectId, keys.uniqueEntryId, keys.dataKey)
-      // );
+
       const popup = document.createElement("div");
       popup.className = "popup";
       popup.appendChild(this.#header(keys, props));

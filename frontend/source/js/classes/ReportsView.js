@@ -4,54 +4,55 @@ import StanzaManager from "./StanzaManager";
 import * as event from '../events';
 
 export default class ReportsView {
+
   #templates;
   #BODY;
-  #ROOT;
-  #EXIT_BUTTON;
+  #STANZAS_CONTAINER;
 
   constructor(elm) {
-    // references
+
     this._stanzas = {};
-    this.#BODY = document.querySelector("body");
-    const returnButton = elm.querySelector(":scope > footer > button.return");
+
+    // references
+    this.#BODY = document.querySelector('body');
+    this.#STANZAS_CONTAINER = elm.querySelector(':scope > .stanzas');
+    const returnButton = elm.querySelector(':scope > footer > button.return');
 
     // attach event
-    returnButton.addEventListener("click", () => {
-      this.#BODY.dataset.display = "properties";
+    returnButton.addEventListener('click', () => {
+      this.#BODY.dataset.display = 'properties';
     });
 
+    // event listener
+    DefaultEventEmitter.addEventListener(event.showStanza, e => {
+      this.#showStanza(e.detail.subject, e.detail.properties);
+    });
+    DefaultEventEmitter.addEventListener(event.hideStanza, e => {
+      this.#hideStanza();
+    });
   }
 
   // private methods
 
-  #stanzaContainer(subject, properties, stanzaContainer) {
-    console.log(subject, properties);
+  #showStanza(subject, properties) {
+    console.log(subject, properties)
     // make stanzas
     this.#STANZAS_CONTAINER.innerHTML
       = StanzaManager.draw(subject.id, subject.value, 'uniplot')
       +　properties
         .map(property => {
           if (property === undefined) {
-            return "";
+            return '';
           } else {
-            const subject = Records.subjects.find((subject) =>
-              subject.properties.some(
-                (subjectProperty) =>
-                  subjectProperty.propertyId === property.propertyId
-              )
-            );
+            const subject = Records.subjects.find(subject => subject.properties.some(subjectProperty => subjectProperty.propertyId === property.propertyId));
             // TODO: 1個目のアトリビュートしか返していない
             return StanzaManager.draw(subject.subjectId, property.attributes[0].id, 'uniplot');
           }
-        })
-        .join("");
-    return stanzaContainer;
+        }).join('');
   }
 
-  #stanza(subjectId, propertyId, value) {
-    return `<div class="stanza-view" data-subject-id="${subjectId}" data-property-id=${propertyId}">${this.#templates[
-      subjectId
-    ].replace(/{{id}}/g, value)}</div>`;
+  #hideStanza() {
+    this.#STANZAS_CONTAINER.innerHTML = '';
   }
 
   // #stanza(subjectId, value) {
@@ -59,8 +60,10 @@ export default class ReportsView {
   // }
 
   // public methods
+
   defineTemplates(templates) {
-    console.log(templates);
+    console.log(templates)
     this.#templates = templates;
   }
+
 }
