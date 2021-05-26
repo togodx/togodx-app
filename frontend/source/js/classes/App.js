@@ -9,6 +9,7 @@ import BalloonView from './BalloonView';
 import ConditionsController from "./ConditionsController";
 import UploadUserIDsView from "./UploadUserIDsView";
 import Color from "./Color";
+import StanzaManager from "./StanzaManager";
 import * as event from '../events'
 import * as api from '../api'
 
@@ -56,7 +57,7 @@ class App {
     ])
       .then(responces => Promise.all(responces.map(responce => responce.json())))
       .then(([subjects, templates, aggregate]) => {
-        stanzaTtemplates = templates;
+        // stanzaTtemplates = templates;
         Records.setSubjects(subjects);
 
         // define primary keys
@@ -70,24 +71,13 @@ class App {
         const customEvent = new CustomEvent(event.defineTogoKey, {detail: togoKeys});
         DefaultEventEmitter.dispatchEvent(customEvent);
 
-        // set stanza scripts
-        document.querySelector('head').insertAdjacentHTML('beforeend', templates.stanzas.map(stanza => `<script type="module" src="${stanza}" async></script>`).join(''));
+        // initialize stanza manager
+        StanzaManager.init(templates);
+
         // aggregate
         this.#aggregate = Object.freeze(aggregate);
 
-        // get stanza templates
-        return Promise.all(
-          Object.keys(templates.templates).map(key => fetch(templates.templates[key]))
-        );
-      })
-      .then(responces => Promise.all(responces.map(responce => responce.text())))
-      .then(templates => {
-        // set stanza templates
-        const stanzaTemplates = Object.fromEntries(Object.keys(stanzaTtemplates.templates).map((stanza, index) => [stanza, templates[index]]));
-        reportsView.defineTemplates(stanzaTemplates);
-        // define properties (app start)
         this.#makeConceptViews();
-        // Records.setSubjects(this.#subjects);
       });
   }
 

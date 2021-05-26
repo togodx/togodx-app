@@ -1,6 +1,7 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
-import Records from "./Records.js";
-import * as event from "../events";
+import Records from './Records.js';
+import StanzaManager from "./StanzaManager";
+import * as event from '../events';
 
 export default class ReportsView {
   #templates;
@@ -26,11 +27,10 @@ export default class ReportsView {
   #stanzaContainer(subject, properties, stanzaContainer) {
     console.log(subject, properties);
     // make stanzas
-    stanzaContainer.className = "stanzas";
-    stanzaContainer.innerHTML =
-      this.#stanza(subject.id, subject.value) +
-      properties
-        .map((property) => {
+    this.#STANZAS_CONTAINER.innerHTML
+      = StanzaManager.draw(subject.id, subject.value, 'uniplot')
+      +　properties
+        .map(property => {
           if (property === undefined) {
             return "";
           } else {
@@ -41,7 +41,7 @@ export default class ReportsView {
               )
             );
             // TODO: 1個目のアトリビュートしか返していない
-            return this.#stanza(subject.subjectId, property.attributes[0].id);
+            return StanzaManager.draw(subject.subjectId, property.attributes[0].id, 'uniplot');
           }
         })
         .join("");
@@ -54,7 +54,9 @@ export default class ReportsView {
     ].replace(/{{id}}/g, value)}</div>`;
   }
 
-  
+  // #stanza(subjectId, value) {
+  //   return `<div class="stanza-view">${this.#templates[subjectId].replace(/{{id}}/g, value)}</div>`;
+  // }
 
   // public methods
   defineTemplates(templates) {

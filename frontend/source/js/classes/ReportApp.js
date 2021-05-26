@@ -1,4 +1,5 @@
 import Records from './Records';
+import StanzaManager from "./StanzaManager";
 import * as api from '../api'
 
 class ReportApp {
@@ -18,22 +19,20 @@ class ReportApp {
     ])
       .then(responces => Promise.all(responces.map(responce => responce.json())))
       .then(([subjects, templates]) => {
-        stanzaTtemplates = templates;
+        // stanzaTtemplates = templates;
         Records.setSubjects(subjects);
 
-        // set stanza scripts
-        document.querySelector('head').insertAdjacentHTML('beforeend', templates.stanzas.map(stanza => `<script type="module" src="${stanza}"></script>`).join(''));
+        // initialize stanza manager
+        StanzaManager.init(templates);
 
-        // get stanza templates
-        return Promise.all(
-          Object.keys(templates.templates).map(key => fetch(templates.templates[key]))
-        );
-      })
-      .then(responces => Promise.all(responces.map(responce => responce.text())))
-      .then(templates => {
-        this.#templates = Object.fromEntries(Object.keys(stanzaTtemplates.templates).map((stanza, index) => [stanza, templates[index]]));
-
-        this.#drawStanzas();
+        // wait ready stanza manager
+        const intervalId = window.setInterval(() => {
+          console.log(StanzaManager.isReady)
+          if (StanzaManager.isReady) {
+            window.clearInterval(intervalId);
+            this.#drawStanzas();
+          }
+        }, 100);
       });
   }
 
@@ -44,7 +43,7 @@ class ReportApp {
     const main = document.querySelector('main');
     const subjectId = Records.subjects.find(subject => subject.togoKey === urlVars.togoKey).subjectId;
     main.innerHTML =
-      this.#stanza(subjectId, urlVars.id, urlVars.togoKey) +
+      StanzaManager.draw(subjectId, urlVars.id, urlVars.togoKey) +
       properties.map(property => {
         if (property === undefined) {
           return '';
@@ -54,14 +53,10 @@ class ReportApp {
           return `<hr>
           <div class="attributes">
             <header style="background-color: ${this.getHslColor(subject.colorCSSValue)};">${property2.label}</header>
-            ${property.attributes.map(attribute => this.#stanza(subject.subjectId, attribute.id, property.propertyKey)).join('')}
+            ${property.attributes.map(attribute => StanzaManager.draw(subject.subjectId, attribute.id, property.propertyKey)).join('')}
           </div>`;
         }
       }).join('');
-  }
-
-  #stanza(subjectId, id, key) {
-    return `<div class="stanza">${this.#templates[subjectId].replace(/{{id}}/g, id).replace(/{{type}}/g, key)}</div>`;
   }
 
   // utilities
