@@ -1,0 +1,39 @@
+block var
+doctype html
+html.no-js(lang="en")
+
+  head
+    meta(charset="utf-8")
+    title Togo Site
+    meta(name="description" content="")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(property="og:title" content="")
+    meta(property="og:type" content="")
+    meta(property="og:url" content="")
+    meta(property="og:image" content="")
+    link(rel="manifest" href="site.webmanifest")
+    link(rel="apple-touch-icon" href="icon.png")
+    // Place favicon.ico in the root directory
+    link(rel="stylesheet" href="css/main.css")
+
+  body(
+    data-page=page
+    data-heatmap="true"
+    data-display="properties"
+  )
+
+    header#Header
+      h1
+        a(href="./") Togo Site
+      nav
+        ul
+          li
+            a(href="./about.html") About
+          li
+            a(href="./help.html") Help
+          li
+            a(href="./contact.html") Contact
+
+    block main
+
+    block script
