@@ -66,12 +66,13 @@ export default class ColumnSelectorView {
       }
     });
 
-    this.#setItems(items, 0);
-    this.#addColumn(items, 0);
+    const depth = 0;
+    this.#setItems(items, depth);
+    const column = this.#makeColumn(items, depth);
+    this.#appendSubColumn(column, depth);
   }
 
   #setItems(items, depth, parent) {
-    // console.log(items, depth)
     for (const item of items) {
       const hasChild = item.hasChild && item.hasChild === true;
       this.#itemStatus[item.categoryId] = {
@@ -84,23 +85,22 @@ export default class ColumnSelectorView {
       }
       if (hasChild) this.#itemStatus[item.categoryId].children = [];
     }
-    console.log(this.#itemStatus)
   }
 
-  #addColumn(items, depth, parentCategoryId) {
+  #appendSubColumn(column, depth) {
+    this.#currentColumns[depth] = column;
+    this.#CONTAINER.insertAdjacentElement('beforeend', column);
 
-    this.#it__ems = items.map(item => Object.assign({}, item));
-    console.log(this.#it__ems)
+    // event listener
+    // DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
+  }
 
-    // get column element
-    let ul = this.#subColumns.find(column => column.parentCategoryId === parentCategoryId);
-    if (ul === undefined) {
-      ul = document.createElement('ul');
-      ul.classList.add('column');
-      this.#currentColumns[depth] = ul;
-    }
-    this.#subColumns = {ul, parentCategoryId};
-    console.log(this.#subColumns)
+  #makeColumn(items, depth, parentCategoryId) {
+
+    // make column
+    const ul = document.createElement('ul');
+    ul.classList.add('column');
+    this.#subColumns.push({ul, parentCategoryId});
 
     // make items
     ul.innerHTML = items.map(item => {
@@ -111,12 +111,8 @@ export default class ColumnSelectorView {
       </li>`;
     }).join('');
     ul.querySelectorAll(':scope > .item').forEach((item, index) => {
-      // this.#it__ems[index].elm = item
-      console.log(item)
       this.#itemStatus[item.dataset.categoryId].elm = item;
     });
-    this.#CONTAINER.insertAdjacentElement('beforeend', ul);
-    console.log(this.#itemStatus)
     this.#update(App.viewModes.log10);
 
     // drill down event
@@ -138,7 +134,7 @@ export default class ColumnSelectorView {
         }
         // get lower column
         this.#itemStatus[item.dataset.id].selected = true;
-        this.#getChildren(item.dataset.id, depth + 1);
+        this.#getSubColumn(item.dataset.id, depth + 1);
       });
     });
 
@@ -171,12 +167,7 @@ export default class ColumnSelectorView {
       });
     });
 
-    // event listener
-    // DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
-  }
-
-  #makeColumn() {
-
+    return ul;
   }
 
   #update(isLog10) {
@@ -187,19 +178,25 @@ export default class ColumnSelectorView {
     // });
   }
 
-  #getChildren(id, depth) {
-    // loading
-    this.#LOADING_VIEW.classList.add('-shown');
-    fetch(this.#sparqlist + '?categoryIds=' + id)
-      .then(responce => responce.json())
-      .then(json => {
-        this.#setItems(json, depth, id);
-        this.#addColumn(json, depth, id);
-        this.#LOADING_VIEW.classList.remove('-shown');
-        // scroll
-        const gap = this.#ROOT.scrollWidth - this.#ROOT.clientWidth;
-        if (gap > 0) this.#ROOT.scrollLeft = gap;
-      });
+  #getSubColumn(id, depth) {
+    const column = this.#subColumns.find(column => column.parentCategoryId === id);
+    if (column) {
+      this.#appendSubColumn(column.ul, depth);
+    } else {
+      // loading
+      this.#LOADING_VIEW.classList.add('-shown');
+      fetch(this.#sparqlist + '?categoryIds=' + id)
+        .then(responce => responce.json())
+        .then(json => {
+          this.#setItems(json, depth, id);
+          const column = this.#makeColumn(json, depth, id);
+          this.#appendSubColumn(column, depth);
+          this.#LOADING_VIEW.classList.remove('-shown');
+          // scroll
+          const gap = this.#ROOT.scrollWidth - this.#ROOT.clientWidth;
+          if (gap > 0) this.#ROOT.scrollLeft = gap;
+        });
+    }
   }
 
 }

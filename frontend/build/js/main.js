@@ -3392,26 +3392,26 @@
 
   var _setItems = new WeakSet();
 
-  var _addColumn = new WeakSet();
+  var _appendSubColumn = new WeakSet();
 
   var _makeColumn = new WeakSet();
 
   var _update$2 = new WeakSet();
 
-  var _getChildren = new WeakSet();
+  var _getSubColumn = new WeakSet();
 
   var ColumnSelectorView = function ColumnSelectorView(elm, subject, property, _items, sparqlist) {
     var _this = this;
 
     _classCallCheck(this, ColumnSelectorView);
 
-    _getChildren.add(this);
+    _getSubColumn.add(this);
 
     _update$2.add(this);
 
     _makeColumn.add(this);
 
-    _addColumn.add(this);
+    _appendSubColumn.add(this);
 
     _setItems.add(this);
 
@@ -3516,14 +3516,16 @@
         });
       }
     });
+    var _depth = 0;
 
-    _classPrivateMethodGet(this, _setItems, _setItems2).call(this, _items, 0);
+    _classPrivateMethodGet(this, _setItems, _setItems2).call(this, _items, _depth);
 
-    _classPrivateMethodGet(this, _addColumn, _addColumn2).call(this, _items, 0);
+    var _column = _classPrivateMethodGet(this, _makeColumn, _makeColumn2).call(this, _items, _depth);
+
+    _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, _column, _depth);
   };
 
   function _setItems2(items, depth, parent) {
-    // console.log(items, depth)
     var _iterator = _createForOfIteratorHelper(items),
         _step;
 
@@ -3546,48 +3548,35 @@
     } finally {
       _iterator.f();
     }
-
-    console.log(_classPrivateFieldGet(this, _itemStatus));
   }
 
-  function _addColumn2(items, depth, parentCategoryId) {
+  function _appendSubColumn2(column, depth) {
+    _classPrivateFieldGet(this, _currentColumns)[depth] = column;
+
+    _classPrivateFieldGet(this, _CONTAINER$1).insertAdjacentElement('beforeend', column); // event listener
+    // DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
+
+  }
+
+  function _makeColumn2(items, depth, parentCategoryId) {
     var _this2 = this;
 
-    _classPrivateFieldSet(this, _it__ems, items.map(function (item) {
-      return Object.assign({}, item);
-    }));
+    // make column
+    var ul = document.createElement('ul');
+    ul.classList.add('column');
 
-    console.log(_classPrivateFieldGet(this, _it__ems)); // get column element
-
-    var ul = _classPrivateFieldGet(this, _subColumns).find(function (column) {
-      return column.parentCategoryId === parentCategoryId;
-    });
-
-    if (ul === undefined) {
-      ul = document.createElement('ul');
-      ul.classList.add('column');
-      _classPrivateFieldGet(this, _currentColumns)[depth] = ul;
-    }
-
-    _classPrivateFieldSet(this, _subColumns, {
+    _classPrivateFieldGet(this, _subColumns).push({
       ul: ul,
       parentCategoryId: parentCategoryId
-    });
+    }); // make items
 
-    console.log(_classPrivateFieldGet(this, _subColumns)); // make items
 
     ul.innerHTML = items.map(function (item) {
       return "<li class=\"item".concat(item.hasChild ? ' -haschild' : '', "\" data-id=\"").concat(item.categoryId, "\" data-category-id=\"").concat(item.categoryId, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");
     }).join('');
     ul.querySelectorAll(':scope > .item').forEach(function (item, index) {
-      // this.#it__ems[index].elm = item
-      console.log(item);
       _classPrivateFieldGet(_this2, _itemStatus)[item.dataset.categoryId].elm = item;
     });
-
-    _classPrivateFieldGet(this, _CONTAINER$1).insertAdjacentElement('beforeend', ul);
-
-    console.log(_classPrivateFieldGet(this, _itemStatus));
 
     _classPrivateMethodGet(this, _update$2, _update2$2).call(this, App$1.viewModes.log10); // drill down event
 
@@ -3628,7 +3617,7 @@
 
         _classPrivateFieldGet(_this2, _itemStatus)[item.dataset.id].selected = true;
 
-        _classPrivateMethodGet(_this2, _getChildren, _getChildren2).call(_this2, item.dataset.id, depth + 1);
+        _classPrivateMethodGet(_this2, _getSubColumn, _getSubColumn2).call(_this2, item.dataset.id, depth + 1);
       });
     }); // select/deselect a item (attribute)
 
@@ -3666,8 +3655,8 @@
           ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this2, _property$3).propertyId, checkbox.value);
         }
       });
-    }); // event listener
-    // DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
+    });
+    return ul;
   }
 
   function _update2$2(isLog10) {// let max = Math.max(...Array.from(this.#it__ems).map(item => item.count));
@@ -3677,26 +3666,36 @@
     // });
   }
 
-  function _getChildren2(id, depth) {
+  function _getSubColumn2(id, depth) {
     var _this3 = this;
 
-    // loading
-    _classPrivateFieldGet(this, _LOADING_VIEW$2).classList.add('-shown');
-
-    fetch(_classPrivateFieldGet(this, _sparqlist$1) + '?categoryIds=' + id).then(function (responce) {
-      return responce.json();
-    }).then(function (json) {
-      _classPrivateMethodGet(_this3, _setItems, _setItems2).call(_this3, json, depth, id);
-
-      _classPrivateMethodGet(_this3, _addColumn, _addColumn2).call(_this3, json, depth, id);
-
-      _classPrivateFieldGet(_this3, _LOADING_VIEW$2).classList.remove('-shown'); // scroll
-
-
-      var gap = _classPrivateFieldGet(_this3, _ROOT$6).scrollWidth - _classPrivateFieldGet(_this3, _ROOT$6).clientWidth;
-
-      if (gap > 0) _classPrivateFieldGet(_this3, _ROOT$6).scrollLeft = gap;
+    var column = _classPrivateFieldGet(this, _subColumns).find(function (column) {
+      return column.parentCategoryId === id;
     });
+
+    if (column) {
+      _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, column.ul, depth);
+    } else {
+      // loading
+      _classPrivateFieldGet(this, _LOADING_VIEW$2).classList.add('-shown');
+
+      fetch(_classPrivateFieldGet(this, _sparqlist$1) + '?categoryIds=' + id).then(function (responce) {
+        return responce.json();
+      }).then(function (json) {
+        _classPrivateMethodGet(_this3, _setItems, _setItems2).call(_this3, json, depth, id);
+
+        var column = _classPrivateMethodGet(_this3, _makeColumn, _makeColumn2).call(_this3, json, depth, id);
+
+        _classPrivateMethodGet(_this3, _appendSubColumn, _appendSubColumn2).call(_this3, column, depth);
+
+        _classPrivateFieldGet(_this3, _LOADING_VIEW$2).classList.remove('-shown'); // scroll
+
+
+        var gap = _classPrivateFieldGet(_this3, _ROOT$6).scrollWidth - _classPrivateFieldGet(_this3, _ROOT$6).clientWidth;
+
+        if (gap > 0) _classPrivateFieldGet(_this3, _ROOT$6).scrollLeft = gap;
+      });
+    }
   }
 
   /**
