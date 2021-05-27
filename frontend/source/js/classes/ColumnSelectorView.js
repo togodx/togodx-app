@@ -8,10 +8,9 @@ export default class ColumnSelectorView {
   #subject;
   #property;
   #sparqlist;
-  #itemStatus;
+  #items;
+  #columns;
   #currentColumns;
-  #subColumns;
-  #it__ems;
   #ROOT;
   #CONTAINER;
   #LOADING_VIEW;
@@ -21,9 +20,9 @@ export default class ColumnSelectorView {
     this.#subject = subject;
     this.#property = property;
     this.#sparqlist = sparqlist;
-    this.#itemStatus = {};
+    this.#items = {};
+    this.#columns = [];
     this.#currentColumns = [];
-    this.#subColumns = [];
 
     // make container
     elm.innerHTML = `
@@ -57,7 +56,7 @@ export default class ColumnSelectorView {
               // change checkbox status
               const isChecked = e.detail.action === 'add';
               li.querySelector(':scope > input[type="checkbox"]').checked = isChecked;
-              this.#itemStatus[li.dataset.id].checked = isChecked;
+              this.#items[li.dataset.id].checked = isChecked;
               // change ancestor status
               // TODO:
             }
@@ -65,9 +64,12 @@ export default class ColumnSelectorView {
         });
       }
     });
+    DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
 
-    const depth = 0;
     this.#setItems(items, depth);
+
+    // make root column
+    const depth = 0;
     const column = this.#makeColumn(items, depth);
     this.#appendSubColumn(column, depth);
   }
@@ -75,7 +77,7 @@ export default class ColumnSelectorView {
   #setItems(items, depth, parent) {
     for (const item of items) {
       const hasChild = item.hasChild && item.hasChild === true;
-      this.#itemStatus[item.categoryId] = {
+      this.#items[item.categoryId] = {
         label: item.label,
         parent,
         hasChild: hasChild ? true : false,
@@ -83,7 +85,7 @@ export default class ColumnSelectorView {
         selected: false,
         checked: false
       }
-      if (hasChild) this.#itemStatus[item.categoryId].children = [];
+      if (hasChild) this.#items[item.categoryId].children = [];
     }
   }
 
@@ -91,8 +93,6 @@ export default class ColumnSelectorView {
     this.#currentColumns[depth] = column;
     this.#CONTAINER.insertAdjacentElement('beforeend', column);
 
-    // event listener
-    // DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
   }
 
   #makeColumn(items, depth, parentCategoryId) {
@@ -100,20 +100,20 @@ export default class ColumnSelectorView {
     // make column
     const ul = document.createElement('ul');
     ul.classList.add('column');
-    this.#subColumns.push({ul, parentCategoryId});
+    let max = 0;
 
     // make items
     ul.innerHTML = items.map(item => {
-      return `<li class="item${item.hasChild ? ' -haschild' : ''}" data-id="${item.categoryId}" data-category-id="${item.categoryId}">
+      max = Math.max(max, item.count);
+      return `<li class="item${item.hasChild ? ' -haschild' : ''}" data-id="${item.categoryId}" data-category-id="${item.categoryId}" data-count="${item.count}">
         <input type="checkbox" value="${item.categoryId}"/>
         <span class="label">${item.label}</span>
         <span class="count">${item.count.toLocaleString()}</span>
       </li>`;
     }).join('');
     ul.querySelectorAll(':scope > .item').forEach((item, index) => {
-      this.#itemStatus[item.dataset.categoryId].elm = item;
+      this.#items[item.dataset.categoryId].elm = item;
     });
-    this.#update(App.viewModes.log10);
 
     // drill down event
     ul.querySelectorAll(':scope > .item.-haschild').forEach(item => {
@@ -126,14 +126,14 @@ export default class ColumnSelectorView {
           }
         }
         // deselect siblings
-        const selectedItemKeys = Object.keys(this.#itemStatus).filter(id => this.#itemStatus[id].selected && this.#itemStatus[id].depth >= depth);
+        const selectedItemKeys = Object.keys(this.#items).filter(id => this.#items[id].selected && this.#items[id].depth >= depth);
         for (const key of selectedItemKeys) {
-          this.#itemStatus[key].selected = false;
+          this.#items[key].selected = false;
           const selectedItem = this.#currentColumns[depth].querySelector(`[data-id="${key}"]`);
           if (selectedItem) selectedItem.classList.remove('-selected');
         }
         // get lower column
-        this.#itemStatus[item.dataset.id].selected = true;
+        this.#items[item.dataset.id].selected = true;
         this.#getSubColumn(item.dataset.id, depth + 1);
       });
     });
@@ -147,8 +147,8 @@ export default class ColumnSelectorView {
           let id = checkbox.value;
           let parent;
           do { // find ancestors
-            parent = this.#itemStatus[id].parent;
-            if (parent) ancestors.unshift(this.#itemStatus[parent]);
+            parent = this.#items[id].parent;
+            if (parent) ancestors.unshift(this.#items[parent]);
             id = parent;
           } while (parent);
           ConditionBuilder.addPropertyValue({
@@ -156,7 +156,7 @@ export default class ColumnSelectorView {
             property: this.#property,
             value: {
               categoryId: checkbox.value,
-              label: this.#itemStatus[checkbox.value].label,
+              label: this.#items[checkbox.value].label,
               ancestors: ancestors.map(ancestor => ancestor.label)
             }
           });
@@ -167,19 +167,24 @@ export default class ColumnSelectorView {
       });
     });
 
+    this.#columns.push({ul, parentCategoryId, max});
+    this.#update(App.viewModes.log10);
     return ul;
   }
 
   #update(isLog10) {
-    // let max = Math.max(...Array.from(this.#it__ems).map(item => item.count));
-    // max = isLog10 ? Math.log10(max) : max;
-    // this.#it__ems.forEach(item => {
-    //   item.elm.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorDarkGray, 1 - (isLog10 ? Math.log10(item.count) : item.count) / max).coords.map(cood => cood * 256).join(',')})`;
-    // });
+    this.#columns.forEach(column => {
+      let max = column.max;
+      max = isLog10 ? Math.log10(max) : max;
+      column.ul.querySelectorAll(':scope > li').forEach(li => {
+        const count = Number(li.dataset.count);
+        li.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorDarkGray, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
+      });
+    });
   }
 
   #getSubColumn(id, depth) {
-    const column = this.#subColumns.find(column => column.parentCategoryId === id);
+    const column = this.#columns.find(column => column.parentCategoryId === id);
     if (column) {
       this.#appendSubColumn(column.ul, depth);
     } else {
@@ -195,6 +200,11 @@ export default class ColumnSelectorView {
           // scroll
           const gap = this.#ROOT.scrollWidth - this.#ROOT.clientWidth;
           if (gap > 0) this.#ROOT.scrollLeft = gap;
+        })
+        .catch(error => {
+          // TODO: エラー処理
+          this.#LOADING_VIEW.classList.remove('-shown');
+          throw Error(error);
         });
     }
   }
