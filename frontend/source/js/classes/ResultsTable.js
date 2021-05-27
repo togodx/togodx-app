@@ -1,6 +1,6 @@
-import DefaultEventEmitter from "./DefaultEventEmitter";
+import DefaultEventEmitter from './DefaultEventEmitter';
 import StatisticsView from "./StatisticsView";
-import * as event from '../events';
+import * as event from "../events";
 
 export default class ResultsTable {
   #intersctionObserver;
@@ -101,7 +101,9 @@ export default class ResultsTable {
           <div class="togo-key-view">${tableData.condition.togoKey}</div>
         </div>
       </th>
-      ${tableData.condition.attributes.map(property => `
+      ${tableData.condition.attributes
+        .map(
+          (property) => `
       <th>
         <div class="inner -propertyvalue" style="background-color: ${property.subject.colorCSSValue}">
           <div class="togo-key-view">${property.property.primaryKey}</div>
@@ -191,8 +193,14 @@ export default class ResultsTable {
                   data-order = "x,y"
                   data-key="${column.propertyKey}"
                   data-subject-id="${this.#header[columnIndex].subjectId}"
-                  data-main-category-id="${this.#header[columnIndex].propertyId}"
-                  data-sub-category-id="${attribute.attribute.categoryId ? attribute.attribute.categoryId : attribute.attribute.categoryIds }"
+                  data-main-category-id="${
+                    this.#header[columnIndex].propertyId
+                  }"
+                  data-sub-category-id="${
+                    attribute.attribute.categoryId
+                      ? attribute.attribute.categoryId
+                      : attribute.attribute.categoryIds
+                  }"
                   data-unique-entry-id="${attribute.id}"
                   data-unique-entry-uri="${attribute.attribute.uri}"
                   >${attribute.id}</div>
@@ -224,33 +232,13 @@ export default class ResultsTable {
       this.#LOADING_VIEW.classList.add("-shown");
       this.#intersctionObserver.observe(this.#TABLE_END);
     }
-
-    // attach event
-    // rows.forEach((row, index) => {
-    //   const actualIndex = detail.tableData.offset + index;
-    //   const tr = this.#TBODY.querySelector(`:scope > tr[data-index="${actualIndex}"]`);
-    //   tr.addEventListener('click', () => {
-    //     if (tr.classList.contains('-selected')) {
-    //       // hide stanza
-    //       tr.classList.remove('-selected');
-    //       DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
-    //     } else {
-    //       // show stanza
-    //       this.#TBODY.querySelectorAll(':scope > tr').forEach(tr => tr.classList.remove('-selected'));
-    //       tr.classList.add('-selected');
-    //       // dispatch event
-    //       const customEvent = new CustomEvent(event.showStanza, {detail: {
-    //         subject: {
-    //           togoKey: this.#tableData.togoKey,
-    //           id: this.#tableData.subjectId,
-    //           value: tr.dataset.togoId
-    //         },
-    //         properties: row
-    //       }});
-    //       DefaultEventEmitter.dispatchEvent(customEvent);
-    //     }
-    //   })
-    // });
+    
+  // Naming needs improvement but hierarcy for Popup screen is like below
+  // Togo-key   (Uniprot)
+	//  → Subject  (Gene)
+  //    → Main-Category  (Expressed in tissues)
+  //      → Sub-Category  (Thyroid Gland)
+  //        → Unique-Entry (ENSG00000139304)
 
     rows.forEach((row, index) => {
       const actualIndex = detail.tableData.offset + index;
@@ -271,14 +259,26 @@ export default class ResultsTable {
                 keys: {
                   dataKey: uniqueEntry.getAttribute("data-key"),
                   subjectId: uniqueEntry.getAttribute("data-subject-id"),
-                  mainCategoryId: uniqueEntry.getAttribute("data-main-category-id"),
-                  subCategoryId: uniqueEntry.getAttribute("data-sub-category-id"),
-                  uniqueEntryId: uniqueEntry.getAttribute("data-unique-entry-id"),
+                  mainCategoryId: uniqueEntry.getAttribute(
+                    "data-main-category-id"
+                  ),
+                  subCategoryId: uniqueEntry.getAttribute(
+                    "data-sub-category-id"
+                  ),
+                  uniqueEntryId: uniqueEntry.getAttribute(
+                    "data-unique-entry-id"
+                  ),
                 },
                 properties: {
                   isPrimaryKey: uniqueEntry.classList.contains("primarykey"),
-                  externalLink: uniqueEntry.getAttribute("data-unique-entry-uri"),
-                  reportLink: `report.html?togoKey=${this.#tableData.togoKey}&id=${tr.getAttribute("data-togo-id")}&properties=${encodeURIComponent(JSON.stringify(row))}`, 
+                  externalLink: uniqueEntry.getAttribute(
+                    "data-unique-entry-uri"
+                  ),
+                  reportLink: `report.html?togoKey=${
+                    this.#tableData.togoKey
+                  }&id=${tr.getAttribute(
+                    "data-togo-id"
+                  )}&properties=${encodeURIComponent(JSON.stringify(row))}`,
                   stanza: tr.dataset.togoId,
                   dataOrder: uniqueEntry.getAttribute("data-order"),
                 },

@@ -42,14 +42,17 @@
         border-top-left-radius: inherit
         border-top-right-radius: inherit
         padding: 1.5% 3.5%
-        strong
-          font-size: 1.4rem
-          font-weight: bold
-        div
+        > div
           display: flex
-          align-items: center
-          &> *
+          align-items: baseline
+          > *
             margin-right: 1rem !important
+          &.label
+            font-weight: bold
+            > strong
+              font-size: 1.4rem
+            > .path
+              color: rgba(0, 0, 0, 0.5)
           > .close-button-view
             top: unset
             left: 5%
@@ -67,30 +70,31 @@
         width: 100%
         display: flex
         overflow: hidden
+        cursor: pointer
         > .arrow
           position: absolute
           width: 0
           height: 0
           border-color: var(--color-lamp-black)
-          &.up
+          &.-up
             top: 9%
             left: 50%
             border-left: 5px solid transparent
             border-right: 5px solid transparent
             border-bottom: 9.5px solid
-          &.right
+          &.-right
             left: 97%
             top: 50%
             border-top: 5px solid transparent
             border-bottom: 5px solid transparent
             border-left: 9.5px solid
-          &.down
+          &.-down
             bottom: 3%
             left: 50%
             border-left: 5px solid transparent
             border-right: 5px solid transparent
             border-top: 9.5px solid
-          &.left
+          &.-left
             right: 97%
             top: 50%
             border-top: 5px solid transparent
@@ -98,4 +102,5 @@
             border-right: 9.5px solid
         > .stanzas
           overflow: auto
+          width: 100%
           margin: 4rem
