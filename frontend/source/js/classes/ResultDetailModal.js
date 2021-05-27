@@ -4,26 +4,23 @@ import StanzaManager from "./StanzaManager";
 import * as event from "../events";
 
 export default class ResultDetailModal {
-  #arrow_dirs;
   #RESULTS_TABLE;
   #ROOT;
   #RESULT_MODAL;
   #EXIT_BUTTON;
 
   constructor(elm) {
-    // make popup element
     this.#ROOT = document.createElement('section');
-    this.#ROOT.className = "result-detail-modal";
+    this.#ROOT.id = "ResultDetailModal";
     document
       .querySelector('body')
       .insertAdjacentElement("beforeend", this.#ROOT);
 
     // references
     this.#RESULTS_TABLE = document.querySelector("#ResultsTable");
-    this.#RESULT_MODAL = document.querySelector(".result-detail-modal");
+    this.#RESULT_MODAL = document.querySelector("#ResultDetailModal");
     this.#EXIT_BUTTON = document.createElement('div');
     this.#EXIT_BUTTON.className = "close-button-view";
-    this.#arrow_dirs = ["up", "right", "down", "left"];
 
     // attach event
     this.#EXIT_BUTTON.addEventListener('click', () => {
@@ -34,7 +31,7 @@ export default class ResultDetailModal {
       this.#showPopUp(e);
     });
 
-    DefaultEventEmitter.addEventListener(event.hidePopUp, (e) => {
+    DefaultEventEmitter.addEventListener(event.hidePopUp, () => {
       this.#hidePopUp();
     });
 
@@ -45,7 +42,6 @@ export default class ResultDetailModal {
 
   }
 
-  // private methods
   #showPopUp(e) {
     if (this.#RESULT_MODAL.innerHTML === '') {
       const popup = document.createElement('div');
@@ -70,10 +66,6 @@ export default class ResultDetailModal {
     const subCategory = isPrimaryKey
       ? ''
       : Records.getValue(keys.mainCategoryId, keys.subCategoryId);
-
-    const extLink = isPrimaryKey
-      ? ''
-      : `<a class="external-link" href=${props.externalLink}>External Link`;
     const path = isPrimaryKey
       ? keys.dataKey
       : `<span class="path">${subject.subject}　/　${subCategory.label}</span>`;
@@ -89,7 +81,6 @@ export default class ResultDetailModal {
         <a class="toreportpage" href="${
           props.reportLink
         }" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
-        ${extLink}
     `;
     header.style.backgroundColor = subject.colorCSSValue;
     header.lastChild.appendChild(this.#EXIT_BUTTON);
@@ -99,9 +90,9 @@ export default class ResultDetailModal {
 
   #arrow(direction) {
     const arrow = document.createElement('div');
-    arrow.classList.add("arrow", `-${direction}`);
+    arrow.classList.add("arrow", `-${direction.toLowerCase()}`);
     arrow.addEventListener('click', (e) => {
-      alert(direction + " arrow clicked!");
+      this.#moveWithArrow(this.#arrowFuncs.get("Arrow" + direction));
     });
 
     return arrow;
@@ -122,7 +113,7 @@ export default class ResultDetailModal {
   #container(keys){
     const container = document.createElement('div');
     container.className = "container";
-    this.#arrow_dirs.forEach((dir) => {
+    ["Up", "Right", "Down", "Left"].forEach((dir) => {
       container.appendChild(this.#arrow(dir));
     });
     container.appendChild(this.#stanzas(keys));
@@ -131,12 +122,41 @@ export default class ResultDetailModal {
   }
 
   // Events, functions
-  #handleKeydown = (eventObj) => {
-    switch (eventObj.key) {
-      case "Escape":
-        this.#hidePopUp();
-      case "ArrowUp":
-        alert("arrow up!");
+  #handleKeydown = (e) => {
+    if(e.key == "Escape"){
+      this.#hidePopUp();
+    }
+    else if (this.#arrowFuncs.has(e.key)){
+      this.#moveWithArrow(this.#arrowFuncs.get(e.key));
+    }
+  }
+
+  #arrowFuncs = new Map([
+    ["ArrowLeft", function(x,y){return [x-1, y]}],
+    ["ArrowRight", function(x,y){return [x+1, y]}],
+    ["ArrowUp", function(x,y){return [x, y-1]}],
+    ["ArrowDown", function(x,y){return [x, y+1]}]
+  ]);
+
+  #moveWithArrow(movement) {
+    //TODO: Implement functions for data with multiple entries
+    try {
+      const curEntry = this.#RESULTS_TABLE.querySelector(".-selected");
+      let [x,y] = curEntry.getAttribute("data-order").split(",");
+      [x,y] = [x,y].map((cor) => parseFloat(cor));
+    
+      const targetEntry = this.#RESULTS_TABLE.querySelector(`[data-order = "${movement(x,y)}"`);
+      targetEntry.classList.add("-selected");
+      curEntry.classList.remove("-selected");
+
+      this.#RESULT_MODAL.querySelector(".stanzas").innerHTML = StanzaManager.draw(
+        targetEntry.getAttribute("data-subject-id"),
+        targetEntry.getAttribute("data-unique-entry-id"),
+        targetEntry.getAttribute("data-key")
+    );
+      
+    } catch (error) {
+      console.log("reached end of table!");
     }
   }
 
@@ -144,8 +164,8 @@ export default class ResultDetailModal {
     this.#RESULT_MODAL.classList.remove("backdrop");
     this.#RESULT_MODAL.innerHTML = '';
     this.#RESULTS_TABLE
-      .querySelectorAll("tr")
-      .forEach((tr) => tr.classList.remove("-selected"));
+      .querySelectorAll(".-selected")
+      .forEach((entry) => entry.classList.remove("-selected"));
     document.removeEventListener('keydown', this.#handleKeydown);
   }
 }

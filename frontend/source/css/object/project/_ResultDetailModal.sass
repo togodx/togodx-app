@@ -1,5 +1,5 @@
 
-.result-detail-modal
+#ResultDetailModal
   opacity: 0
   z-index: 0
   &.backdrop
@@ -28,7 +28,7 @@
       align-items: center
       align-content: center
       background-color: rgba(255,255,255, 0.8)
-      border-radius: 3rem
+      border-radius: 2rem
       box-shadow: var(--shadow-shallow)
       > header
         display: flex
@@ -44,10 +44,11 @@
         padding: 1.5% 3.5%
         > div
           display: flex
-          align-items: baseline
+          align-items: center
           > *
             margin-right: 1rem !important
           &.label
+            align-items: baseline
             font-weight: bold
             > strong
               font-size: 1.4rem

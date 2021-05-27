@@ -172,6 +172,7 @@ export default class ResultsTable {
             <div
               class="togo-key-view primarykey"
               data-key="${detail.tableData.togoKey}"
+              data-order = "${[0, index]}"
               data-subject-id="${detail.tableData.subjectId}"
               data-unique-entry-id="${detail.rows[index].id}">${
             detail.rows[index].id
@@ -190,7 +191,7 @@ export default class ResultsTable {
               <li>
                 <div
                   class="togo-key-view"
-                  data-order = "x,y"
+                  data-order = "${[columnIndex + 1, index]}"
                   data-key="${column.propertyKey}"
                   data-subject-id="${this.#header[columnIndex].subjectId}"
                   data-main-category-id="${
@@ -248,11 +249,10 @@ export default class ResultsTable {
       const uniqueEntries = tr.querySelectorAll(".togo-key-view");
       uniqueEntries.forEach((uniqueEntry) => {
         uniqueEntry.addEventListener("click", () => {
-          if (tr.classList.contains("-selected")) {
-            tr.classList.remove("-selected");
+          if (uniqueEntry.classList.contains("-selected")) {
+            uniqueEntry.classList.remove("-selected");
           } else {
-            // show popup
-            tr.classList.add("-selected");
+            uniqueEntry.classList.add("-selected");
             // dispatch event
             const customEvent = new CustomEvent(event.showPopup, {
               detail: {
@@ -279,7 +279,6 @@ export default class ResultsTable {
                   }&id=${tr.getAttribute(
                     "data-togo-id"
                   )}&properties=${encodeURIComponent(JSON.stringify(row))}`,
-                  stanza: tr.dataset.togoId,
                   dataOrder: uniqueEntry.getAttribute("data-order"),
                 },
               },
