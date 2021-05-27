@@ -1,4 +1,4 @@
-import DefaultEventEmitter from "./DefaultEventEmitter";
+import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from "./Records";
 import StanzaManager from "./StanzaManager";
 import * as event from "../events";
