@@ -89,10 +89,30 @@ export default class ColumnSelectorView {
     }
   }
 
-  #appendSubColumn(column, depth) {
-    this.#currentColumns[depth] = column;
-    this.#CONTAINER.insertAdjacentElement('beforeend', column);
-
+  #getSubColumn(id, depth) {
+    const column = this.#columns.find(column => column.parentCategoryId === id);
+    if (column) {
+      this.#appendSubColumn(column.ul, depth);
+    } else {
+      // loading
+      this.#LOADING_VIEW.classList.add('-shown');
+      fetch(this.#sparqlist + '?categoryIds=' + id)
+        .then(responce => responce.json())
+        .then(json => {
+          this.#setItems(json, depth, id);
+          const column = this.#makeColumn(json, depth, id);
+          this.#appendSubColumn(column, depth);
+          this.#LOADING_VIEW.classList.remove('-shown');
+          // scroll
+          const gap = this.#ROOT.scrollWidth - this.#ROOT.clientWidth;
+          if (gap > 0) this.#ROOT.scrollLeft = gap;
+        })
+        .catch(error => {
+          // TODO: エラー処理
+          this.#LOADING_VIEW.classList.remove('-shown');
+          throw Error(error);
+        });
+    }
   }
 
   #makeColumn(items, depth, parentCategoryId) {
@@ -172,6 +192,12 @@ export default class ColumnSelectorView {
     return ul;
   }
 
+  #appendSubColumn(column, depth) {
+    this.#currentColumns[depth] = column;
+    this.#CONTAINER.insertAdjacentElement('beforeend', column);
+
+  }
+
   #update(isLog10) {
     this.#columns.forEach(column => {
       let max = column.max;
@@ -181,32 +207,6 @@ export default class ColumnSelectorView {
         li.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorDarkGray, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
       });
     });
-  }
-
-  #getSubColumn(id, depth) {
-    const column = this.#columns.find(column => column.parentCategoryId === id);
-    if (column) {
-      this.#appendSubColumn(column.ul, depth);
-    } else {
-      // loading
-      this.#LOADING_VIEW.classList.add('-shown');
-      fetch(this.#sparqlist + '?categoryIds=' + id)
-        .then(responce => responce.json())
-        .then(json => {
-          this.#setItems(json, depth, id);
-          const column = this.#makeColumn(json, depth, id);
-          this.#appendSubColumn(column, depth);
-          this.#LOADING_VIEW.classList.remove('-shown');
-          // scroll
-          const gap = this.#ROOT.scrollWidth - this.#ROOT.clientWidth;
-          if (gap > 0) this.#ROOT.scrollLeft = gap;
-        })
-        .catch(error => {
-          // TODO: エラー処理
-          this.#LOADING_VIEW.classList.remove('-shown');
-          throw Error(error);
-        });
-    }
   }
 
 }
