@@ -16,9 +16,13 @@ class App {
 
   #viewModes;
   #aggregate;
+  #colorGray;
+  #colorDarkGray;
   #colorLampBlack;
 
   constructor() {
+    this.#colorGray = new Color('--color-gray').to('srgb');
+    this.#colorDarkGray = new Color('--color-dark-gray').to('srgb');
     this.#colorLampBlack = new Color('--color-lamp-black').to('srgb');
   }
 
@@ -101,6 +105,12 @@ class App {
   }
   get aggregateRows() {
     return this.#aggregate.table.url;
+  }
+  get colorGray() {
+    return this.#colorGray;
+  }
+  get colorDarkGray() {
+    return this.#colorDarkGray;
   }
   get colorLampBlack() {
     return this.#colorLampBlack;

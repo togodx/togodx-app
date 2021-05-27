@@ -328,6 +328,7 @@ template {
   --color-light-gray: #CCC;
   --color-warm-gray: #f7f5f4;
   --color-gray: #999;
+  --color-dark-gray: #999;
   --color-lamp-black: #333230;
   --color-translucent-lamp-black1: #33323044;
   --color-translucent-lamp-black2: #33323099;
@@ -347,13 +348,15 @@ template {
   --min-width-app: 102.4rem;
   --height-results-statistics: 20rem;
   --font-size-title: 1.5rem;
+  --text-shadow-value: 0 0 .2rem var(--color-lamp-black);
   --transition-instant: .2s;
   --transition-wipe: .5s;
   --transition-fetching: 1s;
   --shadow-shallow: 0 .1rem .1rem rgba(0,0,0,.3);
   --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3);
   --z-results-header: 1;
-  --z-track-item-selected: 1;
+  --z-track-item-border: 1;
+  --z-track-item-selected: 2;
   --z-track-collapse-button: 1;
   --z-track-tracks-header: 3;
   --z-track-pin: 4;
@@ -537,21 +540,23 @@ main {
 .column-selector-view {
   height: 100%;
   position: relative;
-  background-color: var(--lamp-black);
+  border-top: solid 0.1rem var(--color-gray);
 }
 .column-selector-view > .columns {
   white-space: nowrap;
-  overflow-x: auto;
+  overflow-x: hidden;
   height: 100%;
+  background-color: var(--color-light-gray);
 }
 .column-selector-view > .columns > .inner {
   height: 100%;
+  overflow-x: auto;
 }
 .column-selector-view > .columns > .inner > .column {
   display: inline-block;
   border-left: solid 0.1rem var(--color-separator);
   margin: 0;
-  padding: 0.4rem 0;
+  padding: 0;
   list-style: none;
   max-height: 29.5rem;
   height: 100%;
@@ -571,18 +576,34 @@ main {
   transition: background var(--transition-instant);
   display: flex;
 }
-.column-selector-view > .columns > .inner > .column > .item.-haschild::after {
+.column-selector-view > .columns > .inner > .column > .item.-all {
+  background-color: var(--color-light-gray);
+  border-bottom: solid 0.1rem var(--color-gray);
+}
+.column-selector-view > .columns > .inner > .column > .item.-haschild::before, .column-selector-view > .columns > .inner > .column > .item.-haschild::after {
   content: "";
   position: absolute;
   display: block;
+}
+.column-selector-view > .columns > .inner > .column > .item.-haschild::before {
+  width: 1rem;
+  height: 1rem;
+  top: 0.4rem;
+  right: 0.1rem;
+  border-radius: 100%;
+}
+.column-selector-view > .columns > .inner > .column > .item.-haschild::after {
   border-style: solid;
   border-width: 0.3rem 0 0.3rem 0.4rem;
-  border-color: transparent transparent transparent rgba(0, 0, 0, 0.2);
+  border-color: transparent transparent transparent var(--color-lamp-black);
   top: 0.6rem;
   right: 0.3rem;
 }
+.column-selector-view > .columns > .inner > .column > .item.-haschild:hover::before, .column-selector-view > .columns > .inner > .column > .item.-haschild.-selected::before {
+  background-color: var(--color-lamp-black);
+}
 .column-selector-view > .columns > .inner > .column > .item.-haschild:hover::after, .column-selector-view > .columns > .inner > .column > .item.-haschild.-selected::after {
-  border-color: transparent transparent transparent var(--color-black);
+  border-color: transparent transparent transparent white;
 }
 .column-selector-view > .columns > .inner > .column > .item > label, .column-selector-view > .columns > .inner > .column > .item > .count {
   padding-top: 0.1rem;
@@ -594,9 +615,9 @@ main {
 }
 .column-selector-view > .columns > .inner > .column > .item > .label {
   padding-right: 0.4rem;
-  font-weight: bold;
 }
 .column-selector-view > .columns > .inner > .column > .item > .count {
+  font-weight: lighter;
   padding-left: 1.2rem;
   flex-grow: 1;
   text-align: right;
@@ -1152,7 +1173,6 @@ main {
 }
 
 .track-value-view {
-  color: white;
   line-height: calc(var(--height-track) - var(--padding-track-block-start) * 2);
   position: absolute;
   transition: width var(--transition-wipe), left var(--transition-wipe);
@@ -1164,9 +1184,10 @@ main {
   display: block;
   position: absolute;
   top: 0;
-  right: 0;
+  right: -0.05rem;
   height: 100%;
-  border-left: solid 0.01rem rgba(255, 255, 255, 0.2);
+  border-left: solid 0.005rem var(--color-dark-gray);
+  z-index: var(--z-track-item-border);
 }
 .track-value-view > p {
   padding-left: 0.2rem;
@@ -1252,19 +1273,24 @@ main {
   max-width: calc(100% - var(--width-track-column-property));
 }
 .track-view > .row.-upper > .left {
-  padding-left: 1.6rem;
   position: relative;
   padding-top: 0;
-  display: flex;
-  align-items: center;
   line-height: 1;
   overflow: hidden;
 }
 .track-view > .row.-upper > .left > .collapsebutton {
+  padding-left: 1.2rem;
+  width: 100%;
+  height: var(--height-track);
   z-index: var(--z-track-collapse-button);
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+          align-items: center;
 }
 .track-view > .row.-upper > .left > .collapsebutton::before {
-  left: -1.1rem;
+  top: 0.8rem;
+  left: 0.2rem;
 }
 .track-view > .row.-upper > .left > .collapsebutton > .title {
   width: calc(var(--width-track-column-property) - 1.6rem);
@@ -1506,6 +1532,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   position: relative;
 }
 #Properties > .header {
+  border-bottom: solid 0.1rem var(--color-lamp-black);
   padding: var(--padding-track-block-start) var(--padding-track-inline-start);
   display: flex;
   align-items: center;
