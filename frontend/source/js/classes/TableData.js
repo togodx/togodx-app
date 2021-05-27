@@ -70,7 +70,7 @@ export default class TableData {
     </div>
     <div class="controller">
       <div class="button autorenew" title="Prepare for download" data-button="prepare-download">
-        <span class="material-icons-outlined autorenew">autorenew</span><span class="prepare-pause-resume">Prepare Data</span>
+        <span class="material-icons-outlined autorenew">autorenew</span><span class="prepare-data">Prepare Data</span>
       </div>
       <div class="button downloads" title="Download JSON " data-button="start-download">
         <a class="json" href="" download="sample.json">
@@ -79,7 +79,8 @@ export default class TableData {
         </a>
       </div>
       <div class="button" title="Restore as condition" data-button="restore">
-        <span class="material-icons-outlined">settings_backup_restore</span><span>Edit</span>
+        <span class="material-icons-outlined">settings_backup_restore</span>
+        Edit
       </div>
     </div>
     `;
@@ -103,14 +104,13 @@ export default class TableData {
     this.#BUTTON_PREPARE_DOWNLOAD.addEventListener('click', e => {
       e.stopPropagation();
       if (this.#isAutoLoad == false && this.#ROOT.dataset.status != 'complete') {
-        this.#isAutoLoad == true;
         this.#autoLoad();
         this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.add('lotation');
-        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .prepare-pause-resume').innerHTML='Pause';
+        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .prepare-data').innerHTML = 'Pause';
       } else {
         this.#isAutoLoad = false;
         this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.remove('lotation');
-        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .prepare-pause-resume').innerHTML='Resume';
+        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .prepare-data').innerHTML = 'Resume';
       }
     });
     // delete button
@@ -122,13 +122,11 @@ export default class TableData {
     // });
     BUTTONS.find(button => button.dataset.button === 'restore').addEventListener('click', e => {
       e.stopPropagation();
-      console.log('restore');
       this.#condition.attributes.forEach (attribute => {
         ConditionBuilder.setPropertyValues({
           subject: attribute.subject,
           property: attribute.property,
           values: attribute.query.categoryIds.map(categoryId => {
-            console.log(Records.getValue(attribute.query.propertyId, categoryId));
             return {
               categoryId: categoryId,
               label: Records.getValue(attribute.query.propertyId, categoryId).label,
@@ -137,14 +135,14 @@ export default class TableData {
           })
         });
       })
-      this.#condition.properties.forEach (property => {
-        ConditionBuilder.setPropertyValues({
-          subject: property.subject,
-          property: property.property,
-          values: [{
-          }]
-        });
-      })
+      // this.#condition.properties.forEach (property => {
+      //   ConditionBuilder.setPropertyValues({
+      //     subject: property.subject,
+      //     property: property.property,
+      //     values: [{
+      //     }]
+      //   });
+      // })
     })
     this.select();
     this.#getQueryIds();
