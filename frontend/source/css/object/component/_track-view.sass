@@ -23,17 +23,20 @@
       max-width: calc(100% - var(--width-track-column-property))
     &.-upper
       > .left
-        padding-left: 1.6rem
         position: relative
         padding-top: 0
-        display: flex
-        align-items: center
         line-height: 1
         overflow: hidden
         > .collapsebutton
+          padding-left: 1.2rem
+          width: 100%
+          height: var(--height-track)
           z-index: var(--z-track-collapse-button)
+          display: flex
+          align-items: center
           &::before
-            left: -1.1rem
+            top: .8rem
+            left: .2rem
           > .title
             width: calc(var(--width-track-column-property) - 1.6rem)
             font-size: 1.4rem
