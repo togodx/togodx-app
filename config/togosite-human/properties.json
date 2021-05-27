@@ -3,13 +3,15 @@
     "subject": "Gene",
     "subjectId": "gene",
     "togoKey": "hgnc",
+    "keyLabel": "HGNC",
     "properties": [
       {
         "propertyId": "ensembl-gene-biotype",
         "label": "Gene biotype",
         "description": "Biotypes of genes annotated in Ensembl",
         "data": "https://integbio.jp/togosite/sparqlist/api/Ensembl_gene_type",
-        "primaryKey": "ensembl_gene"
+        "primaryKey": "ensembl_gene",
+        "keyLabel": "Ensembl gene"
       },
       {
         "propertyId": "ensembl-exon-count",
@@ -17,6 +19,7 @@
         "description": "The number of exons",
         "data": "https://integbio.jp/togosite/sparqlist/api/Ensembl-exon-count",
         "primaryKey": "ensembl_transcript",
+        "keyLabel": "Ensembl transcript",
         "viewMethod": "histogram"
       },
       {
@@ -24,42 +27,48 @@
         "label": "# of paralogs",
         "description": "The number of paralogs calculated based on HomoloGene",
         "data": "https://integbio.jp/togosite/sparqlist/api/homologene_human_paralog_count",
-        "primaryKey": "ncbigene"
+        "primaryKey": "ncbigene",
+        "keyLabel": "NCBI gene"
       },
       {
         "propertyId": "homologene_category",
         "label": "Evolutionary conservation",
         "description": "Evolutionary conservation of genes",
         "data": "https://integbio.jp/togosite/sparqlist/api/homologene_category",
-        "primaryKey": "ncbigene"
+        "primaryKey": "ncbigene",
+        "keyLabel": "NCBI gene"
       },
       {
         "propertyId": "refex_specific_high_expression",
         "label": "High-level expression",
         "description": "Highly expressed genes in organs from RefEx",
         "data": "https://integbio.jp/togosite/sparqlist/api/refex_specific_high_expression",
-        "primaryKey": "ncbigene"
+        "primaryKey": "ncbigene",
+        "keyLabel": "NCBI gene"
       },
       {
         "propertyId": "refex_specific_low_expression",
         "label": "Low-level expression",
         "description": "Low expressed genes in organs from RefEx",
         "data": "https://integbio.jp/togosite/sparqlist/api/refex_specific_low_expression",
-        "primaryKey": "ncbigene"
+        "primaryKey": "ncbigene",
+        "keyLabel": "NCBI gene"
       },
       {
         "propertyId": "gtex6_tissues",
         "label": "Expressed in tissues",
         "description": "Genes expressed in tissues from GTEx",
         "data": "https://integbio.jp/togosite/sparqlist/api/gtex6_tissues",
-        "primaryKey": "ensembl_gene"
+        "primaryKey": "ensembl_gene",
+        "keyLabel": "Ensembl gene"
       },
       {
         "propertyId": "chip_atlas",
         "label": "Transcription factors",
         "description": "Genes with hypothetical upstream TFs in ChIP-Atlas",
         "data": "https://integbio.jp/togosite/sparqlist/api/chip_atlas",
-        "primaryKey": "ensembl_gene"
+        "primaryKey": "ensembl_gene",
+        "keyLabel": "Ensembl gene"
       }
     ]
   },
@@ -67,40 +76,46 @@
     "subject": "Protein",
     "subjectId": "protein",
     "togoKey": "uniprot",
+    "keyLabel": "UniProt",
     "properties": [
       {
         "propertyId": "uniprot_keywords_domain",
         "label": "Protein domains",
         "description": "Protein domains from UniProt",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_domain",
-        "primaryKey": "uniprot"
+        "primaryKey": "uniprot",
+        "keyLabel": "UniProt"
       },{
         "propertyId": "uniprot_keywords_cellular_component",
         "label": "Cellular component",
         "description": "Gene Ontology (GO) terms of the cellular component domain",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_cellular_component",
-        "primaryKey": "uniprot"
+        "primaryKey": "uniprot",
+        "keyLabel": "UniProt"
       },
       {
         "propertyId": "uniprot_keywords_biological_process",
         "label": "Biological process",
         "description": "Gene Ontology (GO) terms of the biological process domain",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_biological_process",
-        "primaryKey": "uniprot"
+        "primaryKey": "uniprot",
+        "keyLabel": "UniProt"
       },
       {
         "propertyId": "uniprot_keywords_molecular_function",
         "label": "Molecular function",
         "description": "Gene Ontology (GO) terms of the molecular function domain",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_molecular_function",
-        "primaryKey": "uniprot"
+        "primaryKey": "uniprot",
+        "keyLabel": "UniProt"
       },
       {
         "propertyId": "uniprot_keywords_ligand",
         "label": "Ligands",
         "description": "Ligand bindings from UniProt",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_ligand",
-        "primaryKey": "uniprot"
+        "primaryKey": "uniprot",
+        "keyLabel": "UniProt"
       },
       {
         "propertyId": "uniprot_mass",
@@ -108,6 +123,7 @@
         "description": "Molecular mass from UniProt",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_mass",
         "primaryKey": "uniprot",
+        "keyLabel": "UniProt",
         "viewMethod": "histogram"
       },
       {
@@ -115,7 +131,8 @@
         "label": "PTMs",
         "description": "Post-translational modifications from UniProt",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_PTM",
-        "primaryKey": "uniprot"
+        "primaryKey": "uniprot",
+        "keyLabel": "UniProt"
       },
       {
         "propertyId": "uniprot_transmembranenumber",
@@ -123,6 +140,7 @@
         "description": "The number of transmembrane segments from UniProt",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_transmembranenumber",
         "primaryKey": "uniprot",
+        "keyLabel": "UniProt",
         "viewMethod": "histogram"
       },
       {
@@ -131,6 +149,7 @@
         "description": "The number of phosphorylation sites from UniProt",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_phospho_site",
         "primaryKey": "uniprot",
+        "keyLabel": "UniProt",
         "viewMethod": "histogram"
       },
       {
@@ -139,6 +158,7 @@
         "description": "The number of glycosylation sites from UniProt",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_glyco_site",
         "primaryKey": "uniprot",
+        "keyLabel": "UniProt",
         "viewMethod": "histogram"
       },
       {
@@ -146,21 +166,24 @@
         "label": "Disease-related proteins",
         "description": "Disease-related proteins from UniProt",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_disease",
-        "primaryKey": "uniprot"
+        "primaryKey": "uniprot",
+        "keyLabel": "UniProt"
       },
       {
         "propertyId": "uniprot_isolated_tissue",
         "label": "Isolation source",
         "description": "Tissues from which the protein was isolated, from UniProt",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_isolated_tissue",
-        "primaryKey": "uniprot"
+        "primaryKey": "uniprot",
+        "keyLabel": "UniProt"
       },
       {
         "propertyId": "nextprot_protein_existence",
         "label" : "Evidence of existence",
         "description": "Protein existence obtained from neXtProt",
         "data": "https://integbio.jp/togosite/sparqlist/api/nextprot_protein_existence",
-        "primaryKey": "uniprot"
+        "primaryKey": "uniprot",
+        "keyLabel": "UniProt"
       }
     ]
   },
@@ -168,13 +191,15 @@
     "subject": "Protein structure",
     "subjectId": "proteinStructure",
     "togoKey": "pdb",
+    "keyLabel": "PDB",
     "properties": [
       {
         "propertyId": "uniprot_pdb_existence",
         "label": "Structure data existence",
         "description": "Uniprot entries with links to PDB data entries",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_pdb_existence",
-        "primaryKey": "uniprot"
+        "primaryKey": "uniprot",
+        "keyLabel": "UniProt"
       },
       {
         "propertyId": "pdb_alphahelix",
@@ -182,6 +207,7 @@
         "description": "The number of alpha-helices in a PDB entry",
         "data": "https://integbio.jp/togosite/sparqlist/api/pdb_alphahelix_bin",
         "primaryKey": "pdb",
+        "keyLabel": "PDB",
         "viewMethod": "histogram"
       },
       {
@@ -190,6 +216,7 @@
         "description": "The number of beta-sheets in a PDB entry",
         "data": "https://integbio.jp/togosite/sparqlist/api/pdb_betasheet_bin",
         "primaryKey": "pdb",
+        "keyLabel": "PDB",
         "viewMethod": "histogram"
       },
       {
@@ -198,6 +225,7 @@
         "description": "The number of peptides in a PDB entry",
         "data": "https://integbio.jp/togosite/sparqlist/api/pdb_polypeptide_mode",
         "primaryKey": "pdb",
+        "keyLabel": "PDB",
         "viewMethod": "histogram"
       },
       {
@@ -205,49 +233,54 @@
         "label": "Other related molecules",
         "description": "Nonpeptide molecules related protein structures in PDB",
         "data": "https://integbio.jp/togosite/sparqlist/api/pdb_nonpeptide",
-        "primaryKey": "pdb"
+        "primaryKey": "pdb",
+        "keyLabel": "PDB"
       },
       {
         "propertyId": "pdb_experimental_methods",
         "label": "Analysis methods",
         "description": "Structure determination methods in PDB",
         "data": "https://integbio.jp/togosite/sparqlist/api/pdb_experimental_methods_mode",
-        "primaryKey": "pdb"
+        "primaryKey": "pdb",
+        "keyLabel": "PDB"
       },
       {
         "propertyId": "pdb-temperature",
         "label": "Crystallization temperature",
         "description": "Temperature of the crystallization solution in PDB",
         "data": "https://integbio.jp/togosite/sparqlist/api/pdb-temperature",
-        "primaryKey": "pdb"
+        "primaryKey": "pdb",
+        "keyLabel": "PDB"
       },
       {
         "propertyId": "pdb_pH",
         "label": "Crystallization pH",
         "description": "pH value of the crystallization solution in PDB",
         "data": "https://integbio.jp/togosite/sparqlist/api/pdb_pH",
-        "primaryKey": "pdb"
+        "primaryKey": "pdb",
+        "keyLabel": "PDB"
       }
     ]
   },
     {
     "subject": "Interaction",
     "subjectId": "interaction",
-    "togoKey": "uniprot",
     "properties": [
       {
         "propertyId": "uniprot_reactome",
         "label" : "Proteins in pathway",
         "description": "The number of proteins in each pathway from Reactome",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_reactome",
-        "primaryKey": "uniprot"
+        "primaryKey": "uniprot",
+        "keyLabel": "UniProt"
       },
       {
         "propertyId": "chebi_reactome",
         "label" : "Compounds in pathway",
         "description": "The number of chemical compounds in each pathway from Reactome",
         "data": "https://integbio.jp/togosite/sparqlist/api/chebi_reactome",
-        "primaryKey": "chebi"
+        "primaryKey": "chebi",
+        "keyLabel": "ChEBI compound"
       },
       {
         "propertyId": "uniprot_interact",
@@ -255,6 +288,7 @@
         "description": "The number of interacting proteins from UniProt",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_interact",
         "primaryKey": "uniprot",
+        "keyLabel": "UniProt",
         "viewMethod": "histogram"
       },
       {
@@ -262,7 +296,8 @@
         "label": "ChEMBL assay existence",
         "description": "Proteins with or without ChEMBL assay from Uniprot",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_chembl_assay_existence",
-        "primaryKey": "uniprot"
+        "primaryKey": "uniprot",
+        "keyLabel": "UniProt"
       }
     ]
   },
@@ -270,48 +305,55 @@
     "subject": "Chemical compound",
     "subjectId": "chemicalCompound",
     "togoKey": "pubchem_compound",
+    "keyLabel": "PubChem compound",
     "properties": [
       {
         "propertyId": "chembl_mechanism_action_type",
         "label": "Action type",
         "description": "Mechanism action types in ChEMBL",
         "data": "https://integbio.jp/togosite/sparqlist/api/chembl_mechanism_action_type",
-        "primaryKey": "chembl_compound"
+        "primaryKey": "chembl_compound",
+        "keyLabel": "ChEMBL compound"
       },
       {
         "propertyId": "chembl_substance_type",
         "label": "Substance type",
         "description": "Substance types in ChEMBL",
         "data": "https://integbio.jp/togosite/sparqlist/api/chembl_substancetype",
-        "primaryKey": "chembl_compound"
+        "primaryKey": "chembl_compound",
+        "keyLabel": "ChEMBL compound"
       },
       {
         "propertyId": "chembl_mesh",
         "label": "Drug indication (MeSH)",
         "description": "Drug indications in MeSH categories",
         "data": "https://integbio.jp/togosite/sparqlist/api/chembl_mesh",
-        "primaryKey": "chembl_compound"
+        "primaryKey": "chembl_compound",
+        "keyLabel": "ChEMBL compound"
       },
       {
         "propertyId": "chembl_development_phase",
         "label": "Drug development phase",
         "description": "Drug development phase in ChEMBL",
         "data": "https://integbio.jp/togosite/sparqlist/api/chembl_development_phase",
-        "primaryKey": "chembl_compound"
+        "primaryKey": "chembl_compound",
+        "keyLabel": "ChEMBL compound"
       },
       {
         "propertyId": "atc_classification_pubchem",
         "label": "PubChem ATC classification",
         "description": "Anatomical Therapeutic Chemical (ATC) Classification in PubChem",
         "data": "https://integbio.jp/togosite/sparqlist/api/atc_classification_haschild",
-        "primaryKey": "pubchem_compound"
+        "primaryKey": "pubchem_compound",
+        "keyLabel": "PubChem compound"
       },
       {
         "propertyId": "atc_classification_pubchem_chembl",
         "label": "ChEMBL ATC classification",
         "description": "Anatomical Therapeutic Chemical (ATC) Classification in ChEMBL",
         "data": "https://integbio.jp/togosite/sparqlist/api/atcClassificationChEMBL",
-        "primaryKey": "chembl_compound"
+        "primaryKey": "chembl_compound",
+        "keyLabel": "ChEMBL compound"
       }
     ]
   },
@@ -319,41 +361,47 @@
     "subject": "Disease",
     "subjectId": "disease",
     "togoKey": "mondo",
+    "keyLabel": "Mondo",
     "properties": [
       {
         "propertyId": "disease_mondo_filter",
         "label": "Diseases in Mondo",
         "description": "Disease or disorder categories in the Mondo Disease Ontology (Mondo)",
         "data": "https://integbio.jp/togosite/sparqlist/api/disease_mondo_filter",
-        "primaryKey": "mondo"
+        "primaryKey": "mondo",
+        "keyLabel": "Mondo"
       },
       {
         "propertyId": "disease_mesh_filter",
         "label": "Diseases in MeSH",
         "description": "Disease categories in Medical Subject Headings (MeSH)",
         "data": "https://integbio.jp/togosite/sparqlist/api/disease_mesh_filter",
-        "primaryKey": "mesh"
+        "primaryKey": "mesh",
+        "keyLabel": "MeSH"
       },
       {
         "propertyId": "rare_disease_nando_filter",
         "label": "Diseases in NANDO",
         "description": "Japanese intractable disease categories in the Nanbyo Disease Ontology (NANDO)",
         "data": "https://integbio.jp/togosite/sparqlist/api/nando",
-        "primaryKey": "nando"
+        "primaryKey": "nando",
+        "keyLabel": "NANDO"
       },
       {
         "propertyId": "disease_related_database",
         "label": "Related DBs in Mondo",
         "description": "The number of entries in disease related database in Mondo",
         "data": "https://integbio.jp/togosite/sparqlist/api/Disease-relatedDB",
-        "primaryKey": "mondo"
+        "primaryKey": "mondo",
+        "keyLabel": "Mondo"
       },
       {
         "propertyId": "disease_hpo_filter",
         "label": "Phenotypic abnormality",
         "description": "Phenotypic abnormality categories of the Human Phenotype Ontology (HPO)",
         "data": "https://integbio.jp/togosite/sparqlist/api/disease_hpo_filter",
-        "primaryKey": "hp"
+        "primaryKey": "hp",
+        "keyLabel": "Human Phenotype Ontology"
       }
     ]
   },
@@ -361,20 +409,23 @@
     "subject": "Variant",
     "subjectId": "variant",
     "togoKey": "togovar",
+    "keyLabel": "TogoVar variant",
     "properties": [
       {
         "propertyId": "variant_consequence",
         "label": "Consequence",
         "description": "Variant consequence from TogoVar",
         "data": "https://integbio.jp/togosite/sparqlist/api/variant_consequence",
-        "primaryKey": "togovar"
+        "primaryKey": "togovar",
+        "keyLabel": "TogoVar variant"
       },
       {
         "propertyId": "variant_clinical_significance",
         "label": "Clinical significance",
         "description": "Variant clinical significance from TogoVar",
         "data": "https://integbio.jp/togosite/sparqlist/api/variant_clinical_significance",
-        "primaryKey": "togovar"
+        "primaryKey": "togovar",
+        "keyLabel": "TogoVar variant"
       }
     ]
   }
