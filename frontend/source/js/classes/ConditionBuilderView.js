@@ -1,4 +1,3 @@
-import App from "./App";
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import * as event from '../events';
@@ -80,7 +79,7 @@ export default class ConditionBuilderView {
     <ul class="path">
       <li>${subject.subject}</li>
     </ul>
-    <div class="label" style="color: ${App.getHslColor(subject.hue)};">${property.label}</div>`;
+    <div class="label" style="color: ${subject.colorCSSValue};">${property.label}</div>`;
     this.#PROPERTIES_CONDITIONS_CONTAINER.insertAdjacentElement('beforeend', view);
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // event
@@ -103,7 +102,7 @@ export default class ConditionBuilderView {
     view.dataset.propertyId = property.propertyId;
     view.dataset.categoryId = value.categoryId;
     // view.dataset.range = [0, 0]; // TODO:
-    view.style.backgroundColor = `hsl(${subject.hue}, 45%, 50%)`;
+    view.style.backgroundColor = subject.colorCSSValue;
     view.innerHTML = `
     <div class="closebutton"></div>
     <ul class="path">

@@ -5,18 +5,18 @@
   position: relative
   > .header
     padding: var(--padding-track-block-start) var(--padding-track-inline-start)
-    border-bottom: solid .1rem var(--color-black)
     display: flex
     align-items: center
-    height: var(--height-track)
-    line-height: calc(var(--height-track) - var(--padding-track-block-start) * 2)
+    height: var(--height-header)
+    line-height: calc(var(--height-header) - var(--padding-track-block-start) * 2)
     position: sticky
     top: 0
-    background-color: white
+    background-color: var(--color-lamp-black)
+    color: white
     z-index: var(--z-track-tracks-header)
     > .title
       > *
-        font-size: var(--font-size-title)
+        font-size: 1.2rem
         margin-bottom: 0
         display: inline-block
       > .properties
@@ -31,13 +31,13 @@
         > li
           display: inline-block
           + li
-            margin-left: 1.6rem
-          > .material-icons-outlined
-            font-size: 1.4rem
-            vertical-align: middle
-            position: relative
-            top: -.1rem
-            margin-right: .2rem
+            margin-left: 1.4rem
+          // > .material-icons-outlined
+          //   font-size: 1.6rem
+          //   vertical-align: middle
+          //   position: relative
+          //   top: -.1rem
+          //   margin-right: .2rem
           > label
             margin-bottom: 0
             + label

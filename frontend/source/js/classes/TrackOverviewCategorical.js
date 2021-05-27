@@ -2,9 +2,10 @@ import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
 import * as event from '../events';
+import * as util from '../functions/util';
 
 const MIN_PIN_SIZE = 12;
-const MAX_PIN_SIZE = 20;
+const MAX_PIN_SIZE = 36;
 const RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
 
 export default class TrackOverviewCategorical {
@@ -28,11 +29,9 @@ export default class TrackOverviewCategorical {
     elm.innerHTML = this.#values.map((value, index) => {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / sum * 100;
-      value.color = `hsla(${360 * index / values.length}, 70%, 50%, .075)`;
+      value.baseColor = util.colorTintByHue(subject.color, 360 * index / values.length);
       return `
         <li class="track-value-view" style="width: ${width}%;" data-category-id="${value.categoryId}">
-          <div class="color" style="background-color: ${value.color};"></div>
-          <div class="heatmap"></div>
           <p>
             <span class="label">${value.label}</span>
             <span class="count">${value.count.toLocaleString()}</span>
@@ -50,7 +49,7 @@ export default class TrackOverviewCategorical {
       value.pin = pin;
 
       // attach event: show tooltip
-      const label = `<span style="color: ${App.getHslColor(this.#subject.hue)}">${value.label}</span>`;
+      const label = `<span style="color: ${this.#subject.colorCSSValue}">${value.label}</span>`;
       elm.addEventListener('mouseenter', () => {
         const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {
           label,
@@ -151,13 +150,12 @@ export default class TrackOverviewCategorical {
     let max = Math.max(...this.#values.map(value => value.count));
     max = isLog10 ? Math.log10(max) : max;
     const fixedWidth = isArea ? 0 : 100 / this.#values.length;
-    let width;
     let left = 0;
     this.#values.forEach(value => {
-      width = isArea ? (isLog10 ? Math.log10(value.count) : value.count) / sum * 100 : fixedWidth;
+      const width = isArea ? (isLog10 ? Math.log10(value.count) : value.count) / sum * 100 : fixedWidth;
+      value.elm.style.backgroundColor = `rgb(${value.baseColor.mix(App.colorLampBlack, 1 - (isLog10 ? value.countLog10 : value.count) / max).coords.map(cood => cood * 256).join(',')})`;
       value.elm.style.width = width + '%';
       value.elm.style.left = left + '%';
-      value.elm.querySelector(':scope > .heatmap').style.backgroundColor = `rgba(51, 50, 48, ${1 - (isLog10 ? value.countLog10 : value.count) / max})`;
       left += width;
     });
   }
@@ -173,7 +171,8 @@ export default class TrackOverviewCategorical {
         if (userValue) {
           value.elm.classList.add('-pinsticking');
           // pin
-          const ratio = userValue.count / value.count;
+          let ratio = userValue.count / value.count;
+          ratio = ratio > 1 ? 1 : ratio;
           const size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';

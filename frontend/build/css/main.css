@@ -343,6 +343,7 @@ template {
   --width-track-column-property: 18rem;
   --width-condition: 24rem;
   --height-track: 3rem;
+  --height-header: 2.4rem;
   --min-width-app: 102.4rem;
   --height-results-statistics: 20rem;
   --font-size-title: 1.5rem;
@@ -351,13 +352,14 @@ template {
   --transition-fetching: 1s;
   --shadow-shallow: 0 .1rem .1rem rgba(0,0,0,.3);
   --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3);
+  --z-results-header: 1;
   --z-track-item-selected: 1;
   --z-track-collapse-button: 1;
   --z-track-tracks-header: 3;
   --z-track-pin: 4;
   --z-fixed-area: 5;
-  --z-track-balloon: 6;
-  --z-results-header: 1;
+  --z-header: 6;
+  --z-track-balloon: 7;
 }
 
 @-webkit-keyframes enter-stacking-item {
@@ -410,6 +412,7 @@ body {
   font-family: "Roboto Condensed", sans-serif;
   font-size: 1.2rem;
   line-height: 1.5;
+  background-color: var(--color-gray);
 }
 body[data-page=top] {
   overflow: hidden;
@@ -421,8 +424,9 @@ body[data-page=top][data-display=results] [data-hidden-by=results], body[data-pa
   position: absolute;
   transition: opacity var(--transition-wipe);
 }
-body[data-page=report] {
-  background-color: var(--color-gray);
+
+main {
+  padding-top: var(--height-header);
 }
 
 .balloon-view {
@@ -620,10 +624,11 @@ body[data-page=report] {
   --padding-horizontal: 1rem;
   --padding-vertical: 0;
   --height-selector: 3rem;
-  padding-bottom: 5rem;
+  padding: 1rem 0 5rem;
+  background-color: white;
 }
 .histogram-range-selector-view > .selector {
-  margin: 1rem var(--padding-horizontal);
+  margin: 0 var(--padding-horizontal);
   width: calc(100% - var(--padding-horizontal) * 2);
   height: var(--height-selector);
   position: relative;
@@ -689,9 +694,6 @@ body[data-page=report] {
   bottom: 0;
   width: 100%;
   transition: height var(--transition-instant);
-}
-.histogram-range-selector-view > .histogram > .graph > .bar > .actual > .color {
-  height: 100%;
 }
 .histogram-range-selector-view > .histogram > .graph > .bar > .label {
   position: absolute;
@@ -1062,10 +1064,26 @@ body[data-page=report] {
   left: 0;
   transition: width var(--transition-wipe);
 }
-.table-data-controller-view > .controller, .table-data-controller-view > .downloads {
+.table-data-controller-view > .controller {
+  display: -webkit-flex;
+  display: flex;
   color: white;
 }
-.table-data-controller-view > .controller > .button, .table-data-controller-view > .downloads > .button {
+.table-data-controller-view > .controller > .downloads {
+  display: none;
+}
+.table-data-controller-view > .controller > .downloads > a {
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+.table-data-controller-view > .controller > .downloads > a > span {
+  vertical-align: middle;
+}
+.table-data-controller-view > .controller > .downloads > a > .material-icons-outlined {
+  font-size: 1.4rem;
+}
+.table-data-controller-view > .controller > .button {
   padding: 0.2rem 0;
   -webkit-flex-grow: 1;
           flex-grow: 1;
@@ -1073,30 +1091,25 @@ body[data-page=report] {
   transition: background-color var(--transition-instant);
   cursor: pointer;
 }
-.table-data-controller-view > .controller > .button:hover, .table-data-controller-view > .downloads > .button:hover {
+.table-data-controller-view > .controller > .button:hover {
   background-color: var(--color-lamp-black);
-}
-.table-data-controller-view > .controller > .button > .material-icons-outlined, .table-data-controller-view > .downloads > .button > .material-icons-outlined {
-  position: relative;
-  top: -0.1rem;
-  font-size: 1.4rem;
-  vertical-align: middle;
-}
-.table-data-controller-view > .controller {
-  display: -webkit-flex;
-  display: flex;
 }
 [data-display=results] .table-data-controller-view > .controller > .button[data-button=restore] {
   cursor: not-allowed;
   opacity: 0.5;
 }
+.table-data-controller-view > .controller > .button.none {
+  display: none;
+}
+.table-data-controller-view > .controller > .button > .material-icons-outlined {
+  position: relative;
+  top: -0.1rem;
+  font-size: 1.4rem;
+  vertical-align: middle;
+}
 .table-data-controller-view > .controller > .button > .lotation {
   -webkit-animation: lotation 3s linear infinite;
           animation: lotation 3s linear infinite;
-}
-.table-data-controller-view > .downloads {
-  border-top: solid 1px var(--color-translucent-lamp-black3);
-  display: none;
 }
 .table-data-controller-view.-current, .table-data-controller-view:hover {
   opacity: 1;
@@ -1136,9 +1149,15 @@ body[data-page=report] {
 .table-data-controller-view[data-status=complete] > .indicator {
   display: block;
 }
-.table-data-controller-view[data-status=complete] > .controller, .table-data-controller-view[data-status=complete] > .downloads {
+.table-data-controller-view[data-status=complete] > .controller {
   display: -webkit-flex;
   display: flex;
+}
+.table-data-controller-view[data-status=complete] > .controller > .autorenew {
+  display: none;
+}
+.table-data-controller-view[data-status=complete] > .controller > .downloads {
+  display: block;
 }
 .table-data-controller-view[data-status=complete] > .controller > .button[data-button=prepare-download] {
   cursor: not-allowed;
@@ -1182,6 +1201,7 @@ body[data-page=report] {
   position: absolute;
   transition: width var(--transition-wipe), left var(--transition-wipe);
   cursor: pointer;
+  transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
 }
 .track-value-view::after {
   content: "";
@@ -1191,21 +1211,6 @@ body[data-page=report] {
   right: 0;
   height: 100%;
   border-left: solid 0.01rem rgba(255, 255, 255, 0.2);
-}
-.track-value-view > .color, .track-value-view > .heatmap {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
-}
-.track-value-view > .heatmap {
-  background-color: var(--color-lamp-black);
-  opacity: 0;
-}
-body[data-heatmap=true] .track-value-view > .heatmap {
-  opacity: 1;
 }
 .track-value-view > p {
   padding-left: 0.2rem;
@@ -1243,9 +1248,8 @@ body[data-heatmap=true] .track-value-view > .heatmap {
   z-index: var(--z-track-pin);
   display: none;
 }
-.track-value-view:hover > .color, .track-value-view:hover > .heatmap, .track-value-view.-selected > .color, .track-value-view.-selected > .heatmap {
-  opacity: 0 !important;
-  transition: opacity var(--transition-instant);
+.track-value-view:hover, .track-value-view.-selected {
+  background-color: transparent !important;
 }
 .track-value-view:hover::before, .track-value-view.-selected::before {
   content: "";
@@ -1256,11 +1260,8 @@ body[data-heatmap=true] .track-value-view > .heatmap {
   border: solid 1px white;
   z-index: var(--z-track-item-selected);
 }
-.-showuserids .track-value-view:not(.-pinsticking) > .color {
+.-showuserids .track-value-view:not(.-pinsticking) {
   background-color: var(--color-gray) !important;
-}
-.-showuserids .track-value-view:not(.-pinsticking) > .heatmap {
-  opacity: 0 !important;
 }
 .-showuserids .track-value-view:not(.-pinsticking) > p {
   opacity: 0.25;
@@ -1279,6 +1280,9 @@ body[data-heatmap=true] .track-value-view > .heatmap {
   pointer-events: none;
   opacity: 0.2;
 }
+.track-view.-preparing > .row.-upper > .right > .overview {
+  background-color: transparent !important;
+}
 .track-view > .row {
   display: -webkit-flex;
   display: flex;
@@ -1288,6 +1292,7 @@ body[data-heatmap=true] .track-value-view > .heatmap {
   -webkit-flex-basis: var(--width-track-column-property);
           flex-basis: var(--width-track-column-property);
   min-width: var(--width-track-column-property);
+  background-color: white;
 }
 .track-view > .row > .right {
   -webkit-flex-basis: calc(100% - var(--width-track-column-property));
@@ -1366,7 +1371,7 @@ body[data-heatmap=true] .track-value-view > .heatmap {
   pointer-events: none;
 }
 
-.close-button {
+.close-button-view {
   width: 1.2rem;
   height: 1.2rem;
   position: absolute;
@@ -1374,7 +1379,7 @@ body[data-heatmap=true] .track-value-view > .heatmap {
   right: 0.4rem;
   cursor: pointer;
 }
-.close-button::before, .close-button::after {
+.close-button-view::before, .close-button-view::after {
   content: "";
   border-left: solid 0.1rem var(--color-black);
   position: absolute;
@@ -1383,11 +1388,11 @@ body[data-heatmap=true] .track-value-view > .heatmap {
   display: block;
   height: 0.8rem;
 }
-.close-button::before {
+.close-button-view::before {
   -webkit-transform: rotate(45deg);
           transform: rotate(45deg);
 }
-.close-button::after {
+.close-button-view::after {
   -webkit-transform: rotate(-45deg);
           transform: rotate(-45deg);
 }
@@ -1471,16 +1476,24 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   margin-bottom: -0.6rem;
 }
 
+#Document {
+  margin: 1rem auto;
+  padding: 1rem 2rem;
+  width: 102.4rem;
+  background-color: white;
+}
+
 #FixedArea {
   --padding-inline-start: 1.2rem;
   --padding-block-start: 1rem;
+  border-left: solid 0.1rem var(--color-lamp-black);
   background-color: var(--color-gray);
   width: var(--width-condition);
   min-width: var(--width-condition);
-  height: 100%;
+  height: calc(100% - var(--height-header));
   overflow-y: auto;
   position: fixed;
-  top: 0;
+  top: var(--height-header);
   right: 0;
   display: -webkit-flex;
   display: flex;
@@ -1518,6 +1531,37 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   border-top: solid 0.1rem rgba(255, 255, 255, 0.2);
 }
 
+#Header {
+  padding: 0 1.6rem;
+  height: var(--height-header);
+  line-height: calc(var(--height-header));
+  display: -webkit-flex;
+  display: flex;
+  background-color: white;
+  z-index: var(--z-header);
+  position: fixed;
+  width: 100%;
+  border-bottom: solid 0.1rem var(--color-lamp-black);
+}
+#Header a {
+  color: var(--color-lamp-black);
+}
+#Header a:hover {
+  text-decoration: none;
+}
+#Header > h1 {
+  font-size: 1.6rem;
+}
+#Header > nav {
+  -webkit-flex-grow: 1;
+          flex-grow: 1;
+  text-align: right;
+}
+#Header > nav > ul > li {
+  padding-left: 1rem;
+  display: inline-block;
+}
+
 #Properties {
   width: calc(100vw - var(--width-condition));
   min-width: calc(var(--min-width-app) - var(--width-condition));
@@ -1526,21 +1570,21 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
 }
 #Properties > .header {
   padding: var(--padding-track-block-start) var(--padding-track-inline-start);
-  border-bottom: solid 0.1rem var(--color-black);
   display: -webkit-flex;
   display: flex;
   -webkit-align-items: center;
           align-items: center;
-  height: var(--height-track);
-  line-height: calc(var(--height-track) - var(--padding-track-block-start) * 2);
+  height: var(--height-header);
+  line-height: calc(var(--height-header) - var(--padding-track-block-start) * 2);
   position: -webkit-sticky;
   position: sticky;
   top: 0;
-  background-color: white;
+  background-color: var(--color-lamp-black);
+  color: white;
   z-index: var(--z-track-tracks-header);
 }
 #Properties > .header > .title > * {
-  font-size: var(--font-size-title);
+  font-size: 1.2rem;
   margin-bottom: 0;
   display: inline-block;
 }
@@ -1562,14 +1606,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   display: inline-block;
 }
 #Properties > .header > nav > ul > li + li {
-  margin-left: 1.6rem;
-}
-#Properties > .header > nav > ul > li > .material-icons-outlined {
-  font-size: 1.4rem;
-  vertical-align: middle;
-  position: relative;
-  top: -0.1rem;
-  margin-right: 0.2rem;
+  margin-left: 1.4rem;
 }
 #Properties > .header > nav > ul > li > label {
   margin-bottom: 0;
@@ -1629,6 +1666,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   height: 100%;
   font-size: 1.2rem;
   line-height: 1.2;
+  background-color: white;
 }
 #ResultsTable > .body > table th, #ResultsTable > .body > table td {
   padding: 0;
