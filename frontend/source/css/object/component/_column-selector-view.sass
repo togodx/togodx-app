@@ -6,6 +6,7 @@
     white-space: nowrap
     overflow-x: hidden
     height: 100%
+    background-color: var(--color-light-gray)
     > .inner
       height: 100%
       overflow-x: auto
@@ -30,6 +31,9 @@
           cursor: pointer
           transition: background var(--transition-instant)
           display: flex
+          &.-all
+            background-color: var(--color-light-gray)
+            border-bottom: solid .1rem var(--color-gray)
           &.-haschild
             &::before, &::after
               content: ""

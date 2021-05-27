@@ -3370,6 +3370,8 @@
     });
   }
 
+  var ALL_PROPERTIES = 'ALL_PROPERTIES';
+
   var _subject$3 = new WeakMap();
 
   var _property$3 = new WeakMap();
@@ -3588,12 +3590,12 @@
     ul.classList.add('column');
     var max = 0; // make items
 
-    ul.innerHTML = items.map(function (item) {
+    ul.innerHTML = "<li class=\"item -all\">\n      <input type=\"checkbox\" value=\"".concat(ALL_PROPERTIES, "\"/>\n      <span class=\"label\">All properties</span>\n    </li>") + items.map(function (item) {
       max = Math.max(max, item.count);
-      return "<li class=\"item".concat(item.hasChild ? ' -haschild' : '', "\" data-id=\"").concat(item.categoryId, "\" data-category-id=\"").concat(item.categoryId, "\" data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");
+      return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");
     }).join('');
-    ul.querySelectorAll(':scope > .item').forEach(function (item, index) {
-      _classPrivateFieldGet(_this3, _items$1)[item.dataset.categoryId].elm = item;
+    ul.querySelectorAll(':scope > .item:not(.-all)').forEach(function (item) {
+      return _classPrivateFieldGet(_this3, _items$1)[item.dataset.categoryId].elm = item;
     }); // drill down event
 
     ul.querySelectorAll(':scope > .item.-haschild').forEach(function (item) {
@@ -3636,7 +3638,7 @@
       });
     }); // select/deselect a item (attribute)
 
-    ul.querySelectorAll(':scope > .item > input[type="checkbox"]').forEach(function (checkbox) {
+    ul.querySelectorAll(':scope > .item:not(.-all) > input[type="checkbox"]').forEach(function (checkbox) {
       checkbox.addEventListener('click', function (e) {
         e.stopPropagation();
 
@@ -3664,7 +3666,6 @@
               })
             }
           });
-          console.log(ancestors);
         } else {
           // remove
           ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _property$3).propertyId, checkbox.value);
@@ -3706,7 +3707,7 @@
     _classPrivateFieldGet(this, _columns).forEach(function (column) {
       var max = column.max;
       max = isLog10 ? Math.log10(max) : max;
-      column.ul.querySelectorAll(':scope > li').forEach(function (li) {
+      column.ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
         var count = Number(li.dataset.count);
         li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this4, _subject$3).color.mix(App$1.colorDarkGray, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
           return cood * 256;

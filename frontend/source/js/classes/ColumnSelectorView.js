@@ -3,6 +3,8 @@ import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import * as event from '../events';
 
+const ALL_PROPERTIES = 'ALL_PROPERTIES';
+
 export default class ColumnSelectorView {
 
   #subject;
@@ -120,17 +122,23 @@ export default class ColumnSelectorView {
     let max = 0;
 
     // make items
-    ul.innerHTML = items.map(item => {
+    ul.innerHTML = `<li class="item -all">
+      <input type="checkbox" value="${ALL_PROPERTIES}"/>
+      <span class="label">All properties</span>
+    </li>`
+    + items.map(item => {
       max = Math.max(max, item.count);
-      return `<li class="item${item.hasChild ? ' -haschild' : ''}" data-id="${item.categoryId}" data-category-id="${item.categoryId}" data-count="${item.count}">
+      return `<li
+        class="item${item.hasChild ? ' -haschild' : ''}"
+        data-id="${item.categoryId}"
+        data-category-id="${item.categoryId}"
+        data-count="${item.count}">
         <input type="checkbox" value="${item.categoryId}"/>
         <span class="label">${item.label}</span>
         <span class="count">${item.count.toLocaleString()}</span>
       </li>`;
     }).join('');
-    ul.querySelectorAll(':scope > .item').forEach((item, index) => {
-      this.#items[item.dataset.categoryId].elm = item;
-    });
+    ul.querySelectorAll(':scope > .item:not(.-all)').forEach(item => this.#items[item.dataset.categoryId].elm = item);
 
     // drill down event
     ul.querySelectorAll(':scope > .item.-haschild').forEach(item => {
@@ -156,7 +164,7 @@ export default class ColumnSelectorView {
     });
 
     // select/deselect a item (attribute)
-    ul.querySelectorAll(':scope > .item > input[type="checkbox"]').forEach(checkbox => {
+    ul.querySelectorAll(':scope > .item:not(.-all) > input[type="checkbox"]').forEach(checkbox => {
       checkbox.addEventListener('click', e => {
         e.stopPropagation();
         if (checkbox.checked) { // add
@@ -177,7 +185,6 @@ export default class ColumnSelectorView {
               ancestors: ancestors.map(ancestor => ancestor.label)
             }
           });
-          console.log(ancestors)
         } else { // remove
           ConditionBuilder.removePropertyValue(this.#property.propertyId, checkbox.value);
         }
@@ -207,7 +214,7 @@ export default class ColumnSelectorView {
     this.#columns.forEach(column => {
       let max = column.max;
       max = isLog10 ? Math.log10(max) : max;
-      column.ul.querySelectorAll(':scope > li').forEach(li => {
+      column.ul.querySelectorAll(':scope > li:not(.-all)').forEach(li => {
         const count = Number(li.dataset.count);
         li.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorDarkGray, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
       });

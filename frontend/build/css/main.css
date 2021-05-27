@@ -328,7 +328,7 @@ template {
   --color-light-gray: #CCC;
   --color-warm-gray: #f7f5f4;
   --color-gray: #999;
-  --color-dark-gray: #c8c7c6;
+  --color-dark-gray: #999;
   --color-lamp-black: #333230;
   --color-translucent-lamp-black1: #33323044;
   --color-translucent-lamp-black2: #33323099;
@@ -559,6 +559,7 @@ main {
   white-space: nowrap;
   overflow-x: hidden;
   height: 100%;
+  background-color: var(--color-light-gray);
 }
 .column-selector-view > .columns > .inner {
   height: 100%;
@@ -588,6 +589,10 @@ main {
   transition: background var(--transition-instant);
   display: -webkit-flex;
   display: flex;
+}
+.column-selector-view > .columns > .inner > .column > .item.-all {
+  background-color: var(--color-light-gray);
+  border-bottom: solid 0.1rem var(--color-gray);
 }
 .column-selector-view > .columns > .inner > .column > .item.-haschild::before, .column-selector-view > .columns > .inner > .column > .item.-haschild::after {
   content: "";
@@ -1599,7 +1604,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   position: -webkit-sticky;
   position: sticky;
   top: 0;
-  background-color: var(--color-dark-gray);
+  background-color: var(--color-lamp-black);
   color: white;
   z-index: var(--z-track-tracks-header);
 }
