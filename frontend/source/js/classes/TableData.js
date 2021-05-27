@@ -70,7 +70,7 @@ export default class TableData {
     </div>
     <div class="controller">
       <div class="button autorenew" title="Prepare for download" data-button="prepare-download">
-        <span class="material-icons-outlined autorenew">autorenew</span><span class="prepare-data">prepare data</span>
+        <span class="material-icons-outlined autorenew">autorenew</span><span class="prepare-pause-resume">Prepare Data</span>
       </div>
       <div class="button downloads" title="Download JSON " data-button="start-download">
         <a class="json" href="" download="sample.json">
@@ -79,7 +79,7 @@ export default class TableData {
         </a>
       </div>
       <div class="button" title="Restore as condition" data-button="restore">
-        <span class="material-icons-outlined">settings_backup_restore</span><span>edit</span>
+        <span class="material-icons-outlined">settings_backup_restore</span><span>Edit</span>
       </div>
     </div>
     `;
@@ -106,11 +106,11 @@ export default class TableData {
         this.#isAutoLoad == true;
         this.#autoLoad();
         this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.add('lotation');
-        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .prepare-data').innerHTML='stop';
+        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .prepare-pause-resume').innerHTML='Pause';
       } else {
         this.#isAutoLoad = false;
         this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.remove('lotation');
-        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .prepare-data').innerHTML='prepare data';
+        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .prepare-pause-resume').innerHTML='Resume';
       }
     });
     // delete button
@@ -123,7 +123,6 @@ export default class TableData {
     BUTTONS.find(button => button.dataset.button === 'restore').addEventListener('click', e => {
       e.stopPropagation();
       console.log('restore');
-      console.log(this.#condition.attributes);
       this.#condition.attributes.forEach (attribute => {
         ConditionBuilder.setPropertyValues({
           subject: attribute.subject,
@@ -143,7 +142,6 @@ export default class TableData {
           subject: property.subject,
           property: property.property,
           values: [{
-            
           }]
         });
       })
