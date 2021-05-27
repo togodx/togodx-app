@@ -557,11 +557,12 @@ main {
 }
 .column-selector-view > .columns {
   white-space: nowrap;
-  overflow-x: auto;
+  overflow-x: hidden;
   height: 100%;
 }
 .column-selector-view > .columns > .inner {
   height: 100%;
+  overflow-x: auto;
 }
 .column-selector-view > .columns > .inner > .column {
   display: inline-block;

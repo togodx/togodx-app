@@ -3570,12 +3570,7 @@
 
         _classPrivateMethodGet(_this2, _appendSubColumn, _appendSubColumn2).call(_this2, column, depth);
 
-        _classPrivateFieldGet(_this2, _LOADING_VIEW$2).classList.remove('-shown'); // scroll
-
-
-        var gap = _classPrivateFieldGet(_this2, _ROOT$6).scrollWidth - _classPrivateFieldGet(_this2, _ROOT$6).clientWidth;
-
-        if (gap > 0) _classPrivateFieldGet(_this2, _ROOT$6).scrollLeft = gap;
+        _classPrivateFieldGet(_this2, _LOADING_VIEW$2).classList.remove('-shown');
       }).catch(function (error) {
         // TODO: エラー処理
         _classPrivateFieldGet(_this2, _LOADING_VIEW$2).classList.remove('-shown');
@@ -3691,7 +3686,18 @@
   function _appendSubColumn2(column, depth) {
     _classPrivateFieldGet(this, _currentColumns)[depth] = column;
 
-    _classPrivateFieldGet(this, _CONTAINER$1).insertAdjacentElement('beforeend', column);
+    _classPrivateFieldGet(this, _CONTAINER$1).insertAdjacentElement('beforeend', column); // scroll
+
+
+    var left = _classPrivateFieldGet(this, _CONTAINER$1).scrollWidth - _classPrivateFieldGet(this, _CONTAINER$1).clientWidth;
+
+    if (left > 0) {
+      _classPrivateFieldGet(this, _CONTAINER$1).scrollTo({
+        top: 0,
+        left: left,
+        behavior: 'smooth'
+      });
+    }
   }
 
   function _update2$2(isLog10) {

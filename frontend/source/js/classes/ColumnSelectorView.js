@@ -103,9 +103,6 @@ export default class ColumnSelectorView {
           const column = this.#makeColumn(json, depth, id);
           this.#appendSubColumn(column, depth);
           this.#LOADING_VIEW.classList.remove('-shown');
-          // scroll
-          const gap = this.#ROOT.scrollWidth - this.#ROOT.clientWidth;
-          if (gap > 0) this.#ROOT.scrollLeft = gap;
         })
         .catch(error => {
           // TODO: エラー処理
@@ -195,7 +192,15 @@ export default class ColumnSelectorView {
   #appendSubColumn(column, depth) {
     this.#currentColumns[depth] = column;
     this.#CONTAINER.insertAdjacentElement('beforeend', column);
-
+    // scroll
+    const left = this.#CONTAINER.scrollWidth - this.#CONTAINER.clientWidth;
+    if (left > 0) {
+      this.#CONTAINER.scrollTo({
+        top: 0,
+        left: left,
+        behavior: 'smooth'
+      });
+    };
   }
 
   #update(isLog10) {
