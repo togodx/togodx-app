@@ -34,9 +34,15 @@ export default class ResultDetailModal {
       this.#showPopUp(e);
     });
 
-    DefaultEventEmitter.addEventListener(event.hidePopup, (e) => {
+    DefaultEventEmitter.addEventListener(event.hidePopUp, (e) => {
       this.#hidePopUp();
     });
+
+    this.#RESULT_MODAL.addEventListener('click', (e) => {
+      if (e.target !== e.currentTarget) return;
+      this.#hidePopUp();
+    });
+
   }
 
   // private methods
@@ -47,7 +53,8 @@ export default class ResultDetailModal {
       popup.appendChild(this.#header(e.detail.keys, e.detail.properties));
       popup.appendChild(this.#container(e.detail.keys));
 
-      this.#setEventsPopup();
+      this.#handleKeydown = this.#handleKeydown.bind(this);
+      document.addEventListener('keydown', this.#handleKeydown);
       this.#RESULT_MODAL.appendChild(popup);
       this.#RESULT_MODAL.classList.add("backdrop");
     }
@@ -124,27 +131,13 @@ export default class ResultDetailModal {
   }
 
   // Events, functions
-  #setEventsPopup() {
-    // click event for backdrop
-    this.#RESULT_MODAL.addEventListener('click', (e) => {
-      if (e.target !== e.currentTarget) return;
-      this.#hidePopUp();
-    });
-
-    this.#RESULT_MODAL.addEventListener("keypress", (e) => {
-      console.log("pressed a key!");
-      if(e.key == 'Escape'){
+  #handleKeydown = (eventObj) => {
+    switch (eventObj.key) {
+      case "Escape":
         this.#hidePopUp();
-      };
-
-      switch (e.key) {
-        case "Escape":
-          this.#hidePopUp();
-        case "ArrowUp":
-          alert("arrow up!");
-      }
-      // TODO: add keyboard arrows
-    });
+      case "ArrowUp":
+        alert("arrow up!");
+    }
   }
 
   #hidePopUp() {
@@ -153,5 +146,6 @@ export default class ResultDetailModal {
     this.#RESULTS_TABLE
       .querySelectorAll("tr")
       .forEach((tr) => tr.classList.remove("-selected"));
+    document.removeEventListener('keydown', this.#handleKeydown);
   }
 }
