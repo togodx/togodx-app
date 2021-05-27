@@ -75,24 +75,24 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_domain",
         "primaryKey": "uniprot"
       },{
-        "propertyId": "uniprot_keywords_cellular_component",
+        "propertyId": "uniprot_go_cellular_component",
         "label": "Cellular component",
         "description": "Gene ontology cellular component annotation from UniProt",
-        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_cellular_component",
+        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_go_cellular_component",
         "primaryKey": "uniprot"
       },
       {
-        "propertyId": "uniprot_keywords_biological_process",
+        "propertyId": "uniprot_go_biological_process",
         "label": "Biological process",
         "description": "Gene ontology biological process annotation from UniProt",
-        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_biological_process",
+        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_go_biological_process",
         "primaryKey": "uniprot"
       },
       {
-        "propertyId": "uniprot_keywords_molecular_function",
+        "propertyId": "uniprot_go_molecular_function",
         "label": "Molecular function",
         "description": "Gene ontology molecular function annotation from UniProt",
-        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_molecular_function",
+        "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_go_molecular_function",
         "primaryKey": "uniprot"
       },
       {
