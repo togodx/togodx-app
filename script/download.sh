@@ -66,7 +66,6 @@ download() {
   eval ${cmd}
 
   post_download "${graph_name}" "${db_dir}"
-
 }
 
 create_db_dir() {
@@ -99,6 +98,7 @@ post_download() {
 
   remove_robotstxt "${db_dir}"
   decompress_files "${db_dir}"
+  update_file_list "${graph_name}" "${db_dir}"
   create_date_triple "${graph_name}" "${db_dir}"
 }
 
@@ -135,6 +135,26 @@ remove_files() {
   cd "${db_dir}" && rm -fr *.zip *.tar* *.xz
 }
 
+update_file_list() {
+  local graph_name="${1}"
+  local db_dir="${2}"
+  local file_list="${DOWNLOAD_DIR}/updated_files.txt"
+  for file in $(find "${db_dir}" -type f); do
+    local filetype=$(inspect_filetype "${file}")
+    echo "${file}" "\t" "${graph_name}" "\t" "${filetype}" >> "${file_list}"
+  done
+}
+
+inspect_filetype() {
+  local file="${1}"
+  docker run \
+    -it \
+    --rm \
+    -v "${file}":/data \
+    "ghcr.io/inutano/raptor2:cc010ed" \
+    rapper --guess /data | head | awk '/Guessed/ { print $NF }' | tr -d "'"
+}
+
 create_date_triple() {
   local graph_name="${1}"
   local db_dir="${2}"
@@ -159,6 +179,20 @@ get_modification_date() {
 }
 
 #
+# Help
+#
+help() {
+cat <<- EOF
+download.sh [--debug|--parallel|--outdir] <datalist.tsv>
+
+options:
+  --debug:    increase logging output
+  --parallel: parallelize download (experimental)
+  --outdir:   specify output directory
+EOF
+}
+
+#
 # Main
 #
 main() {
@@ -167,35 +201,43 @@ main() {
     exit 1
   fi
   create_download_dir
-  if [[ ! -z ${NO_PARALLEL} ]]; then
-    download_all
-  else
+  if [[ ! -z ${PARALLEL} ]]; then
     parallel_download
+  else
+    download_all
   fi
 }
 
 #
 # Parse arguments and run
 #
-while [[ $# -gt 0 ]]; do
-  key=${1}
-  case ${key} in
-    --debug)
-      set -eux
-      DEBUG="true"
-      ;;
-    --no-parallel)
-      NO_PARALLEL="true"
-      ;;
-    -O | --outdir)
-      OUTDIR="${2}"
-      shift
-      ;;
-    *tsv)
-      DATALIST="${1}"
-      ;;
-  esac
-  shift
-done
-
-main
+if [[ $# -eq 0 ]]; then
+  help
+  exit 1
+else
+  while [[ $# -gt 0 ]]; do
+    key=${1}
+    case ${key} in
+      -h|--help)
+        help
+        exit 0
+        ;;
+      --debug)
+        set -eux
+        DEBUG="true"
+        ;;
+      --parallel)
+        PARALLEL="true"
+        ;;
+      -O | --outdir)
+        OUTDIR="${2}"
+        shift
+        ;;
+      *tsv)
+        DATALIST="${1}"
+        ;;
+    esac
+    shift
+  done
+  main
+fi
