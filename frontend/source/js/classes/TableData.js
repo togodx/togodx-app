@@ -2,6 +2,7 @@ import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
 import * as event from '../events';
+import Records from "./Records";
 
 const LIMIT = 100;
 
@@ -69,7 +70,7 @@ export default class TableData {
     </div>
     <div class="controller">
       <div class="button autorenew" title="Prepare for download" data-button="prepare-download">
-        <span class="material-icons-outlined autorenew">autorenew</span>
+        <span class="material-icons-outlined autorenew">autorenew</span><span class="prepare-data">prepare data</span>
       </div>
       <div class="button downloads" title="Download JSON " data-button="start-download">
         <a class="json" href="" download="sample.json">
@@ -78,7 +79,7 @@ export default class TableData {
         </a>
       </div>
       <div class="button" title="Restore as condition" data-button="restore">
-        <span class="material-icons-outlined">settings_backup_restore</span>
+        <span class="material-icons-outlined">settings_backup_restore</span><span>edit</span>
       </div>
     </div>
     `;
@@ -105,9 +106,11 @@ export default class TableData {
         this.#isAutoLoad == true;
         this.#autoLoad();
         this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.add('lotation');
+        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .prepare-data').innerHTML='stop';
       } else {
         this.#isAutoLoad = false;
         this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.remove('lotation');
+        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .prepare-data').innerHTML='prepare data';
       }
     });
     // delete button
@@ -117,6 +120,34 @@ export default class TableData {
     //   const element = document.querySelector('.table-data-controller-view');
     //   element.parentNode.removeChild(element)
     // });
+    BUTTONS.find(button => button.dataset.button === 'restore').addEventListener('click', e => {
+      e.stopPropagation();
+      console.log('restore');
+      console.log(this.#condition.attributes);
+      this.#condition.attributes.forEach (attribute => {
+        ConditionBuilder.setPropertyValues({
+          subject: attribute.subject,
+          property: attribute.property,
+          values: attribute.query.categoryIds.map(categoryId => {
+            console.log(Records.getValue(attribute.query.propertyId, categoryId));
+            return {
+              categoryId: categoryId,
+              label: Records.getValue(attribute.query.propertyId, categoryId).label,
+              ancestors: []
+            }
+          })
+        });
+      })
+      this.#condition.properties.forEach (property => {
+        ConditionBuilder.setPropertyValues({
+          subject: property.subject,
+          property: property.property,
+          values: [{
+            
+          }]
+        });
+      })
+    })
     this.select();
     this.#getQueryIds();
   }

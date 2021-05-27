@@ -2531,7 +2531,7 @@
         return "<div class=\"condiiton -value\" style=\"background-color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         return "<div class=\"condiiton -value\" style=\"color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
-      }).join(''), "\n      \n    </div>\n    <div class=\"button close-button-view\" title=\"Delete\" data-button=\"delete\"></div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button autorenew\" title=\"Prepare for download\" data-button=\"prepare-download\">\n        <span class=\"material-icons-outlined autorenew\">autorenew</span>\n      </div>\n      <div class=\"button downloads\" title=\"Download JSON \" data-button=\"start-download\">\n        <a class=\"json\" href=\"\" download=\"sample.json\">\n          <span class=\"material-icons-outlined\">download</span>\n          <span class=\"text\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" title=\"Restore as condition\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n      </div>\n    </div>\n    "); // reference　
+      }).join(''), "\n      \n    </div>\n    <div class=\"button close-button-view\" title=\"Delete\" data-button=\"delete\"></div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button autorenew\" title=\"Prepare for download\" data-button=\"prepare-download\">\n        <span class=\"material-icons-outlined autorenew\">autorenew</span><span class=\"prepare-data\">prepare data</span>\n      </div>\n      <div class=\"button downloads\" title=\"Download JSON \" data-button=\"start-download\">\n        <a class=\"json\" href=\"\" download=\"sample.json\">\n          <span class=\"material-icons-outlined\">download</span>\n          <span class=\"text\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" title=\"Restore as condition\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span><span>edit</span>\n      </div>\n    </div>\n    "); // reference　
 
       _classPrivateFieldSet(this, _ROOT$5, elm);
 
@@ -2571,10 +2571,14 @@
           _classPrivateMethodGet(_this, _autoLoad, _autoLoad2).call(_this);
 
           _classPrivateFieldGet(_this, _BUTTON_PREPARE_DOWNLOAD).querySelector(':scope > .autorenew').classList.add('lotation');
+
+          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DOWNLOAD).querySelector(':scope > .prepare-data').innerHTML = 'stop';
         } else {
           _classPrivateFieldSet(_this, _isAutoLoad, false);
 
           _classPrivateFieldGet(_this, _BUTTON_PREPARE_DOWNLOAD).querySelector(':scope > .autorenew').classList.remove('lotation');
+
+          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DOWNLOAD).querySelector(':scope > .prepare-data').innerHTML = 'prepare data';
         }
       }); // delete button
       // BUTTONS.find(button => button.dataset.button === 'delete').addEventListener('click', e => {
@@ -2590,11 +2594,29 @@
       }).addEventListener('click', function (e) {
         e.stopPropagation();
         console.log('restore');
-        console.log(condition.attributes);
+        console.log(_classPrivateFieldGet(_this, _condition).attributes);
 
         _classPrivateFieldGet(_this, _condition).attributes.forEach(function (attribute) {
-          ConditionBuilder$1.setPropertyValues(attribute);
-          console.log('done');
+          ConditionBuilder$1.setPropertyValues({
+            subject: attribute.subject,
+            property: attribute.property,
+            values: attribute.query.categoryIds.map(function (categoryId) {
+              console.log(Records$1.getValue(attribute.query.propertyId, categoryId));
+              return {
+                categoryId: categoryId,
+                label: Records$1.getValue(attribute.query.propertyId, categoryId).label,
+                ancestors: []
+              };
+            })
+          });
+        });
+
+        _classPrivateFieldGet(_this, _condition).properties.forEach(function (property) {
+          ConditionBuilder$1.setPropertyValues({
+            subject: property.subject,
+            property: property.property,
+            values: [{}]
+          });
         });
       });
       this.select();
