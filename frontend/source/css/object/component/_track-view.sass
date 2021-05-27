@@ -6,12 +6,18 @@
   &.-preparing
     pointer-events: none
     opacity: .2
+    > .row
+      &.-upper
+        > .right
+          > .overview
+            background-color: transparent !important
   > .row
     display: flex
     height: var(--height-track)
     > .left
       flex-basis: var(--width-track-column-property)
       min-width: var(--width-track-column-property)
+      background-color: white
     > .right
       flex-basis: calc(100% - var(--width-track-column-property))
       max-width: calc(100% - var(--width-track-column-property))

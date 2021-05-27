@@ -1,8 +1,9 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import ConditionBuilder from "./ConditionBuilder";
 import * as event from '../events';
 
-const LIMIT = 10;
+const LIMIT = 100;
 
 export default class TableData {
 
@@ -20,9 +21,11 @@ export default class TableData {
   #INDICATOR_TEXT_TIME;
   #INDICATOR_BAR;
   #BUTTON_PREPARE_DOWNLOAD;
+  #BUTTON_START_DOWNLOAD;
 
   constructor(condition, elm) {
     console.log(condition)
+    console.log(ConditionBuilder)
 
     this.#isAutoLoad = false;
     this.#isLoaded = false;
@@ -51,7 +54,7 @@ export default class TableData {
       </div>`).join('')}
       
     </div>
-    <div class="close-button" title="Delete" data-button="delete"></div>
+    <div class="button close-button-view" title="Delete" data-button="delete"></div>
     <div class="status">
       <p>Getting id list</p>
     </div>
@@ -66,25 +69,19 @@ export default class TableData {
     </div>
     <div class="controller">
       <div class="button autorenew" title="Prepare for download" data-button="prepare-download">
-        <span class="material-icons-outlined" id="autorenew">autorenew</span>
+        <span class="material-icons-outlined autorenew">autorenew</span>
+      </div>
+      <div class="button downloads" title="Download JSON " data-button="start-download">
+        <a class="json" href="" download="sample.json">
+          <span class="material-icons-outlined">download</span>
+          <span class="text">JSON</span>
+        </a>
       </div>
       <div class="button" title="Restore as condition" data-button="restore">
         <span class="material-icons-outlined">settings_backup_restore</span>
       </div>
-      <div class="button" title="Delete" data-button="delete">
-        <span class="material-icons-outlined">delete</span>
-      </div>
     </div>
-    <div class="downloads">
-      <div class="button" title="Download CSV">
-        <span class="material-icons-outlined">download</span>
-        CSV
-      </div>
-      <div class="button" title="Download JSON ">
-        <span class="material-icons-outlined">download</span>
-        JSON
-      </div>
-    </div>`;
+    `;
 
     // reference　
     this.#ROOT = elm;
@@ -95,6 +92,7 @@ export default class TableData {
     this.#INDICATOR_BAR = INDICATOR.querySelector(':scope > .progress > .bar');
     const BUTTONS = [...elm.querySelectorAll(':scope > .controller > .button')];
     this.#BUTTON_PREPARE_DOWNLOAD = BUTTONS.find(button => button.dataset.button === 'prepare-download');
+    this.#BUTTON_START_DOWNLOAD = BUTTONS.find(button => button.dataset.button === 'start-download');
 
     // events
     elm.addEventListener('click', () => {
@@ -106,20 +104,19 @@ export default class TableData {
       if (this.#isAutoLoad == false && this.#ROOT.dataset.status != 'complete') {
         this.#isAutoLoad == true;
         this.#autoLoad();
-        document.getElementById('autorenew').classList.add('lotation');
+        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.add('lotation');
       } else {
         this.#isAutoLoad = false;
-        document.getElementById('autorenew').classList.remove('lotation');
+        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.remove('lotation');
       }
     });
-    BUTTONS.find(button => button.dataset.button === 'restore').addEventListener('click', e => {
-      e.stopPropagation();
-      console.log('restore')
-    });
-    BUTTONS.find(button => button.dataset.button === 'delete').addEventListener('click', e => {
-      e.stopPropagation();
-      console.log('delete')
-    });
+    // delete button
+    // BUTTONS.find(button => button.dataset.button === 'delete').addEventListener('click', e => {
+    //   e.stopPropagation();
+    //   console.log('delete')
+    //   const element = document.querySelector('.table-data-controller-view');
+    //   element.parentNode.removeChild(element)
+    // });
     this.select();
     this.#getQueryIds();
   }
@@ -132,8 +129,9 @@ export default class TableData {
     // reset
     this.#abortController = new AbortController();
     this.#ROOT.classList.add('-fetching');
+    console.log(ConditionBuilder.userIds)
     fetch(
-      `${App.aggregatePrimaryKeys}?togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(JSON.stringify(this.#condition.attributes.map(property => property.query)))}`,
+      `${App.aggregatePrimaryKeys}?togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(JSON.stringify(this.#condition.attributes.map(property => property.query)))}${ConditionBuilder.userIds ? `&inputIds=${encodeURIComponent(JSON.stringify(ConditionBuilder.userIds.split(',')))}` : ''}`,
       {
         signal: this.#abortController.signal
       })
@@ -245,7 +243,10 @@ export default class TableData {
   #complete() {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = 'Complete';
-    document.getElementById('autorenew').classList.remove('lotation');
+    this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.add('lotation');
+    const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {type : 'application/json'});
+    const jsonUrl = URL.createObjectURL(jsonBlob);
+    this.#BUTTON_START_DOWNLOAD.querySelector(':scope > .json').setAttribute('href', jsonUrl);
   }
 
   /* public methods */

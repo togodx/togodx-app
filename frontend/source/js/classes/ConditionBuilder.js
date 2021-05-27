@@ -8,6 +8,7 @@ class ConditionBuilder {
   #attributeConditions;
   #subjectId;
   #togoKey;
+  #userIds;
 
   constructor() {
     this.#propertyConditions = [];
@@ -136,10 +137,19 @@ class ConditionBuilder {
     this.#satisfyAggregation();
   }
 
+  setUserIds(ids) {
+    console.log(ids)
+    this.#userIds = ids;
+  }
+
   // public accessor
 
   get currentTogoKey() {
     return this.#togoKey;
+  }
+
+  get userIds() {
+    return this.#userIds === '' ? undefined : this.#userIds;
   }
 
   // private methods

@@ -1,3 +1,4 @@
+import Color from "./Color";
 
 class Records {
 
@@ -12,10 +13,14 @@ class Records {
   setSubjects(subjects) {
     // define subjects
     for (let i = 0; i < subjects.length; i++) {
-      let hue = 360 - (360 * i / subjects.length) + 180;
+      let hue = 360 - (360 * i / subjects.length) + 130;
       hue -= hue > 360 ? 360 : 0;
+      const srgb = new Color('hsv', [hue, 60, 75]).to('srgb');
       subjects[i].hue = hue;
+      subjects[i].color = srgb;
+      subjects[i].colorCSSValue = `rgb(${srgb.coords.map(channel => channel * 256).join(',')})`;
     }
+    console.log(subjects);
     this.#subjects = Object.freeze(subjects);
     // set properties
     this.#properties = [];

@@ -2,13 +2,13 @@
   --padding-horizontal: 1rem
   --padding-vertical: 0
   --height-selector: 3rem
-  padding-bottom: 5rem
+  padding: 1rem 0 5rem
+  background-color: white
   > .selector
-    margin: 1rem var(--padding-horizontal)
+    margin: 0 var(--padding-horizontal)
     width: calc(100% - var(--padding-horizontal) * 2)
     height: var(--height-selector)
     position: relative
-    // overflow: hidden
     > *
       position: absolute
       top: 0
@@ -56,8 +56,6 @@
           bottom: 0
           width: 100%
           transition: height var(--transition-instant)
-          > .color
-            height: 100%
         > .label
           position: absolute
           bottom: 0
@@ -92,17 +90,3 @@
           right: 4px
     > .gridcontainer, > .additionalline
       pointer-events: none
-  // > .controller
-  //   height: 5rem
-  //   > .selector
-  //     position: relative
-  //     > .slider
-  //       position: absolute
-  //       width: 0
-  //       height: 0
-  //       border-style: solid
-  //       border-width: 0 .4rem .8rem .4rem
-  //       border-color: transparent transparent var(--color-black) transparent
-  //       cursor: pointer
-  //   > .form
-  //     text-align: center
