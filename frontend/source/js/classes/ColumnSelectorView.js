@@ -9,8 +9,9 @@ export default class ColumnSelectorView {
   #property;
   #sparqlist;
   #itemStatus;
-  #columns;
-  #items;
+  #currentColumns;
+  #subColumns;
+  #it__ems;
   #ROOT;
   #CONTAINER;
   #LOADING_VIEW;
@@ -21,7 +22,8 @@ export default class ColumnSelectorView {
     this.#property = property;
     this.#sparqlist = sparqlist;
     this.#itemStatus = {};
-    this.#columns = [];
+    this.#currentColumns = [];
+    this.#subColumns = [];
 
     // make container
     elm.innerHTML = `
@@ -49,23 +51,26 @@ export default class ColumnSelectorView {
           break;
       }
       if (this.#property.propertyId === propertyId) {
-        this.#columns.forEach(ul => {
+        this.#currentColumns.forEach(ul => {
           ul.querySelectorAll('li').forEach(li => {
             if (li.dataset.id === categoryId) {
+              // change checkbox status
               const isChecked = e.detail.action === 'add';
               li.querySelector(':scope > input[type="checkbox"]').checked = isChecked;
               this.#itemStatus[li.dataset.id].checked = isChecked;
+              // change ancestor status
+              // TODO:
             }
           })
         });
       }
     });
 
-    this.#addItems(items, 0);
-    this.#makeColumn(items, 0);
+    this.#setItems(items, 0);
+    this.#addColumn(items, 0);
   }
 
-  #addItems(items, depth, parent) {
+  #setItems(items, depth, parent) {
     // console.log(items, depth)
     for (const item of items) {
       const hasChild = item.hasChild && item.hasChild === true;
@@ -82,31 +87,36 @@ export default class ColumnSelectorView {
     console.log(this.#itemStatus)
   }
 
-  #makeColumn(items, depth) {
+  #addColumn(items, depth, parentCategoryId) {
 
-    this.#items = items.map(item => Object.assign({}, item));
-    console.log(this.#items)
+    this.#it__ems = items.map(item => Object.assign({}, item));
+    console.log(this.#it__ems)
 
     // get column element
-    let ul;
-    if (this.#columns[depth]) {
-      ul = this.#columns[depth];
-    } else {
+    let ul = this.#subColumns.find(column => column.parentCategoryId === parentCategoryId);
+    if (ul === undefined) {
       ul = document.createElement('ul');
       ul.classList.add('column');
-      this.#columns[depth] = ul;
+      this.#currentColumns[depth] = ul;
     }
+    this.#subColumns = {ul, parentCategoryId};
+    console.log(this.#subColumns)
 
     // make items
-    ul.innerHTML = this.#items.map(item => {
-      return `<li class="item${item.hasChild ? ' -haschild' : ''}" data-id="${item.categoryId}">
+    ul.innerHTML = items.map(item => {
+      return `<li class="item${item.hasChild ? ' -haschild' : ''}" data-id="${item.categoryId}" data-category-id="${item.categoryId}">
         <input type="checkbox" value="${item.categoryId}"/>
         <span class="label">${item.label}</span>
         <span class="count">${item.count.toLocaleString()}</span>
       </li>`;
     }).join('');
+    ul.querySelectorAll(':scope > .item').forEach((item, index) => {
+      // this.#it__ems[index].elm = item
+      console.log(item)
+      this.#itemStatus[item.dataset.categoryId].elm = item;
+    });
     this.#CONTAINER.insertAdjacentElement('beforeend', ul);
-    ul.querySelectorAll(':scope > .item').forEach((item, index) => this.#items[index].elm = item);
+    console.log(this.#itemStatus)
     this.#update(App.viewModes.log10);
 
     // drill down event
@@ -114,16 +124,16 @@ export default class ColumnSelectorView {
       item.addEventListener('click', () => {
         item.classList.add('-selected');
         // delete an existing lower columns
-        if (this.#columns.length > depth + 1) {
-          for (let i = depth + 1; i < this.#columns.length; i++) {
-            if (this.#columns[i].parentNode) this.#CONTAINER.removeChild(this.#columns[i]);
+        if (this.#currentColumns.length > depth + 1) {
+          for (let i = depth + 1; i < this.#currentColumns.length; i++) {
+            if (this.#currentColumns[i].parentNode) this.#CONTAINER.removeChild(this.#currentColumns[i]);
           }
         }
         // deselect siblings
         const selectedItemKeys = Object.keys(this.#itemStatus).filter(id => this.#itemStatus[id].selected && this.#itemStatus[id].depth >= depth);
         for (const key of selectedItemKeys) {
           this.#itemStatus[key].selected = false;
-          const selectedItem = this.#columns[depth].querySelector(`[data-id="${key}"]`);
+          const selectedItem = this.#currentColumns[depth].querySelector(`[data-id="${key}"]`);
           if (selectedItem) selectedItem.classList.remove('-selected');
         }
         // get lower column
@@ -162,15 +172,19 @@ export default class ColumnSelectorView {
     });
 
     // event listener
-    DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
+    // DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
+  }
+
+  #makeColumn() {
+
   }
 
   #update(isLog10) {
-    let max = Math.max(...Array.from(this.#items).map(item => item.count));
-    max = isLog10 ? Math.log10(max) : max;
-    this.#items.forEach(item => {
-      item.elm.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorDarkGray, 1 - (isLog10 ? Math.log10(item.count) : item.count) / max).coords.map(cood => cood * 256).join(',')})`;
-    });
+    // let max = Math.max(...Array.from(this.#it__ems).map(item => item.count));
+    // max = isLog10 ? Math.log10(max) : max;
+    // this.#it__ems.forEach(item => {
+    //   item.elm.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorDarkGray, 1 - (isLog10 ? Math.log10(item.count) : item.count) / max).coords.map(cood => cood * 256).join(',')})`;
+    // });
   }
 
   #getChildren(id, depth) {
@@ -179,8 +193,8 @@ export default class ColumnSelectorView {
     fetch(this.#sparqlist + '?categoryIds=' + id)
       .then(responce => responce.json())
       .then(json => {
-        this.#addItems(json, depth, id);
-        this.#makeColumn(json, depth);
+        this.#setItems(json, depth, id);
+        this.#addColumn(json, depth, id);
         this.#LOADING_VIEW.classList.remove('-shown');
         // scroll
         const gap = this.#ROOT.scrollWidth - this.#ROOT.clientWidth;
