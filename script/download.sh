@@ -11,9 +11,11 @@ OUTDIR="$(cd $(dirname ${0}) && pwd -P)/../download"
 #
 # Prep
 #
-create_download_dir() {
+initialize_download_dir() {
   DOWNLOAD_DIR="${OUTDIR}/$(date +'%Y%m%d')"
   mkdir -p "${DOWNLOAD_DIR}"
+  UPDATED_FILES="${DOWNLOAD_DIR}/updated_files.txt"
+  echo "file_path\tgraph_name\tfile_type" > "${UPDATED_FILES}"
 }
 
 #
@@ -63,7 +65,8 @@ download() {
 
   local cmd=$(generate_wget_command "${url}")
   echo "  Command: ${cmd}"
-  eval ${cmd}
+  eval ${cmd} ||:
+  wait
 
   post_download "${graph_name}" "${db_dir}"
 }
@@ -89,17 +92,30 @@ generate_wget_command() {
     local opt="${opt} -m -np -nd --accept '*.nt*','*.ttl*','*.owl*','*.tar*','*.rdf*'"
   fi
 
-  echo "wget ${opt} ${url}"
+  echo "wget ${opt} '${url}'"
 }
 
 post_download() {
   local graph_name="${1}"
   local db_dir="${2}"
 
+  rename_files "${db_dir}"
+
   remove_robotstxt "${db_dir}"
   decompress_files "${db_dir}"
-  update_file_list "${graph_name}" "${db_dir}"
+
   create_date_triple "${graph_name}" "${db_dir}"
+  update_file_list "${graph_name}" "${db_dir}"
+}
+
+rename_files() {
+  local db_dir="${1}"
+  local n=0
+  IFS=$'\n'
+  for file in $(find "${db_dir}" -type f -name '*\?*'); do
+    mv "${file}" "${db_dir}/data.${n}.rdf"
+    n+=1
+  done
 }
 
 remove_robotstxt() {
@@ -117,17 +133,26 @@ decompress_files() {
 
 decompress_zipfiles() {
   local db_dir="${1}"
-  cd "${db_dir}" && unzip *.zip
+  local zipfiles=$(find "${db_dir}" -name '*.zip')
+  if [[ ! -z "${zipfiles}" ]]; then
+    cd "${db_dir}" && unzip *.zip
+  fi
 }
 
 decompress_tarfiles() {
   local db_dir="${1}"
-  cd "${db_dir}" && tar xf *.tar*
+  local tarfiles=$(find "${db_dir}" -name '*.tar*')
+  if [[ ! -z "${tarfiles}" ]]; then
+    cd "${db_dir}" && tar xf *.tar*
+  fi
 }
 
 decompress_xz() {
   local db_dir="${1}"
-  cd "${db_dir}" && unxz *.xz*
+  local xzfiles=$(find "${db_dir}" -name '*.xz')
+  if [[ ! -z "${xzfiles}" ]]; then
+    cd "${db_dir}" && unxz *.xz
+  fi
 }
 
 remove_files() {
@@ -138,10 +163,9 @@ remove_files() {
 update_file_list() {
   local graph_name="${1}"
   local db_dir="${2}"
-  local file_list="${DOWNLOAD_DIR}/updated_files.txt"
   for file in $(find "${db_dir}" -type f); do
     local filetype=$(inspect_filetype "${file}")
-    echo "${file}" "\t" "${graph_name}" "\t" "${filetype}" >> "${file_list}"
+    echo "${file}" "\t" "${graph_name}" "\t" "${filetype}" >> "${UPDATED_FILES}"
   done
 }
 
@@ -152,7 +176,7 @@ inspect_filetype() {
     --rm \
     -v "${file}":/data \
     "ghcr.io/inutano/raptor2:cc010ed" \
-    rapper --guess /data | head | awk '/Guessed/ { print $NF }' | tr -d "'"
+    rapper --guess /data 2>/dev/null | head | awk '/Guessed/ { print $NF }' | tr -d "'"
 }
 
 create_date_triple() {
@@ -200,8 +224,8 @@ main() {
     echo "ERROR: No data list found at ${DATALIST}" 1>&2
     exit 1
   fi
-  create_download_dir
-  if [[ ! -z ${PARALLEL} ]]; then
+  initialize_download_dir
+  if [[ "${PARALLEL}" = "true" ]]; then
     parallel_download
   else
     download_all
@@ -215,6 +239,7 @@ if [[ $# -eq 0 ]]; then
   help
   exit 1
 else
+  PARALLEL="false"
   while [[ $# -gt 0 ]]; do
     key=${1}
     case ${key} in
@@ -230,7 +255,7 @@ else
         PARALLEL="true"
         ;;
       -O | --outdir)
-        OUTDIR="${2}"
+        OUTDIR=$(cd "${2}" && pwd -P)
         shift
         ;;
       *tsv)
