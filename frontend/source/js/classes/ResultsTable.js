@@ -138,6 +138,7 @@ export default class ResultsTable {
               data-subject-id="${detail.tableData.subjectId}"
               data-key="${detail.tableData.togoKey}"
               data-category-id="${detail.rows[index].id}">${detail.rows[index].id}</div>
+            <span>${detail.rows[index].label}</span>
           </div>
         </th>
         ${row.map((column, columnIndex) => {
