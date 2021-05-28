@@ -12,3 +12,11 @@ jobs:
         ruby-version: 2.6
         bundler-cache: true
     - run: ruby ./script/generate-document.rb > ./docs/togo-human/data-sources.md
+    - run: |
+        git config --local user.email "togosite[bot]@dbcls.jp"
+        git config --local user.name "togosite github action [bot]"
+        git commit -m "update document" -a
+    - uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
