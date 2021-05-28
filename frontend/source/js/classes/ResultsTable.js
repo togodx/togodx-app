@@ -98,6 +98,11 @@ export default class ResultsTable {
     this.#THEAD.innerHTML = `
       <th>
         <div class="inner">
+          <div class="togo-key-view">Report</div>
+        </div>
+      </th>
+      <th>
+        <div class="inner">
           <div class="togo-key-view">${tableData.condition.togoKey}</div>
         </div>
       </th>
@@ -169,16 +174,23 @@ export default class ResultsTable {
             }&id=${detail.rows[index].id}&properties=${encodeURIComponent(
             JSON.stringify(row)
           )}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
-            <div
-              class="togo-key-view primarykey"
-              data-key="${detail.tableData.togoKey}"
-              data-order = "${[0, index]}"
-              data-subject-id="${detail.tableData.subjectId}"
-              data-unique-entry-id="${detail.rows[index].id}">${
-            detail.rows[index].id
-          }</div>
           </div>
         </th>
+        <td>
+          <div class="inner">
+            <ul>
+              <div
+                class="togo-key-view primarykey"
+                data-key="${detail.tableData.togoKey}"
+                data-order= "${[0, index]}"
+                data-subject-id="${detail.tableData.subjectId}"
+                data-unique-entry-id="${detail.rows[index].id}">${
+                  detail.rows[index].id
+                }
+              </div>
+            </ul>
+          </div<
+        </td>
         ${row
           .map((column, columnIndex) => {
             // console.log(column)
@@ -205,12 +217,9 @@ export default class ResultsTable {
                   data-unique-entry-id="${attribute.id}"
                   data-unique-entry-uri="${attribute.attribute.uri}"
                   >${attribute.id}</div>
-                <a
-                  href="${attribute.attribute ? attribute.attribute.uri : ""}"
-                  title="${attribute.attribute ? attribute.attribute.uri : ""}"
-                  target="_blank">${
+                <span>${
                     attribute.attribute ? attribute.attribute.label : attribute
-                  }</a>
+                  }</span>
               </li>`;
                 })
                 .join("")}</ul></div></td>`;
