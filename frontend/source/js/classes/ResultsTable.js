@@ -255,45 +255,11 @@ export default class ResultsTable {
       const tr = this.#TBODY.querySelector(
         `:scope > tr[data-index="${actualIndex}"]`
       );
+      const reportLink = `report.html?togoKey=${this.#tableData.togoKey}&id=${tr.getAttribute("data-togo-id")}&properties=${encodeURIComponent(JSON.stringify(row))}`
       const uniqueEntries = tr.querySelectorAll(".togo-key-view");
       uniqueEntries.forEach((uniqueEntry) => {
         uniqueEntry.addEventListener("click", () => {
-          if (uniqueEntry.classList.contains("-selected")) {
-            uniqueEntry.classList.remove("-selected");
-          } else {
-            uniqueEntry.classList.add("-selected");
-            // dispatch event
-            const customEvent = new CustomEvent(event.showPopup, {
-              detail: {
-                keys: {
-                  dataKey: uniqueEntry.getAttribute("data-key"),
-                  subjectId: uniqueEntry.getAttribute("data-subject-id"),
-                  mainCategoryId: uniqueEntry.getAttribute(
-                    "data-main-category-id"
-                  ),
-                  subCategoryId: uniqueEntry.getAttribute(
-                    "data-sub-category-id"
-                  ),
-                  uniqueEntryId: uniqueEntry.getAttribute(
-                    "data-unique-entry-id"
-                  ),
-                },
-                properties: {
-                  isPrimaryKey: uniqueEntry.classList.contains("primarykey"),
-                  externalLink: uniqueEntry.getAttribute(
-                    "data-unique-entry-uri"
-                  ),
-                  reportLink: `report.html?togoKey=${
-                    this.#tableData.togoKey
-                  }&id=${tr.getAttribute(
-                    "data-togo-id"
-                  )}&properties=${encodeURIComponent(JSON.stringify(row))}`,
-                  dataOrder: uniqueEntry.getAttribute("data-order"),
-                },
-              },
-            });
-            DefaultEventEmitter.dispatchEvent(customEvent);
-          }
+          this.createPopupEvent(uniqueEntry, tr, reportLink, event.showPopup);
         });
       });
     });
@@ -303,5 +269,37 @@ export default class ResultsTable {
     console.log(tableData);
     this.#ROOT.classList.add("-complete");
     this.#LOADING_VIEW.classList.remove("-shown");
+  }
+
+  createPopupEvent(uniqueEntry, tr, reportLink, newEvent) {
+    if (tr.classList.contains("-selected")) {
+      [tr,uniqueEntry].forEach(e => e.classList.remove("-selected"));
+    } else {
+      [tr,uniqueEntry].forEach(e => e.classList.add("-selected"));
+      // dispatch event
+      const customEvent = new CustomEvent(newEvent, {
+        detail: {
+          keys: {
+            dataKey: uniqueEntry.getAttribute("data-key"),
+            subjectId: uniqueEntry.getAttribute("data-subject-id"),
+            mainCategoryId: uniqueEntry.getAttribute(
+              "data-main-category-id"
+            ),
+            subCategoryId: uniqueEntry.getAttribute(
+              "data-sub-category-id"
+            ),
+            uniqueEntryId: uniqueEntry.getAttribute(
+              "data-unique-entry-id"
+            ),
+          },
+          properties: {
+            dataOrder: uniqueEntry.getAttribute("data-order"),
+            isPrimaryKey: uniqueEntry.classList.contains("primarykey"),
+            reportLink: reportLink,
+          },
+        },
+      });
+      DefaultEventEmitter.dispatchEvent(customEvent);
+    }
   }
 }

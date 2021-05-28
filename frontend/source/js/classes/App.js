@@ -43,8 +43,8 @@ class App {
     new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
     new ConditionsController(document.querySelector('#Conditions'));
     const reportsView = new ReportsView(document.querySelector('#Reports'));
-    new ResultDetailModal();
     new ResultsTable(document.querySelector('#ResultsTable'));
+    new ResultDetailModal();
     new BalloonView();
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
 

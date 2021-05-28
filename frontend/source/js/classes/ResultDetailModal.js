@@ -1,6 +1,7 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import Records from "./Records";
 import StanzaManager from "./StanzaManager";
+import ResultsTable from "./ResultsTable";
 import * as event from "../events";
 
 export default class ResultDetailModal {
@@ -31,6 +32,11 @@ export default class ResultDetailModal {
       this.#showPopUp(e);
     });
 
+    DefaultEventEmitter.addEventListener(event.movePopup, (e) => {
+      this.#hidePopUp();
+      this.#showPopUp(e);
+    });
+
     DefaultEventEmitter.addEventListener(event.hidePopUp, () => {
       this.#hidePopUp();
     });
@@ -44,18 +50,21 @@ export default class ResultDetailModal {
 
   #showPopUp(e) {
     if (this.#RESULT_MODAL.innerHTML === '') {
-      const popup = document.createElement('div');
-      popup.className = "popup";
-      popup.appendChild(this.#header(e.detail.keys, e.detail.properties));
-      popup.appendChild(this.#container(e.detail.keys));
-
       this.#handleKeydown = this.#handleKeydown.bind(this);
       document.addEventListener('keydown', this.#handleKeydown);
-      this.#RESULT_MODAL.appendChild(popup);
+      this.#RESULT_MODAL.appendChild(this.#popup(e.detail));
       this.#RESULT_MODAL.classList.add("backdrop");
     }
   }
 
+  #popup(detail) {
+    const popup = document.createElement('div');
+      popup.className = "popup";
+      popup.appendChild(this.#header(detail.keys, detail.properties));
+      popup.appendChild(this.#container(detail));
+    
+      return popup
+  }
   // HTML elements
   #header(keys, props) {
     const subject = Records.getSubject(keys.subjectId);
@@ -88,14 +97,15 @@ export default class ResultDetailModal {
     return header;
   }
 
-  #arrow(direction) {
-    const arrow = document.createElement('div');
-    arrow.classList.add("arrow", `-${direction.toLowerCase()}`);
-    arrow.addEventListener('click', (e) => {
-      this.#moveWithArrow(this.#arrowFuncs.get("Arrow" + direction));
+  #container(detail){
+    const container = document.createElement('div');
+    container.className = "container";
+    ["Up", "Right", "Down", "Left"].forEach((dir) => {
+      container.appendChild(this.#arrow(dir, detail));
     });
+    container.appendChild(this.#stanzas(detail.keys));
 
-    return arrow;
+    return container
   }
 
   #stanzas(keys) {
@@ -110,15 +120,14 @@ export default class ResultDetailModal {
     return stanzas
   }
 
-  #container(keys){
-    const container = document.createElement('div');
-    container.className = "container";
-    ["Up", "Right", "Down", "Left"].forEach((dir) => {
-      container.appendChild(this.#arrow(dir));
+  #arrow(direction, detail) {
+    const arrow = document.createElement('div');
+    arrow.classList.add("arrow", `-${direction.toLowerCase()}`);
+    arrow.addEventListener('click', (e) => {
+      this.#setMovementArrow(this.#arrowFuncs.get("Arrow" + direction), detail);
     });
-    container.appendChild(this.#stanzas(keys));
 
-    return container
+    return arrow;
   }
 
   // Events, functions
@@ -127,7 +136,7 @@ export default class ResultDetailModal {
       this.#hidePopUp();
     }
     else if (this.#arrowFuncs.has(e.key)){
-      this.#moveWithArrow(this.#arrowFuncs.get(e.key));
+      this.#setMovementArrow(this.#arrowFuncs.get("Arrow" + direction), e.detail);
     }
   }
 
@@ -138,26 +147,45 @@ export default class ResultDetailModal {
     ["ArrowDown", function(x,y){return [x, y+1]}]
   ]);
 
-  #moveWithArrow(movement) {
-    //TODO: Implement functions for data with multiple entries
-    try {
-      const curEntry = this.#RESULTS_TABLE.querySelector(".-selected");
-      let [x,y] = curEntry.getAttribute("data-order").split(",");
-      [x,y] = [x,y].map((cor) => parseFloat(cor));
+  #setMovementArrow(movement, detail) {
+    detail.properties.movement = movement;
+    const curEntry = this.#RESULTS_TABLE.querySelector(`[data-unique-entry-id = "${detail.keys.uniqueEntryId}"]`)
+    let [x,y] = curEntry.getAttribute("data-order").split(",");
+    [x,y] = [x,y].map((cor) => parseFloat(cor));
     
-      const targetEntry = this.#RESULTS_TABLE.querySelector(`[data-order = "${movement(x,y)}"`);
-      targetEntry.classList.add("-selected");
-      curEntry.classList.remove("-selected");
+    const targetEntry = this.#RESULTS_TABLE.querySelector(`[data-order = "${movement(x,y)}"`);
+    targetEntry.classList.add("-selected");
 
-      this.#RESULT_MODAL.querySelector(".stanzas").innerHTML = StanzaManager.draw(
-        targetEntry.getAttribute("data-subject-id"),
-        targetEntry.getAttribute("data-unique-entry-id"),
-        targetEntry.getAttribute("data-key")
-    );
-      
-    } catch (error) {
-      console.log("reached end of table!");
-    }
+    const targetTr = targetEntry.closest('tr');
+    const reportLink = "test";
+
+    ResultsTable.prototype.createPopupEvent(targetEntry, targetTr, reportLink, event.movePopup);
+    // const customEvent = new CustomEvent(event.movePopup, {
+    //   detail: detail
+    // });
+    // DefaultEventEmitter.dispatchEvent(customEvent);
+  }
+
+  #moveWithArrow(keys, props) {
+    //TODO: Implement functions for data with multiple entries
+    console.log("moving!");
+      // const curTr = this.#RESULTS_TABLE.querySelector(".-selected");
+      const uniqueId = this.#RESULTS_TABLE.querySelector(`[data-unique-entry-id = "${keys.uniqueEntryId}"]`)
+      // let [x,y] = curEntry.getAttribute("data-order").split(",");
+      // [x,y] = [x,y].map((cor) => parseFloat(cor));
+    
+      // const targetEntry = this.#RESULTS_TABLE.querySelector(`[data-order = "${movement(x,y)}"`);
+      uniqueId.classList.add("-selected");
+      // curEntry.classList.remove("-selected");
+
+      // const test= this.#RESULT_MODAL.querySelector('header');
+      // test.remove();
+      // this.#RESULT_MODAL.prepend(this.#header(keys, props));
+      // this.#RESULT_MODAL.querySelector(".stanzas").innerHTML = StanzaManager.draw(
+      //   keys.subjectId,
+      //   keys.uniqueEntryId,
+      //   keys.dataKey
+      // );
   }
 
   #hidePopUp() {
