@@ -16,7 +16,16 @@ jobs:
         git config --local user.email "togosite[bot]@dbcls.jp"
         git config --local user.name "togosite github action [bot]"
         git commit -m "update document" -a
-    - uses: ad-m/github-push-action@master
+
+    - uses: peter-evans/create-pull-request@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref }}
+        commit-message: Update documentation
+        committer: togosite[bot]
+        author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+        branch: documentation-patches
+        delete-branch: true
+        title: 'Update documentation'
+        body: |
+          Update documentation data source details by github actions
+        reviewers: inutano
+        draft: false
