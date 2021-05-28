@@ -127,37 +127,29 @@ decompress_files() {
   local db_dir="${1}"
   decompress_zipfiles "${db_dir}"
   decompress_tarfiles "${db_dir}"
+  decompress_gz "${db_dir}"
   decompress_xz "${db_dir}"
-  remove_files "${db_dir}"
 }
 
 decompress_zipfiles() {
   local db_dir="${1}"
-  local zipfiles=$(find "${db_dir}" -name '*.zip')
-  if [[ ! -z "${zipfiles}" ]]; then
-    cd "${db_dir}" && unzip *.zip
-  fi
+  find ${db_dir} -type f -name "*.zip" -execdir unzip {} \;
 }
 
 decompress_tarfiles() {
   local db_dir="${1}"
-  local tarfiles=$(find "${db_dir}" -name '*.tar*')
-  if [[ ! -z "${tarfiles}" ]]; then
-    cd "${db_dir}" && tar xf *.tar*
-  fi
+  find ${db_dir} -type f -name "*.tar*" -execdir tar xf {} \;
+  find ${db_dir} -type f -name "*.tar*" -execdir rm -f {} \;
+}
+
+decompress_gz() {
+  local db_dir="${1}"
+  find ${db_dir} -type f -name "*.gz" -execdir gunzip {} \;
 }
 
 decompress_xz() {
   local db_dir="${1}"
-  local xzfiles=$(find "${db_dir}" -name '*.xz')
-  if [[ ! -z "${xzfiles}" ]]; then
-    cd "${db_dir}" && unxz *.xz
-  fi
-}
-
-remove_files() {
-  local db_dir="${1}"
-  cd "${db_dir}" && rm -fr *.zip *.tar* *.xz
+  find ${db_dir} -type f -name "*.xz" -execdir unxz {} \;
 }
 
 update_file_list() {
@@ -183,7 +175,7 @@ create_date_triple() {
   local graph_name="${1}"
   local db_dir="${2}"
   local date=$(get_modification_date)
-  echo "<${graph_name}> <http://purl.org/dc/terms/date> \"${date}\"^^<http://www.w3.org/2001/XMLSchema#date> ." > "${db_dir}/date.ttl"
+  echo "<${graph_name}> <http://purl.org/dc/terms/date> \"${date}\"^^<http://www.w3.org/2001/XMLSchema#date> ." > "${db_dir}/date.nq"
 }
 
 get_modification_date() {
