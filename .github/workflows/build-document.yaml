@@ -20,12 +20,5 @@ jobs:
     - uses: peter-evans/create-pull-request@v3
       with:
         commit-message: Update documentation
-        committer: togosite[bot]
-        author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         branch: documentation-patches
-        delete-branch: true
         title: 'Update documentation'
-        body: |
-          Update documentation data source details by github actions
-        reviewers: inutano
-        draft: false
