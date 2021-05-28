@@ -3499,15 +3499,21 @@
 
       if (_classPrivateFieldGet(_this, _property$3).propertyId === propertyId) {
         _classPrivateFieldGet(_this, _currentColumns).forEach(function (ul) {
+          var isAllChecked = true;
           ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
+            var checkbox = li.querySelector(':scope > input[type="checkbox"]');
+            if (!checkbox.checked) isAllChecked = false;
+
             if (li.dataset.id === categoryId) {
               // change checkbox status
               var isChecked = e.detail.action === 'add';
-              li.querySelector(':scope > input[type="checkbox"]').checked = isChecked;
-              _classPrivateFieldGet(_this, _items$1)[li.dataset.id].checked = isChecked; // change ancestor status
-              // TODO:
+              checkbox.checked = isChecked;
+              _classPrivateFieldGet(_this, _items$1)[li.dataset.id].checked = isChecked;
             }
-          });
+          }); // update all properties
+
+          ul.querySelector(':scope > .item.-all > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
+          // TODO:
         });
       }
     });

@@ -53,16 +53,22 @@ export default class ColumnSelectorView {
       }
       if (this.#property.propertyId === propertyId) {
         this.#currentColumns.forEach(ul => {
+          let isAllChecked = true;
           ul.querySelectorAll(':scope > li:not(.-all)').forEach(li => {
+            const checkbox = li.querySelector(':scope > input[type="checkbox"]');
+            if (!checkbox.checked) isAllChecked = false;
             if (li.dataset.id === categoryId) {
               // change checkbox status
               const isChecked = e.detail.action === 'add';
-              li.querySelector(':scope > input[type="checkbox"]').checked = isChecked;
+              checkbox.checked = isChecked;
               this.#items[li.dataset.id].checked = isChecked;
-              // change ancestor status
-              // TODO:
             }
           })
+          // update all properties
+          ul.querySelector(':scope > .item.-all > input[type="checkbox"]').checked = isAllChecked;
+          // change ancestor status
+
+          // TODO:
         });
       }
     });
