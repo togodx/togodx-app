@@ -1,6 +1,6 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
-import StatisticsView from "./StatisticsView";
-import * as event from "../events";
+import StatisticsView from './StatisticsView';
+import * as event from '../events';
 
 export default class ResultsTable {
   #intersctionObserver;
@@ -16,13 +16,13 @@ export default class ResultsTable {
   constructor(elm) {
     // references
     this.#ROOT = elm;
-    const TABLE = elm.querySelector(":scope > .body > table");
-    this.#THEAD = TABLE.querySelector(":scope > thead > tr.header");
-    this.#STATS = TABLE.querySelector(":scope > thead > tr.statistics");
-    this.#TBODY = TABLE.querySelector(":scope > tbody");
-    this.#TABLE_END = elm.querySelector(":scope > .body > .tableend");
+    const TABLE = elm.querySelector(':scope > .body > table');
+    this.#THEAD = TABLE.querySelector(':scope > thead > tr.header');
+    this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics');
+    this.#TBODY = TABLE.querySelector(':scope > tbody');
+    this.#TABLE_END = elm.querySelector(':scope > .body > .tableend');
     this.#LOADING_VIEW = this.#TABLE_END.querySelector(
-      ":scope > .loading-view"
+      ':scope > .loading-view'
     );
 
     // get next data automatically
@@ -51,10 +51,10 @@ export default class ResultsTable {
     const mutationObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (
-          mutation.type === "attributes" &&
-          mutation.attributeName === "data-display"
+          mutation.type === 'attributes' &&
+          mutation.attributeName === 'data-display'
         ) {
-          if (mutation.target.dataset.display !== "results") {
+          if (mutation.target.dataset.display !== 'results') {
             this.#intersctionObserver.unobserve(this.#TABLE_END);
             // deselect table data
             this.#tableData.deselect();
@@ -62,7 +62,7 @@ export default class ResultsTable {
         }
       });
     });
-    mutationObserver.observe(document.querySelector("body"), {
+    mutationObserver.observe(document.querySelector('body'), {
       attributes: true,
     });
   }
@@ -88,55 +88,55 @@ export default class ResultsTable {
         propertyId: property.property.propertyId,
       };
     });
-    this.#ROOT.classList.remove("-complete");
-    this.#THEAD.innerHTML = "";
-    this.#TBODY.innerHTML = "";
-    this.#LOADING_VIEW.classList.add("-shown");
+    this.#ROOT.classList.remove('-complete');
+    this.#THEAD.innerHTML = '';
+    this.#TBODY.innerHTML = '';
+    this.#LOADING_VIEW.classList.add('-shown');
     DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
 
     // make table header
     this.#THEAD.innerHTML = `
       <th>
-        <div class="inner">
-          <div class="togo-key-view">Report</div>
+        <div class='inner'>
+          <div class='togo-key-view'>Report</div>
         </div>
       </th>
       <th>
-        <div class="inner">
-          <div class="togo-key-view">${tableData.condition.togoKey}</div>
+        <div class='inner'>
+          <div class='togo-key-view'>${tableData.condition.togoKey}</div>
         </div>
       </th>
       ${tableData.condition.attributes
         .map(
           (property) => `
       <th>
-        <div class="inner -propertyvalue" style="background-color: ${property.subject.colorCSSValue}">
-          <div class="togo-key-view">${property.property.primaryKey}</div>
+        <div class='inner -propertyvalue' style='background-color: ${property.subject.colorCSSValue}'>
+          <div class='togo-key-view'>${property.property.primaryKey}</div>
           <span>${property.property.label}</span>
         </div>
       </th>`
         )
-        .join("")}
+        .join('')}
       ${tableData.condition.properties
         .map(
           (property) => `
       <th>
-        <div class="inner -property" style="color: ${property.subject.colorCSSValue}">
-          <div class="togo-key-view">${property.property.primaryKey}</div>
+        <div class='inner -property' style='color: ${property.subject.colorCSSValue}'>
+          <div class='togo-key-view'>${property.property.primaryKey}</div>
           <span>${property.property.label}</span>
         </div>
       </th>`
         )
-        .join("")}`;
+        .join('')}`;
 
     // make stats
     this.#STATS.innerHTML =
-      '<td><div class="inner"><div></td>' +
+      `<td><div class='inner'><div></td>` +
       properties
-        .map(() => `<td><div class="inner"><div></div></div></td>`)
-        .join("");
+        .map(() => `<td><div class='inner'><div></div></div></td>`)
+        .join('');
     this.#STATS
-      .querySelectorAll(":scope > td > .inner > div")
+      .querySelectorAll(':scope > td > .inner > div')
       .forEach((elm, index) => {
         if (index === 0) return;
         new StatisticsView(elm, properties[index - 1]);
@@ -160,31 +160,31 @@ export default class ResultsTable {
 
     // make table
     this.#TBODY.insertAdjacentHTML(
-      "beforeend",
+      'beforeend',
       rows
         .map((row, index) => {
           console.log(row);
-          return `<tr data-index="${
+          return `<tr data-index='${
             detail.tableData.offset + index
-          }" data-togo-id="${detail.rows[index].id}">
+          }' data-togo-id='${detail.rows[index].id}'>
         <th>
-          <div class="inner">
-            <a class="toreportpage" href="report.html?togoKey=${
+          <div class='inner'>
+            <a class='toreportpage' href='report.html?togoKey=${
               detail.tableData.togoKey
             }&id=${detail.rows[index].id}&properties=${encodeURIComponent(
             JSON.stringify(row)
-          )}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
+          )}' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>
           </div>
         </th>
         <td>
-          <div class="inner">
+          <div class='inner'>
             <ul>
               <div
-                class="togo-key-view primarykey"
-                data-key="${detail.tableData.togoKey}"
-                data-order= "${[0, index]}"
-                data-subject-id="${detail.tableData.subjectId}"
-                data-unique-entry-id="${detail.rows[index].id}">${
+                class='togo-key-view primarykey'
+                data-key='${detail.tableData.togoKey}'
+                data-order= '${[0, index]}'
+                data-subject-id='${detail.tableData.subjectId}'
+                data-unique-entry-id='${detail.rows[index].id}'>${
                   detail.rows[index].id
                 }
               </div>
@@ -197,50 +197,50 @@ export default class ResultsTable {
             // console.log(column)
             if (column) {
               return `
-              <td><div class="inner"><ul>${column.attributes
+              <td><div class='inner'><ul>${column.attributes
                 .map((attribute) => {
                   if (!attribute.attribute) console.error(attribute);
                   return `
               <li>
                 <div
-                  class="togo-key-view"
-                  data-order = "${[columnIndex + 1, index]}"
-                  data-key="${column.propertyKey}"
-                  data-subject-id="${this.#header[columnIndex].subjectId}"
-                  data-main-category-id="${
+                  class='togo-key-view'
+                  data-order = '${[columnIndex + 1, index]}'
+                  data-key='${column.propertyKey}'
+                  data-subject-id='${this.#header[columnIndex].subjectId}'
+                  data-main-category-id='${
                     this.#header[columnIndex].propertyId
-                  }"
-                  data-sub-category-id="${
+                  }'
+                  data-sub-category-id='${
                     attribute.attribute.categoryId
                       ? attribute.attribute.categoryId
                       : attribute.attribute.categoryIds
-                  }"
-                  data-unique-entry-id="${attribute.id}"
-                  data-unique-entry-uri="${attribute.attribute.uri}"
+                  }'
+                  data-unique-entry-id='${attribute.id}'
+                  data-unique-entry-uri='${attribute.attribute.uri}'
                   >${attribute.id}</div>
                 <span>${
                     attribute.attribute ? attribute.attribute.label : attribute
                   }</span>
               </li>`;
                 })
-                .join("")}</ul></div></td>`;
+                .join('')}</ul></div></td>`;
             } else {
-              return '<td><div class="inner -empty"></div></td>';
+              return `<td><div class='inner -empty'></div></td>`;
             }
           })
-          .join("")}
+          .join('')}
       </tr>`;
         })
-        .join("")
+        .join('')
     );
 
     // turn off auto-loading after last line is displayed
     if (detail.done) {
-      this.#ROOT.classList.add("-complete");
-      this.#LOADING_VIEW.classList.remove("-shown");
+      this.#ROOT.classList.add('-complete');
+      this.#LOADING_VIEW.classList.remove('-shown');
     } else {
-      this.#ROOT.classList.remove("-complete");
-      this.#LOADING_VIEW.classList.add("-shown");
+      this.#ROOT.classList.remove('-complete');
+      this.#LOADING_VIEW.classList.add('-shown');
       this.#intersctionObserver.observe(this.#TABLE_END);
     }
     
@@ -254,12 +254,12 @@ export default class ResultsTable {
     rows.forEach((row, index) => {
       const actualIndex = detail.tableData.offset + index;
       const tr = this.#TBODY.querySelector(
-        `:scope > tr[data-index="${actualIndex}"]`
+        `:scope > tr[data-index='${actualIndex}']`
       );
-      const reportLink = `report.html?togoKey=${this.#tableData.togoKey}&id=${tr.getAttribute("data-togo-id")}&properties=${encodeURIComponent(JSON.stringify(row))}`
-      const uniqueEntries = tr.querySelectorAll(".togo-key-view");
+      const reportLink = `report.html?togoKey=${this.#tableData.togoKey}&id=${tr.getAttribute('data-togo-id')}&properties=${encodeURIComponent(JSON.stringify(row))}`
+      const uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach((uniqueEntry) => {
-        uniqueEntry.addEventListener("click", () => {
+        uniqueEntry.addEventListener('click', () => {
           this.createPopupEvent(uniqueEntry, tr, reportLink, event.showPopup);
         });
       });
@@ -268,8 +268,8 @@ export default class ResultsTable {
 
   #failed(tableData) {
     console.log(tableData);
-    this.#ROOT.classList.add("-complete");
-    this.#LOADING_VIEW.classList.remove("-shown");
+    this.#ROOT.classList.add('-complete');
+    this.#LOADING_VIEW.classList.remove('-shown');
   }
 
   // public methods
@@ -282,21 +282,21 @@ export default class ResultsTable {
     const customEvent = new CustomEvent(newEvent, {
       detail: {
         keys: {
-          dataKey: uniqueEntry.getAttribute("data-key"),
-          subjectId: uniqueEntry.getAttribute("data-subject-id"),
+          dataKey: uniqueEntry.getAttribute('data-key'),
+          subjectId: uniqueEntry.getAttribute('data-subject-id'),
           mainCategoryId: uniqueEntry.getAttribute(
-            "data-main-category-id"
+            'data-main-category-id'
           ),
           subCategoryId: uniqueEntry.getAttribute(
-            "data-sub-category-id"
+            'data-sub-category-id'
           ),
           uniqueEntryId: uniqueEntry.getAttribute(
-            "data-unique-entry-id"
+            'data-unique-entry-id'
           ),
         },
         properties: {
-          dataOrder: uniqueEntry.getAttribute("data-order"),
-          isPrimaryKey: uniqueEntry.classList.contains("primarykey"),
+          dataOrder: uniqueEntry.getAttribute('data-order'),
+          isPrimaryKey: uniqueEntry.classList.contains('primarykey'),
           reportLink: reportLink,
         },
       }

@@ -1,8 +1,8 @@
-import DefaultEventEmitter from "./DefaultEventEmitter";
-import Records from "./Records";
-import StanzaManager from "./StanzaManager";
-import ResultsTable from "./ResultsTable";
-import * as event from "../events";
+import DefaultEventEmitter from './DefaultEventEmitter';
+import Records from './Records';
+import StanzaManager from './StanzaManager';
+import ResultsTable from './ResultsTable';
+import * as event from '../events';
 
 export default class ResultDetailModal {
   #RESULTS_TABLE;
@@ -12,16 +12,16 @@ export default class ResultDetailModal {
 
   constructor(elm) {
     this.#ROOT = document.createElement('section');
-    this.#ROOT.id = "ResultDetailModal";
+    this.#ROOT.id = 'ResultDetailModal';
     document
       .querySelector('body')
-      .insertAdjacentElement("beforeend", this.#ROOT);
+      .insertAdjacentElement('beforeend', this.#ROOT);
 
     // references
-    this.#RESULTS_TABLE = document.querySelector("#ResultsTable");
-    this.#RESULT_MODAL = document.querySelector("#ResultDetailModal");
+    this.#RESULTS_TABLE = document.querySelector('#ResultsTable');
+    this.#RESULT_MODAL = document.querySelector('#ResultDetailModal');
     this.#EXIT_BUTTON = document.createElement('div');
-    this.#EXIT_BUTTON.className = "close-button-view";
+    this.#EXIT_BUTTON.className = 'close-button-view';
 
     // attach event
     this.#EXIT_BUTTON.addEventListener('click', () => {
@@ -54,7 +54,7 @@ export default class ResultDetailModal {
       this.#handleKeydown = this.#handleKeydown.bind(this);
       document.addEventListener('keydown', this.#handleKeydown);
       this.#RESULT_MODAL.appendChild(this.#popup(e.detail));
-      this.#RESULT_MODAL.classList.add("backdrop");
+      this.#RESULT_MODAL.classList.add('backdrop');
     }
   }
   //TODO: hover highlighting 
@@ -74,12 +74,12 @@ export default class ResultDetailModal {
   }
 
   #entryEl(id) {
-    return this.#RESULTS_TABLE.querySelector(`[data-unique-entry-id = "${id}"]`);
+    return this.#RESULTS_TABLE.querySelector(`[data-unique-entry-id = '${id}']`);
   }
 
   #popup(detail) {
     const popup = document.createElement('div');
-      popup.className = "popup";
+      popup.className = 'popup';
       popup.appendChild(this.#header(detail.keys, detail.properties));
       popup.appendChild(this.#container(detail));
     
@@ -97,19 +97,19 @@ export default class ResultDetailModal {
       : Records.getValue(keys.mainCategoryId, keys.subCategoryId);
     const path = isPrimaryKey
       ? keys.dataKey
-      : `<span class="path">${subject.subject}　/　${subCategory.label}</span>`;
-    const header = document.createElement("header");
+      : `<span class='path'>${subject.subject}　/　${subCategory.label}</span>`;
+    const header = document.createElement('header');
     header.innerHTML = `
-      <div class="label">
+      <div class='label'>
         <strong>${
           isPrimaryKey ? keys.uniqueEntryId : mainCategory.label
         } </strong>
         ${path}
       </div>
       <div>
-        <a class="toreportpage" href="${
+        <a class='toreportpage' href='${
           props.reportLink
-        }" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
+        }' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>
     `;
     header.style.backgroundColor = subject.colorCSSValue;
     header.lastChild.appendChild(this.#EXIT_BUTTON);
@@ -119,8 +119,8 @@ export default class ResultDetailModal {
 
   #container(detail){
     const container = document.createElement('div');
-    container.className = "container";
-    ["Up", "Right", "Down", "Left"].forEach((dir) => {
+    container.className = 'container';
+    ['Up', 'Right', 'Down', 'Left'].forEach((dir) => {
       container.appendChild(this.#arrow(dir, detail));
     });
     container.appendChild(this.#stanzas(detail.keys));
@@ -130,7 +130,7 @@ export default class ResultDetailModal {
 
   #stanzas(keys) {
     const stanzas = document.createElement('div');
-    stanzas.className = "stanzas";
+    stanzas.className = 'stanzas';
     stanzas.innerHTML += StanzaManager.draw(
       keys.subjectId,
       keys.uniqueEntryId,
@@ -142,9 +142,9 @@ export default class ResultDetailModal {
 
   #arrow(direction, detail) {
     const arrow = document.createElement('div');
-    arrow.classList.add("arrow", `-${direction.toLowerCase()}`);
+    arrow.classList.add('arrow', `-${direction.toLowerCase()}`);
     arrow.addEventListener('click', (e) => {
-      this.#setMovementArrow(this.#arrowFuncs.get("Arrow" + direction), detail);
+      this.#setMovementArrow(this.#arrowFuncs.get('Arrow' + direction), detail);
     });
 
     return arrow;
@@ -152,7 +152,7 @@ export default class ResultDetailModal {
 
   // Events, functions
   #handleKeydown = (e) => {
-    if(e.key == "Escape"){
+    if(e.key == 'Escape'){
       this.#hidePopUp();
     }
     else if (this.#arrowFuncs.has(e.key)){
@@ -162,14 +162,14 @@ export default class ResultDetailModal {
   }
 
   #arrowFuncs = new Map([
-    ["ArrowLeft", function(x,y){return [x-1, y]}],
-    ["ArrowRight", function(x,y){return [x+1, y]}],
-    ["ArrowUp", function(x,y){return [x, y-1]}],
-    ["ArrowDown", function(x,y){return [x, y+1]}]
+    ['ArrowLeft', function(x,y){return [x-1, y]}],
+    ['ArrowRight', function(x,y){return [x+1, y]}],
+    ['ArrowUp', function(x,y){return [x, y-1]}],
+    ['ArrowDown', function(x,y){return [x, y+1]}]
   ]);
 
   #getCorList(str) {
-    let [x,y] = str.split(",");
+    let [x,y] = str.split(',');
     return [x,y].map((cor) => parseFloat(cor));
   }
 
@@ -177,9 +177,9 @@ export default class ResultDetailModal {
     //TODO: Implement functions for data with multiple entries
     detail.properties.movement = movement;
     const curEntry = this.#entryEl(detail.keys.uniqueEntryId);
-    let [x, y] = this.#getCorList(curEntry.getAttribute("data-order"));
+    let [x, y] = this.#getCorList(curEntry.getAttribute('data-order'));
     
-    const targetEntry = this.#RESULTS_TABLE.querySelector(`[data-order = "${movement(x,y)}"`);
+    const targetEntry = this.#RESULTS_TABLE.querySelector(`[data-order = '${movement(x,y)}'`);
     const targetTr = targetEntry.closest('tr');
     const reportLink = targetTr.querySelector('.toreportpage').href;
 
@@ -187,11 +187,11 @@ export default class ResultDetailModal {
   }
 
   #hidePopUp() {
-    this.#RESULT_MODAL.classList.remove("backdrop");
+    this.#RESULT_MODAL.classList.remove('backdrop');
     this.#RESULT_MODAL.innerHTML = '';
     this.#RESULTS_TABLE
-      .querySelectorAll(".-selected")
-      .forEach((entry) => entry.classList.remove("-selected"));
+      .querySelectorAll('.-selected')
+      .forEach((entry) => entry.classList.remove('-selected'));
     document.removeEventListener('keydown', this.#handleKeydown);
   }
 }
