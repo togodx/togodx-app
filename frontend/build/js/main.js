@@ -3594,7 +3594,8 @@
       max = Math.max(max, item.count);
       return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");
     }).join('');
-    ul.querySelectorAll(':scope > .item:not(.-all)').forEach(function (item) {
+    var listItems = ul.querySelectorAll(':scope > .item:not(.-all)');
+    listItems.forEach(function (item) {
       return _classPrivateFieldGet(_this3, _items$1)[item.dataset.categoryId].elm = item;
     }); // drill down event
 
@@ -3638,7 +3639,8 @@
       });
     }); // select/deselect a item (attribute)
 
-    ul.querySelectorAll(':scope > .item:not(.-all) > input[type="checkbox"]').forEach(function (checkbox) {
+    listItems.forEach(function (item) {
+      var checkbox = item.querySelector(':scope > input[type="checkbox"]');
       checkbox.addEventListener('click', function (e) {
         e.stopPropagation();
 
@@ -3669,6 +3671,17 @@
         } else {
           // remove
           ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _property$3).propertyId, checkbox.value);
+        }
+      });
+    }); // all properties event
+
+    ul.querySelector(':scope > .item.-all').addEventListener('change', function (e) {
+      var isChecked = e.target.checked;
+      listItems.forEach(function (item) {
+        var checkbox = item.querySelector(':scope > input[type="checkbox"]');
+
+        if (checkbox.checked !== isChecked) {
+          checkbox.dispatchEvent(new MouseEvent('click'));
         }
       });
     });

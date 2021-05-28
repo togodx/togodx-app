@@ -138,7 +138,8 @@ export default class ColumnSelectorView {
         <span class="count">${item.count.toLocaleString()}</span>
       </li>`;
     }).join('');
-    ul.querySelectorAll(':scope > .item:not(.-all)').forEach(item => this.#items[item.dataset.categoryId].elm = item);
+    const listItems = ul.querySelectorAll(':scope > .item:not(.-all)');
+    listItems.forEach(item => this.#items[item.dataset.categoryId].elm = item);
 
     // drill down event
     ul.querySelectorAll(':scope > .item.-haschild').forEach(item => {
@@ -164,7 +165,8 @@ export default class ColumnSelectorView {
     });
 
     // select/deselect a item (attribute)
-    ul.querySelectorAll(':scope > .item:not(.-all) > input[type="checkbox"]').forEach(checkbox => {
+    listItems.forEach(item => {
+      const checkbox = item.querySelector(':scope > input[type="checkbox"]');
       checkbox.addEventListener('click', e => {
         e.stopPropagation();
         if (checkbox.checked) { // add
@@ -187,6 +189,17 @@ export default class ColumnSelectorView {
           });
         } else { // remove
           ConditionBuilder.removePropertyValue(this.#property.propertyId, checkbox.value);
+        }
+      });
+    });
+
+    // all properties event
+    ul.querySelector(':scope > .item.-all').addEventListener('change', e => {
+      const isChecked = e.target.checked;
+      listItems.forEach(item => {
+        const checkbox = item.querySelector(':scope > input[type="checkbox"]');
+        if (checkbox.checked !== isChecked) {
+          checkbox.dispatchEvent(new MouseEvent('click'));
         }
       });
     });
