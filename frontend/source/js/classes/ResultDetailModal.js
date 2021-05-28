@@ -1,8 +1,14 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
+<<<<<<< HEAD
 import Records from './Records';
 import StanzaManager from './StanzaManager';
 import ResultsTable from './ResultsTable';
 import * as event from '../events';
+=======
+import Records from "./Records";
+import StanzaManager from "./StanzaManager";
+import * as event from "../events";
+>>>>>>> d58d5f68f6deb6720a324068cea8d10016af6bdd
 
 export default class ResultDetailModal {
   #RESULTS_TABLE;
