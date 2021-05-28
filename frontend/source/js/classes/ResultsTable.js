@@ -188,6 +188,7 @@ export default class ResultsTable {
                   detail.rows[index].id
                 }
               </div>
+              <span>${detail.rows[index].label}</span>
             </ul>
           </div<
         </td>
@@ -259,7 +260,7 @@ export default class ResultsTable {
       const uniqueEntries = tr.querySelectorAll(".togo-key-view");
       uniqueEntries.forEach((uniqueEntry) => {
         uniqueEntry.addEventListener("click", () => {
-          this.createPopupEvent(uniqueEntry, tr, reportLink, event.showPopup);
+          this.createPopupEvent(uniqueEntry, reportLink, event.showPopup);
         });
       });
     });
@@ -271,35 +272,31 @@ export default class ResultsTable {
     this.#LOADING_VIEW.classList.remove("-shown");
   }
 
-  createPopupEvent(uniqueEntry, tr, reportLink, newEvent) {
-    if (tr.classList.contains("-selected")) {
-      [tr,uniqueEntry].forEach(e => e.classList.remove("-selected"));
-    } else {
-      [tr,uniqueEntry].forEach(e => e.classList.add("-selected"));
-      // dispatch event
-      const customEvent = new CustomEvent(newEvent, {
-        detail: {
-          keys: {
-            dataKey: uniqueEntry.getAttribute("data-key"),
-            subjectId: uniqueEntry.getAttribute("data-subject-id"),
-            mainCategoryId: uniqueEntry.getAttribute(
-              "data-main-category-id"
-            ),
-            subCategoryId: uniqueEntry.getAttribute(
-              "data-sub-category-id"
-            ),
-            uniqueEntryId: uniqueEntry.getAttribute(
-              "data-unique-entry-id"
-            ),
-          },
-          properties: {
-            dataOrder: uniqueEntry.getAttribute("data-order"),
-            isPrimaryKey: uniqueEntry.classList.contains("primarykey"),
-            reportLink: reportLink,
-          },
+  // public methods
+  // TODO: Set better way to get reportLink
+  createPopupEvent(uniqueEntry, reportLink, newEvent) {
+    const customEvent = new CustomEvent(newEvent, {
+      detail: {
+        keys: {
+          dataKey: uniqueEntry.getAttribute("data-key"),
+          subjectId: uniqueEntry.getAttribute("data-subject-id"),
+          mainCategoryId: uniqueEntry.getAttribute(
+            "data-main-category-id"
+          ),
+          subCategoryId: uniqueEntry.getAttribute(
+            "data-sub-category-id"
+          ),
+          uniqueEntryId: uniqueEntry.getAttribute(
+            "data-unique-entry-id"
+          ),
         },
-      });
-      DefaultEventEmitter.dispatchEvent(customEvent);
-    }
+        properties: {
+          dataOrder: uniqueEntry.getAttribute("data-order"),
+          isPrimaryKey: uniqueEntry.classList.contains("primarykey"),
+          reportLink: reportLink,
+        },
+      }
+    });
+    DefaultEventEmitter.dispatchEvent(customEvent);
   }
 }

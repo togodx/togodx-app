@@ -136,7 +136,8 @@ export default class ResultDetailModal {
       this.#hidePopUp();
     }
     else if (this.#arrowFuncs.has(e.key)){
-      this.#setMovementArrow(this.#arrowFuncs.get("Arrow" + direction), e.detail);
+      // TODO: set actual event handler
+      this.#RESULT_MODAL.querySelector(`.arrow.-${e.key.replace('Arrow','').toLowerCase()}`).click();
     }
   }
 
@@ -148,44 +149,25 @@ export default class ResultDetailModal {
   ]);
 
   #setMovementArrow(movement, detail) {
+    //TODO: Implement functions for data with multiple entries
+    //TODO: Set better way to get reportLink
     detail.properties.movement = movement;
     const curEntry = this.#RESULTS_TABLE.querySelector(`[data-unique-entry-id = "${detail.keys.uniqueEntryId}"]`)
     let [x,y] = curEntry.getAttribute("data-order").split(",");
     [x,y] = [x,y].map((cor) => parseFloat(cor));
+    curEntry.classList.remove('.-selected');
     
     const targetEntry = this.#RESULTS_TABLE.querySelector(`[data-order = "${movement(x,y)}"`);
-    targetEntry.classList.add("-selected");
+    targetEntry.classList.add(".-selected");
 
     const targetTr = targetEntry.closest('tr');
-    const reportLink = "test";
+    if (!targetTr.classList.contains('.-selected')) {
+      targetTr.classList.add('.-selected')
+    };
 
-    ResultsTable.prototype.createPopupEvent(targetEntry, targetTr, reportLink, event.movePopup);
-    // const customEvent = new CustomEvent(event.movePopup, {
-    //   detail: detail
-    // });
-    // DefaultEventEmitter.dispatchEvent(customEvent);
-  }
+    const reportLink = targetTr.querySelector('.toreportpage').href;
 
-  #moveWithArrow(keys, props) {
-    //TODO: Implement functions for data with multiple entries
-    console.log("moving!");
-      // const curTr = this.#RESULTS_TABLE.querySelector(".-selected");
-      const uniqueId = this.#RESULTS_TABLE.querySelector(`[data-unique-entry-id = "${keys.uniqueEntryId}"]`)
-      // let [x,y] = curEntry.getAttribute("data-order").split(",");
-      // [x,y] = [x,y].map((cor) => parseFloat(cor));
-    
-      // const targetEntry = this.#RESULTS_TABLE.querySelector(`[data-order = "${movement(x,y)}"`);
-      uniqueId.classList.add("-selected");
-      // curEntry.classList.remove("-selected");
-
-      // const test= this.#RESULT_MODAL.querySelector('header');
-      // test.remove();
-      // this.#RESULT_MODAL.prepend(this.#header(keys, props));
-      // this.#RESULT_MODAL.querySelector(".stanzas").innerHTML = StanzaManager.draw(
-      //   keys.subjectId,
-      //   keys.uniqueEntryId,
-      //   keys.dataKey
-      // );
+    ResultsTable.prototype.createPopupEvent(targetEntry, reportLink, event.movePopup);
   }
 
   #hidePopUp() {
