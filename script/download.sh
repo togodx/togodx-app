@@ -15,33 +15,48 @@ initialize_download_dir() {
   DOWNLOAD_DIR="${OUTDIR}/$(date +'%Y%m%d')"
   mkdir -p "${DOWNLOAD_DIR}"
   UPDATED_FILES="${DOWNLOAD_DIR}/updated_files.txt"
-  echo "file_path\tgraph_name\tfile_type" > "${UPDATED_FILES}"
+  printf "file_path\tgraph_name\tfile_type\n" > "${UPDATED_FILES}"
 }
 
 #
 # Download
 #
+get_db_name() {
+  local line="${1}"
+  printf "${line}\n" | cut -f 1 | sed -e 's: :_:g'
+}
+
+get_graph_name() {
+  local line="${1}"
+  printf "${line}\n" | cut -f 2
+}
+
+get_url() {
+  local line="${1}"
+  printf "${line}\n" | cut -f 3
+}
+
 download_all() {
-  echo "Starting download using single thread.."
+  printf "Starting download using single thread..\n"
   IFS=$'\n'
   for line in $(awk -F'\t' 'NR != 1 && NF == 3' ${DATALIST}); do
-    local db_name=$(echo "${line}" | cut -f 1 | sed -e 's: :_:g')
-    local graph_name=$(echo "${line}" | cut -f 2)
-    local url=$(echo "${line}" | cut -f 3)
+    local db_name=$(get_db_name "${line}")
+    local graph_name=$(get_graph_name "${line}")
+    local url=$(get_url "${line}")
 
-    if [[ ! -z ${url} ]]; then
+    if [[ ! -z "${url}" ]]; then
       download "${db_name}" "${graph_name}" "${url}"
     fi
   done
 }
 
 parallel_download() {
-  echo "Starting parallel download using $(nproc) threads.."
+  printf "Starting parallel download using $(nproc) threads..\n"
   IFS=$'\n'
   for line in $(awk -F'\t' 'NR != 1 && NF == 3' ${DATALIST}); do
-    local db_name=$(echo "${line}" | cut -f 1 | sed -e 's: :_:g')
-    local graph_name=$(echo "${line}" | cut -f 2)
-    local url=$(echo "${line}" | cut -f 3)
+    local db_name=$(get_db_name "${line}")
+    local graph_name=$(get_graph_name "${line}")
+    local url=$(get_url "${line}")
 
     if [[ ! -z ${url} ]]; then
       download "${db_name}" "${graph_name}" "${url}" &
@@ -59,12 +74,12 @@ download() {
   local db_dir=$(create_db_dir ${db_name})
   cd ${db_dir}
 
-  echo ""
-  echo "Start Downloading: ${db_name} at ${db_dir}"
-  echo "  Graph name: ${graph_name}"
+  printf "\n"
+  printf "Start Downloading: ${db_name} at ${db_dir}\n"
+  printf "  Graph name: ${graph_name}\n"
 
   local cmd=$(generate_wget_command "${url}")
-  echo "  Command: ${cmd}"
+  printf "  Command: ${cmd}\n"
   eval ${cmd} ||:
   wait
 
@@ -75,7 +90,7 @@ create_db_dir() {
   local db_name="${1}"
   local db_dir="${DOWNLOAD_DIR}/${db_name}"
   mkdir -p "${db_dir}"
-  echo "${db_dir}"
+  printf "${db_dir}\n"
 }
 
 generate_wget_command() {
@@ -88,11 +103,11 @@ generate_wget_command() {
     local opt="${opt} --quiet"
   fi
 
-  if [[ ! -z $(echo ${url} | awk '/\/$/') ]]; then
+  if [[ ! -z $(printf "${url}\n" | awk '/\/$/') ]]; then
     local opt="${opt} -m -np -nd --accept '*.nt*','*.ttl*','*.owl*','*.tar*','*.rdf*'"
   fi
 
-  echo "wget ${opt} '${url}'"
+  printf "wget ${opt} '${url}'\n"
 }
 
 post_download() {
@@ -157,7 +172,7 @@ update_file_list() {
   local db_dir="${2}"
   for file in $(find "${db_dir}" -type f); do
     local filetype=$(inspect_filetype "${file}")
-    echo "${file}" "\t" "${graph_name}" "\t" "${filetype}" >> "${UPDATED_FILES}"
+    printf "${file}\t${graph_name}\t${filetype}\n" >> "${UPDATED_FILES}"
   done
 }
 
@@ -175,7 +190,7 @@ create_date_triple() {
   local graph_name="${1}"
   local db_dir="${2}"
   local date=$(get_modification_date "${db_dir}")
-  echo "<${graph_name}> <http://purl.org/dc/terms/date> \"${date}\"^^<http://www.w3.org/2001/XMLSchema#date> ." > "${db_dir}/date.nq"
+  printf "<${graph_name}> <http://purl.org/dc/terms/date> \"${date}\"^^<http://www.w3.org/2001/XMLSchema#date> .\n" > "${db_dir}/date.nq"
 }
 
 get_modification_date() {
@@ -192,7 +207,7 @@ get_modification_date() {
   else
     local date=$(date '+%Y-%m-%d')
   fi
-  echo "${date}"
+  printf "${date}\n"
 }
 
 get_oldest_file() {
@@ -219,7 +234,7 @@ EOF
 #
 main() {
   if [[ ! -e ${DATALIST} ]]; then
-    echo "ERROR: No data list found at ${DATALIST}" 1>&2
+    printf "ERROR: No data list found at ${DATALIST}\n" 1>&2
     exit 1
   fi
   initialize_download_dir
