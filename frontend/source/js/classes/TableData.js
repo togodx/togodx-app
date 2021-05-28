@@ -21,12 +21,11 @@ export default class TableData {
   #INDICATOR_TEXT_AMOUNT;
   #INDICATOR_TEXT_TIME;
   #INDICATOR_BAR;
-  #BUTTON_PREPARE_DOWNLOAD;
-  #BUTTON_START_DOWNLOAD;
+  #BUTTON_PREPARE_DATA;
+  #BUTTON_DOWNLOAD_JSON;
 
   constructor(condition, elm) {
     console.log(condition)
-    console.log(ConditionBuilder)
 
     this.#isAutoLoad = false;
     this.#isLoaded = false;
@@ -53,7 +52,6 @@ export default class TableData {
       ${condition.properties.map(property => `<div class="condiiton -value" style="color: hsl(${property.subject.hue}, 45%, 50%)">
         <p title="${property.property.label}">${property.property.label}</p>
       </div>`).join('')}
-      
     </div>
     <div class="button close-button-view" title="Delete" data-button="delete"></div>
     <div class="status">
@@ -69,18 +67,19 @@ export default class TableData {
       </div>
     </div>
     <div class="controller">
-      <div class="button autorenew" title="Prepare for download" data-button="prepare-download">
-        <span class="material-icons-outlined autorenew">autorenew</span><span class="preparedata">Prepare data</span>
+      <div class="button autorenew" data-button="prepare-download">
+        <span class="material-icons-outlined">autorenew</span>
+        <span class="label">Prepare data</span>
       </div>
-      <div class="button downloads" title="Download JSON " data-button="start-download">
+      <div class="button downloads" data-button="download-json">
         <a class="json" href="" download="sample.json">
           <span class="material-icons-outlined">download</span>
-          <span class="text">JSON</span>
+          <span class="label">JSON</span>
         </a>
       </div>
-      <div class="button" title="Restore as condition" data-button="restore">
+      <div class="button" data-button="restore">
         <span class="material-icons-outlined">settings_backup_restore</span>
-        Edit
+        <span class="label">Edit</span>
       </div>
     </div>
     `;
@@ -93,24 +92,25 @@ export default class TableData {
     this.#INDICATOR_TEXT_TIME = INDICATOR.querySelector(':scope > .text > .remaining-time');
     this.#INDICATOR_BAR = INDICATOR.querySelector(':scope > .progress > .bar');
     const BUTTONS = [...elm.querySelectorAll(':scope > .controller > .button')];
-    this.#BUTTON_PREPARE_DOWNLOAD = BUTTONS.find(button => button.dataset.button === 'prepare-download');
-    this.#BUTTON_START_DOWNLOAD = BUTTONS.find(button => button.dataset.button === 'start-download');
+    this.#BUTTON_PREPARE_DATA = BUTTONS.find(button => button.dataset.button === 'prepare-download');
+    this.#BUTTON_DOWNLOAD_JSON = BUTTONS.find(button => button.dataset.button === 'download-json');
 
     // events
     elm.addEventListener('click', () => {
       if (elm.classList.contains('-current')) return;
       this.select();
     });
-    this.#BUTTON_PREPARE_DOWNLOAD.addEventListener('click', e => {
+    // prepare data
+    this.#BUTTON_PREPARE_DATA.addEventListener('click', e => {
       e.stopPropagation();
-      if (this.#isAutoLoad == false && this.#ROOT.dataset.status != 'complete') {
+      if (this.#isAutoLoad === false && this.#ROOT.dataset.status !== 'complete') {
         this.#autoLoad();
-        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.add('lotation');
-        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .preparedata').innerHTML = 'Pause';
+        this.#BUTTON_PREPARE_DATA.classList.add('-rotating');
+        this.#BUTTON_PREPARE_DATA.querySelector(':scope > .label').innerHTML = 'Pause';
       } else {
         this.#isAutoLoad = false;
-        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.remove('lotation');
-        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .preparedata').innerHTML = 'Resume';
+        this.#BUTTON_PREPARE_DATA.classList.remove('-rotating');
+        this.#BUTTON_PREPARE_DATA.querySelector(':scope > .label').innerHTML = 'Resume';
       }
     });
     // delete button
@@ -174,11 +174,7 @@ export default class TableData {
         this.#STATUS.textContent = `${responce.status} (${responce.statusText})`;
         throw Error(responce);
       })
-      .then(responce => {
-        // const reader = responce.body.getReader();
-        // console.log(reader);
-        return responce.json();
-      })
+      .then(responce => esponce.json())
       .then(queryIds => {
         console.log(queryIds)
         this.#queryIds = queryIds;
@@ -270,10 +266,10 @@ export default class TableData {
   #complete() {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = 'Complete';
-    this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.add('lotation');
+    this.#BUTTON_PREPARE_DATA.classList.add('-rotating');
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {type : 'application/json'});
     const jsonUrl = URL.createObjectURL(jsonBlob);
-    this.#BUTTON_START_DOWNLOAD.querySelector(':scope > .json').setAttribute('href', jsonUrl);
+    this.#BUTTON_DOWNLOAD_JSON.querySelector(':scope > .json').setAttribute('href', jsonUrl);
   }
 
   /* public methods */

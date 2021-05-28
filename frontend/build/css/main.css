@@ -367,19 +367,23 @@ template {
 
 @-webkit-keyframes enter-stacking-item {
   from {
-    transform: scaleY(0);
+    -webkit-transform: scaleY(0);
+            transform: scaleY(0);
   }
   to {
-    transform: scaleY(1);
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
   }
 }
 
 @keyframes enter-stacking-item {
   from {
-    transform: scaleY(0);
+    -webkit-transform: scaleY(0);
+            transform: scaleY(0);
   }
   to {
-    transform: scaleY(1);
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
   }
 }
 @-webkit-keyframes fetching {
@@ -435,7 +439,8 @@ main {
   -webkit-filter: drop-shadow(var(--shadow-normal));
           filter: drop-shadow(var(--shadow-normal));
   z-index: var(--z-track-balloon);
-  transform: translate(-50%, calc(-100% + -5px));
+  -webkit-transform: translate(-50%, calc(-100% + -5px));
+          transform: translate(-50%, calc(-100% + -5px));
   pointer-events: none;
   border-radius: 0.2rem;
 }
@@ -454,7 +459,8 @@ main {
   height: 0;
 }
 .balloon-view.-below {
-  transform: translate(-50%, calc(100% - 14px));
+  -webkit-transform: translate(-50%, calc(100% - 14px));
+          transform: translate(-50%, calc(100% - 14px));
 }
 .balloon-view.-below::before {
   top: -1.4rem;
@@ -471,11 +477,13 @@ main {
   font-weight: bold;
 }
 .balloon-view > .container > dl {
+  display: -webkit-flex;
   display: flex;
   margin: 0;
 }
 .balloon-view > .container > dl > dt {
-  flex-grow: 1;
+  -webkit-flex-grow: 1;
+          flex-grow: 1;
 }
 .balloon-view > .container > dl > dd {
   margin: 0;
@@ -484,6 +492,7 @@ main {
 }
 
 .concept-view {
+  display: -webkit-flex;
   display: flex;
 }
 .concept-view > .title {
@@ -508,7 +517,9 @@ main {
   width: 1em;
   height: 1em;
   cursor: pointer;
+  transition: -webkit-transform var(--transition-instant);
   transition: transform var(--transition-instant);
+  transition: transform var(--transition-instant), -webkit-transform var(--transition-instant);
 }
 .collapse-view .collapsebutton::before {
   content: "";
@@ -518,14 +529,16 @@ main {
   border-right: solid 0.1rem var(--color-black);
   border-top: solid 0.1rem var(--color-black);
   position: absolute;
-  transform: translate(0.1rem, 0.3rem) rotate(45deg);
+  -webkit-transform: translate(0.1rem, 0.3rem) rotate(45deg);
+          transform: translate(0.1rem, 0.3rem) rotate(45deg);
 }
 .collapse-view .collapsebutton.-white::before {
   border-right-color: white;
   border-top-color: white;
 }
 .collapse-view .collapsebutton.-spread::before {
-  transform: translate(0.2rem, 0.2rem) rotate(135deg);
+  -webkit-transform: translate(0.2rem, 0.2rem) rotate(135deg);
+          transform: translate(0.2rem, 0.2rem) rotate(135deg);
 }
 .collapse-view .collapsingcontent {
   max-height: 0;
@@ -574,6 +587,7 @@ main {
   line-height: 1;
   cursor: pointer;
   transition: background var(--transition-instant);
+  display: -webkit-flex;
   display: flex;
 }
 .column-selector-view > .columns > .inner > .column > .item.-all {
@@ -619,7 +633,8 @@ main {
 .column-selector-view > .columns > .inner > .column > .item > .count {
   font-weight: lighter;
   padding-left: 1.2rem;
-  flex-grow: 1;
+  -webkit-flex-grow: 1;
+          flex-grow: 1;
   text-align: right;
 }
 .column-selector-view > .loading-view {
@@ -647,8 +662,10 @@ main {
   height: 100%;
 }
 .histogram-range-selector-view > .selector > .overview {
+  display: -webkit-flex;
   display: flex;
-  align-items: flex-end;
+  -webkit-align-items: flex-end;
+          align-items: flex-end;
 }
 .histogram-range-selector-view > .selector > .overview > .bar {
   opacity: 0.2;
@@ -682,8 +699,10 @@ main {
   left: 0;
 }
 .histogram-range-selector-view > .histogram > .graph {
+  display: -webkit-flex;
   display: flex;
-  align-items: flex-end;
+  -webkit-align-items: flex-end;
+          align-items: flex-end;
 }
 .histogram-range-selector-view > .histogram > .graph > .bar {
   position: relative;
@@ -705,8 +724,10 @@ main {
   margin: 0;
   left: 50%;
   white-space: nowrap;
-  transform: translate(0, 1rem) rotate(90deg);
-  transform-origin: 0 50%;
+  -webkit-transform: translate(0, 1rem) rotate(90deg);
+          transform: translate(0, 1rem) rotate(90deg);
+  -webkit-transform-origin: 0 50%;
+          transform-origin: 0 50%;
 }
 .histogram-range-selector-view > .histogram > .graph > .bar.-filtered {
   height: 0%;
@@ -724,7 +745,8 @@ main {
   width: 100%;
   position: absolute;
   border-bottom: dotted 0.1rem var(--color-separator);
-  transform: translateY(0.1rem);
+  -webkit-transform: translateY(0.1rem);
+          transform: translateY(0.1rem);
   transition: bottom var(--transition-instant);
 }
 .histogram-range-selector-view > .histogram > .gridcontainer > .grid > .label {
@@ -775,19 +797,23 @@ main {
 
 @-webkit-keyframes loading {
   from {
-    transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
   }
   to {
-    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
   }
 }
 
 @keyframes loading {
   from {
-    transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
   }
   to {
-    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
   }
 }
 .rounded-button-view {
@@ -846,7 +872,8 @@ main {
   box-shadow: var(--shadow-shallow);
   -webkit-animation: var(--transition-instant) enter-stacking-item;
           animation: var(--transition-instant) enter-stacking-item;
-  transform-origin: 0 0;
+  -webkit-transform-origin: 0 0;
+          transform-origin: 0 0;
   margin-top: 0.4rem;
 }
 .stacking-condition-view > .closebutton {
@@ -867,10 +894,12 @@ main {
   height: 0.8rem;
 }
 .stacking-condition-view > .closebutton::before {
-  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+          transform: rotate(45deg);
 }
 .stacking-condition-view > .closebutton::after {
-  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
 }
 .stacking-condition-view > .path {
   margin: 0;
@@ -889,7 +918,8 @@ main {
   display: inline-block;
   border-left: solid 0.1rem var(--color-gray);
   height: 1.4rem;
-  transform: rotate(20deg);
+  -webkit-transform: rotate(20deg);
+          transform: rotate(20deg);
   margin: -0.6rem 0.4rem 0 0.4rem;
 }
 .stacking-condition-view > .label {
@@ -935,8 +965,10 @@ main {
   font-size: 1rem;
   bottom: 0;
   left: 0.9rem;
-  transform-origin: 0% 0%;
-  transform: rotate(30deg);
+  -webkit-transform-origin: 0% 0%;
+          transform-origin: 0% 0%;
+  -webkit-transform: rotate(30deg);
+          transform: rotate(30deg);
 }
 .statistics-view > .statistics > * > .bar > .value {
   color: white;
@@ -977,7 +1009,8 @@ main {
   font-size: 1rem;
   -webkit-animation: var(--transition-instant) enter-stacking-item;
           animation: var(--transition-instant) enter-stacking-item;
-  transform-origin: 0 0;
+  -webkit-transform-origin: 0 0;
+          transform-origin: 0 0;
   margin-top: 0.6rem;
   opacity: 0.6;
   cursor: pointer;
@@ -985,6 +1018,7 @@ main {
   position: relative;
 }
 .table-data-controller-view > .conditions {
+  display: -webkit-flex;
   display: flex;
   font-weight: bold;
   border-bottom: solid 0.1rem var(--color-separator);
@@ -992,7 +1026,8 @@ main {
 .table-data-controller-view > .conditions > .condiiton {
   padding: 0.2rem 0.4rem;
   overflow: hidden;
-  flex-grow: 1;
+  -webkit-flex-grow: 1;
+          flex-grow: 1;
 }
 .table-data-controller-view > .conditions > .condiiton:first-child {
   color: white;
@@ -1030,8 +1065,10 @@ main {
 }
 .table-data-controller-view > .indicator > .text {
   line-height: 1;
+  display: -webkit-flex;
   display: flex;
-  justify-content: space-between;
+  -webkit-justify-content: space-between;
+          justify-content: space-between;
 }
 .table-data-controller-view > .indicator > .progress {
   margin: 0.4rem 0;
@@ -1049,6 +1086,7 @@ main {
   transition: width var(--transition-wipe);
 }
 .table-data-controller-view > .controller {
+  display: -webkit-flex;
   display: flex;
   color: white;
 }
@@ -1068,7 +1106,8 @@ main {
 }
 .table-data-controller-view > .controller > .button {
   padding: 0.2rem 0;
-  flex-grow: 1;
+  -webkit-flex-grow: 1;
+          flex-grow: 1;
   background-color: var(--color-translucent-lamp-black2);
   transition: background-color var(--transition-instant);
   cursor: pointer;
@@ -1090,9 +1129,9 @@ main {
   vertical-align: middle;
   left: -0.2rem;
 }
-.table-data-controller-view > .controller > .button > .lotation {
-  -webkit-animation: lotation 3s linear infinite;
-          animation: lotation 3s linear infinite;
+.table-data-controller-view > .controller > .button.-rotating > .material-icons-outlined {
+  -webkit-animation: rotation 3s linear infinite;
+          animation: rotation 3s linear infinite;
 }
 .table-data-controller-view.-current, .table-data-controller-view:hover {
   opacity: 1;
@@ -1123,6 +1162,7 @@ main {
   display: block;
 }
 .table-data-controller-view[data-status="load rows"] > .controller {
+  display: -webkit-flex;
   display: flex;
 }
 .table-data-controller-view[data-status=complete] > .status > p {
@@ -1132,6 +1172,7 @@ main {
   display: block;
 }
 .table-data-controller-view[data-status=complete] > .controller {
+  display: -webkit-flex;
   display: flex;
 }
 .table-data-controller-view[data-status=complete] > .controller > .autorenew {
@@ -1145,21 +1186,25 @@ main {
   opacity: 0.5;
 }
 
-@-webkit-keyframes lotation {
+@-webkit-keyframes rotation {
   0% {
-    transform: rotate(0);
+    -webkit-transform: rotate(0);
+            transform: rotate(0);
   }
   100% {
-    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
   }
 }
 
-@keyframes lotation {
+@keyframes rotation {
   0% {
-    transform: rotate(0);
+    -webkit-transform: rotate(0);
+            transform: rotate(0);
   }
   100% {
-    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
   }
 }
 .togo-key-view {
@@ -1217,7 +1262,8 @@ main {
   height: 20px;
   border: solid 1px rgba(255, 255, 255, 0.5);
   background-color: var(--color-lamp-black);
-  transform: rotate(45deg) skew(5deg, 5deg);
+  -webkit-transform: rotate(45deg) skew(5deg, 5deg);
+          transform: rotate(45deg) skew(5deg, 5deg);
   border-top-left-radius: 50%;
   border-bottom-left-radius: 50%;
   border-top-right-radius: 50%;
@@ -1260,16 +1306,19 @@ main {
   background-color: transparent !important;
 }
 .track-view > .row {
+  display: -webkit-flex;
   display: flex;
   height: var(--height-track);
 }
 .track-view > .row > .left {
-  flex-basis: var(--width-track-column-property);
+  -webkit-flex-basis: var(--width-track-column-property);
+          flex-basis: var(--width-track-column-property);
   min-width: var(--width-track-column-property);
   background-color: white;
 }
 .track-view > .row > .right {
-  flex-basis: calc(100% - var(--width-track-column-property));
+  -webkit-flex-basis: calc(100% - var(--width-track-column-property));
+          flex-basis: calc(100% - var(--width-track-column-property));
   max-width: calc(100% - var(--width-track-column-property));
 }
 .track-view > .row.-upper > .left {
@@ -1365,10 +1414,12 @@ main {
   height: 0.8rem;
 }
 .close-button-view::before {
-  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+          transform: rotate(45deg);
 }
 .close-button-view::after {
-  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
 }
 
 #App {
@@ -1378,15 +1429,20 @@ main {
 #App > .inner {
   height: 100%;
   width: calc(200vw - var(--width-condition));
+  display: -webkit-flex;
   display: flex;
+  transition: -webkit-transform var(--transition-wipe);
   transition: transform var(--transition-wipe);
+  transition: transform var(--transition-wipe), -webkit-transform var(--transition-wipe);
 }
 body[data-display=results] #App > .inner {
-  transform: translateX(calc(-100vw + var(--width-condition)));
+  -webkit-transform: translateX(calc(-100vw + var(--width-condition)));
+          transform: translateX(calc(-100vw + var(--width-condition)));
 }
 
 #ConditionBuilder > .conditions {
-  flex-grow: 1;
+  -webkit-flex-grow: 1;
+          flex-grow: 1;
 }
 #ConditionBuilder > .conditions > * {
   padding: 0.7rem 0.6rem;
@@ -1464,13 +1520,17 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   position: fixed;
   top: var(--height-header);
   right: 0;
+  display: -webkit-flex;
   display: flex;
-  flex-direction: column;
+  -webkit-flex-direction: column;
+          flex-direction: column;
   z-index: var(--z-fixed-area);
 }
 #FixedArea > div > section {
+  display: -webkit-flex;
   display: flex;
-  flex-direction: column;
+  -webkit-flex-direction: column;
+          flex-direction: column;
   padding: var(--padding-block-start) var(--padding-inline-start);
 }
 #FixedArea > div > section > header {
@@ -1500,6 +1560,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   padding: 0 1.6rem;
   height: var(--height-header);
   line-height: calc(var(--height-header));
+  display: -webkit-flex;
   display: flex;
   background-color: white;
   z-index: var(--z-header);
@@ -1517,7 +1578,8 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   font-size: 1.6rem;
 }
 #Header > nav {
-  flex-grow: 1;
+  -webkit-flex-grow: 1;
+          flex-grow: 1;
   text-align: right;
 }
 #Header > nav > ul > li {
@@ -1534,8 +1596,10 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
 #Properties > .header {
   border-bottom: solid 0.1rem var(--color-lamp-black);
   padding: var(--padding-track-block-start) var(--padding-track-inline-start);
+  display: -webkit-flex;
   display: flex;
-  align-items: center;
+  -webkit-align-items: center;
+          align-items: center;
   height: var(--height-header);
   line-height: calc(var(--height-header) - var(--padding-track-block-start) * 2);
   position: -webkit-sticky;
@@ -1556,7 +1620,8 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   width: calc(var(--width-track-column-subject) + var(--width-track-column-property) - var(--padding-track-inline-start));
 }
 #Properties > .header > nav {
-  flex-grow: 1;
+  -webkit-flex-grow: 1;
+          flex-grow: 1;
   text-align: right;
 }
 #Properties > .header > nav > ul {
@@ -1584,7 +1649,8 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
 }
 
 #Reports > .stanzas {
-  flex-grow: 1;
+  -webkit-flex-grow: 1;
+          flex-grow: 1;
 }
 
 #ReportsPageView {

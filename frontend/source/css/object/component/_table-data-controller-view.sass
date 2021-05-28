@@ -98,8 +98,9 @@
         font-size: 1.4rem
         vertical-align: middle
         left: -.2rem
-      > .lotation
-        animation: lotation 3s linear infinite
+      &.-rotating
+        > .material-icons-outlined
+          animation: rotation 3s linear infinite
   &.-current, &:hover
     opacity: 1
   &.-current
@@ -145,7 +146,7 @@
         &[data-button="prepare-download"]
           +button-disabled
 
-@keyframes lotation
+@keyframes rotation
   0%  
     transform: rotate(0)
   100%  
