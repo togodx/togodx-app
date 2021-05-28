@@ -260,7 +260,7 @@ export default class ResultsTable {
       const uniqueEntries = tr.querySelectorAll(".togo-key-view");
       uniqueEntries.forEach((uniqueEntry) => {
         uniqueEntry.addEventListener("click", () => {
-          this.createPopupEvent(uniqueEntry, reportLink, event.showPopup);
+          this.createPopupEvent(uniqueEntry, tr, reportLink, event.showPopup);
         });
       });
     });
@@ -274,7 +274,11 @@ export default class ResultsTable {
 
   // public methods
   // TODO: Set better way to get reportLink
-  createPopupEvent(uniqueEntry, reportLink, newEvent) {
+  createPopupEvent(uniqueEntry, tr, reportLink, newEvent) {
+    // if (!tr.classList.contains('.-selected')) {
+    //   tr.classList.add('.-selected');
+    // };
+    // uniqueEntry.classList.add('.-selected');
     const customEvent = new CustomEvent(newEvent, {
       detail: {
         keys: {

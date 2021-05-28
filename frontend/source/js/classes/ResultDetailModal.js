@@ -50,11 +50,31 @@ export default class ResultDetailModal {
 
   #showPopUp(e) {
     if (this.#RESULT_MODAL.innerHTML === '') {
+      this.#setHighlight(e.detail.keys.uniqueEntryId, e.detail.properties.dataOrder);
       this.#handleKeydown = this.#handleKeydown.bind(this);
       document.addEventListener('keydown', this.#handleKeydown);
       this.#RESULT_MODAL.appendChild(this.#popup(e.detail));
       this.#RESULT_MODAL.classList.add("backdrop");
     }
+  }
+  //TODO: hover highlighting 
+  #setHighlight(id, axes) {
+    const curEntry = this.#entryEl(id);
+    const curTr = curEntry.closest('tr');
+    curEntry.classList.add('-selected');
+    curTr.classList.add('-selected');
+
+    const rowIndex = axes.slice(0,1);
+    this.#RESULTS_TABLE.querySelectorAll('[data-order]').forEach(element => {
+      const td = element.closest('td');
+      if(element.getAttribute('data-order').slice(0,1) === rowIndex){
+        td.classList.add('-selected');
+      }
+    });
+  }
+
+  #entryEl(id) {
+    return this.#RESULTS_TABLE.querySelector(`[data-unique-entry-id = "${id}"]`);
   }
 
   #popup(detail) {
@@ -148,26 +168,22 @@ export default class ResultDetailModal {
     ["ArrowDown", function(x,y){return [x, y+1]}]
   ]);
 
+  #getCorList(str) {
+    let [x,y] = str.split(",");
+    return [x,y].map((cor) => parseFloat(cor));
+  }
+
   #setMovementArrow(movement, detail) {
     //TODO: Implement functions for data with multiple entries
-    //TODO: Set better way to get reportLink
     detail.properties.movement = movement;
-    const curEntry = this.#RESULTS_TABLE.querySelector(`[data-unique-entry-id = "${detail.keys.uniqueEntryId}"]`)
-    let [x,y] = curEntry.getAttribute("data-order").split(",");
-    [x,y] = [x,y].map((cor) => parseFloat(cor));
-    curEntry.classList.remove('.-selected');
+    const curEntry = this.#entryEl(detail.keys.uniqueEntryId);
+    let [x, y] = this.#getCorList(curEntry.getAttribute("data-order"));
     
     const targetEntry = this.#RESULTS_TABLE.querySelector(`[data-order = "${movement(x,y)}"`);
-    targetEntry.classList.add(".-selected");
-
     const targetTr = targetEntry.closest('tr');
-    if (!targetTr.classList.contains('.-selected')) {
-      targetTr.classList.add('.-selected')
-    };
-
     const reportLink = targetTr.querySelector('.toreportpage').href;
 
-    ResultsTable.prototype.createPopupEvent(targetEntry, reportLink, event.movePopup);
+    ResultsTable.prototype.createPopupEvent(targetEntry, targetTr, reportLink, event.movePopup);
   }
 
   #hidePopUp() {
