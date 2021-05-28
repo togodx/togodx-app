@@ -174,24 +174,30 @@ inspect_filetype() {
 create_date_triple() {
   local graph_name="${1}"
   local db_dir="${2}"
-  local date=$(get_modification_date)
+  local date=$(get_modification_date "${db_dir}")
   echo "<${graph_name}> <http://purl.org/dc/terms/date> \"${date}\"^^<http://www.w3.org/2001/XMLSchema#date> ." > "${db_dir}/date.nq"
 }
 
 get_modification_date() {
-  local oldest_file_in_the_dir=$(ls -lt | tail -1 | awk '{ print $NF }')
-  if [[ ! -z ${oldest_file_in_the_dir} ]]; then
+  local db_dir="${1}"
+  local oldest_file="$(get_oldest_file "${db_dir}")"
+  if [[ ! -z "${oldest_file}" ]]; then
     if [[ ${OSTYPE} =~ ^darwin ]]; then
-      local date_epoc=$(stat -f %m "${oldest_file_in_the_dir}" )
+      local date_epoc=$(stat -f %m "${oldest_file}" )
       local date=$(date -r "${date_epoc}" '+%Y-%m-%d')
     else
-      local date_epoc=$(stat -c '%Y' "${oldest_file_in_the_dir}" )
+      local date_epoc=$(stat -c '%Y' "${oldest_file}" )
       local date=$(date --date "@${date_epoc}" '+%Y-%m-%d')
     fi
   else
     local date=$(date '+%Y-%m-%d')
   fi
   echo "${date}"
+}
+
+get_oldest_file() {
+  local db_dir="${1}"
+  find "${db_dir}" -type f -printf "%T@ %p\n" | sort -n | awk 'NR == 1 { print $NF }'
 }
 
 #
