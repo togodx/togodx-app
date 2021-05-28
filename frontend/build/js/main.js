@@ -5103,7 +5103,7 @@
         return "<div class=\"condiiton -value\" style=\"background-color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         return "<div class=\"condiiton -value\" style=\"color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
-      }).join(''), "\n      \n    </div>\n    <div class=\"button close-button-view\" title=\"Delete\" data-button=\"delete\"></div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button autorenew\" title=\"Prepare for download\" data-button=\"prepare-download\">\n        <span class=\"material-icons-outlined autorenew\">autorenew</span><span class=\"prepare-data\">Prepare Data</span>\n      </div>\n      <div class=\"button downloads\" title=\"Download JSON \" data-button=\"start-download\">\n        <a class=\"json\" href=\"\" download=\"sample.json\">\n          <span class=\"material-icons-outlined\">download</span>\n          <span class=\"text\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" title=\"Restore as condition\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n        Edit\n      </div>\n    </div>\n    "); // reference　
+      }).join(''), "\n      \n    </div>\n    <div class=\"button close-button-view\" title=\"Delete\" data-button=\"delete\"></div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button autorenew\" title=\"Prepare for download\" data-button=\"prepare-download\">\n        <span class=\"material-icons-outlined autorenew\">autorenew</span><span class=\"preparedata\">Prepare data</span>\n      </div>\n      <div class=\"button downloads\" title=\"Download JSON \" data-button=\"start-download\">\n        <a class=\"json\" href=\"\" download=\"sample.json\">\n          <span class=\"material-icons-outlined\">download</span>\n          <span class=\"text\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" title=\"Restore as condition\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n        Edit\n      </div>\n    </div>\n    "); // reference　
 
       _classPrivateFieldSet(this, _ROOT$6, elm);
 
@@ -5142,13 +5142,13 @@
 
           _classPrivateFieldGet(_this, _BUTTON_PREPARE_DOWNLOAD).querySelector(':scope > .autorenew').classList.add('lotation');
 
-          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DOWNLOAD).querySelector(':scope > .prepare-data').innerHTML = 'Pause';
+          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DOWNLOAD).querySelector(':scope > .preparedata').innerHTML = 'Pause';
         } else {
           _classPrivateFieldSet(_this, _isAutoLoad, false);
 
           _classPrivateFieldGet(_this, _BUTTON_PREPARE_DOWNLOAD).querySelector(':scope > .autorenew').classList.remove('lotation');
 
-          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DOWNLOAD).querySelector(':scope > .prepare-data').innerHTML = 'Resume';
+          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DOWNLOAD).querySelector(':scope > .preparedata').innerHTML = 'Resume';
         }
       }); // delete button
       // BUTTONS.find(button => button.dataset.button === 'delete').addEventListener('click', e => {

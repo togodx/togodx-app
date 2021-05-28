@@ -70,7 +70,7 @@ export default class TableData {
     </div>
     <div class="controller">
       <div class="button autorenew" title="Prepare for download" data-button="prepare-download">
-        <span class="material-icons-outlined autorenew">autorenew</span><span class="prepare-data">Prepare Data</span>
+        <span class="material-icons-outlined autorenew">autorenew</span><span class="preparedata">Prepare data</span>
       </div>
       <div class="button downloads" title="Download JSON " data-button="start-download">
         <a class="json" href="" download="sample.json">
@@ -106,11 +106,11 @@ export default class TableData {
       if (this.#isAutoLoad == false && this.#ROOT.dataset.status != 'complete') {
         this.#autoLoad();
         this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.add('lotation');
-        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .prepare-data').innerHTML = 'Pause';
+        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .preparedata').innerHTML = 'Pause';
       } else {
         this.#isAutoLoad = false;
         this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.remove('lotation');
-        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .prepare-data').innerHTML = 'Resume';
+        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .preparedata').innerHTML = 'Resume';
       }
     });
     // delete button
