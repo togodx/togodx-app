@@ -53,16 +53,22 @@ export default class ColumnSelectorView {
       }
       if (this.#property.propertyId === propertyId) {
         this.#currentColumns.forEach(ul => {
-          ul.querySelectorAll('li').forEach(li => {
+          let isAllChecked = true;
+          ul.querySelectorAll(':scope > li:not(.-all)').forEach(li => {
+            const checkbox = li.querySelector(':scope > input[type="checkbox"]');
+            if (!checkbox.checked) isAllChecked = false;
             if (li.dataset.id === categoryId) {
               // change checkbox status
               const isChecked = e.detail.action === 'add';
-              li.querySelector(':scope > input[type="checkbox"]').checked = isChecked;
+              checkbox.checked = isChecked;
               this.#items[li.dataset.id].checked = isChecked;
-              // change ancestor status
-              // TODO:
             }
           })
+          // update all properties
+          ul.querySelector(':scope > .item.-all > input[type="checkbox"]').checked = isAllChecked;
+          // change ancestor status
+
+          // TODO:
         });
       }
     });
@@ -138,12 +144,17 @@ export default class ColumnSelectorView {
         <span class="count">${item.count.toLocaleString()}</span>
       </li>`;
     }).join('');
-    ul.querySelectorAll(':scope > .item:not(.-all)').forEach(item => this.#items[item.dataset.categoryId].elm = item);
+    const listItems = ul.querySelectorAll(':scope > .item:not(.-all)');
+    listItems.forEach(li => this.#items[li.dataset.categoryId].elm = li);
 
     // drill down event
-    ul.querySelectorAll(':scope > .item.-haschild').forEach(item => {
-      item.addEventListener('click', () => {
-        item.classList.add('-selected');
+    ul.querySelectorAll(':scope > .item.-haschild').forEach(li => {
+      li.addEventListener('click', () => {
+        li.classList.add('-selected');
+        // deselect siblings
+        li.parentNode.childNodes.forEach(sibling => {
+          if (sibling !== li) sibling.classList.remove('-selected');
+        });
         // delete an existing lower columns
         if (this.#currentColumns.length > depth + 1) {
           for (let i = depth + 1; i < this.#currentColumns.length; i++) {
@@ -158,13 +169,14 @@ export default class ColumnSelectorView {
           if (selectedItem) selectedItem.classList.remove('-selected');
         }
         // get lower column
-        this.#items[item.dataset.id].selected = true;
-        this.#getSubColumn(item.dataset.id, depth + 1);
+        this.#items[li.dataset.id].selected = true;
+        this.#getSubColumn(li.dataset.id, depth + 1);
       });
     });
 
     // select/deselect a item (attribute)
-    ul.querySelectorAll(':scope > .item:not(.-all) > input[type="checkbox"]').forEach(checkbox => {
+    listItems.forEach(li => {
+      const checkbox = li.querySelector(':scope > input[type="checkbox"]');
       checkbox.addEventListener('click', e => {
         e.stopPropagation();
         if (checkbox.checked) { // add
@@ -187,6 +199,17 @@ export default class ColumnSelectorView {
           });
         } else { // remove
           ConditionBuilder.removePropertyValue(this.#property.propertyId, checkbox.value);
+        }
+      });
+    });
+
+    // all properties event
+    ul.querySelector(':scope > .item.-all').addEventListener('change', e => {
+      const isChecked = e.target.checked;
+      listItems.forEach(item => {
+        const checkbox = item.querySelector(':scope > input[type="checkbox"]');
+        if (checkbox.checked !== isChecked) {
+          checkbox.dispatchEvent(new MouseEvent('click'));
         }
       });
     });

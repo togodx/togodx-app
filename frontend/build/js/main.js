@@ -3562,7 +3562,11 @@
 
       if (_classPrivateFieldGet(_this, _property).propertyId === propertyId) {
         _classPrivateFieldGet(_this, _currentColumns).forEach(function (ul) {
-          ul.querySelectorAll('li').forEach(function (li) {
+          var isAllChecked = true;
+          ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
+            var checkbox = li.querySelector(':scope > input[type="checkbox"]');
+            if (!checkbox.checked) isAllChecked = false;
+
             if (li.dataset.id === categoryId) {
               // change checkbox status
               var isChecked = e.detail.action === 'add';
@@ -3570,7 +3574,10 @@
               _classPrivateFieldGet(_this, _items)[li.dataset.id].checked = isChecked; // change ancestor status
               // TODO:
             }
-          });
+          }); // update all properties
+
+          ul.querySelector(':scope > .item.-all > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
+          // TODO:
         });
       }
     });
@@ -3661,9 +3668,13 @@
       return _classPrivateFieldGet(_this3, _items)[item.dataset.categoryId].elm = item;
     }); // drill down event
 
-    ul.querySelectorAll(':scope > .item.-haschild').forEach(function (item) {
-      item.addEventListener('click', function () {
-        item.classList.add('-selected'); // delete an existing lower columns
+    ul.querySelectorAll(':scope > .item.-haschild').forEach(function (li) {
+      li.addEventListener('click', function () {
+        li.classList.add('-selected'); // deselect siblings
+
+        li.parentNode.childNodes.forEach(function (sibling) {
+          if (sibling !== li) sibling.classList.remove('-selected');
+        }); // delete an existing lower columns
 
         if (_classPrivateFieldGet(_this3, _currentColumns).length > depth + 1) {
           for (var i = depth + 1; i < _classPrivateFieldGet(_this3, _currentColumns).length; i++) {
@@ -3697,11 +3708,12 @@
 
         _classPrivateFieldGet(_this3, _items)[item.dataset.id].selected = true;
 
-        _classPrivateMethodGet(_this3, _getSubColumn, _getSubColumn2).call(_this3, item.dataset.id, depth + 1);
+        _classPrivateMethodGet(_this3, _getSubColumn, _getSubColumn2).call(_this3, li.dataset.id, depth + 1);
       });
     }); // select/deselect a item (attribute)
 
-    ul.querySelectorAll(':scope > .item:not(.-all) > input[type="checkbox"]').forEach(function (checkbox) {
+    listItems.forEach(function (li) {
+      var checkbox = li.querySelector(':scope > input[type="checkbox"]');
       checkbox.addEventListener('click', function (e) {
         e.stopPropagation();
 
@@ -3732,6 +3744,17 @@
         } else {
           // remove
           ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _property).propertyId, checkbox.value);
+        }
+      });
+    }); // all properties event
+
+    ul.querySelector(':scope > .item.-all').addEventListener('change', function (e) {
+      var isChecked = e.target.checked;
+      listItems.forEach(function (item) {
+        var checkbox = item.querySelector(':scope > input[type="checkbox"]');
+
+        if (checkbox.checked !== isChecked) {
+          checkbox.dispatchEvent(new MouseEvent('click'));
         }
       });
     });
@@ -4820,7 +4843,7 @@
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
       console.log(row);
-      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div\n              class=\"togo-key-view\"\n              data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n              data-key=\"").concat(detail.tableData.togoKey, "\"\n              data-category-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column, columnIndex) {
+      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div\n              class=\"togo-key-view\"\n              data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n              data-key=\"").concat(detail.tableData.togoKey, "\"\n              data-category-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "</div>\n            <span>").concat(detail.rows[index].label, "</span>\n          </div>\n        </th>\n        ").concat(row.map(function (column, columnIndex) {
         // console.log(column)
         if (column) {
           return "\n              <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute) {
