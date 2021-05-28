@@ -145,6 +145,10 @@ export default class ColumnSelectorView {
     ul.querySelectorAll(':scope > .item.-haschild').forEach(li => {
       li.addEventListener('click', () => {
         li.classList.add('-selected');
+        // deselect siblings
+        li.parentNode.childNodes.forEach(sibling => {
+          if (sibling !== li) sibling.classList.remove('-selected');
+        });
         // delete an existing lower columns
         if (this.#currentColumns.length > depth + 1) {
           for (let i = depth + 1; i < this.#currentColumns.length; i++) {

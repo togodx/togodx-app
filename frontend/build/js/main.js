@@ -3601,7 +3601,11 @@
 
     ul.querySelectorAll(':scope > .item.-haschild').forEach(function (li) {
       li.addEventListener('click', function () {
-        li.classList.add('-selected'); // delete an existing lower columns
+        li.classList.add('-selected'); // deselect siblings
+
+        li.parentNode.childNodes.forEach(function (sibling) {
+          if (sibling !== li) sibling.classList.remove('-selected');
+        }); // delete an existing lower columns
 
         if (_classPrivateFieldGet(_this3, _currentColumns).length > depth + 1) {
           for (var i = depth + 1; i < _classPrivateFieldGet(_this3, _currentColumns).length; i++) {
