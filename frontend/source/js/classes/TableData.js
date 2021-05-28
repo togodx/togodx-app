@@ -67,11 +67,11 @@ export default class TableData {
       </div>
     </div>
     <div class="controller">
-      <div class="button autorenew" data-button="prepare-download">
+      <div class="button" data-button="prepare-data">
         <span class="material-icons-outlined">autorenew</span>
         <span class="label">Prepare data</span>
       </div>
-      <div class="button downloads" data-button="download-json">
+      <div class="button" data-button="download-json">
         <a class="json" href="" download="sample.json">
           <span class="material-icons-outlined">download</span>
           <span class="label">JSON</span>
@@ -92,7 +92,7 @@ export default class TableData {
     this.#INDICATOR_TEXT_TIME = INDICATOR.querySelector(':scope > .text > .remaining-time');
     this.#INDICATOR_BAR = INDICATOR.querySelector(':scope > .progress > .bar');
     const BUTTONS = [...elm.querySelectorAll(':scope > .controller > .button')];
-    this.#BUTTON_PREPARE_DATA = BUTTONS.find(button => button.dataset.button === 'prepare-download');
+    this.#BUTTON_PREPARE_DATA = BUTTONS.find(button => button.dataset.button === 'prepare-data');
     this.#BUTTON_DOWNLOAD_JSON = BUTTONS.find(button => button.dataset.button === 'download-json');
 
     // events
@@ -174,7 +174,7 @@ export default class TableData {
         this.#STATUS.textContent = `${responce.status} (${responce.statusText})`;
         throw Error(responce);
       })
-      .then(responce => esponce.json())
+      .then(responce => responce.json())
       .then(queryIds => {
         console.log(queryIds)
         this.#queryIds = queryIds;

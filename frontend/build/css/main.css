@@ -1090,18 +1090,18 @@ main {
   display: flex;
   color: white;
 }
-.table-data-controller-view > .controller > .downloads {
+.table-data-controller-view > .controller > [data-button=download-json] {
   display: none;
 }
-.table-data-controller-view > .controller > .downloads > a {
+.table-data-controller-view > .controller > [data-button=download-json] > a {
   color: white;
   text-decoration: none;
   display: block;
 }
-.table-data-controller-view > .controller > .downloads > a > span {
+.table-data-controller-view > .controller > [data-button=download-json] > a > span {
   vertical-align: middle;
 }
-.table-data-controller-view > .controller > .downloads > a > .material-icons-outlined {
+.table-data-controller-view > .controller > [data-button=download-json] > a > .material-icons-outlined {
   font-size: 1.4rem;
 }
 .table-data-controller-view > .controller > .button {
@@ -1150,11 +1150,11 @@ main {
   -webkit-animation: var(--transition-fetching) infinite alternate fetching;
           animation: var(--transition-fetching) infinite alternate fetching;
 }
-.table-data-controller-view.-autoload > .controller > .button[data-button=prepare-download] {
+.table-data-controller-view.-autoload > .controller > .button[data-button=prepare-data] {
   cursor: not-allowed;
   opacity: 0.5;
 }
-.table-data-controller-view[data-status="load ids"] > .controller > .button[data-button=prepare-download] {
+.table-data-controller-view[data-status="load ids"] > .controller > .button[data-button=prepare-data] {
   cursor: not-allowed;
   opacity: 0.5;
 }
@@ -1175,13 +1175,13 @@ main {
   display: -webkit-flex;
   display: flex;
 }
-.table-data-controller-view[data-status=complete] > .controller > .autorenew {
+.table-data-controller-view[data-status=complete] > .controller > [data-button=prepare-data] {
   display: none;
 }
-.table-data-controller-view[data-status=complete] > .controller > .downloads {
+.table-data-controller-view[data-status=complete] > .controller > [data-button=download-json] {
   display: block;
 }
-.table-data-controller-view[data-status=complete] > .controller > .button[data-button=prepare-download] {
+.table-data-controller-view[data-status=complete] > .controller > .button[data-button=prepare-data] {
   cursor: not-allowed;
   opacity: 0.5;
 }

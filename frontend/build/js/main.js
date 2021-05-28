@@ -5133,7 +5133,7 @@
         return "<div class=\"condiiton -value\" style=\"background-color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         return "<div class=\"condiiton -value\" style=\"color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
-      }).join(''), "\n    </div>\n    <div class=\"button close-button-view\" title=\"Delete\" data-button=\"delete\"></div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button autorenew\" data-button=\"prepare-download\">\n        <span class=\"material-icons-outlined\">autorenew</span>\n        <span class=\"label\">Prepare data</span>\n      </div>\n      <div class=\"button downloads\" data-button=\"download-json\">\n        <a class=\"json\" href=\"\" download=\"sample.json\">\n          <span class=\"material-icons-outlined\">download</span>\n          <span class=\"label\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n        <span class=\"label\">Edit</span>\n      </div>\n    </div>\n    "); // reference　
+      }).join(''), "\n    </div>\n    <div class=\"button close-button-view\" title=\"Delete\" data-button=\"delete\"></div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button\" data-button=\"prepare-data\">\n        <span class=\"material-icons-outlined\">autorenew</span>\n        <span class=\"label\">Prepare data</span>\n      </div>\n      <div class=\"button\" data-button=\"download-json\">\n        <a class=\"json\" href=\"\" download=\"sample.json\">\n          <span class=\"material-icons-outlined\">download</span>\n          <span class=\"label\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n        <span class=\"label\">Edit</span>\n      </div>\n    </div>\n    "); // reference　
 
       _classPrivateFieldSet(this, _ROOT, elm);
 
@@ -5150,7 +5150,7 @@
       var BUTTONS = _toConsumableArray(elm.querySelectorAll(':scope > .controller > .button'));
 
       _classPrivateFieldSet(this, _BUTTON_PREPARE_DATA, BUTTONS.find(function (button) {
-        return button.dataset.button === 'prepare-download';
+        return button.dataset.button === 'prepare-data';
       }));
 
       _classPrivateFieldSet(this, _BUTTON_DOWNLOAD_JSON, BUTTONS.find(function (button) {
@@ -5330,7 +5330,7 @@
       _classPrivateFieldGet(_this2, _STATUS).textContent = "".concat(responce.status, " (").concat(responce.statusText, ")");
       throw Error(responce);
     }).then(function (responce) {
-      return esponce.json();
+      return responce.json();
     }).then(function (queryIds) {
       console.log(queryIds);
 
