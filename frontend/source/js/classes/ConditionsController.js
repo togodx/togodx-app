@@ -19,6 +19,7 @@ export default class ConditionsController {
     // event listener
     DefaultEventEmitter.addEventListener(event.completeQueryParameter, e => this.#setTableData(e.detail));
     DefaultEventEmitter.addEventListener(event.selectTableData, e => this.#selectTableData(e.detail));
+    DefaultEventEmitter.addEventListener(event.deleteTableData, e => this.#deleteTableData(e.detail));
   }
 
   /* private methods */
@@ -61,6 +62,11 @@ export default class ConditionsController {
     for (const tableData of this.#tableData) {
       if (tableData !== selectedTableData) tableData.deselect();
     }
+  }
+
+  #deleteTableData(tableData) {
+    const index = this.#tableData.indexOf(tableData);
+    this.#tableData.splice(index, 1);
   }
 
 }

@@ -22,8 +22,9 @@ export const showStanza = 'showStanza';
 export const failedFetchTableDataIds = 'failedFetchTableDataIds';
 export const addNextRows = 'addNextRows';
 
-// Table
+// Table data
 export const selectTableData = 'selectTableData';
+export const deleteTableData = 'deleteTableData';
 
 // Track
 export const enterPropertyValueItemView = 'enterPropertyValueItemView';

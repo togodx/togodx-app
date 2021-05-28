@@ -42,6 +42,7 @@ export default class TableData {
     elm.dataset.status = 'load ids';
 
     elm.innerHTML = `
+    <div class="close-button-view"></div>
     <div class="conditions">
       <div class="condiiton">
         <p title="${condition.togoKey}">${condition.togoKey}</p>
@@ -53,7 +54,6 @@ export default class TableData {
         <p title="${property.property.label}">${property.property.label}</p>
       </div>`).join('')}
     </div>
-    <div class="button close-button-view" title="Delete" data-button="delete"></div>
     <div class="status">
       <p>Getting id list</p>
     </div>
@@ -113,13 +113,16 @@ export default class TableData {
         this.#BUTTON_PREPARE_DATA.querySelector(':scope > .label').innerHTML = 'Resume';
       }
     });
-    // delete button
-    // BUTTONS.find(button => button.dataset.button === 'delete').addEventListener('click', e => {
-    //   e.stopPropagation();
-    //   console.log('delete')
-    //   const element = document.querySelector('.table-data-controller-view');
-    //   element.parentNode.removeChild(element)
-    // });
+    // delete
+    this.#ROOT.querySelector(':scope > .close-button-view').addEventListener('click', e => {
+      e.stopPropagation();
+      console.log('delete')
+      const customEvent = new CustomEvent(event.deleteTableData, {detail: this});
+      DefaultEventEmitter.dispatchEvent(customEvent);
+      this.#ROOT.parentNode.removeChild(this.#ROOT);
+      // TODO: stop fetch
+    });
+    // restore
     BUTTONS.find(button => button.dataset.button === 'restore').addEventListener('click', e => {
       e.stopPropagation();
       this.#condition.attributes.forEach (attribute => {

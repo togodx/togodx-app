@@ -2816,9 +2816,10 @@
   var showStanza = 'showStanza'; // Polling
 
   var failedFetchTableDataIds = 'failedFetchTableDataIds';
-  var addNextRows = 'addNextRows'; // Table
+  var addNextRows = 'addNextRows'; // Table data
 
-  var selectTableData = 'selectTableData'; // Track
+  var selectTableData = 'selectTableData';
+  var deleteTableData = 'deleteTableData'; // Track
 
   var enterPropertyValueItemView = 'enterPropertyValueItemView';
   var leavePropertyValueItemView = 'leavePropertyValueItemView';
@@ -5129,11 +5130,11 @@
 
       elm.classList.add('table-data-controller-view');
       elm.dataset.status = 'load ids';
-      elm.innerHTML = "\n    <div class=\"conditions\">\n      <div class=\"condiiton\">\n        <p title=\"".concat(condition.togoKey, "\">").concat(condition.togoKey, "</p>\n      </div>\n      ").concat(condition.attributes.map(function (property) {
+      elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condiiton\">\n        <p title=\"".concat(condition.togoKey, "\">").concat(condition.togoKey, "</p>\n      </div>\n      ").concat(condition.attributes.map(function (property) {
         return "<div class=\"condiiton -value\" style=\"background-color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         return "<div class=\"condiiton -value\" style=\"color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
-      }).join(''), "\n    </div>\n    <div class=\"button close-button-view\" title=\"Delete\" data-button=\"delete\"></div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button\" data-button=\"prepare-data\">\n        <span class=\"material-icons-outlined\">autorenew</span>\n        <span class=\"label\">Prepare data</span>\n      </div>\n      <div class=\"button\" data-button=\"download-json\">\n        <a class=\"json\" href=\"\" download=\"sample.json\">\n          <span class=\"material-icons-outlined\">download</span>\n          <span class=\"label\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n        <span class=\"label\">Edit</span>\n      </div>\n    </div>\n    "); // reference　
+      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button\" data-button=\"prepare-data\">\n        <span class=\"material-icons-outlined\">autorenew</span>\n        <span class=\"label\">Prepare data</span>\n      </div>\n      <div class=\"button\" data-button=\"download-json\">\n        <a class=\"json\" href=\"\" download=\"sample.json\">\n          <span class=\"material-icons-outlined\">download</span>\n          <span class=\"label\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n        <span class=\"label\">Edit</span>\n      </div>\n    </div>\n    "); // reference　
 
       _classPrivateFieldSet(this, _ROOT, elm);
 
@@ -5180,13 +5181,20 @@
 
           _classPrivateFieldGet(_this, _BUTTON_PREPARE_DATA).querySelector(':scope > .label').innerHTML = 'Resume';
         }
-      }); // delete button
-      // BUTTONS.find(button => button.dataset.button === 'delete').addEventListener('click', e => {
-      //   e.stopPropagation();
-      //   console.log('delete')
-      //   const element = document.querySelector('.table-data-controller-view');
-      //   element.parentNode.removeChild(element)
-      // });
+      }); // delete
+
+
+      _classPrivateFieldGet(this, _ROOT).querySelector(':scope > .close-button-view').addEventListener('click', function (e) {
+        e.stopPropagation();
+        console.log('delete');
+        var customEvent = new CustomEvent(deleteTableData, {
+          detail: _this
+        });
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
+
+        _classPrivateFieldGet(_this, _ROOT).parentNode.removeChild(_classPrivateFieldGet(_this, _ROOT)); // TODO: stop fetch
+
+      }); // restore
 
 
       BUTTONS.find(function (button) {
@@ -5467,10 +5475,14 @@
 
   var _selectTableData = new WeakSet();
 
+  var _deleteTableData = new WeakSet();
+
   var ConditionsController = function ConditionsController(_elm) {
     var _this = this;
 
     _classCallCheck(this, ConditionsController);
+
+    _deleteTableData.add(this);
 
     _selectTableData.add(this);
 
@@ -5504,6 +5516,9 @@
     });
     DefaultEventEmitter$1.addEventListener(selectTableData, function (e) {
       return _classPrivateMethodGet(_this, _selectTableData, _selectTableData2).call(_this, e.detail);
+    });
+    DefaultEventEmitter$1.addEventListener(deleteTableData, function (e) {
+      return _classPrivateMethodGet(_this, _deleteTableData, _deleteTableData2).call(_this, e.detail);
     });
   }
   /* private methods */
@@ -5562,6 +5577,12 @@
     } finally {
       _iterator.f();
     }
+  }
+
+  function _deleteTableData2(tableData) {
+    var index = _classPrivateFieldGet(this, _tableData).indexOf(tableData);
+
+    _classPrivateFieldGet(this, _tableData).splice(index, 1);
   }
 
   var PATH = 'https://integbio.jp/togosite/sparqlist/api/';
