@@ -60,7 +60,7 @@
     if (typeof Proxy === "function") return true;
 
     try {
-      Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
       return true;
     } catch (e) {
       return false;
@@ -282,6 +282,1866 @@
         } finally {
           if (didErr) throw err;
         }
+      }
+    };
+  }
+
+  function _classPrivateFieldGet(receiver, privateMap) {
+    var descriptor = privateMap.get(receiver);
+
+    if (!descriptor) {
+      throw new TypeError("attempted to get private field on non-instance");
+    }
+
+    if (descriptor.get) {
+      return descriptor.get.call(receiver);
+    }
+
+    return descriptor.value;
+  }
+
+  function _classPrivateFieldSet(receiver, privateMap, value) {
+    var descriptor = privateMap.get(receiver);
+
+    if (!descriptor) {
+      throw new TypeError("attempted to set private field on non-instance");
+    }
+
+    if (descriptor.set) {
+      descriptor.set.call(receiver, value);
+    } else {
+      if (!descriptor.writable) {
+        throw new TypeError("attempted to set read only private field");
+      }
+
+      descriptor.value = value;
+    }
+
+    return value;
+  }
+
+  function _classPrivateMethodGet(receiver, privateSet, fn) {
+    if (!privateSet.has(receiver)) {
+      throw new TypeError("attempted to get private field on non-instance");
+    }
+
+    return fn;
+  }
+
+  var DefaultEventEmitter = /*#__PURE__*/function (_EventTarget) {
+    _inherits(DefaultEventEmitter, _EventTarget);
+
+    var _super = _createSuper(DefaultEventEmitter);
+
+    function DefaultEventEmitter() {
+      _classCallCheck(this, DefaultEventEmitter);
+
+      return _super.call(this);
+    }
+
+    return DefaultEventEmitter;
+  }( /*#__PURE__*/_wrapNativeSuper(EventTarget));
+
+  var DefaultEventEmitter$1 = new DefaultEventEmitter();
+
+  function t(t, e) {
+    var r = t.length;
+    Array.isArray(t[0]) || (t = [t]), Array.isArray(e[0]) || (e = e.map(function (t) {
+      return [t];
+    }));
+    var a = e[0].length,
+        s = e[0].map(function (t, r) {
+      return e.map(function (t) {
+        return t[r];
+      });
+    }),
+        o = t.map(function (t) {
+      return s.map(function (e) {
+        return Array.isArray(t) ? t.reduce(function (t, r, a) {
+          return t + r * (e[a] || 0);
+        }, 0) : e.reduce(function (e, r) {
+          return e + r * t;
+        }, 0);
+      });
+    });
+    return 1 === r && (o = o[0]), 1 === a ? o.map(function (t) {
+      return t[0];
+    }) : o;
+  }
+
+  function e(t) {
+    return "string" === r(t);
+  }
+
+  function r(t) {
+    return (Object.prototype.toString.call(t).match(/^\[object\s+(.*?)\]$/)[1] || "").toLowerCase();
+  }
+
+  function a(t) {
+    for (var _len = arguments.length, e = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      e[_key - 1] = arguments[_key];
+    }
+
+    for (var _i = 0, _e = e; _i < _e.length; _i++) {
+      var _r = _e[_i];
+
+      if (_r) {
+        var _e2 = Object.getOwnPropertyDescriptors(_r);
+
+        Object.defineProperties(t, _e2);
+      }
+    }
+
+    return t;
+  }
+
+  function s(t, e, r) {
+    var a = Object.getOwnPropertyDescriptor(e, r);
+    Object.defineProperty(t, r, a);
+  }
+
+  function o(t, e) {
+    e = +e;
+    var r = (Math.floor(t) + "").length;
+    if (e > r) return +t.toFixed(e - r);
+    {
+      var _a = Math.pow(10, r - e);
+
+      return Math.round(t / _a) * _a;
+    }
+  }
+
+  function i(t) {
+    if (t.indexOf(".") > 0) {
+      var _t$split = t.split("."),
+          _t$split2 = _slicedToArray(_t$split, 2),
+          _e3 = _t$split2[0],
+          _r2 = _t$split2[1],
+          _a2 = Color.space(_e3);
+
+      if (!(_r2 in _a2.coords)) throw new ReferenceError("Color space \"".concat(_a2.name, "\" has no \"").concat(_r2, "\" coordinate."));
+      return [_a2, _r2];
+    }
+  }
+
+  function n(t, e, r) {
+    var a = e.split("."),
+        s = a.pop();
+    if (t = a.reduceRight(function (t, e) {
+      return t && t[e];
+    }, t)) return void 0 === r ? t[s] : t[s] = r;
+  }
+
+  var c = Object.freeze({
+    __proto__: null,
+    isString: e,
+    type: r,
+    extend: a,
+    copyDescriptor: s,
+    capitalize: function capitalize(t) {
+      return t ? t[0].toUpperCase() + t.slice(1) : t;
+    },
+    toPrecision: o,
+    parseCoord: i,
+    value: n,
+    multiplyMatrices: t
+  });
+  var l = "undefined" != typeof document;
+
+  var h = /*#__PURE__*/function () {
+    function h() {
+      _classCallCheck(this, h);
+
+      var r, a;
+
+      for (var _len2 = arguments.length, t = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        t[_key2] = arguments[_key2];
+      }
+
+      if (t[0] && "object" == _typeof(t[0]) && (t[0].space || t[0].spaceId) && t[0].coords) a = t[0];else if (e(t[0])) {
+        if (l && 0 === t[0].indexOf("--")) {
+          var _t = arguments[1] && 1 === arguments[1].nodeType ? arguments[1] : document.documentElement;
+
+          r = getComputedStyle(_t).getPropertyValue(arguments[0]);
+        } else 1 === t.length && (r = t[0]);
+
+        r && (a = h.parse(r));
+      }
+      if (a) "spaceId" in a ? this.spaceId = a.spaceId : this.space = a.space, this.coords = a.coords.slice(), this.alpha = a.alpha;else {
+        var _ref, _t2, _t3;
+
+        var _e4, _r3, _a3;
+
+        Array.isArray(t[0]) ? (_ref = ["sRGB"].concat(t), _e4 = _ref[0], _r3 = _ref[1], _a3 = _ref[2], _ref) : (_t2 = t, _t3 = _slicedToArray(_t2, 3), _e4 = _t3[0], _r3 = _t3[1], _a3 = _t3[2], _t2), this.spaceId = _e4 || "sRGB", this.coords = _r3 ? _r3.slice() : [0, 0, 0], this.alpha = _a3;
+      }
+      this.alpha = this.alpha < 1 ? this.alpha : 1;
+
+      for (var _t4 = 0; _t4 < this.coords.length; _t4++) {
+        "NaN" === this.coords[_t4] && (this.coords[_t4] = NaN);
+      }
+    }
+
+    _createClass(h, [{
+      key: "set",
+      value: function set(t, e) {
+        if (1 === arguments.length && "object" === r(arguments[0])) {
+          var _t5 = arguments[0];
+
+          for (var _e5 in _t5) {
+            this.set(_e5, _t5[_e5]);
+          }
+        } else if ("function" == typeof e) {
+          var _r4 = n(this, t);
+
+          n(this, t, e.call(this, _r4));
+        } else n(this, t, e);
+
+        return this;
+      }
+    }, {
+      key: "lighten",
+      value: function lighten() {
+        var t = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : .25;
+        var e = new h(this),
+            r = e.lightness;
+        return e.lightness = r * (1 + t), e;
+      }
+    }, {
+      key: "darken",
+      value: function darken() {
+        var t = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : .25;
+        var e = new h(this),
+            r = e.lightness;
+        return e.lightness = r * (1 - t), e;
+      }
+    }, {
+      key: "distance",
+      value: function distance(t) {
+        var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "lab";
+        t = h.get(t);
+        var r = this[(e = h.space(e)).id],
+            a = t[e.id];
+        return Math.sqrt(r.reduce(function (t, e, r) {
+          return isNaN(e) || isNaN(a[r]) ? t : t + Math.pow(a[r] - e, 2);
+        }, 0));
+      }
+    }, {
+      key: "deltaE",
+      value: function deltaE(t) {
+        var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        e(r) && (r = {
+          method: r
+        });
+
+        var _r5 = r,
+            _r5$method = _r5.method,
+            a = _r5$method === void 0 ? h.defaults.deltaE : _r5$method,
+            s = _objectWithoutProperties(_r5, ["method"]);
+
+        return t = h.get(t), this["deltaE" + a] ? this["deltaE" + a](t, s) : this.deltaE76(t);
+      }
+    }, {
+      key: "deltaE76",
+      value: function deltaE76(t) {
+        return this.distance(t, "lab");
+      }
+    }, {
+      key: "contrast",
+      value: function contrast(t) {
+        var _ref2;
+
+        t = h.get(t);
+        var e = this.luminance,
+            r = t.luminance;
+        return r > e && (_ref2 = [r, e], e = _ref2[0], r = _ref2[1], _ref2), (e + .05) / (r + .05);
+      }
+    }, {
+      key: "getCoords",
+      value: function getCoords() {
+        var _ref3 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            t = _ref3.inGamut,
+            _ref3$precision = _ref3.precision,
+            e = _ref3$precision === void 0 ? h.defaults.precision : _ref3$precision;
+
+        var r = this.coords;
+
+        if (t && !this.inGamut() && (r = this.toGamut(!0 === t ? void 0 : t).coords), null != e) {
+          var _t6 = this.space.coords ? Object.values(this.space.coords) : [];
+
+          r = r.map(function (r, a) {
+            return o(r, e, _t6[a]);
+          });
+        }
+
+        return r;
+      }
+    }, {
+      key: "inGamut",
+      value: function inGamut() {
+        var t = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.space;
+        var e = arguments.length > 1 ? arguments[1] : undefined;
+        return t = h.space(t), h.inGamut(t, this[t.id], e);
+      }
+    }, {
+      key: "toGamut",
+      value: function toGamut() {
+        var _ref4 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            _ref4$method = _ref4.method,
+            t = _ref4$method === void 0 ? h.defaults.gamutMapping : _ref4$method,
+            _ref4$space = _ref4.space,
+            r = _ref4$space === void 0 ? this.space : _ref4$space,
+            a = _ref4.inPlace;
+
+        if (e(arguments[0]) && (r = arguments[0]), r = h.space(r), this.inGamut(r, {
+          epsilon: 0
+        })) return this;
+        var s = this.to(r);
+
+        if (t.indexOf(".") > 0 && !this.inGamut(r)) {
+          var _e6 = s.toGamut({
+            method: "clip",
+            space: r
+          });
+
+          if (this.deltaE(_e6, {
+            method: "2000"
+          }) > 2) {
+            var _i2 = i(t),
+                _i3 = _slicedToArray(_i2, 2),
+                _e7 = _i3[0],
+                _a4 = _i3[1],
+                _o = s.to(_e7),
+                _n = .01,
+                _c = _e7.coords[_a4][0],
+                _l = _o[_a4];
+
+            for (; _l - _c > _n;) {
+              var _t7 = _o.toGamut({
+                space: r,
+                method: "clip"
+              });
+
+              _o.deltaE(_t7, {
+                method: "2000"
+              }) - 2 < _n ? _c = _o[_a4] : _l = _o[_a4], _o[_a4] = (_l + _c) / 2;
+            }
+
+            s = _o.to(r);
+          } else s = _e6;
+        }
+
+        if ("clip" === t || !s.inGamut(r, {
+          epsilon: 0
+        })) {
+          var _t8 = Object.values(r.coords);
+
+          s.coords = s.coords.map(function (e, r) {
+            var _t8$r = _slicedToArray(_t8[r], 2),
+                a = _t8$r[0],
+                s = _t8$r[1];
+
+            return void 0 !== a && (e = Math.max(a, e)), void 0 !== s && (e = Math.min(e, s)), e;
+          });
+        }
+
+        return r.id !== this.spaceId && (s = s.to(this.space)), a ? (this.coords = s.coords, this) : s;
+      }
+    }, {
+      key: "clone",
+      value: function clone() {
+        return new h(this.spaceId, this.coords, this.alpha);
+      }
+    }, {
+      key: "to",
+      value: function to(t) {
+        var _ref5 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+            e = _ref5.inGamut;
+
+        var r = (t = h.space(t)).id,
+            a = new h(r, this[r], this.alpha);
+        return e && a.toGamut({
+          inPlace: !0
+        }), a;
+      }
+    }, {
+      key: "toJSON",
+      value: function toJSON() {
+        return {
+          spaceId: this.spaceId,
+          coords: this.coords,
+          alpha: this.alpha
+        };
+      }
+    }, {
+      key: "toString",
+      value: function toString() {
+        var _ref6 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            _ref6$precision = _ref6.precision,
+            t = _ref6$precision === void 0 ? h.defaults.precision : _ref6$precision,
+            r = _ref6.format,
+            a = _ref6.commas,
+            s = _ref6.inGamut,
+            _ref6$name = _ref6.name,
+            i = _ref6$name === void 0 ? "color" : _ref6$name,
+            n = _ref6.fallback;
+
+        var c = this.alpha < 1 ? " ".concat(a ? "," : "/", " ").concat(this.alpha) : "",
+            p = this.getCoords({
+          inGamut: s,
+          precision: t
+        });
+        p = p.map(function (t) {
+          return t || 0;
+        }), e(r) && "%" === r && (r = function r(e) {
+          return o(e *= 100, t) + "%";
+        }), "function" == typeof r && (p = p.map(r));
+
+        var u = _toConsumableArray(p);
+
+        "color" === i && u.unshift(this.space ? this.space.cssId || this.space.id : "XYZ");
+        var d = "".concat(i, "(").concat(u.join(a ? ", " : " ")).concat(c, ")");
+
+        if (n) {
+          if (!l || "undefined" == typeof CSS || CSS.supports("color", d)) return d = new String(d), d.color = this, d;
+
+          var _e8 = Array.isArray(n) ? n.slice() : h.defaults.fallbackSpaces;
+
+          for (var _r7, _a5 = 0; _r7 = _e8[_a5]; _a5++) {
+            if (h.spaces[_r7]) {
+              var _s = this.to(_r7);
+
+              if (d = _s.toString({
+                precision: t
+              }), CSS.supports("color", d)) return d = new String(d), d.color = _s, d;
+              _e8 === h.defaults.fallbackSpaces && (_e8.splice(_a5, 1), _a5--);
+            }
+          }
+
+          var _r6 = this.to("srgb");
+
+          d = new String(_r6.toString({
+            commas: !0
+          })), d.color = _r6;
+        }
+
+        return d;
+      }
+    }, {
+      key: "equals",
+      value: function equals(t) {
+        return t = h.get(t), this.spaceId === t.spaceId && this.alpha === t.alpha && this.coords.every(function (e, r) {
+          return e === t.coords[r];
+        });
+      }
+    }, {
+      key: "space",
+      get: function get() {
+        return h.spaces[this.spaceId];
+      },
+      set: function set(t) {
+        return this.spaceId = t;
+      }
+    }, {
+      key: "spaceId",
+      get: function get() {
+        return this._spaceId;
+      },
+      set: function set(t) {
+        var e = h.space(t);
+
+        if (t = e.id, this.space && e && this.space !== e) {
+          this.coords = this[t];
+
+          for (var _t9 in this.space.instance) {
+            this.hasOwnProperty(_t9) && delete this[_t9];
+          }
+        }
+
+        this._spaceId = t, a(this, this.space.instance);
+      }
+    }, {
+      key: "white",
+      get: function get() {
+        return this.space.white || h.whites.D50;
+      }
+    }, {
+      key: "luminance",
+      get: function get() {
+        return h.chromaticAdaptation(h.spaces.xyz.white, h.whites.D65, this.xyz)[1];
+      },
+      set: function set(t) {
+        var e = h.chromaticAdaptation(h.spaces.xyz.white, h.whites.D65, this.xyz);
+        e[1] = t, e = h.chromaticAdaptation(h.whites.D65, h.spaces.xyz.white, e), this.xyz.X = e[0], this.xyz.Y = e[1], this.xyz.Z = e[2];
+      }
+    }, {
+      key: "uv",
+      get: function get() {
+        var _this$xyz = _slicedToArray(this.xyz, 3),
+            t = _this$xyz[0],
+            e = _this$xyz[1],
+            r = _this$xyz[2],
+            a = t + 15 * e + 3 * r;
+
+        return [4 * t / a, 9 * e / a];
+      }
+    }, {
+      key: "xy",
+      get: function get() {
+        var _this$xyz2 = _slicedToArray(this.xyz, 3),
+            t = _this$xyz2[0],
+            e = _this$xyz2[1],
+            r = _this$xyz2[2],
+            a = t + e + r;
+
+        return [t / a, e / a];
+      }
+    }], [{
+      key: "inGamut",
+      value: function inGamut(t, e) {
+        var _ref7 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
+            _ref7$epsilon = _ref7.epsilon,
+            r = _ref7$epsilon === void 0 ? 75e-6 : _ref7$epsilon;
+
+        if ((t = h.space(t)).inGamut) return t.inGamut(e);
+        {
+          if (!t.coords) return !0;
+
+          var _a6 = Object.values(t.coords);
+
+          return e.every(function (t, e) {
+            if (Number.isNaN(t)) return !0;
+
+            var _a6$e = _slicedToArray(_a6[e], 2),
+                s = _a6$e[0],
+                o = _a6$e[1];
+
+            return (void 0 === s || t >= s - r) && (void 0 === o || t <= o + r);
+          });
+        }
+      }
+    }, {
+      key: "chromaticAdaptation",
+      value: function chromaticAdaptation(e, r, a) {
+        var s = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+        if ((e = e || h.whites.D50) === (r = r || h.whites.D50)) return a;
+        var o = {
+          W1: e,
+          W2: r,
+          XYZ: a,
+          options: s
+        };
+        if (h.hooks.run("chromatic-adaptation-start", o), o.M || (o.W1 === h.whites.D65 && o.W2 === h.whites.D50 ? o.M = [[1.0479298208405488, .022946793341019088, -.05019222954313557], [.029627815688159344, .990434484573249, -.01707382502938514], [-.009243058152591178, .015055144896577895, .7518742899580008]] : o.W1 === h.whites.D50 && o.W2 === h.whites.D65 && (o.M = [[.9554734527042182, -.023098536874261423, .0632593086610217], [-.028369706963208136, 1.0099954580058226, .021041398966943008], [.012314001688319899, -.020507696433477912, 1.3303659366080753]])), h.hooks.run("chromatic-adaptation-end", o), o.M) return t(o.M, o.XYZ);
+        throw new TypeError("Only Bradford CAT with white points D50 and D65 supported for now.");
+      }
+    }, {
+      key: "parse",
+      value: function parse(t) {
+        var e = {
+          str: t
+        };
+        if (h.hooks.run("parse-start", e), e.color) return e.color;
+        if (e.parsed = h.parseFunction(e.str), h.hooks.run("parse-function-start", e), e.color) return e.color;
+
+        for (var _i4 = 0, _Object$values = Object.values(h.spaces); _i4 < _Object$values.length; _i4++) {
+          var _t10 = _Object$values[_i4];
+
+          if (_t10.parse) {
+            var _r8 = _t10.parse(e.str, e.parsed);
+
+            if (_r8) return _r8;
+          }
+        }
+
+        var r = e.parsed && e.parsed.name;
+
+        if (!/^color|^rgb/.test(r) && l && document.head) {
+          var _a7 = document.head.style.color;
+
+          if (document.head.style.color = "", document.head.style.color = t, document.head.style.color !== _a7) {
+            var _s2 = getComputedStyle(document.head).color;
+            document.head.style.color = _a7, _s2 && (t = _s2, e.parsed = h.parseFunction(_s2), r = e.parsed.name);
+          }
+        }
+
+        if (e.parsed) {
+          if ("rgb" === r || "rgba" === r) {
+            var _t11 = e.parsed.args.map(function (t, e) {
+              return e < 3 && !t.percentage ? t / 255 : +t;
+            });
+
+            return {
+              spaceId: "srgb",
+              coords: _t11.slice(0, 3),
+              alpha: _t11[3]
+            };
+          }
+
+          if ("color" === r) {
+            var _t12 = e.parsed.args.shift().toLowerCase(),
+                _r9 = Object.values(h.spaces).find(function (e) {
+              return (e.cssId || e.id) === _t12;
+            });
+
+            if (_r9) {
+              var _t13 = Object.keys(_r9.coords).length,
+                  _a8 = e.parsed.rawArgs.indexOf("/") > 0 ? e.parsed.args.pop() : 1,
+                  _s3 = Array(_t13).fill(0);
+
+              return _s3.forEach(function (t, r) {
+                return _s3[r] = e.parsed.args[r] || 0;
+              }), {
+                spaceId: _r9.id,
+                coords: _s3,
+                alpha: _a8
+              };
+            }
+
+            throw new TypeError("Color space ".concat(_t12, " not found. Missing a plugin?"));
+          }
+        }
+
+        throw new TypeError("Could not parse ".concat(t, " as a color. Missing a plugin?"));
+      }
+    }, {
+      key: "parseFunction",
+      value: function parseFunction(t) {
+        if (!t) return;
+        t = t.trim();
+        var e = /^-?[\d.]+$/;
+        var r = t.match(/^([a-z]+)\((.+?)\)$/i);
+
+        if (r) {
+          var _t14 = r[2].match(/([-\w.]+(?:%|deg)?)/g);
+
+          return _t14 = _t14.map(function (t) {
+            if (/%$/.test(t)) {
+              var _e9 = new Number(+t.slice(0, -1) / 100);
+
+              return _e9.percentage = !0, _e9;
+            }
+
+            if (/deg$/.test(t)) {
+              var _e10 = new Number(+t.slice(0, -3));
+
+              return _e10.deg = !0, _e10;
+            }
+
+            return e.test(t) ? +t : t;
+          }), {
+            name: r[1].toLowerCase(),
+            rawName: r[1],
+            rawArgs: r[2],
+            args: _t14
+          };
+        }
+      }
+    }, {
+      key: "convert",
+      value: function convert(t, e, r) {
+        if ((e = h.space(e)) === (r = h.space(r))) return t;
+        t = t.map(function (t) {
+          return Number.isNaN(t) ? 0 : t;
+        });
+        var a = e.id,
+            s = r.id;
+        if (r.from && r.from[a]) return r.from[a](t);
+        if (e.to && e.to[s]) return e.to[s](t);
+        var o = e.toXYZ(t);
+        return r.white !== e.white && (o = h.chromaticAdaptation(e.white, r.white, o)), r.fromXYZ(o);
+      }
+    }, {
+      key: "get",
+      value: function get(t) {
+        for (var _len3 = arguments.length, e = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+          e[_key3 - 1] = arguments[_key3];
+        }
+
+        return t instanceof h ? t : _construct(h, [t].concat(e));
+      }
+    }, {
+      key: "space",
+      value: function space(t) {
+        var e = r(t);
+
+        if ("string" === e) {
+          var _e11 = h.spaces[t.toLowerCase()];
+          if (!_e11) throw new TypeError("No color space found with id = \"".concat(t, "\""));
+          return _e11;
+        }
+
+        if (t && "object" === e) return t;
+        throw new TypeError(t + " is not a valid color space");
+      }
+    }, {
+      key: "defineSpace",
+      value: function defineSpace(_ref8) {
+        var t = _ref8.id,
+            e = _ref8.inherits;
+        var r = h.spaces[t] = arguments[0];
+
+        if (e) {
+          var _t15 = ["id", "parse", "instance", "properties"];
+          var _a9 = h.spaces[e];
+
+          for (var _e12 in _a9) {
+            _t15.includes(_e12) || _e12 in r || s(r, _a9, _e12);
+          }
+        }
+
+        var o = r.coords;
+
+        if (r.properties && a(h.prototype, r.properties), !r.fromXYZ && !r.toXYZ) {
+          var _t16;
+
+          if (r.from && r.to) {
+            var _e13 = new Set(Object.keys(r.from)),
+                _a10 = new Set(Object.keys(r.to)),
+                _s4 = _toConsumableArray(_e13).filter(function (t) {
+              if (_a10.has(t)) {
+                var _e14 = h.spaces[t];
+                return _e14 && _e14.fromXYZ && _e14.toXYZ;
+              }
+            });
+
+            _s4.length > 0 && (_t16 = h.spaces[_s4[0]]);
+          }
+
+          if (!_t16) throw new ReferenceError("No connection space found for ".concat(r.name, "."));
+          Object.assign(r, {
+            fromXYZ: function fromXYZ(e) {
+              var r = _t16.fromXYZ(e);
+
+              return this.from[_t16.id](r);
+            },
+            toXYZ: function toXYZ(e) {
+              var r = this.to[_t16.id](e);
+
+              return _t16.toXYZ(r);
+            }
+          });
+        }
+
+        var i = Object.keys(o);
+        return Object.defineProperty(h.prototype, t, {
+          get: function get() {
+            var _this = this;
+
+            var e = h.convert(this.coords, this.spaceId, t);
+            return "undefined" == typeof Proxy ? e : new Proxy(e, {
+              has: function has(t, e) {
+                return i.includes(e) || Reflect.has(t, e);
+              },
+              get: function get(t, e, r) {
+                var a = i.indexOf(e);
+                return a > -1 ? t[a] : Reflect.get(t, e, r);
+              },
+              set: function set(e, r, a, s) {
+                var o = i.indexOf(r);
+                return r > -1 && (o = r), o > -1 ? (e[o] = a, _this.coords = h.convert(e, t, _this.spaceId), !0) : Reflect.set(e, r, a, s);
+              }
+            });
+          },
+          set: function set(e) {
+            this.coords = h.convert(e, t, this.spaceId);
+          },
+          configurable: !0,
+          enumerable: !0
+        }), r;
+      }
+    }, {
+      key: "defineShortcut",
+      value: function defineShortcut(t) {
+        var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : h.prototype;
+        var r = arguments.length > 2 ? arguments[2] : undefined;
+        r && (h.shortcuts[t] = r), Object.defineProperty(e, t, {
+          get: function get() {
+            return n(this, h.shortcuts[t]);
+          },
+          set: function set(e) {
+            return n(this, h.shortcuts[t], e);
+          },
+          configurable: !0,
+          enumerable: !0
+        });
+      }
+    }, {
+      key: "statify",
+      value: function statify() {
+
+        var _iterator = _createForOfIteratorHelper(Object.getOwnPropertyNames(h.prototype)),
+            _step;
+
+        try {
+          var _loop = function _loop() {
+            var t = _step.value;
+            var e = Object.getOwnPropertyDescriptor(h.prototype, t);
+            e.get || e.set || "function" != typeof e.value || t in h || (h[t] = function (e) {
+              var _e15;
+
+              for (var _len4 = arguments.length, r = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
+                r[_key4 - 1] = arguments[_key4];
+              }
+
+              return (_e15 = e = h.get(e))[t].apply(_e15, r);
+            });
+          };
+
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            _loop();
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+      }
+    }]);
+
+    return h;
+  }();
+
+  Object.assign(h, {
+    util: c,
+    hooks: new ( /*#__PURE__*/function () {
+      function _class() {
+        _classCallCheck(this, _class);
+      }
+
+      _createClass(_class, [{
+        key: "add",
+        value: function add(t, e, r) {
+          if ("string" == typeof arguments[0]) (Array.isArray(t) ? t : [t]).forEach(function (t) {
+            this[t] = this[t] || [], e && this[t][r ? "unshift" : "push"](e);
+          }, this);else for (var t in arguments[0]) {
+            this.add(t, arguments[0][t], arguments[1]);
+          }
+        }
+      }, {
+        key: "run",
+        value: function run(t, e) {
+          this[t] = this[t] || [], this[t].forEach(function (t) {
+            t.call(e && e.context ? e.context : e, e);
+          });
+        }
+      }]);
+
+      return _class;
+    }())(),
+    whites: {
+      D50: [.3457 / .3585, 1, .2958 / .3585],
+      D65: [.3127 / .329, 1, .3583 / .329]
+    },
+    spaces: {},
+    shortcuts: {
+      lightness: "lch.lightness",
+      chroma: "lch.chroma",
+      hue: "lch.hue"
+    },
+    defaults: {
+      gamutMapping: "lch.chroma",
+      precision: 5,
+      deltaE: "76",
+      fallbackSpaces: ["p3", "srgb"]
+    }
+  }), h.defineSpace({
+    id: "xyz",
+    name: "XYZ",
+    coords: {
+      X: [],
+      Y: [],
+      Z: []
+    },
+    white: h.whites.D50,
+    inGamut: function inGamut(t) {
+      return !0;
+    },
+    toXYZ: function toXYZ(t) {
+      return t;
+    },
+    fromXYZ: function fromXYZ(t) {
+      return t;
+    }
+  });
+
+  for (var _t17 in h.shortcuts) {
+    h.defineShortcut(_t17);
+  }
+
+  h.statify(), h.defineSpace({
+    id: "lab",
+    name: "Lab",
+    coords: {
+      L: [0, 100],
+      a: [-100, 100],
+      b: [-100, 100]
+    },
+    inGamut: function inGamut(t) {
+      return !0;
+    },
+    white: h.whites.D50,
+    "ε": 216 / 24389,
+    "ε3": 24 / 116,
+    "κ": 24389 / 27,
+    fromXYZ: function fromXYZ(t) {
+      var e = this["κ"],
+          r = this["ε"],
+          a = this.white;
+      var s = t.map(function (t, e) {
+        return t / a[e];
+      }).map(function (t) {
+        return t > r ? Math.cbrt(t) : (e * t + 16) / 116;
+      });
+      return [116 * s[1] - 16, 500 * (s[0] - s[1]), 200 * (s[1] - s[2])];
+    },
+    toXYZ: function toXYZ(t) {
+      var e = this["κ"],
+          r = this["ε3"],
+          a = this.white;
+      var s = [];
+      return s[1] = (t[0] + 16) / 116, s[0] = t[1] / 500 + s[1], s[2] = s[1] - t[2] / 200, [s[0] > r ? Math.pow(s[0], 3) : (116 * s[0] - 16) / e, t[0] > 8 ? Math.pow((t[0] + 16) / 116, 3) : t[0] / e, s[2] > r ? Math.pow(s[2], 3) : (116 * s[2] - 16) / e].map(function (t, e) {
+        return t * a[e];
+      });
+    },
+    parse: function parse(t) {
+      var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : h.parseFunction(t);
+
+      if (e && "lab" === e.name) {
+        var _t18 = e.args[0];
+        return _t18.percentage && (e.args[0] = 100 * _t18), {
+          spaceId: "lab",
+          coords: e.args.slice(0, 3),
+          alpha: e.args.slice(3)[0]
+        };
+      }
+    },
+    instance: {
+      toString: function toString() {
+        var _ref9 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            t = _ref9.format,
+            e = _objectWithoutProperties(_ref9, ["format"]);
+
+        return t || (t = function t(_t19, e) {
+          return 0 === e ? _t19 + "%" : _t19;
+        }), h.prototype.toString.call(this, _objectSpread2({
+          name: "lab",
+          format: t
+        }, e));
+      }
+    }
+  });
+  var p = [0, 360];
+
+  function u(t) {
+    return (t % 360 + 360) % 360;
+  }
+
+  p.isAngle = !0, h.defineSpace({
+    id: "lch",
+    name: "LCH",
+    coords: {
+      lightness: [0, 100],
+      chroma: [0, 150],
+      hue: p
+    },
+    inGamut: function inGamut(t) {
+      return !0;
+    },
+    white: h.whites.D50,
+    from: {
+      lab: function lab(t) {
+        var e,
+            _t20 = _slicedToArray(t, 3),
+            r = _t20[0],
+            a = _t20[1],
+            s = _t20[2];
+
+        return e = Math.abs(a) < .02 && Math.abs(s) < .02 ? NaN : 180 * Math.atan2(s, a) / Math.PI, [r, Math.sqrt(Math.pow(a, 2) + Math.pow(s, 2)), u(e)];
+      }
+    },
+    to: {
+      lab: function lab(t) {
+        var _t21 = _slicedToArray(t, 3),
+            e = _t21[0],
+            r = _t21[1],
+            a = _t21[2];
+
+        return r < 0 && (r = 0), isNaN(a) && (a = 0), [e, r * Math.cos(a * Math.PI / 180), r * Math.sin(a * Math.PI / 180)];
+      }
+    },
+    parse: function parse(t) {
+      var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : h.parseFunction(t);
+
+      if (e && "lch" === e.name) {
+        var _t22 = e.args[0];
+        return _t22.percentage && (e.args[0] = 100 * _t22), {
+          spaceId: "lch",
+          coords: e.args.slice(0, 3),
+          alpha: e.args.slice(3)[0]
+        };
+      }
+    },
+    instance: {
+      toString: function toString() {
+        var _ref10 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            t = _ref10.format,
+            e = _objectWithoutProperties(_ref10, ["format"]);
+
+        return t || (t = function t(_t23, e) {
+          return 0 === e ? _t23 + "%" : _t23;
+        }), h.prototype.toString.call(this, _objectSpread2({
+          name: "lch",
+          format: t
+        }, e));
+      }
+    }
+  }), h.defineSpace({
+    id: "srgb",
+    name: "sRGB",
+    coords: {
+      red: [0, 1],
+      green: [0, 1],
+      blue: [0, 1]
+    },
+    white: h.whites.D65,
+    toLinear: function toLinear(t) {
+      return t.map(function (t) {
+        var e = t < 0 ? -1 : 1,
+            r = Math.abs(t);
+        return r < .04045 ? t / 12.92 : e * Math.pow((r + .055) / 1.055, 2.4);
+      });
+    },
+    toGamma: function toGamma(t) {
+      return t.map(function (t) {
+        var e = t < 0 ? -1 : 1,
+            r = Math.abs(t);
+        return r > .0031308 ? e * (1.055 * Math.pow(r, 1 / 2.4) - .055) : 12.92 * t;
+      });
+    },
+    toXYZ_M: [[.41239079926595934, .357584339383878, .1804807884018343], [.21263900587151027, .715168678767756, .07219231536073371], [.01933081871559182, .11919477979462598, .9505321522496607]],
+    fromXYZ_M: [[3.2409699419045226, -1.537383177570094, -.4986107602930034], [-.9692436362808796, 1.8759675015077202, .04155505740717559], [.05563007969699366, -.20397695888897652, 1.0569715142428786]],
+    toXYZ: function toXYZ(e) {
+      return e = this.toLinear(e), t(this.toXYZ_M, e);
+    },
+    fromXYZ: function fromXYZ(e) {
+      return this.toGamma(t(this.fromXYZ_M, e));
+    },
+    properties: {
+      toHex: function toHex() {
+        var _ref11 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            _ref11$alpha = _ref11.alpha,
+            t = _ref11$alpha === void 0 ? !0 : _ref11$alpha,
+            _ref11$collapse = _ref11.collapse,
+            e = _ref11$collapse === void 0 ? !0 : _ref11$collapse;
+
+        var r = this.to("srgb", {
+          inGamut: !0
+        }).coords;
+        this.alpha < 1 && t && r.push(this.alpha), r = r.map(function (t) {
+          return Math.round(255 * t);
+        });
+        var a = e && r.every(function (t) {
+          return t % 17 == 0;
+        });
+        return "#" + r.map(function (t) {
+          return a ? (t / 17).toString(16) : t.toString(16).padStart(2, "0");
+        }).join("");
+      },
+
+      get hex() {
+        return this.toHex();
+      }
+
+    },
+    instance: {
+      toString: function toString() {
+        var _ref12 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            _ref12$inGamut = _ref12.inGamut,
+            t = _ref12$inGamut === void 0 ? !0 : _ref12$inGamut,
+            e = _ref12.commas,
+            _ref12$format = _ref12.format,
+            r = _ref12$format === void 0 ? "%" : _ref12$format,
+            a = _objectWithoutProperties(_ref12, ["inGamut", "commas", "format"]);
+
+        if (255 === r) r = function r(t) {
+          return 255 * t;
+        };else if ("hex" === r) return this.toHex(arguments[0]);
+        return h.prototype.toString.call(this, _objectSpread2({
+          inGamut: t,
+          commas: e,
+          format: r,
+          name: "rgb" + (e && this.alpha < 1 ? "a" : "")
+        }, a));
+      }
+    },
+    parseHex: function parseHex(t) {
+      t.length <= 5 && (t = t.replace(/[a-f0-9]/gi, "$&$&"));
+      var e = [];
+      return t.replace(/[a-f0-9]{2}/gi, function (t) {
+        e.push(parseInt(t, 16) / 255);
+      }), {
+        spaceId: "srgb",
+        coords: e.slice(0, 3),
+        alpha: e.slice(3)[0]
+      };
+    }
+  }), h.hooks.add("parse-start", function (t) {
+    var e = t.str;
+    /^#([a-f0-9]{3,4}){1,2}$/i.test(e) && (t.color = h.spaces.srgb.parseHex(e));
+  }), h.defineSpace({
+    inherits: "srgb",
+    id: "srgb-linear",
+    name: "sRGB-linear",
+    toLinear: function toLinear(t) {
+      return t;
+    },
+    toGamma: function toGamma(t) {
+      return t;
+    }
+  }), h.defineSpace({
+    id: "hsl",
+    name: "HSL",
+    coords: {
+      hue: p,
+      saturation: [0, 100],
+      lightness: [0, 100]
+    },
+    inGamut: function inGamut(t) {
+      var e = this.to.srgb(t);
+      return h.inGamut("srgb", e);
+    },
+    white: h.whites.D65,
+    from: {
+      srgb: function srgb(t) {
+        var e = Math.max.apply(Math, t),
+            r = Math.min.apply(Math, t),
+            _t24 = _slicedToArray(t, 3),
+            a = _t24[0],
+            s = _t24[1],
+            o = _t24[2],
+            i = NaN,
+            n = 0,
+            c = (r + e) / 2,
+            l = e - r;
+
+        if (0 !== l) {
+          switch (n = 0 === c || 1 === c ? 0 : (e - c) / Math.min(c, 1 - c), e) {
+            case a:
+              i = (s - o) / l + (s < o ? 6 : 0);
+              break;
+
+            case s:
+              i = (o - a) / l + 2;
+              break;
+
+            case o:
+              i = (a - s) / l + 4;
+          }
+
+          i *= 60;
+        }
+
+        return [i, 100 * n, 100 * c];
+      }
+    },
+    to: {
+      srgb: function srgb(t) {
+        var _t25 = _slicedToArray(t, 3),
+            e = _t25[0],
+            r = _t25[1],
+            a = _t25[2];
+
+        function s(t) {
+          var s = (t + e / 30) % 12,
+              o = r * Math.min(a, 1 - a);
+          return a - o * Math.max(-1, Math.min(s - 3, 9 - s, 1));
+        }
+
+        return e %= 360, e < 0 && (e += 360), r /= 100, a /= 100, [s(0), s(8), s(4)];
+      }
+    },
+    parse: function parse(t) {
+      var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : h.parseFunction(t);
+
+      if (e && /^hsla?$/.test(e.name)) {
+        var _t26 = e.args;
+        return _t26[1] *= 100, _t26[2] *= 100, {
+          spaceId: "hsl",
+          coords: _t26.slice(0, 3),
+          alpha: _t26[3]
+        };
+      }
+    },
+    instance: {
+      toString: function toString() {
+        var _ref13 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            t = _ref13.precision,
+            e = _ref13.commas,
+            r = _ref13.format,
+            a = _ref13.inGamut,
+            s = _objectWithoutProperties(_ref13, ["precision", "commas", "format", "inGamut"]);
+
+        return r || (r = function r(t, e) {
+          return e > 0 ? t + "%" : t;
+        }), h.prototype.toString.call(this, _objectSpread2({
+          inGamut: !0,
+          commas: e,
+          format: r,
+          name: "hsl" + (e && this.alpha < 1 ? "a" : "")
+        }, s));
+      }
+    }
+  }), h.defineSpace({
+    id: "hwb",
+    name: "HWB",
+    coords: {
+      hue: p,
+      whiteness: [0, 100],
+      blackness: [0, 100]
+    },
+    inGamut: function inGamut(t) {
+      var e = this.to.srgb(t);
+      return h.inGamut("srgb", e);
+    },
+    white: h.whites.D65,
+    from: {
+      srgb: function srgb(t) {
+        var e = h.spaces.hsl.from.srgb(t)[0],
+            r = Math.min.apply(Math, _toConsumableArray(t)),
+            a = 1 - Math.max.apply(Math, _toConsumableArray(t));
+        return r *= 100, a *= 100, [e, r, a];
+      },
+      hsv: function hsv(t) {
+        var _t27 = _slicedToArray(t, 3),
+            e = _t27[0],
+            r = _t27[1],
+            a = _t27[2];
+
+        return [e, a * (100 - r) / 100, 100 - a];
+      },
+      hsl: function hsl(t) {
+        var e = h.spaces.hsv.from.hsl(t);
+        return this.hsv(e);
+      }
+    },
+    to: {
+      srgb: function srgb(t) {
+        var _t28 = _slicedToArray(t, 3),
+            e = _t28[0],
+            r = _t28[1],
+            a = _t28[2];
+
+        r /= 100, a /= 100;
+        var s = r + a;
+
+        if (s >= 1) {
+          var _t29 = r / s;
+
+          return [_t29, _t29, _t29];
+        }
+
+        var o = h.spaces.hsl.to.srgb([e, 100, 50]);
+
+        for (var i = 0; i < 3; i++) {
+          o[i] *= 1 - r - a, o[i] += r;
+        }
+
+        return o;
+      },
+      hsv: function hsv(t) {
+        var _t30 = _slicedToArray(t, 3),
+            e = _t30[0],
+            r = _t30[1],
+            a = _t30[2];
+
+        r /= 100, a /= 100;
+        var s = r + a;
+        if (s >= 1) return [e, 0, r / s * 100];
+        var o = 1 - a;
+        return [e, 100 * (0 === o ? 0 : 1 - r / o), 100 * o];
+      },
+      hsl: function hsl(t) {
+        var e = h.spaces.hwb.to.hsv(t);
+        return h.spaces.hsv.to.hsl(e);
+      }
+    },
+    parse: function parse(t) {
+      var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : h.parseFunction(t);
+
+      if (e && /^hwba?$/.test(e.name)) {
+        var _t31 = e.args;
+        return _t31[1] *= 100, _t31[2] *= 100, {
+          spaceId: "hwb",
+          coords: _t31.slice(0, 3),
+          alpha: _t31[3]
+        };
+      }
+    },
+    instance: {
+      toString: function toString() {
+        var _ref14 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            t = _ref14.format,
+            e = _ref14.commas,
+            r = _ref14.inGamut,
+            a = _objectWithoutProperties(_ref14, ["format", "commas", "inGamut"]);
+
+        return t || (t = function t(_t32, e) {
+          return e > 0 ? _t32 + "%" : _t32;
+        }), h.prototype.toString.call(this, _objectSpread2({
+          inGamut: !0,
+          commas: !1,
+          format: t,
+          name: "hwb"
+        }, a));
+      }
+    }
+  }), h.defineSpace({
+    id: "hsv",
+    name: "HSV",
+    coords: {
+      hue: p,
+      saturation: [0, 100],
+      value: [0, 100]
+    },
+    inGamut: function inGamut(t) {
+      var e = this.to.hsl(t);
+      return h.spaces.hsl.inGamut(e);
+    },
+    white: h.whites.D65,
+    from: {
+      hsl: function hsl(t) {
+        var _t33 = _slicedToArray(t, 3),
+            e = _t33[0],
+            r = _t33[1],
+            a = _t33[2];
+
+        r /= 100, a /= 100;
+        var s = a + r * Math.min(a, 1 - a);
+        return [e, 0 === s ? 0 : 200 * (1 - a / s), 100 * s];
+      }
+    },
+    to: {
+      hsl: function hsl(t) {
+        var _t34 = _slicedToArray(t, 3),
+            e = _t34[0],
+            r = _t34[1],
+            a = _t34[2];
+
+        r /= 100, a /= 100;
+        var s = a * (1 - r / 2);
+        return [e, 0 === s || 1 === s ? 0 : (a - s) / Math.min(s, 1 - s) * 100, 100 * s];
+      }
+    }
+  }), h.defineSpace({
+    inherits: "srgb",
+    id: "p3",
+    name: "P3",
+    cssId: "display-p3",
+    toXYZ_M: [[.4865709486482162, .26566769316909306, .1982172852343625], [.2289745640697488, .6917385218365064, .079286914093745], [0, .04511338185890264, 1.043944368900976]],
+    fromXYZ_M: [[2.493496911941425, -.9313836179191239, -.40271078445071684], [-.8294889695615747, 1.7626640603183463, .023624685841943577], [.03584583024378447, -.07617238926804182, .9568845240076872]]
+  }), h.defineSpace({
+    inherits: "srgb",
+    id: "a98rgb",
+    name: "Adobe 98 RGB compatible",
+    cssId: "a98-rgb",
+    toLinear: function toLinear(t) {
+      return t.map(function (t) {
+        return Math.pow(Math.abs(t), 563 / 256) * Math.sign(t);
+      });
+    },
+    toGamma: function toGamma(t) {
+      return t.map(function (t) {
+        return Math.pow(Math.abs(t), 256 / 563) * Math.sign(t);
+      });
+    },
+    toXYZ_M: [[.5766690429101305, .1855582379065463, .1882286462349947], [.29734497525053605, .6273635662554661, .07529145849399788], [.02703136138641234, .07068885253582723, .9913375368376388]],
+    fromXYZ_M: [[2.0415879038107465, -.5650069742788596, -.34473135077832956], [-.9692436362808795, 1.8759675015077202, .04155505740717557], [.013444280632031142, -.11836239223101838, 1.0151749943912054]]
+  }), h.defineSpace({
+    inherits: "srgb",
+    id: "prophoto",
+    name: "ProPhoto",
+    cssId: "prophoto-rgb",
+    white: h.whites.D50,
+    toLinear: function toLinear(t) {
+      return t.map(function (t) {
+        return t <= 16 / 512 ? t / 16 : Math.pow(t, 1.8);
+      });
+    },
+    toGamma: function toGamma(t) {
+      return t.map(function (t) {
+        return t >= 1 / 512 ? Math.pow(t, 1 / 1.8) : 16 * t;
+      });
+    },
+    toXYZ_M: [[.7977604896723027, .13518583717574031, .0313493495815248], [.2880711282292934, .7118432178101014, 8565396060525902e-20], [0, 0, .8251046025104601]],
+    fromXYZ_M: [[1.3457989731028281, -.25558010007997534, -.05110628506753401], [-.5446224939028347, 1.5082327413132781, .02053603239147973], [0, 0, 1.2119675456389454]]
+  }), h.defineSpace({
+    inherits: "srgb",
+    id: "rec2020",
+    name: "REC.2020",
+    "α": 1.09929682680944,
+    "β": .018053968510807,
+    toLinear: function toLinear(t) {
+      var e = this["α"],
+          r = this["β"];
+      return t.map(function (t) {
+        return t < 4.5 * r ? t / 4.5 : Math.pow((t + e - 1) / e, 1 / .45);
+      });
+    },
+    toGamma: function toGamma(t) {
+      var e = this["α"],
+          r = this["β"];
+      return t.map(function (t) {
+        return t > r ? e * Math.pow(t, .45) - (e - 1) : 4.5 * t;
+      });
+    },
+    toXYZ_M: [[.6369580483012914, .14461690358620832, .1688809751641721], [.2627002120112671, .6779980715188708, .05930171646986196], [0, .028072693049087428, 1.060985057710791]],
+    fromXYZ_M: [[1.716651187971268, -.355670783776392, -.25336628137366], [-.666684351832489, 1.616481236634939, .0157685458139111], [.017639857445311, -.042770613257809, .942103121235474]]
+  }), h.defineSpace({
+    id: "absxyzd65",
+    name: "Absolute XYZ D65",
+    coords: {
+      Xa: [0, 9504.7],
+      Ya: [0, 1e4],
+      Za: [0, 10888.3]
+    },
+    white: h.whites.D65,
+    Yw: 203,
+    inGamut: function inGamut(t) {
+      return !0;
+    },
+    fromXYZ: function fromXYZ(t) {
+      var e = this.Yw;
+      return t.map(function (t) {
+        return Math.max(t * e, 0);
+      });
+    },
+    toXYZ: function toXYZ(t) {
+      var e = this.Yw;
+      return t.map(function (t) {
+        return Math.max(t / e, 0);
+      });
+    }
+  }), h.defineSpace({
+    id: "jzazbz",
+    cssid: "Jzazbz",
+    name: "Jzazbz",
+    coords: {
+      Jz: [0, 1],
+      az: [-.5, .5],
+      bz: [-.5, .5]
+    },
+    inGamut: function inGamut(t) {
+      return !0;
+    },
+    white: h.whites.D65,
+    b: 1.15,
+    g: .66,
+    n: 2610 / 16384,
+    ninv: 16384 / 2610,
+    c1: .8359375,
+    c2: 2413 / 128,
+    c3: 18.6875,
+    p: 1.7 * 2523 / 32,
+    pinv: 32 / (1.7 * 2523),
+    d: -.56,
+    d0: 16295499532821565e-27,
+    XYZtoCone_M: [[.41478972, .579999, .014648], [-.20151, 1.120649, .0531008], [-.0166008, .2648, .6684799]],
+    ConetoXYZ_M: [[1.9242264357876067, -1.0047923125953657, .037651404030618], [.35031676209499907, .7264811939316552, -.06538442294808501], [-.09098281098284752, -.3127282905230739, 1.5227665613052603]],
+    ConetoIab_M: [[.5, .5, 0], [3.524, -4.066708, .542708], [.199076, 1.096799, -1.295875]],
+    IabtoCone_M: [[1, .1386050432715393, .05804731615611886], [.9999999999999999, -.1386050432715393, -.05804731615611886], [.9999999999999998, -.09601924202631895, -.8118918960560388]],
+    fromXYZ: function fromXYZ(e) {
+      var r = this.b,
+          a = this.g,
+          s = this.n,
+          o = this.p,
+          i = this.c1,
+          n = this.c2,
+          c = this.c3,
+          l = this.d,
+          p = this.d0,
+          u = this.XYZtoCone_M,
+          d = this.ConetoIab_M;
+
+      var _h$spaces$absxyzd65$f = h.spaces.absxyzd65.fromXYZ(e),
+          _h$spaces$absxyzd65$f2 = _slicedToArray(_h$spaces$absxyzd65$f, 3),
+          m = _h$spaces$absxyzd65$f2[0],
+          f = _h$spaces$absxyzd65$f2[1],
+          g = _h$spaces$absxyzd65$f2[2],
+          M = t(u, [r * m - (r - 1) * g, a * f - (a - 1) * m, g]).map(function (t) {
+        return Math.pow((i + n * Math.pow(t / 1e4, s)) / (1 + c * Math.pow(t / 1e4, s)), o);
+      }),
+          _t35 = t(d, M),
+          _t36 = _slicedToArray(_t35, 3),
+          b = _t36[0],
+          w = _t36[1],
+          y = _t36[2];
+
+      return [(1 + l) * b / (1 + l * b) - p, w, y];
+    },
+    toXYZ: function toXYZ(e) {
+      var r = this.b,
+          a = this.g,
+          s = this.ninv,
+          o = this.pinv,
+          i = this.c1,
+          n = this.c2,
+          c = this.c3,
+          l = this.d,
+          p = this.d0,
+          u = this.ConetoXYZ_M,
+          d = this.IabtoCone_M;
+
+      var _e16 = _slicedToArray(e, 3),
+          m = _e16[0],
+          f = _e16[1],
+          g = _e16[2],
+          M = t(d, [(m + p) / (1 + l - l * (m + p)), f, g]).map(function (t) {
+        return 1e4 * Math.pow((i - Math.pow(t, o)) / (c * Math.pow(t, o) - n), s);
+      }),
+          _t37 = t(u, M),
+          _t38 = _slicedToArray(_t37, 3),
+          b = _t38[0],
+          w = _t38[1],
+          y = _t38[2],
+          S = (b + (r - 1) * y) / r,
+          C = (w + (a - 1) * S) / a;
+
+      return h.spaces.absxyzd65.toXYZ([S, C, y]);
+    },
+    parse: function parse(t) {
+      var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : h.parseFunction(t);
+      if (e && "jzabz" === e.name) return {
+        spaceId: "jzazbz",
+        coords: e.args.slice(0, 3),
+        alpha: e.args.slice(3)[0]
+      };
+    },
+    instance: {
+      toString: function toString() {
+        var _ref15 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            t = _ref15.format,
+            e = _objectWithoutProperties(_ref15, ["format"]);
+
+        return h.prototype.toString.call(this, _objectSpread2({
+          name: "jzazbz",
+          format: t
+        }, e));
+      }
+    }
+  }), h.defineSpace({
+    id: "jzczhz",
+    name: "JzCzHz",
+    coords: {
+      Jz: [0, 1],
+      chroma: [0, 1],
+      hue: p
+    },
+    inGamut: function inGamut(t) {
+      return !0;
+    },
+    white: h.whites.D65,
+    from: {
+      jzazbz: function jzazbz(t) {
+        var e,
+            _t39 = _slicedToArray(t, 3),
+            r = _t39[0],
+            a = _t39[1],
+            s = _t39[2];
+
+        var o = 2e-4;
+        return e = Math.abs(a) < o && Math.abs(s) < o ? NaN : 180 * Math.atan2(s, a) / Math.PI, [r, Math.sqrt(Math.pow(a, 2) + Math.pow(s, 2)), u(e)];
+      }
+    },
+    to: {
+      jzazbz: function jzazbz(t) {
+        return [t[0], t[1] * Math.cos(t[2] * Math.PI / 180), t[1] * Math.sin(t[2] * Math.PI / 180)];
+      }
+    },
+    parse: function parse(t) {
+      var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : h.parseFunction(t);
+      if (e && "jzczhz" === e.name) return e.args[0], {
+        spaceId: "jzczhz",
+        coords: e.args.slice(0, 3),
+        alpha: e.args.slice(3)[0]
+      };
+    }
+  }), h.spaces.rec2020, h.defineSpace({
+    id: "ictcp",
+    name: "ICTCP",
+    coords: {
+      I: [0, 1],
+      CT: [-.5, .5],
+      CP: [-.5, .5]
+    },
+    inGamut: function inGamut(t) {
+      return !0;
+    },
+    white: h.whites.D65,
+    c1: .8359375,
+    c2: 2413 / 128,
+    c3: 18.6875,
+    m1: 2610 / 16384,
+    m2: 2523 / 32,
+    im1: 16384 / 2610,
+    im2: 32 / 2523,
+    XYZtoLMS_M: [[.3592, .6976, -.0358], [-.1922, 1.1004, .0755], [.007, .0749, .8434]],
+    Rec2020toLMS_M: [[1688 / 4096, 2146 / 4096, 262 / 4096], [683 / 4096, 2951 / 4096, 462 / 4096], [99 / 4096, 309 / 4096, 3688 / 4096]],
+    LMStoIPT_M: [[.5, .5, 0], [6610 / 4096, -13613 / 4096, 7003 / 4096], [17933 / 4096, -17390 / 4096, -543 / 4096]],
+    IPTtoLMS_M: [[.9999888965628402, .008605050147287059, .11103437159861648], [1.00001110343716, -.008605050147287059, -.11103437159861648], [1.0000320633910054, .56004913547279, -.3206339100541203]],
+    LMStoRec2020_M: [[3.437556893281401, -2.507211212509506, .06965431922810461], [-.7914286866564416, 1.983837219874009, -.19240853321756743], [-.025646662911506475, -.09924024864394557, 1.124886911555452]],
+    LMStoXYZ_M: [[2.0701800566956137, -1.326456876103021, .20661600684785517], [.3649882500326575, .6804673628522352, -.04542175307585323], [-.04959554223893211, -.04942116118675749, 1.1879959417328034]],
+    fromXYZ: function fromXYZ(e) {
+      var r = this.XYZtoLMS_M;
+
+      var _h$spaces$absxyzd65$f3 = h.spaces.absxyzd65.fromXYZ(e),
+          _h$spaces$absxyzd65$f4 = _slicedToArray(_h$spaces$absxyzd65$f3, 3),
+          a = _h$spaces$absxyzd65$f4[0],
+          s = _h$spaces$absxyzd65$f4[1],
+          o = _h$spaces$absxyzd65$f4[2],
+          i = t(r, [a, s, o]);
+
+      return this.LMStoICtCp(i);
+    },
+    toXYZ: function toXYZ(e) {
+      var r = this.LMStoXYZ_M;
+      var a = t(r, this.ICtCptoLMS(e));
+      return h.spaces.absxyzd65.toXYZ(a);
+    },
+    LMStoICtCp: function LMStoICtCp(e) {
+      var r = this.LMStoIPT_M,
+          a = this.c1,
+          s = this.c2,
+          o = this.c3,
+          i = this.m1,
+          n = this.m2;
+      return t(r, e.map(function (t) {
+        return Math.pow((a + s * Math.pow(t / 1e4, i)) / (1 + o * Math.pow(t / 1e4, i)), n);
+      }));
+    },
+    ICtCptoLMS: function ICtCptoLMS(e) {
+      var r = this.IPTtoLMS_M,
+          a = this.c1,
+          s = this.c2,
+          o = this.c3,
+          i = this.im1,
+          n = this.im2;
+      return t(r, e).map(function (t) {
+        return 1e4 * Math.pow(Math.max(Math.pow(t, n) - a, 0) / (s - o * Math.pow(t, n)), i);
+      });
+    }
+  }), h.defineSpace({
+    inherits: "rec2020",
+    id: "rec2100pq",
+    cssid: "rec2100-pq",
+    name: "REC.2100-PQ",
+    Yw: 203,
+    n: 2610 / 16384,
+    ninv: 16384 / 2610,
+    m: 2523 / 32,
+    minv: 32 / 2523,
+    c1: .8359375,
+    c2: 2413 / 128,
+    c3: 18.6875,
+    toLinear: function toLinear(t) {
+      var e = this.Yw,
+          r = this.ninv,
+          a = this.minv,
+          s = this.c1,
+          o = this.c2,
+          i = this.c3;
+      return t.map(function (t) {
+        return 1e4 * Math.pow(Math.max(Math.pow(t, a) - s, 0) / (o - i * Math.pow(t, a)), r) / e;
+      });
+    },
+    toGamma: function toGamma(t) {
+      var e = this.Yw,
+          r = this.n,
+          a = this.m,
+          s = this.c1,
+          o = this.c2,
+          i = this.c3;
+      return t.map(function (t) {
+        var n = Math.max(t * e / 1e4, 0);
+        return Math.pow((s + o * Math.pow(n, r)) / (1 + i * Math.pow(n, r)), a);
+      });
+    }
+  }), h.defineSpace({
+    id: "oklab",
+    cssid: "oklab",
+    name: "OKLab",
+    coords: {
+      L: [0, 1],
+      a: [-.5, .5],
+      b: [-.5, .5]
+    },
+    inGamut: function inGamut(t) {
+      return !0;
+    },
+    white: h.whites.D65,
+    XYZtoLMS_M: [[.8189330101, .3618667424, -.1288597137], [.0329845436, .9293118715, .0361456387], [.0482003018, .2643662691, .633851707]],
+    LMStoXYZ_M: [[1.2270138511035211, -.5577999806518222, .28125614896646783], [-.04058017842328059, 1.11225686961683, -.0716766786656012], [-.07638128450570689, -.4214819784180127, 1.5861632204407947]],
+    LMStoLab_M: [[.2104542553, .793617785, -.0040720468], [1.9779984951, -2.428592205, .4505937099], [.0259040371, .7827717662, -.808675766]],
+    LabtoLMS_M: [[.9999999984505198, .39633779217376786, .2158037580607588], [1.0000000088817609, -.10556134232365635, -.06385417477170591], [1.0000000546724108, -.08948418209496575, -1.2914855378640917]],
+    fromXYZ: function fromXYZ(e) {
+      var r = this.XYZtoLMS_M,
+          a = this.LMStoLab_M;
+      var s = t(r, e);
+      return t(a, s.map(function (t) {
+        return Math.cbrt(t);
+      }));
+    },
+    toXYZ: function toXYZ(e) {
+      var r = this.LMStoXYZ_M,
+          a = this.LabtoLMS_M;
+      var s = t(a, e);
+      return t(r, s.map(function (t) {
+        return Math.pow(t, 3);
+      }));
+    }
+  }), h.defineSpace({
+    id: "oklch",
+    name: "OKLCh",
+    coords: {
+      lightness: [0, 1],
+      chroma: [0, 1],
+      hue: p
+    },
+    inGamut: function inGamut(t) {
+      return !0;
+    },
+    white: h.whites.D65,
+    from: {
+      oklab: function oklab(t) {
+        var e,
+            _t40 = _slicedToArray(t, 3),
+            r = _t40[0],
+            a = _t40[1],
+            s = _t40[2];
+
+        var o = 2e-4;
+        return e = Math.abs(a) < o && Math.abs(s) < o ? NaN : 180 * Math.atan2(s, a) / Math.PI, [r, Math.sqrt(Math.pow(a, 2) + Math.pow(s, 2)), u(e)];
+      }
+    },
+    to: {
+      oklab: function oklab(t) {
+        var e,
+            r,
+            _t41 = _slicedToArray(t, 3),
+            a = _t41[0],
+            s = _t41[1],
+            o = _t41[2];
+
+        return isNaN(o) ? (e = 0, r = 0) : (e = s * Math.cos(o * Math.PI / 180), r = s * Math.sin(o * Math.PI / 180)), [a, e, r];
+      }
+    },
+    parse: function parse(t) {
+      var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : h.parseFunction(t);
+      if (e && "oklch" === e.name) return e.args[0], {
+        spaceId: "oklch",
+        coords: e.args.slice(0, 3),
+        alpha: e.args.slice(3)[0]
+      };
+    }
+  }), h.CATs = {}, h.hooks.add("chromatic-adaptation-start", function (t) {
+    t.options.method && (t.M = h.adapt(t.W1, t.W2, t.options.method));
+  }), h.hooks.add("chromatic-adaptation-end", function (t) {
+    t.M || (t.M = h.adapt(t.W1, t.W2, t.options.method));
+  }), h.defineCAT = function (_ref16) {
+    var t = _ref16.id,
+        e = _ref16.toCone_M,
+        r = _ref16.fromCone_M;
+    h.CATs[t] = arguments[0];
+  }, h.adapt = function (e, r) {
+    var a = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "Bradford";
+
+    var s = h.CATs[a],
+        _t42 = t(s.toCone_M, e),
+        _t43 = _slicedToArray(_t42, 3),
+        o = _t43[0],
+        i = _t43[1],
+        n = _t43[2],
+        _t44 = t(s.toCone_M, r),
+        _t45 = _slicedToArray(_t44, 3),
+        c = _t45[0],
+        l = _t45[1],
+        p = _t45[2],
+        u = t([[c / o, 0, 0], [0, l / i, 0], [0, 0, p / n]], s.toCone_M);
+
+    return t(s.fromCone_M, u);
+  }, h.defineCAT({
+    id: "von Kries",
+    toCone_M: [[.40024, .7076, -.08081], [-.2263, 1.16532, .0457], [0, 0, .91822]],
+    fromCone_M: [[1.8599364, -1.1293816, .2198974], [.3611914, .6388125, -64e-7], [0, 0, 1.0890636]]
+  }), h.defineCAT({
+    id: "Bradford",
+    toCone_M: [[.8951, .2664, -.1614], [-.7502, 1.7135, .0367], [.0389, -.0685, 1.0296]],
+    fromCone_M: [[.9869929, -.1470543, .1599627], [.4323053, .5183603, .0492912], [-.0085287, .0400428, .9684867]]
+  }), h.defineCAT({
+    id: "CAT02",
+    toCone_M: [[.7328, .4296, -.1624], [-.7036, 1.6975, .0061], [.003, .0136, .9834]],
+    fromCone_M: [[1.0961238, -.278869, .1827452], [.454369, .4735332, .0720978], [-.0096276, -.005698, 1.0153256]]
+  }), h.defineCAT({
+    id: "CAT16",
+    toCone_M: [[.401288, .650173, -.051461], [-.250268, 1.204414, .045854], [-.002079, .048952, .953127]],
+    fromCone_M: [[1.862067855087233, -1.011254630531685, .1491867754444518], [.3875265432361372, .6214474419314753, -.008973985167612518], [-.01584149884933386, -.03412293802851557, 1.04996443687785]]
+  }), Object.assign(h.whites, {
+    A: [1.0985, 1, .35585],
+    C: [.98074, 1, 1.18232],
+    D55: [.95682, 1, .92149],
+    D75: [.94972, 1, 1.22638],
+    E: [1, 1, 1],
+    F2: [.99186, 1, .67393],
+    F7: [.95041, 1, 1.08747],
+    F11: [1.00962, 1, .6435]
+  }), h.defineSpace({
+    id: "acescc",
+    name: "ACEScc",
+    inherits: "srgb",
+    coords: {
+      red: [-.3014, 1.468],
+      green: [-.3014, 1.468],
+      blue: [-.3014, 1.468]
+    },
+    white: h.whites.ACES = [.32168 / .33767, 1, .34065 / .33767],
+    toLinear: function toLinear(t) {
+      var e = (Math.log2(65504) + 9.72) / 17.52;
+      return t.map(function (t) {
+        return t <= (9.72 - 15) / 17.52 ? 2 * (Math.pow(2, 17.52 * t - 9.72) - Math.pow(2, -16)) : t < e ? Math.pow(2, 17.52 * t - 9.72) : 65504;
+      });
+    },
+    toGamma: function toGamma(t) {
+      var e = Math.pow(2, -16);
+      return t.map(function (t) {
+        return t <= 0 ? (Math.log2(e) + 9.72) / 17.52 : t < e ? (Math.log2(e + .5 * t) + 9.72) / 17.52 : (Math.log2(t) + 9.72) / 17.52;
+      });
+    },
+    toXYZ_M: [[.6624541811085053, .13400420645643313, .1561876870049078], [.27222871678091454, .6740817658111484, .05368951740793705], [-.005574649490394108, .004060733528982826, 1.0103391003129971]],
+    fromXYZ_M: [[1.6410233796943257, -.32480329418479, -.23642469523761225], [-.6636628587229829, 1.6153315916573379, .016756347685530137], [.011721894328375376, -.008284441996237409, .9883948585390215]]
+  });
+  var d = {
+    range: function range() {
+      for (var _len5 = arguments.length, t = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+        t[_key5] = arguments[_key5];
+      }
+
+      return h.range.apply(h, [this].concat(t));
+    },
+    mix: function mix(t) {
+      var _ref17;
+
+      var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : .5;
+      var a = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+      "object" === r(e) && (_ref17 = [.5, e], e = _ref17[0], a = _ref17[1], _ref17);
+      var _a11 = a,
+          s = _a11.space,
+          o = _a11.outputSpace;
+      return t = h.get(t), this.range(t, {
+        space: s,
+        outputSpace: o
+      })(e);
+    },
+    steps: function steps() {
+      for (var _len6 = arguments.length, t = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+        t[_key6] = arguments[_key6];
       }
     };
   }
@@ -697,13 +2557,13 @@
     return ConditionBuilder;
   }();
 
-  function _satisfyAggregation2() {
+  var _satisfyAggregation2 = function _satisfyAggregation2() {
     var established = _classPrivateFieldGet(this, _togoKey) && _classPrivateFieldGet(this, _subjectId) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
     var customEvent = new CustomEvent(mutateEstablishConditions, {
       detail: established
     });
     DefaultEventEmitter$1.dispatchEvent(customEvent);
-  }
+  };
 
   var ConditionBuilder$1 = new ConditionBuilder();
 
@@ -814,7 +2674,7 @@
   } // private methods
   ;
 
-  function _defineTogoKeys2$1(togoKeys) {
+  var _defineTogoKeys2 = function _defineTogoKeys2(togoKeys) {
     // make options
     _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = togoKeys.map(function (togoKey) {
       return "<option value=\"".concat(togoKey.togoKey, "\" data-subject-id=\"").concat(togoKeys.subjectId, "\">").concat(togoKey.label, " (").concat(togoKey.togoKey, ")</option>");
@@ -829,9 +2689,9 @@
     });
 
     _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));
-  }
+  };
 
-  function _addProperty2(subject, property) {
+  var _addProperty2 = function _addProperty2(subject, property) {
     // make view
     var view = document.createElement('div');
     view.classList.add('stacking-condition-view');
@@ -846,16 +2706,16 @@
     view.querySelector(':scope > .closebutton').addEventListener('click', function () {
       ConditionBuilder$1.removeProperty(view.dataset.propertyId);
     });
-  }
+  };
 
-  function _removeProperty2(propertyId) {
+  var _removeProperty2 = function _removeProperty2(propertyId) {
     var view = _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).querySelector("[data-property-id=\"".concat(propertyId, "\"]"));
 
     view.parentNode.removeChild(view);
     if (_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).childNodes.length === 0) _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.add('-empty');
-  }
+  };
 
-  function _addPropertyValue2(subject, property, value) {
+  var _addPropertyValue2 = function _addPropertyValue2(subject, property, value) {
     // make view
     var view = document.createElement('div');
     view.classList.add('stacking-condition-view');
@@ -876,28 +2736,95 @@
     view.querySelector(':scope > .closebutton').addEventListener('click', function () {
       ConditionBuilder$1.removePropertyValue(view.dataset.propertyId, view.dataset.categoryId);
     });
-  }
+  };
 
-  function _removePropertyValue2(propertyId, categoryId) {
+  var _removePropertyValue2 = function _removePropertyValue2(propertyId, categoryId) {
     var view = _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).querySelector("[data-property-id=\"".concat(propertyId, "\"][data-category-id=\"").concat(categoryId, "\"]"));
 
     view.parentNode.removeChild(view);
     if (_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).childNodes.length === 0) _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.add('-empty');
-  }
+  };
 
   var _templates = new WeakMap();
 
-  var _BODY$1 = new WeakMap();
+  var _isReady = new WeakMap();
 
-  var _ROOT$7 = new WeakMap();
+  var StanzaManager = /*#__PURE__*/function () {
+    function StanzaManager() {
+      _classCallCheck(this, StanzaManager);
+
+      _templates.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _isReady.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldSet(this, _isReady, false);
+    }
+
+    _createClass(StanzaManager, [{
+      key: "init",
+      value: function init(data) {
+        var _this = this;
+
+        // embed modules
+        var head = document.querySelector('head');
+        data.stanzas.forEach(function (stanza) {
+          var script = document.createElement('script');
+          script.setAttribute('type', 'module');
+          script.setAttribute('src', stanza);
+          script.setAttribute('async', 1);
+          head.appendChild(script);
+        }); // fetch templates
+
+        Promise.all(Object.keys(data.templates).map(function (key) {
+          return fetch(data.templates[key]);
+        })).then(function (responces) {
+          return Promise.all(responces.map(function (responce) {
+            return responce.text();
+          }));
+        }).then(function (templates) {
+          // set stanza templates
+          _classPrivateFieldSet(_this, _templates, Object.fromEntries(Object.keys(data.templates).map(function (stanza, index) {
+            return [stanza, templates[index]];
+          })));
+
+          _classPrivateFieldSet(_this, _isReady, true);
+
+          console.log(_classPrivateFieldGet(_this, _templates));
+        });
+      }
+      /**
+       * 
+       * @param {String} subjectId  e.g. gene, protein (category name)
+       * @param {String} id  ID of dataset
+       * @param {String} key  e.g. hgnc, uniplot (dataset name)
+       * @returns {String} HTML
+       */
+
+    }, {
+      key: "draw",
+      value: function draw(subjectId, id, key) {
+        return "<div class=\"stanza\">".concat(_classPrivateFieldGet(this, _templates)[subjectId].replace(/{{id}}/g, id).replace(/{{type}}/g, key), "</div>");
+      }
+    }, {
+      key: "isReady",
+      get: function get() {
+        return _classPrivateFieldGet(this, _isReady);
+      }
+    }]);
 
   var _REPORT_MODAL = new WeakMap();
 
   var _EXIT_BUTTON = new WeakMap();
 
-  var _showPopUp = new WeakSet();
+  var _templates$1 = new WeakMap();
 
-  var _header = new WeakSet();
+  var _BODY = new WeakMap();
 
   var _stanzaContainer = new WeakSet();
 
@@ -921,12 +2848,12 @@
 
       _showPopUp.add(this);
 
-      _templates.set(this, {
+      _templates$1.set(this, {
         writable: true,
         value: void 0
       });
 
-      _BODY$1.set(this, {
+      _BODY.set(this, {
         writable: true,
         value: void 0
       });
@@ -956,19 +2883,15 @@
 
       _classPrivateFieldSet(this, _BODY$1, document.querySelector("body"));
 
-      _classPrivateFieldSet(this, _REPORT_MODAL, document.querySelector(".report-modal"));
+      _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
 
       _classPrivateFieldSet(this, _EXIT_BUTTON, document.createElement("div"));
 
       _classPrivateFieldGet(this, _EXIT_BUTTON).className = "close-button";
       var returnButton = elm.querySelector(":scope > footer > button.return"); // attach event
 
-      returnButton.addEventListener("click", function () {
-        _classPrivateFieldGet(_this, _BODY$1).dataset.display = "properties";
-      });
-
-      _classPrivateFieldGet(this, _EXIT_BUTTON).addEventListener("click", function () {
-        _classPrivateMethodGet(_this, _hidePopUp, _hidePopUp2).call(_this);
+      returnButton.addEventListener('click', function () {
+        _classPrivateFieldGet(_this, _BODY).dataset.display = 'properties';
       }); // event listener
 
 
@@ -983,39 +2906,21 @@
 
     _createClass(ReportsView, [{
       key: "defineTemplates",
-      value: // public methods
-      function defineTemplates(templates) {
+      // #stanza(subjectId, value) {
+      //   return `<div class="stanza-view">${this.#templates[subjectId].replace(/{{id}}/g, value)}</div>`;
+      // }
+      // public methods
+      value: function defineTemplates(templates) {
         console.log(templates);
 
-        _classPrivateFieldSet(this, _templates, templates);
+        _classPrivateFieldSet(this, _templates$1, templates);
       }
     }]);
 
     return ReportsView;
   }();
 
-  function _showPopUp2(subject, properties) {
-    var stanzaDiv = document.createElement("div");
-    var popupDiv = document.createElement("div");
-    popupDiv.className = "popup";
-    popupDiv.appendChild(_classPrivateMethodGet(this, _header, _header2).call(this, subject));
-    popupDiv.appendChild(_classPrivateMethodGet(this, _stanzaContainer, _stanzaContainer2).call(this, subject, properties, stanzaDiv));
-
-    _classPrivateFieldGet(this, _REPORT_MODAL).appendChild(popupDiv);
-
-    _classPrivateFieldGet(this, _REPORT_MODAL).classList.add("-showing", "overlay");
-  }
-
-  function _header2(subject) {
-    var header = document.createElement("header");
-    header.innerHTML = "\n      <div>\n        <strong>".concat(subject.value, " </strong>\n        <span class=\"type\"> Main category / Subcategory</span>\n      </div>\n      <div>\n        <a class=\"toreportpage\" href=\"report.html?togoKey\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n        <a class=\"external-link\"href=\"#\">External Link</span>\n      </span>\n    ");
-    header.childNodes[3].appendChild(_classPrivateFieldGet(this, _EXIT_BUTTON));
-    return header;
-  }
-
-  function _stanzaContainer2(subject, properties, stanzaContainer) {
-    var _this2 = this;
-
+  var _showStanza2 = function _showStanza2(subject, properties) {
     console.log(subject, properties); // make stanzas
 
     stanzaContainer.className = "stanzas";
@@ -1032,21 +2937,12 @@
 
         return _classPrivateMethodGet(_this2, _stanza, _stanza2).call(_this2, _subject.subjectId, property.attributes[0].id);
       }
-    }).join(""); // set navigation buttons
+    }).join('');
+  };
 
-    stanzaContainer.innerHTML += "\n        <div class=\"arrow up\"></div>\n        <div class=\"arrow right\"></div>\n        <div class=\"arrow down\"></div>\n        <div class=\"arrow left\"></div>\n      ";
-    return stanzaContainer;
-  }
-
-  function _stanza2(subjectId, propertyId, value) {
-    return "<div class=\"stanza-view\" data-subject-id=\"".concat(subjectId, "\" data-property-id=").concat(propertyId, "\">").concat(_classPrivateFieldGet(this, _templates)[subjectId].replace(/{{id}}/g, value), "</div>");
-  }
-
-  function _hidePopUp2() {
-    _classPrivateFieldGet(this, _REPORT_MODAL).classList.remove("-showing", "overlay");
-
-    _classPrivateFieldGet(this, _REPORT_MODAL).innerHTML = "";
-  }
+  var _hideStanza2 = function _hideStanza2() {
+    _classPrivateFieldGet(this, _STANZAS_CONTAINER).innerHTML = '';
+  };
 
   function collapseView(elm) {
     var button = elm.querySelector(".collapsebutton[data-collapse=\"".concat(elm.dataset.collapse, "\"]"));
@@ -1058,257 +2954,390 @@
     });
   }
 
-  var ColumnSelectorView = /*#__PURE__*/function () {
-    function ColumnSelectorView(elm, subject, property, items, sparqlist) {
-      var _this = this;
+  var ALL_PROPERTIES = 'ALL_PROPERTIES';
 
-      _classCallCheck(this, ColumnSelectorView);
+  var _subject = new WeakMap();
 
-      this._subject = subject;
-      this._property = property;
-      this._sparqlist = sparqlist;
-      this._itemStatus = {};
-      this._columns = []; // make container
+  var _property = new WeakMap();
 
-      elm.innerHTML = "\n    <div class=\"column-selector-view\">\n      <div class=\"columns\">\n        <div class=\"inner\"></div>\n      </div>\n      <div class=\"loading-view\"></div>\n    </div>";
-      this._view = elm.querySelector(':scope > .column-selector-view');
-      this._container = this._view.querySelector(':scope > .columns > .inner');
-      this._loadingView = this._view.querySelector(':scope > .loading-view'); // even listener
-
-      DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (e) {
-        var propertyId, categoryId;
-
-        switch (e.detail.action) {
-          case 'add':
-            propertyId = e.detail.condition.property.propertyId;
-            categoryId = e.detail.condition.value.categoryId;
-            break;
-
-          case 'remove':
-            propertyId = e.detail.propertyId;
-            categoryId = e.detail.categoryId;
-            break;
-        }
-
-        if (_this._property.propertyId == propertyId) {
-          // TODO: Number型になればこの処理は厳密比較に
-          _this._columns.forEach(function (ul) {
-            ul.querySelectorAll('li').forEach(function (li) {
-              if (li.dataset.id == categoryId) {
-                // TODO: Number型になればこの処理は厳密比較に
-                var isChecked = e.detail.action === 'add';
-                li.querySelector(':scope > input[type="checkbox"]').checked = isChecked;
-                _this._itemStatus[li.dataset.id].checked = isChecked;
-              }
-            });
-          });
-        }
-      });
-
-      this._addItems(items, 0);
-
-      this._makeColumn(items, 0);
-    }
-
-    _createClass(ColumnSelectorView, [{
-      key: "_addItems",
-      value: function _addItems(items, depth, parent) {
-        // console.log(items, depth)
-        var _iterator = _createForOfIteratorHelper(items),
-            _step;
-
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var item = _step.value;
-            var hasChild = item.hasChild && item.hasChild === true;
-            this._itemStatus[item.categoryId] = {
-              label: item.label,
-              parent: parent,
-              hasChild: hasChild ? true : false,
-              depth: depth,
-              selected: false,
-              checked: false
-            };
-
-            if (hasChild) {
-              this._itemStatus[item.categoryId].children = [];
-            }
-          } // console.log(this._itemStatus)
-
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
-      }
-    }, {
-      key: "_makeColumn",
-      value: function _makeColumn(items, depth) {
-        var _this2 = this;
-
-        // console.log(items)
-        this._items = items.map(function (item) {
-          return Object.assign({}, item);
-        }); // get column element
-
-        var ul;
-
-        if (this._columns[depth]) {
-          ul = this._columns[depth];
-        } else {
-          ul = document.createElement('ul');
-          ul.classList.add('column');
-          this._columns[depth] = ul;
-        } // make items
-
-
-        ul.innerHTML = this._items.map(function (item) {
-          return "<li class=\"item".concat(item.hasChild ? ' -haschild' : '', "\" data-id=\"").concat(item.categoryId, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");
-        }).join('');
-
-        this._container.insertAdjacentElement('beforeend', ul);
-
-        ul.querySelectorAll(':scope > .item').forEach(function (item, index) {
-          _this2._items[index].elm = item;
-        });
-
-        this._update(App$1.viewModes.log10); // drill down event
-
-
-        ul.querySelectorAll(':scope > .item.-haschild').forEach(function (item) {
-          item.addEventListener('click', function () {
-            item.classList.add('-selected'); // delete an existing lower columns
-
-            if (_this2._columns.length > depth + 1) {
-              for (var i = depth + 1; i < _this2._columns.length; i++) {
-                if (_this2._columns[i].parentNode) _this2._container.removeChild(_this2._columns[i]);
-              }
-            } // deselect siblings
-
-
-            var selectedItemKeys = Object.keys(_this2._itemStatus).filter(function (id) {
-              return _this2._itemStatus[id].selected && _this2._itemStatus[id].depth >= depth;
-            });
-
-            var _iterator2 = _createForOfIteratorHelper(selectedItemKeys),
-                _step2;
-
-            try {
-              for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-                var key = _step2.value;
-                _this2._itemStatus[key].selected = false;
-
-                var selectedItem = _this2._columns[depth].querySelector("[data-id=\"".concat(key, "\"]"));
-
-                if (selectedItem) selectedItem.classList.remove('-selected');
-              } // get lower column
-
-            } catch (err) {
-              _iterator2.e(err);
-            } finally {
-              _iterator2.f();
-            }
-
-            _this2._itemStatus[item.dataset.id].selected = true;
-
-            _this2._getChildren(item.dataset.id, depth + 1);
-          });
-        }); // select/deselect a item (attribute)
-
-        ul.querySelectorAll(':scope > .item > input[type="checkbox"]').forEach(function (checkbox) {
-          checkbox.addEventListener('click', function (e) {
-            e.stopPropagation();
-
-            if (checkbox.checked) {
-              // add
-              var ancestors = [];
-              var id = checkbox.value;
-              var parent;
-
-              do {
-                parent = _this2._itemStatus[id].parent;
-                if (parent) ancestors.unshift(_this2._itemStatus[parent]);
-                id = parent;
-              } while (parent);
-
-              ConditionBuilder$1.addPropertyValue({
-                subject: _this2._subject,
-                property: _this2._property,
-                value: {
-                  categoryId: checkbox.value,
-                  label: _this2._itemStatus[checkbox.value].label,
-                  ancestors: ancestors.map(function (ancestor) {
-                    return ancestor.label;
-                  })
-                }
-              });
-            } else {
-              // remove
-              ConditionBuilder$1.removePropertyValue(_this2._property.propertyId, checkbox.value);
-            }
-          });
-        }); // event listener
-
-        DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
-          return _this2._update(e.detail.log10);
-        });
-      }
-    }, {
-      key: "_update",
-      value: function _update(isLog10) {
-        var _this3 = this;
-
-        var max = Math.max.apply(Math, _toConsumableArray(Array.from(this._items).map(function (item) {
-          return item.count;
-        })));
-        max = isLog10 ? Math.log10(max) : max;
-
-        this._items.forEach(function (item) {
-          item.elm.style.backgroundColor = "hsl(".concat(_this3._subject.hue, ", 75%, ").concat(100 - (isLog10 ? Math.log10(item.count) : item.count) / max * 40, "%)");
-        });
-      }
-    }, {
-      key: "_getChildren",
-      value: function _getChildren(id, depth) {
-        var _this4 = this;
-
-        // loading
-        this._loadingView.classList.add('-shown');
-
-        fetch(this._sparqlist + '?categoryIds=' + id).then(function (responce) {
-          return responce.json();
-        }).then(function (json) {
-          _this4._addItems(json, depth, id);
-
-          _this4._makeColumn(json, depth);
-
-          _this4._loadingView.classList.remove('-shown'); // scroll
-
-
-          var gap = _this4._view.scrollWidth - _this4._view.clientWidth;
-          if (gap > 0) _this4._view.scrollLeft = gap;
-        });
-      }
-    }]);
-
-    return ColumnSelectorView;
-  }();
-
-  var NUM_OF_GRID = 4;
+  var _sparqlist = new WeakMap();
 
   var _items = new WeakMap();
 
-  var _subject$2 = new WeakMap();
+  var _columns = new WeakMap();
 
-  var _property$2 = new WeakMap();
+  var _currentColumns = new WeakMap();
+
+  var _ROOT = new WeakMap();
+
+  var _CONTAINER = new WeakMap();
+
+  var _LOADING_VIEW = new WeakMap();
+
+  var _setItems = new WeakSet();
+
+  var _getSubColumn = new WeakSet();
+
+  var _makeColumn = new WeakSet();
+
+  var _appendSubColumn = new WeakSet();
+
+  var _update = new WeakSet();
+
+  var ColumnSelectorView = function ColumnSelectorView(elm, subject, property, _items2, sparqlist) {
+    var _this = this;
+
+    _classCallCheck(this, ColumnSelectorView);
+
+    _update.add(this);
+
+    _appendSubColumn.add(this);
+
+    _makeColumn.add(this);
+
+    _getSubColumn.add(this);
+
+    _setItems.add(this);
+
+    _subject.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _property.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _sparqlist.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _items.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _columns.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _currentColumns.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _ROOT.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _CONTAINER.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _LOADING_VIEW.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _classPrivateFieldSet(this, _subject, subject);
+
+    _classPrivateFieldSet(this, _property, property);
+
+    _classPrivateFieldSet(this, _sparqlist, sparqlist);
+
+    _classPrivateFieldSet(this, _items, {});
+
+    _classPrivateFieldSet(this, _columns, []);
+
+    _classPrivateFieldSet(this, _currentColumns, []); // make container
+
+
+    elm.innerHTML = "\n    <div class=\"column-selector-view\">\n      <div class=\"columns\">\n        <div class=\"inner\"></div>\n      </div>\n      <div class=\"loading-view\"></div>\n    </div>";
+
+    _classPrivateFieldSet(this, _ROOT, elm.querySelector(':scope > .column-selector-view'));
+
+    _classPrivateFieldSet(this, _CONTAINER, _classPrivateFieldGet(this, _ROOT).querySelector(':scope > .columns > .inner'));
+
+    _classPrivateFieldSet(this, _LOADING_VIEW, _classPrivateFieldGet(this, _ROOT).querySelector(':scope > .loading-view')); // even listener
+
+
+    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (e) {
+      var propertyId, categoryId;
+
+      switch (e.detail.action) {
+        case 'add':
+          propertyId = e.detail.condition.property.propertyId;
+          categoryId = e.detail.condition.value.categoryId;
+          break;
+
+        case 'remove':
+          propertyId = e.detail.propertyId;
+          categoryId = e.detail.categoryId;
+          break;
+      }
+
+      if (_classPrivateFieldGet(_this, _property).propertyId === propertyId) {
+        _classPrivateFieldGet(_this, _currentColumns).forEach(function (ul) {
+          var isAllChecked = true;
+          ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
+            var checkbox = li.querySelector(':scope > input[type="checkbox"]');
+            if (!checkbox.checked) isAllChecked = false;
+
+            if (li.dataset.id === categoryId) {
+              // change checkbox status
+              var isChecked = e.detail.action === 'add';
+              li.querySelector(':scope > input[type="checkbox"]').checked = isChecked;
+              _classPrivateFieldGet(_this, _items)[li.dataset.id].checked = isChecked; // change ancestor status
+              // TODO:
+            }
+          }); // update all properties
+
+          ul.querySelector(':scope > .item.-all > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
+          // TODO:
+        });
+      }
+    });
+    DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
+      return _classPrivateMethodGet(_this, _update, _update2).call(_this, e.detail.log10);
+    });
+
+    _classPrivateMethodGet(this, _setItems, _setItems2).call(this, _items2, _depth); // make root column
+
+
+    var _depth = 0;
+
+    var _column = _classPrivateMethodGet(this, _makeColumn, _makeColumn2).call(this, _items2, _depth);
+
+    _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, _column, _depth);
+  };
+
+  var _setItems2 = function _setItems2(items, depth, parent) {
+    var _iterator = _createForOfIteratorHelper(items),
+        _step;
+
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var item = _step.value;
+        var hasChild = item.hasChild && item.hasChild === true;
+        _classPrivateFieldGet(this, _items)[item.categoryId] = {
+          label: item.label,
+          parent: parent,
+          hasChild: hasChild ? true : false,
+          depth: depth,
+          selected: false,
+          checked: false
+        };
+        if (hasChild) _classPrivateFieldGet(this, _items)[item.categoryId].children = [];
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+  };
+
+  var _getSubColumn2 = function _getSubColumn2(id, depth) {
+    var _this2 = this;
+
+    var column = _classPrivateFieldGet(this, _columns).find(function (column) {
+      return column.parentCategoryId === id;
+    });
+
+    if (column) {
+      _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, column.ul, depth);
+    } else {
+      // loading
+      _classPrivateFieldGet(this, _LOADING_VIEW).classList.add('-shown');
+
+      fetch(_classPrivateFieldGet(this, _sparqlist) + '?categoryIds=' + id).then(function (responce) {
+        return responce.json();
+      }).then(function (json) {
+        _classPrivateMethodGet(_this2, _setItems, _setItems2).call(_this2, json, depth, id);
+
+        var column = _classPrivateMethodGet(_this2, _makeColumn, _makeColumn2).call(_this2, json, depth, id);
+
+        _classPrivateMethodGet(_this2, _appendSubColumn, _appendSubColumn2).call(_this2, column, depth);
+
+        _classPrivateFieldGet(_this2, _LOADING_VIEW).classList.remove('-shown');
+      }).catch(function (error) {
+        // TODO: エラー処理
+        _classPrivateFieldGet(_this2, _LOADING_VIEW).classList.remove('-shown');
+
+        throw Error(error);
+      });
+    }
+  };
+
+  var _makeColumn2 = function _makeColumn2(items, depth, parentCategoryId) {
+    var _this3 = this;
+
+    // make column
+    var ul = document.createElement('ul');
+    ul.classList.add('column');
+    var max = 0; // make items
+
+    ul.innerHTML = "<li class=\"item -all\">\n      <input type=\"checkbox\" value=\"".concat(ALL_PROPERTIES, "\"/>\n      <span class=\"label\">All properties</span>\n    </li>") + items.map(function (item) {
+      max = Math.max(max, item.count);
+      return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");
+    }).join('');
+    ul.querySelectorAll(':scope > .item:not(.-all)').forEach(function (item) {
+      return _classPrivateFieldGet(_this3, _items)[item.dataset.categoryId].elm = item;
+    }); // drill down event
+
+    ul.querySelectorAll(':scope > .item.-haschild').forEach(function (li) {
+      li.addEventListener('click', function () {
+        li.classList.add('-selected'); // deselect siblings
+
+        li.parentNode.childNodes.forEach(function (sibling) {
+          if (sibling !== li) sibling.classList.remove('-selected');
+        }); // delete an existing lower columns
+
+        if (_classPrivateFieldGet(_this3, _currentColumns).length > depth + 1) {
+          for (var i = depth + 1; i < _classPrivateFieldGet(_this3, _currentColumns).length; i++) {
+            if (_classPrivateFieldGet(_this3, _currentColumns)[i].parentNode) _classPrivateFieldGet(_this3, _CONTAINER).removeChild(_classPrivateFieldGet(_this3, _currentColumns)[i]);
+          }
+        } // deselect siblings
+
+
+        var selectedItemKeys = Object.keys(_classPrivateFieldGet(_this3, _items)).filter(function (id) {
+          return _classPrivateFieldGet(_this3, _items)[id].selected && _classPrivateFieldGet(_this3, _items)[id].depth >= depth;
+        });
+
+        var _iterator2 = _createForOfIteratorHelper(selectedItemKeys),
+            _step2;
+
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var key = _step2.value;
+            _classPrivateFieldGet(_this3, _items)[key].selected = false;
+
+            var selectedItem = _classPrivateFieldGet(_this3, _currentColumns)[depth].querySelector("[data-id=\"".concat(key, "\"]"));
+
+            if (selectedItem) selectedItem.classList.remove('-selected');
+          } // get lower column
+
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
+
+        _classPrivateFieldGet(_this3, _items)[item.dataset.id].selected = true;
+
+        _classPrivateMethodGet(_this3, _getSubColumn, _getSubColumn2).call(_this3, li.dataset.id, depth + 1);
+      });
+    }); // select/deselect a item (attribute)
+
+    listItems.forEach(function (li) {
+      var checkbox = li.querySelector(':scope > input[type="checkbox"]');
+      checkbox.addEventListener('click', function (e) {
+        e.stopPropagation();
+
+        if (checkbox.checked) {
+          // add
+          var ancestors = [];
+          var id = checkbox.value;
+          var parent;
+
+          do {
+            // find ancestors
+            parent = _classPrivateFieldGet(_this3, _items)[id].parent;
+            if (parent) ancestors.unshift(_classPrivateFieldGet(_this3, _items)[parent]);
+            id = parent;
+          } while (parent);
+
+          ConditionBuilder$1.addPropertyValue({
+            subject: _classPrivateFieldGet(_this3, _subject),
+            property: _classPrivateFieldGet(_this3, _property),
+            value: {
+              categoryId: checkbox.value,
+              label: _classPrivateFieldGet(_this3, _items)[checkbox.value].label,
+              ancestors: ancestors.map(function (ancestor) {
+                return ancestor.label;
+              })
+            }
+          });
+        } else {
+          // remove
+          ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _property).propertyId, checkbox.value);
+        }
+      });
+    }); // all properties event
+
+    ul.querySelector(':scope > .item.-all').addEventListener('change', function (e) {
+      var isChecked = e.target.checked;
+      listItems.forEach(function (item) {
+        var checkbox = item.querySelector(':scope > input[type="checkbox"]');
+
+        if (checkbox.checked !== isChecked) {
+          checkbox.dispatchEvent(new MouseEvent('click'));
+        }
+      });
+    });
+
+    _classPrivateFieldGet(this, _columns).push({
+      ul: ul,
+      parentCategoryId: parentCategoryId,
+      max: max
+    });
+
+    _classPrivateMethodGet(this, _update, _update2).call(this, App$1.viewModes.log10);
+
+    return ul;
+  };
+
+  var _appendSubColumn2 = function _appendSubColumn2(column, depth) {
+    _classPrivateFieldGet(this, _currentColumns)[depth] = column;
+
+    _classPrivateFieldGet(this, _CONTAINER).insertAdjacentElement('beforeend', column); // scroll
+
+
+    var left = _classPrivateFieldGet(this, _CONTAINER).scrollWidth - _classPrivateFieldGet(this, _CONTAINER).clientWidth;
+
+    if (left > 0) {
+      _classPrivateFieldGet(this, _CONTAINER).scrollTo({
+        top: 0,
+        left: left,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  var _update2 = function _update2(isLog10) {
+    var _this4 = this;
+
+    _classPrivateFieldGet(this, _columns).forEach(function (column) {
+      var max = column.max;
+      max = isLog10 ? Math.log10(max) : max;
+      column.ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
+        var count = Number(li.dataset.count);
+        li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this4, _subject).color.mix(App$1.colorDarkGray, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
+          return cood * 256;
+        }).join(','), ")");
+      });
+    });
+  };
+
+  var NUM_OF_GRID = 4;
+
+  var _items$1 = new WeakMap();
+
+  var _subject$1 = new WeakMap();
+
+  var _property$1 = new WeakMap();
 
   var _selectedBarsStart = new WeakMap();
 
   var _selectedBarsEnd = new WeakMap();
 
-  var _OVERVIEW_CONTAINER$1 = new WeakMap();
+  var _OVERVIEW_CONTAINER = new WeakMap();
 
-  var _ROOT$6 = new WeakMap();
+  var _ROOT$1 = new WeakMap();
 
   var _SELECTOR_BARS = new WeakMap();
 
@@ -1338,17 +3367,17 @@
 
     _setupRangeSelector.add(this);
 
-    _items.set(this, {
+    _items$1.set(this, {
       writable: true,
       value: void 0
     });
 
-    _subject$2.set(this, {
+    _subject$1.set(this, {
       writable: true,
       value: void 0
     });
 
-    _property$2.set(this, {
+    _property$1.set(this, {
       writable: true,
       value: void 0
     });
@@ -1363,12 +3392,12 @@
       value: void 0
     });
 
-    _OVERVIEW_CONTAINER$1.set(this, {
+    _OVERVIEW_CONTAINER.set(this, {
       writable: true,
       value: void 0
     });
 
-    _ROOT$6.set(this, {
+    _ROOT$1.set(this, {
       writable: true,
       value: void 0
     });
@@ -1385,15 +3414,15 @@
 
     console.log(elm, subject, property, _items2, sparqlist);
 
-    _classPrivateFieldSet(this, _subject$2, subject);
+    _classPrivateFieldSet(this, _subject$1, subject);
 
     this._sparqlist = sparqlist;
 
-    _classPrivateFieldSet(this, _property$2, property);
+    _classPrivateFieldSet(this, _property$1, property);
 
-    _classPrivateFieldSet(this, _OVERVIEW_CONTAINER$1, overview);
+    _classPrivateFieldSet(this, _OVERVIEW_CONTAINER, overview);
 
-    _classPrivateFieldSet(this, _items, _items2.map(function (item) {
+    _classPrivateFieldSet(this, _items$1, _items2.map(function (item) {
       return Object.assign({}, item);
     }));
 
@@ -1404,29 +3433,31 @@
 
     elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"selector\">\n        <div class=\"overview\"></div>\n        <div class=\"controller\"></div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ".concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>\n      <!--\n      <div class=\"controller\">\n        <div class=\"selector\">\n          <div class=\"slider -min\"></div>\n          <div class=\"slider -max\"></div>\n        </div>\n        <div class=\"form\">\n          <input type=\"number\" data-range=\"min\">\n          ~\n          <input type=\"number\" data-range=\"max\">\n        </div>\n      </div>\n      -->");
 
-    _classPrivateFieldSet(this, _ROOT$6, elm.querySelector(':scope > .histogram-range-selector-view'));
+    _classPrivateFieldSet(this, _ROOT$1, elm.querySelector(':scope > .histogram-range-selector-view'));
 
-    var histogram = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .histogram');
+    var histogram = _classPrivateFieldGet(this, _ROOT$1).querySelector(':scope > .histogram');
 
-    var selector = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .selector'); // make graph
+    var selector = _classPrivateFieldGet(this, _ROOT$1).querySelector(':scope > .selector'); // make graph
 
 
-    var _max = Math.max.apply(Math, _toConsumableArray(_classPrivateFieldGet(this, _items).map(function (item) {
+    var _max = Math.max.apply(Math, _toConsumableArray(_classPrivateFieldGet(this, _items$1).map(function (item) {
       return item.count;
     })));
 
-    var _width = 100 / _classPrivateFieldGet(this, _items).length;
+    var _width = 100 / _classPrivateFieldGet(this, _items$1).length;
 
-    selector.querySelector(':scope > .overview').innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
-      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(_width, "%; height: ").concat(item.count / _max * 100, "%; background-color: ").concat(App$1.getHslColor(subject.hue), ";\"></div>");
+    selector.querySelector(':scope > .overview').innerHTML = _classPrivateFieldGet(this, _items$1).map(function (item) {
+      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(_width, "%; height: ").concat(item.count / _max * 100, "%; background-color: ").concat(subject.colorCSSValue, ";\"></div>");
     }).join('');
     var graph = histogram.querySelector(':scope > .graph');
-    graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
-      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\">\n      <div class=\"actual\" style=\"background-color: ").concat(App$1.getHslColor(subject.hue), ";\">\n        <div class=\"color\" style=\"background-color: hsla(").concat(360 * index / _classPrivateFieldGet(_this, _items).length, ", 70%, 50%, .075);\"></div>\n      </div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
+    graph.innerHTML = _classPrivateFieldGet(this, _items$1).map(function (item, index) {
+      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\">\n      <div class=\"actual\" style=\"background-color: rgb(").concat(colorTintByHue(subject.color, 360 * index / _classPrivateFieldGet(_this, _items$1).length).coords.map(function (cood) {
+        return cood * 256;
+      }).join(','), ");\"></div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
     }).join(''); // reference
 
     histogram.querySelectorAll(':scope > .graph > .bar').forEach(function (item, index) {
-      return _classPrivateFieldGet(_this, _items)[index].elm = item;
+      return _classPrivateFieldGet(_this, _items$1)[index].elm = item;
     });
 
     _classPrivateFieldSet(this, _GRIDS, histogram.querySelectorAll(':scope > .gridcontainer > .grid'));
@@ -1444,10 +3475,10 @@
   } // private methods
   ;
 
-  function _setupRangeSelector2() {
+  var _setupRangeSelector2 = function _setupRangeSelector2() {
     var _this2 = this;
 
-    var selectorController = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .selector > .controller');
+    var selectorController = _classPrivateFieldGet(this, _ROOT$1).querySelector(':scope > .selector > .controller');
 
     var isMouseDown = false,
         startX,
@@ -1455,7 +3486,7 @@
         unit;
     selectorController.addEventListener('mousedown', function (e) {
       width = e.target.getBoundingClientRect().width;
-      unit = width / _classPrivateFieldGet(_this2, _items).length;
+      unit = width / _classPrivateFieldGet(_this2, _items$1).length;
       isMouseDown = true;
       startX = e.layerX;
     });
@@ -1475,7 +3506,7 @@
         } // select overview by range
 
 
-        _classPrivateFieldGet(_this2, _ROOT$6).querySelectorAll(':scope > .selector > .overview > .bar').forEach(function (bar, index) {
+        _classPrivateFieldGet(_this2, _ROOT$1).querySelectorAll(':scope > .selector > .overview > .bar').forEach(function (bar, index) {
           if (_classPrivateFieldGet(_this2, _selectedBarsStart) <= index && index <= _classPrivateFieldGet(_this2, _selectedBarsEnd)) {
             bar.classList.add('-selected');
           } else {
@@ -1489,8 +3520,8 @@
         var selectedItems = _classPrivateFieldGet(_this2, _selectedItems);
 
         ConditionBuilder$1.setPropertyValues({
-          subject: _classPrivateFieldGet(_this2, _subject$2),
-          property: _classPrivateFieldGet(_this2, _property$2),
+          subject: _classPrivateFieldGet(_this2, _subject$1),
+          property: _classPrivateFieldGet(_this2, _property$1),
           values: selectedItems.map(function (item) {
             return {
               categoryId: item.categoryId,
@@ -1506,10 +3537,10 @@
         isMouseDown = false;
       }
     });
-  }
+  };
 
-  function _update2$1() {
-    var selectedItems = _classPrivateFieldGet(this, _selectedBarsStart) ? _classPrivateFieldGet(this, _selectedItems) : _classPrivateFieldGet(this, _items);
+  var _update2$1 = function _update2() {
+    var selectedItems = _classPrivateFieldGet(this, _selectedBarsStart) ? _classPrivateFieldGet(this, _selectedItems) : _classPrivateFieldGet(this, _items$1);
     var max = Math.max.apply(Math, _toConsumableArray(selectedItems.map(function (item) {
       return item.count;
     })));
@@ -1527,7 +3558,7 @@
     }); // graph
 
 
-    _classPrivateFieldGet(this, _items).forEach(function (item) {
+    _classPrivateFieldGet(this, _items$1).forEach(function (item) {
       if (selectedItems.indexOf(item) === -1) {
         item.elm.classList.add('-filtered');
       } else {
@@ -1537,15 +3568,15 @@
         item.elm.querySelector(':scope > .actual').style.height = "".concat(height, "%");
       }
     });
-  }
+  };
 
-  function _get_selectedItems() {
+  var _get_selectedItems = function _get_selectedItems() {
     var _this3 = this;
 
     var items;
 
     if (_classPrivateFieldGet(this, _selectedBarsStart)) {
-      items = _classPrivateFieldGet(this, _items).filter(function (item_, index) {
+      items = _classPrivateFieldGet(this, _items$1).filter(function (item_, index) {
         if (_classPrivateFieldGet(_this3, _selectedBarsStart) <= index && index <= _classPrivateFieldGet(_this3, _selectedBarsEnd)) {
           return true;
         } else {
@@ -1557,21 +3588,21 @@
     }
 
     return items;
-  }
+  };
 
   var MIN_PIN_SIZE = 12;
   var MAX_PIN_SIZE = 20;
   var RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
 
-  var _subject$1 = new WeakMap();
+  var _subject$2 = new WeakMap();
 
-  var _property$1 = new WeakMap();
+  var _property$2 = new WeakMap();
 
   var _values = new WeakMap();
 
-  var _ROOT$5 = new WeakMap();
+  var _ROOT$2 = new WeakMap();
 
-  var _update = new WeakSet();
+  var _update$2 = new WeakSet();
 
   var _plotUserIdValues = new WeakSet();
 
@@ -1586,14 +3617,14 @@
 
     _plotUserIdValues.add(this);
 
-    _update.add(this);
+    _update$2.add(this);
 
-    _subject$1.set(this, {
+    _subject$2.set(this, {
       writable: true,
       value: void 0
     });
 
-    _property$1.set(this, {
+    _property$2.set(this, {
       writable: true,
       value: void 0
     });
@@ -1603,16 +3634,16 @@
       value: void 0
     });
 
-    _ROOT$5.set(this, {
+    _ROOT$2.set(this, {
       writable: true,
       value: void 0
     });
 
-    _classPrivateFieldSet(this, _ROOT$5, elm);
+    _classPrivateFieldSet(this, _ROOT$2, elm);
 
-    _classPrivateFieldSet(this, _subject$1, subject);
+    _classPrivateFieldSet(this, _subject$2, subject);
 
-    _classPrivateFieldSet(this, _property$1, property);
+    _classPrivateFieldSet(this, _property$2, property);
 
     _classPrivateFieldSet(this, _values, values.map(function (value) {
       return Object.assign({}, value);
@@ -1640,7 +3671,7 @@
       var pin = elm.querySelector(':scope > .pin');
       value.pin = pin; // attach event: show tooltip
 
-      var label = "<span style=\"color: ".concat(App$1.getHslColor(_classPrivateFieldGet(_this, _subject$1).hue), "\">").concat(value.label, "</span>");
+      var label = "<span style=\"color: ".concat(_classPrivateFieldGet(_this, _subject$2).colorCSSValue, "\">").concat(value.label, "</span>");
       elm.addEventListener('mouseenter', function () {
         var customEvent = new CustomEvent(enterPropertyValueItemView, {
           detail: {
@@ -1680,12 +3711,12 @@
       elm.addEventListener('click', function () {
         if (elm.classList.contains('-selected')) {
           elm.classList.remove('-selected');
-          ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this, _property$1).propertyId, value.categoryId);
+          ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this, _property$2).propertyId, value.categoryId);
         } else {
           elm.classList.add('-selected');
           ConditionBuilder$1.addPropertyValue({
-            subject: _classPrivateFieldGet(_this, _subject$1),
-            property: _classPrivateFieldGet(_this, _property$1),
+            subject: _classPrivateFieldGet(_this, _subject$2),
+            property: _classPrivateFieldGet(_this, _property$2),
             value: {
               categoryId: value.categoryId,
               label: value.label,
@@ -1712,7 +3743,7 @@
           break;
       }
 
-      if (_classPrivateFieldGet(_this, _property$1).propertyId === propertyId) {
+      if (_classPrivateFieldGet(_this, _property$2).propertyId === propertyId) {
         _classPrivateFieldGet(_this, _values).forEach(function (value) {
           if (value.categoryId === categoryId) {
             switch (e.detail.action) {
@@ -1729,7 +3760,7 @@
       }
     });
     DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
-      return _classPrivateMethodGet(_this, _update, _update2).call(_this, e.detail);
+      return _classPrivateMethodGet(_this, _update$2, _update2$2).call(_this, e.detail);
     });
     DefaultEventEmitter$1.addEventListener(setUserValues, function (e) {
       return _classPrivateMethodGet(_this, _plotUserIdValues, _plotUserIdValues2).call(_this, e.detail);
@@ -1738,10 +3769,10 @@
       return _classPrivateMethodGet(_this, _clearUserIdValues, _clearUserIdValues2).call(_this, e.detail);
     });
 
-    _classPrivateMethodGet(this, _update, _update2).call(this, App$1.viewModes);
+    _classPrivateMethodGet(this, _update$2, _update2$2).call(this, App$1.viewModes);
   };
 
-  function _update2(viewModes) {
+  var _update2$2 = function _update2(viewModes) {
     var isArea = viewModes.area;
     var isLog10 = viewModes.log10;
 
@@ -1758,17 +3789,20 @@
     var left = 0;
 
     _classPrivateFieldGet(this, _values).forEach(function (value) {
-      width = isArea ? (isLog10 ? Math.log10(value.count) : value.count) / sum * 100 : fixedWidth;
+      var width = isArea ? (isLog10 ? Math.log10(value.count) : value.count) / sum * 100 : fixedWidth;
+      value.elm.style.backgroundColor = "rgb(".concat(value.baseColor.mix(App$1.colorDarkGray, 1 - (isLog10 ? value.countLog10 : value.count) / max).coords.map(function (cood) {
+        return cood * 256;
+      }).join(','), ")");
       value.elm.style.width = width + '%';
       value.elm.style.left = left + '%';
       value.elm.querySelector(':scope > .heatmap').style.backgroundColor = "rgba(51, 50, 48, ".concat(1 - (isLog10 ? value.countLog10 : value.count) / max, ")");
       left += width;
     });
-  }
+  };
 
-  function _plotUserIdValues2(detail) {
-    if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
-      _classPrivateFieldGet(this, _ROOT$5).classList.add('-pinsticking');
+  var _plotUserIdValues2 = function _plotUserIdValues2(detail) {
+    if (_classPrivateFieldGet(this, _property$2).propertyId === detail.propertyId) {
+      _classPrivateFieldGet(this, _ROOT$2).classList.add('-pinsticking');
 
       console.log(detail, _classPrivateFieldGet(this, _values));
 
@@ -1792,19 +3826,19 @@
         }
       });
     }
-  }
+  };
 
-  function _clearUserIdValues2() {
+  var _clearUserIdValues2 = function _clearUserIdValues2() {
     _classPrivateFieldGet(this, _values).forEach(function (value) {
       return value.elm.classList.remove('-pinsticking');
     });
-  }
+  };
 
-  var _subject = new WeakMap();
+  var _subject$3 = new WeakMap();
 
-  var _property = new WeakMap();
+  var _property$3 = new WeakMap();
 
-  var _sparqlist = new WeakMap();
+  var _sparqlist$1 = new WeakMap();
 
   var _ROOT$4 = new WeakMap();
 
@@ -1812,7 +3846,7 @@
 
   var _SELECT_CONTAINER = new WeakMap();
 
-  var _OVERVIEW_CONTAINER = new WeakMap();
+  var _OVERVIEW_CONTAINER$1 = new WeakMap();
 
   var _CHECKBOX_ALL_PROPERTIES = new WeakMap();
 
@@ -1825,17 +3859,17 @@
 
     _makeValues.add(this);
 
-    _subject.set(this, {
+    _subject$3.set(this, {
       writable: true,
       value: void 0
     });
 
-    _property.set(this, {
+    _property$3.set(this, {
       writable: true,
       value: void 0
     });
 
-    _sparqlist.set(this, {
+    _sparqlist$1.set(this, {
       writable: true,
       value: void 0
     });
@@ -1855,7 +3889,7 @@
       value: void 0
     });
 
-    _OVERVIEW_CONTAINER.set(this, {
+    _OVERVIEW_CONTAINER$1.set(this, {
       writable: true,
       value: void 0
     });
@@ -1871,11 +3905,11 @@
 
     _classPrivateFieldSet(this, _ROOT$4, elm);
 
-    _classPrivateFieldSet(this, _subject, subject);
+    _classPrivateFieldSet(this, _subject$3, subject);
 
-    _classPrivateFieldSet(this, _property, property);
+    _classPrivateFieldSet(this, _property$3, property);
 
-    _classPrivateFieldSet(this, _sparqlist, property.data);
+    _classPrivateFieldSet(this, _sparqlist$1, property.data);
 
     elm.classList.add('track-view');
     elm.classList.add('-preparing');
@@ -1886,7 +3920,7 @@
     elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <h2 class=\"title\">").concat(property.label, "</h2>\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview\" style=\"background-color: ").concat(App$1.getHslColor(subject.hue), ";\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <p class=\"description\">").concat(property.description, "</p>\n        <label><input type=\"checkbox\">All properties</label>\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
     var valuesContainer = elm.querySelector(':scope > .row.-upper > .values');
 
-    _classPrivateFieldSet(this, _OVERVIEW_CONTAINER, valuesContainer.querySelector(':scope > .overview > .inner'));
+    _classPrivateFieldSet(this, _OVERVIEW_CONTAINER$1, valuesContainer.querySelector(':scope > .overview > .inner'));
 
     _classPrivateFieldSet(this, _LOADING_VIEW$1, valuesContainer.querySelector(':scope > .overview > .loading-view'));
 
@@ -1903,14 +3937,14 @@
       if (_classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked) {
         // add
         ConditionBuilder$1.addProperty({
-          subject: _classPrivateFieldGet(_this, _subject),
-          property: _classPrivateFieldGet(_this, _property)
+          subject: _classPrivateFieldGet(_this, _subject$3),
+          property: _classPrivateFieldGet(_this, _property$3)
         });
 
         _classPrivateFieldGet(_this, _ROOT$4).classList.add('-allselected');
       } else {
         // remove
-        ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this, _property).propertyId);
+        ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this, _property$3).propertyId);
 
         _classPrivateFieldGet(_this, _ROOT$4).classList.remove('-allselected');
       }
@@ -1919,7 +3953,7 @@
 
     DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
       if (e.detail.action === 'remove') {
-        if (e.detail.propertyId === _classPrivateFieldGet(_this, _property).propertyId) {
+        if (e.detail.propertyId === _classPrivateFieldGet(_this, _property$3).propertyId) {
           _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = false;
 
           _classPrivateFieldGet(_this, _ROOT$4).classList.remove('-allselected');
@@ -1934,28 +3968,28 @@
     }).catch(function (error) {
       console.error(error);
 
-      _classPrivateFieldGet(_this, _OVERVIEW_CONTAINER).insertAdjacentHTML('afterend', "<div class=\"error\">".concat(error, " - <a href=\"").concat(property.data, "\" target=\"_blank\">").concat(property.data, "</a></div>"));
+      _classPrivateFieldGet(_this, _OVERVIEW_CONTAINER$1).insertAdjacentHTML('afterend', "<div class=\"error\">".concat(error, " - <a href=\"").concat(property.data, "\" target=\"_blank\">").concat(property.data, "</a></div>"));
 
       _classPrivateFieldGet(_this, _LOADING_VIEW$1).classList.remove('-shown');
     });
   } // private methods
   ;
 
-  function _makeValues2(values) {
-    _classPrivateFieldGet(this, _ROOT$4).classList.remove('-preparing');
+  var _makeValues2 = function _makeValues2(values) {
+    _classPrivateFieldGet(this, _ROOT$3).classList.remove('-preparing');
 
     _classPrivateFieldGet(this, _LOADING_VIEW$1).classList.remove('-shown');
 
-    Records$1.setValues(_classPrivateFieldGet(this, _property).propertyId, values); // make overview
+    Records$1.setValues(_classPrivateFieldGet(this, _property$3).propertyId, values); // make overview
 
-    new TrackOverviewCategorical(_classPrivateFieldGet(this, _OVERVIEW_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values); // make selector view
+    new TrackOverviewCategorical(_classPrivateFieldGet(this, _OVERVIEW_CONTAINER$1), _classPrivateFieldGet(this, _subject$3), _classPrivateFieldGet(this, _property$3), values); // make selector view
 
-    if (_classPrivateFieldGet(this, _property).viewMethod && _classPrivateFieldGet(this, _property).viewMethod === 'histogram') {
-      new HistogramRangeSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values, _classPrivateFieldGet(this, _sparqlist), _classPrivateFieldGet(this, _OVERVIEW_CONTAINER));
+    if (_classPrivateFieldGet(this, _property$3).viewMethod && _classPrivateFieldGet(this, _property$3).viewMethod === 'histogram') {
+      new HistogramRangeSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject$3), _classPrivateFieldGet(this, _property$3), values, _classPrivateFieldGet(this, _sparqlist$1), _classPrivateFieldGet(this, _OVERVIEW_CONTAINER$1));
     } else {
-      new ColumnSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values, _classPrivateFieldGet(this, _sparqlist));
+      new ColumnSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject$3), _classPrivateFieldGet(this, _property$3), values, _classPrivateFieldGet(this, _sparqlist$1));
     }
-  }
+  };
 
   var ConceptView = function ConceptView(subject, elm) {
     _classCallCheck(this, ConceptView);
@@ -2046,7 +4080,7 @@
    */
   ;
 
-  function _draw2(detail) {
+  var _draw2 = function _draw2(detail) {
     var _this2 = this;
 
     // const data = detail.tableData.data;
@@ -2101,15 +4135,15 @@
     _classPrivateFieldGet(this, _TICKS).innerHTML = labels.map(function (label) {
       return "\n      <div class=\"bar\">\n        <div class=\"label\">".concat(label, "</div>\n      </div>");
     }).join('');
-  }
+  };
 
   var _intersctionObserver = new WeakMap();
 
-  var _tableData$1 = new WeakMap();
+  var _tableData = new WeakMap();
 
   var _header = new WeakMap();
 
-  var _ROOT$3 = new WeakMap();
+  var _ROOT$4 = new WeakMap();
 
   var _THEAD = new WeakMap();
 
@@ -2119,7 +4153,7 @@
 
   var _TABLE_END = new WeakMap();
 
-  var _LOADING_VIEW = new WeakMap();
+  var _LOADING_VIEW$2 = new WeakMap();
 
   var _enterTableEnd = new WeakSet();
 
@@ -2147,7 +4181,7 @@
       value: void 0
     });
 
-    _tableData$1.set(this, {
+    _tableData.set(this, {
       writable: true,
       value: void 0
     });
@@ -2157,7 +4191,7 @@
       value: void 0
     });
 
-    _ROOT$3.set(this, {
+    _ROOT$4.set(this, {
       writable: true,
       value: void 0
     });
@@ -2182,13 +4216,13 @@
       value: void 0
     });
 
-    _LOADING_VIEW.set(this, {
+    _LOADING_VIEW$2.set(this, {
       writable: true,
       value: void 0
     });
 
     // references
-    _classPrivateFieldSet(this, _ROOT$3, _elm);
+    _classPrivateFieldSet(this, _ROOT$4, _elm);
 
     var TABLE = _elm.querySelector(':scope > .body > table');
 
@@ -2200,7 +4234,7 @@
 
     _classPrivateFieldSet(this, _TABLE_END, _elm.querySelector(':scope > .body > .tableend'));
 
-    _classPrivateFieldSet(this, _LOADING_VIEW, _classPrivateFieldGet(this, _TABLE_END).querySelector(':scope > .loading-view')); // get next data automatically
+    _classPrivateFieldSet(this, _LOADING_VIEW$2, _classPrivateFieldGet(this, _TABLE_END).querySelector(':scope > .loading-view')); // get next data automatically
 
 
     _classPrivateFieldSet(this, _intersctionObserver, new IntersectionObserver(function (entries) {
@@ -2242,7 +4276,7 @@
             _classPrivateFieldGet(_this, _intersctionObserver).unobserve(_classPrivateFieldGet(_this, _TABLE_END)); // deselect table data
 
 
-            _classPrivateFieldGet(_this, _tableData$1).deselect();
+            _classPrivateFieldGet(_this, _tableData).deselect();
           }
         }
       });
@@ -2253,16 +4287,16 @@
   } // private methods
   ;
 
-  function _enterTableEnd2() {
+  var _enterTableEnd2 = function _enterTableEnd2() {
     _classPrivateFieldGet(this, _intersctionObserver).unobserve(_classPrivateFieldGet(this, _TABLE_END));
 
-    _classPrivateFieldGet(this, _tableData$1).next();
-  }
+    _classPrivateFieldGet(this, _tableData).next();
+  };
 
-  function _setupTable2(tableData) {
+  var _setupTable2 = function _setupTable2(tableData) {
     var properties = tableData.condition.attributes.concat(tableData.condition.properties); // reset
 
-    _classPrivateFieldSet(this, _tableData$1, tableData);
+    _classPrivateFieldSet(this, _tableData, tableData);
 
     _classPrivateFieldGet(this, _intersctionObserver).unobserve(_classPrivateFieldGet(this, _TABLE_END));
 
@@ -2273,12 +4307,12 @@
       };
     }));
 
-    _classPrivateFieldGet(this, _ROOT$3).classList.remove('-complete');
+    _classPrivateFieldGet(this, _ROOT$4).classList.remove('-complete');
 
     _classPrivateFieldGet(this, _THEAD).innerHTML = '';
     _classPrivateFieldGet(this, _TBODY).innerHTML = '';
 
-    _classPrivateFieldGet(this, _LOADING_VIEW).classList.add('-shown');
+    _classPrivateFieldGet(this, _LOADING_VIEW$2).classList.add('-shown');
 
     DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
@@ -2296,14 +4330,14 @@
       if (index === 0) return;
       new StatisticsView(elm, properties[index - 1]);
     });
-  }
+  };
 
-  function _addTableRows2(detail) {
+  var _addTableRows2 = function _addTableRows2(detail) {
     var _this2 = this;
 
     console.log(detail);
 
-    _classPrivateFieldSet(this, _tableData$1, detail.tableData); // normalize
+    _classPrivateFieldSet(this, _tableData, detail.tableData); // normalize
 
 
     var rows = [];
@@ -2317,7 +4351,7 @@
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
       console.log(row);
-      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div\n              class=\"togo-key-view\"\n              data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n              data-key=\"").concat(detail.tableData.togoKey, "\"\n              data-category-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "</div>\n          </div>\n        </th>\n        ").concat(row.map(function (column, columnIndex) {
+      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n        <th>\n          <div class=\"inner\">\n            <a class=\"toreportpage\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n            <div\n              class=\"togo-key-view\"\n              data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n              data-key=\"").concat(detail.tableData.togoKey, "\"\n              data-category-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "</div>\n            <span>").concat(detail.rows[index].label, "</span>\n          </div>\n        </th>\n        ").concat(row.map(function (column, columnIndex) {
         // console.log(column)
         if (column) {
           return "\n              <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute) {
@@ -2332,13 +4366,13 @@
 
 
     if (detail.done) {
-      _classPrivateFieldGet(this, _ROOT$3).classList.add('-complete');
+      _classPrivateFieldGet(this, _ROOT$4).classList.add('-complete');
 
-      _classPrivateFieldGet(this, _LOADING_VIEW).classList.remove('-shown');
+      _classPrivateFieldGet(this, _LOADING_VIEW$2).classList.remove('-shown');
     } else {
-      _classPrivateFieldGet(this, _ROOT$3).classList.remove('-complete');
+      _classPrivateFieldGet(this, _ROOT$4).classList.remove('-complete');
 
-      _classPrivateFieldGet(this, _LOADING_VIEW).classList.add('-shown');
+      _classPrivateFieldGet(this, _LOADING_VIEW$2).classList.add('-shown');
 
       _classPrivateFieldGet(this, _intersctionObserver).observe(_classPrivateFieldGet(this, _TABLE_END));
     } // attach event
@@ -2365,8 +4399,8 @@
           var customEvent = new CustomEvent(showStanza, {
             detail: {
               subject: {
-                togoKey: _classPrivateFieldGet(_this2, _tableData$1).togoKey,
-                id: _classPrivateFieldGet(_this2, _tableData$1).subjectId,
+                togoKey: _classPrivateFieldGet(_this2, _tableData).togoKey,
+                id: _classPrivateFieldGet(_this2, _tableData).subjectId,
                 value: tr.dataset.togoId
               },
               properties: row
@@ -2376,68 +4410,68 @@
         }
       });
     });
-  }
+  };
 
-  function _failed2(tableData) {
+  var _failed2 = function _failed2(tableData) {
     console.log(tableData);
 
-    _classPrivateFieldGet(this, _ROOT$3).classList.add('-complete');
+    _classPrivateFieldGet(this, _ROOT$4).classList.add('-complete');
 
-    _classPrivateFieldGet(this, _LOADING_VIEW).classList.remove('-shown');
-  }
+    _classPrivateFieldGet(this, _LOADING_VIEW$2).classList.remove('-shown');
+  };
 
-  var _ROOT$2 = new WeakMap();
+  var _ROOT$5 = new WeakMap();
 
-  var _CONTAINER = new WeakMap();
+  var _CONTAINER$1 = new WeakMap();
 
   var BalloonView = function BalloonView() {
     var _this = this;
 
     _classCallCheck(this, BalloonView);
 
-    _ROOT$2.set(this, {
+    _ROOT$5.set(this, {
       writable: true,
       value: void 0
     });
 
-    _CONTAINER.set(this, {
+    _CONTAINER$1.set(this, {
       writable: true,
       value: void 0
     });
 
     // make element
-    _classPrivateFieldSet(this, _ROOT$2, document.createElement('div'));
+    _classPrivateFieldSet(this, _ROOT$5, document.createElement('div'));
 
-    _classPrivateFieldGet(this, _ROOT$2).className = 'balloon-view';
-    document.querySelector('body').insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$2));
-    _classPrivateFieldGet(this, _ROOT$2).innerHTML = '<div class="container"></div>';
+    _classPrivateFieldGet(this, _ROOT$5).className = 'balloon-view';
+    document.querySelector('body').insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$5));
+    _classPrivateFieldGet(this, _ROOT$5).innerHTML = '<div class="container"></div>';
 
-    _classPrivateFieldSet(this, _CONTAINER, _classPrivateFieldGet(this, _ROOT$2).querySelector(':scope > .container')); // event listener
+    _classPrivateFieldSet(this, _CONTAINER$1, _classPrivateFieldGet(this, _ROOT$5).querySelector(':scope > .container')); // event listener
 
 
     DefaultEventEmitter$1.addEventListener(enterPropertyValueItemView, function (e) {
-      _classPrivateFieldGet(_this, _CONTAINER).innerHTML = "\n        <header>".concat(e.detail.label, "</header>\n        ").concat(e.detail.values.map(function (value) {
+      _classPrivateFieldGet(_this, _CONTAINER$1).innerHTML = "\n        <header>".concat(e.detail.label, "</header>\n        ").concat(e.detail.values.map(function (value) {
         return "<dl>\n          <dt>".concat(value.key, ":</dt>\n          <dd>").concat(value.value, "</dd>\n        </dl>");
       }).join('')); // geography
 
       var rect = e.detail.elm.getBoundingClientRect();
       var isBelow = window.innerHeight * .3 > rect.top;
-      _classPrivateFieldGet(_this, _ROOT$2).style.left = rect.left + rect.width * .5 + 'px';
+      _classPrivateFieldGet(_this, _ROOT$5).style.left = rect.left + rect.width * .5 + 'px';
 
       if (isBelow) {
-        _classPrivateFieldGet(_this, _ROOT$2).classList.add('-below');
+        _classPrivateFieldGet(_this, _ROOT$5).classList.add('-below');
 
-        _classPrivateFieldGet(_this, _ROOT$2).style.top = rect.top + 10 + 'px';
+        _classPrivateFieldGet(_this, _ROOT$5).style.top = rect.top + 10 + 'px';
       } else {
-        _classPrivateFieldGet(_this, _ROOT$2).classList.remove('-below');
+        _classPrivateFieldGet(_this, _ROOT$5).classList.remove('-below');
 
-        _classPrivateFieldGet(_this, _ROOT$2).style.top = rect.top + 'px';
+        _classPrivateFieldGet(_this, _ROOT$5).style.top = rect.top + 'px';
       }
 
-      _classPrivateFieldGet(_this, _ROOT$2).classList.add('-showing');
+      _classPrivateFieldGet(_this, _ROOT$5).classList.add('-showing');
     });
     DefaultEventEmitter$1.addEventListener(leavePropertyValueItemView, function (e) {
-      _classPrivateFieldGet(_this, _ROOT$2).classList.remove('-showing');
+      _classPrivateFieldGet(_this, _ROOT$5).classList.remove('-showing');
     });
   };
 
@@ -2459,7 +4493,7 @@
 
   var _startTime = new WeakMap();
 
-  var _ROOT$1 = new WeakMap();
+  var _ROOT$6 = new WeakMap();
 
   var _STATUS = new WeakMap();
 
@@ -2537,7 +4571,7 @@
         value: void 0
       });
 
-      _ROOT$1.set(this, {
+      _ROOT$6.set(this, {
         writable: true,
         value: void 0
       });
@@ -2592,9 +4626,9 @@
         return "<div class=\"condiiton -value\" style=\"background-color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         return "<div class=\"condiiton -value\" style=\"color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
-      }).join(''), "\n      \n    </div>\n    <div class=\"close-button\" title=\"Delete\" data-button=\"delete\"></div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button autorenew\" title=\"Prepare for download\" data-button=\"prepare-download\">\n        <span class=\"material-icons-outlined\" id=\"autorenew\">autorenew</span>\n      </div>\n      <div class=\"button\" title=\"Restore as condition\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n      </div>\n      <div class=\"button\" title=\"Delete\" data-button=\"delete\">\n        <span class=\"material-icons-outlined\">delete</span>\n      </div>\n    </div>\n    <div class=\"downloads\">\n      <div class=\"button\" title=\"Download CSV\">\n        <span class=\"material-icons-outlined\">download</span>\n        CSV\n      </div>\n      <div class=\"button\" title=\"Download JSON \">\n        <span class=\"material-icons-outlined\">download</span>\n        JSON\n      </div>\n    </div>"); // reference　
+      }).join(''), "\n      \n    </div>\n    <div class=\"button close-button-view\" title=\"Delete\" data-button=\"delete\"></div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button autorenew\" title=\"Prepare for download\" data-button=\"prepare-download\">\n        <span class=\"material-icons-outlined autorenew\">autorenew</span><span class=\"preparedata\">Prepare data</span>\n      </div>\n      <div class=\"button downloads\" title=\"Download JSON \" data-button=\"start-download\">\n        <a class=\"json\" href=\"\" download=\"sample.json\">\n          <span class=\"material-icons-outlined\">download</span>\n          <span class=\"text\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" title=\"Restore as condition\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n        Edit\n      </div>\n    </div>\n    "); // reference　
 
-      _classPrivateFieldSet(this, _ROOT$1, elm);
+      _classPrivateFieldSet(this, _ROOT$6, elm);
 
       _classPrivateFieldSet(this, _STATUS, elm.querySelector(':scope > .status > p'));
 
@@ -2622,16 +4656,18 @@
       _classPrivateFieldGet(this, _BUTTON_PREPARE_DOWNLOAD).addEventListener('click', function (e) {
         e.stopPropagation();
 
-        if (_classPrivateFieldGet(_this, _isAutoLoad) == false && _classPrivateFieldGet(_this, _ROOT$1).dataset.status != 'complete') {
-          _classPrivateFieldGet(_this, _isAutoLoad) == true;
-
+        if (_classPrivateFieldGet(_this, _isAutoLoad) == false && _classPrivateFieldGet(_this, _ROOT$6).dataset.status != 'complete') {
           _classPrivateMethodGet(_this, _autoLoad, _autoLoad2).call(_this);
 
-          document.getElementById('autorenew').classList.add('lotation');
+          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DOWNLOAD).querySelector(':scope > .autorenew').classList.add('lotation');
+
+          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DOWNLOAD).querySelector(':scope > .preparedata').innerHTML = 'Pause';
         } else {
           _classPrivateFieldSet(_this, _isAutoLoad, false);
 
-          document.getElementById('autorenew').classList.remove('lotation');
+          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DOWNLOAD).querySelector(':scope > .autorenew').classList.remove('lotation');
+
+          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DOWNLOAD).querySelector(':scope > .preparedata').innerHTML = 'Resume';
         }
       });
 
@@ -2639,13 +4675,28 @@
         return button.dataset.button === 'restore';
       }).addEventListener('click', function (e) {
         e.stopPropagation();
-        console.log('restore');
-      });
-      BUTTONS.find(function (button) {
-        return button.dataset.button === 'delete';
-      }).addEventListener('click', function (e) {
-        e.stopPropagation();
-        console.log('delete');
+
+        _classPrivateFieldGet(_this, _condition).attributes.forEach(function (attribute) {
+          ConditionBuilder$1.setPropertyValues({
+            subject: attribute.subject,
+            property: attribute.property,
+            values: attribute.query.categoryIds.map(function (categoryId) {
+              return {
+                categoryId: categoryId,
+                label: Records$1.getValue(attribute.query.propertyId, categoryId).label,
+                ancestors: []
+              };
+            })
+          });
+        }); // this.#condition.properties.forEach (property => {
+        //   ConditionBuilder.setPropertyValues({
+        //     subject: property.subject,
+        //     property: property.property,
+        //     values: [{
+        //     }]
+        //   });
+        // })
+
       });
       this.select();
 
@@ -2656,10 +4707,10 @@
 
     _createClass(TableData, [{
       key: "select",
-      value:
+
       /* public methods */
-      function select() {
-        _classPrivateFieldGet(this, _ROOT$1).classList.add('-current'); // dispatch event
+      value: function select() {
+        _classPrivateFieldGet(this, _ROOT$6).classList.add('-current'); // dispatch event
 
 
         var customEvent1 = new CustomEvent(selectTableData, {
@@ -2667,7 +4718,7 @@
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent1); // send rows
 
-        if (_classPrivateFieldGet(this, _ROOT$1).dataset.status !== 'load ids') {
+        if (_classPrivateFieldGet(this, _ROOT$6).dataset.status !== 'load ids') {
           var done = this.offset >= _classPrivateFieldGet(this, _queryIds).length;
 
           var customEvent2 = new CustomEvent(addNextRows, {
@@ -2683,7 +4734,7 @@
     }, {
       key: "deselect",
       value: function deselect() {
-        _classPrivateFieldGet(this, _ROOT$1).classList.remove('-current');
+        _classPrivateFieldGet(this, _ROOT$6).classList.remove('-current');
       }
     }, {
       key: "next",
@@ -2734,13 +4785,13 @@
     return TableData;
   }();
 
-  function _getQueryIds2() {
+  var _getQueryIds2 = function _getQueryIds2() {
     var _this2 = this;
 
     // reset
     _classPrivateFieldSet(this, _abortController, new AbortController());
 
-    _classPrivateFieldGet(this, _ROOT$1).classList.add('-fetching');
+    _classPrivateFieldGet(this, _ROOT$6).classList.add('-fetching');
 
     fetch("".concat(App$1.aggregatePrimaryKeys, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
       return property.query;
@@ -2769,7 +4820,7 @@
       _classPrivateFieldSet(_this2, _queryIds, queryIds); // display
 
 
-      _classPrivateFieldGet(_this2, _ROOT$1).dataset.status = 'load rows';
+      _classPrivateFieldGet(_this2, _ROOT$6).dataset.status = 'load rows';
       _classPrivateFieldGet(_this2, _STATUS).textContent = '';
       _classPrivateFieldGet(_this2, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this2.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this2, _queryIds).length.toLocaleString());
 
@@ -2784,14 +4835,14 @@
       });
       DefaultEventEmitter$1.dispatchEvent(customEvent);
     }).finally(function () {
-      _classPrivateFieldGet(_this2, _ROOT$1).classList.remove('-fetching');
+      _classPrivateFieldGet(_this2, _ROOT$6).classList.remove('-fetching');
     });
-  }
+  };
 
-  function _getProperties2() {
+  var _getProperties2 = function _getProperties2() {
     var _this3 = this;
 
-    _classPrivateFieldGet(this, _ROOT$1).classList.add('-fetching');
+    _classPrivateFieldGet(this, _ROOT$6).classList.add('-fetching');
 
     _classPrivateFieldGet(this, _STATUS).textContent = 'Getting data';
     fetch("".concat(App$1.aggregateRows, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
@@ -2812,7 +4863,7 @@
       _classPrivateFieldSet(_this3, _isLoaded, _this3.offset >= _classPrivateFieldGet(_this3, _queryIds).length); // display
 
 
-      _classPrivateFieldGet(_this3, _ROOT$1).classList.remove('-fetching');
+      _classPrivateFieldGet(_this3, _ROOT$6).classList.remove('-fetching');
 
       _classPrivateFieldGet(_this3, _STATUS).textContent = 'Awaiting';
       _classPrivateFieldGet(_this3, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this3.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this3, _queryIds).length.toLocaleString());
@@ -2836,13 +4887,13 @@
         _classPrivateMethodGet(_this3, _getProperties, _getProperties2).call(_this3);
       }
     }).catch(function (error) {
-      _classPrivateFieldGet(_this3, _ROOT$1).classList.remove('-fetching');
+      _classPrivateFieldGet(_this3, _ROOT$6).classList.remove('-fetching');
 
       console.error(error); // TODO:
     });
-  }
+  };
 
-  function _updateRemainingTime2() {
+  var _updateRemainingTime2 = function _updateRemainingTime2() {
     var singleTime = (Date.now() - _classPrivateFieldGet(this, _startTime)) / this.offset;
     var remainingTime;
 
@@ -2863,25 +4914,33 @@
     } else {
       _classPrivateFieldGet(this, _INDICATOR_TEXT_TIME).innerHTML = "";
     }
-  }
+  };
 
-  function _autoLoad2() {
+  var _autoLoad2 = function _autoLoad2() {
     if (_classPrivateFieldGet(this, _isLoaded)) return;
 
     _classPrivateFieldSet(this, _isAutoLoad, true);
 
-    _classPrivateFieldGet(this, _ROOT$1).classList.add('-autoload');
+    _classPrivateFieldGet(this, _ROOT$6).classList.add('-autoload');
 
     _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
-  }
+  };
 
-  function _complete2() {
-    _classPrivateFieldGet(this, _ROOT$1).dataset.status = 'complete';
+  var _complete2 = function _complete2() {
+    _classPrivateFieldGet(this, _ROOT$6).dataset.status = 'complete';
     _classPrivateFieldGet(this, _STATUS).textContent = 'Complete';
-    document.getElementById('autorenew').classList.remove('lotation');
-  }
 
-  var _tableData = new WeakMap();
+    _classPrivateFieldGet(this, _BUTTON_PREPARE_DOWNLOAD).querySelector(':scope > .autorenew').classList.add('lotation');
+
+    var jsonBlob = new Blob([JSON.stringify(_classPrivateFieldGet(this, _rows), null, 2)], {
+      type: 'application/json'
+    });
+    var jsonUrl = URL.createObjectURL(jsonBlob);
+
+    _classPrivateFieldGet(this, _BUTTON_START_DOWNLOAD).querySelector(':scope > .json').setAttribute('href', jsonUrl);
+  };
+
+  var _tableData$1 = new WeakMap();
 
   var _body = new WeakMap();
 
@@ -2900,7 +4959,7 @@
 
     _setTableData.add(this);
 
-    _tableData.set(this, {
+    _tableData$1.set(this, {
       writable: true,
       value: void 0
     });
@@ -2915,7 +4974,7 @@
       value: void 0
     });
 
-    _classPrivateFieldSet(this, _tableData, []); // references
+    _classPrivateFieldSet(this, _tableData$1, []); // references
 
 
     _classPrivateFieldSet(this, _conditionsContainer, _elm.querySelector(':scope > .conditions'));
@@ -2933,10 +4992,10 @@
   /* private methods */
   ;
 
-  function _setTableData2(newCondition) {
+  var _setTableData2 = function _setTableData2(newCondition) {
     // find matching condition from already existing conditions
     // TODO: うまく検出できていない
-    var sameConditionTableData = _classPrivateFieldGet(this, _tableData).find(function (tableData) {
+    var sameConditionTableData = _classPrivateFieldGet(this, _tableData$1).find(function (tableData) {
       var matchTogoKey = newCondition.togoKey === tableData.condition.togoKey; // compare properties
 
       var matchProperties = newCondition.properties.every(function (newProperty) {
@@ -2966,14 +5025,14 @@
 
       _classPrivateFieldGet(this, _conditionsContainer).insertAdjacentElement('afterbegin', elm);
 
-      _classPrivateFieldGet(this, _tableData).push(new TableData(newCondition, elm));
+      _classPrivateFieldGet(this, _tableData$1).push(new TableData(newCondition, elm));
     }
-  }
+  };
 
-  function _selectTableData2(selectedTableData) {
+  var _selectTableData2 = function _selectTableData2(selectedTableData) {
     _classPrivateFieldGet(this, _body).dataset.display = 'results'; // deselect
 
-    var _iterator = _createForOfIteratorHelper(_classPrivateFieldGet(this, _tableData)),
+    var _iterator = _createForOfIteratorHelper(_classPrivateFieldGet(this, _tableData$1)),
         _step;
 
     try {
@@ -2986,12 +5045,12 @@
     } finally {
       _iterator.f();
     }
-  }
+  };
 
   var PATH = 'https://integbio.jp/togosite/sparqlist/api/';
   var DATA_FROM_USER_IDS = 'data_from_user_ids';
 
-  var _BODY = new WeakMap();
+  var _BODY$1 = new WeakMap();
 
   var _ROOT = new WeakMap();
 
@@ -3014,9 +5073,7 @@
 
     _fetch.add(this);
 
-    _defineTogoKeys.add(this);
-
-    _BODY.set(this, {
+    _BODY$1.set(this, {
       writable: true,
       value: void 0
     });
@@ -3036,7 +5093,7 @@
       value: void 0
     });
 
-    _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
+    _classPrivateFieldSet(this, _BODY$1, document.querySelector('body')); // this.#ROOT = elm;
 
     _classPrivateFieldSet(this, _ROOT, elm);
 
@@ -3068,14 +5125,7 @@
   } // private methods
   ;
 
-  function _defineTogoKeys2(togoKeys) {
-    console.log(togoKeys);
-    _classPrivateFieldGet(this, _USER_KEY).innerHTML = togoKeys.map(function (togoKey) {
-      return "<option value=\"".concat(togoKey.togoKey, "\" data-subject-id=\"").concat(togoKeys.subjectId, "\">").concat(togoKey.label, " (").concat(togoKey.togoKey, ")</option>");
-    }).join('');
-  }
-
-  function _fetch2() {
+  var _fetch2 = function _fetch2() {
     var _this2 = this;
 
     console.log(_classPrivateFieldGet(this, _USER_KEY).value);
@@ -3088,7 +5138,7 @@
       }).then(function (values) {
         console.log(values);
 
-        _classPrivateFieldGet(_this2, _BODY).classList.add('-showuserids'); // dispatch event
+        _classPrivateFieldGet(_this2, _BODY$1).classList.add('-showuserids'); // dispatch event
 
 
         var customEvent = new CustomEvent(setUserValues, {
@@ -3100,14 +5150,14 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       });
     });
-  }
+  };
 
-  function _clear2() {
-    _classPrivateFieldGet(this, _BODY).classList.remove('-showuserids');
+  var _clear2 = function _clear2() {
+    _classPrivateFieldGet(this, _BODY$1).classList.remove('-showuserids');
 
     var customEvent = new CustomEvent(clearUserValues);
     DefaultEventEmitter$1.dispatchEvent(customEvent);
-  }
+  };
 
   var PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
   var TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
@@ -3116,6 +5166,12 @@
   var _viewModes = new WeakMap();
 
   var _aggregate = new WeakMap();
+
+  var _colorGray = new WeakMap();
+
+  var _colorDarkGray = new WeakMap();
+
+  var _colorLampBlack = new WeakMap();
 
   var _makeConceptViews = new WeakSet();
 
@@ -3134,6 +5190,27 @@
         writable: true,
         value: void 0
       });
+
+      _colorGray.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _colorDarkGray.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _colorLampBlack.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldSet(this, _colorGray, new h('--color-gray').to('srgb'));
+
+      _classPrivateFieldSet(this, _colorDarkGray, new h('--color-dark-gray').to('srgb'));
+
+      _classPrivateFieldSet(this, _colorLampBlack, new h('--color-lamp-black').to('srgb'));
     }
 
     _createClass(App, [{
@@ -3226,6 +5303,8 @@
 
     }, {
       key: "viewModes",
+      // public methods
+      // accessor
       get: function get() {
         return _classPrivateFieldGet(this, _viewModes);
       }
@@ -3239,19 +5318,34 @@
       get: function get() {
         return _classPrivateFieldGet(this, _aggregate).table.url;
       }
+    }, {
+      key: "colorGray",
+      get: function get() {
+        return _classPrivateFieldGet(this, _colorGray);
+      }
+    }, {
+      key: "colorDarkGray",
+      get: function get() {
+        return _classPrivateFieldGet(this, _colorDarkGray);
+      }
+    }, {
+      key: "colorLampBlack",
+      get: function get() {
+        return _classPrivateFieldGet(this, _colorLampBlack);
+      }
     }]);
 
     return App;
   }();
 
-  function _makeConceptViews2() {
+  var _makeConceptViews2 = function _makeConceptViews2() {
     var conceptsContainer = document.querySelector('#Properties > .concepts');
     Records$1.subjects.forEach(function (subject) {
       var elm = document.createElement('section');
       new ConceptView(subject, elm);
       conceptsContainer.insertAdjacentElement('beforeend', elm);
     });
-  }
+  };
 
   var App$1 = new App();
 
