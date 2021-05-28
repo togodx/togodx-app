@@ -3570,15 +3570,21 @@
 
       if (_classPrivateFieldGet(_this, _property$3).propertyId === propertyId) {
         _classPrivateFieldGet(_this, _currentColumns).forEach(function (ul) {
-          ul.querySelectorAll('li').forEach(function (li) {
+          var isAllChecked = true;
+          ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
+            var checkbox = li.querySelector(':scope > input[type="checkbox"]');
+            if (!checkbox.checked) isAllChecked = false;
+
             if (li.dataset.id === categoryId) {
               // change checkbox status
               var isChecked = e.detail.action === 'add';
-              li.querySelector(':scope > input[type="checkbox"]').checked = isChecked;
-              _classPrivateFieldGet(_this, _items$1)[li.dataset.id].checked = isChecked; // change ancestor status
-              // TODO:
+              checkbox.checked = isChecked;
+              _classPrivateFieldGet(_this, _items$1)[li.dataset.id].checked = isChecked;
             }
-          });
+          }); // update all properties
+
+          ul.querySelector(':scope > .item.-all > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
+          // TODO:
         });
       }
     });
@@ -3665,13 +3671,18 @@
       max = Math.max(max, item.count);
       return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");
     }).join('');
-    ul.querySelectorAll(':scope > .item:not(.-all)').forEach(function (item) {
-      return _classPrivateFieldGet(_this3, _items$1)[item.dataset.categoryId].elm = item;
+    var listItems = ul.querySelectorAll(':scope > .item:not(.-all)');
+    listItems.forEach(function (li) {
+      return _classPrivateFieldGet(_this3, _items$1)[li.dataset.categoryId].elm = li;
     }); // drill down event
 
-    ul.querySelectorAll(':scope > .item.-haschild').forEach(function (item) {
-      item.addEventListener('click', function () {
-        item.classList.add('-selected'); // delete an existing lower columns
+    ul.querySelectorAll(':scope > .item.-haschild').forEach(function (li) {
+      li.addEventListener('click', function () {
+        li.classList.add('-selected'); // deselect siblings
+
+        li.parentNode.childNodes.forEach(function (sibling) {
+          if (sibling !== li) sibling.classList.remove('-selected');
+        }); // delete an existing lower columns
 
         if (_classPrivateFieldGet(_this3, _currentColumns).length > depth + 1) {
           for (var i = depth + 1; i < _classPrivateFieldGet(_this3, _currentColumns).length; i++) {
@@ -3703,13 +3714,14 @@
           _iterator2.f();
         }
 
-        _classPrivateFieldGet(_this3, _items$1)[item.dataset.id].selected = true;
+        _classPrivateFieldGet(_this3, _items$1)[li.dataset.id].selected = true;
 
-        _classPrivateMethodGet(_this3, _getSubColumn, _getSubColumn2).call(_this3, item.dataset.id, depth + 1);
+        _classPrivateMethodGet(_this3, _getSubColumn, _getSubColumn2).call(_this3, li.dataset.id, depth + 1);
       });
     }); // select/deselect a item (attribute)
 
-    ul.querySelectorAll(':scope > .item:not(.-all) > input[type="checkbox"]').forEach(function (checkbox) {
+    listItems.forEach(function (li) {
+      var checkbox = li.querySelector(':scope > input[type="checkbox"]');
       checkbox.addEventListener('click', function (e) {
         e.stopPropagation();
 
@@ -3740,6 +3752,17 @@
         } else {
           // remove
           ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _property$3).propertyId, checkbox.value);
+        }
+      });
+    }); // all properties event
+
+    ul.querySelector(':scope > .item.-all').addEventListener('change', function (e) {
+      var isChecked = e.target.checked;
+      listItems.forEach(function (item) {
+        var checkbox = item.querySelector(':scope > input[type="checkbox"]');
+
+        if (checkbox.checked !== isChecked) {
+          checkbox.dispatchEvent(new MouseEvent('click'));
         }
       });
     });
