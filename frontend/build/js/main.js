@@ -5186,14 +5186,18 @@
 
       _classPrivateFieldGet(this, _ROOT).querySelector(':scope > .close-button-view').addEventListener('click', function (e) {
         e.stopPropagation();
-        console.log('delete');
         var customEvent = new CustomEvent(deleteTableData, {
           detail: _this
         });
-        DefaultEventEmitter$1.dispatchEvent(customEvent);
+        DefaultEventEmitter$1.dispatchEvent(customEvent); // abort fetch
 
-        _classPrivateFieldGet(_this, _ROOT).parentNode.removeChild(_classPrivateFieldGet(_this, _ROOT)); // TODO: stop fetch
+        _classPrivateFieldGet(_this, _abortController).abort(); // delete element
 
+
+        _classPrivateFieldGet(_this, _ROOT).parentNode.removeChild(_classPrivateFieldGet(_this, _ROOT)); // transition
+
+
+        document.querySelector('body').dataset.display = 'properties';
       }); // restore
 
 
@@ -5319,7 +5323,6 @@
 
     _classPrivateFieldGet(this, _ROOT).classList.add('-fetching');
 
-    console.log(ConditionBuilder$1.userIds);
     fetch("".concat(App$1.aggregatePrimaryKeys, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
       return property.query;
     })))).concat(ConditionBuilder$1.userIds ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : ''), {
@@ -5327,8 +5330,6 @@
     }).catch(function (error) {
       throw Error(error);
     }).then(function (responce) {
-      console.log(responce);
-
       if (responce.ok) {
         return responce;
       }

@@ -116,11 +116,14 @@ export default class TableData {
     // delete
     this.#ROOT.querySelector(':scope > .close-button-view').addEventListener('click', e => {
       e.stopPropagation();
-      console.log('delete')
       const customEvent = new CustomEvent(event.deleteTableData, {detail: this});
       DefaultEventEmitter.dispatchEvent(customEvent);
+      // abort fetch
+      this.#abortController.abort();
+      // delete element
       this.#ROOT.parentNode.removeChild(this.#ROOT);
-      // TODO: stop fetch
+      // transition
+      document.querySelector('body').dataset.display = 'properties';
     });
     // restore
     BUTTONS.find(button => button.dataset.button === 'restore').addEventListener('click', e => {
@@ -159,7 +162,6 @@ export default class TableData {
     // reset
     this.#abortController = new AbortController();
     this.#ROOT.classList.add('-fetching');
-    console.log(ConditionBuilder.userIds)
     fetch(
       `${App.aggregatePrimaryKeys}?togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(JSON.stringify(this.#condition.attributes.map(property => property.query)))}${ConditionBuilder.userIds ? `&inputIds=${encodeURIComponent(JSON.stringify(ConditionBuilder.userIds.split(',')))}` : ''}`,
       {
@@ -169,7 +171,6 @@ export default class TableData {
         throw Error(error);
       })
       .then(responce => {
-        console.log(responce);
         if (responce.ok) {
           return responce
         };
