@@ -53,7 +53,7 @@ export default class ColumnSelectorView {
       }
       if (this.#property.propertyId === propertyId) {
         this.#currentColumns.forEach(ul => {
-          ul.querySelectorAll('li').forEach(li => {
+          ul.querySelectorAll(':scope > li:not(.-all)').forEach(li => {
             if (li.dataset.id === categoryId) {
               // change checkbox status
               const isChecked = e.detail.action === 'add';
@@ -139,12 +139,12 @@ export default class ColumnSelectorView {
       </li>`;
     }).join('');
     const listItems = ul.querySelectorAll(':scope > .item:not(.-all)');
-    listItems.forEach(item => this.#items[item.dataset.categoryId].elm = item);
+    listItems.forEach(li => this.#items[li.dataset.categoryId].elm = li);
 
     // drill down event
-    ul.querySelectorAll(':scope > .item.-haschild').forEach(item => {
-      item.addEventListener('click', () => {
-        item.classList.add('-selected');
+    ul.querySelectorAll(':scope > .item.-haschild').forEach(li => {
+      li.addEventListener('click', () => {
+        li.classList.add('-selected');
         // delete an existing lower columns
         if (this.#currentColumns.length > depth + 1) {
           for (let i = depth + 1; i < this.#currentColumns.length; i++) {
@@ -159,14 +159,14 @@ export default class ColumnSelectorView {
           if (selectedItem) selectedItem.classList.remove('-selected');
         }
         // get lower column
-        this.#items[item.dataset.id].selected = true;
-        this.#getSubColumn(item.dataset.id, depth + 1);
+        this.#items[li.dataset.id].selected = true;
+        this.#getSubColumn(li.dataset.id, depth + 1);
       });
     });
 
     // select/deselect a item (attribute)
-    listItems.forEach(item => {
-      const checkbox = item.querySelector(':scope > input[type="checkbox"]');
+    listItems.forEach(li => {
+      const checkbox = li.querySelector(':scope > input[type="checkbox"]');
       checkbox.addEventListener('click', e => {
         e.stopPropagation();
         if (checkbox.checked) { // add

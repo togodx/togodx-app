@@ -3499,7 +3499,7 @@
 
       if (_classPrivateFieldGet(_this, _property$3).propertyId === propertyId) {
         _classPrivateFieldGet(_this, _currentColumns).forEach(function (ul) {
-          ul.querySelectorAll('li').forEach(function (li) {
+          ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
             if (li.dataset.id === categoryId) {
               // change checkbox status
               var isChecked = e.detail.action === 'add';
@@ -3595,13 +3595,13 @@
       return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");
     }).join('');
     var listItems = ul.querySelectorAll(':scope > .item:not(.-all)');
-    listItems.forEach(function (item) {
-      return _classPrivateFieldGet(_this3, _items$1)[item.dataset.categoryId].elm = item;
+    listItems.forEach(function (li) {
+      return _classPrivateFieldGet(_this3, _items$1)[li.dataset.categoryId].elm = li;
     }); // drill down event
 
-    ul.querySelectorAll(':scope > .item.-haschild').forEach(function (item) {
-      item.addEventListener('click', function () {
-        item.classList.add('-selected'); // delete an existing lower columns
+    ul.querySelectorAll(':scope > .item.-haschild').forEach(function (li) {
+      li.addEventListener('click', function () {
+        li.classList.add('-selected'); // delete an existing lower columns
 
         if (_classPrivateFieldGet(_this3, _currentColumns).length > depth + 1) {
           for (var i = depth + 1; i < _classPrivateFieldGet(_this3, _currentColumns).length; i++) {
@@ -3633,14 +3633,14 @@
           _iterator2.f();
         }
 
-        _classPrivateFieldGet(_this3, _items$1)[item.dataset.id].selected = true;
+        _classPrivateFieldGet(_this3, _items$1)[li.dataset.id].selected = true;
 
-        _classPrivateMethodGet(_this3, _getSubColumn, _getSubColumn2).call(_this3, item.dataset.id, depth + 1);
+        _classPrivateMethodGet(_this3, _getSubColumn, _getSubColumn2).call(_this3, li.dataset.id, depth + 1);
       });
     }); // select/deselect a item (attribute)
 
-    listItems.forEach(function (item) {
-      var checkbox = item.querySelector(':scope > input[type="checkbox"]');
+    listItems.forEach(function (li) {
+      var checkbox = li.querySelector(':scope > input[type="checkbox"]');
       checkbox.addEventListener('click', function (e) {
         e.stopPropagation();
 
