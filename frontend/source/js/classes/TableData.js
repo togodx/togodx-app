@@ -128,7 +128,16 @@ export default class TableData {
     // restore
     BUTTONS.find(button => button.dataset.button === 'restore').addEventListener('click', e => {
       e.stopPropagation();
-      this.#condition.attributes.forEach (attribute => {
+      // property (attribute)
+      console.log(this.#condition)
+      ConditionBuilder.setProperties(this.#condition.properties.map(property => {
+        return {
+          subject: property.subject,
+          property: property.property
+        }
+      }));
+      // attribute (classification/distribution)
+      this.#condition.attributes.forEach(attribute => {
         ConditionBuilder.setPropertyValues({
           subject: attribute.subject,
           property: attribute.property,
@@ -140,7 +149,7 @@ export default class TableData {
             }
           })
         });
-      })
+      });
       // this.#condition.properties.forEach (property => {
       //   ConditionBuilder.setPropertyValues({
       //     subject: property.subject,

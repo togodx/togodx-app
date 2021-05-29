@@ -27,6 +27,7 @@ export default class ConditionBuilderView {
 
     // event listeners
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, e => {
+      console.log(e.detail)
       switch (e.detail.action) {
         case 'add':
           this.#addProperty(e.detail.condition.subject, e.detail.condition.property);
@@ -70,6 +71,7 @@ export default class ConditionBuilderView {
   }
 
   #addProperty(subject, property) {
+    console.log(property)
     // make view
     const view = document.createElement('div');
     view.classList.add('stacking-condition-view');

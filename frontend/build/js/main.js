@@ -2878,8 +2878,9 @@
       value: function addProperty(condition) {
         console.log('addProperty', condition); // store
 
-        _classPrivateFieldGet(this, _propertyConditions).push(condition); // evaluate
+        _classPrivateFieldGet(this, _propertyConditions).push(condition);
 
+        console.log(_classPrivateFieldGet(this, _propertyConditions)); // evaluate
 
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
 
@@ -2914,7 +2915,8 @@
     }, {
       key: "removeProperty",
       value: function removeProperty(propertyId) {
-        // remove from store
+        console.log('removeProperty', propertyId); // remove from store
+
         var index = _classPrivateFieldGet(this, _propertyConditions).findIndex(function (condition) {
           return condition.property.propertyId === propertyId;
         });
@@ -2957,16 +2959,52 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
+      key: "setProperties",
+      value: function setProperties(conditions) {
+        var _this = this;
+
+        console.log(conditions);
+        var propertyIds = conditions.map(function (condition) {
+          return condition.property.propertyId;
+        });
+        console.log(propertyIds);
+        Records$1.properties.forEach(function (property) {
+          var isExistInNewConditions = propertyIds.indexOf(property.propertyId) !== -1;
+
+          var index = _classPrivateFieldGet(_this, _propertyConditions).findIndex(function (condition) {
+            return condition.property.propertyId === property.propertyId;
+          });
+
+          if (isExistInNewConditions) {
+            if (index === -1) {
+              console.log('add'); // if the property exists in new conditions, and if the property doesn't exist in my conditions, add it
+
+              _this.addProperty(conditions.find(function (condition) {
+                return condition.property.propertyId === property.propertyId;
+              }));
+            }
+          } else {
+            if (index !== -1) {
+              // if the property doesn't exist in new conditions, and the proerty exists in my conditions, remove it
+              console.log('remove');
+              console.log(index);
+
+              _this.removeProperty(property.propertyId);
+            }
+          }
+        });
+      }
+    }, {
       key: "setPropertyValues",
       value: function setPropertyValues(condition) {
-        var _this = this;
+        var _this2 = this;
 
         var originalValues = Records$1.getProperty(condition.property.propertyId).values;
         var startIndex = originalValues.findIndex(function (originalValue) {
           return originalValue.categoryId === condition.values[0].categoryId;
         });
         originalValues.forEach(function (originalValue, originalIndex) {
-          var index = _classPrivateFieldGet(_this, _attributeConditions).findIndex(function (attrCondition) {
+          var index = _classPrivateFieldGet(_this2, _attributeConditions).findIndex(function (attrCondition) {
             return attrCondition.property.propertyId === condition.property.propertyId && attrCondition.value.categoryId === originalValue.categoryId;
           });
 
@@ -2974,7 +3012,7 @@
             var value = condition.values[originalIndex - startIndex]; // add
 
             if (index === -1) {
-              _this.addPropertyValue({
+              _this2.addPropertyValue({
                 subject: condition.subject,
                 property: condition.property,
                 value: value
@@ -2983,7 +3021,7 @@
           } else {
             // remove
             if (index !== -1) {
-              _this.removePropertyValue(condition.property.propertyId, originalValue.categoryId);
+              _this2.removePropertyValue(condition.property.propertyId, originalValue.categoryId);
             }
           }
         });
@@ -2991,7 +3029,7 @@
     }, {
       key: "makeQueryParameter",
       value: function makeQueryParameter() {
-        var _this2 = this;
+        var _this3 = this;
 
         // create properties
         var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (condition) {
@@ -3019,10 +3057,10 @@
               propertyId: propertyId,
               categoryIds: attributesForEachProperties[propertyId]
             },
-            property: _classPrivateFieldGet(_this2, _attributeConditions).find(function (condition) {
+            property: _classPrivateFieldGet(_this3, _attributeConditions).find(function (condition) {
               return condition.property.propertyId === propertyId;
             }).property,
-            subject: _classPrivateFieldGet(_this2, _attributeConditions).find(function (condition) {
+            subject: _classPrivateFieldGet(_this3, _attributeConditions).find(function (condition) {
               return condition.property.propertyId === propertyId;
             }).subject
           };
@@ -3154,6 +3192,8 @@
 
 
     DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
+      console.log(e.detail);
+
       switch (e.detail.action) {
         case 'add':
           _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, e.detail.condition.subject, e.detail.condition.property);
@@ -3206,7 +3246,8 @@
   }
 
   function _addProperty2(subject, property) {
-    // make view
+    console.log(property); // make view
+
     var view = document.createElement('div');
     view.classList.add('stacking-condition-view');
     view.dataset.propertyId = property.propertyId;
@@ -4453,12 +4494,24 @@
 
 
     DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
-      if (e.detail.action === 'remove') {
-        if (e.detail.propertyId === _classPrivateFieldGet(_this, _property).propertyId) {
-          _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = false;
+      switch (e.detail.action) {
+        case 'add':
+          if (e.detail.condition.property.propertyId === _classPrivateFieldGet(_this, _property).propertyId) {
+            _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = true;
 
-          _classPrivateFieldGet(_this, _ROOT$3).classList.remove('-allselected');
-        }
+            _classPrivateFieldGet(_this, _ROOT$3).classList.add('-allselected');
+          }
+
+          break;
+
+        case 'remove':
+          if (e.detail.propertyId === _classPrivateFieldGet(_this, _property).propertyId) {
+            _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = false;
+
+            _classPrivateFieldGet(_this, _ROOT$3).classList.remove('-allselected');
+          }
+
+          break;
       }
     }); // get property data
 
@@ -5204,7 +5257,15 @@
       BUTTONS.find(function (button) {
         return button.dataset.button === 'restore';
       }).addEventListener('click', function (e) {
-        e.stopPropagation();
+        e.stopPropagation(); // property (attribute)
+
+        console.log(_classPrivateFieldGet(_this, _condition));
+        ConditionBuilder$1.setProperties(_classPrivateFieldGet(_this, _condition).properties.map(function (property) {
+          return {
+            subject: property.subject,
+            property: property.property
+          };
+        })); // attribute (classification/distribution)
 
         _classPrivateFieldGet(_this, _condition).attributes.forEach(function (attribute) {
           ConditionBuilder$1.setPropertyValues({
