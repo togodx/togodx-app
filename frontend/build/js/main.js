@@ -1,22 +1,6 @@
 (function () {
   'use strict';
 
-  function _typeof(obj) {
-    "@babel/helpers - typeof";
-
-    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-      _typeof = function (obj) {
-        return typeof obj;
-      };
-    } else {
-      _typeof = function (obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-      };
-    }
-
-    return _typeof(obj);
-  }
-
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
@@ -37,55 +21,6 @@
     if (protoProps) _defineProperties(Constructor.prototype, protoProps);
     if (staticProps) _defineProperties(Constructor, staticProps);
     return Constructor;
-  }
-
-  function _defineProperty(obj, key, value) {
-    if (key in obj) {
-      Object.defineProperty(obj, key, {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key] = value;
-    }
-
-    return obj;
-  }
-
-  function ownKeys(object, enumerableOnly) {
-    var keys = Object.keys(object);
-
-    if (Object.getOwnPropertySymbols) {
-      var symbols = Object.getOwnPropertySymbols(object);
-      if (enumerableOnly) symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      });
-      keys.push.apply(keys, symbols);
-    }
-
-    return keys;
-  }
-
-  function _objectSpread2(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i] != null ? arguments[i] : {};
-
-      if (i % 2) {
-        ownKeys(Object(source), true).forEach(function (key) {
-          _defineProperty(target, key, source[key]);
-        });
-      } else if (Object.getOwnPropertyDescriptors) {
-        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-      } else {
-        ownKeys(Object(source)).forEach(function (key) {
-          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-        });
-      }
-    }
-
-    return target;
   }
 
   function _inherits(subClass, superClass) {
@@ -185,42 +120,6 @@
     };
 
     return _wrapNativeSuper(Class);
-  }
-
-  function _objectWithoutPropertiesLoose(source, excluded) {
-    if (source == null) return {};
-    var target = {};
-    var sourceKeys = Object.keys(source);
-    var key, i;
-
-    for (i = 0; i < sourceKeys.length; i++) {
-      key = sourceKeys[i];
-      if (excluded.indexOf(key) >= 0) continue;
-      target[key] = source[key];
-    }
-
-    return target;
-  }
-
-  function _objectWithoutProperties(source, excluded) {
-    if (source == null) return {};
-
-    var target = _objectWithoutPropertiesLoose(source, excluded);
-
-    var key, i;
-
-    if (Object.getOwnPropertySymbols) {
-      var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-
-      for (i = 0; i < sourceSymbolKeys.length; i++) {
-        key = sourceSymbolKeys[i];
-        if (excluded.indexOf(key) >= 0) continue;
-        if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
-        target[key] = source[key];
-      }
-    }
-
-    return target;
   }
 
   function _assertThisInitialized(self) {
@@ -2252,452 +2151,74 @@
       for (var _len6 = arguments.length, t = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
         t[_key6] = arguments[_key6];
       }
-
-      return h.steps.apply(h, [this].concat(t));
-    }
-  };
-
-  function m(t) {
-    return "function" === r(t) && t.rangeArgs;
+    };
   }
 
-  function f(t, e, r) {
-    return isNaN(t) ? e : isNaN(e) ? t : t + (e - t) * r;
+  function _classPrivateFieldGet(receiver, privateMap) {
+    var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get");
+
+    return _classApplyDescriptorGet(receiver, descriptor);
   }
 
-  h.steps = function (t, e) {
-    var _ref18, _a$rangeArgs$colors, _a$rangeArgs$colors2;
+  function _classPrivateFieldSet(receiver, privateMap, value) {
+    var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set");
 
-    var r = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    var a;
-    m(t) && ((_ref18 = [t, e], a = _ref18[0], r = _ref18[1], _ref18), (_a$rangeArgs$colors = a.rangeArgs.colors, _a$rangeArgs$colors2 = _slicedToArray(_a$rangeArgs$colors, 2), t = _a$rangeArgs$colors2[0], e = _a$rangeArgs$colors2[1], _a$rangeArgs$colors));
+    _classApplyDescriptorSet(receiver, descriptor, value);
 
-    var _r10 = r,
-        s = _r10.maxDeltaE,
-        o = _r10.deltaEMethod,
-        _r10$steps = _r10.steps,
-        i = _r10$steps === void 0 ? 2 : _r10$steps,
-        _r10$maxSteps = _r10.maxSteps,
-        n = _r10$maxSteps === void 0 ? 1e3 : _r10$maxSteps,
-        c = _objectWithoutProperties(_r10, ["maxDeltaE", "deltaEMethod", "steps", "maxSteps"]);
+    return value;
+  }
 
-    a || (t = h.get(t), e = h.get(e), a = h.range(t, e, c));
-    var l = this.deltaE(e),
-        p = s > 0 ? Math.max(i, Math.ceil(l / s) + 1) : i,
-        u = [];
-    if (void 0 !== n && (p = Math.min(p, n)), 1 === p) u = [{
-      p: .5,
-      color: a(.5)
-    }];else {
-      var _t46 = 1 / (p - 1);
-
-      u = Array.from({
-        length: p
-      }, function (e, r) {
-        var s = r * _t46;
-        return {
-          p: s,
-          color: a(s)
-        };
-      });
+  function _classExtractFieldDescriptor(receiver, privateMap, action) {
+    if (!privateMap.has(receiver)) {
+      throw new TypeError("attempted to " + action + " private field on non-instance");
     }
 
-    if (s > 0) {
-      var _t47 = u.reduce(function (t, e, r) {
-        if (0 === r) return 0;
-        var a = e.color.deltaE(u[r - 1].color, o);
-        return Math.max(t, a);
-      }, 0);
+    return privateMap.get(receiver);
+  }
 
-      for (; _t47 > s;) {
-        _t47 = 0;
+  function _classApplyDescriptorGet(receiver, descriptor) {
+    if (descriptor.get) {
+      return descriptor.get.call(receiver);
+    }
 
-        for (var _e17 = 1; _e17 < u.length && u.length < n; _e17++) {
-          var _r11 = u[_e17 - 1],
-              _s5 = u[_e17],
-              _o2 = (_s5.p + _r11.p) / 2,
-              _i5 = a(_o2);
+    return descriptor.value;
+  }
 
-          _t47 = Math.max(_t47, _i5.deltaE(_r11.color), _i5.deltaE(_s5.color)), u.splice(_e17, 0, {
-            p: _o2,
-            color: a(_o2)
-          }), _e17++;
-        }
+  function _classApplyDescriptorSet(receiver, descriptor, value) {
+    if (descriptor.set) {
+      descriptor.set.call(receiver, value);
+    } else {
+      if (!descriptor.writable) {
+        throw new TypeError("attempted to set read only private field");
       }
+
+      descriptor.value = value;
+    }
+  }
+
+  function _classPrivateMethodGet(receiver, privateSet, fn) {
+    if (!privateSet.has(receiver)) {
+      throw new TypeError("attempted to get private field on non-instance");
     }
 
-    return u = u.map(function (t) {
-      return t.color;
-    }), u;
-  }, h.range = function (t, e) {
-    var r = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    return fn;
+  }
 
-    if (m(t)) {
-      var _r12 = t,
-          _a12 = e;
-      return h.range.apply(h, _toConsumableArray(_r12.rangeArgs.colors).concat([_objectSpread2(_objectSpread2({}, _r12.rangeArgs.options), _a12)]));
+  var DefaultEventEmitter = /*#__PURE__*/function (_EventTarget) {
+    _inherits(DefaultEventEmitter, _EventTarget);
+
+    var _super = _createSuper(DefaultEventEmitter);
+
+    function DefaultEventEmitter() {
+      _classCallCheck(this, DefaultEventEmitter);
+
+      return _super.call(this);
     }
 
-    var a = r.space,
-        s = r.outputSpace,
-        o = r.progression,
-        i = r.premultiplied;
-    t = new h(t), e = new h(e);
-    var n = {
-      colors: [t, e],
-      options: r
-    };
+    return DefaultEventEmitter;
+  }( /*#__PURE__*/_wrapNativeSuper(EventTarget));
 
-    if (a = a ? h.space(a) : h.spaces[h.defaults.interpolationSpace] || t.space, s = s ? h.space(s) : t.space || a, t = t.to(a).toGamut(), e = e.to(a).toGamut(), a.coords.hue && a.coords.hue.isAngle) {
-      var _s6 = r.hue = r.hue || "shorter";
-
-      var _ref19 = function (t, e) {
-        if ("raw" === t) return e;
-
-        var _e$map = e.map(u),
-            _e$map2 = _slicedToArray(_e$map, 2),
-            r = _e$map2[0],
-            a = _e$map2[1],
-            s = a - r;
-
-        return "increasing" === t ? s < 0 && (a += 360) : "decreasing" === t ? s > 0 && (r += 360) : "longer" === t ? -180 < s && s < 180 && (s > 0 ? a += 360 : r += 360) : "shorter" === t && (s > 180 ? r += 360 : s < -180 && (a += 360)), [r, a];
-      }(_s6, [t[a.id].hue, e[a.id].hue]);
-
-      var _ref20 = _slicedToArray(_ref19, 2);
-
-      t[a.id].hue = _ref20[0];
-      e[a.id].hue = _ref20[1];
-    }
-
-    return i && (t.coords = t.coords.map(function (e) {
-      return e * t.alpha;
-    }), e.coords = e.coords.map(function (t) {
-      return t * e.alpha;
-    })), Object.assign(function (r) {
-      r = o ? o(r) : r;
-      var n = t.coords.map(function (t, a) {
-        return f(t, e.coords[a], r);
-      }),
-          c = f(t.alpha, e.alpha, r),
-          l = new h(a, n, c);
-      return i && (l.coords = l.coords.map(function (t) {
-        return t / c;
-      })), s !== a && (l = l.to(s)), l;
-    }, {
-      rangeArgs: n
-    });
-  }, Object.assign(h.defaults, {
-    interpolationSpace: "lab"
-  }), Object.assign(h.prototype, d), h.statify(Object.keys(d)), h.prototype.deltaECMC = function (t) {
-    var _ref21 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-        _ref21$l = _ref21.l,
-        e = _ref21$l === void 0 ? 2 : _ref21$l,
-        _ref21$c = _ref21.c,
-        r = _ref21$c === void 0 ? 1 : _ref21$c;
-
-    t = h.get(t);
-
-    var _this$lab = _slicedToArray(this.lab, 3),
-        a = _this$lab[0],
-        s = _this$lab[1],
-        o = _this$lab[2],
-        i = this.chroma,
-        n = this.hue,
-        _t$lab = _slicedToArray(t.lab, 3),
-        c = _t$lab[0],
-        l = _t$lab[1],
-        p = _t$lab[2],
-        u = t.chroma;
-
-    i < 0 && (i = 0), u < 0 && (u = 0);
-    var d = a - c,
-        m = i - u,
-        f = s - l,
-        g = o - p;
-    var M = Math.PI / 180;
-    var b = Math.pow(f, 2) + Math.pow(g, 2) - Math.pow(m, 2),
-        w = .511;
-    a >= 16 && (w = .040975 * a / (1 + .01765 * a));
-    var y,
-        S = .0638 * i / (1 + .0131 * i) + .638;
-    Number.isNaN(n) && (n = 0), y = n >= 164 && n <= 345 ? .56 + Math.abs(.2 * Math.cos((n + 168) * M)) : .36 + Math.abs(.4 * Math.cos((n + 35) * M));
-    var C = Math.pow(i, 4),
-        k = Math.sqrt(C / (C + 1900)),
-        Y = Math.pow(d / (e * w), 2);
-    return Y += Math.pow(m / (r * S), 2), Y += b / Math.pow(S * (k * y + 1 - k), 2), Math.sqrt(Y);
-  }, h.statify(["deltaECMC"]), h.prototype.deltaE2000 = function (t) {
-    var _ref22 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-        _ref22$kL = _ref22.kL,
-        e = _ref22$kL === void 0 ? 1 : _ref22$kL,
-        _ref22$kC = _ref22.kC,
-        r = _ref22$kC === void 0 ? 1 : _ref22$kC,
-        _ref22$kH = _ref22.kH,
-        a = _ref22$kH === void 0 ? 1 : _ref22$kH;
-
-    t = h.get(t);
-
-    var _this$lab2 = _slicedToArray(this.lab, 3),
-        s = _this$lab2[0],
-        o = _this$lab2[1],
-        i = _this$lab2[2],
-        n = this.chroma,
-        _t$lab2 = _slicedToArray(t.lab, 3),
-        c = _t$lab2[0],
-        l = _t$lab2[1],
-        p = _t$lab2[2],
-        u = t.chroma;
-
-    n < 0 && (n = 0), u < 0 && (u = 0);
-    var d = (n + u) / 2,
-        m = Math.pow(d, 7);
-    var f = Math.pow(25, 7);
-    var g = .5 * (1 - Math.sqrt(m / (m + f))),
-        M = (1 + g) * o,
-        b = (1 + g) * l,
-        w = Math.sqrt(Math.pow(M, 2) + Math.pow(i, 2)),
-        y = Math.sqrt(Math.pow(b, 2) + Math.pow(p, 2));
-    var S = Math.PI,
-        C = 180 / S,
-        k = S / 180;
-    var Y = 0 === M && 0 === i ? 0 : Math.atan2(i, M),
-        z = 0 === b && 0 === p ? 0 : Math.atan2(p, b);
-    Y < 0 && (Y += 2 * S), z < 0 && (z += 2 * S), Y *= C, z *= C;
-
-    var I,
-        X = c - s,
-        Z = y - w,
-        _ = z - Y,
-        v = Y + z,
-        G = Math.abs(_);
-
-    w * y == 0 ? I = 0 : G <= 180 ? I = _ : _ > 180 ? I = _ - 360 : _ < -180 ? I = _ + 360 : console.log("the unthinkable has happened");
-    var x,
-        N = 2 * Math.sqrt(y * w) * Math.sin(I * k / 2),
-        L = (s + c) / 2,
-        j = (w + y) / 2,
-        O = Math.pow(j, 7);
-    x = w * y == 0 ? v : G <= 180 ? v / 2 : v < 360 ? (v + 360) / 2 : (v - 360) / 2;
-    var A = Math.pow(L - 50, 2),
-        E = 1 + .015 * A / Math.sqrt(20 + A),
-        P = 1 + .045 * j,
-        D = 1;
-    D -= .17 * Math.cos((x - 30) * k), D += .24 * Math.cos(2 * x * k), D += .32 * Math.cos((3 * x + 6) * k), D -= .2 * Math.cos((4 * x - 63) * k);
-    var q = 1 + .015 * j * D,
-        T = 30 * Math.exp(-1 * Math.pow((x - 275) / 25, 2)),
-        $ = 2 * Math.sqrt(O / (O + f)),
-        R = Math.pow(X / (e * E), 2);
-    return R += Math.pow(Z / (r * P), 2), R += Math.pow(N / (a * q), 2), R += -1 * Math.sin(2 * T * k) * $ * (Z / (r * P)) * (N / (a * q)), Math.sqrt(R);
-  }, h.statify(["deltaE2000"]), h.prototype.deltaEJz = function (t) {
-    t = h.get(t);
-
-    var _this$jzczhz = _slicedToArray(this.jzczhz, 3),
-        e = _this$jzczhz[0],
-        r = _this$jzczhz[1],
-        a = _this$jzczhz[2],
-        _t$jzczhz = _slicedToArray(t.jzczhz, 3),
-        s = _t$jzczhz[0],
-        o = _t$jzczhz[1],
-        i = _t$jzczhz[2],
-        n = e - s,
-        c = r - o;
-
-    Number.isNaN(a) && Number.isNaN(i) ? (a = 0, i = 0) : Number.isNaN(a) ? a = i : Number.isNaN(i) && (i = a);
-    var l = a - i,
-        p = 2 * Math.sqrt(r * o) * Math.sin(l * Math.PI / 180);
-    return Math.sqrt(Math.pow(n, 2) + Math.pow(c, 2) + Math.pow(p, 2));
-  }, h.statify(["deltaEJz"]), h.prototype.deltaEITP = function (t) {
-    t = h.get(t);
-
-    var _this$ictcp = _slicedToArray(this.ictcp, 3),
-        e = _this$ictcp[0],
-        r = _this$ictcp[1],
-        a = _this$ictcp[2],
-        _t$ictcp = _slicedToArray(t.ictcp, 3),
-        s = _t$ictcp[0],
-        o = _t$ictcp[1],
-        i = _t$ictcp[2];
-
-    return 720 * Math.sqrt(Math.pow(e - s, 2) + .25 * Math.pow(r - o, 2) + Math.pow(a - i, 2));
-  }, h.statify(["deltaEITP"]), h.prototype.deltaEOK = function (t) {
-    var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    t = h.get(t);
-
-    var _this$oklab = _slicedToArray(this.oklab, 3),
-        r = _this$oklab[0],
-        a = _this$oklab[1],
-        s = _this$oklab[2],
-        o = Math.sqrt(Math.pow(a, 2) + Math.pow(s, 2)),
-        _t$oklab = _slicedToArray(t.oklab, 3),
-        i = _t$oklab[0],
-        n = _t$oklab[1],
-        c = _t$oklab[2],
-        l = Math.sqrt(Math.pow(n, 2) + Math.pow(c, 2));
-
-    e.ΔL = r - i, e.ΔC = o - l;
-    var p = Math.pow(a - n, 2) + Math.pow(s - c, 2) - Math.pow(e.ΔC, 2);
-    p < 0 && (p = 0), e.ΔH = Math.sqrt(p);
-    var u = Math.pow(e.ΔL, 2) + Math.pow(e.ΔC, 2) + p;
-    return Math.sqrt(u);
-  }, h.statify(["deltaEOK"]);
-  var g = {
-    aliceblue: [240 / 255, 248 / 255, 1],
-    antiquewhite: [250 / 255, 235 / 255, 215 / 255],
-    aqua: [0, 1, 1],
-    aquamarine: [127 / 255, 1, 212 / 255],
-    azure: [240 / 255, 1, 1],
-    beige: [245 / 255, 245 / 255, 220 / 255],
-    bisque: [1, 228 / 255, 196 / 255],
-    black: [0, 0, 0],
-    blanchedalmond: [1, 235 / 255, 205 / 255],
-    blue: [0, 0, 1],
-    blueviolet: [138 / 255, 43 / 255, 226 / 255],
-    brown: [165 / 255, 42 / 255, 42 / 255],
-    burlywood: [222 / 255, 184 / 255, 135 / 255],
-    cadetblue: [95 / 255, 158 / 255, 160 / 255],
-    chartreuse: [127 / 255, 1, 0],
-    chocolate: [210 / 255, 105 / 255, 30 / 255],
-    coral: [1, 127 / 255, 80 / 255],
-    cornflowerblue: [100 / 255, 149 / 255, 237 / 255],
-    cornsilk: [1, 248 / 255, 220 / 255],
-    crimson: [220 / 255, 20 / 255, 60 / 255],
-    cyan: [0, 1, 1],
-    darkblue: [0, 0, 139 / 255],
-    darkcyan: [0, 139 / 255, 139 / 255],
-    darkgoldenrod: [184 / 255, 134 / 255, 11 / 255],
-    darkgray: [169 / 255, 169 / 255, 169 / 255],
-    darkgreen: [0, 100 / 255, 0],
-    darkgrey: [169 / 255, 169 / 255, 169 / 255],
-    darkkhaki: [189 / 255, 183 / 255, 107 / 255],
-    darkmagenta: [139 / 255, 0, 139 / 255],
-    darkolivegreen: [85 / 255, 107 / 255, 47 / 255],
-    darkorange: [1, 140 / 255, 0],
-    darkorchid: [.6, 50 / 255, .8],
-    darkred: [139 / 255, 0, 0],
-    darksalmon: [233 / 255, 150 / 255, 122 / 255],
-    darkseagreen: [143 / 255, 188 / 255, 143 / 255],
-    darkslateblue: [72 / 255, 61 / 255, 139 / 255],
-    darkslategray: [47 / 255, 79 / 255, 79 / 255],
-    darkslategrey: [47 / 255, 79 / 255, 79 / 255],
-    darkturquoise: [0, 206 / 255, 209 / 255],
-    darkviolet: [148 / 255, 0, 211 / 255],
-    deeppink: [1, 20 / 255, 147 / 255],
-    deepskyblue: [0, 191 / 255, 1],
-    dimgray: [105 / 255, 105 / 255, 105 / 255],
-    dimgrey: [105 / 255, 105 / 255, 105 / 255],
-    dodgerblue: [30 / 255, 144 / 255, 1],
-    firebrick: [178 / 255, 34 / 255, 34 / 255],
-    floralwhite: [1, 250 / 255, 240 / 255],
-    forestgreen: [34 / 255, 139 / 255, 34 / 255],
-    fuchsia: [1, 0, 1],
-    gainsboro: [220 / 255, 220 / 255, 220 / 255],
-    ghostwhite: [248 / 255, 248 / 255, 1],
-    gold: [1, 215 / 255, 0],
-    goldenrod: [218 / 255, 165 / 255, 32 / 255],
-    gray: [128 / 255, 128 / 255, 128 / 255],
-    green: [0, 128 / 255, 0],
-    greenyellow: [173 / 255, 1, 47 / 255],
-    grey: [128 / 255, 128 / 255, 128 / 255],
-    honeydew: [240 / 255, 1, 240 / 255],
-    hotpink: [1, 105 / 255, 180 / 255],
-    indianred: [205 / 255, 92 / 255, 92 / 255],
-    indigo: [75 / 255, 0, 130 / 255],
-    ivory: [1, 1, 240 / 255],
-    khaki: [240 / 255, 230 / 255, 140 / 255],
-    lavender: [230 / 255, 230 / 255, 250 / 255],
-    lavenderblush: [1, 240 / 255, 245 / 255],
-    lawngreen: [124 / 255, 252 / 255, 0],
-    lemonchiffon: [1, 250 / 255, 205 / 255],
-    lightblue: [173 / 255, 216 / 255, 230 / 255],
-    lightcoral: [240 / 255, 128 / 255, 128 / 255],
-    lightcyan: [224 / 255, 1, 1],
-    lightgoldenrodyellow: [250 / 255, 250 / 255, 210 / 255],
-    lightgray: [211 / 255, 211 / 255, 211 / 255],
-    lightgreen: [144 / 255, 238 / 255, 144 / 255],
-    lightgrey: [211 / 255, 211 / 255, 211 / 255],
-    lightpink: [1, 182 / 255, 193 / 255],
-    lightsalmon: [1, 160 / 255, 122 / 255],
-    lightseagreen: [32 / 255, 178 / 255, 170 / 255],
-    lightskyblue: [135 / 255, 206 / 255, 250 / 255],
-    lightslategray: [119 / 255, 136 / 255, .6],
-    lightslategrey: [119 / 255, 136 / 255, .6],
-    lightsteelblue: [176 / 255, 196 / 255, 222 / 255],
-    lightyellow: [1, 1, 224 / 255],
-    lime: [0, 1, 0],
-    limegreen: [50 / 255, 205 / 255, 50 / 255],
-    linen: [250 / 255, 240 / 255, 230 / 255],
-    magenta: [1, 0, 1],
-    maroon: [128 / 255, 0, 0],
-    mediumaquamarine: [.4, 205 / 255, 170 / 255],
-    mediumblue: [0, 0, 205 / 255],
-    mediumorchid: [186 / 255, 85 / 255, 211 / 255],
-    mediumpurple: [147 / 255, 112 / 255, 219 / 255],
-    mediumseagreen: [60 / 255, 179 / 255, 113 / 255],
-    mediumslateblue: [123 / 255, 104 / 255, 238 / 255],
-    mediumspringgreen: [0, 250 / 255, 154 / 255],
-    mediumturquoise: [72 / 255, 209 / 255, .8],
-    mediumvioletred: [199 / 255, 21 / 255, 133 / 255],
-    midnightblue: [25 / 255, 25 / 255, 112 / 255],
-    mintcream: [245 / 255, 1, 250 / 255],
-    mistyrose: [1, 228 / 255, 225 / 255],
-    moccasin: [1, 228 / 255, 181 / 255],
-    navajowhite: [1, 222 / 255, 173 / 255],
-    navy: [0, 0, 128 / 255],
-    oldlace: [253 / 255, 245 / 255, 230 / 255],
-    olive: [128 / 255, 128 / 255, 0],
-    olivedrab: [107 / 255, 142 / 255, 35 / 255],
-    orange: [1, 165 / 255, 0],
-    orangered: [1, 69 / 255, 0],
-    orchid: [218 / 255, 112 / 255, 214 / 255],
-    palegoldenrod: [238 / 255, 232 / 255, 170 / 255],
-    palegreen: [152 / 255, 251 / 255, 152 / 255],
-    paleturquoise: [175 / 255, 238 / 255, 238 / 255],
-    palevioletred: [219 / 255, 112 / 255, 147 / 255],
-    papayawhip: [1, 239 / 255, 213 / 255],
-    peachpuff: [1, 218 / 255, 185 / 255],
-    peru: [205 / 255, 133 / 255, 63 / 255],
-    pink: [1, 192 / 255, 203 / 255],
-    plum: [221 / 255, 160 / 255, 221 / 255],
-    powderblue: [176 / 255, 224 / 255, 230 / 255],
-    purple: [128 / 255, 0, 128 / 255],
-    rebeccapurple: [.4, .2, .6],
-    red: [1, 0, 0],
-    rosybrown: [188 / 255, 143 / 255, 143 / 255],
-    royalblue: [65 / 255, 105 / 255, 225 / 255],
-    saddlebrown: [139 / 255, 69 / 255, 19 / 255],
-    salmon: [250 / 255, 128 / 255, 114 / 255],
-    sandybrown: [244 / 255, 164 / 255, 96 / 255],
-    seagreen: [46 / 255, 139 / 255, 87 / 255],
-    seashell: [1, 245 / 255, 238 / 255],
-    sienna: [160 / 255, 82 / 255, 45 / 255],
-    silver: [192 / 255, 192 / 255, 192 / 255],
-    skyblue: [135 / 255, 206 / 255, 235 / 255],
-    slateblue: [106 / 255, 90 / 255, 205 / 255],
-    slategray: [112 / 255, 128 / 255, 144 / 255],
-    slategrey: [112 / 255, 128 / 255, 144 / 255],
-    snow: [1, 250 / 255, 250 / 255],
-    springgreen: [0, 1, 127 / 255],
-    steelblue: [70 / 255, 130 / 255, 180 / 255],
-    tan: [210 / 255, 180 / 255, 140 / 255],
-    teal: [0, 128 / 255, 128 / 255],
-    thistle: [216 / 255, 191 / 255, 216 / 255],
-    tomato: [1, 99 / 255, 71 / 255],
-    turquoise: [64 / 255, 224 / 255, 208 / 255],
-    violet: [238 / 255, 130 / 255, 238 / 255],
-    wheat: [245 / 255, 222 / 255, 179 / 255],
-    white: [1, 1, 1],
-    whitesmoke: [245 / 255, 245 / 255, 245 / 255],
-    yellow: [1, 1, 0],
-    yellowgreen: [154 / 255, 205 / 255, 50 / 255]
-  };
-  h.hooks.add("parse-start", function (t) {
-    var e = t.str.toLowerCase(),
-        r = {
-      spaceId: "srgb",
-      coords: null,
-      alpha: 1
-    };
-    "transparent" === e ? (r.coords = g.black, r.alpha = 0) : r.coords = g[e], r.coords && (t.color = r);
-  });
+  var DefaultEventEmitter$1 = new DefaultEventEmitter();
 
   var _subjects = new WeakMap();
 
@@ -2728,15 +2249,8 @@
         for (var i = 0; i < subjects.length; i++) {
           var hue = 360 - 360 * i / subjects.length + 130;
           hue -= hue > 360 ? 360 : 0;
-          var srgb = new h('hsv', [hue, 60, 75]).to('srgb');
           subjects[i].hue = hue;
-          subjects[i].color = srgb;
-          subjects[i].colorCSSValue = "rgb(".concat(srgb.coords.map(function (channel) {
-            return channel * 256;
-          }).join(','), ")");
         }
-
-        console.log(subjects);
 
         _classPrivateFieldSet(this, _subjects, Object.freeze(subjects)); // set properties
 
@@ -2832,8 +2346,6 @@
 
   var _togoKey = new WeakMap();
 
-  var _userIds = new WeakMap();
-
   var _satisfyAggregation = new WeakSet();
 
   var ConditionBuilder = /*#__PURE__*/function () {
@@ -2858,11 +2370,6 @@
       });
 
       _togoKey.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _userIds.set(this, {
         writable: true,
         value: void 0
       });
@@ -3078,24 +2585,12 @@
         _classPrivateFieldSet(this, _subjectId, subjectId);
 
         _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this);
-      }
-    }, {
-      key: "setUserIds",
-      value: function setUserIds(ids) {
-        console.log(ids);
-
-        _classPrivateFieldSet(this, _userIds, ids);
       } // public accessor
 
     }, {
       key: "currentTogoKey",
       get: function get() {
         return _classPrivateFieldGet(this, _togoKey);
-      }
-    }, {
-      key: "userIds",
-      get: function get() {
-        return _classPrivateFieldGet(this, _userIds) === '' ? undefined : _classPrivateFieldGet(this, _userIds);
       } // private methods
 
     }]);
@@ -3121,7 +2616,7 @@
 
   var _EXEC_BUTTON = new WeakMap();
 
-  var _defineTogoKeys = new WeakSet();
+  var _defineTogoKeys$1 = new WeakSet();
 
   var _addProperty = new WeakSet();
 
@@ -3144,7 +2639,7 @@
 
     _addProperty.add(this);
 
-    _defineTogoKeys.add(this);
+    _defineTogoKeys$1.add(this);
 
     _TOGO_KEYS.set(this, {
       writable: true,
@@ -3214,7 +2709,7 @@
       }
     });
     DefaultEventEmitter$1.addEventListener(defineTogoKey, function (e) {
-      _classPrivateMethodGet(_this, _defineTogoKeys, _defineTogoKeys2).call(_this, e.detail);
+      _classPrivateMethodGet(_this, _defineTogoKeys$1, _defineTogoKeys2$1).call(_this, e.detail);
     });
     DefaultEventEmitter$1.addEventListener(mutateEstablishConditions, function (e) {
       _classPrivateFieldGet(_this, _EXEC_BUTTON).disabled = !e.detail;
@@ -3245,7 +2740,7 @@
     var view = document.createElement('div');
     view.classList.add('stacking-condition-view');
     view.dataset.propertyId = property.propertyId;
-    view.innerHTML = "\n    <div class=\"closebutton\"></div>\n    <ul class=\"path\">\n      <li>".concat(subject.subject, "</li>\n    </ul>\n    <div class=\"label\" style=\"color: ").concat(subject.colorCSSValue, ";\">").concat(property.label, "</div>");
+    view.innerHTML = "\n    <div class=\"closebutton\"></div>\n    <ul class=\"path\">\n      <li>".concat(subject.subject, "</li>\n    </ul>\n    <div class=\"label\" style=\"color: ").concat(App$1.getHslColor(subject.hue), ";\">").concat(property.label, "</div>");
 
     _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).insertAdjacentElement('beforeend', view);
 
@@ -3272,7 +2767,7 @@
     view.dataset.propertyId = property.propertyId;
     view.dataset.categoryId = value.categoryId; // view.dataset.range = [0, 0]; // TODO:
 
-    view.style.backgroundColor = subject.colorCSSValue;
+    view.style.backgroundColor = "hsl(".concat(subject.hue, ", 45%, 50%)");
     view.innerHTML = "\n    <div class=\"closebutton\"></div>\n    <ul class=\"path\">\n      <li>".concat(subject.subject, "</li>\n      <li>").concat(property.label, "</li>\n      ").concat(value.ancestors.map(function (ancestor) {
       return "<li>".concat(ancestor, "</li>");
     }).join(''), "\n    </ul>\n    <div class=\"label\">").concat(value.label, "</div>");
@@ -3367,20 +2862,19 @@
       }
     }]);
 
-    return StanzaManager;
-  }();
+  var _REPORT_MODAL = new WeakMap();
 
-  var StanzaManager$1 = new StanzaManager();
+  var _EXIT_BUTTON = new WeakMap();
 
   var _templates = new WeakMap();
 
   var _BODY$1 = new WeakMap();
 
-  var _STANZAS_CONTAINER = new WeakMap();
+  var _stanzaContainer = new WeakSet();
 
-  var _showStanza = new WeakSet();
+  var _stanza = new WeakSet();
 
-  var _hideStanza = new WeakSet();
+  var _hidePopUp = new WeakSet();
 
   var ReportsView = /*#__PURE__*/function () {
     function ReportsView(elm) {
@@ -3388,9 +2882,15 @@
 
       _classCallCheck(this, ReportsView);
 
-      _hideStanza.add(this);
+      _hidePopUp.add(this);
 
-      _showStanza.add(this);
+      _stanza.add(this);
+
+      _stanzaContainer.add(this);
+
+      _header.add(this);
+
+      _showPopUp.add(this);
 
       _templates.set(this, {
         writable: true,
@@ -3402,28 +2902,48 @@
         value: void 0
       });
 
-      _STANZAS_CONTAINER.set(this, {
+      _ROOT$7.set(this, {
         writable: true,
         value: void 0
       });
 
-      this._stanzas = {}; // references
+      _REPORT_MODAL.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _EXIT_BUTTON.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      // make popup element
+      _classPrivateFieldSet(this, _ROOT$7, document.createElement("section"));
+
+      _classPrivateFieldGet(this, _ROOT$7).className = "report-modal";
+      document.querySelector("body").insertAdjacentElement("beforeend", _classPrivateFieldGet(this, _ROOT$7)); // references
+
+      this._stanzas = {};
+
+      _classPrivateFieldSet(this, _BODY$1, document.querySelector("body"));
 
       _classPrivateFieldSet(this, _BODY$1, document.querySelector('body'));
 
-      _classPrivateFieldSet(this, _STANZAS_CONTAINER, elm.querySelector(':scope > .stanzas'));
+      _classPrivateFieldSet(this, _EXIT_BUTTON, document.createElement("div"));
 
-      var returnButton = elm.querySelector(':scope > footer > button.return'); // attach event
+      _classPrivateFieldGet(this, _EXIT_BUTTON).className = "close-button";
+      var returnButton = elm.querySelector(":scope > footer > button.return"); // attach event
 
       returnButton.addEventListener('click', function () {
         _classPrivateFieldGet(_this, _BODY$1).dataset.display = 'properties';
       }); // event listener
 
+
       DefaultEventEmitter$1.addEventListener(showStanza, function (e) {
-        _classPrivateMethodGet(_this, _showStanza, _showStanza2).call(_this, e.detail.subject, e.detail.properties);
+        _classPrivateMethodGet(_this, _showPopUp, _showPopUp2).call(_this, e.detail.subject, e.detail.properties);
       });
       DefaultEventEmitter$1.addEventListener(hideStanza, function (e) {
-        _classPrivateMethodGet(_this, _hideStanza, _hideStanza2).call(_this);
+        _classPrivateMethodGet(_this, _hidePopUp, _hidePopUp2).call(_this);
       });
     } // private methods
 
@@ -3447,9 +2967,10 @@
   function _showStanza2(subject, properties) {
     console.log(subject, properties); // make stanzas
 
-    _classPrivateFieldGet(this, _STANZAS_CONTAINER).innerHTML = StanzaManager$1.draw(subject.id, subject.value, 'uniplot') + properties.map(function (property) {
+    stanzaContainer.className = "stanzas";
+    stanzaContainer.innerHTML = _classPrivateMethodGet(this, _stanza, _stanza2).call(this, subject.id, subject.value) + properties.map(function (property) {
       if (property === undefined) {
-        return '';
+        return "";
       } else {
         var _subject = Records$1.subjects.find(function (subject) {
           return subject.properties.some(function (subjectProperty) {
@@ -3458,7 +2979,7 @@
         }); // TODO: 1個目のアトリビュートしか返していない
 
 
-        return StanzaManager$1.draw(_subject.subjectId, property.attributes[0].id, 'uniplot');
+        return _classPrivateMethodGet(_this2, _stanza, _stanza2).call(_this2, _subject.subjectId, property.attributes[0].id);
       }
     }).join('');
   }
@@ -3846,20 +3367,6 @@
     });
   }
 
-  /**
-   * 
-   * @param {Color} baseColor 
-   * @param {Color} tintColor 
-   */
-
-  function colorTintByHue(baseColor, hue) {
-    return baseColor.mix(new h('hsv', [hue, 70, 50]), .2).set({
-      lightness: function lightness(_lightness) {
-        return _lightness * 1.2;
-      }
-    }).to('srgb');
-  }
-
   var NUM_OF_GRID = 4;
 
   var _items = new WeakMap();
@@ -4128,7 +3635,7 @@
   }
 
   var MIN_PIN_SIZE = 12;
-  var MAX_PIN_SIZE = 36;
+  var MAX_PIN_SIZE = 20;
   var RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
 
   var _subject$1 = new WeakMap();
@@ -4197,8 +3704,8 @@
     elm.innerHTML = _classPrivateFieldGet(this, _values).map(function (value, index) {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / _sum * 100;
-      value.baseColor = colorTintByHue(subject.color, 360 * index / values.length);
-      return "\n        <li class=\"track-value-view\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n          <div class=\"pin\"></div>\n        </li>");
+      value.color = "hsla(".concat(360 * index / values.length, ", 70%, 50%, .075)");
+      return "\n        <li class=\"track-value-view\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"color\" style=\"background-color: ").concat(value.color, ";\"></div>\n          <div class=\"heatmap\"></div>\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n          <div class=\"pin\"></div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .track-value-view').forEach(function (elm, index) {
       // reference
@@ -4322,6 +3829,7 @@
     })));
     max = isLog10 ? Math.log10(max) : max;
     var fixedWidth = isArea ? 0 : 100 / _classPrivateFieldGet(this, _values).length;
+    var width;
     var left = 0;
 
     _classPrivateFieldGet(this, _values).forEach(function (value) {
@@ -4331,6 +3839,7 @@
       }).join(','), ")");
       value.elm.style.width = width + '%';
       value.elm.style.left = left + '%';
+      value.elm.querySelector(':scope > .heatmap').style.backgroundColor = "rgba(51, 50, 48, ".concat(1 - (isLog10 ? value.countLog10 : value.count) / max, ")");
       left += width;
     });
   }
@@ -4350,7 +3859,6 @@
           value.elm.classList.add('-pinsticking'); // pin
 
           var ratio = userValue.count / value.count;
-          ratio = ratio > 1 ? 1 : ratio;
           var size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
@@ -4376,7 +3884,7 @@
 
   var _sparqlist = new WeakMap();
 
-  var _ROOT$3 = new WeakMap();
+  var _ROOT$4 = new WeakMap();
 
   var _LOADING_VIEW$1 = new WeakMap();
 
@@ -4410,7 +3918,7 @@
       value: void 0
     });
 
-    _ROOT$3.set(this, {
+    _ROOT$4.set(this, {
       writable: true,
       value: void 0
     });
@@ -4439,7 +3947,7 @@
     var elm = document.createElement('div');
     container.insertAdjacentElement('beforeend', elm);
 
-    _classPrivateFieldSet(this, _ROOT$3, elm);
+    _classPrivateFieldSet(this, _ROOT$4, elm);
 
     _classPrivateFieldSet(this, _subject, subject);
 
@@ -4453,7 +3961,7 @@
     elm.dataset.propertyId = property.propertyId;
     elm.dataset.collapse = property.propertyId; // make html
 
-    elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <h2 class=\"title\">").concat(property.label, "</h2>\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview\" style=\"background-color: ").concat(subject.colorCSSValue, ";\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <p class=\"description\">").concat(property.description, "</p>\n        <label><input type=\"checkbox\">All properties</label>\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
+    elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <h2 class=\"title\">").concat(property.label, "</h2>\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview\" style=\"background-color: ").concat(App$1.getHslColor(subject.hue), ";\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <p class=\"description\">").concat(property.description, "</p>\n        <label><input type=\"checkbox\">All properties</label>\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
     var valuesContainer = elm.querySelector(':scope > .row.-upper > .values');
 
     _classPrivateFieldSet(this, _OVERVIEW_CONTAINER, valuesContainer.querySelector(':scope > .overview > .inner'));
@@ -4477,12 +3985,12 @@
           property: _classPrivateFieldGet(_this, _property)
         });
 
-        _classPrivateFieldGet(_this, _ROOT$3).classList.add('-allselected');
+        _classPrivateFieldGet(_this, _ROOT$4).classList.add('-allselected');
       } else {
         // remove
         ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this, _property).propertyId);
 
-        _classPrivateFieldGet(_this, _ROOT$3).classList.remove('-allselected');
+        _classPrivateFieldGet(_this, _ROOT$4).classList.remove('-allselected');
       }
     }); // event listener
 
@@ -4543,7 +4051,7 @@
     _classCallCheck(this, ConceptView);
 
     elm.classList.add('concept-view');
-    elm.innerHTML = "\n    <h3 class=\"title\" style=\"background-color: ".concat(subject.colorCSSValue, ";\">\n      <span>").concat(subject.subject, "</span>\n    </h3>\n    <div class=\"properties\"></div>"); // make tracks
+    elm.innerHTML = "\n    <h3 class=\"title\" style=\"background-color: ".concat(App$1.getHslColor(subject.hue), ";\">\n      <span>").concat(subject.subject, "</span>\n    </h3>\n    <div class=\"properties\"></div>"); // make tracks
 
     var properties = subject.properties;
     var propertiesContainer = elm.querySelector(':scope > .properties');
@@ -4556,7 +4064,7 @@
 
   var _propertyId = new WeakMap();
 
-  var _color = new WeakMap();
+  var _hue = new WeakMap();
 
   var _COUNTS = new WeakMap();
 
@@ -4578,7 +4086,7 @@
       value: void 0
     });
 
-    _color.set(this, {
+    _hue.set(this, {
       writable: true,
       value: void 0
     });
@@ -4602,7 +4110,7 @@
 
     _classPrivateFieldSet(this, _propertyId, _property.property.propertyId);
 
-    _classPrivateFieldSet(this, _color, _property.subject.colorCSSValue);
+    _classPrivateFieldSet(this, _hue, App$1.getHslColor(_property.subject.hue));
 
     elm.classList.add('statistics-view'); // make HTML
 
@@ -4658,7 +4166,7 @@
 
     _classPrivateFieldGet(this, _COUNTS).innerHTML = counts.map(function (count) {
       var position = count / countMax < .5 ? ' -below' : '';
-      return "\n      <div class=\"bar\" style=\"height: ".concat(count / countMax * 100, "%; background-color: ").concat(_classPrivateFieldGet(_this2, _color), ";\">\n        <div class=\"value").concat(position, "\">").concat(count.toLocaleString(), "</div>\n      </div>");
+      return "\n      <div class=\"bar\" style=\"height: ".concat(count / countMax * 100, "%; background-color: ").concat(_classPrivateFieldGet(_this2, _hue), ";\">\n        <div class=\"value").concat(position, "\">").concat(count.toLocaleString(), "</div>\n      </div>");
     }).join(''); // rate
 
     var rates = categoryIds.map(function (categoryId, index) {
@@ -4670,7 +4178,7 @@
 
     _classPrivateFieldGet(this, _RATES).innerHTML = rates.map(function (rate) {
       var position = rate / rateMax < .5 ? ' -below' : '';
-      return "\n      <div class=\"bar\" style=\"height: ".concat(rate / rateMax * 100, "%; background-color: ").concat(_classPrivateFieldGet(_this2, _color), ";\">\n        <div class=\"value").concat(position, "\">").concat(rate.toLocaleString(), "</div>\n      </div>");
+      return "\n      <div class=\"bar\" style=\"height: ".concat(rate / rateMax * 100, "%; background-color: ").concat(_classPrivateFieldGet(_this2, _hue), ";\">\n        <div class=\"value").concat(position, "\">").concat(rate.toLocaleString(), "</div>\n      </div>");
     }).join(''); // tick
 
     var labels = categoryIds.map(function (categoryId) {
@@ -4865,9 +4373,9 @@
     DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
     _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(tableData.condition.togoKey, "</div>\n        </div>\n      </th>\n      ").concat(tableData.condition.attributes.map(function (property) {
-      return "\n      <th>\n        <div class=\"inner -propertyvalue\" style=\"background-color: ".concat(property.subject.colorCSSValue, "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
+      return "\n      <th data-subject-id=\"".concat(property.subject.subjectId, "\" data-property-label=\"").concat(property.property.label, "\">\n        <div class=\"inner -propertyvalue\"  style=\"background-color: ").concat(App$1.getHslColor(property.subject.hue), "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
     }).join(''), "\n      ").concat(tableData.condition.properties.map(function (property) {
-      return "\n      <th>\n        <div class=\"inner -property\" style=\"color: ".concat(property.subject.colorCSSValue, "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
+      return "\n      <th>\n        <div class=\"inner -property\" style=\"color: ".concat(App$1.getHslColor(property.subject.hue), "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
     }).join('')); // make stats
 
     _classPrivateFieldGet(this, _STATS).innerHTML = '<td><div class="inner"><div></td>' + properties.map(function () {
@@ -5023,7 +4531,7 @@
     });
   };
 
-  var LIMIT = 100;
+  var LIMIT = 10;
 
   var _condition = new WeakMap();
 
@@ -5375,7 +4883,7 @@
 
     fetch("".concat(App$1.aggregatePrimaryKeys, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
       return property.query;
-    })))).concat(ConditionBuilder$1.userIds ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : ''), {
+    })))), {
       signal: _classPrivateFieldGet(this, _abortController).signal
     }).catch(function (error) {
       throw Error(error);
@@ -5641,15 +5149,19 @@
 
   var _BODY = new WeakMap();
 
+  var _ROOT = new WeakMap();
+
+  var _USER_KEY = new WeakMap();
+
   var _USER_IDS = new WeakMap();
+
+  var _defineTogoKeys = new WeakSet();
 
   var _fetch = new WeakSet();
 
   var _clear = new WeakSet();
 
-  var UploadUserIDsView = // #ROOT;
-  // #USER_KEY;
-  function UploadUserIDsView(elm) {
+  var UploadUserIDsView = function UploadUserIDsView(elm) {
     var _this = this;
 
     _classCallCheck(this, UploadUserIDsView);
@@ -5663,6 +5175,16 @@
       value: void 0
     });
 
+    _ROOT.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _USER_KEY.set(this, {
+      writable: true,
+      value: void 0
+    });
+
     _USER_IDS.set(this, {
       writable: true,
       value: void 0
@@ -5670,8 +5192,11 @@
 
     _classPrivateFieldSet(this, _BODY, document.querySelector('body')); // this.#ROOT = elm;
 
+    _classPrivateFieldSet(this, _ROOT, elm);
 
-    var form = elm.querySelector(':scope > form'); // this.#USER_KEY = form.querySelector(':scope > label > select');
+    var form = elm.querySelector(':scope > form');
+
+    _classPrivateFieldSet(this, _USER_KEY, form.querySelector(':scope > label > select'));
 
     _classPrivateFieldSet(this, _USER_IDS, form.querySelector(':scope > label > input')); // atache events
 
@@ -5691,26 +5216,17 @@
       return false;
     }); // event listeners
 
-    _classPrivateFieldGet(this, _USER_IDS).addEventListener('change', function () {
-      console.log(_classPrivateFieldGet(_this, _USER_IDS));
-      console.log(_classPrivateFieldGet(_this, _USER_IDS).value);
-      ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value);
-    }); // DefaultEventEmitter.addEventListener(event.defineTogoKey, e => {
-    //   this.#defineTogoKeys(e.detail);
-    // });
-
+    DefaultEventEmitter$1.addEventListener(defineTogoKey, function (e) {
+      _classPrivateMethodGet(_this, _defineTogoKeys, _defineTogoKeys2).call(_this, e.detail);
+    });
   } // private methods
-  // #defineTogoKeys(togoKeys) {
-  //   console.log(togoKeys)
-  //   this.#USER_KEY.innerHTML = togoKeys.map(togoKey => `<option value="${togoKey.togoKey}" data-subject-id="${togoKeys.subjectId}">${togoKey.label} (${togoKey.togoKey})</option>`).join('');
-  // }
   ;
 
   function _fetch2() {
     var _this2 = this;
 
-    // console.log(this.#USER_KEY.value)
-    var queryTemplate = "".concat(PATH + DATA_FROM_USER_IDS, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
+    console.log(_classPrivateFieldGet(this, _USER_KEY).value);
+    var queryTemplate = "".concat(PATH + DATA_FROM_USER_IDS, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(_classPrivateFieldGet(this, _USER_KEY).value, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
     Records$1.properties.forEach(function (property) {
       console.log(property);
       var propertyId = property.propertyId;
@@ -5844,15 +5360,41 @@
           var customEvent = new CustomEvent(defineTogoKey, {
             detail: togoKeys
           });
-          DefaultEventEmitter$1.dispatchEvent(customEvent); // initialize stanza manager
+          DefaultEventEmitter$1.dispatchEvent(customEvent); // set stanza scripts
 
-          StanzaManager$1.init(templates); // aggregate
+          document.querySelector('head').insertAdjacentHTML('beforeend', templates.stanzas.map(function (stanza) {
+            return "<script type=\"module\" src=\"".concat(stanza, "\" async></script>");
+          }).join('')); // aggregate
 
-          _classPrivateFieldSet(_this, _aggregate, Object.freeze(aggregate));
+          _classPrivateFieldSet(_this, _aggregate, Object.freeze(aggregate)); // get stanza templates
 
-          _classPrivateMethodGet(_this, _makeConceptViews, _makeConceptViews2).call(_this);
+
+          return Promise.all(Object.keys(templates.templates).map(function (key) {
+            return fetch(templates.templates[key]);
+          }));
+        }).then(function (responces) {
+          return Promise.all(responces.map(function (responce) {
+            return responce.text();
+          }));
+        }).then(function (templates) {
+          // set stanza templates
+          var stanzaTemplates = Object.fromEntries(Object.keys(stanzaTtemplates.templates).map(function (stanza, index) {
+            return [stanza, templates[index]];
+          }));
+          reportsView.defineTemplates(stanzaTemplates); // define properties (app start)
+
+          _classPrivateMethodGet(_this, _makeConceptViews, _makeConceptViews2).call(_this); // Records.setSubjects(this.#subjects);
+
         });
       } // private methods
+
+    }, {
+      key: "getHslColor",
+      value: // public methods
+      // utilities
+      function getHslColor(hue) {
+        return "hsl(".concat(hue, ", 50%, 55%)");
+      } // accessor
 
     }, {
       key: "viewModes",

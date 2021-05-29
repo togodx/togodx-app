@@ -18,6 +18,11 @@ export const completeQueryParameter = 'completeQueryParameter';
 export const hideStanza = 'hideStanza';
 export const showStanza = 'showStanza';
 
+// Popup
+export const hidePopup = 'hidePopup';
+export const showPopup = 'showPopup';
+export const movePopup = 'movePopup';
+
 // Polling
 export const failedFetchTableDataIds = 'failedFetchTableDataIds';
 export const addNextRows = 'addNextRows';

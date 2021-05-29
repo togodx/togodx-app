@@ -1,12 +1,10 @@
 import Color from "./Color";
 
 class Records {
-
   #subjects;
   #properties;
 
-  constructor() {
-  }
+  constructor() {}
 
   // public methods
 
@@ -44,10 +42,13 @@ class Records {
   }
 
   getValue(propertyId, categoryId) {
-    // const property = this.#properties.find(property => property.propertyId === propertyId);
     const property = this.getProperty(propertyId);
     const value = property.values.find(value => value.categoryId === categoryId);
     return value;
+  }
+
+  getSubject(subjectId) {
+    return this.#subjects.find((subject) => subject.subjectId === subjectId);
   }
 
   // public accessors
@@ -59,7 +60,6 @@ class Records {
   get properties() {
     return this.#properties;
   }
-
 }
 
 export default new Records();

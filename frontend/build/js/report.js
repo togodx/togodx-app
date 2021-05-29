@@ -1,22 +1,6 @@
 (function () {
   'use strict';
 
-  function _typeof(obj) {
-    "@babel/helpers - typeof";
-
-    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-      _typeof = function (obj) {
-        return typeof obj;
-      };
-    } else {
-      _typeof = function (obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-      };
-    }
-
-    return _typeof(obj);
-  }
-
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
@@ -167,20 +151,8 @@
     return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
   }
 
-  function _toConsumableArray(arr) {
-    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
-  }
-
-  function _arrayWithoutHoles(arr) {
-    if (Array.isArray(arr)) return _arrayLikeToArray(arr);
-  }
-
   function _arrayWithHoles(arr) {
     if (Array.isArray(arr)) return arr;
-  }
-
-  function _iterableToArray(iter) {
-    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
   }
 
   function _iterableToArrayLimit(arr, i) {
@@ -227,69 +199,8 @@
     return arr2;
   }
 
-  function _nonIterableSpread() {
-    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-  }
-
   function _nonIterableRest() {
     throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-  }
-
-  function _createForOfIteratorHelper(o, allowArrayLike) {
-    var it;
-
-    if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
-      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
-        if (it) o = it;
-        var i = 0;
-
-        var F = function () {};
-
-        return {
-          s: F,
-          n: function () {
-            if (i >= o.length) return {
-              done: true
-            };
-            return {
-              done: false,
-              value: o[i++]
-            };
-          },
-          e: function (e) {
-            throw e;
-          },
-          f: F
-        };
-      }
-
-      throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-    }
-
-    var normalCompletion = true,
-        didErr = false,
-        err;
-    return {
-      s: function () {
-        it = o[Symbol.iterator]();
-      },
-      n: function () {
-        var step = it.next();
-        normalCompletion = step.done;
-        return step;
-      },
-      e: function (e) {
-        didErr = true;
-        err = e;
-      },
-      f: function () {
-        try {
-          if (!normalCompletion && it.return != null) it.return();
-        } finally {
-          if (didErr) throw err;
-        }
-      }
-    };
   }
 
   function _classPrivateFieldGet(receiver, privateMap) {
@@ -2609,15 +2520,8 @@
         for (var i = 0; i < subjects.length; i++) {
           var hue = 360 - 360 * i / subjects.length + 130;
           hue -= hue > 360 ? 360 : 0;
-          var srgb = new h('hsv', [hue, 60, 75]).to('srgb');
           subjects[i].hue = hue;
-          subjects[i].color = srgb;
-          subjects[i].colorCSSValue = "rgb(".concat(srgb.coords.map(function (channel) {
-            return channel * 256;
-          }).join(','), ")");
         }
-
-        console.log(subjects);
 
         _classPrivateFieldSet(this, _subjects, Object.freeze(subjects)); // set properties
 
@@ -2765,9 +2669,13 @@
 
   var _drawStanzas = new WeakSet();
 
+  var _stanza = new WeakSet();
+
   var ReportApp = /*#__PURE__*/function () {
     function ReportApp() {
       _classCallCheck(this, ReportApp);
+
+      _stanza.add(this);
 
       _drawStanzas.add(this);
 
@@ -2782,6 +2690,8 @@
       value: function ready() {
         var _this = this;
 
+        var stanzaTtemplates; // load config json
+
         Promise.all([fetch(PROPERTIES), fetch(TEMPLATES)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
@@ -2791,20 +2701,26 @@
               subjects = _ref2[0],
               templates = _ref2[1];
 
-          // stanzaTtemplates = templates;
-          Records$1.setSubjects(subjects); // initialize stanza manager
+          stanzaTtemplates = templates;
+          Records$1.setSubjects(subjects); // set stanza scripts
 
-          StanzaManager$1.init(templates); // wait ready stanza manager
+          document.querySelector('head').insertAdjacentHTML('beforeend', templates.stanzas.map(function (stanza) {
+            return "<script type=\"module\" src=\"".concat(stanza, "\"></script>");
+          }).join('')); // get stanza templates
 
-          var intervalId = window.setInterval(function () {
-            console.log(StanzaManager$1.isReady);
+          return Promise.all(Object.keys(templates.templates).map(function (key) {
+            return fetch(templates.templates[key]);
+          }));
+        }).then(function (responces) {
+          return Promise.all(responces.map(function (responce) {
+            return responce.text();
+          }));
+        }).then(function (templates) {
+          _classPrivateFieldSet(_this, _templates, Object.fromEntries(Object.keys(stanzaTtemplates.templates).map(function (stanza, index) {
+            return [stanza, templates[index]];
+          })));
 
-            if (StanzaManager$1.isReady) {
-              window.clearInterval(intervalId);
-
-              _classPrivateMethodGet(_this, _drawStanzas, _drawStanzas2).call(_this);
-            }
-          }, 100);
+          _classPrivateMethodGet(_this, _drawStanzas, _drawStanzas2).call(_this);
         });
       }
     }, {
@@ -2829,7 +2745,7 @@
     var subjectId = Records$1.subjects.find(function (subject) {
       return subject.togoKey === urlVars.togoKey;
     }).subjectId;
-    main.innerHTML = StanzaManager$1.draw(subjectId, urlVars.id, urlVars.togoKey) + properties.map(function (property) {
+    main.innerHTML = _classPrivateMethodGet(this, _stanza, _stanza2).call(this, subjectId, urlVars.id, urlVars.togoKey) + properties.map(function (property) {
       if (property === undefined) {
         return '';
       } else {
@@ -2841,12 +2757,16 @@
         var property2 = subject.properties.find(function (property) {
           return property.propertyId === property.propertyId;
         });
-        return "<hr>\n          <div class=\"attributes\">\n            <header style=\"background-color: ".concat(_this2.getHslColor(subject.colorCSSValue), ";\">").concat(property2.label, "</header>\n            ").concat(property.attributes.map(function (attribute) {
-          return StanzaManager$1.draw(subject.subjectId, attribute.id, property.propertyKey);
+        return "<hr>\n          <div class=\"attributes\">\n            <header style=\"background-color: ".concat(_this2.getHslColor(subject.hue), ";\">").concat(property2.label, "</header>\n            ").concat(property.attributes.map(function (attribute) {
+          return _classPrivateMethodGet(_this2, _stanza, _stanza2).call(_this2, subject.subjectId, attribute.id, property.propertyKey);
         }).join(''), "\n          </div>");
       }
     }).join('');
   };
+
+  function _stanza2(subjectId, id, key) {
+    return "<div class=\"stanza\">".concat(_classPrivateFieldGet(this, _templates)[subjectId].replace(/{{id}}/g, id).replace(/{{type}}/g, key), "</div>");
+  }
 
   var ReportApp$1 = new ReportApp();
 

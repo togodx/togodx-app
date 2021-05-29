@@ -344,7 +344,6 @@ template {
   --width-track-column-property: 18rem;
   --width-condition: 24rem;
   --height-track: 3rem;
-  --height-header: 2.4rem;
   --min-width-app: 102.4rem;
   --height-results-statistics: 20rem;
   --font-size-title: 1.5rem;
@@ -361,8 +360,8 @@ template {
   --z-track-tracks-header: 3;
   --z-track-pin: 4;
   --z-fixed-area: 5;
-  --z-header: 6;
-  --z-track-balloon: 7;
+  --z-track-balloon: 6;
+  --z-results-header: 1;
 }
 
 @-webkit-keyframes enter-stacking-item {
@@ -415,7 +414,6 @@ body {
   font-family: "Roboto Condensed", sans-serif;
   font-size: 1.2rem;
   line-height: 1.5;
-  background-color: var(--color-gray);
 }
 body[data-page=top] {
   overflow: hidden;
@@ -427,9 +425,8 @@ body[data-page=top][data-display=results] [data-hidden-by=results], body[data-pa
   position: absolute;
   transition: opacity var(--transition-wipe);
 }
-
-main {
-  padding-top: var(--height-header);
+body[data-page=report] {
+  background-color: var(--color-gray);
 }
 
 .balloon-view {
@@ -645,11 +642,10 @@ main {
   --padding-horizontal: 1rem;
   --padding-vertical: 0;
   --height-selector: 3rem;
-  padding: 1rem 0 5rem;
-  background-color: white;
+  padding-bottom: 5rem;
 }
 .histogram-range-selector-view > .selector {
-  margin: 0 var(--padding-horizontal);
+  margin: 1rem var(--padding-horizontal);
   width: calc(100% - var(--padding-horizontal) * 2);
   height: var(--height-selector);
   position: relative;
@@ -715,6 +711,9 @@ main {
   bottom: 0;
   width: 100%;
   transition: height var(--transition-instant);
+}
+.histogram-range-selector-view > .histogram > .graph > .bar > .actual > .color {
+  height: 100%;
 }
 .histogram-range-selector-view > .histogram > .graph > .bar > .label {
   position: absolute;
@@ -863,6 +862,27 @@ main {
   position: relative;
   top: -0.1rem;
   margin-right: 0.2rem;
+}
+
+.toreportpage {
+  display: inline-block;
+  background-color: var(--color-lamp-black);
+  color: white;
+  font-weight: normal;
+  padding: 0 0.8rem;
+  border-radius: 0.2rem;
+  margin-right: 0.2rem;
+}
+.toreportpage::before {
+  content: "Report";
+}
+.toreportpage > .material-icons-outlined {
+  font-size: 1rem;
+  vertical-align: middle;
+  margin-left: 0.3rem;
+  position: relative;
+  top: -0.1rem;
+  margin-right: -0.1rem;
 }
 
 .stacking-condition-view {
@@ -1112,17 +1132,10 @@ main {
   transition: background-color var(--transition-instant);
   cursor: pointer;
 }
-.table-data-controller-view > .controller > .button:hover {
+.table-data-controller-view > .controller > .button:hover, .table-data-controller-view > .downloads > .button:hover {
   background-color: var(--color-lamp-black);
 }
-[data-display=results] .table-data-controller-view > .controller > .button[data-button=restore] {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-.table-data-controller-view > .controller > .button.none {
-  display: none;
-}
-.table-data-controller-view > .controller > .button > .material-icons-outlined {
+.table-data-controller-view > .controller > .button > .material-icons-outlined, .table-data-controller-view > .downloads > .button > .material-icons-outlined {
   position: relative;
   top: -0.1rem;
   font-size: 1.4rem;
@@ -1132,6 +1145,10 @@ main {
 .table-data-controller-view > .controller > .button.-rotating > .material-icons-outlined {
   -webkit-animation: rotation 3s linear infinite;
           animation: rotation 3s linear infinite;
+}
+.table-data-controller-view > .downloads {
+  border-top: solid 1px var(--color-translucent-lamp-black3);
+  display: none;
 }
 .table-data-controller-view.-current, .table-data-controller-view:hover {
   opacity: 1;
@@ -1222,7 +1239,6 @@ main {
   position: absolute;
   transition: width var(--transition-wipe), left var(--transition-wipe);
   cursor: pointer;
-  transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
 }
 .track-value-view::after {
   content: "";
@@ -1233,6 +1249,21 @@ main {
   height: 100%;
   border-left: solid 0.005rem var(--color-dark-gray);
   z-index: var(--z-track-item-border);
+}
+.track-value-view > .color, .track-value-view > .heatmap {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
+}
+.track-value-view > .heatmap {
+  background-color: var(--color-lamp-black);
+  opacity: 0;
+}
+body[data-heatmap=true] .track-value-view > .heatmap {
+  opacity: 1;
 }
 .track-value-view > p {
   padding-left: 0.2rem;
@@ -1270,8 +1301,9 @@ main {
   z-index: var(--z-track-pin);
   display: none;
 }
-.track-value-view:hover, .track-value-view.-selected {
-  background-color: transparent !important;
+.track-value-view:hover > .color, .track-value-view:hover > .heatmap, .track-value-view.-selected > .color, .track-value-view.-selected > .heatmap {
+  opacity: 0 !important;
+  transition: opacity var(--transition-instant);
 }
 .track-value-view:hover::before, .track-value-view.-selected::before {
   content: "";
@@ -1282,8 +1314,11 @@ main {
   border: solid 1px white;
   z-index: var(--z-track-item-selected);
 }
-.-showuserids .track-value-view:not(.-pinsticking) {
+.-showuserids .track-value-view:not(.-pinsticking) > .color {
   background-color: var(--color-gray) !important;
+}
+.-showuserids .track-value-view:not(.-pinsticking) > .heatmap {
+  opacity: 0 !important;
 }
 .-showuserids .track-value-view:not(.-pinsticking) > p {
   opacity: 0.25;
@@ -1302,9 +1337,6 @@ main {
   pointer-events: none;
   opacity: 0.2;
 }
-.track-view.-preparing > .row.-upper > .right > .overview {
-  background-color: transparent !important;
-}
 .track-view > .row {
   display: -webkit-flex;
   display: flex;
@@ -1314,7 +1346,6 @@ main {
   -webkit-flex-basis: var(--width-track-column-property);
           flex-basis: var(--width-track-column-property);
   min-width: var(--width-track-column-property);
-  background-color: white;
 }
 .track-view > .row > .right {
   -webkit-flex-basis: calc(100% - var(--width-track-column-property));
@@ -1396,7 +1427,7 @@ main {
   pointer-events: none;
 }
 
-.close-button-view {
+.close-button {
   width: 1.2rem;
   height: 1.2rem;
   position: absolute;
@@ -1404,7 +1435,7 @@ main {
   right: 0.4rem;
   cursor: pointer;
 }
-.close-button-view::before, .close-button-view::after {
+.close-button::before, .close-button::after {
   content: "";
   border-left: solid 0.1rem var(--color-black);
   position: absolute;
@@ -1501,24 +1532,16 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   margin-bottom: -0.6rem;
 }
 
-#Document {
-  margin: 1rem auto;
-  padding: 1rem 2rem;
-  width: 102.4rem;
-  background-color: white;
-}
-
 #FixedArea {
   --padding-inline-start: 1.2rem;
   --padding-block-start: 1rem;
-  border-left: solid 0.1rem var(--color-lamp-black);
   background-color: var(--color-gray);
   width: var(--width-condition);
   min-width: var(--width-condition);
-  height: calc(100% - var(--height-header));
+  height: 100%;
   overflow-y: auto;
   position: fixed;
-  top: var(--height-header);
+  top: 0;
   right: 0;
   display: -webkit-flex;
   display: flex;
@@ -1605,12 +1628,11 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   position: -webkit-sticky;
   position: sticky;
   top: 0;
-  background-color: var(--color-lamp-black);
-  color: white;
+  background-color: white;
   z-index: var(--z-track-tracks-header);
 }
 #Properties > .header > .title > * {
-  font-size: 1.2rem;
+  font-size: var(--font-size-title);
   margin-bottom: 0;
   display: inline-block;
 }
@@ -1632,7 +1654,14 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   display: inline-block;
 }
 #Properties > .header > nav > ul > li + li {
-  margin-left: 1.4rem;
+  margin-left: 1.6rem;
+}
+#Properties > .header > nav > ul > li > .material-icons-outlined {
+  font-size: 1.4rem;
+  vertical-align: middle;
+  position: relative;
+  top: -0.1rem;
+  margin-right: 0.2rem;
 }
 #Properties > .header > nav > ul > li > label {
   margin-bottom: 0;
@@ -1692,7 +1721,6 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   height: 100%;
   font-size: 1.2rem;
   line-height: 1.2;
-  background-color: white;
 }
 #ResultsTable > .body > table th, #ResultsTable > .body > table td {
   padding: 0;
@@ -1750,25 +1778,6 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
 }
 #ResultsTable > .body > table > tbody > tr > th {
   font-weight: normal;
-}
-#ResultsTable > .body > table > tbody > tr > th > .inner > .toreportpage {
-  display: inline-block;
-  background-color: var(--color-lamp-black);
-  color: white;
-  padding: 0 0.8rem;
-  border-radius: 0.2rem;
-  margin-right: 0.2rem;
-}
-#ResultsTable > .body > table > tbody > tr > th > .inner > .toreportpage::before {
-  content: "Report";
-}
-#ResultsTable > .body > table > tbody > tr > th > .inner > .toreportpage > .material-icons-outlined {
-  font-size: 1rem;
-  vertical-align: middle;
-  margin-left: 0.3rem;
-  position: relative;
-  top: -0.1rem;
-  margin-right: -0.1rem;
 }
 #ResultsTable > .body > table > tbody > tr > td > .inner > ul {
   margin: 0;
