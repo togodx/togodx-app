@@ -18,7 +18,6 @@ class Records {
       subjects[i].color = srgb;
       subjects[i].colorCSSValue = `rgb(${srgb.coords.map(channel => channel * 256).join(',')})`;
     }
-    console.log(subjects);
     this.#subjects = Object.freeze(subjects);
     // set properties
     this.#properties = [];

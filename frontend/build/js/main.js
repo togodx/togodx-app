@@ -2736,8 +2736,6 @@
           }).join(','), ")");
         }
 
-        console.log(subjects);
-
         _classPrivateFieldSet(this, _subjects, Object.freeze(subjects)); // set properties
 
 
@@ -3255,18 +3253,20 @@
   } // private methods
   ;
 
-  function _defineTogoKeys2(togoKeys) {
+  function _defineTogoKeys2(subjects) {
     // make options
-    _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = togoKeys.map(function (togoKey) {
-      return "<option value=\"".concat(togoKey.togoKey, "\" data-subject-id=\"").concat(togoKeys.subjectId, "\">").concat(togoKey.label, " (").concat(togoKey.togoKey, ")</option>");
+    _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = subjects.map(function (subject) {
+      var option = '';
+      if (subject.togoKey) option = "<option value=\"".concat(subject.togoKey, "\" data-subject-id=\"").concat(subjects.subjectId, "\">").concat(subject.keyLabel, "</option>");
+      return option;
     }).join('');
     _classPrivateFieldGet(this, _TOGO_KEYS).disabled = false; // attach event
 
     _classPrivateFieldGet(this, _TOGO_KEYS).addEventListener('change', function (e) {
-      var togoKey = togoKeys.find(function (togoKey) {
-        return togoKey.togoKey === e.target.value;
+      var subject = subjects.find(function (subject) {
+        return subject.togoKey === e.target.value;
       });
-      ConditionBuilder$1.setSubject(e.target.value, togoKey.subjectId);
+      ConditionBuilder$1.setSubject(e.target.value, subject.subjectId);
     });
 
     _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));
@@ -6027,15 +6027,8 @@
       console.log(_classPrivateFieldGet(_this, _USER_IDS));
       console.log(_classPrivateFieldGet(_this, _USER_IDS).value);
       ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value);
-    }); // DefaultEventEmitter.addEventListener(event.defineTogoKey, e => {
-    //   this.#defineTogoKeys(e.detail);
-    // });
-
+    });
   } // private methods
-  // #defineTogoKeys(togoKeys) {
-  //   console.log(togoKeys)
-  //   this.#USER_KEY.innerHTML = togoKeys.map(togoKey => `<option value="${togoKey.togoKey}" data-subject-id="${togoKeys.subjectId}">${togoKey.label} (${togoKey.togoKey})</option>`).join('');
-  // }
   ;
 
   function _fetch2() {
@@ -6166,16 +6159,17 @@
               aggregate = _ref2[2];
 
           Records$1.setSubjects(subjects); // define primary keys
+          // const togoKeys = subjects.map(subject => {
+          //   return {
+          //     label: subject.subject,
+          //     togoKey: subject.togoKey,
+          //     subjectId: subject.subjectId
+          //   }
+          // });
+          // const customEvent = new CustomEvent(event.defineTogoKey, {detail: togoKeys});
 
-          var togoKeys = subjects.map(function (subject) {
-            return {
-              label: subject.subject,
-              togoKey: subject.togoKey,
-              subjectId: subject.subjectId
-            };
-          });
           var customEvent = new CustomEvent(defineTogoKey, {
-            detail: togoKeys
+            detail: subjects
           });
           DefaultEventEmitter$1.dispatchEvent(customEvent); // initialize stanza manager
 

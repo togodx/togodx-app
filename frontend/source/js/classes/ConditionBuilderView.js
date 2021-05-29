@@ -58,14 +58,18 @@ export default class ConditionBuilderView {
 
   // private methods
 
-  #defineTogoKeys(togoKeys) {
+  #defineTogoKeys(subjects) {
     // make options
-    this.#TOGO_KEYS.innerHTML = togoKeys.map(togoKey => `<option value="${togoKey.togoKey}" data-subject-id="${togoKeys.subjectId}">${togoKey.label} (${togoKey.togoKey})</option>`).join('');
+    this.#TOGO_KEYS.innerHTML = subjects.map(subject => {
+      let option = '';
+      if (subject.togoKey) option = `<option value="${subject.togoKey}" data-subject-id="${subjects.subjectId}">${subject.keyLabel}</option>`;
+      return option;
+    }).join('');
     this.#TOGO_KEYS.disabled = false;
     // attach event
     this.#TOGO_KEYS.addEventListener('change', e => {
-      const togoKey = togoKeys.find(togoKey => togoKey.togoKey === e.target.value);
-      ConditionBuilder.setSubject(e.target.value, togoKey.subjectId);
+      const subject = subjects.find(subject => subject.togoKey === e.target.value);
+      ConditionBuilder.setSubject(e.target.value, subject.subjectId);
     });
     this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }

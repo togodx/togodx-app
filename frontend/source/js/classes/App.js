@@ -63,14 +63,15 @@ class App {
         Records.setSubjects(subjects);
 
         // define primary keys
-        const togoKeys = subjects.map(subject => {
-          return {
-            label: subject.subject,
-            togoKey: subject.togoKey,
-            subjectId: subject.subjectId
-          }
-        });
-        const customEvent = new CustomEvent(event.defineTogoKey, {detail: togoKeys});
+        // const togoKeys = subjects.map(subject => {
+        //   return {
+        //     label: subject.subject,
+        //     togoKey: subject.togoKey,
+        //     subjectId: subject.subjectId
+        //   }
+        // });
+        // const customEvent = new CustomEvent(event.defineTogoKey, {detail: togoKeys});
+        const customEvent = new CustomEvent(event.defineTogoKey, {detail: subjects});
         DefaultEventEmitter.dispatchEvent(customEvent);
 
         // initialize stanza manager
