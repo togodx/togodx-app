@@ -72,27 +72,21 @@ class ConditionBuilder {
   }
 
   setProperties(conditions) {
-    console.log(conditions)
     const propertyIds = conditions.map(condition => condition.property.propertyId);
-    console.log(propertyIds)
     Records.properties.forEach(property => {
       const isExistInNewConditions = propertyIds.indexOf(property.propertyId) !== -1;
       const index = this.#propertyConditions.findIndex(condition => condition.property.propertyId === property.propertyId);
       if (isExistInNewConditions) {
         if (index === -1) {
-          console.log('add')
           // if the property exists in new conditions, and if the property doesn't exist in my conditions, add it
           this.addProperty(conditions.find(condition => condition.property.propertyId === property.propertyId));
         }
       } else {
         if (index !== -1) {
           // if the property doesn't exist in new conditions, and the proerty exists in my conditions, remove it
-          console.log('remove')
-          console.log(index)
           this.removeProperty(property.propertyId);
         }
       }
-
     });
   }
 

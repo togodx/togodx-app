@@ -51,7 +51,6 @@ class App {
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
 
     // load config json
-    let stanzaTtemplates;
     Promise.all([
       fetch(api.PROPERTIES),
       fetch(api.TEMPLATES),
@@ -59,7 +58,6 @@ class App {
     ])
       .then(responces => Promise.all(responces.map(responce => responce.json())))
       .then(([subjects, templates, aggregate]) => {
-        // stanzaTtemplates = templates;
         Records.setSubjects(subjects);
 
         // define primary keys

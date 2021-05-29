@@ -2963,11 +2963,9 @@
       value: function setProperties(conditions) {
         var _this = this;
 
-        console.log(conditions);
         var propertyIds = conditions.map(function (condition) {
           return condition.property.propertyId;
         });
-        console.log(propertyIds);
         Records$1.properties.forEach(function (property) {
           var isExistInNewConditions = propertyIds.indexOf(property.propertyId) !== -1;
 
@@ -2977,8 +2975,7 @@
 
           if (isExistInNewConditions) {
             if (index === -1) {
-              console.log('add'); // if the property exists in new conditions, and if the property doesn't exist in my conditions, add it
-
+              // if the property exists in new conditions, and if the property doesn't exist in my conditions, add it
               _this.addProperty(conditions.find(function (condition) {
                 return condition.property.propertyId === property.propertyId;
               }));
@@ -2986,9 +2983,6 @@
           } else {
             if (index !== -1) {
               // if the property doesn't exist in new conditions, and the proerty exists in my conditions, remove it
-              console.log('remove');
-              console.log(index);
-
               _this.removeProperty(property.propertyId);
             }
           }
@@ -5267,6 +5261,9 @@
           };
         })); // attribute (classification/distribution)
 
+        console.log(Records$1.properties);
+        Records$1.properties.forEach(function (property) {});
+
         _classPrivateFieldGet(_this, _condition).attributes.forEach(function (attribute) {
           ConditionBuilder$1.setPropertyValues({
             subject: attribute.subject,
@@ -5279,15 +5276,7 @@
               };
             })
           });
-        }); // this.#condition.properties.forEach (property => {
-        //   ConditionBuilder.setPropertyValues({
-        //     subject: property.subject,
-        //     property: property.property,
-        //     values: [{
-        //     }]
-        //   });
-        // })
-
+        });
       });
       this.select();
 
@@ -5832,6 +5821,7 @@
         new ResultsTable(document.querySelector('#ResultsTable'));
         new BalloonView();
         new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
+
         Promise.all([fetch(PROPERTIES), fetch(TEMPLATES), fetch(AGGREGATE)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
@@ -5842,7 +5832,6 @@
               templates = _ref2[1],
               aggregate = _ref2[2];
 
-          // stanzaTtemplates = templates;
           Records$1.setSubjects(subjects); // define primary keys
 
           var togoKeys = subjects.map(function (subject) {

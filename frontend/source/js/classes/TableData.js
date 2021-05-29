@@ -1,8 +1,8 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
-import * as event from '../events';
 import Records from "./Records";
+import * as event from '../events';
 
 const LIMIT = 100;
 
@@ -137,6 +137,10 @@ export default class TableData {
         }
       }));
       // attribute (classification/distribution)
+      console.log(Records.properties)
+      Records.properties.forEach(property => {
+        
+      });
       this.#condition.attributes.forEach(attribute => {
         ConditionBuilder.setPropertyValues({
           subject: attribute.subject,
@@ -150,15 +154,7 @@ export default class TableData {
           })
         });
       });
-      // this.#condition.properties.forEach (property => {
-      //   ConditionBuilder.setPropertyValues({
-      //     subject: property.subject,
-      //     property: property.property,
-      //     values: [{
-      //     }]
-      //   });
-      // })
-    })
+    });
     this.select();
     this.#getQueryIds();
   }
