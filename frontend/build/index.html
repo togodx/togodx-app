@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html class="no-js" lang="">
+<html class="no-js" lang="en">
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>Togo Site</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:title" content="">
@@ -14,8 +14,17 @@
     <!-- Place favicon.ico in the root directory-->
     <link rel="stylesheet" href="css/main.css">
   </head>
-  <body data-heatmap="true" data-display="properties" data-page="top">
-    <header></header>
+  <body data-page="top" data-heatmap="true" data-display="properties">
+    <header id="Header">
+      <h1><a href="./">Togo Site</a></h1>
+      <nav>
+        <ul>
+          <li><a href="./about.html">About</a></li>
+          <li><a href="./help.html">Help</a></li>
+          <li><a href="./contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
     <main id="App">
       <div class="inner">
         <section id="Properties">
@@ -68,6 +77,10 @@
               <h2 class="title">Condition builder</h2>
             </header>
             <div class="conditions">
+              <div class="togoKey">
+                <h2 class="title"><span class="material-icons-outlined">layers</span>Select target category</h2>
+                <select disabled></select>
+              </div>
               <div class="attributes">
                 <h2 class="title"><span class="material-icons-outlined">west</span>Select filters</h2>
                 <div class="conditions -empty"></div>
@@ -80,22 +93,13 @@
                 <h2 class="title"><span class="material-icons-outlined">file_upload</span>Upload IDs</h2>
                 <form>
                   <label>
-                    <p>userKey</p>
-                    <select></select>
-                  </label>
-                  <label>
-                    <p>userIds</p>
-                    <input type="text" value="Q9NYF8,Q4V339,A6NCE7,A7E2F4,P69849,A6NN73,Q92928,Q5T1J5,P0C7P4,Q6DN03,P09874,Q08211,Q5T4S7,P12270,Q9UPN3,P07814,P53621,P49321,P0C629,Q9BZK8,Q9BY65">
+                    <input type="text" placeholder="Enter comma-separated IDs">
                   </label>
                   <div class="buttons">
                     <button class="rounded-button-view -small -black" type="button">Submit</button>
                     <button class="rounded-button-view -small -black" type="button">Clear</button>
                   </div>
                 </form>
-              </div>
-              <div class="togoKey">
-                <h2 class="title"><span class="material-icons-outlined">layers</span>Select target category</h2>
-                <select disabled></select>
               </div>
             </div>
             <footer>
@@ -106,6 +110,7 @@
             <header>
               <h2 class="title">Reports</h2>
             </header>
+            <div class="stanzas"></div>
             <footer>
               <button class="return rounded-button-view -black -spread"><span class="material-icons-outlined">keyboard_return</span>Return</button>
             </footer>
@@ -121,10 +126,6 @@
         </div>
       </section>
     </main>
-    <script src="js/vendor/d3.js"></script>
-    <script src="js/vendor/lodash.js"></script>
     <script src="js/main.js"></script>
-    <script type="module" src="https://togostanza.github.io/metastanza/hash-table.js" async></script>
-    <script type="module" src="https://togostanza.github.io/metastanza/barchart.js" async></script>
   </body>
 </html>

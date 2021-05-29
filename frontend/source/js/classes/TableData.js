@@ -137,22 +137,22 @@ export default class TableData {
         }
       }));
       // attribute (classification/distribution)
-      console.log(Records.properties)
       Records.properties.forEach(property => {
-        
-      });
-      this.#condition.attributes.forEach(attribute => {
-        ConditionBuilder.setPropertyValues({
-          subject: attribute.subject,
-          property: attribute.property,
-          values: attribute.query.categoryIds.map(categoryId => {
+        const attribute = this.#condition.attributes.find(attribute => attribute.property.propertyId === property.propertyId);
+        let subject, values = [];
+        if (attribute) {
+          subject = attribute.subject;
+          values = attribute.query.categoryIds.map(categoryId => {
             return {
               categoryId: categoryId,
               label: Records.getValue(attribute.query.propertyId, categoryId).label,
               ancestors: []
             }
-          })
-        });
+          });
+        } else {
+          subject = Records.getSubject(property.subjectId);
+        }
+        ConditionBuilder.setPropertyValues({subject, property, values});
       });
     });
     this.select();

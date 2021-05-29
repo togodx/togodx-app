@@ -36,6 +36,10 @@ class Records {
     property.values = values;
   }
 
+  getSubject(subjectId) {
+    return this.#subjects.find((subject) => subject.subjectId === subjectId);
+  }
+
   getProperty(propertyId) {
     const property = this.#properties.find(property => property.propertyId === propertyId);
     return property;
@@ -45,10 +49,6 @@ class Records {
     const property = this.getProperty(propertyId);
     const value = property.values.find(value => value.categoryId === categoryId);
     return value;
-  }
-
-  getSubject(subjectId) {
-    return this.#subjects.find((subject) => subject.subjectId === subjectId);
   }
 
   // public accessors

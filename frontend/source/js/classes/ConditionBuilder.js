@@ -92,7 +92,7 @@ class ConditionBuilder {
 
   setPropertyValues(condition) {
     const originalValues = Records.getProperty(condition.property.propertyId).values;
-    const startIndex = originalValues.findIndex(originalValue => originalValue.categoryId === condition.values[0].categoryId);
+    const startIndex = condition.values.length === 0 ? 0 : originalValues.findIndex(originalValue => originalValue.categoryId === condition.values[0].categoryId);
     originalValues.forEach((originalValue, originalIndex) => {
       const index = this.#attributeConditions.findIndex(attrCondition => attrCondition.property.propertyId === condition.property.propertyId && attrCondition.value.categoryId === originalValue.categoryId);
       if (startIndex <= originalIndex && originalIndex < startIndex + condition.values.length) {
