@@ -1808,6 +1808,11 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
 #ResultDetailModal {
   --padding-side: 1.2rem;
   --height-header: 3rem;
+  --margin-stanza: 2rem;
+  --width-arrow: 1.2rem;
+  --height-arrow: .6rem;
+  --inline-start-arrow: calc((var(--margin-stanza) - var(--height-arrow)) * .5);
+  --block-start-arrow: calc(50% - (var(--width-arrow) * .5));
   opacity: 0;
   z-index: 0;
 }
@@ -1894,45 +1899,85 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   display: flex;
   overflow: hidden;
   cursor: pointer;
+  position: relative;
 }
 #ResultDetailModal.backdrop > .popup > .container > .arrow {
   position: absolute;
-  width: 0;
-  height: 0;
   border-color: var(--color-lamp-black);
+  cursor: pointer;
+}
+#ResultDetailModal.backdrop > .popup > .container > .arrow.-up, #ResultDetailModal.backdrop > .popup > .container > .arrow.-right, #ResultDetailModal.backdrop > .popup > .container > .arrow.-down, #ResultDetailModal.backdrop > .popup > .container > .arrow.-left {
+  transition: background var(--transition-instant);
+}
+#ResultDetailModal.backdrop > .popup > .container > .arrow.-up::before, #ResultDetailModal.backdrop > .popup > .container > .arrow.-right::before, #ResultDetailModal.backdrop > .popup > .container > .arrow.-down::before, #ResultDetailModal.backdrop > .popup > .container > .arrow.-left::before {
+  content: "";
+  position: absolute;
+  opacity: 0.5;
+  transition: opacity var(--transition-instant);
+}
+#ResultDetailModal.backdrop > .popup > .container > .arrow.-up, #ResultDetailModal.backdrop > .popup > .container > .arrow.-down {
+  left: 0;
+  width: 100%;
+  height: var(--margin-stanza);
+}
+#ResultDetailModal.backdrop > .popup > .container > .arrow.-up::before, #ResultDetailModal.backdrop > .popup > .container > .arrow.-down::before {
+  left: var(--block-start-arrow);
+}
+#ResultDetailModal.backdrop > .popup > .container > .arrow.-right, #ResultDetailModal.backdrop > .popup > .container > .arrow.-left {
+  top: 0;
+  width: var(--margin-stanza);
+  height: 100%;
+}
+#ResultDetailModal.backdrop > .popup > .container > .arrow.-right::before, #ResultDetailModal.backdrop > .popup > .container > .arrow.-left::before {
+  top: var(--block-start-arrow);
 }
 #ResultDetailModal.backdrop > .popup > .container > .arrow.-up {
-  top: 9%;
-  left: 50%;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-bottom: 9.5px solid;
+  top: 0;
+}
+#ResultDetailModal.backdrop > .popup > .container > .arrow.-up::before {
+  border-left: calc(var(--width-arrow) * .5) solid transparent;
+  border-right: calc(var(--width-arrow) * .5) solid transparent;
+  border-bottom: var(--height-arrow) solid;
+  top: var(--inline-start-arrow);
 }
 #ResultDetailModal.backdrop > .popup > .container > .arrow.-right {
-  left: 97%;
-  top: 50%;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 9.5px solid;
+  right: 0;
+}
+#ResultDetailModal.backdrop > .popup > .container > .arrow.-right::before {
+  border-top: calc(var(--width-arrow) * .5) solid transparent;
+  border-bottom: calc(var(--width-arrow) * .5) solid transparent;
+  border-left: var(--height-arrow) solid;
+  right: var(--inline-start-arrow);
 }
 #ResultDetailModal.backdrop > .popup > .container > .arrow.-down {
-  bottom: 3%;
-  left: 50%;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 9.5px solid;
+  bottom: 0;
+}
+#ResultDetailModal.backdrop > .popup > .container > .arrow.-down::before {
+  border-left: calc(var(--width-arrow) * .5) solid transparent;
+  border-right: calc(var(--width-arrow) * .5) solid transparent;
+  border-top: var(--height-arrow) solid;
+  bottom: var(--inline-start-arrow);
 }
 #ResultDetailModal.backdrop > .popup > .container > .arrow.-left {
-  right: 97%;
-  top: 50%;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-right: 9.5px solid;
+  left: 0;
+}
+#ResultDetailModal.backdrop > .popup > .container > .arrow.-left::before {
+  border-top: calc(var(--width-arrow) * .5) solid transparent;
+  border-bottom: calc(var(--width-arrow) * .5) solid transparent;
+  border-right: var(--height-arrow) solid;
+  left: var(--inline-start-arrow);
+}
+#ResultDetailModal.backdrop > .popup > .container > .arrow:hover {
+  background-color: var(--color-hover);
+}
+#ResultDetailModal.backdrop > .popup > .container > .arrow:hover::before {
+  opacity: 1;
 }
 #ResultDetailModal.backdrop > .popup > .container > .stanzas {
+  margin: var(--margin-stanza);
+  padding: 0.8rem;
   overflow: auto;
   width: 100%;
-  margin: 4rem;
 }
 
 #UploadUserIDsView > form {

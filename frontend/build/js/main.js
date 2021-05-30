@@ -5216,7 +5216,7 @@
     var isPrimaryKey = props.isPrimaryKey;
     var mainCategory = isPrimaryKey ? '' : Records$1.getProperty(keys.mainCategoryId);
     var subCategory = isPrimaryKey ? '' : Records$1.getValue(keys.mainCategoryId, keys.subCategoryId);
-    var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(subject.subject, "\u3000/\u3000").concat(subCategory.label, "</span>");
+    var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(subject.subject, " / ").concat(subCategory.label, "</span>");
     var header = document.createElement('header');
     header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div>\n        <a class='report-page-button-view' href='").concat(props.reportLink, "' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>\n    ");
     header.style.backgroundColor = subject.colorCSSValue;

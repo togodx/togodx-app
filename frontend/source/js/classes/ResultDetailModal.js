@@ -97,7 +97,7 @@ export default class ResultDetailModal {
       : Records.getValue(keys.mainCategoryId, keys.subCategoryId);
     const path = isPrimaryKey
       ? keys.dataKey
-      : `<span class='path'>${subject.subject}　/　${subCategory.label}</span>`;
+      : `<span class='path'>${subject.subject} / ${subCategory.label}</span>`;
     const header = document.createElement('header');
     header.innerHTML = `
       <div class='label'>
