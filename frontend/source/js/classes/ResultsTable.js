@@ -130,7 +130,7 @@ export default class ResultsTable {
 
     // make stats
     this.#STATS.innerHTML =
-      `<td><div class='inner'><div></td>` +
+      `<td colspan="2"><div class='inner'><div></td>` +
       properties
         .map(() => `<td><div class='inner'><div></div></div></td>`)
         .join('');
@@ -168,7 +168,7 @@ export default class ResultsTable {
           }' data-togo-id='${detail.rows[index].id}'>
         <th>
           <div class='inner'>
-            <a class='toreportpage' href='report.html?togoKey=${
+            <a class='report-page-button-view' href='report.html?togoKey=${
               detail.tableData.togoKey
             }&id=${detail.rows[index].id}&properties=${encodeURIComponent(
             JSON.stringify(row)

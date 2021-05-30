@@ -153,7 +153,7 @@ export default class TrackOverviewCategorical {
     let left = 0;
     this.#values.forEach(value => {
       const width = isArea ? (isLog10 ? Math.log10(value.count) : value.count) / sum * 100 : fixedWidth;
-      value.elm.style.backgroundColor = `rgb(${value.baseColor.mix(App.colorDarkGray, 1 - (isLog10 ? value.countLog10 : value.count) / max).coords.map(cood => cood * 256).join(',')})`;
+      value.elm.style.backgroundColor = `rgb(${value.baseColor.mix(App.colorGray, 1 - (isLog10 ? value.countLog10 : value.count) / max).coords.map(cood => cood * 256).join(',')})`;
       value.elm.style.width = width + '%';
       value.elm.style.left = left + '%';
       left += width;

@@ -45,7 +45,7 @@ export default class TableData {
     <div class="close-button-view"></div>
     <div class="conditions">
       <div class="condiiton">
-        <p title="${condition.togoKey}">${condition.togoKey}</p>
+        <p title="${condition.togoKey}">${Records.getLabelFromTogoKey(condition.togoKey)}</p>
       </div>
       ${condition.attributes.map(property => `<div class="condiiton -value" style="background-color: hsl(${property.subject.hue}, 45%, 50%)">
         <p title="${property.property.label}">${property.property.label}</p>

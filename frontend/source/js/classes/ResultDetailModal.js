@@ -107,7 +107,7 @@ export default class ResultDetailModal {
         ${path}
       </div>
       <div>
-        <a class='toreportpage' href='${
+        <a class='report-page-button-view' href='${
           props.reportLink
         }' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>
     `;
@@ -181,7 +181,7 @@ export default class ResultDetailModal {
     
     const targetEntry = this.#RESULTS_TABLE.querySelector(`[data-order = '${movement(x,y)}'`);
     const targetTr = targetEntry.closest('tr');
-    const reportLink = targetTr.querySelector('.toreportpage').href;
+    const reportLink = targetTr.querySelector('.report-page-button-view').href;
 
     ResultsTable.prototype.createPopupEvent(targetEntry, targetTr, reportLink, event.movePopup);
   }

@@ -328,7 +328,7 @@ template {
   --color-light-gray: #CCC;
   --color-warm-gray: #f7f5f4;
   --color-gray: #999;
-  --color-dark-gray: #999;
+  --color-dark-gray: #666;
   --color-lamp-black: #333230;
   --color-translucent-lamp-black1: #33323044;
   --color-translucent-lamp-black2: #33323099;
@@ -489,6 +489,32 @@ main {
   margin: 0;
   padding-left: 1rem;
   text-align: right;
+}
+
+.close-button-view {
+  width: 1.2rem;
+  height: 1.2rem;
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  cursor: pointer;
+}
+.close-button-view::before, .close-button-view::after {
+  content: "";
+  border-left: solid 0.1rem var(--color-black);
+  position: absolute;
+  top: 0.1rem;
+  left: 0.6rem;
+  display: block;
+  height: 0.8rem;
+}
+.close-button-view::before {
+  -webkit-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+.close-button-view::after {
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
 }
 
 .concept-view {
@@ -816,6 +842,28 @@ main {
             transform: rotate(360deg);
   }
 }
+.report-page-button-view {
+  display: inline-block;
+  background-color: var(--color-lamp-black);
+  color: white;
+  font-weight: normal;
+  padding: 0 0.8rem;
+  border-radius: 0.2rem;
+  margin-right: 0.2rem;
+  cursor: pointer;
+}
+.report-page-button-view::before {
+  content: "Report";
+}
+.report-page-button-view > .material-icons-outlined {
+  font-size: 1rem;
+  vertical-align: middle;
+  margin-left: 0.3rem;
+  position: relative;
+  top: -0.1rem;
+  margin-right: -0.1rem;
+}
+
 .rounded-button-view {
   margin-left: -0.1rem;
   padding: 0 0.8em;
@@ -863,28 +911,6 @@ main {
   position: relative;
   top: -0.1rem;
   margin-right: 0.2rem;
-}
-
-.toreportpage {
-  display: inline-block;
-  background-color: var(--color-lamp-black);
-  color: white;
-  font-weight: normal;
-  padding: 0 0.8rem;
-  border-radius: 0.2rem;
-  margin-right: 0.2rem;
-  cursor: pointer;
-}
-.toreportpage::before {
-  content: "Report";
-}
-.toreportpage > .material-icons-outlined {
-  font-size: 1rem;
-  vertical-align: middle;
-  margin-left: 0.3rem;
-  position: relative;
-  top: -0.1rem;
-  margin-right: -0.1rem;
 }
 
 .stacking-condition-view {
@@ -1254,7 +1280,7 @@ main {
   top: 0;
   right: -0.05rem;
   height: 100%;
-  border-left: solid 0.005rem var(--color-dark-gray);
+  border-left: solid 0.005rem var(--color-gray);
   z-index: var(--z-track-item-border);
 }
 .track-value-view > p {
@@ -1417,32 +1443,6 @@ main {
   border: solid 0.1rem black;
   box-shadow: 0 0 0 0.1rem rgba(255, 255, 255, 0.5) inset;
   pointer-events: none;
-}
-
-.close-button-view {
-  width: 1.2rem;
-  height: 1.2rem;
-  position: absolute;
-  top: 0.4rem;
-  right: 0.4rem;
-  cursor: pointer;
-}
-.close-button-view::before, .close-button-view::after {
-  content: "";
-  border-left: solid 0.1rem var(--color-black);
-  position: absolute;
-  top: 0.1rem;
-  left: 0.6rem;
-  display: block;
-  height: 0.8rem;
-}
-.close-button-view::before {
-  -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
-}
-.close-button-view::after {
-  -webkit-transform: rotate(-45deg);
-          transform: rotate(-45deg);
 }
 
 #App {
@@ -1754,10 +1754,13 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   border-bottom: solid 0.1rem var(--color-black);
 }
 #ResultsTable > .body > table > thead > tr.header > th:first-child > .inner {
-  background-color: var(--color-translucent-lamp-black2);
+  background-color: var(--color-light-gray);
 }
 #ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner {
   background-color: var(--color-lamp-black);
+}
+#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner > .togo-key-view {
+  background-color: var(--color-dark-gray);
 }
 #ResultsTable > .body > table > thead > tr.statistics > td > .inner {
   background-color: white;

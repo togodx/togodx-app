@@ -183,7 +183,7 @@
       "pg" : 0,
       "sct" : 0
     },
-    "\/source\/css\/object\/component\/_reportpage-button-view.sass" : {
+    "\/source\/css\/object\/component\/_report-page-button-view.sass" : {
       "aP" : 1,
       "bl" : 0,
       "dP" : 10,
@@ -191,7 +191,7 @@
       "ft" : 2,
       "ma" : 1,
       "oA" : 1,
-      "oAP" : "\/build\/css\/object\/component\/_reportpage-button-view.css",
+      "oAP" : "\/build\/css\/object\/component\/_report-page-button-view.css",
       "oF" : 0,
       "oS" : 1,
       "pg" : 0,
