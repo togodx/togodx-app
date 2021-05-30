@@ -81,7 +81,7 @@ export default class ConditionBuilderView {
     view.classList.add('stacking-condition-view');
     view.dataset.propertyId = property.propertyId;
     view.innerHTML = `
-    <div class="closebutton"></div>
+    <div class="close-button-view"></div>
     <ul class="path">
       <li>${subject.subject}</li>
     </ul>
@@ -89,7 +89,7 @@ export default class ConditionBuilderView {
     this.#PROPERTIES_CONDITIONS_CONTAINER.insertAdjacentElement('beforeend', view);
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // event
-    view.querySelector(':scope > .closebutton').addEventListener('click', () => {
+    view.querySelector(':scope > .close-button-view').addEventListener('click', () => {
       ConditionBuilder.removeProperty(view.dataset.propertyId);
     });
   }
@@ -110,7 +110,7 @@ export default class ConditionBuilderView {
     // view.dataset.range = [0, 0]; // TODO:
     view.style.backgroundColor = subject.colorCSSValue;
     view.innerHTML = `
-    <div class="closebutton"></div>
+    <div class="close-button-view"></div>
     <ul class="path">
       <li>${subject.subject}</li>
       <li>${property.label}</li>
@@ -120,7 +120,7 @@ export default class ConditionBuilderView {
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.insertAdjacentElement('beforeend', view);
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // event
-    view.querySelector(':scope > .closebutton').addEventListener('click', () => {
+    view.querySelector(':scope > .close-button-view').addEventListener('click', () => {
       ConditionBuilder.removePropertyValue(view.dataset.propertyId, view.dataset.categoryId);
     });
   }

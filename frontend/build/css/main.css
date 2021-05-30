@@ -923,30 +923,10 @@ main {
           transform-origin: 0 0;
   margin-top: 0.4rem;
 }
-.stacking-condition-view > .closebutton {
-  width: 1.2rem;
-  height: 1.2rem;
+.stacking-condition-view > .close-button-view {
   position: absolute;
   top: 0.4rem;
   right: 0.4rem;
-  cursor: pointer;
-}
-.stacking-condition-view > .closebutton::before, .stacking-condition-view > .closebutton::after {
-  content: "";
-  border-left: solid 0.1rem var(--color-black);
-  position: absolute;
-  top: 0.1rem;
-  left: 0.6rem;
-  display: block;
-  height: 0.8rem;
-}
-.stacking-condition-view > .closebutton::before {
-  -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
-}
-.stacking-condition-view > .closebutton::after {
-  -webkit-transform: rotate(-45deg);
-          transform: rotate(-45deg);
 }
 .stacking-condition-view > .path {
   margin: 0;
@@ -1063,6 +1043,11 @@ main {
   cursor: pointer;
   transition: opacity var(--transition-instant);
   position: relative;
+}
+.table-data-controller-view > .close-button-view {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
 }
 .table-data-controller-view > .conditions {
   display: -webkit-flex;
@@ -1494,7 +1479,7 @@ body[data-display=results] #App > .inner {
   margin-top: 0.4rem;
   font-weight: lighter;
 }
-body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .stacking-condition-view > .closebutton {
+body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .stacking-condition-view > .close-button-view {
   display: none;
 }
 #ConditionBuilder > .conditions > .attributes > .conditions.-empty::after {

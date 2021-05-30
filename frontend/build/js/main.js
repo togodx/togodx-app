@@ -3285,14 +3285,14 @@
     var view = document.createElement('div');
     view.classList.add('stacking-condition-view');
     view.dataset.propertyId = property.propertyId;
-    view.innerHTML = "\n    <div class=\"closebutton\"></div>\n    <ul class=\"path\">\n      <li>".concat(subject.subject, "</li>\n    </ul>\n    <div class=\"label\" style=\"color: ").concat(subject.colorCSSValue, ";\">").concat(property.label, "</div>");
+    view.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      <li>".concat(subject.subject, "</li>\n    </ul>\n    <div class=\"label\" style=\"color: ").concat(subject.colorCSSValue, ";\">").concat(property.label, "</div>");
 
     _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).insertAdjacentElement('beforeend', view);
 
     _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.remove('-empty'); // event
 
 
-    view.querySelector(':scope > .closebutton').addEventListener('click', function () {
+    view.querySelector(':scope > .close-button-view').addEventListener('click', function () {
       ConditionBuilder$1.removeProperty(view.dataset.propertyId);
     });
   }
@@ -3313,7 +3313,7 @@
     view.dataset.categoryId = value.categoryId; // view.dataset.range = [0, 0]; // TODO:
 
     view.style.backgroundColor = subject.colorCSSValue;
-    view.innerHTML = "\n    <div class=\"closebutton\"></div>\n    <ul class=\"path\">\n      <li>".concat(subject.subject, "</li>\n      <li>").concat(property.label, "</li>\n      ").concat(value.ancestors.map(function (ancestor) {
+    view.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      <li>".concat(subject.subject, "</li>\n      <li>").concat(property.label, "</li>\n      ").concat(value.ancestors.map(function (ancestor) {
       return "<li>".concat(ancestor, "</li>");
     }).join(''), "\n    </ul>\n    <div class=\"label\">").concat(value.label, "</div>");
 
@@ -3322,7 +3322,7 @@
     _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.remove('-empty'); // event
 
 
-    view.querySelector(':scope > .closebutton').addEventListener('click', function () {
+    view.querySelector(':scope > .close-button-view').addEventListener('click', function () {
       ConditionBuilder$1.removePropertyValue(view.dataset.propertyId, view.dataset.categoryId);
     });
   }
