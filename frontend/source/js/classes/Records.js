@@ -50,6 +50,10 @@ class Records {
     return value;
   }
 
+  getLabelFromTogoKey(togoKey) {
+    return this.#subjects.find(subject => subject.togoKey === togoKey).keyLabel;
+  }
+
   // public accessors
 
   get subjects() {

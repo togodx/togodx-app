@@ -2784,6 +2784,13 @@
           return value.categoryId === categoryId;
         });
         return value;
+      }
+    }, {
+      key: "getLabelFromTogoKey",
+      value: function getLabelFromTogoKey(togoKey) {
+        return _classPrivateFieldGet(this, _subjects).find(function (subject) {
+          return subject.togoKey === togoKey;
+        }).keyLabel;
       } // public accessors
 
     }, {
@@ -3982,8 +3989,7 @@
       value: void 0
     });
 
-    console.log(elm, subject, property, _items2, sparqlist);
-
+    // console.log(elm, subject, property, items, sparqlist)
     _classPrivateFieldSet(this, _subject$2, subject);
 
     this._sparqlist = sparqlist;
@@ -4930,7 +4936,7 @@
 
     DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
-    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class='inner'>\n          <div class='togo-key-view'>Report</div>\n        </div>\n      </th>\n      <th>\n        <div class='inner'>\n          <div class='togo-key-view'>".concat(tableData.condition.togoKey, "</div>\n        </div>\n      </th>\n      ").concat(tableData.condition.attributes.map(function (property) {
+    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class='inner'>Report</div>\n      </th>\n      <th>\n        <div class='inner'>\n          <div class='togo-key-view'>".concat(Records$1.getLabelFromTogoKey(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      ").concat(tableData.condition.attributes.map(function (property) {
       return "\n      <th>\n        <div class='inner -propertyvalue' style='background-color: ".concat(property.subject.colorCSSValue, "'>\n          <div class='togo-key-view'>").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
     }).join(''), "\n      ").concat(tableData.condition.properties.map(function (property) {
       return "\n      <th>\n        <div class='inner -property' style='color: ".concat(property.subject.colorCSSValue, "'>\n          <div class='togo-key-view'>").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");

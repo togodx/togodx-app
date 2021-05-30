@@ -1,5 +1,6 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
 import StatisticsView from './StatisticsView';
+import Records from './Records';
 import * as event from '../events';
 
 export default class ResultsTable {
@@ -97,13 +98,11 @@ export default class ResultsTable {
     // make table header
     this.#THEAD.innerHTML = `
       <th>
-        <div class='inner'>
-          <div class='togo-key-view'>Report</div>
-        </div>
+        <div class='inner'>Report</div>
       </th>
       <th>
         <div class='inner'>
-          <div class='togo-key-view'>${tableData.condition.togoKey}</div>
+          <div class='togo-key-view'>${Records.getLabelFromTogoKey(tableData.condition.togoKey)}</div>
         </div>
       </th>
       ${tableData.condition.attributes

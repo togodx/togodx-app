@@ -2673,6 +2673,13 @@
           return value.categoryId === categoryId;
         });
         return value;
+      }
+    }, {
+      key: "getLabelFromTogoKey",
+      value: function getLabelFromTogoKey(togoKey) {
+        return _classPrivateFieldGet(this, _subjects).find(function (subject) {
+          return subject.togoKey === togoKey;
+        }).keyLabel;
       } // public accessors
 
     }, {
