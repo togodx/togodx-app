@@ -325,8 +325,9 @@ template {
   display: none !important;
 }
 :root {
-  --color-light-gray: #CCC;
   --color-warm-gray: #f7f5f4;
+  --color-light-gray: #CCC;
+  --color-silver: #c8c7c6;
   --color-gray: #999;
   --color-dark-gray: #666;
   --color-lamp-black: #333230;
@@ -348,7 +349,6 @@ template {
   --min-width-app: 102.4rem;
   --height-results-statistics: 20rem;
   --font-size-title: 1.5rem;
-  --text-shadow-value: 0 0 .2rem var(--color-lamp-black);
   --transition-instant: .2s;
   --transition-wipe: .5s;
   --transition-fetching: 1s;
@@ -1256,16 +1256,7 @@ main {
   transition: width var(--transition-wipe), left var(--transition-wipe);
   cursor: pointer;
   transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
-}
-.track-value-view::after {
-  content: "";
-  display: block;
-  position: absolute;
-  top: 0;
-  right: -0.05rem;
-  height: 100%;
-  border-left: solid 0.005rem var(--color-gray);
-  z-index: var(--z-track-item-border);
+  border-right: solid 0.1rem var(--color-gray);
 }
 .track-value-view > p {
   padding-left: 0.2rem;

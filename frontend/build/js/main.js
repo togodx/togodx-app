@@ -3879,7 +3879,7 @@
       max = isLog10 ? Math.log10(max) : max;
       column.ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
         var count = Number(li.dataset.count);
-        li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this4, _subject$3).color.mix(App$1.colorGray, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
+        li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this4, _subject$3).color.mix(App$1.colorSilver, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
           return cood * 256;
         }).join(','), ")");
       });
@@ -4365,7 +4365,7 @@
 
     _classPrivateFieldGet(this, _values).forEach(function (value) {
       var width = isArea ? (isLog10 ? Math.log10(value.count) : value.count) / sum * 100 : fixedWidth;
-      value.elm.style.backgroundColor = "rgb(".concat(value.baseColor.mix(App$1.colorGray, 1 - (isLog10 ? value.countLog10 : value.count) / max).coords.map(function (cood) {
+      value.elm.style.backgroundColor = "rgb(".concat(value.baseColor.mix(App$1.colorSilver, 1 - (isLog10 ? value.countLog10 : value.count) / max).coords.map(function (cood) {
         return cood * 256;
       }).join(','), ")");
       value.elm.style.width = width + '%';
@@ -6079,6 +6079,8 @@
 
   var _aggregate = new WeakMap();
 
+  var _colorSilver = new WeakMap();
+
   var _colorGray = new WeakMap();
 
   var _colorDarkGray = new WeakMap();
@@ -6103,6 +6105,11 @@
         value: void 0
       });
 
+      _colorSilver.set(this, {
+        writable: true,
+        value: void 0
+      });
+
       _colorGray.set(this, {
         writable: true,
         value: void 0
@@ -6117,6 +6124,8 @@
         writable: true,
         value: void 0
       });
+
+      _classPrivateFieldSet(this, _colorSilver, new h('--color-silver').to('srgb'));
 
       _classPrivateFieldSet(this, _colorGray, new h('--color-gray').to('srgb'));
 
@@ -6203,6 +6212,11 @@
       key: "aggregateRows",
       get: function get() {
         return _classPrivateFieldGet(this, _aggregate).table.url;
+      }
+    }, {
+      key: "colorSilver",
+      get: function get() {
+        return _classPrivateFieldGet(this, _colorSilver);
       }
     }, {
       key: "colorGray",
