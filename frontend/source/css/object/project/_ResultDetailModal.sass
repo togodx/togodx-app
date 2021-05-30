@@ -1,5 +1,6 @@
-
 #ResultDetailModal
+  --padding-side: 1.2rem
+  --height-header: 3rem
   opacity: 0
   z-index: 0
   &.backdrop
@@ -13,59 +14,55 @@
     left: 0
     right: 0
     bottom: 0
-    background-color: rgba(0,0,0,0.5)
-    z-index: 1000
+    background-color: rgba(0, 0, 0, .5)
+    z-index: var(--z-modal-window-backdrop)
     opacity: 1
     > .popup
-      z-index: 1001
+      z-index: var(--z-modal-window)
       position: absolute
       display: flex
       flex-direction: column
       flex-grow: 1
-      min-width: 65%
-      max-width: 90%
+      min-width: 80rem
+      // max-width: 90%
       height: 85%
       align-items: center
       align-content: center
-      background-color: rgba(255,255,255, 0.8)
-      border-radius: 2rem
-      box-shadow: var(--shadow-shallow)
+      background-color: rgba(255, 255, 255, .85)
+      border-radius: .4rem
       > header
         display: flex
         justify-content: space-between
         align-items: center
-        height: 7%
+        height: var(--height-header)
         width: 100%
         color: white
-        font-weight: 20
-        padding-right: 1rem
+        line-height: 1.6rem
         border-top-left-radius: inherit
         border-top-right-radius: inherit
-        padding: 1.5% 3.5%
+        padding: calc((var(--height-header) - 1.6rem) * .5) var(--padding-side)
         > div
           display: flex
           align-items: center
-          > *
-            margin-right: 1rem !important
           &.label
             align-items: baseline
             font-weight: bold
+            flex-grow: 1
+            font-size: 1.4rem
+            > *
+              margin-right: 1rem !important
             > strong
-              font-size: 1.4rem
+              // font-size: 1.4rem
             > .path
-              color: rgba(0, 0, 0, 0.5)
+              color: var(--color-lamp-black)
           > .close-button-view
-            top: unset
-            left: 5%
+            margin-left: .5rem
+            margin-right: -.4rem
             position: relative
-            width: 1.5rem
-            height: 1.5rem
-            cursor: pointer
-            &::before, &::after
-              height: 1.5rem
-          > .external-link
-            text-decoration: underline
-            color: white
+              // height: 1.5rem
+          // > .external-link
+          //   text-decoration: underline
+          //   color: white
       > .container
         height: 100%
         width: 100%

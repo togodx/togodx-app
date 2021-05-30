@@ -352,8 +352,6 @@ template {
   --transition-instant: .2s;
   --transition-wipe: .5s;
   --transition-fetching: 1s;
-  --shadow-shallow: 0 .1rem .1rem rgba(0,0,0,.3);
-  --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3);
   --z-results-header: 1;
   --z-track-item-border: 1;
   --z-track-item-selected: 2;
@@ -363,6 +361,10 @@ template {
   --z-fixed-area: 5;
   --z-header: 6;
   --z-track-balloon: 7;
+  --z-modal-window-backdrop: 8;
+  --z-modal-window: 9;
+  --shadow-shallow: 0 .1rem .1rem rgba(0,0,0,.3);
+  --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3);
 }
 
 @-webkit-keyframes enter-stacking-item {
@@ -494,9 +496,6 @@ main {
 .close-button-view {
   width: 1.2rem;
   height: 1.2rem;
-  position: absolute;
-  top: 0.4rem;
-  right: 0.4rem;
   cursor: pointer;
 }
 .close-button-view::before, .close-button-view::after {
@@ -1807,6 +1806,8 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
 }
 
 #ResultDetailModal {
+  --padding-side: 1.2rem;
+  --height-header: 3rem;
   opacity: 0;
   z-index: 0;
 }
@@ -1825,11 +1826,11 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  z-index: var(--z-modal-window-backdrop);
   opacity: 1;
 }
 #ResultDetailModal.backdrop > .popup {
-  z-index: 1001;
+  z-index: var(--z-modal-window);
   position: absolute;
   display: -webkit-flex;
   display: flex;
@@ -1837,16 +1838,14 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
           flex-direction: column;
   -webkit-flex-grow: 1;
           flex-grow: 1;
-  min-width: 65%;
-  max-width: 90%;
+  min-width: 80rem;
   height: 85%;
   -webkit-align-items: center;
           align-items: center;
   -webkit-align-content: center;
           align-content: center;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 2rem;
-  box-shadow: var(--shadow-shallow);
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 0.4rem;
 }
 #ResultDetailModal.backdrop > .popup > header {
   display: -webkit-flex;
@@ -1855,14 +1854,13 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
           justify-content: space-between;
   -webkit-align-items: center;
           align-items: center;
-  height: 7%;
+  height: var(--height-header);
   width: 100%;
   color: white;
-  font-weight: 20;
-  padding-right: 1rem;
+  line-height: 1.6rem;
   border-top-left-radius: inherit;
   border-top-right-radius: inherit;
-  padding: 1.5% 3.5%;
+  padding: calc((var(--height-header) - 1.6rem) * .5) var(--padding-side);
 }
 #ResultDetailModal.backdrop > .popup > header > div {
   display: -webkit-flex;
@@ -1870,34 +1868,24 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   -webkit-align-items: center;
           align-items: center;
 }
-#ResultDetailModal.backdrop > .popup > header > div > * {
-  margin-right: 1rem !important;
-}
 #ResultDetailModal.backdrop > .popup > header > div.label {
   -webkit-align-items: baseline;
           align-items: baseline;
   font-weight: bold;
-}
-#ResultDetailModal.backdrop > .popup > header > div.label > strong {
+  -webkit-flex-grow: 1;
+          flex-grow: 1;
   font-size: 1.4rem;
 }
+#ResultDetailModal.backdrop > .popup > header > div.label > * {
+  margin-right: 1rem !important;
+}
 #ResultDetailModal.backdrop > .popup > header > div.label > .path {
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--color-lamp-black);
 }
 #ResultDetailModal.backdrop > .popup > header > div > .close-button-view {
-  top: unset;
-  left: 5%;
+  margin-left: 0.5rem;
+  margin-right: -0.4rem;
   position: relative;
-  width: 1.5rem;
-  height: 1.5rem;
-  cursor: pointer;
-}
-#ResultDetailModal.backdrop > .popup > header > div > .close-button-view::before, #ResultDetailModal.backdrop > .popup > header > div > .close-button-view::after {
-  height: 1.5rem;
-}
-#ResultDetailModal.backdrop > .popup > header > div > .external-link {
-  text-decoration: underline;
-  color: white;
 }
 #ResultDetailModal.backdrop > .popup > .container {
   height: 100%;
