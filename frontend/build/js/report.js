@@ -2699,7 +2699,7 @@
 
   var Records$1 = new Records();
 
-  var _templates$1 = new WeakMap();
+  var _templates = new WeakMap();
 
   var _isReady = new WeakMap();
 
@@ -2707,7 +2707,7 @@
     function StanzaManager() {
       _classCallCheck(this, StanzaManager);
 
-      _templates$1.set(this, {
+      _templates.set(this, {
         writable: true,
         value: void 0
       });
@@ -2743,13 +2743,13 @@
           }));
         }).then(function (templates) {
           // set stanza templates
-          _classPrivateFieldSet(_this, _templates$1, Object.fromEntries(Object.keys(data.templates).map(function (stanza, index) {
+          _classPrivateFieldSet(_this, _templates, Object.fromEntries(Object.keys(data.templates).map(function (stanza, index) {
             return [stanza, templates[index]];
           })));
 
           _classPrivateFieldSet(_this, _isReady, true);
 
-          console.log(_classPrivateFieldGet(_this, _templates$1));
+          console.log(_classPrivateFieldGet(_this, _templates));
         });
       }
       /**
@@ -2763,7 +2763,7 @@
     }, {
       key: "draw",
       value: function draw(subjectId, id, key) {
-        return "<div class=\"stanza\">".concat(_classPrivateFieldGet(this, _templates$1)[subjectId].replace(/{{id}}/g, id).replace(/{{type}}/g, key), "</div>");
+        return "<div class=\"stanza\">".concat(_classPrivateFieldGet(this, _templates)[subjectId].replace(/{{id}}/g, id).replace(/{{type}}/g, key), "</div>");
       }
     }, {
       key: "isReady",
@@ -2780,8 +2780,6 @@
   var PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
   var TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
 
-  var _templates = new WeakMap();
-
   var _drawStanzas = new WeakSet();
 
   var ReportApp = /*#__PURE__*/function () {
@@ -2789,11 +2787,6 @@
       _classCallCheck(this, ReportApp);
 
       _drawStanzas.add(this);
-
-      _templates.set(this, {
-        writable: true,
-        value: void 0
-      });
     }
 
     _createClass(ReportApp, [{
@@ -2801,6 +2794,7 @@
       value: function ready() {
         var _this = this;
 
+        // load config json
         Promise.all([fetch(PROPERTIES), fetch(TEMPLATES)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
@@ -2810,7 +2804,6 @@
               subjects = _ref2[0],
               templates = _ref2[1];
 
-          // stanzaTtemplates = templates;
           Records$1.setSubjects(subjects); // initialize stanza manager
 
           StanzaManager$1.init(templates); // wait ready stanza manager
@@ -2843,7 +2836,7 @@
     var urlVars = Object.fromEntries(window.location.search.substr(1).split('&').map(function (keyValue) {
       return keyValue.split('=');
     }));
-    var properties = JSON.parse(decodeURIComponent(urlVars.properties));
+    var properties = JSON.parse(decodeURIComponent(RawDeflate.inflate(window.atob(urlVars.properties))));
     var main = document.querySelector('main');
     var subjectId = Records$1.subjects.find(function (subject) {
       return subject.togoKey === urlVars.togoKey;

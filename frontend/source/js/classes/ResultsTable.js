@@ -98,19 +98,19 @@ export default class ResultsTable {
     // make table header
     this.#THEAD.innerHTML = `
       <th>
-        <div class='inner'>Report</div>
+        <div class="inner">Report</div>
       </th>
       <th>
-        <div class='inner'>
-          <div class='togo-key-view'>${Records.getLabelFromTogoKey(tableData.condition.togoKey)}</div>
+        <div class="inner">
+          <div class="togo-key-view">${Records.getLabelFromTogoKey(tableData.condition.togoKey)}</div>
         </div>
       </th>
       ${tableData.condition.attributes
         .map(
           (property) => `
       <th>
-        <div class='inner -propertyvalue' style='background-color: ${property.subject.colorCSSValue}'>
-          <div class='togo-key-view'>${property.property.primaryKey}</div>
+        <div class="inner -propertyvalue" style="background-color: ${property.subject.colorCSSValue}">
+          <div class="togo-key-view">${property.property.primaryKey}</div>
           <span>${property.property.label}</span>
         </div>
       </th>`
@@ -120,8 +120,8 @@ export default class ResultsTable {
         .map(
           (property) => `
       <th>
-        <div class='inner -property' style='color: ${property.subject.colorCSSValue}'>
-          <div class='togo-key-view'>${property.property.primaryKey}</div>
+        <div class="inner -property" style="color: ${property.subject.colorCSSValue}">
+          <div class="togo-key-view">${property.property.primaryKey}</div>
           <span>${property.property.label}</span>
         </div>
       </th>`
@@ -130,9 +130,9 @@ export default class ResultsTable {
 
     // make stats
     this.#STATS.innerHTML =
-      `<td colspan="2"><div class='inner'><div></td>` +
+      `<td colspan="2"><div class="inner"><div></td>` +
       properties
-        .map(() => `<td><div class='inner'><div></div></div></td>`)
+        .map(() => `<td><div class="inner"><div></div></div></td>`)
         .join('');
     this.#STATS
       .querySelectorAll(':scope > td > .inner > div')
@@ -163,72 +163,66 @@ export default class ResultsTable {
       rows
         .map((row, index) => {
           console.log(row);
-          return `<tr data-index='${
-            detail.tableData.offset + index
-          }' data-togo-id='${detail.rows[index].id}'>
-        <th>
-          <div class='inner'>
-            <a class='report-page-button-view' href='report.html?togoKey=${
-              detail.tableData.togoKey
-            }&id=${detail.rows[index].id}&properties=${encodeURIComponent(
-            JSON.stringify(row)
-          )}' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>
-          </div>
-        </th>
-        <td>
-          <div class='inner'>
-            <ul>
-              <div
-                class='togo-key-view primarykey'
-                data-key='${detail.tableData.togoKey}'
-                data-order= '${[0, index]}'
-                data-subject-id='${detail.tableData.subjectId}'
-                data-unique-entry-id='${detail.rows[index].id}'>${
-                  detail.rows[index].id
-                }
+          return `<tr data-index="${detail.tableData.offset + index}" data-togo-id="${detail.rows[index].id}">
+            <th>
+              <div class="inner">
+                <a class="report-page-button-view" href="report.html?togoKey=${detail.tableData.togoKey}&id=${detail.rows[index].id}&properties=${window.btoa(RawDeflate.deflate(encodeURIComponent(JSON.stringify(row))))}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
               </div>
-              <span>${detail.rows[index].label}</span>
-            </ul>
-          </div<
-        </td>
-        ${row
-          .map((column, columnIndex) => {
-            // console.log(column)
-            if (column) {
-              return `
-              <td><div class='inner'><ul>${column.attributes
-                .map((attribute) => {
-                  if (!attribute.attribute) console.error(attribute);
+            </th>
+            <td>
+              <div class="inner">
+                <ul>
+                  <div
+                    class="togo-key-view primarykey"
+                    data-key="${detail.tableData.togoKey}"
+                    data-order= "${[0, index]}"
+                    data-subject-id="${detail.tableData.subjectId}"
+                    data-unique-entry-id="${detail.rows[index].id}">${
+                      detail.rows[index].id
+                    }
+                  </div>
+                  <span>${detail.rows[index].label}</span>
+                </ul>
+              </div<
+            </td>
+            ${row
+              .map((column, columnIndex) => {
+                // console.log(column)
+                if (column) {
                   return `
-              <li>
-                <div
-                  class='togo-key-view'
-                  data-order = '${[columnIndex + 1, index]}'
-                  data-key='${column.propertyKey}'
-                  data-subject-id='${this.#header[columnIndex].subjectId}'
-                  data-main-category-id='${
-                    this.#header[columnIndex].propertyId
-                  }'
-                  data-sub-category-id='${
-                    attribute.attribute.categoryId
-                      ? attribute.attribute.categoryId
-                      : attribute.attribute.categoryIds
-                  }'
-                  data-unique-entry-id='${attribute.id}'
-                  data-unique-entry-uri='${attribute.attribute.uri}'
-                  >${attribute.id}</div>
-                <span>${
-                    attribute.attribute ? attribute.attribute.label : attribute
-                  }</span>
-              </li>`;
-                })
-                .join('')}</ul></div></td>`;
-            } else {
-              return `<td><div class='inner -empty'></div></td>`;
-            }
-          })
-          .join('')}
-      </tr>`;
+                  <td><div class="inner"><ul>${column.attributes
+                    .map((attribute) => {
+                      if (!attribute.attribute) console.error(attribute);
+                      return `
+                      <li>
+                        <div
+                          class="togo-key-view"
+                          data-order="${[columnIndex + 1, index]}"
+                          data-key="${column.propertyKey}"
+                          data-subject-id="${this.#header[columnIndex].subjectId}"
+                          data-main-category-id="${
+                            this.#header[columnIndex].propertyId
+                          }"
+                          data-sub-category-id="${
+                            attribute.attribute.categoryId
+                              ? attribute.attribute.categoryId
+                              : attribute.attribute.categoryIds
+                          }"
+                          data-unique-entry-id="${attribute.id}"
+                          data-unique-entry-uri="${attribute.attribute.uri}"
+                          >${attribute.id}</div>
+                        <span>${
+                            attribute.attribute ? attribute.attribute.label : attribute
+                          }</span>
+                      </li>`;
+                    })
+                    .join('')}</ul></div></td>`;
+                } else {
+                  return `<td><div class="inner -empty"></div></td>`;
+                }
+              })
+              .join('')}
+          </tr>`;
         })
         .join('')
     );
@@ -253,7 +247,7 @@ export default class ResultsTable {
     rows.forEach((row, index) => {
       const actualIndex = detail.tableData.offset + index;
       const tr = this.#TBODY.querySelector(
-        `:scope > tr[data-index='${actualIndex}']`
+        `:scope > tr[data-index="${actualIndex}"]`
       );
       const reportLink = `report.html?togoKey=${this.#tableData.togoKey}&id=${tr.getAttribute('data-togo-id')}&properties=${encodeURIComponent(JSON.stringify(row))}`
       const uniqueEntries = tr.querySelectorAll('.togo-key-view');

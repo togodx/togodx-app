@@ -3879,7 +3879,7 @@
       max = isLog10 ? Math.log10(max) : max;
       column.ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
         var count = Number(li.dataset.count);
-        li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this4, _subject$3).color.mix(App$1.colorDarkGray, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
+        li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this4, _subject$3).color.mix(App$1.colorGray, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
           return cood * 256;
         }).join(','), ")");
       });
@@ -4936,14 +4936,14 @@
 
     DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
-    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class='inner'>Report</div>\n      </th>\n      <th>\n        <div class='inner'>\n          <div class='togo-key-view'>".concat(Records$1.getLabelFromTogoKey(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      ").concat(tableData.condition.attributes.map(function (property) {
-      return "\n      <th>\n        <div class='inner -propertyvalue' style='background-color: ".concat(property.subject.colorCSSValue, "'>\n          <div class='togo-key-view'>").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
+    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class=\"inner\">Report</div>\n      </th>\n      <th>\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getLabelFromTogoKey(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      ").concat(tableData.condition.attributes.map(function (property) {
+      return "\n      <th>\n        <div class=\"inner -propertyvalue\" style=\"background-color: ".concat(property.subject.colorCSSValue, "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
     }).join(''), "\n      ").concat(tableData.condition.properties.map(function (property) {
-      return "\n      <th>\n        <div class='inner -property' style='color: ".concat(property.subject.colorCSSValue, "'>\n          <div class='togo-key-view'>").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
+      return "\n      <th>\n        <div class=\"inner -property\" style=\"color: ".concat(property.subject.colorCSSValue, "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
     }).join('')); // make stats
 
-    _classPrivateFieldGet(this, _STATS).innerHTML = "<td colspan=\"2\"><div class='inner'><div></td>" + properties.map(function () {
-      return "<td><div class='inner'><div></div></div></td>";
+    _classPrivateFieldGet(this, _STATS).innerHTML = "<td colspan=\"2\"><div class=\"inner\"><div></td>" + properties.map(function () {
+      return "<td><div class=\"inner\"><div></div></div></td>";
     }).join('');
 
     _classPrivateFieldGet(this, _STATS).querySelectorAll(':scope > td > .inner > div').forEach(function (elm, index) {
@@ -4971,17 +4971,17 @@
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
       console.log(row);
-      return "<tr data-index='".concat(detail.tableData.offset + index, "' data-togo-id='").concat(detail.rows[index].id, "'>\n        <th>\n          <div class='inner'>\n            <a class='report-page-button-view' href='report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(encodeURIComponent(JSON.stringify(row)), "' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>\n          </div>\n        </th>\n        <td>\n          <div class='inner'>\n            <ul>\n              <div\n                class='togo-key-view primarykey'\n                data-key='").concat(detail.tableData.togoKey, "'\n                data-order= '").concat([0, index], "'\n                data-subject-id='").concat(detail.tableData.subjectId, "'\n                data-unique-entry-id='").concat(detail.rows[index].id, "'>").concat(detail.rows[index].id, "\n              </div>\n              <span>").concat(detail.rows[index].label, "</span>\n            </ul>\n          </div<\n        </td>\n        ").concat(row.map(function (column, columnIndex) {
+      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n            <th>\n              <div class=\"inner\">\n                <a class=\"report-page-button-view\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(window.btoa(RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n              </div>\n            </th>\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order= \"").concat([0, index], "\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "\n                  </div>\n                  <span>").concat(detail.rows[index].label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.map(function (column, columnIndex) {
         // console.log(column)
         if (column) {
-          return "\n              <td><div class='inner'><ul>".concat(column.attributes.map(function (attribute) {
+          return "\n                  <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute) {
             if (!attribute.attribute) console.error(attribute);
-            return "\n              <li>\n                <div\n                  class='togo-key-view'\n                  data-order = '".concat([columnIndex + 1, index], "'\n                  data-key='").concat(column.propertyKey, "'\n                  data-subject-id='").concat(_classPrivateFieldGet(_this2, _header$1)[columnIndex].subjectId, "'\n                  data-main-category-id='").concat(_classPrivateFieldGet(_this2, _header$1)[columnIndex].propertyId, "'\n                  data-sub-category-id='").concat(attribute.attribute.categoryId ? attribute.attribute.categoryId : attribute.attribute.categoryIds, "'\n                  data-unique-entry-id='").concat(attribute.id, "'\n                  data-unique-entry-uri='").concat(attribute.attribute.uri, "'\n                  >").concat(attribute.id, "</div>\n                <span>").concat(attribute.attribute ? attribute.attribute.label : attribute, "</span>\n              </li>");
+            return "\n                      <li>\n                        <div\n                          class=\"togo-key-view\"\n                          data-order=\"".concat([columnIndex + 1, index], "\"\n                          data-key=\"").concat(column.propertyKey, "\"\n                          data-subject-id=\"").concat(_classPrivateFieldGet(_this2, _header$1)[columnIndex].subjectId, "\"\n                          data-main-category-id=\"").concat(_classPrivateFieldGet(_this2, _header$1)[columnIndex].propertyId, "\"\n                          data-sub-category-id=\"").concat(attribute.attribute.categoryId ? attribute.attribute.categoryId : attribute.attribute.categoryIds, "\"\n                          data-unique-entry-id=\"").concat(attribute.id, "\"\n                          data-unique-entry-uri=\"").concat(attribute.attribute.uri, "\"\n                          >").concat(attribute.id, "</div>\n                        <span>").concat(attribute.attribute ? attribute.attribute.label : attribute, "</span>\n                      </li>");
           }).join(''), "</ul></div></td>");
         } else {
-          return "<td><div class='inner -empty'></div></td>";
+          return "<td><div class=\"inner -empty\"></div></td>";
         }
-      }).join(''), "\n      </tr>");
+      }).join(''), "\n          </tr>");
     }).join('')); // turn off auto-loading after last line is displayed
 
 
@@ -5006,7 +5006,7 @@
     rows.forEach(function (row, index) {
       var actualIndex = detail.tableData.offset + index;
 
-      var tr = _classPrivateFieldGet(_this2, _TBODY).querySelector(":scope > tr[data-index='".concat(actualIndex, "']"));
+      var tr = _classPrivateFieldGet(_this2, _TBODY).querySelector(":scope > tr[data-index=\"".concat(actualIndex, "\"]"));
 
       var reportLink = "report.html?togoKey=".concat(_classPrivateFieldGet(_this2, _tableData$1).togoKey, "&id=").concat(tr.getAttribute('data-togo-id'), "&properties=").concat(encodeURIComponent(JSON.stringify(row)));
       var uniqueEntries = tr.querySelectorAll('.togo-key-view');
