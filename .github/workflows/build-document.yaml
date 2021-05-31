@@ -1,5 +1,8 @@
 name: build-document
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - develop
 jobs:
   build_document:
     runs-on: ubuntu-latest

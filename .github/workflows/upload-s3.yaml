@@ -1,5 +1,8 @@
 name: upload-s3
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main
 jobs:
   upload_web_source:
     runs-on: ubuntu-latest
