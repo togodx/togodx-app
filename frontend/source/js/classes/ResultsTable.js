@@ -236,7 +236,7 @@ export default class ResultsTable {
       this.#LOADING_VIEW.classList.add('-shown');
       this.#intersctionObserver.observe(this.#TABLE_END);
     }
-    
+
   // Naming needs improvement but hierarcy for Popup screen is like below
   // Togo-key   (Uniprot)
 	//  → Subject  (Gene)
@@ -253,8 +253,12 @@ export default class ResultsTable {
       const uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach((uniqueEntry) => {
         uniqueEntry.addEventListener('click', () => {
-          this.createPopupEvent(uniqueEntry, tr, reportLink, event.showPopup);
+          this.createPopupEvent(uniqueEntry, reportLink, event.showPopup);
         });
+        const td = uniqueEntry.closest('td');
+        td.addEventListener('mouseenter', () => {
+          this.colHighlight(uniqueEntry.getAttribute('data-order'));
+        })
       });
     });
   }
@@ -267,11 +271,7 @@ export default class ResultsTable {
 
   // public methods
   // TODO: Set better way to get reportLink
-  createPopupEvent(uniqueEntry, tr, reportLink, newEvent) {
-    // if (!tr.classList.contains('.-selected')) {
-    //   tr.classList.add('.-selected');
-    // };
-    // uniqueEntry.classList.add('.-selected');
+  createPopupEvent(uniqueEntry, reportLink, newEvent) {
     const customEvent = new CustomEvent(newEvent, {
       detail: {
         keys: {
@@ -296,4 +296,20 @@ export default class ResultsTable {
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
+
+  colHighlight(axes) {
+    const colIndex = axes.slice(0,1);
+    document.querySelector('#Results tbody').querySelectorAll('[data-order]').forEach(element => {
+      const td = element.closest('td');
+      if(element.getAttribute('data-order').slice(0,1) === colIndex){
+        if(!td.classList.contains('.-selected')) {
+          td.classList.add('-selected');
+        }
+      }
+      else{
+        td.classList.remove('-selected');
+      }
+    });
+  }
+
 }

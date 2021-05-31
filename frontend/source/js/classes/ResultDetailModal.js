@@ -57,20 +57,14 @@ export default class ResultDetailModal {
       this.#RESULT_MODAL.classList.add('backdrop');
     }
   }
-  //TODO: hover highlighting 
+
   #setHighlight(id, axes) {
     const curEntry = this.#entryEl(id);
     const curTr = curEntry.closest('tr');
     curEntry.classList.add('-selected');
     curTr.classList.add('-selected');
 
-    const rowIndex = axes.slice(0,1);
-    this.#RESULTS_TABLE.querySelectorAll('[data-order]').forEach(element => {
-      const td = element.closest('td');
-      if(element.getAttribute('data-order').slice(0,1) === rowIndex){
-        td.classList.add('-selected');
-      }
-    });
+    ResultsTable.prototype.colHighlight(axes);
   }
 
   #entryEl(id) {
@@ -82,7 +76,7 @@ export default class ResultDetailModal {
       popup.className = 'popup';
       popup.appendChild(this.#header(detail.keys, detail.properties));
       popup.appendChild(this.#container(detail));
-    
+
       return popup
   }
   // HTML elements
@@ -178,12 +172,12 @@ export default class ResultDetailModal {
     detail.properties.movement = movement;
     const curEntry = this.#entryEl(detail.keys.uniqueEntryId);
     let [x, y] = this.#getCorList(curEntry.getAttribute('data-order'));
-    
+
     const targetEntry = this.#RESULTS_TABLE.querySelector(`[data-order = '${movement(x,y)}'`);
     const targetTr = targetEntry.closest('tr');
     const reportLink = targetTr.querySelector('.report-page-button-view').href;
 
-    ResultsTable.prototype.createPopupEvent(targetEntry, targetTr, reportLink, event.movePopup);
+    ResultsTable.prototype.createPopupEvent(targetEntry, reportLink, event.movePopup);
   }
 
   #hidePopUp() {
