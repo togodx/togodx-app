@@ -19,7 +19,7 @@ export default class HistogramRangeSelectorView {
   #GRIDS;
 
   constructor(elm, subject, property, items, sparqlist, overview) {
-    console.log(elm, subject, property, items, sparqlist)
+    // console.log(elm, subject, property, items, sparqlist)
 
     this.#subject = subject;
     this._sparqlist = sparqlist;

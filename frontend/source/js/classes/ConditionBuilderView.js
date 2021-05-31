@@ -27,6 +27,7 @@ export default class ConditionBuilderView {
 
     // event listeners
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, e => {
+      console.log(e.detail)
       switch (e.detail.action) {
         case 'add':
           this.#addProperty(e.detail.condition.subject, e.detail.condition.property);
@@ -57,25 +58,30 @@ export default class ConditionBuilderView {
 
   // private methods
 
-  #defineTogoKeys(togoKeys) {
+  #defineTogoKeys(subjects) {
     // make options
-    this.#TOGO_KEYS.innerHTML = togoKeys.map(togoKey => `<option value="${togoKey.togoKey}" data-subject-id="${togoKeys.subjectId}">${togoKey.label} (${togoKey.togoKey})</option>`).join('');
+    this.#TOGO_KEYS.innerHTML = subjects.map(subject => {
+      let option = '';
+      if (subject.togoKey) option = `<option value="${subject.togoKey}" data-subject-id="${subjects.subjectId}">${subject.keyLabel}</option>`;
+      return option;
+    }).join('');
     this.#TOGO_KEYS.disabled = false;
     // attach event
     this.#TOGO_KEYS.addEventListener('change', e => {
-      const togoKey = togoKeys.find(togoKey => togoKey.togoKey === e.target.value);
-      ConditionBuilder.setSubject(e.target.value, togoKey.subjectId);
+      const subject = subjects.find(subject => subject.togoKey === e.target.value);
+      ConditionBuilder.setSubject(e.target.value, subject.subjectId);
     });
     this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }
 
   #addProperty(subject, property) {
+    console.log(property)
     // make view
     const view = document.createElement('div');
     view.classList.add('stacking-condition-view');
     view.dataset.propertyId = property.propertyId;
     view.innerHTML = `
-    <div class="closebutton"></div>
+    <div class="close-button-view"></div>
     <ul class="path">
       <li>${subject.subject}</li>
     </ul>
@@ -83,7 +89,7 @@ export default class ConditionBuilderView {
     this.#PROPERTIES_CONDITIONS_CONTAINER.insertAdjacentElement('beforeend', view);
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // event
-    view.querySelector(':scope > .closebutton').addEventListener('click', () => {
+    view.querySelector(':scope > .close-button-view').addEventListener('click', () => {
       ConditionBuilder.removeProperty(view.dataset.propertyId);
     });
   }
@@ -104,7 +110,7 @@ export default class ConditionBuilderView {
     // view.dataset.range = [0, 0]; // TODO:
     view.style.backgroundColor = subject.colorCSSValue;
     view.innerHTML = `
-    <div class="closebutton"></div>
+    <div class="close-button-view"></div>
     <ul class="path">
       <li>${subject.subject}</li>
       <li>${property.label}</li>
@@ -114,7 +120,7 @@ export default class ConditionBuilderView {
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.insertAdjacentElement('beforeend', view);
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // event
-    view.querySelector(':scope > .closebutton').addEventListener('click', () => {
+    view.querySelector(':scope > .close-button-view').addEventListener('click', () => {
       ConditionBuilder.removePropertyValue(view.dataset.propertyId, view.dataset.categoryId);
     });
   }

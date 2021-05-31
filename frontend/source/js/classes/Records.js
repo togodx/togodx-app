@@ -1,12 +1,10 @@
 import Color from "./Color";
 
 class Records {
-
   #subjects;
   #properties;
 
-  constructor() {
-  }
+  constructor() {}
 
   // public methods
 
@@ -20,7 +18,6 @@ class Records {
       subjects[i].color = srgb;
       subjects[i].colorCSSValue = `rgb(${srgb.coords.map(channel => channel * 256).join(',')})`;
     }
-    console.log(subjects);
     this.#subjects = Object.freeze(subjects);
     // set properties
     this.#properties = [];
@@ -38,16 +35,23 @@ class Records {
     property.values = values;
   }
 
+  getSubject(subjectId) {
+    return this.#subjects.find((subject) => subject.subjectId === subjectId);
+  }
+
   getProperty(propertyId) {
     const property = this.#properties.find(property => property.propertyId === propertyId);
     return property;
   }
 
   getValue(propertyId, categoryId) {
-    // const property = this.#properties.find(property => property.propertyId === propertyId);
     const property = this.getProperty(propertyId);
     const value = property.values.find(value => value.categoryId === categoryId);
     return value;
+  }
+
+  getLabelFromTogoKey(togoKey) {
+    return this.#subjects.find(subject => subject.togoKey === togoKey).keyLabel;
   }
 
   // public accessors
@@ -59,7 +63,6 @@ class Records {
   get properties() {
     return this.#properties;
   }
-
 }
 
 export default new Records();

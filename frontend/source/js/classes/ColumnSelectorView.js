@@ -3,15 +3,28 @@ import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import * as event from '../events';
 
+const ALL_PROPERTIES = 'ALL_PROPERTIES';
+
 export default class ColumnSelectorView {
+
+  #subject;
+  #property;
+  #sparqlist;
+  #items;
+  #columns;
+  #currentColumns;
+  #ROOT;
+  #CONTAINER;
+  #LOADING_VIEW;
 
   constructor(elm, subject, property, items, sparqlist) {
 
-    this._subject = subject;
-    this._property = property;
-    this._sparqlist = sparqlist;
-    this._itemStatus = {};
-    this._columns = [];
+    this.#subject = subject;
+    this.#property = property;
+    this.#sparqlist = sparqlist;
+    this.#items = {};
+    this.#columns = [];
+    this.#currentColumns = [];
 
     // make container
     elm.innerHTML = `
@@ -21,9 +34,9 @@ export default class ColumnSelectorView {
       </div>
       <div class="loading-view"></div>
     </div>`;
-    this._view = elm.querySelector(':scope > .column-selector-view');
-    this._container = this._view.querySelector(':scope > .columns > .inner');
-    this._loadingView = this._view.querySelector(':scope > .loading-view');
+    this.#ROOT = elm.querySelector(':scope > .column-selector-view');
+    this.#CONTAINER = this.#ROOT.querySelector(':scope > .columns > .inner');
+    this.#LOADING_VIEW = this.#ROOT.querySelector(':scope > .loading-view');
 
     // even listener
     DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, e => {
@@ -38,28 +51,41 @@ export default class ColumnSelectorView {
           categoryId = e.detail.categoryId;
           break;
       }
-      if (this._property.propertyId == propertyId) { // TODO: Number型になればこの処理は厳密比較に
-        this._columns.forEach(ul => {
-          ul.querySelectorAll('li').forEach(li => {
-            if (li.dataset.id == categoryId) { // TODO: Number型になればこの処理は厳密比較に
+      if (this.#property.propertyId === propertyId) {
+        this.#currentColumns.forEach(ul => {
+          let isAllChecked = true;
+          ul.querySelectorAll(':scope > li:not(.-all)').forEach(li => {
+            const checkbox = li.querySelector(':scope > input[type="checkbox"]');
+            if (!checkbox.checked) isAllChecked = false;
+            if (li.dataset.id === categoryId) {
+              // change checkbox status
               const isChecked = e.detail.action === 'add';
-              li.querySelector(':scope > input[type="checkbox"]').checked = isChecked;
-              this._itemStatus[li.dataset.id].checked = isChecked;
+              checkbox.checked = isChecked;
+              this.#items[li.dataset.id].checked = isChecked;
             }
           })
+          // update all properties
+          ul.querySelector(':scope > .item.-all > input[type="checkbox"]').checked = isAllChecked;
+          // change ancestor status
+
+          // TODO:
         });
       }
     });
+    DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
 
-    this._addItems(items, 0);
-    this._makeColumn(items, 0);
+    this.#setItems(items, depth);
+
+    // make root column
+    const depth = 0;
+    const column = this.#makeColumn(items, depth);
+    this.#appendSubColumn(column, depth);
   }
 
-  _addItems(items, depth, parent) {
-    // console.log(items, depth)
+  #setItems(items, depth, parent) {
     for (const item of items) {
       const hasChild = item.hasChild && item.hasChild === true;
-      this._itemStatus[item.categoryId] = {
+      this.#items[item.categoryId] = {
         label: item.label,
         parent,
         hasChild: hasChild ? true : false,
@@ -67,118 +93,155 @@ export default class ColumnSelectorView {
         selected: false,
         checked: false
       }
-      if (hasChild) {
-        this._itemStatus[item.categoryId].children = [];
-      }
+      if (hasChild) this.#items[item.categoryId].children = [];
     }
-    // console.log(this._itemStatus)
   }
 
-  _makeColumn(items, depth) {
-    // console.log(items)
-
-    this._items = items.map(item => Object.assign({}, item));
-
-    // get column element
-    let ul;
-    if (this._columns[depth]) {
-      ul = this._columns[depth];
+  #getSubColumn(id, depth) {
+    const column = this.#columns.find(column => column.parentCategoryId === id);
+    if (column) {
+      this.#appendSubColumn(column.ul, depth);
     } else {
-      ul = document.createElement('ul');
-      ul.classList.add('column');
-      this._columns[depth] = ul;
+      // loading
+      this.#LOADING_VIEW.classList.add('-shown');
+      fetch(this.#sparqlist + '?categoryIds=' + id)
+        .then(responce => responce.json())
+        .then(json => {
+          this.#setItems(json, depth, id);
+          const column = this.#makeColumn(json, depth, id);
+          this.#appendSubColumn(column, depth);
+          this.#LOADING_VIEW.classList.remove('-shown');
+        })
+        .catch(error => {
+          // TODO: エラー処理
+          this.#LOADING_VIEW.classList.remove('-shown');
+          throw Error(error);
+        });
     }
+  }
+
+  #makeColumn(items, depth, parentCategoryId) {
+
+    // make column
+    const ul = document.createElement('ul');
+    ul.classList.add('column');
+    let max = 0;
 
     // make items
-    ul.innerHTML = this._items.map(item => {
-      return `<li class="item${item.hasChild ? ' -haschild' : ''}" data-id="${item.categoryId}">
+    ul.innerHTML = `<li class="item -all">
+      <input type="checkbox" value="${ALL_PROPERTIES}"/>
+      <span class="label">All properties</span>
+    </li>`
+    + items.map(item => {
+      max = Math.max(max, item.count);
+      return `<li
+        class="item${item.hasChild ? ' -haschild' : ''}"
+        data-id="${item.categoryId}"
+        data-category-id="${item.categoryId}"
+        data-count="${item.count}">
         <input type="checkbox" value="${item.categoryId}"/>
         <span class="label">${item.label}</span>
         <span class="count">${item.count.toLocaleString()}</span>
       </li>`;
     }).join('');
-    this._container.insertAdjacentElement('beforeend', ul);
-    ul.querySelectorAll(':scope > .item').forEach((item, index) => {
-      this._items[index].elm = item;
-    })
-    this._update(App.viewModes.log10);
+    const listItems = ul.querySelectorAll(':scope > .item:not(.-all)');
+    listItems.forEach(li => this.#items[li.dataset.categoryId].elm = li);
 
     // drill down event
-    ul.querySelectorAll(':scope > .item.-haschild').forEach(item => {
-      item.addEventListener('click', () => {
-        item.classList.add('-selected');
+    ul.querySelectorAll(':scope > .item.-haschild').forEach(li => {
+      li.addEventListener('click', () => {
+        li.classList.add('-selected');
+        // deselect siblings
+        li.parentNode.childNodes.forEach(sibling => {
+          if (sibling !== li) sibling.classList.remove('-selected');
+        });
         // delete an existing lower columns
-        if (this._columns.length > depth + 1) {
-          for (let i = depth + 1; i < this._columns.length; i++) {
-            if (this._columns[i].parentNode) this._container.removeChild(this._columns[i]);
+        if (this.#currentColumns.length > depth + 1) {
+          for (let i = depth + 1; i < this.#currentColumns.length; i++) {
+            if (this.#currentColumns[i].parentNode) this.#CONTAINER.removeChild(this.#currentColumns[i]);
           }
         }
         // deselect siblings
-        const selectedItemKeys = Object.keys(this._itemStatus).filter(id => this._itemStatus[id].selected && this._itemStatus[id].depth >= depth);
+        const selectedItemKeys = Object.keys(this.#items).filter(id => this.#items[id].selected && this.#items[id].depth >= depth);
         for (const key of selectedItemKeys) {
-          this._itemStatus[key].selected = false;
-          const selectedItem = this._columns[depth].querySelector(`[data-id="${key}"]`);
+          this.#items[key].selected = false;
+          const selectedItem = this.#currentColumns[depth].querySelector(`[data-id="${key}"]`);
           if (selectedItem) selectedItem.classList.remove('-selected');
         }
         // get lower column
-        this._itemStatus[item.dataset.id].selected = true;
-        this._getChildren(item.dataset.id, depth + 1);
+        this.#items[li.dataset.id].selected = true;
+        this.#getSubColumn(li.dataset.id, depth + 1);
       });
     });
 
     // select/deselect a item (attribute)
-    ul.querySelectorAll(':scope > .item > input[type="checkbox"]').forEach(checkbox => {
+    listItems.forEach(li => {
+      const checkbox = li.querySelector(':scope > input[type="checkbox"]');
       checkbox.addEventListener('click', e => {
         e.stopPropagation();
         if (checkbox.checked) { // add
           const ancestors = [];
           let id = checkbox.value;
           let parent;
-          do {
-            parent = this._itemStatus[id].parent;
-            if (parent) ancestors.unshift(this._itemStatus[parent]);
+          do { // find ancestors
+            parent = this.#items[id].parent;
+            if (parent) ancestors.unshift(this.#items[parent]);
             id = parent;
           } while (parent);
           ConditionBuilder.addPropertyValue({
-            subject: this._subject,
-            property: this._property,
+            subject: this.#subject,
+            property: this.#property,
             value: {
               categoryId: checkbox.value,
-              label: this._itemStatus[checkbox.value].label,
+              label: this.#items[checkbox.value].label,
               ancestors: ancestors.map(ancestor => ancestor.label)
             }
           });
         } else { // remove
-          ConditionBuilder.removePropertyValue(this._property.propertyId, checkbox.value);
+          ConditionBuilder.removePropertyValue(this.#property.propertyId, checkbox.value);
         }
       });
     });
 
-    // event listener
-    DefaultEventEmitter.addEventListener(event.changeViewModes, e => this._update(e.detail.log10));
-  }
-
-  _update(isLog10) {
-    let max = Math.max(...Array.from(this._items).map(item => item.count));
-    max = isLog10 ? Math.log10(max) : max;
-    this._items.forEach(item => {
-      item.elm.style.backgroundColor = `hsl(${this._subject.hue}, 75%, ${100 - (isLog10 ? Math.log10(item.count) : item.count) / max * 40}%)`;
-    });
-  }
-
-  _getChildren(id, depth) {
-    // loading
-    this._loadingView.classList.add('-shown');
-    fetch(this._sparqlist + '?categoryIds=' + id)
-      .then(responce => responce.json())
-      .then(json => {
-        this._addItems(json, depth, id);
-        this._makeColumn(json, depth);
-        this._loadingView.classList.remove('-shown');
-        // scroll
-        const gap = this._view.scrollWidth - this._view.clientWidth;
-        if (gap > 0) this._view.scrollLeft = gap;
+    // all properties event
+    ul.querySelector(':scope > .item.-all').addEventListener('change', e => {
+      const isChecked = e.target.checked;
+      listItems.forEach(item => {
+        const checkbox = item.querySelector(':scope > input[type="checkbox"]');
+        if (checkbox.checked !== isChecked) {
+          checkbox.dispatchEvent(new MouseEvent('click'));
+        }
       });
+    });
+
+    this.#columns.push({ul, parentCategoryId, max});
+    this.#update(App.viewModes.log10);
+    return ul;
+  }
+
+  #appendSubColumn(column, depth) {
+    this.#currentColumns[depth] = column;
+    this.#CONTAINER.insertAdjacentElement('beforeend', column);
+    // scroll
+    const left = this.#CONTAINER.scrollWidth - this.#CONTAINER.clientWidth;
+    if (left > 0) {
+      this.#CONTAINER.scrollTo({
+        top: 0,
+        left: left,
+        behavior: 'smooth'
+      });
+    };
+  }
+
+  #update(isLog10) {
+    this.#columns.forEach(column => {
+      let max = column.max;
+      max = isLog10 ? Math.log10(max) : max;
+      column.ul.querySelectorAll(':scope > li:not(.-all)').forEach(li => {
+        const count = Number(li.dataset.count);
+        li.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorSilver, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
+      });
+    });
   }
 
 }

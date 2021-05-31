@@ -1,6 +1,7 @@
 import App from "./App";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
+import Records from "./Records";
 import * as event from '../events';
 
 const LIMIT = 100;
@@ -20,12 +21,11 @@ export default class TableData {
   #INDICATOR_TEXT_AMOUNT;
   #INDICATOR_TEXT_TIME;
   #INDICATOR_BAR;
-  #BUTTON_PREPARE_DOWNLOAD;
-  #BUTTON_START_DOWNLOAD;
+  #BUTTON_PREPARE_DATA;
+  #BUTTON_DOWNLOAD_JSON;
 
   constructor(condition, elm) {
     console.log(condition)
-    console.log(ConditionBuilder)
 
     this.#isAutoLoad = false;
     this.#isLoaded = false;
@@ -42,9 +42,10 @@ export default class TableData {
     elm.dataset.status = 'load ids';
 
     elm.innerHTML = `
+    <div class="close-button-view"></div>
     <div class="conditions">
       <div class="condiiton">
-        <p title="${condition.togoKey}">${condition.togoKey}</p>
+        <p title="${condition.togoKey}">${Records.getLabelFromTogoKey(condition.togoKey)}</p>
       </div>
       ${condition.attributes.map(property => `<div class="condiiton -value" style="background-color: hsl(${property.subject.hue}, 45%, 50%)">
         <p title="${property.property.label}">${property.property.label}</p>
@@ -52,9 +53,7 @@ export default class TableData {
       ${condition.properties.map(property => `<div class="condiiton -value" style="color: hsl(${property.subject.hue}, 45%, 50%)">
         <p title="${property.property.label}">${property.property.label}</p>
       </div>`).join('')}
-      
     </div>
-    <div class="button close-button-view" title="Delete" data-button="delete"></div>
     <div class="status">
       <p>Getting id list</p>
     </div>
@@ -68,17 +67,19 @@ export default class TableData {
       </div>
     </div>
     <div class="controller">
-      <div class="button autorenew" title="Prepare for download" data-button="prepare-download">
-        <span class="material-icons-outlined autorenew">autorenew</span>
+      <div class="button" data-button="prepare-data">
+        <span class="material-icons-outlined">autorenew</span>
+        <span class="label">Prepare data</span>
       </div>
-      <div class="button downloads" title="Download JSON " data-button="start-download">
+      <div class="button" data-button="download-json">
         <a class="json" href="" download="sample.json">
           <span class="material-icons-outlined">download</span>
-          <span class="text">JSON</span>
+          <span class="label">JSON</span>
         </a>
       </div>
-      <div class="button" title="Restore as condition" data-button="restore">
+      <div class="button" data-button="restore">
         <span class="material-icons-outlined">settings_backup_restore</span>
+        <span class="label">Edit</span>
       </div>
     </div>
     `;
@@ -91,32 +92,69 @@ export default class TableData {
     this.#INDICATOR_TEXT_TIME = INDICATOR.querySelector(':scope > .text > .remaining-time');
     this.#INDICATOR_BAR = INDICATOR.querySelector(':scope > .progress > .bar');
     const BUTTONS = [...elm.querySelectorAll(':scope > .controller > .button')];
-    this.#BUTTON_PREPARE_DOWNLOAD = BUTTONS.find(button => button.dataset.button === 'prepare-download');
-    this.#BUTTON_START_DOWNLOAD = BUTTONS.find(button => button.dataset.button === 'start-download');
+    this.#BUTTON_PREPARE_DATA = BUTTONS.find(button => button.dataset.button === 'prepare-data');
+    this.#BUTTON_DOWNLOAD_JSON = BUTTONS.find(button => button.dataset.button === 'download-json');
 
     // events
     elm.addEventListener('click', () => {
       if (elm.classList.contains('-current')) return;
       this.select();
     });
-    this.#BUTTON_PREPARE_DOWNLOAD.addEventListener('click', e => {
+    // prepare data
+    this.#BUTTON_PREPARE_DATA.addEventListener('click', e => {
       e.stopPropagation();
-      if (this.#isAutoLoad == false && this.#ROOT.dataset.status != 'complete') {
-        this.#isAutoLoad == true;
+      if (this.#isAutoLoad === false && this.#ROOT.dataset.status !== 'complete') {
         this.#autoLoad();
-        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.add('lotation');
+        this.#BUTTON_PREPARE_DATA.classList.add('-rotating');
+        this.#BUTTON_PREPARE_DATA.querySelector(':scope > .label').innerHTML = 'Pause';
       } else {
         this.#isAutoLoad = false;
-        this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.remove('lotation');
+        this.#BUTTON_PREPARE_DATA.classList.remove('-rotating');
+        this.#BUTTON_PREPARE_DATA.querySelector(':scope > .label').innerHTML = 'Resume';
       }
     });
-    // delete button
-    // BUTTONS.find(button => button.dataset.button === 'delete').addEventListener('click', e => {
-    //   e.stopPropagation();
-    //   console.log('delete')
-    //   const element = document.querySelector('.table-data-controller-view');
-    //   element.parentNode.removeChild(element)
-    // });
+    // delete
+    this.#ROOT.querySelector(':scope > .close-button-view').addEventListener('click', e => {
+      e.stopPropagation();
+      const customEvent = new CustomEvent(event.deleteTableData, {detail: this});
+      DefaultEventEmitter.dispatchEvent(customEvent);
+      // abort fetch
+      this.#abortController.abort();
+      // delete element
+      this.#ROOT.parentNode.removeChild(this.#ROOT);
+      // transition
+      document.querySelector('body').dataset.display = 'properties';
+    });
+    // restore
+    BUTTONS.find(button => button.dataset.button === 'restore').addEventListener('click', e => {
+      e.stopPropagation();
+      // property (attribute)
+      console.log(this.#condition)
+      ConditionBuilder.setProperties(this.#condition.properties.map(property => {
+        return {
+          subject: property.subject,
+          property: property.property
+        }
+      }));
+      // attribute (classification/distribution)
+      Records.properties.forEach(property => {
+        const attribute = this.#condition.attributes.find(attribute => attribute.property.propertyId === property.propertyId);
+        let subject, values = [];
+        if (attribute) {
+          subject = attribute.subject;
+          values = attribute.query.categoryIds.map(categoryId => {
+            return {
+              categoryId: categoryId,
+              label: Records.getValue(attribute.query.propertyId, categoryId).label,
+              ancestors: []
+            }
+          });
+        } else {
+          subject = Records.getSubject(property.subjectId);
+        }
+        ConditionBuilder.setPropertyValues({subject, property, values});
+      });
+    });
     this.select();
     this.#getQueryIds();
   }
@@ -129,7 +167,6 @@ export default class TableData {
     // reset
     this.#abortController = new AbortController();
     this.#ROOT.classList.add('-fetching');
-    console.log(ConditionBuilder.userIds)
     fetch(
       `${App.aggregatePrimaryKeys}?togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(JSON.stringify(this.#condition.attributes.map(property => property.query)))}${ConditionBuilder.userIds ? `&inputIds=${encodeURIComponent(JSON.stringify(ConditionBuilder.userIds.split(',')))}` : ''}`,
       {
@@ -139,7 +176,6 @@ export default class TableData {
         throw Error(error);
       })
       .then(responce => {
-        console.log(responce);
         if (responce.ok) {
           return responce
         };
@@ -147,11 +183,7 @@ export default class TableData {
         this.#STATUS.textContent = `${responce.status} (${responce.statusText})`;
         throw Error(responce);
       })
-      .then(responce => {
-        // const reader = responce.body.getReader();
-        // console.log(reader);
-        return responce.json();
-      })
+      .then(responce => responce.json())
       .then(queryIds => {
         console.log(queryIds)
         this.#queryIds = queryIds;
@@ -243,10 +275,10 @@ export default class TableData {
   #complete() {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = 'Complete';
-    this.#BUTTON_PREPARE_DOWNLOAD.querySelector(':scope > .autorenew').classList.add('lotation');
+    this.#BUTTON_PREPARE_DATA.classList.add('-rotating');
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {type : 'application/json'});
     const jsonUrl = URL.createObjectURL(jsonBlob);
-    this.#BUTTON_START_DOWNLOAD.querySelector(':scope > .json').setAttribute('href', jsonUrl);
+    this.#BUTTON_DOWNLOAD_JSON.querySelector(':scope > .json').setAttribute('href', jsonUrl);
   }
 
   /* public methods */
