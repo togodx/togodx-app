@@ -67,7 +67,6 @@ export default class ColumnSelectorView {
           // update all properties
           ul.querySelector(':scope > .item.-all > input[type="checkbox"]').checked = isAllChecked;
           // change ancestor status
-
           // TODO:
         });
       }
@@ -206,12 +205,12 @@ export default class ColumnSelectorView {
     // all properties event
     ul.querySelector(':scope > .item.-all').addEventListener('change', e => {
       const isChecked = e.target.checked;
-      listItems.forEach(item => {
-        const checkbox = item.querySelector(':scope > input[type="checkbox"]');
-        if (checkbox.checked !== isChecked) {
-          checkbox.dispatchEvent(new MouseEvent('click'));
-        }
-      });
+      // listItems.forEach(item => {
+      //   const checkbox = item.querySelector(':scope > input[type="checkbox"]');
+      //   if (checkbox.checked !== isChecked) {
+      //     checkbox.dispatchEvent(new MouseEvent('click'));
+      //   }
+      // });
     });
 
     this.#columns.push({ul, parentCategoryId, max});
