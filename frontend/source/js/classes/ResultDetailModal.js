@@ -50,7 +50,7 @@ export default class ResultDetailModal {
 
   #showPopUp(e) {
     if (this.#RESULT_MODAL.innerHTML === '') {
-      this.#setHighlight(e.detail.keys.uniqueEntryId, e.detail.properties.dataOrder);
+      this.#setHighlight(e.detail.properties.dataOrder);
       this.#handleKeydown = this.#handleKeydown.bind(this);
       document.addEventListener('keydown', this.#handleKeydown);
       this.#RESULT_MODAL.appendChild(this.#popup(e.detail));
@@ -58,8 +58,8 @@ export default class ResultDetailModal {
     }
   }
 
-  #setHighlight(id, axes) {
-    const curEntry = this.#entryEl(id);
+  #setHighlight(axes) {
+    const curEntry = this.#RESULTS_TABLE.querySelector(`[data-order = '${axes}']`);
     const curTr = curEntry.closest('tr');
     curEntry.classList.add('-selected');
     curTr.classList.add('-selected');
@@ -69,11 +69,7 @@ export default class ResultDetailModal {
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
-    
-  #entryEl(id) {
-    return this.#RESULTS_TABLE.querySelector(`[data-unique-entry-id = '${id}']`);
-  }
-
+   
   #popup(detail) {
     const popup = document.createElement('div');
       popup.className = 'popup';
@@ -173,8 +169,7 @@ export default class ResultDetailModal {
   #setMovementArrow(movement, detail) {
     //TODO: Implement functions for data with multiple entries
     detail.properties.movement = movement;
-    const curEntry = this.#entryEl(detail.keys.uniqueEntryId);
-    let [x, y] = this.#getCorList(curEntry.getAttribute('data-order'));
+    let [x, y] = this.#getCorList(detail.properties.dataOrder);
 
     const targetEntry = this.#RESULTS_TABLE.querySelector(`[data-order = '${movement(x,y)}'`);
     const targetTr = targetEntry.closest('tr');

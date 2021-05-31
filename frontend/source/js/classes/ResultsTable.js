@@ -265,7 +265,6 @@ export default class ResultsTable {
             detail: uniqueEntry.getAttribute('data-order')
           });
           DefaultEventEmitter.dispatchEvent(customEvent);
-          // this.#colHighlight(uniqueEntry.getAttribute('data-order'));
         })
         td.addEventListener('mouseleave', () => {
           if(document.querySelector('#ResultDetailModal').innerHTML === ''){
