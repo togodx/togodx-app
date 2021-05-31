@@ -8,15 +8,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        run: echo "::set-output name=date::$(TZ=Asia/Tokyo date +'%Y%m%d-%H%M%S')"
+
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
+
+      - run: |
+         git tag ${{ steps.date.outputs.date }}
+         git push origin ${{ steps.date.outputs.date }}
+
       - uses: softprops/action-gh-release@v1
         with:
           name: release-${{ steps.date.outputs.date }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: opspresso/action-s3-sync@master
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
