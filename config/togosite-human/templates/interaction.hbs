@@ -81,7 +81,7 @@
   
     // popup stanza
     appendStanza(stanzaDiv, "hash-table", id, typeInfo[type].label, typeInfo[type].columns, typeInfo[type].dataUrl + id, true);
-    appendStanza(stanzaDiv, "scroll-table", id, typeInfo["interactions"].label, typeInfo["interactions"].columns, typeInfo["interactions"].dataUrl + "?type=" + type + "&id=" + id, true, 400);
+    appendStanza(stanzaDiv, "pagination-table", id, typeInfo["interactions"].label, typeInfo["interactions"].columns, typeInfo["interactions"].dataUrl + "?type=" + type + "&id=" + id, true, 400);
   }
   
   renderStanzas(document.getElementById("metastanza-interaction"), id, type);
