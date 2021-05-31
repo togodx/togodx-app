@@ -14,13 +14,9 @@ jobs:
         with:
           fetch-depth: 1
 
-      - run: |
-         git tag ${{ steps.date.outputs.date }}
-         git push origin ${{ steps.date.outputs.date }}
-
-      - uses: softprops/action-gh-release@v1
+      - uses: avakar/tag-and-release@v1
         with:
-          name: release-${{ steps.date.outputs.date }}
+          tag_name: release-${{ steps.date.outputs.date }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
