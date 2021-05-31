@@ -259,6 +259,12 @@ export default class ResultsTable {
         td.addEventListener('mouseenter', () => {
           this.colHighlight(uniqueEntry.getAttribute('data-order'));
         })
+        td.addEventListener('mouseleave', () => {
+          const test  = document.querySelector('#ResultDetailModal');
+          if(document.querySelector('#ResultDetailModal').innerHTML === ''){
+            this.#TBODY.querySelectorAll('td').forEach((td) => td.classList.remove('-selected'));
+          }
+        })
       });
     });
   }
