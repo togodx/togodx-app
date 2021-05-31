@@ -1,4 +1,4 @@
-name: upload-s3
+name: upload-s3-dev
 on:
   push:
     branches:
@@ -17,5 +17,5 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: "ap-northeast-1"
           FROM_PATH: "./frontend/build"
-          DEST_PATH: "s3://togosite-test/"
+          DEST_PATH: "s3://togosite-dev/"
           OPTIONS: "--delete --acl public-read --exclude 'README.md'"
