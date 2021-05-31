@@ -47,6 +47,9 @@ export default class ResultsTable {
     DefaultEventEmitter.addEventListener(event.failedFetchTableDataIds, (e) =>
       this.#failed(e.detail)
     );
+    DefaultEventEmitter.addEventListener(event.highlightCol, (e) => {
+      this.#colHighlight(e.detail)
+    })
 
     // turnoff intersection observer after display transition
     const mutationObserver = new MutationObserver((mutations) => {
@@ -255,12 +258,16 @@ export default class ResultsTable {
         uniqueEntry.addEventListener('click', () => {
           this.createPopupEvent(uniqueEntry, reportLink, event.showPopup);
         });
+        // remove highlight on mouseleave only when there is no popup
         const td = uniqueEntry.closest('td');
         td.addEventListener('mouseenter', () => {
-          this.colHighlight(uniqueEntry.getAttribute('data-order'));
+          const customEvent = new CustomEvent(event.highlightCol, {
+            detail: uniqueEntry.getAttribute('data-order')
+          });
+          DefaultEventEmitter.dispatchEvent(customEvent);
+          // this.#colHighlight(uniqueEntry.getAttribute('data-order'));
         })
         td.addEventListener('mouseleave', () => {
-          const test  = document.querySelector('#ResultDetailModal');
           if(document.querySelector('#ResultDetailModal').innerHTML === ''){
             this.#TBODY.querySelectorAll('td').forEach((td) => td.classList.remove('-selected'));
           }
@@ -303,7 +310,7 @@ export default class ResultsTable {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  colHighlight(axes) {
+  #colHighlight(axes) {
     const colIndex = axes.slice(0,1);
     document.querySelector('#Results tbody').querySelectorAll('[data-order]').forEach(element => {
       const td = element.closest('td');

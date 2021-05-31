@@ -64,9 +64,12 @@ export default class ResultDetailModal {
     curEntry.classList.add('-selected');
     curTr.classList.add('-selected');
 
-    ResultsTable.prototype.colHighlight(axes);
+    const customEvent = new CustomEvent(event.highlightCol, {
+      detail: axes
+    });
+    DefaultEventEmitter.dispatchEvent(customEvent);
   }
-
+    
   #entryEl(id) {
     return this.#RESULTS_TABLE.querySelector(`[data-unique-entry-id = '${id}']`);
   }
