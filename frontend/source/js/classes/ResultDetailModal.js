@@ -5,12 +5,12 @@ import ResultsTable from './ResultsTable';
 import * as event from '../events';
 
 export default class ResultDetailModal {
-  #RESULTS_TABLE;
   #ROOT;
+  #RESULTS_TABLE;
   #RESULT_MODAL;
-  #EXIT_BUTTON;
+  #exit_button;
 
-  constructor(elm) {
+  constructor() {
     this.#ROOT = document.createElement('section');
     this.#ROOT.id = 'ResultDetailModal';
     document
@@ -20,11 +20,11 @@ export default class ResultDetailModal {
     // references
     this.#RESULTS_TABLE = document.querySelector('#ResultsTable');
     this.#RESULT_MODAL = document.querySelector('#ResultDetailModal');
-    this.#EXIT_BUTTON = document.createElement('div');
-    this.#EXIT_BUTTON.className = 'close-button-view';
+    this.#exit_button = document.createElement('div');
+    this.#exit_button.className = 'close-button-view';
 
     // attach event
-    this.#EXIT_BUTTON.addEventListener('click', () => {
+    this.#exit_button.addEventListener('click', () => {
       this.#hidePopUp();
     });
 
@@ -48,6 +48,7 @@ export default class ResultDetailModal {
 
   }
 
+  // bind this on handleKeydown so it will keep listening to same event during the whole popup
   #showPopUp(e) {
     if (this.#RESULT_MODAL.innerHTML === '') {
       this.#setHighlight(e.detail.properties.dataOrder);
@@ -69,7 +70,7 @@ export default class ResultDetailModal {
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
-   
+  // HTML elements
   #popup(detail) {
     const popup = document.createElement('div');
       popup.className = 'popup';
@@ -78,7 +79,7 @@ export default class ResultDetailModal {
 
       return popup
   }
-  // HTML elements
+  
   #header(keys, props) {
     const subject = Records.getSubject(keys.subjectId);
     const isPrimaryKey = props.isPrimaryKey;
@@ -105,7 +106,7 @@ export default class ResultDetailModal {
         }' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>
     `;
     header.style.backgroundColor = subject.colorCSSValue;
-    header.lastChild.appendChild(this.#EXIT_BUTTON);
+    header.lastChild.appendChild(this.#exit_button);
 
     return header;
   }

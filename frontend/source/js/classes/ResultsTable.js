@@ -311,7 +311,7 @@ export default class ResultsTable {
 
   #colHighlight(axes) {
     const colIndex = axes.slice(0,1);
-    document.querySelector('#Results tbody').querySelectorAll('[data-order]').forEach(element => {
+    this.#TBODY.querySelectorAll('[data-order]').forEach(element => {
       const td = element.closest('td');
       if(element.getAttribute('data-order').slice(0,1) === colIndex){
         if(!td.classList.contains('.-selected')) {
