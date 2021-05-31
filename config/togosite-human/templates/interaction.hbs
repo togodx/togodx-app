@@ -59,7 +59,7 @@
     return await fetch(url, options).then(res=>res.json());
   }
 
-  const appendStanza = (stanzaDiv, metastanza, id, typelabel, columns, dataUrl, popup, height) => {
+  const appendStanza = (stanzaDiv, metastanza, id, typelabel, columns, dataUrl, popup, pageSizeOption) => {
     let title = document.createElement("h2");
     title.innerHTML = typelabel;
     stanzaDiv.appendChild(title);
@@ -68,7 +68,10 @@
     stanza.setAttribute("format-key", "true");
     stanza.setAttribute("columns", JSON.stringify(columns));
     stanza.setAttribute("data-url", dataUrl);
-    if (height) stanza.setAttribute("height", 400); 
+    if (pageSizeOption) {
+      stanza.setAttribute("page-size-option", pageSizeOption);
+      stanza.setAttribute("page-slider", true);
+    }
     if (popup) stanza.classList.add("popup");
     stanzaDiv.appendChild(stanza);
   }
@@ -81,7 +84,7 @@
   
     // popup stanza
     appendStanza(stanzaDiv, "hash-table", id, typeInfo[type].label, typeInfo[type].columns, typeInfo[type].dataUrl + id, true);
-    appendStanza(stanzaDiv, "pagination-table", id, typeInfo["interactions"].label, typeInfo["interactions"].columns, typeInfo["interactions"].dataUrl + "?type=" + type + "&id=" + id, true, 400);
+    appendStanza(stanzaDiv, "pagination-table", id, typeInfo["interactions"].label, typeInfo["interactions"].columns, typeInfo["interactions"].dataUrl + "?type=" + type + "&id=" + id, false, "10,20,50,100");
   }
   
   renderStanzas(document.getElementById("metastanza-interaction"), id, type);
