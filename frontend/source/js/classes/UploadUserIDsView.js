@@ -39,18 +39,10 @@ export default class UploadUserIDsView {
       console.log(this.#USER_IDS.value)
       ConditionBuilder.setUserIds(this.#USER_IDS.value);
     });
-    // DefaultEventEmitter.addEventListener(event.defineTogoKey, e => {
-    //   this.#defineTogoKeys(e.detail);
-    // });
 
   }
 
   // private methods
-
-  // #defineTogoKeys(togoKeys) {
-  //   console.log(togoKeys)
-  //   this.#USER_KEY.innerHTML = togoKeys.map(togoKey => `<option value="${togoKey.togoKey}" data-subject-id="${togoKeys.subjectId}">${togoKey.label} (${togoKey.togoKey})</option>`).join('');
-  // }
 
   #fetch() {
 

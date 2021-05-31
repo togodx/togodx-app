@@ -34,7 +34,12 @@
                 border-bottom: solid .1rem var(--color-black)
               &:first-child
                 > .inner
+                  background-color: var(--color-light-gray)
+              &:nth-child(2)
+                > .inner
                   background-color: var(--color-lamp-black)
+                  > .togo-key-view
+                    background-color: var(--color-dark-gray)
           &.statistics
             > td
               // position: sticky
@@ -48,30 +53,14 @@
           position: relative
           transition: border var(--transition-instant), box-shadow var(--transition-instant)
           &:hover, &.-selected
-            box-shadow: 0 0 0 .1rem var(--color-black) inset
-            border-bottom-color: white
+            background-color: var(--color-selected)
           > th, > td
             vertical-align: top
           > th
             font-weight: normal
-            > .inner
-              > .toreportpage
-                display: inline-block
-                background-color: var(--color-lamp-black)
-                color: white
-                padding: 0 .8rem
-                border-radius: .2rem
-                margin-right: .2rem
-                &::before
-                  content: "Report"
-                > .material-icons-outlined
-                  font-size: 1rem
-                  vertical-align: middle
-                  margin-left: .3rem
-                  position: relative
-                  top: -.1rem
-                  margin-right: -.1rem
           > td
+            &.-selected
+              background-color: var(--color-selected)
             > .inner
               > ul
                 margin: 0
@@ -79,11 +68,13 @@
                 list-style: none
                 max-height: 10.2rem
                 overflow-y: auto
+                .togo-key-view
+                  &:hover, &.-selected
+                    background-color: var(--color-light-gray)
+                    color: var(--color-black)
                 > li
                   + li
                     margin-block-start: .2rem
-              a[href]
-                text-decoration: underline
     > .tableend
       height: 8rem
       position: relative

@@ -1,18 +1,19 @@
 .track-value-view
-  color: white
   line-height: calc(var(--height-track) - var(--padding-track-block-start) * 2)
   position: absolute
   transition: width var(--transition-wipe), left var(--transition-wipe)
   cursor: pointer
   transition: background-color var(--transition-wipe), opacity var(--transition-wipe)
-  &::after
-    content: ""
-    display: block
-    position: absolute
-    top: 0
-    right: 0
-    height: 100%
-    border-left: solid .01rem rgba(255, 255, 255, .2)
+  border-right: solid .1rem var(--color-gray)
+  // &::after
+  //   content: ""
+  //   display: block
+  //   position: absolute
+  //   top: 0
+  //   right: -.05rem
+  //   height: 100%
+  //   border-left: solid .005rem var(--color-gray)
+  //   z-index: var(--z-track-item-border)
   > p
     padding-left: .2rem
     padding-right: .2rem

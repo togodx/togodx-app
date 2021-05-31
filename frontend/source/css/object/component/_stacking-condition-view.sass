@@ -6,25 +6,10 @@
   animation: var(--transition-instant) enter-stacking-item
   transform-origin: 0 0
   margin-top: .4rem
-  > .closebutton
-    width: 1.2rem
-    height: 1.2rem
+  > .close-button-view
     position: absolute
     top: .4rem
     right: .4rem
-    cursor: pointer
-    &::before, &::after
-      content: ""
-      border-left: solid .1rem var(--color-black)
-      position: absolute
-      top: .1rem
-      left: .6rem
-      display: block
-      height: .8rem
-    &::before
-      transform: rotate(45deg)
-    &::after
-      transform: rotate(-45deg)
   > .path
     margin: 0
     padding: .6rem 1.4rem 0 0

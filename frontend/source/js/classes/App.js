@@ -4,6 +4,7 @@ import Records from './Records';
 import ReportsView from './ReportsView';
 import ConceptView from './ConceptView';
 import ResultsTable from './ResultsTable';
+import ResultDetailModal from "./ResultDetailModal";
 import BalloonView from './BalloonView';
 import ConditionsController from "./ConditionsController";
 import UploadUserIDsView from "./UploadUserIDsView";
@@ -16,9 +17,15 @@ class App {
 
   #viewModes;
   #aggregate;
+  #colorSilver;
+  #colorGray;
+  #colorDarkGray;
   #colorLampBlack;
 
   constructor() {
+    this.#colorSilver = new Color('--color-silver').to('srgb');
+    this.#colorGray = new Color('--color-gray').to('srgb');
+    this.#colorDarkGray = new Color('--color-dark-gray').to('srgb');
     this.#colorLampBlack = new Color('--color-lamp-black').to('srgb');
   }
 
@@ -43,11 +50,11 @@ class App {
     new ConditionsController(document.querySelector('#Conditions'));
     const reportsView = new ReportsView(document.querySelector('#Reports'));
     new ResultsTable(document.querySelector('#ResultsTable'));
+    new ResultDetailModal();
     new BalloonView();
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
 
     // load config json
-    let stanzaTtemplates;
     Promise.all([
       fetch(api.PROPERTIES),
       fetch(api.TEMPLATES),
@@ -55,18 +62,18 @@ class App {
     ])
       .then(responces => Promise.all(responces.map(responce => responce.json())))
       .then(([subjects, templates, aggregate]) => {
-        // stanzaTtemplates = templates;
         Records.setSubjects(subjects);
 
         // define primary keys
-        const togoKeys = subjects.map(subject => {
-          return {
-            label: subject.subject,
-            togoKey: subject.togoKey,
-            subjectId: subject.subjectId
-          }
-        });
-        const customEvent = new CustomEvent(event.defineTogoKey, {detail: togoKeys});
+        // const togoKeys = subjects.map(subject => {
+        //   return {
+        //     label: subject.subject,
+        //     togoKey: subject.togoKey,
+        //     subjectId: subject.subjectId
+        //   }
+        // });
+        // const customEvent = new CustomEvent(event.defineTogoKey, {detail: togoKeys});
+        const customEvent = new CustomEvent(event.defineTogoKey, {detail: subjects});
         DefaultEventEmitter.dispatchEvent(customEvent);
 
         // initialize stanza manager
@@ -101,6 +108,15 @@ class App {
   }
   get aggregateRows() {
     return this.#aggregate.table.url;
+  }
+  get colorSilver() {
+    return this.#colorSilver;
+  }
+  get colorGray() {
+    return this.#colorGray;
+  }
+  get colorDarkGray() {
+    return this.#colorDarkGray;
   }
   get colorLampBlack() {
     return this.#colorLampBlack;

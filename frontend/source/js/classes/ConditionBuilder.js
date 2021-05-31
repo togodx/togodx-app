@@ -21,6 +21,7 @@ class ConditionBuilder {
     console.log('addProperty', condition)
     // store
     this.#propertyConditions.push(condition);
+    console.log(this.#propertyConditions)
     // evaluate
     this.#satisfyAggregation();
     // dispatch event
@@ -46,6 +47,7 @@ class ConditionBuilder {
   }
 
   removeProperty(propertyId) {
+    console.log('removeProperty', propertyId)
     // remove from store
     const index = this.#propertyConditions.findIndex(condition => condition.property.propertyId === propertyId);
     if (index === -1) return;
@@ -69,9 +71,28 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
+  setProperties(conditions) {
+    const propertyIds = conditions.map(condition => condition.property.propertyId);
+    Records.properties.forEach(property => {
+      const isExistInNewConditions = propertyIds.indexOf(property.propertyId) !== -1;
+      const index = this.#propertyConditions.findIndex(condition => condition.property.propertyId === property.propertyId);
+      if (isExistInNewConditions) {
+        if (index === -1) {
+          // if the property exists in new conditions, and if the property doesn't exist in my conditions, add it
+          this.addProperty(conditions.find(condition => condition.property.propertyId === property.propertyId));
+        }
+      } else {
+        if (index !== -1) {
+          // if the property doesn't exist in new conditions, and the proerty exists in my conditions, remove it
+          this.removeProperty(property.propertyId);
+        }
+      }
+    });
+  }
+
   setPropertyValues(condition) {
     const originalValues = Records.getProperty(condition.property.propertyId).values;
-    const startIndex = originalValues.findIndex(originalValue => originalValue.categoryId === condition.values[0].categoryId);
+    const startIndex = condition.values.length === 0 ? 0 : originalValues.findIndex(originalValue => originalValue.categoryId === condition.values[0].categoryId);
     originalValues.forEach((originalValue, originalIndex) => {
       const index = this.#attributeConditions.findIndex(attrCondition => attrCondition.property.propertyId === condition.property.propertyId && attrCondition.value.categoryId === originalValue.categoryId);
       if (startIndex <= originalIndex && originalIndex < startIndex + condition.values.length) {

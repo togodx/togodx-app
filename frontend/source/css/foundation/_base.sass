@@ -1,8 +1,10 @@
 :root
   // color
-  --color-light-gray: #CCC
   --color-warm-gray: #f7f5f4
+  --color-light-gray: #CCC
+  --color-silver: #c8c7c6
   --color-gray: #999
+  --color-dark-gray: #666
   --color-lamp-black: #333230
   --color-translucent-lamp-black1: #33323044
   --color-translucent-lamp-black2: #33323099
@@ -28,17 +30,21 @@
   --transition-instant: .2s
   --transition-wipe: .5s
   --transition-fetching: 1s
-  // misc.
-  --shadow-shallow: 0 .1rem .1rem rgba(0,0,0,.3)
-  --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3)
+  // z index
   --z-results-header: 1
-  --z-track-item-selected: 1
+  --z-track-item-border: 1
+  --z-track-item-selected: 2
   --z-track-collapse-button: 1
   --z-track-tracks-header: 3
   --z-track-pin: 4
   --z-fixed-area: 5
   --z-header: 6
   --z-track-balloon: 7
+  --z-modal-window-backdrop: 8
+  --z-modal-window: 9
+  // misc.
+  --shadow-shallow: 0 .1rem .1rem rgba(0,0,0,.3)
+  --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3)
 
 @keyframes enter-stacking-item
   from

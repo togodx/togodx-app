@@ -4,14 +4,11 @@ import * as api from '../api'
 
 class ReportApp {
 
-  #templates;
-
   constructor() {
   }
 
   ready() {
 
-    let stanzaTtemplates;
     // load config json
     Promise.all([
       fetch(api.PROPERTIES),
@@ -19,7 +16,6 @@ class ReportApp {
     ])
       .then(responces => Promise.all(responces.map(responce => responce.json())))
       .then(([subjects, templates]) => {
-        // stanzaTtemplates = templates;
         Records.setSubjects(subjects);
 
         // initialize stanza manager
@@ -38,7 +34,7 @@ class ReportApp {
 
   #drawStanzas() {
     const urlVars = Object.fromEntries(window.location.search.substr(1).split('&').map(keyValue => keyValue.split('=')));
-    const properties = JSON.parse(decodeURIComponent(urlVars.properties));
+    const properties = JSON.parse(decodeURIComponent(RawDeflate.inflate(window.atob(urlVars.properties))));
     
     const main = document.querySelector('main');
     const subjectId = Records.subjects.find(subject => subject.togoKey === urlVars.togoKey).subjectId;

@@ -80,11 +80,19 @@ export default class TrackView {
     });
     // event listener
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, e => {
-      if (e.detail.action === 'remove') {
-        if (e.detail.propertyId === this.#property.propertyId) {
-          this.#CHECKBOX_ALL_PROPERTIES.checked = false;
-          this.#ROOT.classList.remove('-allselected');
-        }
+      switch (e.detail.action) {
+        case 'add':
+          if (e.detail.condition.property.propertyId === this.#property.propertyId) {
+            this.#CHECKBOX_ALL_PROPERTIES.checked = true;
+            this.#ROOT.classList.add('-allselected');
+          }
+        break;
+        case 'remove':
+          if (e.detail.propertyId === this.#property.propertyId) {
+            this.#CHECKBOX_ALL_PROPERTIES.checked = false;
+            this.#ROOT.classList.remove('-allselected');
+          }
+          break;
       }
     });
 

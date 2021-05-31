@@ -14,6 +14,10 @@
   cursor: pointer
   transition: opacity var(--transition-instant)
   position: relative
+  > .close-button-view
+    position: absolute
+    top: .4rem
+    right: .4rem
   > .conditions
     display: flex
     font-weight: bold
@@ -68,8 +72,7 @@
   > .controller
     display: flex
     color: white
-    > .downloads
-      // border-top: solid 1px var(--color-translucent-lamp-black3)
+    > [data-button="download-json"]
       display: none
       > a
         color: white
@@ -97,8 +100,10 @@
         top: -.1rem
         font-size: 1.4rem
         vertical-align: middle
-      > .lotation
-        animation: lotation 3s linear infinite
+        left: -.2rem
+      &.-rotating
+        > .material-icons-outlined
+          animation: rotation 3s linear infinite
   &.-current, &:hover
     opacity: 1
   &.-current
@@ -115,12 +120,12 @@
   &.-autoload
     > .controller
       > .button
-        &[data-button="prepare-download"]
+        &[data-button="prepare-data"]
           +button-disabled
   &[data-status="load ids"]
     > .controller
       > .button
-        &[data-button="prepare-download"]
+        &[data-button="prepare-data"]
           +button-disabled
   &[data-status="load rows"]
     > .indicator
@@ -135,16 +140,16 @@
       display: block
     > .controller
       display: flex
-      > .autorenew
+      > [data-button="prepare-data"]
         display: none
-      > .downloads
+      > [data-button="download-json"]
         display: block
     > .controller
       > .button
-        &[data-button="prepare-download"]
+        &[data-button="prepare-data"]
           +button-disabled
 
-@keyframes lotation
+@keyframes rotation
   0%  
     transform: rotate(0)
   100%  
