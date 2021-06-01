@@ -408,8 +408,6 @@
   {
     "subject": "Variant",
     "subjectId": "variant",
-    "togoKey": "togovar",
-    "keyLabel": "TogoVar variant",
     "properties": [
       {
         "propertyId": "variant_consequence",
