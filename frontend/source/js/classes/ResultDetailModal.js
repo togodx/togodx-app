@@ -1,7 +1,7 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
 import StanzaManager from './StanzaManager';
-import { createPopupEvent } from '../functions/util';
+import {createPopupEvent} from '../functions/util';
 import * as event from '../events';
 
 export default class ResultDetailModal {
@@ -28,11 +28,11 @@ export default class ResultDetailModal {
       this.#hidePopUp();
     });
 
-    DefaultEventEmitter.addEventListener(event.showPopup, (e) => {
+    DefaultEventEmitter.addEventListener(event.showPopup, e => {
       this.#showPopUp(e);
     });
 
-    DefaultEventEmitter.addEventListener(event.movePopup, (e) => {
+    DefaultEventEmitter.addEventListener(event.movePopup, e => {
       this.#hidePopUp();
       this.#showPopUp(e);
     });
@@ -41,11 +41,10 @@ export default class ResultDetailModal {
       this.#hidePopUp();
     });
 
-    this.#RESULT_MODAL.addEventListener('click', (e) => {
+    this.#RESULT_MODAL.addEventListener('click', e => {
       if (e.target !== e.currentTarget) return;
       this.#hidePopUp();
     });
-
   }
 
   // bind this on handleKeydown so it will keep listening to same event during the whole popup
@@ -62,13 +61,13 @@ export default class ResultDetailModal {
   // HTML elements
   #popup(detail) {
     const popup = document.createElement('div');
-      popup.className = 'popup';
-      popup.appendChild(this.#header(detail.keys, detail.properties));
-      popup.appendChild(this.#container(detail.keys, detail.properties));
+    popup.className = 'popup';
+    popup.appendChild(this.#header(detail.keys, detail.properties));
+    popup.appendChild(this.#container(detail.keys, detail.properties));
 
-      return popup
+    return popup;
   }
-  
+
   #header(keys, props) {
     const subject = Records.getSubject(keys.subjectId);
     const isPrimaryKey = props.isPrimaryKey;
@@ -100,33 +99,31 @@ export default class ResultDetailModal {
     return header;
   }
 
-  #container(keys, props){
+  #container(keys, props) {
     const container = document.createElement('div');
     container.className = 'container';
-    ['Up', 'Right', 'Down', 'Left'].forEach((direction) => {
+    ['Up', 'Right', 'Down', 'Left'].forEach(direction => {
       container.appendChild(this.#arrow(direction, props.dataOrder));
     });
-    container.appendChild(this.#stanzas(keys.subjectId, keys.uniqueEntryId, keys.dataKey));
+    container.appendChild(
+      this.#stanzas(keys.subjectId, keys.uniqueEntryId, keys.dataKey)
+    );
 
-    return container
+    return container;
   }
 
   #stanzas(subjectId, uniqueEntryId, dataKey) {
     const stanzas = document.createElement('div');
     stanzas.className = 'stanzas';
-    stanzas.innerHTML += StanzaManager.draw(
-      subjectId,
-      uniqueEntryId,
-      dataKey
-    );
+    stanzas.innerHTML += StanzaManager.draw(subjectId, uniqueEntryId, dataKey);
 
-    return stanzas
+    return stanzas;
   }
 
   #arrow(direction, axes) {
     const arrow = document.createElement('div');
     arrow.classList.add('arrow', `-${direction.toLowerCase()}`);
-    arrow.addEventListener('click', (e) => {
+    arrow.addEventListener('click', e => {
       this.#setMovementArrow(this.#arrowFuncs.get('Arrow' + direction), axes);
     });
 
@@ -135,45 +132,72 @@ export default class ResultDetailModal {
 
   // Events, functions
   #setHighlight(axes) {
-    const curEntry = this.#RESULTS_TABLE.querySelector(`[data-order = '${axes}']`);
+    const curEntry = this.#RESULTS_TABLE.querySelector(
+      `[data-order = '${axes}']`
+    );
     const curTr = curEntry.closest('tr');
     curEntry.classList.add('-selected');
     curTr.classList.add('-selected');
 
     const customEvent = new CustomEvent(event.highlightCol, {
-      detail: axes
+      detail: axes,
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  #handleKeydown = (e) => {
-    if(e.key == 'Escape'){
+  #handleKeydown = e => {
+    if (e.key == 'Escape') {
       this.#hidePopUp();
+    } else if (this.#arrowFuncs.has(e.key)) {
+      this.#RESULT_MODAL
+        .querySelector(`.arrow.-${e.key.replace('Arrow', '').toLowerCase()}`)
+        .click();
     }
-    else if (this.#arrowFuncs.has(e.key)){
-      this.#RESULT_MODAL.querySelector(`.arrow.-${e.key.replace('Arrow','').toLowerCase()}`).click();
-    }
-  }
+  };
 
   #arrowFuncs = new Map([
-    ['ArrowLeft', function(x,y){return [x-1, y]}],
-    ['ArrowRight', function(x,y){return [x+1, y]}],
-    ['ArrowUp', function(x,y){return [x, y-1]}],
-    ['ArrowDown', function(x,y){return [x, y+1]}]
+    [
+      'ArrowLeft',
+      function (x, y) {
+        return [x - 1, y];
+      },
+    ],
+    [
+      'ArrowRight',
+      function (x, y) {
+        return [x + 1, y];
+      },
+    ],
+    [
+      'ArrowUp',
+      function (x, y) {
+        return [x, y - 1];
+      },
+    ],
+    [
+      'ArrowDown',
+      function (x, y) {
+        return [x, y + 1];
+      },
+    ],
   ]);
 
   #getCorList(str) {
-    let [x,y] = str.split(',');
-    return [x,y].map((cor) => parseInt(cor));
+    let [x, y] = str.split(',');
+    return [x, y].map(cor => parseInt(cor));
   }
 
   #setMovementArrow(movement, axes) {
     //TODO: Implement functions for data with multiple entries
     let [x, y] = this.#getCorList(axes);
 
-    const targetEntry = this.#RESULTS_TABLE.querySelector(`[data-order = '${movement(x,y)}'`);
+    const targetEntry = this.#RESULTS_TABLE.querySelector(
+      `[data-order = '${movement(x, y)}'`
+    );
     const targetTr = targetEntry.closest('tr');
-    const reportLink = targetTr.querySelector(':scope > th > .inner > .report-page-button-view').href;
+    const reportLink = targetTr.querySelector(
+      ':scope > th > .inner > .report-page-button-view'
+    ).href;
 
     createPopupEvent(targetEntry, reportLink, event.movePopup);
   }
@@ -183,7 +207,7 @@ export default class ResultDetailModal {
     this.#RESULT_MODAL.innerHTML = '';
     this.#RESULTS_TABLE
       .querySelectorAll('.-selected')
-      .forEach((entry) => entry.classList.remove('-selected'));
+      .forEach(entry => entry.classList.remove('-selected'));
     document.removeEventListener('keydown', this.#handleKeydown);
   }
 }
