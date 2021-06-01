@@ -20,7 +20,7 @@
               height: 100%
               &.-propertyvalue
                 color: white
-          &.header
+          &.header, &.subheader
             font-weight: bold
             white-space: nowrap
             > th
@@ -32,6 +32,8 @@
                 background-color: white
                 // border-bottom: solid .1rem var(--color-separator)
                 border-bottom: solid .1rem var(--color-black)
+                &.-noborder
+                  border: none
               &:first-child
                 > .inner
                   background-color: var(--color-light-gray)

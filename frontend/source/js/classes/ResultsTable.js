@@ -10,6 +10,7 @@ export default class ResultsTable {
   #header;
   #ROOT;
   #THEAD;
+  #THEAD_SUB;
   #STATS;
   #TBODY;
   #TABLE_END;
@@ -20,6 +21,7 @@ export default class ResultsTable {
     this.#ROOT = elm;
     const TABLE = elm.querySelector(':scope > .body > table');
     this.#THEAD = TABLE.querySelector(':scope > thead > tr.header');
+    this.#THEAD_SUB = TABLE.querySelector(':scope > thead > tr.subheader');
     this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics');
     this.#TBODY = TABLE.querySelector(':scope > tbody');
     this.#TABLE_END = elm.querySelector(':scope > .body > .tableend');
@@ -102,36 +104,46 @@ export default class ResultsTable {
     // make table header
     this.#THEAD.innerHTML = `
       <th>
-        <div class="inner">Report</div>
+        <div class="inner -noborder">Report</div>
       </th>
-      <th>
-        <div class="inner">
+      <th colspan="100%">
+        <div class="inner -noborder">
           <div class="togo-key-view">${Records.getLabelFromTogoKey(tableData.condition.togoKey)}</div>
         </div>
       </th>
-      ${tableData.condition.attributes
-        .map(
-          (property) => `
-      <th>
-        <div class="inner -propertyvalue" style="background-color: ${property.subject.colorCSSValue}">
-          <div class="togo-key-view">${property.property.primaryKey}</div>
-          <span>${property.property.label}</span>
-        </div>
-      </th>`
-        )
-        .join('')}
-      ${tableData.condition.properties
-        .map(
-          (property) => `
-      <th>
-        <div class="inner -property" style="color: ${property.subject.colorCSSValue}">
-          <div class="togo-key-view">${property.property.primaryKey}</div>
-          <span>${property.property.label}</span>
-        </div>
-      </th>`
-        )
-        .join('')}`;
+      `
 
+    // makte table sub header
+    this.#THEAD_SUB.innerHTML = `
+    <th>
+      <div class="inner"></div>
+    </th>
+    <th>
+      <div class="inner"></div>
+    </th>
+    ${tableData.condition.attributes
+      .map(
+        (property) => `
+    <th>
+      <div class="inner -propertyvalue" style="background-color: ${property.subject.colorCSSValue}">
+        <div class="togo-key-view">${property.property.primaryKey}</div>
+        <span>${property.property.label}</span>
+      </div>
+    </th>`
+      )
+      .join('')}
+    ${tableData.condition.properties
+      .map(
+        (property) => `
+    <th>
+      <div class="inner -property" style="color: ${property.subject.colorCSSValue}">
+        <div class="togo-key-view">${property.property.primaryKey}</div>
+        <span>${property.property.label}</span>
+      </div>
+    </th>`
+      )
+      .join('')}`;
+    
     // make stats
     this.#STATS.innerHTML =
       `<td colspan="2"><div class="inner"><div></td>` +
