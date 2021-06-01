@@ -1,6 +1,7 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
 import StatisticsView from './StatisticsView';
 import Records from './Records';
+import { createPopupEvent } from '../functions/util';
 import * as event from '../events';
 
 export default class ResultsTable {
@@ -246,7 +247,6 @@ export default class ResultsTable {
   //    → Main-Category  (Expressed in tissues)
   //      → Sub-Category  (Thyroid Gland)
   //        → Unique-Entry (ENSG00000139304)
-
     rows.forEach((row, index) => {
       const actualIndex = detail.tableData.offset + index;
       const tr = this.#TBODY.querySelector(
@@ -256,7 +256,7 @@ export default class ResultsTable {
       const uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach((uniqueEntry) => {
         uniqueEntry.addEventListener('click', () => {
-          this.createPopupEvent(uniqueEntry, reportLink, event.showPopup);
+          createPopupEvent(uniqueEntry, reportLink, event.showPopup);
         });
         // remove highlight on mouseleave only when there is no popup
         const td = uniqueEntry.closest('td');
@@ -281,34 +281,6 @@ export default class ResultsTable {
     this.#LOADING_VIEW.classList.remove('-shown');
   }
 
-  // public methods
-  // TODO: Set better way to get reportLink
-  createPopupEvent(uniqueEntry, reportLink, newEvent) {
-    const customEvent = new CustomEvent(newEvent, {
-      detail: {
-        keys: {
-          dataKey: uniqueEntry.getAttribute('data-key'),
-          subjectId: uniqueEntry.getAttribute('data-subject-id'),
-          mainCategoryId: uniqueEntry.getAttribute(
-            'data-main-category-id'
-          ),
-          subCategoryId: uniqueEntry.getAttribute(
-            'data-sub-category-id'
-          ),
-          uniqueEntryId: uniqueEntry.getAttribute(
-            'data-unique-entry-id'
-          ),
-        },
-        properties: {
-          dataOrder: uniqueEntry.getAttribute('data-order'),
-          isPrimaryKey: uniqueEntry.classList.contains('primarykey'),
-          reportLink: reportLink,
-        },
-      }
-    });
-    DefaultEventEmitter.dispatchEvent(customEvent);
-  }
-
   #colHighlight(axes) {
     const colIndex = axes.slice(0,1);
     this.#TBODY.querySelectorAll('[data-order]').forEach(element => {
@@ -323,5 +295,4 @@ export default class ResultsTable {
       }
     });
   }
-
 }

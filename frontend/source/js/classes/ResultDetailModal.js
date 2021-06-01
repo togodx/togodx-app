@@ -1,7 +1,7 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
 import StanzaManager from './StanzaManager';
-import ResultsTable from './ResultsTable';
+import {createPopupEvent} from '../functions/util';
 import * as event from '../events';
 
 export default class ResultDetailModal {
@@ -45,7 +45,6 @@ export default class ResultDetailModal {
       if (e.target !== e.currentTarget) return;
       this.#hidePopUp();
     });
-
   }
 
   // bind this on handleKeydown so it will keep listening to same event during the whole popup
@@ -54,38 +53,25 @@ export default class ResultDetailModal {
       this.#setHighlight(e.detail.properties.dataOrder);
       this.#handleKeydown = this.#handleKeydown.bind(this);
       document.addEventListener('keydown', this.#handleKeydown);
+
       this.#RESULT_MODAL.appendChild(this.#popup(e.detail));
       this.#RESULT_MODAL.classList.add('backdrop');
     }
   }
-
-  #setHighlight(axes) {
-    const curEntry = this.#RESULTS_TABLE.querySelector(`[data-order = '${axes}']`);
-    const curTr = curEntry.closest('tr');
-    curEntry.classList.add('-selected');
-    curTr.classList.add('-selected');
-
-    const customEvent = new CustomEvent(event.highlightCol, {
-      detail: axes
-    });
-    DefaultEventEmitter.dispatchEvent(customEvent);
-  }
   // HTML elements
   #popup(detail) {
     const popup = document.createElement('div');
-      popup.className = 'popup';
-      popup.appendChild(this.#header(detail.keys, detail.properties));
-      popup.appendChild(this.#container(detail));
+    popup.className = 'popup';
+    popup.appendChild(this.#header(detail.keys, detail.properties));
+    popup.appendChild(this.#container(detail.keys, detail.properties));
 
-      return popup
+    return popup;
   }
-  
+
   #header(keys, props) {
     const subject = Records.getSubject(keys.subjectId);
     const isPrimaryKey = props.isPrimaryKey;
-    const mainCategory = isPrimaryKey
-      ? ''
-      : Records.getProperty(keys.mainCategoryId);
+    const mainCategory = isPrimaryKey? '': Records.getProperty(keys.mainCategoryId);
     const subCategory = isPrimaryKey
       ? ''
       : Records.getValue(keys.mainCategoryId, keys.subCategoryId);
@@ -111,72 +97,107 @@ export default class ResultDetailModal {
     return header;
   }
 
-  #container(detail){
+  #container(keys, props) {
     const container = document.createElement('div');
     container.className = 'container';
-    ['Up', 'Right', 'Down', 'Left'].forEach((dir) => {
-      container.appendChild(this.#arrow(dir, detail));
+    ['Up', 'Right', 'Down', 'Left'].forEach((direction) => {
+      container.appendChild(this.#arrow(direction, props.dataOrder));
     });
-    container.appendChild(this.#stanzas(detail.keys));
-
-    return container
-  }
-
-  #stanzas(keys) {
-    const stanzas = document.createElement('div');
-    stanzas.className = 'stanzas';
-    stanzas.innerHTML += StanzaManager.draw(
-      keys.subjectId,
-      keys.uniqueEntryId,
-      keys.dataKey
+    container.appendChild(
+      this.#stanzas(keys.subjectId, keys.uniqueEntryId, keys.dataKey)
     );
 
-    return stanzas
+    return container;
   }
 
-  #arrow(direction, detail) {
+  #stanzas(subjectId, uniqueEntryId, dataKey) {
+    const stanzas = document.createElement('div');
+    stanzas.className = 'stanzas';
+    stanzas.innerHTML += StanzaManager.draw(subjectId, uniqueEntryId, dataKey);
+
+    return stanzas;
+  }
+
+  #arrow(direction, axes) {
     const arrow = document.createElement('div');
     arrow.classList.add('arrow', `-${direction.toLowerCase()}`);
     arrow.addEventListener('click', (e) => {
-      this.#setMovementArrow(this.#arrowFuncs.get('Arrow' + direction), detail);
+      this.#setMovementArrow(this.#arrowFuncs.get('Arrow' + direction), axes);
     });
 
     return arrow;
   }
 
   // Events, functions
-  #handleKeydown = (e) => {
-    if(e.key == 'Escape'){
-      this.#hidePopUp();
-    }
-    else if (this.#arrowFuncs.has(e.key)){
-      // TODO: set actual event handler
-      this.#RESULT_MODAL.querySelector(`.arrow.-${e.key.replace('Arrow','').toLowerCase()}`).click();
-    }
+  #setHighlight(axes) {
+    const curEntry = this.#RESULTS_TABLE.querySelector(
+      `[data-order = '${axes}']`
+    );
+    const curTr = curEntry.closest('tr');
+    curEntry.classList.add('-selected');
+    curTr.classList.add('-selected');
+
+    const customEvent = new CustomEvent(event.highlightCol, {
+      detail: axes,
+    });
+    DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
+  #handleKeydown = (e) => {
+    if (e.key == 'Escape') {
+      this.#hidePopUp();
+    } else if (this.#arrowFuncs.has(e.key)) {
+      this.#RESULT_MODAL
+        .querySelector(`.arrow.-${e.key.replace('Arrow', '').toLowerCase()}`)
+        .click();
+    }
+  };
+
   #arrowFuncs = new Map([
-    ['ArrowLeft', function(x,y){return [x-1, y]}],
-    ['ArrowRight', function(x,y){return [x+1, y]}],
-    ['ArrowUp', function(x,y){return [x, y-1]}],
-    ['ArrowDown', function(x,y){return [x, y+1]}]
+    [
+      'ArrowLeft',
+      function (x, y) {
+        return [x - 1, y];
+      },
+    ],
+    [
+      'ArrowRight',
+      function (x, y) {
+        return [x + 1, y];
+      },
+    ],
+    [
+      'ArrowUp',
+      function (x, y) {
+        return [x, y - 1];
+      },
+    ],
+    [
+      'ArrowDown',
+      function (x, y) {
+        return [x, y + 1];
+      },
+    ],
   ]);
 
   #getCorList(str) {
-    let [x,y] = str.split(',');
-    return [x,y].map((cor) => parseFloat(cor));
+    let [x, y] = str.split(',');
+    return [x, y].map((cor) => parseInt(cor));
   }
 
-  #setMovementArrow(movement, detail) {
+  #setMovementArrow(movement, axes) {
     //TODO: Implement functions for data with multiple entries
-    detail.properties.movement = movement;
-    let [x, y] = this.#getCorList(detail.properties.dataOrder);
+    let [x, y] = this.#getCorList(axes);
 
-    const targetEntry = this.#RESULTS_TABLE.querySelector(`[data-order = '${movement(x,y)}'`);
+    const targetEntry = this.#RESULTS_TABLE.querySelector(
+      `[data-order = '${movement(x, y)}'`
+    );
     const targetTr = targetEntry.closest('tr');
-    const reportLink = targetTr.querySelector('.report-page-button-view').href;
+    const reportLink = targetTr.querySelector(
+      ':scope > th > .inner > .report-page-button-view'
+    ).href;
 
-    ResultsTable.prototype.createPopupEvent(targetEntry, reportLink, event.movePopup);
+    createPopupEvent(targetEntry, reportLink, event.movePopup);
   }
 
   #hidePopUp() {
