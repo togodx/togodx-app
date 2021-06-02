@@ -1,4 +1,4 @@
-<div id="disease-metastanza">
+<div id="metastanza-disease">
   <h1>Disease: {{type}}: {{id}}</h1>
 </div>
 <script>
@@ -58,7 +58,7 @@
       return array;
     }
 
-    const metastanzaDiv = document.getElementById("disease-metastanza");
+    const metastanzaDiv = document.getElementById("metastanza-disease");
     const dataUrl = (id, type) => dataUrlEndpoint + '?id=' + id + '&type=' + type;
     const titleDict = {
       'mondo': 'Mondo',
