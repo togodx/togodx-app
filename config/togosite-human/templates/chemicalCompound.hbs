@@ -1,127 +1,131 @@
-<div id="metastanza">
+<div id="metastanza-chemicalCompound">
   <h1>Chemical compound: {{type}}: {{id}}</h1>
 </div>
 <script>
-  // togoid endpoint
-  const togoidAPIURL = 'https://api.togoid.dbcls.jp.il3c.com';
-  const dataUrlEndpoint = 'https://integbio.jp/togosite/sparqlist/api/test_chemical_details5';
-  const idTypes = ['pubchem_compound', 'chembl_compound', 'chebi'];
+  (() => {
+    // togoid endpoint
+    const togoidAPIURL = 'https://api.togoid.dbcls.jp.il3c.com';
+    const dataUrlEndpoint = 'https://integbio.jp/togosite/sparqlist/api/test_chemical_details5';
+    const idTypes = ['pubchem_compound', 'chembl_compound', 'chebi'];
 
-  // embed the id and id type via handlebars variable
-  const subjectId = "{{id}}";
-  const subjectIdType = "{{type}}";
+    // embed the id and id type via handlebars variable
+    const subjectId = "{{id}}";
+    const subjectIdType = "{{type}}";
 
-  // for testing
-  // const subjectId = "2244";
-  // const subjectIdType = 'pubchem_compound';
+    // for testing
+    // const subjectId = "2244";
+    // const subjectIdType = 'pubchem_compound';
 
-  // access API and return JSON
-  const fetchJSON = async (api) => {
-    const response = await fetch(api);
-    const json = await response.json();
-    return json;
-  }
-
-  // helper function to set multiple attributes
-  const updateAttributes = (element, attributes) => {
-    for (let key in attributes) {
-      element.setAttribute(key, attributes[key]);
+    // access API and return JSON
+    const fetchJSON = async (api) => {
+      const response = await fetch(api);
+      const json = await response.json();
+      console.log(api);  // debug
+      console.log(json); // debug
+      return json;
     }
-  }
 
-  // create a list of target ID types by removing the subject ID type
-  const targetIdTypes = async (subjectIdType) => {
-    const index = idTypes.indexOf(subjectIdType);
-    if (index > -1) {
-      idTypes.splice(index, 1);
-    }
-    return idTypes;
-  }
-
-  // access convert APi endpoint and create ID Object
-  const convertId = async (subjectId, subjectIdType) => {
-    const targets = await targetIdTypes(subjectIdType);
-    const array = [];
-    for (const targetIdType of targets) {
-      const url = togoidAPIURL + '/convert?format=json&ids=' + subjectId + '&route=' + subjectIdType + ',' + targetIdType;
-      const json = await fetchJSON(url);
-      if (json.results.length != 0) {
-        array.push({
-          'type': targetIdType,
-          'ids': json.results
-        });
+    // helper function to set multiple attributes
+    const updateAttributes = (element, attributes) => {
+      for (let key in attributes) {
+        element.setAttribute(key, attributes[key]);
       }
     }
-    return array;
-  }
 
-  const metastanzaDiv = document.getElementById("metastanza");
-  const dataUrl = (id, type) => dataUrlEndpoint + '?id=' + id + '&type=' + type;
-  const titleDict = {
-    'pubchem_compound': 'PubChem',
-    'chembl_compound': 'ChEMBL',
-    'chebi': 'ChEBI'
-  };
-
-  const addHeader = (id, type) => {
-    const header = document.createElement('h2');
-    const headerText = document.createTextNode(titleDict[type] + ': ' + id);
-    header.appendChild(headerText);
-    metastanzaDiv.appendChild(header);
-  }
-
-  const generateColumnSetting = async (id, type) => {
-    const data = await fetchJSON(dataUrl(id, type));
-    return Object.entries(data[0]).map(([key, value]) => {
-      const obj = {};
-      obj.id = key;
-      if (/^http(s|)\:\/\//.test(value)) {
-        obj.link = key;
+    // create a list of target ID types by removing the subject ID type
+    const targetIdTypes = async (subjectIdType) => {
+      const index = idTypes.indexOf(subjectIdType);
+      if (index > -1) {
+        idTypes.splice(index, 1);
       }
-      return obj;
-    });
-  }
+      return idTypes;
+    }
 
-  const addHashTable = async (id, type) => {
-    const hashTable = document.createElement('togostanza-hash-table');
-    const columnSetting = await generateColumnSetting(id, type);
-    updateAttributes(hashTable, {
-      'data-url': dataUrl(id, type),
-      'data-type': 'json',
-      'format-key': true,
-      columns: JSON.stringify(columnSetting)
-    });
-    metastanzaDiv.appendChild(hashTable);
+    // access convert APi endpoint and create ID Object
+    const convertId = async (subjectId, subjectIdType) => {
+      const targets = await targetIdTypes(subjectIdType);
+      const array = [];
+      for (const targetIdType of targets) {
+        const url = togoidAPIURL + '/convert?format=json&ids=' + subjectId + '&route=' + subjectIdType + ',' + targetIdType;
+        const json = await fetchJSON(url);
+        if (json.results.length != 0) {
+          array.push({
+            'type': targetIdType,
+            'ids': json.results
+          });
+        }
+      }
+      return array;
+    }
 
-    console.log(hashTable);
-  }
+    const metastanzaDiv = document.getElementById("metastanza-chemicalCompound");
+    const dataUrl = (id, type) => dataUrlEndpoint + '?id=' + id + '&type=' + type;
+    const titleDict = {
+      'pubchem_compound': 'PubChem',
+      'chembl_compound': 'ChEMBL',
+      'chebi': 'ChEBI'
+    };
 
-  const addMainSubject = () => {
-    addHeader(subjectId, subjectIdType);
-    addHashTable(subjectId, subjectIdType);
-  }
+    const addHeader = (id, type) => {
+      const header = document.createElement('h2');
+      const headerText = document.createTextNode(titleDict[type] + ': ' + id);
+      header.appendChild(headerText);
+      metastanzaDiv.appendChild(header);
+    }
 
-  const createMetastanza = async () => {
-    addMainSubject();
+    const generateColumnSetting = async (id, type) => {
+      const data = await fetchJSON(dataUrl(id, type));
+      return Object.entries(data[0]).map(([key, value]) => {
+        const obj = {};
+        obj.id = key;
+        if (/^http(s|)\:\/\//.test(value)) {
+          obj.link = key;
+        }
+        return obj;
+      });
+    }
 
-    const array = await convertId(subjectId, subjectIdType);
+    const addHashTable = async (id, type) => {
+      const hashTable = document.createElement('togostanza-hash-table');
+      const columnSetting = await generateColumnSetting(id, type);
+      updateAttributes(hashTable, {
+        'data-url': dataUrl(id, type),
+        'data-type': 'json',
+        'format-key': true,
+        columns: JSON.stringify(columnSetting)
+      });
+      metastanzaDiv.appendChild(hashTable);
 
-    console.log("subject id: " + subjectId);
-    console.log("subject id type: " + subjectIdType);
-    console.log("converted ids: " + array);
+      console.log(hashTable);
+    }
 
-    for (const idObj of array) {
-      for (const id of idObj.ids) {
-        const type = idObj.type;
-        const data = await fetchJSON(dataUrl(id, type));
-        if (data.length > 0) {
-          addHeader(id, type);
-          addHashTable(id, type);
+    const addMainSubject = () => {
+      addHeader(subjectId, subjectIdType);
+      addHashTable(subjectId, subjectIdType);
+    }
+
+    const createMetastanza = async () => {
+      addMainSubject();
+
+      const array = await convertId(subjectId, subjectIdType);
+
+      console.log("subject id: " + subjectId);
+      console.log("subject id type: " + subjectIdType);
+      console.log("converted ids: " + array);
+
+      for (const idObj of array) {
+        for (const id of idObj.ids) {
+          const type = idObj.type;
+          const data = await fetchJSON(dataUrl(id, type));
+          if (data.length > 0) {
+            addHeader(id, type);
+            addHashTable(id, type);
+          }
         }
       }
     }
-  }
 
-  // exec
-  createMetastanza();
+    // exec
+    createMetastanza();
+  })()
 </script>
