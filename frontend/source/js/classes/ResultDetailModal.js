@@ -209,22 +209,33 @@ export default class ResultDetailModal {
   }
 
   #getTargetEntry(direction, axes, internalIndex) {
-    if (
-      !Object.is(NaN, internalIndex) &&
-      ['Down', 'Up'].includes(direction)
-    ) {
-      const allEntries = this.#RESULTS_TABLE.querySelectorAll(
+    // Check if there are multiple entries in the cell
+    if (['Down', 'Up'].includes(direction)) {
+      const allCurEntries = this.#RESULTS_TABLE.querySelectorAll(
         `[data-order = '${axes}']`
       );
-      const targetIndex =
-        direction === 'Down' ? internalIndex + 1 : internalIndex - 1;
-      return allEntries[targetIndex];
+      const targetIndex = direction === 'Down' ? internalIndex + 1 : internalIndex - 1;
+      // if (targetIndex === -1) {
+      //   let [x, y] = this.#getCorList(axes);
+      //   const movement = this.#arrowFuncs.get('Arrow' + direction);
+      //   const allTargetEntires = this.#RESULTS_TABLE.querySelectorAll(
+      //     `[data-order = '${movement(x, y)}']`
+      //   );
+      //   return allTargetEntires[allTargetEntires.length - 1];
+      // }
+      // movement inside cell
+      if(allCurEntries[targetIndex]){
+          return allCurEntries[targetIndex];
+      }
+
     }
+    // default target outside of cell
     let [x, y] = this.#getCorList(axes);
     const movement = this.#arrowFuncs.get('Arrow' + direction);
-    return this.#RESULTS_TABLE.querySelector(
-      `[data-order = '${movement(x, y)}'`
+    const allTargetEntires = this.#RESULTS_TABLE.querySelectorAll(
+      `[data-order = '${movement(x, y)}']`
     );
+    return allTargetEntires[0];
   }
 
   #hidePopUp() {
