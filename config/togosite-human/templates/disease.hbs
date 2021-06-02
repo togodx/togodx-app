@@ -20,6 +20,8 @@
     const fetchJSON = async (api) => {
       const response = await fetch(api);
       const json = await response.json();
+      console.log(api);  // debug
+      console.log(json); // debug
       return json;
     }
 
