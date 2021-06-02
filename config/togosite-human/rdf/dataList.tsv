@@ -5,7 +5,6 @@ Reactome	http://rdf.integbio.jp/dataset/togosite/reactome	ftp://ftp.ebi.ac.uk/pu
 Rhea	http://rdf.integbio.jp/dataset/togosite/rhea	ftp://ftp.ebi.ac.uk/pub/databases/rhea/rdf/
 Ensembl	http://rdf.integbio.jp/dataset/togosite/ensembl	ftp://ftp.ensembl.org/pub/release-102/rdf/homo_sapiens/
 neXtProt	http://rdf.integbio.jp/dataset/togosite/nextprot	ftp://ftp.nextprot.org/pub/current_release/rdf/ttl
-TogoID	http://rdf.integbio.jp/dataset/togosite/togoid	http://ep6.dbcls.jp/togoid/link/togosite/
 dbcatalog	http://rdf.integbio.jp/dataset/togosite/dbcatalog/main	http://integbio.jp/rdf/download/dbcatalog/2021-03-17/all/dbcatalog.tar.gz
 NANDO	http://rdf.integbio.jp/dataset/togosite/nando	http://integbio.jp/rdf/download/nando/2020-11-11/all/nand.tar.gz
 wwPDB	http://rdf.integbio.jp/dataset/togosite/pdbj	http://integbio.jp/rdf/download/pdbj/2021-01-20/all/pdbj.tar.gz
@@ -43,3 +42,48 @@ UniProt	http://rdf.integbio.jp/dataset/togosite/uniprot	https://www.uniprot.org/
 PubChem	http://rdf.integbio.jp/dataset/togosite/pubchem
 UniProt keywords	http://rdf.integbio.jp/dataset/togosite/uniprot/keywords	ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/rdf/keywords.rdf.xz
 UniProt tissues	http://rdf.integbio.jp/dataset/togosite/uniprot/tissues	ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/rdf/tissues.rdf.xz
+TogoID_chembl_compound-chebi	http://rdf.integbio.jp/dataset/togosite/togoid/chembl_compound-chebi	http://ep6.dbcls.jp/togoid/link/togosite/chembl_compound-chebi.ttl
+TogoID_chembl_compound-chembl_target	http://rdf.integbio.jp/dataset/togosite/togoid/chembl_compound-chembl_target	http://ep6.dbcls.jp/togoid/link/togosite/chembl_compound-chembl_target.ttl
+TogoID_chembl_compound-pubchem_compound	http://rdf.integbio.jp/dataset/togosite/togoid/chembl_compound-pubchem_compound	http://ep6.dbcls.jp/togoid/link/togosite/chembl_compound-pubchem_compound.ttl
+TogoID_chembl_target-ensembl_gene	http://rdf.integbio.jp/dataset/togosite/togoid/chembl_target-ensembl_gene	http://ep6.dbcls.jp/togoid/link/togosite/chembl_target-ensembl_gene.ttl
+TogoID_chembl_target-pdb	http://rdf.integbio.jp/dataset/togosite/togoid/chembl_target-pdb	http://ep6.dbcls.jp/togoid/link/togosite/chembl_target-pdb.ttl
+TogoID_chembl_target-uniprot	http://rdf.integbio.jp/dataset/togosite/togoid/chembl_target-uniprot	http://ep6.dbcls.jp/togoid/link/togosite/chembl_target-uniprot.ttl
+TogoID_ensembl_gene-ensembl_transcript	http://rdf.integbio.jp/dataset/togosite/togoid/ensembl_gene-ensembl_transcript	http://ep6.dbcls.jp/togoid/link/togosite/ensembl_gene-ensembl_transcript.ttl
+TogoID_ensembl_gene-hgnc	http://rdf.integbio.jp/dataset/togosite/togoid/ensembl_gene-hgnc	http://ep6.dbcls.jp/togoid/link/togosite/ensembl_gene-hgnc.ttl
+TogoID_ensembl_gene-ncbigene	http://rdf.integbio.jp/dataset/togosite/togoid/ensembl_gene-ncbigene	http://ep6.dbcls.jp/togoid/link/togosite/ensembl_gene-ncbigene.ttl
+TogoID_ensembl_gene-uniprot	http://rdf.integbio.jp/dataset/togosite/togoid/ensembl_gene-uniprot	http://ep6.dbcls.jp/togoid/link/togosite/ensembl_gene-uniprot.ttl
+TogoID_ensembl_transcript-hgnc	http://rdf.integbio.jp/dataset/togosite/togoid/ensembl_transcript-hgnc	http://ep6.dbcls.jp/togoid/link/togosite/ensembl_transcript-hgnc.ttl
+TogoID_hgnc-ensembl_gene	http://rdf.integbio.jp/dataset/togosite/togoid/hgnc-ensembl_gene	http://ep6.dbcls.jp/togoid/link/togosite/hgnc-ensembl_gene.ttl
+TogoID_hgnc-ncbigene	http://rdf.integbio.jp/dataset/togosite/togoid/hgnc-ncbigene	http://ep6.dbcls.jp/togoid/link/togosite/hgnc-ncbigene.ttl
+TogoID_hgnc-uniprot	http://rdf.integbio.jp/dataset/togosite/togoid/hgnc-uniprot	http://ep6.dbcls.jp/togoid/link/togosite/hgnc-uniprot.ttl
+TogoID_medgen-hp	http://rdf.integbio.jp/dataset/togosite/togoid/medgen-hp	http://ep6.dbcls.jp/togoid/link/togosite/medgen-hp.ttl
+TogoID_medgen-mondo	http://rdf.integbio.jp/dataset/togosite/togoid/medgen-mondo	http://ep6.dbcls.jp/togoid/link/togosite/medgen-mondo.ttl
+TogoID_medgen-ncbigene	http://rdf.integbio.jp/dataset/togosite/togoid/medgen-ncbigene	http://ep6.dbcls.jp/togoid/link/togosite/medgen-ncbigene.ttl
+TogoID_medgen-omim_phenotype	http://rdf.integbio.jp/dataset/togosite/togoid/medgen-omim_phenotype	http://ep6.dbcls.jp/togoid/link/togosite/medgen-omim_phenotype.ttl
+TogoID_medgen-orphanet	http://rdf.integbio.jp/dataset/togosite/togoid/medgen-orphanet	http://ep6.dbcls.jp/togoid/link/togosite/medgen-orphanet.ttl
+TogoID_mondo-hp	http://rdf.integbio.jp/dataset/togosite/togoid/mondo-hp	http://ep6.dbcls.jp/togoid/link/togosite/mondo-hp.ttl
+TogoID_mondo-omim_phenotype	http://rdf.integbio.jp/dataset/togosite/togoid/mondo-omim_phenotype	http://ep6.dbcls.jp/togoid/link/togosite/mondo-omim_phenotype.ttl
+TogoID_mondo-orphanet	http://rdf.integbio.jp/dataset/togosite/togoid/mondo-orphanet	http://ep6.dbcls.jp/togoid/link/togosite/mondo-orphanet.ttl
+TogoID_nando-mondo	http://rdf.integbio.jp/dataset/togosite/togoid/nando-mondo	http://ep6.dbcls.jp/togoid/link/togosite/nando-mondo.ttl
+TogoID_ncbigene-ensembl_gene	http://rdf.integbio.jp/dataset/togosite/togoid/ncbigene-ensembl_gene	http://ep6.dbcls.jp/togoid/link/togosite/ncbigene-ensembl_gene.ttl
+TogoID_ncbigene-ensembl_transcript	http://rdf.integbio.jp/dataset/togosite/togoid/ncbigene-ensembl_transcript	http://ep6.dbcls.jp/togoid/link/togosite/ncbigene-ensembl_transcript.ttl
+TogoID_ncbigene-hgnc	http://rdf.integbio.jp/dataset/togosite/togoid/ncbigene-hgnc	http://ep6.dbcls.jp/togoid/link/togosite/ncbigene-hgnc.ttl
+TogoID_orphanet-omim_phenotype	http://rdf.integbio.jp/dataset/togosite/togoid/orphanet-omim_phenotype	http://ep6.dbcls.jp/togoid/link/togosite/orphanet-omim_phenotype.ttl
+TogoID_pdb-uniprot	http://rdf.integbio.jp/dataset/togosite/togoid/pdb-uniprot	http://ep6.dbcls.jp/togoid/link/togosite/pdb-uniprot.ttl
+TogoID_pubchem_compound-chebi	http://rdf.integbio.jp/dataset/togosite/togoid/pubchem_compound-chebi	http://ep6.dbcls.jp/togoid/link/togosite/pubchem_compound-chebi.ttl
+TogoID_pubchem_compound-chembl_compound	http://rdf.integbio.jp/dataset/togosite/togoid/pubchem_compound-chembl_compound	http://ep6.dbcls.jp/togoid/link/togosite/pubchem_compound-chembl_compound.ttl
+TogoID_pubchem_compound-ensembl_gene	http://rdf.integbio.jp/dataset/togosite/togoid/pubchem_compound-ensembl_gene	http://ep6.dbcls.jp/togoid/link/togosite/pubchem_compound-ensembl_gene.ttl
+TogoID_pubchem_compound-uniprot	http://rdf.integbio.jp/dataset/togosite/togoid/pubchem_compound-uniprot	http://ep6.dbcls.jp/togoid/link/togosite/pubchem_compound-uniprot.ttl
+TogoID_togovar-ensembl_gene	http://rdf.integbio.jp/dataset/togosite/togoid/togovar-ensembl_gene	http://ep6.dbcls.jp/togoid/link/togosite/togovar-ensembl_gene.ttl
+TogoID_togovar-ensembl_transcript	http://rdf.integbio.jp/dataset/togosite/togoid/togovar-ensembl_transcript	http://ep6.dbcls.jp/togoid/link/togosite/togovar-ensembl_transcript.ttl
+TogoID_togovar-hgnc	http://rdf.integbio.jp/dataset/togosite/togoid/togovar-hgnc	http://ep6.dbcls.jp/togoid/link/togosite/togovar-hgnc.ttl
+TogoID_togovar-medgen	http://rdf.integbio.jp/dataset/togosite/togoid/togovar-medgen	http://ep6.dbcls.jp/togoid/link/togosite/togovar-medgen.ttl
+TogoID_togovar-ncbigene	http://rdf.integbio.jp/dataset/togosite/togoid/togovar-ncbigene	http://ep6.dbcls.jp/togoid/link/togosite/togovar-ncbigene.ttl
+TogoID_uniprot-chembl_target	http://rdf.integbio.jp/dataset/togosite/togoid/uniprot-chembl_target	http://ep6.dbcls.jp/togoid/link/togosite/uniprot-chembl_target.ttl
+TogoID_uniprot-ensembl_gene	http://rdf.integbio.jp/dataset/togosite/togoid/uniprot-ensembl_gene	http://ep6.dbcls.jp/togoid/link/togosite/uniprot-ensembl_gene.ttl
+TogoID_uniprot-ensembl_transcript	http://rdf.integbio.jp/dataset/togosite/togoid/uniprot-ensembl_transcript	http://ep6.dbcls.jp/togoid/link/togosite/uniprot-ensembl_transcript.ttl
+TogoID_uniprot-hgnc	http://rdf.integbio.jp/dataset/togosite/togoid/uniprot-hgnc	http://ep6.dbcls.jp/togoid/link/togosite/uniprot-hgnc.ttl
+TogoID_uniprot-ncbigene	http://rdf.integbio.jp/dataset/togosite/togoid/uniprot-ncbigene	http://ep6.dbcls.jp/togoid/link/togosite/uniprot-ncbigene.ttl
+TogoID_uniprot-omim_phenotype	http://rdf.integbio.jp/dataset/togosite/togoid/uniprot-omim_phenotype	http://ep6.dbcls.jp/togoid/link/togosite/uniprot-omim_phenotype.ttl
+TogoID_uniprot-orphanet	http://rdf.integbio.jp/dataset/togosite/togoid/uniprot-orphanet	http://ep6.dbcls.jp/togoid/link/togosite/uniprot-orphanet.ttl
+TogoID_uniprot-pdb	http://rdf.integbio.jp/dataset/togosite/togoid/uniprot-pdb	http://ep6.dbcls.jp/togoid/link/togosite/uniprot-pdb.ttl
