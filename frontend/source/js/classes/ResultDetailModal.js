@@ -50,7 +50,10 @@ export default class ResultDetailModal {
   // bind this on handleKeydown so it will keep listening to same event during the whole popup
   #showPopUp(e) {
     if (this.#RESULT_MODAL.innerHTML === '') {
-      this.#setHighlight(e.detail.properties.dataOrder);
+      this.#setHighlight(
+        e.detail.properties.dataOrder,
+        e.detail.properties.dataSubOrder
+      );
       this.#handleKeydown = this.#handleKeydown.bind(this);
       document.addEventListener('keydown', this.#handleKeydown);
 
@@ -103,7 +106,7 @@ export default class ResultDetailModal {
     const container = document.createElement('div');
     container.className = 'container';
     ['Up', 'Right', 'Down', 'Left'].forEach(direction => {
-      container.appendChild(this.#arrow(direction, props.dataOrder));
+      container.appendChild(this.#arrow(direction, props));
     });
     container.appendChild(
       this.#stanzas(keys.subjectId, keys.uniqueEntryId, keys.dataKey)
@@ -120,21 +123,24 @@ export default class ResultDetailModal {
     return stanzas;
   }
 
-  #arrow(direction, axes) {
+  #arrow(direction, props) {
     const arrow = document.createElement('div');
     arrow.classList.add('arrow', `-${direction.toLowerCase()}`);
     arrow.addEventListener('click', e => {
-      this.#setMovementArrow(this.#arrowFuncs.get('Arrow' + direction), axes);
+      this.#setMovementArrow(direction, props.dataOrder, props.dataSubOrder);
     });
 
     return arrow;
   }
 
   // Events, functions
-  #setHighlight(axes) {
-    const curEntry = this.#RESULTS_TABLE.querySelector(
-      `[data-order = '${axes}']`
-    );
+  #setHighlight(axes, subOrder) {
+    const curEntry = !subOrder
+      ? this.#RESULTS_TABLE.querySelector(`[data-order = '${axes}']`)
+      : this.#RESULTS_TABLE.querySelector(
+          `[data-order = '${axes}'][data-sub-order = '${subOrder}']`
+        );
+
     const curTr = curEntry.closest('tr');
     curEntry.classList.add('-selected');
     curTr.classList.add('-selected');
@@ -187,12 +193,12 @@ export default class ResultDetailModal {
     return [x, y].map(cor => parseInt(cor));
   }
 
-  #setMovementArrow(movement, axes) {
+  #setMovementArrow(direction, axes, internalIndex) {
     //TODO: Implement functions for data with multiple entries
-    let [x, y] = this.#getCorList(axes);
-
-    const targetEntry = this.#RESULTS_TABLE.querySelector(
-      `[data-order = '${movement(x, y)}'`
+    const targetEntry = this.#getTargetEntry(
+      direction,
+      axes,
+      parseInt(internalIndex)
     );
     const targetTr = targetEntry.closest('tr');
     const reportLink = targetTr.querySelector(
@@ -200,6 +206,25 @@ export default class ResultDetailModal {
     ).href;
 
     createPopupEvent(targetEntry, reportLink, event.movePopup);
+  }
+
+  #getTargetEntry(direction, axes, internalIndex) {
+    if (
+      !Object.is(NaN, internalIndex) &&
+      ['Down', 'Up'].includes(direction)
+    ) {
+      const allEntries = this.#RESULTS_TABLE.querySelectorAll(
+        `[data-order = '${axes}']`
+      );
+      const targetIndex =
+        direction === 'Down' ? internalIndex + 1 : internalIndex - 1;
+      return allEntries[targetIndex];
+    }
+    let [x, y] = this.#getCorList(axes);
+    const movement = this.#arrowFuncs.get('Arrow' + direction);
+    return this.#RESULTS_TABLE.querySelector(
+      `[data-order = '${movement(x, y)}'`
+    );
   }
 
   #hidePopUp() {

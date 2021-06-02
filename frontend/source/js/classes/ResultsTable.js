@@ -215,13 +215,14 @@ export default class ResultsTable {
                 if (column) {
                   return `
                   <td><div class="inner"><ul>${column.attributes
-                    .map(attribute => {
+                    .map((attribute, attributeIndex) => {
                       if (!attribute.attribute) console.error(attribute);
                       return `
                       <li>
                         <div
                           class="togo-key-view"
                           data-order="${[columnIndex + 1, index]}"
+                          data-sub-order="${(column.attributes).length > 1? attributeIndex : undefined}"
                           data-key="${column.propertyKey}"
                           data-subject-id="${
                             this.#header[columnIndex].subjectId
@@ -235,7 +236,6 @@ export default class ResultsTable {
                               : attribute.attribute.categoryIds
                           }"
                           data-unique-entry-id="${attribute.id}"
-                          data-unique-entry-uri="${attribute.attribute.uri}"
                           >${attribute.id}</div>
                         <span>${
                           attribute.attribute

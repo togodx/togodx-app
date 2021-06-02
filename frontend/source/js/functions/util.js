@@ -25,6 +25,7 @@ export function createPopupEvent(uniqueEntry, reportLink, newEvent) {
       },
       properties: {
         dataOrder: uniqueEntry.getAttribute('data-order'),
+        dataSubOrder: uniqueEntry.getAttribute('data-sub-order'),
         isPrimaryKey: uniqueEntry.classList.contains('primarykey'),
         reportLink: reportLink,
       },
