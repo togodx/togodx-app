@@ -70,6 +70,7 @@ export default class TrackOverviewCategorical {
 
       // attach event: show tooltip of pin
       pin.addEventListener('mouseenter', () => {
+        console.log(value)
         const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {
           label,
           values: [
@@ -176,8 +177,6 @@ export default class TrackOverviewCategorical {
           const size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
-          value.pin.style.top = -size + 'px';
-          value.pin.style.left = (-size / 2) + 'px';
           value.userValueCount =  userValue.count;
         } else {
           value.elm.classList.remove('-pinsticking');

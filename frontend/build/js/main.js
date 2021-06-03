@@ -4267,6 +4267,7 @@
       }); // attach event: show tooltip of pin
 
       pin.addEventListener('mouseenter', function () {
+        console.log(value);
         var customEvent = new CustomEvent(enterPropertyValueItemView, {
           detail: {
             label: label,
@@ -4393,8 +4394,6 @@
           var size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
-          value.pin.style.top = -size + 'px';
-          value.pin.style.left = -size / 2 + 'px';
           value.userValueCount = userValue.count;
         } else {
           value.elm.classList.remove('-pinsticking');
@@ -5974,8 +5973,7 @@
     _classPrivateFieldGet(this, _tableData).splice(index, 1);
   }
 
-  var PATH = 'https://integbio.jp/togosite/sparqlist/api/';
-  var DATA_FROM_USER_IDS = 'data_from_user_ids';
+  var _path = new WeakMap();
 
   var _BODY = new WeakMap();
 
@@ -5985,9 +5983,7 @@
 
   var _clear = new WeakSet();
 
-  var UploadUserIDsView = // #ROOT;
-  // #USER_KEY;
-  function UploadUserIDsView(elm) {
+  var UploadUserIDsView = function UploadUserIDsView(elm, path) {
     var _this = this;
 
     _classCallCheck(this, UploadUserIDsView);
@@ -5995,6 +5991,11 @@
     _clear.add(this);
 
     _fetch.add(this);
+
+    _path.set(this, {
+      writable: true,
+      value: void 0
+    });
 
     _BODY.set(this, {
       writable: true,
@@ -6006,22 +6007,22 @@
       value: void 0
     });
 
-    _classPrivateFieldSet(this, _BODY, document.querySelector('body')); // this.#ROOT = elm;
+    _classPrivateFieldSet(this, _path, path);
+
+    _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
+
+    _classPrivateFieldSet(this, _USER_IDS, elm.querySelector(':scope > label > input')); // atache events
 
 
-    var form = elm.querySelector(':scope > form'); // this.#USER_KEY = form.querySelector(':scope > label > select');
-
-    _classPrivateFieldSet(this, _USER_IDS, form.querySelector(':scope > label > input')); // atache events
-
-
-    form.querySelector(':scope > .buttons > button:nth-child(1)').addEventListener('click', function (e) {
+    var buttons = elm.querySelector(':scope > .buttons');
+    buttons.querySelector(':scope > button:nth-child(1)').addEventListener('click', function (e) {
       e.stopPropagation();
 
       _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
 
       return false;
     });
-    form.querySelector(':scope > .buttons > button:nth-child(2)').addEventListener('click', function (e) {
+    buttons.querySelector(':scope > button:nth-child(2)').addEventListener('click', function (e) {
       e.stopPropagation();
 
       _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
@@ -6030,9 +6031,11 @@
     }); // event listeners
 
     _classPrivateFieldGet(this, _USER_IDS).addEventListener('change', function () {
-      console.log(_classPrivateFieldGet(_this, _USER_IDS));
-      console.log(_classPrivateFieldGet(_this, _USER_IDS).value);
       ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value);
+    });
+
+    _classPrivateFieldGet(this, _USER_IDS).addEventListener('keyup', function (e) {
+      if (e.keyCode === 13) _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
     });
   } // private methods
   ;
@@ -6040,8 +6043,9 @@
   function _fetch2() {
     var _this2 = this;
 
-    // console.log(this.#USER_KEY.value)
-    var queryTemplate = "".concat(PATH + DATA_FROM_USER_IDS, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
+    if (_classPrivateFieldGet(this, _USER_IDS).value === '') return;
+    var queryTemplate = "".concat(_classPrivateFieldGet(this, _path).url, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
+    console.log(queryTemplate);
     Records$1.properties.forEach(function (property) {
       console.log(property);
       var propertyId = property.propertyId;
@@ -6160,8 +6164,7 @@
         new ReportsView(document.querySelector('#Reports'));
         new ResultsTable(document.querySelector('#ResultsTable'));
         new ResultDetailModal();
-        new BalloonView();
-        new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
+        new BalloonView(); // load config json
 
         Promise.all([fetch(PROPERTIES), fetch(TEMPLATES), fetch(AGGREGATE)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
@@ -6173,15 +6176,9 @@
               templates = _ref2[1],
               aggregate = _ref2[2];
 
-          Records$1.setSubjects(subjects); // define primary keys
-          // const togoKeys = subjects.map(subject => {
-          //   return {
-          //     label: subject.subject,
-          //     togoKey: subject.togoKey,
-          //     subjectId: subject.subjectId
-          //   }
-          // });
-          // const customEvent = new CustomEvent(event.defineTogoKey, {detail: togoKeys});
+          Records$1.setSubjects(subjects); // setup upload user id
+
+          new UploadUserIDsView(document.querySelector('#UploadUserIDsView'), aggregate.mapping); // define primary keys
 
           var customEvent = new CustomEvent(defineTogoKey, {
             detail: subjects
