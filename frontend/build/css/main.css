@@ -1256,24 +1256,35 @@ main {
   transition: width var(--transition-wipe), left var(--transition-wipe);
   cursor: pointer;
   transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
-  border-right: solid 0.1rem var(--color-gray);
 }
-.track-value-view > p {
+.track-value-view::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: -0.05rem;
+  height: 100%;
+  border-left: solid 0.005rem var(--color-gray);
+  z-index: var(--z-track-item-border);
+}
+.track-value-view > .labels {
+  overflow: hidden;
+}
+.track-value-view > .labels > p {
   padding-left: 0.2rem;
   padding-right: 0.2rem;
   padding-top: var(--padding-track-block-start);
   margin: 0;
   text-overflow: ellipsis;
   white-space: nowrap;
-  overflow: hidden;
   position: relative;
   text-align: center;
   transition: opacity var(--transition-wipe);
 }
-.track-value-view > p > .label {
+.track-value-view > .labels > p > .label {
   font-size: 1.2rem;
 }
-.track-value-view > p > .count {
+.track-value-view > .labels > p > .count {
   padding-left: 0.8rem;
   font-size: 1rem;
   font-weight: lighter;
@@ -1704,28 +1715,31 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
 #ResultsTable > .body > table > thead > tr > th > .inner.-propertyvalue, #ResultsTable > .body > table > thead > tr td > .inner.-propertyvalue {
   color: white;
 }
-#ResultsTable > .body > table > thead > tr.header {
+#ResultsTable > .body > table > thead > tr.header, #ResultsTable > .body > table > thead > tr.subheader {
   font-weight: bold;
   white-space: nowrap;
 }
-#ResultsTable > .body > table > thead > tr.header > th {
+#ResultsTable > .body > table > thead > tr.header > th, #ResultsTable > .body > table > thead > tr.subheader > th {
   position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: var(--z-results-header);
   line-height: 1.5rem;
 }
-#ResultsTable > .body > table > thead > tr.header > th > .inner {
+#ResultsTable > .body > table > thead > tr.header > th > .inner, #ResultsTable > .body > table > thead > tr.subheader > th > .inner {
   background-color: white;
   border-bottom: solid 0.1rem var(--color-black);
 }
-#ResultsTable > .body > table > thead > tr.header > th:first-child > .inner {
+#ResultsTable > .body > table > thead > tr.header > th > .inner.-noborder, #ResultsTable > .body > table > thead > tr.subheader > th > .inner.-noborder {
+  border: none;
+}
+#ResultsTable > .body > table > thead > tr.header > th:first-child > .inner, #ResultsTable > .body > table > thead > tr.subheader > th:first-child > .inner {
   background-color: var(--color-light-gray);
 }
-#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner {
+#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.subheader > th:nth-child(2) > .inner {
   background-color: var(--color-lamp-black);
 }
-#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner > .togo-key-view {
+#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader > th:nth-child(2) > .inner > .togo-key-view {
   background-color: var(--color-dark-gray);
 }
 #ResultsTable > .body > table > thead > tr.statistics > td > .inner {

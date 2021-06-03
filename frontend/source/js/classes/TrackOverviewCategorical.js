@@ -32,10 +32,12 @@ export default class TrackOverviewCategorical {
       value.baseColor = util.colorTintByHue(subject.color, 360 * index / values.length);
       return `
         <li class="track-value-view" style="width: ${width}%;" data-category-id="${value.categoryId}">
-          <p>
-            <span class="label">${value.label}</span>
-            <span class="count">${value.count.toLocaleString()}</span>
-          </p>
+          <div class="labels">
+            <p>
+              <span class="label">${value.label}</span>
+              <span class="count">${value.count.toLocaleString()}</span>
+            </p>
+          </div>
           <div class="pin"></div>
         </li>`;
     }).join('');
@@ -144,15 +146,16 @@ export default class TrackOverviewCategorical {
   }
 
   #update(viewModes) {
-    const isArea = viewModes.area;
+    // const isArea = viewModes.area;
     const isLog10 = viewModes.log10;
     const sum = this.#values.reduce((acc, value) => acc + (isLog10 ? value.countLog10 : value.count), 0);
     let max = Math.max(...this.#values.map(value => value.count));
     max = isLog10 ? Math.log10(max) : max;
-    const fixedWidth = isArea ? 0 : 100 / this.#values.length;
+    // const fixedWidth = isArea ? 0 : 100 / this.#values.length;
     let left = 0;
     this.#values.forEach(value => {
-      const width = isArea ? (isLog10 ? Math.log10(value.count) : value.count) / sum * 100 : fixedWidth;
+      // const width = isArea ? (isLog10 ? Math.log10(value.count) : value.count) / sum * 100 : fixedWidth;
+      const width = (isLog10 ? (value.count === 0 ? 0 : Math.log10(value.count)) : value.count) / sum * 100;
       value.elm.style.backgroundColor = `rgb(${value.baseColor.mix(App.colorSilver, 1 - (isLog10 ? value.countLog10 : value.count) / max).coords.map(cood => cood * 256).join(',')})`;
       value.elm.style.width = width + '%';
       value.elm.style.left = left + '%';
