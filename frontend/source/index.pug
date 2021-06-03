@@ -266,16 +266,11 @@ block main
               h2.title
                 span.material-icons-outlined file_upload
                 | Upload IDs
-              form
-                //- label
-                //-   p userKey
-                //-   //- input#UploadUserIDsUserKey(type="text" value="uniprot")
-                //-   select
-                label
-                  input(type="text" placeholder="Enter comma-separated IDs")
-                .buttons
-                  button.rounded-button-view.-small.-black(type="button") Submit
-                  button.rounded-button-view.-small.-black(type="button") Clear
+              label
+                input(type="text" placeholder="Enter comma-separated IDs")
+              .buttons
+                button.rounded-button-view.-small.-black(type="button") Submit
+                button.rounded-button-view.-small.-black(type="button") Clear
               
           footer
             button.exec.rounded-button-view.-black.-spread(disabled)

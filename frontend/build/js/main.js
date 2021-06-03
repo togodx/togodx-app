@@ -6032,19 +6032,18 @@
 
     _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
 
-    var form = elm.querySelector(':scope > form');
-
-    _classPrivateFieldSet(this, _USER_IDS, form.querySelector(':scope > label > input')); // atache events
+    _classPrivateFieldSet(this, _USER_IDS, elm.querySelector(':scope > label > input')); // atache events
 
 
-    form.querySelector(':scope > .buttons > button:nth-child(1)').addEventListener('click', function (e) {
+    var buttons = elm.querySelector(':scope > .buttons');
+    buttons.querySelector(':scope > button:nth-child(1)').addEventListener('click', function (e) {
       e.stopPropagation();
 
       _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
 
       return false;
     });
-    form.querySelector(':scope > .buttons > button:nth-child(2)').addEventListener('click', function (e) {
+    buttons.querySelector(':scope > button:nth-child(2)').addEventListener('click', function (e) {
       e.stopPropagation();
 
       _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
@@ -6053,9 +6052,11 @@
     }); // event listeners
 
     _classPrivateFieldGet(this, _USER_IDS).addEventListener('change', function () {
-      console.log(_classPrivateFieldGet(_this, _USER_IDS));
-      console.log(_classPrivateFieldGet(_this, _USER_IDS).value);
       ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value);
+    });
+
+    _classPrivateFieldGet(this, _USER_IDS).addEventListener('keyup', function (e) {
+      if (e.keyCode === 13) _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
     });
   } // private methods
   ;
@@ -6063,7 +6064,9 @@
   function _fetch2() {
     var _this2 = this;
 
+    if (_classPrivateFieldGet(this, _USER_IDS).value === '') return;
     var queryTemplate = "".concat(_classPrivateFieldGet(this, _path).url, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
+    console.log(queryTemplate);
     Records$1.properties.forEach(function (property) {
       console.log(property);
       var propertyId = property.propertyId;

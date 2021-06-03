@@ -3,9 +3,6 @@ import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
 
-const PATH = 'https://integbio.jp/togosite/sparqlist/api/';
-const DATA_FROM_USER_IDS = 'data_from_user_ids';
-
 export default class UploadUserIDsView {
 
   #path;
@@ -16,16 +13,16 @@ export default class UploadUserIDsView {
 
     this.#path = path;
     this.#BODY = document.querySelector('body');
-    const form = elm.querySelector(':scope > form');
-    this.#USER_IDS = form.querySelector(':scope > label > input');
+    this.#USER_IDS = elm.querySelector(':scope > label > input');
 
     // atache events
-    form.querySelector(':scope > .buttons > button:nth-child(1)').addEventListener('click', e => {
+    const buttons = elm.querySelector(':scope > .buttons');
+    buttons.querySelector(':scope > button:nth-child(1)').addEventListener('click', e => {
       e.stopPropagation();
       this.#fetch();
       return false;
     });
-    form.querySelector(':scope > .buttons > button:nth-child(2)').addEventListener('click', e => {
+    buttons.querySelector(':scope > button:nth-child(2)').addEventListener('click', e => {
       e.stopPropagation();
       this.#clear();
       return false;
@@ -33,9 +30,10 @@ export default class UploadUserIDsView {
 
     // event listeners
     this.#USER_IDS.addEventListener('change', () => {
-      console.log(this.#USER_IDS)
-      console.log(this.#USER_IDS.value)
       ConditionBuilder.setUserIds(this.#USER_IDS.value);
+    });
+    this.#USER_IDS.addEventListener('keyup', e => {
+      if (e.keyCode === 13) this.#fetch();
     });
 
   }
@@ -43,8 +41,10 @@ export default class UploadUserIDsView {
   // private methods
 
   #fetch() {
+    if (this.#USER_IDS.value === '') return;
 
     const queryTemplate = `${this.#path.url}?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=${ConditionBuilder.currentTogoKey}&userIds=${encodeURIComponent(this.#USER_IDS.value)}`;
+    console.log(queryTemplate)
 
     Records.properties.forEach(property => {
       console.log(property)
