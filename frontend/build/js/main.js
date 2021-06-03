@@ -4288,6 +4288,7 @@
       }); // attach event: show tooltip of pin
 
       pin.addEventListener('mouseenter', function () {
+        console.log(value);
         var customEvent = new CustomEvent(enterPropertyValueItemView, {
           detail: {
             label: label,
@@ -4414,8 +4415,6 @@
           var size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
-          value.pin.style.top = -size + 'px';
-          value.pin.style.left = -size / 2 + 'px';
           value.userValueCount = userValue.count;
         } else {
           value.elm.classList.remove('-pinsticking');
