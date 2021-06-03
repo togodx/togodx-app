@@ -14,9 +14,9 @@ export default class ConditionBuilderView {
     // references
     const body = document.querySelector('body');
     const conditionsContainer = elm.querySelector(':scope > .conditions');
-    this.#TOGO_KEYS = conditionsContainer.querySelector(':scope > .togoKey > select');
-    this.#PROPERTIES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .properties > .conditions');
-    this.#ATTRIBUTES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .attributes > .conditions');
+    this.#TOGO_KEYS = conditionsContainer.querySelector(':scope > .togokey > .inner > select');
+    this.#PROPERTIES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .properties > .inner > .conditions');
+    this.#ATTRIBUTES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .attributes > .inner > .conditions');
     this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
 
     // attach event

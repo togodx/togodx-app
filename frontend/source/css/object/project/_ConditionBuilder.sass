@@ -7,44 +7,29 @@
       border-radius: .4rem
       + *
         margin-top: .4rem
-      > .title
-        margin-bottom: -.2rem
-        line-height: 1
-        font-size: 1.2rem
-        > .material-icons-outlined
-          font-size: 1.4rem
-          vertical-align: middle
-          margin-inline-end: .3rem
-          position: relative
-          top: -.1rem
+      > .inner
+        > .title
+          margin-bottom: -.2rem
+          line-height: 1
+          font-size: 1.2rem
+          > .material-icons-outlined
+            font-size: 1.4rem
+            vertical-align: middle
+            margin-inline-end: .3rem
+            position: relative
+            top: -.1rem
       > .conditions
-        &.-empty
-          &::after
-            font-size: 1.2rem
-            line-height: 1.2
-            display: block
-            margin-top: .4rem
-            font-weight: lighter
         > .stacking-condition-view
           > .close-button-view
             body[data-display="results"] &
               display: none
-    > .attributes
-      > .conditions
-        &.-empty
-          &::after
-            content: "Add classification/distribution as many as ..."
-    > .properties
-      > .conditions
-        &.-empty
-          &::after
-            content: "Specify additional attributes integrated into resulting table ..."
-    > .togoKey
+    > .togokey
       width: 100%
       transition: opacity var(--transition-wipe)
-      > select
-        width: 100%
-        margin-top: .4rem
+      > .inner
+        > select
+          width: 100%
+          margin-top: .4rem
       body[data-display="results"] &
         pointer-events: none
         opacity: .5

@@ -16,7 +16,7 @@
   </head>
   <body data-page="top" data-heatmap="true" data-display="properties">
     <header id="Header">
-      <h1><a href="./">Togo Site</a></h1>
+      <h1><a href="./">TogoSite</a></h1>
       <nav>
         <ul>
           <li><a href="./about.html">About</a></li>
@@ -30,8 +30,8 @@
         <section id="Properties">
           <header class="header">
             <div class="title">
-              <h2 class="properties">Attribute</h2>
-              <h2 class="attributes">Classification / Distribution</h2>
+              <h2 class="properties">Attribute keys</h2>
+              <h2 class="attributes">Attribute values</h2>
             </div>
             <nav>
               <ul>
@@ -77,29 +77,36 @@
               <h2 class="title">Condition builder</h2>
             </header>
             <div class="conditions">
-              <div class="togoKey">
-                <h2 class="title"><span class="material-icons-outlined">layers</span>Select target category</h2>
-                <select disabled></select>
+              <div class="togokey">
+                <div class="inner">
+                  <h2 class="title"><span class="material-icons-outlined">layers</span>Select target category</h2>
+                  <select disabled></select>
+                </div>
+                <hr>
+                <div class="inner" id="UploadUserIDsView">
+                  <h2 class="title"><span class="material-icons-outlined">file_upload</span>Map your IDs<small>optional</small></h2>
+                  <form>
+                    <label>
+                      <input type="text" placeholder="Enter comma-separated IDs">
+                    </label>
+                    <div class="buttons">
+                      <button class="rounded-button-view -small -black" type="button">Submit</button>
+                      <button class="rounded-button-view -small -black" type="button">Reset</button>
+                    </div>
+                  </form>
+                </div>
               </div>
               <div class="attributes">
-                <h2 class="title"><span class="material-icons-outlined">west</span>Select filters</h2>
-                <div class="conditions -empty"></div>
+                <div class="inner">
+                  <h2 class="title"><span class="material-icons-outlined">west</span>Add filters</h2>
+                  <div class="conditions -empty"></div>
+                </div>
               </div>
               <div class="properties">
-                <h2 class="title"><span class="material-icons-outlined">west</span>Additional attributes</h2>
-                <div class="conditions -empty"></div>
-              </div>
-              <div id="UploadUserIDsView">
-                <h2 class="title"><span class="material-icons-outlined">file_upload</span>Upload IDs</h2>
-                <form>
-                  <label>
-                    <input type="text" placeholder="Enter comma-separated IDs">
-                  </label>
-                  <div class="buttons">
-                    <button class="rounded-button-view -small -black" type="button">Submit</button>
-                    <button class="rounded-button-view -small -black" type="button">Clear</button>
-                  </div>
-                </form>
+                <div class="inner">
+                  <h2 class="title"><span class="material-icons-outlined">west</span>Map attributes</h2>
+                  <div class="conditions -empty"></div>
+                </div>
               </div>
             </div>
             <footer>
@@ -119,7 +126,7 @@
         <div class="lower">
           <section id="Conditions">
             <header>
-              <h2 class="title">Conditions</h2>
+              <h2 class="title">Saved onditions</h2>
             </header>
             <div class="conditions"></div>
           </section>
