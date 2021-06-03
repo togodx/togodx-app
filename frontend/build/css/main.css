@@ -883,7 +883,7 @@ main {
   background-color: var(--color-lamp-black);
   color: white;
 }
-.rounded-button-view.-outine {
+.rounded-button-view.-outline {
   border: solid 0.1rem var(--color-separator);
 }
 .rounded-button-view.-spread {
@@ -1461,12 +1461,12 @@ body[data-display=results] #App > .inner {
 #ConditionBuilder > .conditions > * + * {
   margin-top: 0.4rem;
 }
-#ConditionBuilder > .conditions > * > .title {
+#ConditionBuilder > .conditions > * > .inner > .title {
   margin-bottom: -0.2rem;
   line-height: 1;
   font-size: 1.2rem;
 }
-#ConditionBuilder > .conditions > * > .title > .material-icons-outlined {
+#ConditionBuilder > .conditions > * > .inner > .title > .material-icons-outlined {
   font-size: 1.4rem;
   vertical-align: middle;
   -webkit-margin-end: 0.3rem;
@@ -1474,31 +1474,22 @@ body[data-display=results] #App > .inner {
   position: relative;
   top: -0.1rem;
 }
-#ConditionBuilder > .conditions > * > .conditions.-empty::after {
-  font-size: 1.2rem;
-  line-height: 1.2;
-  display: block;
-  margin-top: 0.4rem;
-  font-weight: lighter;
+#ConditionBuilder > .conditions > * > .inner > .title > small {
+  font-weight: normal;
+  margin-left: 0.5rem;
 }
 body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .stacking-condition-view > .close-button-view {
   display: none;
 }
-#ConditionBuilder > .conditions > .attributes > .conditions.-empty::after {
-  content: "Add classification/distribution as many as ...";
-}
-#ConditionBuilder > .conditions > .properties > .conditions.-empty::after {
-  content: "Specify additional attributes integrated into resulting table ...";
-}
-#ConditionBuilder > .conditions > .togoKey {
+#ConditionBuilder > .conditions > .togokey {
   width: 100%;
   transition: opacity var(--transition-wipe);
 }
-#ConditionBuilder > .conditions > .togoKey > select {
+#ConditionBuilder > .conditions > .togokey > .inner > select {
   width: 100%;
   margin-top: 0.4rem;
 }
-body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
+body[data-display=results] #ConditionBuilder > .conditions > .togokey {
   pointer-events: none;
   opacity: 0.5;
 }
@@ -1984,7 +1975,6 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   display: block;
 }
 #UploadUserIDsView > form > .buttons {
-  padding-top: 0.4rem;
   text-align: center;
 }
 
