@@ -14,6 +14,7 @@ export function colorTintByHue(baseColor, hue) {
 }
 
 export function createPopupEvent(uniqueEntry, reportLink, newEvent) {
+  const [x, y] = uniqueEntry.getAttribute('data-order').split(',');
   const customEvent = new CustomEvent(newEvent, {
     detail: {
       keys: {
@@ -24,7 +25,8 @@ export function createPopupEvent(uniqueEntry, reportLink, newEvent) {
         uniqueEntryId: uniqueEntry.getAttribute('data-unique-entry-id'),
       },
       properties: {
-        dataOrder: uniqueEntry.getAttribute('data-order'),
+        dataX: x,
+        dataY: y,
         dataSubOrder: uniqueEntry.getAttribute('data-sub-order'),
         isPrimaryKey: uniqueEntry.classList.contains('primarykey'),
         reportLink: reportLink,

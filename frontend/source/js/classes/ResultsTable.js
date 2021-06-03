@@ -199,7 +199,7 @@ export default class ResultsTable {
                   <div
                     class="togo-key-view primarykey"
                     data-key="${detail.tableData.togoKey}"
-                    data-order= "${[0, index]}"
+                    data-order= "${[0, detail.tableData.offset + index]}"
                     data-sub-order= "0"
                     data-subject-id="${detail.tableData.subjectId}"
                     data-unique-entry-id="${detail.rows[index].id}">${
@@ -222,7 +222,7 @@ export default class ResultsTable {
                       <li>
                         <div
                           class="togo-key-view"
-                          data-order="${[columnIndex + 1, index]}"
+                          data-order="${[columnIndex + 1, detail.tableData.offset + index]}"
                           data-sub-order="${attributeIndex}"
                           data-key="${column.propertyKey}"
                           data-subject-id="${
@@ -291,7 +291,7 @@ export default class ResultsTable {
         const td = uniqueEntry.closest('td');
         td.addEventListener('mouseenter', () => {
           const customEvent = new CustomEvent(event.highlightCol, {
-            detail: uniqueEntry.getAttribute('data-order'),
+            detail: uniqueEntry.getAttribute('data-order').split(',')[0],
           });
           DefaultEventEmitter.dispatchEvent(customEvent);
         });
@@ -312,11 +312,11 @@ export default class ResultsTable {
     this.#LOADING_VIEW.classList.remove('-shown');
   }
 
-  #colHighlight(axes) {
-    const colIndex = axes.slice(0, 1);
+  #colHighlight(colIndex) {
+    console.log('ran colHighlight');
     this.#TBODY.querySelectorAll('[data-order]').forEach(element => {
       const td = element.closest('td');
-      if (element.getAttribute('data-order').slice(0, 1) === colIndex) {
+      if (element.getAttribute('data-order').split(',')[0] === colIndex) {
         if (!td.classList.contains('.-selected')) {
           td.classList.add('-selected');
         }

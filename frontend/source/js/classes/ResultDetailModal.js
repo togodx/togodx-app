@@ -50,7 +50,8 @@ export default class ResultDetailModal {
   #showPopUp(e) {
     if (this.#RESULT_MODAL.innerHTML === '') {
       this.#setHighlight(
-        e.detail.properties.dataOrder,
+        e.detail.properties.dataX,
+        e.detail.properties.dataY,
         e.detail.properties.dataSubOrder
       );
       this.#handleKeydown = this.#handleKeydown.bind(this);
@@ -128,7 +129,8 @@ export default class ResultDetailModal {
     arrow.addEventListener('click', e => {
       const arrowMovement = {
         dir: direction,
-        curAxes: props.dataOrder,
+        curX: parseInt(props.dataX),
+        curY: parseInt(props.dataY),
         curInternalIndex: parseInt(props.dataSubOrder),
         getTargetAxes: this.#arrowFuncs.get('Arrow' + direction),
       };
@@ -139,14 +141,14 @@ export default class ResultDetailModal {
   }
 
   // Events, functions
-  #setHighlight(axes, subOrder) {
-    const curEntry = this.#entriesByDataOrder(axes, subOrder);
-    const curTr = curEntry.closest('tr');
-    curEntry.classList.add('-selected');
-    curTr.classList.add('-selected');
+  #setHighlight(x, y, subOrder) {
+    const entry = this.#entriesByAxes(x, y, subOrder);
+    const tr = entry.closest('tr');
+    entry.classList.add('-selected');
+    tr.classList.add('-selected');
 
     const customEvent = new CustomEvent(event.highlightCol, {
-      detail: axes,
+      detail: x,
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
@@ -207,7 +209,7 @@ export default class ResultDetailModal {
   #getTargetEntry(move) {
     // Check if there are multiple entries in the current cell when going up or down
     if (['Down', 'Up'].includes(move.dir)) {
-      const allCurEntries = this.#entriesByDataOrder(move.curAxes);
+      const allCurEntries = this.#entriesByAxes(move.curX, move.curY);
       const targetInternalIndex = move.getTargetAxes(move.curInternalIndex)[1];
       // movement inside cell
       if (allCurEntries[targetInternalIndex]) {
@@ -215,27 +217,18 @@ export default class ResultDetailModal {
       }
     }
     // default: target outside of current cell
-    const [curX, curY] = this.#parsedAxesList(move.curAxes);
-    const allTargetEntries = this.#entriesByDataOrder(
-      move.getTargetAxes(curX, curY)
-    );
+    const [targetX, targetY] = move.getTargetAxes(move.curX, move.curY);
+    const allTargetEntries = this.#entriesByAxes(targetX, targetY);
     const targetIndex = move.dir === 'Up' ? allTargetEntries.length - 1 : 0;
     return allTargetEntries[targetIndex];
   }
 
-  #parsedAxesList(str) {
-    let [x, y] = str.split(',');
-    return [x, y].map(cor => parseInt(cor));
-  }
-
-  #entriesByDataOrder(dataOrder, subOrder) {
+  #entriesByAxes(x, y, subOrder) {
     if (subOrder === undefined) {
-      return this.#RESULTS_TABLE.querySelectorAll(
-        `[data-order = '${dataOrder}']`
-      );
+      return this.#RESULTS_TABLE.querySelectorAll(`[data-order = '${x},${y}']`);
     }
     return this.#RESULTS_TABLE.querySelector(
-      `[data-order = '${dataOrder}'][data-sub-order = '${subOrder}']`
+      `[data-order = '${x},${y}'][data-sub-order = '${subOrder}']`
     );
   }
 
