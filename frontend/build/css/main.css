@@ -358,6 +358,7 @@ template {
   --z-track-collapse-button: 1;
   --z-track-tracks-header: 3;
   --z-track-pin: 4;
+  --z-track-pin-hover: 5;
   --z-fixed-area: 5;
   --z-header: 6;
   --z-track-balloon: 7;
@@ -1299,6 +1300,10 @@ main {
   border-top-right-radius: 50%;
   z-index: var(--z-track-pin);
   display: none;
+}
+.track-value-view > .pin:hover {
+  border-color: white;
+  z-index: var(--z-track-pin-hover);
 }
 .track-value-view:hover, .track-value-view.-selected {
   background-color: transparent !important;
