@@ -2834,8 +2834,7 @@
   var addNextRows = 'addNextRows'; // Table data
 
   var selectTableData = 'selectTableData';
-  var deleteTableData = 'deleteTableData';
-  var highlightCol = 'highlightCol'; // Track
+  var deleteTableData = 'deleteTableData'; // Track
 
   var enterPropertyValueItemView = 'enterPropertyValueItemView';
   var leavePropertyValueItemView = 'leavePropertyValueItemView';
@@ -2859,7 +2858,6 @@
     addNextRows: addNextRows,
     selectTableData: selectTableData,
     deleteTableData: deleteTableData,
-    highlightCol: highlightCol,
     enterPropertyValueItemView: enterPropertyValueItemView,
     leavePropertyValueItemView: leavePropertyValueItemView
   });
@@ -3889,36 +3887,17 @@
   }
 
   /**
-   *
-   * @param {Color} baseColor
-   * @param {Color} tintColor
+   * 
+   * @param {Color} baseColor 
+   * @param {Color} tintColor 
    */
 
   function colorTintByHue(baseColor, hue) {
-    return baseColor.mix(new h('hsv', [hue, 70, 50]), 0.2).set({
+    return baseColor.mix(new h('hsv', [hue, 70, 50]), .2).set({
       lightness: function lightness(_lightness) {
         return _lightness * 1.2;
       }
     }).to('srgb');
-  }
-  function createPopupEvent(uniqueEntry, reportLink, newEvent) {
-    var customEvent = new CustomEvent(newEvent, {
-      detail: {
-        keys: {
-          dataKey: uniqueEntry.getAttribute('data-key'),
-          subjectId: uniqueEntry.getAttribute('data-subject-id'),
-          mainCategoryId: uniqueEntry.getAttribute('data-main-category-id'),
-          subCategoryId: uniqueEntry.getAttribute('data-sub-category-id'),
-          uniqueEntryId: uniqueEntry.getAttribute('data-unique-entry-id')
-        },
-        properties: {
-          dataOrder: uniqueEntry.getAttribute('data-order'),
-          isPrimaryKey: uniqueEntry.classList.contains('primarykey'),
-          reportLink: reportLink
-        }
-      }
-    });
-    DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
 
   var NUM_OF_GRID = 4;
@@ -4754,8 +4733,6 @@
 
   var _THEAD = new WeakMap();
 
-  var _THEAD_SUB = new WeakMap();
-
   var _STATS = new WeakMap();
 
   var _TBODY = new WeakMap();
@@ -4772,143 +4749,162 @@
 
   var _failed = new WeakSet();
 
-  var _colHighlight = new WeakSet();
+  var ResultsTable = /*#__PURE__*/function () {
+    function ResultsTable(_elm) {
+      var _this = this;
 
-  var ResultsTable = function ResultsTable(_elm) {
-    var _this = this;
+      _classCallCheck(this, ResultsTable);
 
-    _classCallCheck(this, ResultsTable);
+      _failed.add(this);
 
-    _colHighlight.add(this);
+      _addTableRows.add(this);
 
-    _failed.add(this);
+      _setupTable.add(this);
 
-    _addTableRows.add(this);
+      _enterTableEnd.add(this);
 
-    _setupTable.add(this);
+      _intersctionObserver.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _enterTableEnd.add(this);
+      _tableData$1.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _intersctionObserver.set(this, {
-      writable: true,
-      value: void 0
-    });
+      _header$1.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _tableData$1.set(this, {
-      writable: true,
-      value: void 0
-    });
+      _ROOT$3.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _header$1.set(this, {
-      writable: true,
-      value: void 0
-    });
+      _THEAD.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _ROOT$3.set(this, {
-      writable: true,
-      value: void 0
-    });
+      _STATS.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _THEAD.set(this, {
-      writable: true,
-      value: void 0
-    });
+      _TBODY.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _THEAD_SUB.set(this, {
-      writable: true,
-      value: void 0
-    });
+      _TABLE_END.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _STATS.set(this, {
-      writable: true,
-      value: void 0
-    });
+      _LOADING_VIEW.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _TBODY.set(this, {
-      writable: true,
-      value: void 0
-    });
+      // references
+      _classPrivateFieldSet(this, _ROOT$3, _elm);
 
-    _TABLE_END.set(this, {
-      writable: true,
-      value: void 0
-    });
+      var TABLE = _elm.querySelector(':scope > .body > table');
 
-    _LOADING_VIEW.set(this, {
-      writable: true,
-      value: void 0
-    });
+      _classPrivateFieldSet(this, _THEAD, TABLE.querySelector(':scope > thead > tr.header'));
 
-    // references
-    _classPrivateFieldSet(this, _ROOT$3, _elm);
+      _classPrivateFieldSet(this, _STATS, TABLE.querySelector(':scope > thead > tr.statistics'));
 
-    var TABLE = _elm.querySelector(':scope > .body > table');
+      _classPrivateFieldSet(this, _TBODY, TABLE.querySelector(':scope > tbody'));
 
-    _classPrivateFieldSet(this, _THEAD, TABLE.querySelector(':scope > thead > tr.header'));
+      _classPrivateFieldSet(this, _TABLE_END, _elm.querySelector(':scope > .body > .tableend'));
 
-    _classPrivateFieldSet(this, _THEAD_SUB, TABLE.querySelector(':scope > thead > tr.subheader'));
-
-    _classPrivateFieldSet(this, _STATS, TABLE.querySelector(':scope > thead > tr.statistics'));
-
-    _classPrivateFieldSet(this, _TBODY, TABLE.querySelector(':scope > tbody'));
-
-    _classPrivateFieldSet(this, _TABLE_END, _elm.querySelector(':scope > .body > .tableend'));
-
-    _classPrivateFieldSet(this, _LOADING_VIEW, _classPrivateFieldGet(this, _TABLE_END).querySelector(':scope > .loading-view')); // get next data automatically
+      _classPrivateFieldSet(this, _LOADING_VIEW, _classPrivateFieldGet(this, _TABLE_END).querySelector(':scope > .loading-view')); // get next data automatically
 
 
-    _classPrivateFieldSet(this, _intersctionObserver, new IntersectionObserver(function (entries) {
-      var _iterator = _createForOfIteratorHelper(entries),
-          _step;
+      _classPrivateFieldSet(this, _intersctionObserver, new IntersectionObserver(function (entries) {
+        var _iterator = _createForOfIteratorHelper(entries),
+            _step;
 
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var entry = _step.value;
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var entry = _step.value;
 
-          if (entry.target === _classPrivateFieldGet(_this, _TABLE_END)) {
-            if (entry.isIntersecting) {
-              _classPrivateMethodGet(_this, _enterTableEnd, _enterTableEnd2).call(_this);
+            if (entry.target === _classPrivateFieldGet(_this, _TABLE_END)) {
+              if (entry.isIntersecting) {
+                _classPrivateMethodGet(_this, _enterTableEnd, _enterTableEnd2).call(_this);
+              }
             }
           }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
         }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-    })); // event listener
+      })); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener(selectTableData, function (e) {
-      return _classPrivateMethodGet(_this, _setupTable, _setupTable2).call(_this, e.detail);
-    });
-    DefaultEventEmitter$1.addEventListener(addNextRows, function (e) {
-      return _classPrivateMethodGet(_this, _addTableRows, _addTableRows2).call(_this, e.detail);
-    });
-    DefaultEventEmitter$1.addEventListener(failedFetchTableDataIds, function (e) {
-      return _classPrivateMethodGet(_this, _failed, _failed2).call(_this, e.detail);
-    });
-    DefaultEventEmitter$1.addEventListener(highlightCol, function (e) {
-      _classPrivateMethodGet(_this, _colHighlight, _colHighlight2).call(_this, e.detail);
-    }); // turnoff intersection observer after display transition
-
-    var mutationObserver = new MutationObserver(function (mutations) {
-      mutations.forEach(function (mutation) {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'data-display') {
-          if (mutation.target.dataset.display !== 'results') {
-            _classPrivateFieldGet(_this, _intersctionObserver).unobserve(_classPrivateFieldGet(_this, _TABLE_END)); // deselect table data
-
-
-            _classPrivateFieldGet(_this, _tableData$1).deselect();
-          }
-        }
+      DefaultEventEmitter$1.addEventListener(selectTableData, function (e) {
+        return _classPrivateMethodGet(_this, _setupTable, _setupTable2).call(_this, e.detail);
       });
-    });
-    mutationObserver.observe(document.querySelector('body'), {
-      attributes: true
-    });
-  } // private methods
-  ;
+      DefaultEventEmitter$1.addEventListener(addNextRows, function (e) {
+        return _classPrivateMethodGet(_this, _addTableRows, _addTableRows2).call(_this, e.detail);
+      });
+      DefaultEventEmitter$1.addEventListener(failedFetchTableDataIds, function (e) {
+        return _classPrivateMethodGet(_this, _failed, _failed2).call(_this, e.detail);
+      }); // turnoff intersection observer after display transition
+
+      var mutationObserver = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'data-display') {
+            if (mutation.target.dataset.display !== 'results') {
+              _classPrivateFieldGet(_this, _intersctionObserver).unobserve(_classPrivateFieldGet(_this, _TABLE_END)); // deselect table data
+
+
+              _classPrivateFieldGet(_this, _tableData$1).deselect();
+            }
+          }
+        });
+      });
+      mutationObserver.observe(document.querySelector('body'), {
+        attributes: true
+      });
+    } // private methods
+
+
+    _createClass(ResultsTable, [{
+      key: "createPopupEvent",
+      value: // public methods
+      // TODO: Set better way to get reportLink
+      function createPopupEvent(uniqueEntry, tr, reportLink, newEvent) {
+        // if (!tr.classList.contains('.-selected')) {
+        //   tr.classList.add('.-selected');
+        // };
+        // uniqueEntry.classList.add('.-selected');
+        var customEvent = new CustomEvent(newEvent, {
+          detail: {
+            keys: {
+              dataKey: uniqueEntry.getAttribute('data-key'),
+              subjectId: uniqueEntry.getAttribute('data-subject-id'),
+              mainCategoryId: uniqueEntry.getAttribute('data-main-category-id'),
+              subCategoryId: uniqueEntry.getAttribute('data-sub-category-id'),
+              uniqueEntryId: uniqueEntry.getAttribute('data-unique-entry-id')
+            },
+            properties: {
+              dataOrder: uniqueEntry.getAttribute('data-order'),
+              isPrimaryKey: uniqueEntry.classList.contains('primarykey'),
+              reportLink: reportLink
+            }
+          }
+        });
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
+      }
+    }]);
+
+    return ResultsTable;
+  }();
 
   function _enterTableEnd2() {
     _classPrivateFieldGet(this, _intersctionObserver).unobserve(_classPrivateFieldGet(this, _TABLE_END));
@@ -4939,12 +4935,10 @@
 
     DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
-    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class=\"inner -noborder\">Report</div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\">\n          <div class=\"togo-key-view\">".concat(Records$1.getLabelFromTogoKey(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      "); // makte table sub header
-
-    _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    <th>\n      <div class=\"inner\"></div>\n    </th>\n    <th>\n      <div class=\"inner\"></div>\n    </th>\n    ".concat(tableData.condition.attributes.map(function (property) {
-      return "\n    <th>\n      <div class=\"inner -propertyvalue\" style=\"background-color: ".concat(property.subject.colorCSSValue, "\">\n        <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.property.label, "</span>\n      </div>\n    </th>");
-    }).join(''), "\n    ").concat(tableData.condition.properties.map(function (property) {
-      return "\n    <th>\n      <div class=\"inner -property\" style=\"color: ".concat(property.subject.colorCSSValue, "\">\n        <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.property.label, "</span>\n      </div>\n    </th>");
+    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class=\"inner\">Report</div>\n      </th>\n      <th>\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getLabelFromTogoKey(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      ").concat(tableData.condition.attributes.map(function (property) {
+      return "\n      <th>\n        <div class=\"inner -propertyvalue\" style=\"background-color: ".concat(property.subject.colorCSSValue, "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
+    }).join(''), "\n      ").concat(tableData.condition.properties.map(function (property) {
+      return "\n      <th>\n        <div class=\"inner -property\" style=\"color: ".concat(property.subject.colorCSSValue, "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
     }).join('')); // make stats
 
     _classPrivateFieldGet(this, _STATS).innerHTML = "<td colspan=\"2\"><div class=\"inner\"><div></td>" + properties.map(function () {
@@ -5017,22 +5011,7 @@
       var uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(function (uniqueEntry) {
         uniqueEntry.addEventListener('click', function () {
-          createPopupEvent(uniqueEntry, reportLink, showPopup);
-        }); // remove highlight on mouseleave only when there is no popup
-
-        var td = uniqueEntry.closest('td');
-        td.addEventListener('mouseenter', function () {
-          var customEvent = new CustomEvent(highlightCol, {
-            detail: uniqueEntry.getAttribute('data-order')
-          });
-          DefaultEventEmitter$1.dispatchEvent(customEvent);
-        });
-        td.addEventListener('mouseleave', function () {
-          if (document.querySelector('#ResultDetailModal').innerHTML === '') {
-            _classPrivateFieldGet(_this2, _TBODY).querySelectorAll('td').forEach(function (td) {
-              return td.classList.remove('-selected');
-            });
-          }
+          _this2.createPopupEvent(uniqueEntry, tr, reportLink, showPopup);
         });
       });
     });
@@ -5046,31 +5025,19 @@
     _classPrivateFieldGet(this, _LOADING_VIEW).classList.remove('-shown');
   }
 
-  function _colHighlight2(axes) {
-    var colIndex = axes.slice(0, 1);
-
-    _classPrivateFieldGet(this, _TBODY).querySelectorAll('[data-order]').forEach(function (element) {
-      var td = element.closest('td');
-
-      if (element.getAttribute('data-order').slice(0, 1) === colIndex) {
-        if (!td.classList.contains('.-selected')) {
-          td.classList.add('-selected');
-        }
-      } else {
-        td.classList.remove('-selected');
-      }
-    });
-  }
+  var _RESULTS_TABLE = new WeakMap();
 
   var _ROOT$2 = new WeakMap();
 
-  var _RESULTS_TABLE = new WeakMap();
-
   var _RESULT_MODAL = new WeakMap();
 
-  var _exit_button = new WeakMap();
+  var _EXIT_BUTTON = new WeakMap();
 
   var _showPopUp = new WeakSet();
+
+  var _setHighlight = new WeakSet();
+
+  var _entryEl = new WeakSet();
 
   var _popup = new WeakSet();
 
@@ -5082,8 +5049,6 @@
 
   var _arrow = new WeakSet();
 
-  var _setHighlight = new WeakSet();
-
   var _handleKeydown = new WeakMap();
 
   var _arrowFuncs = new WeakMap();
@@ -5094,7 +5059,7 @@
 
   var _hidePopUp = new WeakSet();
 
-  var ResultDetailModal = function ResultDetailModal() {
+  var ResultDetailModal = function ResultDetailModal(elm) {
     var _this = this;
 
     _classCallCheck(this, ResultDetailModal);
@@ -5104,8 +5069,6 @@
     _setMovementArrow.add(this);
 
     _getCorList.add(this);
-
-    _setHighlight.add(this);
 
     _arrow.add(this);
 
@@ -5117,14 +5080,18 @@
 
     _popup.add(this);
 
+    _entryEl.add(this);
+
+    _setHighlight.add(this);
+
     _showPopUp.add(this);
 
-    _ROOT$2.set(this, {
+    _RESULTS_TABLE.set(this, {
       writable: true,
       value: void 0
     });
 
-    _RESULTS_TABLE.set(this, {
+    _ROOT$2.set(this, {
       writable: true,
       value: void 0
     });
@@ -5134,7 +5101,7 @@
       value: void 0
     });
 
-    _exit_button.set(this, {
+    _EXIT_BUTTON.set(this, {
       writable: true,
       value: void 0
     });
@@ -5145,6 +5112,7 @@
         if (e.key == 'Escape') {
           _classPrivateMethodGet(_this, _hidePopUp, _hidePopUp2).call(_this);
         } else if (_classPrivateFieldGet(_this, _arrowFuncs).has(e.key)) {
+          // TODO: set actual event handler
           _classPrivateFieldGet(_this, _RESULT_MODAL).querySelector(".arrow.-".concat(e.key.replace('Arrow', '').toLowerCase())).click();
         }
       }
@@ -5172,11 +5140,11 @@
 
     _classPrivateFieldSet(this, _RESULT_MODAL, document.querySelector('#ResultDetailModal'));
 
-    _classPrivateFieldSet(this, _exit_button, document.createElement('div'));
+    _classPrivateFieldSet(this, _EXIT_BUTTON, document.createElement('div'));
 
-    _classPrivateFieldGet(this, _exit_button).className = 'close-button-view'; // attach event
+    _classPrivateFieldGet(this, _EXIT_BUTTON).className = 'close-button-view'; // attach event
 
-    _classPrivateFieldGet(this, _exit_button).addEventListener('click', function () {
+    _classPrivateFieldGet(this, _EXIT_BUTTON).addEventListener('click', function () {
       _classPrivateMethodGet(_this, _hidePopUp, _hidePopUp2).call(_this);
     });
 
@@ -5197,12 +5165,11 @@
 
       _classPrivateMethodGet(_this, _hidePopUp, _hidePopUp2).call(_this);
     });
-  } // bind this on handleKeydown so it will keep listening to same event during the whole popup
-  ;
+  };
 
   function _showPopUp2(e) {
     if (_classPrivateFieldGet(this, _RESULT_MODAL).innerHTML === '') {
-      _classPrivateMethodGet(this, _setHighlight, _setHighlight2).call(this, e.detail.properties.dataOrder);
+      _classPrivateMethodGet(this, _setHighlight, _setHighlight2).call(this, e.detail.keys.uniqueEntryId, e.detail.properties.dataOrder);
 
       _classPrivateFieldSet(this, _handleKeydown, _classPrivateFieldGet(this, _handleKeydown).bind(this));
 
@@ -5214,11 +5181,32 @@
     }
   }
 
+  function _setHighlight2(id, axes) {
+    var curEntry = _classPrivateMethodGet(this, _entryEl, _entryEl2).call(this, id);
+
+    var curTr = curEntry.closest('tr');
+    curEntry.classList.add('-selected');
+    curTr.classList.add('-selected');
+    var rowIndex = axes.slice(0, 1);
+
+    _classPrivateFieldGet(this, _RESULTS_TABLE).querySelectorAll('[data-order]').forEach(function (element) {
+      var td = element.closest('td');
+
+      if (element.getAttribute('data-order').slice(0, 1) === rowIndex) {
+        td.classList.add('-selected');
+      }
+    });
+  }
+
+  function _entryEl2(id) {
+    return _classPrivateFieldGet(this, _RESULTS_TABLE).querySelector("[data-unique-entry-id = '".concat(id, "']"));
+  }
+
   function _popup2(detail) {
     var popup = document.createElement('div');
     popup.className = 'popup';
     popup.appendChild(_classPrivateMethodGet(this, _header, _header2).call(this, detail.keys, detail.properties));
-    popup.appendChild(_classPrivateMethodGet(this, _container, _container2).call(this, detail.keys, detail.properties));
+    popup.appendChild(_classPrivateMethodGet(this, _container, _container2).call(this, detail));
     return popup;
   }
 
@@ -5231,50 +5219,38 @@
     var header = document.createElement('header');
     header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div>\n        <a class='report-page-button-view' href='").concat(props.reportLink, "' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>\n    ");
     header.style.backgroundColor = subject.colorCSSValue;
-    header.lastChild.appendChild(_classPrivateFieldGet(this, _exit_button));
+    header.lastChild.appendChild(_classPrivateFieldGet(this, _EXIT_BUTTON));
     return header;
   }
 
-  function _container2(keys, props) {
+  function _container2(detail) {
     var _this2 = this;
 
     var container = document.createElement('div');
     container.className = 'container';
-    ['Up', 'Right', 'Down', 'Left'].forEach(function (direction) {
-      container.appendChild(_classPrivateMethodGet(_this2, _arrow, _arrow2).call(_this2, direction, props.dataOrder));
+    ['Up', 'Right', 'Down', 'Left'].forEach(function (dir) {
+      container.appendChild(_classPrivateMethodGet(_this2, _arrow, _arrow2).call(_this2, dir, detail));
     });
-    container.appendChild(_classPrivateMethodGet(this, _stanzas, _stanzas2).call(this, keys.subjectId, keys.uniqueEntryId, keys.dataKey));
+    container.appendChild(_classPrivateMethodGet(this, _stanzas, _stanzas2).call(this, detail.keys));
     return container;
   }
 
-  function _stanzas2(subjectId, uniqueEntryId, dataKey) {
+  function _stanzas2(keys) {
     var stanzas = document.createElement('div');
     stanzas.className = 'stanzas';
-    stanzas.innerHTML += StanzaManager$1.draw(subjectId, uniqueEntryId, dataKey);
+    stanzas.innerHTML += StanzaManager$1.draw(keys.subjectId, keys.uniqueEntryId, keys.dataKey);
     return stanzas;
   }
 
-  function _arrow2(direction, axes) {
+  function _arrow2(direction, detail) {
     var _this3 = this;
 
     var arrow = document.createElement('div');
     arrow.classList.add('arrow', "-".concat(direction.toLowerCase()));
     arrow.addEventListener('click', function (e) {
-      _classPrivateMethodGet(_this3, _setMovementArrow, _setMovementArrow2).call(_this3, _classPrivateFieldGet(_this3, _arrowFuncs).get('Arrow' + direction), axes);
+      _classPrivateMethodGet(_this3, _setMovementArrow, _setMovementArrow2).call(_this3, _classPrivateFieldGet(_this3, _arrowFuncs).get('Arrow' + direction), detail);
     });
     return arrow;
-  }
-
-  function _setHighlight2(axes) {
-    var curEntry = _classPrivateFieldGet(this, _RESULTS_TABLE).querySelector("[data-order = '".concat(axes, "']"));
-
-    var curTr = curEntry.closest('tr');
-    curEntry.classList.add('-selected');
-    curTr.classList.add('-selected');
-    var customEvent = new CustomEvent(highlightCol, {
-      detail: axes
-    });
-    DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
 
   function _getCorList2(str) {
@@ -5284,13 +5260,17 @@
         y = _str$split2[1];
 
     return [x, y].map(function (cor) {
-      return parseInt(cor);
+      return parseFloat(cor);
     });
   }
 
-  function _setMovementArrow2(movement, axes) {
+  function _setMovementArrow2(movement, detail) {
     //TODO: Implement functions for data with multiple entries
-    var _classPrivateMethodGe = _classPrivateMethodGet(this, _getCorList, _getCorList2).call(this, axes),
+    detail.properties.movement = movement;
+
+    var curEntry = _classPrivateMethodGet(this, _entryEl, _entryEl2).call(this, detail.keys.uniqueEntryId);
+
+    var _classPrivateMethodGe = _classPrivateMethodGet(this, _getCorList, _getCorList2).call(this, curEntry.getAttribute('data-order')),
         _classPrivateMethodGe2 = _slicedToArray(_classPrivateMethodGe, 2),
         x = _classPrivateMethodGe2[0],
         y = _classPrivateMethodGe2[1];
@@ -5298,8 +5278,8 @@
     var targetEntry = _classPrivateFieldGet(this, _RESULTS_TABLE).querySelector("[data-order = '".concat(movement(x, y), "'"));
 
     var targetTr = targetEntry.closest('tr');
-    var reportLink = targetTr.querySelector(':scope > th > .inner > .report-page-button-view').href;
-    createPopupEvent(targetEntry, reportLink, movePopup);
+    var reportLink = targetTr.querySelector('.report-page-button-view').href;
+    ResultsTable.prototype.createPopupEvent(targetEntry, targetTr, reportLink, movePopup);
   }
 
   function _hidePopUp2() {
