@@ -882,7 +882,7 @@ main {
   background-color: var(--color-lamp-black);
   color: white;
 }
-.rounded-button-view.-outine {
+.rounded-button-view.-outline {
   border: solid 0.1rem var(--color-separator);
 }
 .rounded-button-view.-spread {
@@ -1463,6 +1463,10 @@ body[data-display=results] #App > .inner {
   position: relative;
   top: -0.1rem;
 }
+#ConditionBuilder > .conditions > * > .inner > .title > small {
+  font-weight: normal;
+  margin-left: 0.5rem;
+}
 body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .stacking-condition-view > .close-button-view {
   display: none;
 }
@@ -1957,7 +1961,6 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
   display: block;
 }
 #UploadUserIDsView > form > .buttons {
-  padding-top: 0.4rem;
   text-align: center;
 }
 
