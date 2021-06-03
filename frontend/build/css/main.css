@@ -358,6 +358,7 @@ template {
   --z-track-collapse-button: 1;
   --z-track-tracks-header: 3;
   --z-track-pin: 4;
+  --z-track-pin-hover: 5;
   --z-fixed-area: 5;
   --z-header: 6;
   --z-track-balloon: 7;
@@ -1256,7 +1257,16 @@ main {
   transition: width var(--transition-wipe), left var(--transition-wipe);
   cursor: pointer;
   transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
-  border-right: solid 0.1rem var(--color-gray);
+}
+.track-value-view::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: -0.05rem;
+  height: 100%;
+  border-left: solid 0.005rem var(--color-gray);
+  z-index: var(--z-track-item-border);
 }
 .track-value-view > p {
   padding-left: 0.2rem;
@@ -1280,19 +1290,20 @@ main {
 }
 .track-value-view > .pin {
   position: absolute;
-  top: -20px;
-  left: calc(0px - 10px);
-  width: 20px;
-  height: 20px;
+  bottom: 100%;
   border: solid 1px rgba(255, 255, 255, 0.5);
   background-color: var(--color-lamp-black);
-  -webkit-transform: rotate(45deg) skew(5deg, 5deg);
-          transform: rotate(45deg) skew(5deg, 5deg);
+  -webkit-transform: translate(-50%, -20%) rotate(45deg) skew(5deg, 5deg);
+          transform: translate(-50%, -20%) rotate(45deg) skew(5deg, 5deg);
   border-top-left-radius: 50%;
   border-bottom-left-radius: 50%;
   border-top-right-radius: 50%;
   z-index: var(--z-track-pin);
   display: none;
+}
+.track-value-view > .pin:hover {
+  border-color: white;
+  z-index: var(--z-track-pin-hover);
 }
 .track-value-view:hover, .track-value-view.-selected {
   background-color: transparent !important;
@@ -1704,28 +1715,31 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
 #ResultsTable > .body > table > thead > tr > th > .inner.-propertyvalue, #ResultsTable > .body > table > thead > tr td > .inner.-propertyvalue {
   color: white;
 }
-#ResultsTable > .body > table > thead > tr.header {
+#ResultsTable > .body > table > thead > tr.header, #ResultsTable > .body > table > thead > tr.subheader {
   font-weight: bold;
   white-space: nowrap;
 }
-#ResultsTable > .body > table > thead > tr.header > th {
+#ResultsTable > .body > table > thead > tr.header > th, #ResultsTable > .body > table > thead > tr.subheader > th {
   position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: var(--z-results-header);
   line-height: 1.5rem;
 }
-#ResultsTable > .body > table > thead > tr.header > th > .inner {
+#ResultsTable > .body > table > thead > tr.header > th > .inner, #ResultsTable > .body > table > thead > tr.subheader > th > .inner {
   background-color: white;
   border-bottom: solid 0.1rem var(--color-black);
 }
-#ResultsTable > .body > table > thead > tr.header > th:first-child > .inner {
+#ResultsTable > .body > table > thead > tr.header > th > .inner.-noborder, #ResultsTable > .body > table > thead > tr.subheader > th > .inner.-noborder {
+  border: none;
+}
+#ResultsTable > .body > table > thead > tr.header > th:first-child > .inner, #ResultsTable > .body > table > thead > tr.subheader > th:first-child > .inner {
   background-color: var(--color-light-gray);
 }
-#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner {
+#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.subheader > th:nth-child(2) > .inner {
   background-color: var(--color-lamp-black);
 }
-#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner > .togo-key-view {
+#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader > th:nth-child(2) > .inner > .togo-key-view {
   background-color: var(--color-dark-gray);
 }
 #ResultsTable > .body > table > thead > tr.statistics > td > .inner {
