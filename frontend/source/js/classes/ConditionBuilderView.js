@@ -14,9 +14,9 @@ export default class ConditionBuilderView {
     // references
     const body = document.querySelector('body');
     const conditionsContainer = elm.querySelector(':scope > .conditions');
-    this.#TOGO_KEYS = conditionsContainer.querySelector(':scope > .togoKey > select');
-    this.#PROPERTIES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .properties > .conditions');
-    this.#ATTRIBUTES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .attributes > .conditions');
+    this.#TOGO_KEYS = conditionsContainer.querySelector(':scope > .togokey > .inner > select');
+    this.#PROPERTIES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .properties > .inner > .conditions');
+    this.#ATTRIBUTES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .attributes > .inner > .conditions');
     this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
 
     // attach event
@@ -62,7 +62,7 @@ export default class ConditionBuilderView {
     // make options
     this.#TOGO_KEYS.innerHTML = subjects.map(subject => {
       let option = '';
-      if (subject.togoKey) option = `<option value="${subject.togoKey}" data-subject-id="${subjects.subjectId}">${subject.keyLabel}</option>`;
+      if (subject.togoKey) option = `<option value="${subject.togoKey}" data-subject-id="${subjects.subjectId}">${subject.subject} - ${subject.keyLabel}</option>`;
       return option;
     }).join('');
     this.#TOGO_KEYS.disabled = false;

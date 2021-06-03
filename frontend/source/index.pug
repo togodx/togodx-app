@@ -14,8 +14,8 @@ block main
       section#Properties
         header.header
           .title
-            h2.properties Attribute
-            h2.attributes Classification / Distribution
+            h2.properties Attribute keys
+            h2.attributes Attribute values
           nav
             ul
               //- li#UploadUserIDsView
@@ -232,50 +232,56 @@ block main
             //- h2.title(data-hidden-by="properties") Results
             h2.title Condition builder
           .conditions
-            .togoKey
-              h2.title
-                span.material-icons-outlined layers
-                | Select target category
-              select(disabled)
-                //- option(val="gene") Gene
+            .togokey
+              .inner
+                h2.title
+                  span.material-icons-outlined layers
+                  | Select target category
+                select(disabled)
+                  //- option(val="gene") Gene
+              hr
+              #UploadUserIDsView.inner
+                h2.title
+                  span.material-icons-outlined file_upload
+                  | Map your IDs
+                  small optional
+                form
+                  //- label
+                  //-   p userKey
+                  //-   //- input#UploadUserIDsUserKey(type="text" value="uniprot")
+                  //-   select
+                  label
+                    input(type="text" placeholder="Enter comma-separated IDs")
+                  .buttons
+                    button.rounded-button-view.-verysmall.-outline(type="button") Submit
+                    button.rounded-button-view.-verysmall.-outline(type="button") Reset
+
             .attributes
-              h2.title
-                span.material-icons-outlined west
-                | Select filters
-              .conditions.-empty
-              //-
-                .stacking-condition-view.-attribute
-                  .closebutton
-                  ul.path
-                    li Expression
-                    li Position
-                    li.end Genital
-                  .label Testis
+              .inner
+                h2.title
+                  span.material-icons-outlined west
+                  | Add filters
+                .conditions.-empty
+                //-
+                  .stacking-condition-view.-attribute
+                    .closebutton
+                    ul.path
+                      li Expression
+                      li Position
+                      li.end Genital
+                    .label Testis
             .properties
-              h2.title
-                span.material-icons-outlined west
-                | Additional attributes
-              .conditions.-empty
-              //-
-                .stacking-condition-view
-                  .closebutton
-                  ul.path
-                    li.end Expression
-                  .label Testis
-            #UploadUserIDsView
-              h2.title
-                span.material-icons-outlined file_upload
-                | Upload IDs
-              form
-                //- label
-                //-   p userKey
-                //-   //- input#UploadUserIDsUserKey(type="text" value="uniprot")
-                //-   select
-                label
-                  input(type="text" placeholder="Enter comma-separated IDs")
-                .buttons
-                  button.rounded-button-view.-small.-black(type="button") Submit
-                  button.rounded-button-view.-small.-black(type="button") Clear
+              .inner
+                h2.title
+                  span.material-icons-outlined west
+                  | Map attributes
+                .conditions.-empty
+                //-
+                  .stacking-condition-view
+                    .closebutton
+                    ul.path
+                      li.end Expression
+                    .label Testis
               
           footer
             button.exec.rounded-button-view.-black.-spread(disabled)
@@ -297,5 +303,5 @@ block main
         
         section#Conditions
           header
-            h2.title Conditions
+            h2.title Saved onditions
           .conditions

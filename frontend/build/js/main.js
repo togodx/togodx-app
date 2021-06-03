@@ -3208,11 +3208,11 @@
     var body = document.querySelector('body');
     var conditionsContainer = elm.querySelector(':scope > .conditions');
 
-    _classPrivateFieldSet(this, _TOGO_KEYS, conditionsContainer.querySelector(':scope > .togoKey > select'));
+    _classPrivateFieldSet(this, _TOGO_KEYS, conditionsContainer.querySelector(':scope > .togokey > .inner > select'));
 
-    _classPrivateFieldSet(this, _PROPERTIES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .properties > .conditions'));
+    _classPrivateFieldSet(this, _PROPERTIES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .properties > .inner > .conditions'));
 
-    _classPrivateFieldSet(this, _ATTRIBUTES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .attributes > .conditions'));
+    _classPrivateFieldSet(this, _ATTRIBUTES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .attributes > .inner > .conditions'));
 
     _classPrivateFieldSet(this, _EXEC_BUTTON, elm.querySelector(':scope > footer > button.exec')); // attach event
 
@@ -3264,7 +3264,7 @@
     // make options
     _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = subjects.map(function (subject) {
       var option = '';
-      if (subject.togoKey) option = "<option value=\"".concat(subject.togoKey, "\" data-subject-id=\"").concat(subjects.subjectId, "\">").concat(subject.keyLabel, "</option>");
+      if (subject.togoKey) option = "<option value=\"".concat(subject.togoKey, "\" data-subject-id=\"").concat(subjects.subjectId, "\">").concat(subject.subject, " - ").concat(subject.keyLabel, "</option>");
       return option;
     }).join('');
     _classPrivateFieldGet(this, _TOGO_KEYS).disabled = false; // attach event
