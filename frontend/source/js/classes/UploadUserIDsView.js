@@ -8,17 +8,15 @@ const DATA_FROM_USER_IDS = 'data_from_user_ids';
 
 export default class UploadUserIDsView {
 
+  #path;
   #BODY;
-  // #ROOT;
-  // #USER_KEY;
   #USER_IDS;
 
-  constructor(elm) {
+  constructor(elm, path) {
 
+    this.#path = path;
     this.#BODY = document.querySelector('body');
-    // this.#ROOT = elm;
     const form = elm.querySelector(':scope > form');
-    // this.#USER_KEY = form.querySelector(':scope > label > select');
     this.#USER_IDS = form.querySelector(':scope > label > input');
 
     // atache events
@@ -46,8 +44,7 @@ export default class UploadUserIDsView {
 
   #fetch() {
 
-    // console.log(this.#USER_KEY.value)
-    const queryTemplate = `${PATH + DATA_FROM_USER_IDS}?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=${ConditionBuilder.currentTogoKey}&userIds=${encodeURIComponent(this.#USER_IDS.value)}`;
+    const queryTemplate = `${this.#path.url}?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=${ConditionBuilder.currentTogoKey}&userIds=${encodeURIComponent(this.#USER_IDS.value)}`;
 
     Records.properties.forEach(property => {
       console.log(property)
