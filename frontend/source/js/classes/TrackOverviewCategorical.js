@@ -70,15 +70,21 @@ export default class TrackOverviewCategorical {
 
       // attach event: show tooltip of pin
       pin.addEventListener('mouseenter', () => {
-        console.log(value)
+        const values = [
+          {
+            key: 'Count',
+            value: `${value.userValueCount.toLocaleString()} / ${value.count.toLocaleString()}`
+          }
+        ];
+        if (value.pValue) {
+          values.push({
+            key: 'P-value',
+            value: value.pValue.toExponential()
+          });
+        }
         const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {
           label,
-          values: [
-            {
-              key: 'Count',
-              value: `${value.userValueCount.toLocaleString()} / ${value.count.toLocaleString()}`
-            }
-          ],
+          values,
           elm: pin
         }});
         DefaultEventEmitter.dispatchEvent(customEvent);
@@ -164,16 +170,19 @@ export default class TrackOverviewCategorical {
   #plotUserIdValues(detail) {
     if (this.#property.propertyId === detail.propertyId) {
       this.#ROOT.classList.add('-pinsticking');
-
-      console.log(detail, this.#values)
-
       this.#values.forEach(value => {
         const userValue = detail.values.find(userValue => userValue.categoryId === value.categoryId);
         if (userValue) {
           value.elm.classList.add('-pinsticking');
           // pin
-          let ratio = userValue.count / value.count;
-          ratio = ratio > 1 ? 1 : ratio;
+          let ratio;
+          if (userValue.pValue) {
+            ratio = userValue.pValue;
+            value.pValue = userValue.pValue;
+          } else {
+            ratio = userValue.count / value.count;
+            ratio = ratio > 1 ? 1 : ratio;
+          }
           const size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
