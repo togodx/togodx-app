@@ -64,7 +64,6 @@ class App {
         Records.setSubjects(subjects);
 
         // setup upload user id
-        console.log(aggregate.mapping)
         new UploadUserIDsView(document.querySelector('#UploadUserIDsView'), aggregate.mapping);
 
         // define primary keys
