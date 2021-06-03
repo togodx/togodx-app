@@ -200,6 +200,7 @@ export default class ResultsTable {
                     class="togo-key-view primarykey"
                     data-key="${detail.tableData.togoKey}"
                     data-order= "${[0, index]}"
+                    data-sub-order= "0"
                     data-subject-id="${detail.tableData.subjectId}"
                     data-unique-entry-id="${detail.rows[index].id}">${
             detail.rows[index].id
@@ -222,7 +223,7 @@ export default class ResultsTable {
                         <div
                           class="togo-key-view"
                           data-order="${[columnIndex + 1, index]}"
-                          data-sub-order="${(column.attributes).length > 1? attributeIndex : undefined}"
+                          data-sub-order="${attributeIndex}"
                           data-key="${column.propertyKey}"
                           data-subject-id="${
                             this.#header[columnIndex].subjectId

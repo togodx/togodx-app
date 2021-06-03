@@ -46,7 +46,6 @@ export default class ResultDetailModal {
       this.#hidePopUp();
     });
   }
-
   // bind this on handleKeydown so it will keep listening to same event during the whole popup
   #showPopUp(e) {
     if (this.#RESULT_MODAL.innerHTML === '') {
@@ -127,7 +126,13 @@ export default class ResultDetailModal {
     const arrow = document.createElement('div');
     arrow.classList.add('arrow', `-${direction.toLowerCase()}`);
     arrow.addEventListener('click', e => {
-      this.#setMovementArrow(direction, props.dataOrder, props.dataSubOrder);
+      const arrowMovement = {
+        dir: direction,
+        curAxes: props.dataOrder,
+        curInternalIndex: parseInt(props.dataSubOrder),
+        getTargetAxes: this.#arrowFuncs.get('Arrow' + direction),
+      };
+      this.#setMovementArrow(arrowMovement);
     });
 
     return arrow;
@@ -135,12 +140,7 @@ export default class ResultDetailModal {
 
   // Events, functions
   #setHighlight(axes, subOrder) {
-    const curEntry = !subOrder
-      ? this.#RESULTS_TABLE.querySelector(`[data-order = '${axes}']`)
-      : this.#RESULTS_TABLE.querySelector(
-          `[data-order = '${axes}'][data-sub-order = '${subOrder}']`
-        );
-
+    const curEntry = this.#entriesByDataOrder(axes, subOrder);
     const curTr = curEntry.closest('tr');
     curEntry.classList.add('-selected');
     curTr.classList.add('-selected');
@@ -155,6 +155,7 @@ export default class ResultDetailModal {
     if (e.key == 'Escape') {
       this.#hidePopUp();
     } else if (this.#arrowFuncs.has(e.key)) {
+      e.preventDefault();
       this.#RESULT_MODAL
         .querySelector(`.arrow.-${e.key.replace('Arrow', '').toLowerCase()}`)
         .click();
@@ -176,66 +177,66 @@ export default class ResultDetailModal {
     ],
     [
       'ArrowUp',
-      function (x, y) {
+      function (x, y = x) {
         return [x, y - 1];
       },
     ],
     [
       'ArrowDown',
-      function (x, y) {
+      function (x, y = x) {
         return [x, y + 1];
       },
     ],
   ]);
 
-  #getCorList(str) {
+  #setMovementArrow(movement) {
+    try {
+      const targetEntry = this.#getTargetEntry(movement);
+      const targetTr = targetEntry.closest('tr');
+      const reportLink = targetTr.querySelector(
+        ':scope > th > .inner > .report-page-button-view'
+      ).href;
+
+      targetEntry.scrollIntoView({block: 'center'});
+      createPopupEvent(targetEntry, reportLink, event.movePopup);
+    } catch (error) {
+      console.log('Out of bounds');
+    }
+  }
+
+  #getTargetEntry(move) {
+    // Check if there are multiple entries in the current cell when going up or down
+    if (['Down', 'Up'].includes(move.dir)) {
+      const allCurEntries = this.#entriesByDataOrder(move.curAxes);
+      const targetInternalIndex = move.getTargetAxes(move.curInternalIndex)[1];
+      // movement inside cell
+      if (allCurEntries[targetInternalIndex]) {
+        return allCurEntries[targetInternalIndex];
+      }
+    }
+    // default: target outside of current cell
+    const [curX, curY] = this.#parsedAxesList(move.curAxes);
+    const allTargetEntries = this.#entriesByDataOrder(
+      move.getTargetAxes(curX, curY)
+    );
+    const targetIndex = move.dir === 'Up' ? allTargetEntries.length - 1 : 0;
+    return allTargetEntries[targetIndex];
+  }
+
+  #parsedAxesList(str) {
     let [x, y] = str.split(',');
     return [x, y].map(cor => parseInt(cor));
   }
 
-  #setMovementArrow(direction, axes, internalIndex) {
-    //TODO: Implement functions for data with multiple entries
-    const targetEntry = this.#getTargetEntry(
-      direction,
-      axes,
-      parseInt(internalIndex)
-    );
-    const targetTr = targetEntry.closest('tr');
-    const reportLink = targetTr.querySelector(
-      ':scope > th > .inner > .report-page-button-view'
-    ).href;
-
-    createPopupEvent(targetEntry, reportLink, event.movePopup);
-  }
-
-  #getTargetEntry(direction, axes, internalIndex) {
-    // Check if there are multiple entries in the cell
-    if (['Down', 'Up'].includes(direction)) {
-      const allCurEntries = this.#RESULTS_TABLE.querySelectorAll(
-        `[data-order = '${axes}']`
+  #entriesByDataOrder(dataOrder, subOrder) {
+    if (subOrder === undefined) {
+      return this.#RESULTS_TABLE.querySelectorAll(
+        `[data-order = '${dataOrder}']`
       );
-      const targetIndex = direction === 'Down' ? internalIndex + 1 : internalIndex - 1;
-      // if (targetIndex === -1) {
-      //   let [x, y] = this.#getCorList(axes);
-      //   const movement = this.#arrowFuncs.get('Arrow' + direction);
-      //   const allTargetEntires = this.#RESULTS_TABLE.querySelectorAll(
-      //     `[data-order = '${movement(x, y)}']`
-      //   );
-      //   return allTargetEntires[allTargetEntires.length - 1];
-      // }
-      // movement inside cell
-      if(allCurEntries[targetIndex]){
-          return allCurEntries[targetIndex];
-      }
-
     }
-    // default target outside of cell
-    let [x, y] = this.#getCorList(axes);
-    const movement = this.#arrowFuncs.get('Arrow' + direction);
-    const allTargetEntires = this.#RESULTS_TABLE.querySelectorAll(
-      `[data-order = '${movement(x, y)}']`
+    return this.#RESULTS_TABLE.querySelector(
+      `[data-order = '${dataOrder}'][data-sub-order = '${subOrder}']`
     );
-    return allTargetEntires[0];
   }
 
   #hidePopUp() {
