@@ -222,7 +222,10 @@ export default class ResultsTable {
                       <li>
                         <div
                           class="togo-key-view"
-                          data-order="${[columnIndex + 1, detail.tableData.offset + index]}"
+                          data-order="${[
+                            columnIndex + 1,
+                            detail.tableData.offset + index,
+                          ]}"
                           data-sub-order="${attributeIndex}"
                           data-key="${column.propertyKey}"
                           data-subject-id="${
@@ -277,11 +280,13 @@ export default class ResultsTable {
       const tr = this.#TBODY.querySelector(
         `:scope > tr[data-index="${actualIndex}"]`
       );
-      const reportLink = `report.html?togoKey=${
-        this.#tableData.togoKey
-      }&id=${tr.getAttribute('data-togo-id')}&properties=${encodeURIComponent(
-        JSON.stringify(row)
+      const reportLink = `
+      report.html?togoKey=${detail.tableData.togoKey}&id=${
+        detail.rows[index].id
+      }&properties=${window.btoa(
+        RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))
       )}`;
+
       const uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(uniqueEntry => {
         uniqueEntry.addEventListener('click', () => {
@@ -313,7 +318,6 @@ export default class ResultsTable {
   }
 
   #colHighlight(colIndex) {
-    console.log('ran colHighlight');
     this.#TBODY.querySelectorAll('[data-order]').forEach(element => {
       const td = element.closest('td');
       if (element.getAttribute('data-order').split(',')[0] === colIndex) {
