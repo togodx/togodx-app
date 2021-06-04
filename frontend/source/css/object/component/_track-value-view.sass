@@ -14,23 +14,24 @@
     height: 100%
     border-left: solid .005rem var(--color-gray)
     z-index: var(--z-track-item-border)
-  > p
-    padding-left: .2rem
-    padding-right: .2rem
-    padding-top: var(--padding-track-block-start)
-    margin: 0
-    text-overflow: ellipsis
-    white-space: nowrap
+  > .labels
     overflow: hidden
-    position: relative
-    text-align: center
-    transition: opacity var(--transition-wipe)
-    > .label
-      font-size: 1.2rem
-    > .count
-      padding-left: .8rem
-      font-size: 1rem
-      font-weight: lighter
+    > p
+      padding-left: .2rem
+      padding-right: .2rem
+      padding-top: var(--padding-track-block-start)
+      margin: 0
+      text-overflow: ellipsis
+      white-space: nowrap
+      position: relative
+      text-align: center
+      transition: opacity var(--transition-wipe)
+      > .label
+        font-size: 1.2rem
+      > .count
+        padding-left: .8rem
+        font-size: 1rem
+        font-weight: lighter
   > .pin
     position: absolute
     // top: -20px
