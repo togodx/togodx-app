@@ -103,26 +103,23 @@ export default class ResultsTable {
 
     // make table header
     this.#THEAD.innerHTML = `
-      <th>
-        <div class="inner -noborder">Report</div>
+      <th rowspan="2">
+        <div class="inner">Report</div>
       </th>
-      <th colspan="100%">
-        <div class="inner -noborder">
+      <th rowspan="2">
+        <div class="inner">
           <div class="togo-key-view">${Records.getLabelFromTogoKey(
             tableData.condition.togoKey
           )}</div>
         </div>
       </th>
+      <th colspan="100%">
+        <div class="inner -noborder"></div>
+      </th>
       `;
 
     // makte table sub header
     this.#THEAD_SUB.innerHTML = `
-    <th>
-      <div class="inner"></div>
-    </th>
-    <th>
-      <div class="inner"></div>
-    </th>
     ${tableData.condition.attributes
       .map(
         property => `
