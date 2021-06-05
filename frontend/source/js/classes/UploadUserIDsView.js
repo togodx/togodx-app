@@ -44,10 +44,8 @@ export default class UploadUserIDsView {
     if (this.#USER_IDS.value === '') return;
 
     const queryTemplate = `${this.#path.url}?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=${ConditionBuilder.currentTogoKey}&userIds=${encodeURIComponent(this.#USER_IDS.value)}`;
-    console.log(queryTemplate)
 
     Records.properties.forEach(property => {
-      console.log(property)
       const propertyId = property.propertyId;
       fetch(queryTemplate
         .replace('@@sparqlet@@', encodeURIComponent(property.data))

@@ -4197,6 +4197,8 @@
 
   var _values = new WeakMap();
 
+  var _userValues = new WeakMap();
+
   var _ROOT$5 = new WeakMap();
 
   var _update = new WeakSet();
@@ -4227,6 +4229,11 @@
     });
 
     _values.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _userValues.set(this, {
       writable: true,
       value: void 0
     });
@@ -4287,15 +4294,28 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }); // attach event: show tooltip of pin
 
-      pin.addEventListener('mouseenter', function () {
-        console.log(value);
+      pin.addEventListener('mouseenter', function (e) {
+        e.stopPropagation();
+        var values = [{
+          key: 'Count',
+          value: "".concat(value.userValueCount.toLocaleString(), " / ").concat(value.count.toLocaleString())
+        }];
+
+        var userValue = _classPrivateFieldGet(_this, _userValues).find(function (userValue) {
+          return userValue.categoryId === value.categoryId;
+        });
+
+        if (userValue) {
+          values.push({
+            key: 'P-value',
+            value: userValue.pValue.toExponential()
+          });
+        }
+
         var customEvent = new CustomEvent(enterPropertyValueItemView, {
           detail: {
             label: label,
-            values: [{
-              key: 'Count',
-              value: "".concat(value.userValueCount.toLocaleString(), " / ").concat(value.count.toLocaleString())
-            }],
+            values: values,
             elm: pin
           }
         });
@@ -4399,9 +4419,22 @@
 
   function _plotUserIdValues2(detail) {
     if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
+      var _detail$values$;
+
       _classPrivateFieldGet(this, _ROOT$5).classList.add('-pinsticking');
 
-      console.log(detail, _classPrivateFieldGet(this, _values));
+      _classPrivateFieldSet(this, _userValues, detail.values); // calculate min value
+
+
+      var maxPValue;
+
+      if ((_detail$values$ = detail.values[0]) !== null && _detail$values$ !== void 0 && _detail$values$.pValue) {
+        var minPValue = Math.min.apply(Math, _toConsumableArray(detail.values.map(function (value) {
+          return value.pValue;
+        })));
+        maxPValue = 1 - Math.log10(minPValue);
+      } // mapping
+
 
       _classPrivateFieldGet(this, _values).forEach(function (value) {
         var userValue = detail.values.find(function (userValue) {
@@ -4411,8 +4444,15 @@
         if (userValue) {
           value.elm.classList.add('-pinsticking'); // pin
 
-          var ratio = userValue.count / value.count;
-          ratio = ratio > 1 ? 1 : ratio;
+          var ratio;
+
+          if (userValue.pValue) {
+            ratio = (1 - Math.log10(userValue.pValue)) / maxPValue; // value.pValue = userValue.pValue;
+          } else {
+            ratio = userValue.count / value.count;
+            ratio = ratio > 1 ? 1 : ratio;
+          }
+
           var size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
@@ -6066,9 +6106,7 @@
 
     if (_classPrivateFieldGet(this, _USER_IDS).value === '') return;
     var queryTemplate = "".concat(_classPrivateFieldGet(this, _path).url, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
-    console.log(queryTemplate);
     Records$1.properties.forEach(function (property) {
-      console.log(property);
       var propertyId = property.propertyId;
       fetch(queryTemplate.replace('@@sparqlet@@', encodeURIComponent(property.data)).replace('@@primaryKey@@', encodeURIComponent(property.primaryKey))).then(function (responce) {
         return responce.json();
