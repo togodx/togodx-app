@@ -1270,16 +1270,6 @@ main {
   border-left: solid 0.005rem var(--color-gray);
   z-index: var(--z-track-item-border);
 }
-.track-value-view::after {
-  content: "";
-  display: block;
-  position: absolute;
-  top: 0;
-  right: -0.05rem;
-  height: 100%;
-  border-left: solid 0.005rem var(--color-gray);
-  z-index: var(--z-track-item-border);
-}
 .track-value-view > .labels {
   overflow: hidden;
 }
@@ -1350,7 +1340,7 @@ main {
 }
 
 .track-view {
-  border-bottom: solid 0.1rem var(--color-separator);
+  margin-bottom: 0.1rem;
   font-size: 1.2rem;
   position: relative;
   transition: opacity var(--transition-wipe);
@@ -1983,20 +1973,17 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
   width: 100%;
 }
 
-#UploadUserIDsView > form {
-  margin-top: 0.2rem;
-}
-#UploadUserIDsView > form > label {
+#UploadUserIDsView > label {
   display: block;
 }
-#UploadUserIDsView > form > label > p {
+#UploadUserIDsView > label > p {
   margin-bottom: 0;
 }
-#UploadUserIDsView > form > label > select, #UploadUserIDsView > form > label input {
+#UploadUserIDsView > label > select, #UploadUserIDsView > label input {
   width: 100%;
   display: block;
 }
-#UploadUserIDsView > form > .buttons {
+#UploadUserIDsView > .buttons {
   text-align: center;
 }
 
