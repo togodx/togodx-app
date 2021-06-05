@@ -358,12 +358,14 @@ template {
   --z-track-collapse-button: 1;
   --z-track-tracks-header: 3;
   --z-track-pin: 4;
-  --z-track-pin-hover: 5;
-  --z-fixed-area: 5;
-  --z-header: 6;
-  --z-track-balloon: 7;
-  --z-modal-window-backdrop: 8;
-  --z-modal-window: 9;
+  --z-track-item-hover: 5;
+  --z-track-item-selected-hover: 6;
+  --z-track-pin-hover: 7;
+  --z-fixed-area: 7;
+  --z-header: 8;
+  --z-track-balloon: 9;
+  --z-modal-window-backdrop: 10;
+  --z-modal-window: 11;
   --shadow-shallow: 0 .1rem .1rem rgba(0,0,0,.3);
   --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3);
 }
@@ -1293,8 +1295,8 @@ main {
   bottom: 100%;
   border: solid 1px rgba(255, 255, 255, 0.5);
   background-color: var(--color-lamp-black);
-  -webkit-transform: translate(-50%, -20%) rotate(45deg) skew(5deg, 5deg);
-          transform: translate(-50%, -20%) rotate(45deg) skew(5deg, 5deg);
+  -webkit-transform: translate(-50%, calc(-20% + .4rem)) rotate(45deg) skew(5deg, 5deg);
+          transform: translate(-50%, calc(-20% + .4rem)) rotate(45deg) skew(5deg, 5deg);
   border-top-left-radius: 50%;
   border-bottom-left-radius: 50%;
   border-top-right-radius: 50%;
@@ -1315,7 +1317,15 @@ main {
   width: 100%;
   height: 100%;
   border: solid 1px white;
+}
+.track-value-view.-selected::before {
   z-index: var(--z-track-item-selected);
+}
+.track-value-view:hover::before {
+  z-index: var(--z-track-item-selected-hover);
+}
+.track-value-view:hover > .pin {
+  z-index: var(--z-track-pin-hover);
 }
 .-showuserids .track-value-view:not(.-pinsticking) {
   background-color: var(--color-gray) !important;

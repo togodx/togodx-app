@@ -4197,6 +4197,8 @@
 
   var _values = new WeakMap();
 
+  var _userValues = new WeakMap();
+
   var _ROOT$5 = new WeakMap();
 
   var _update = new WeakSet();
@@ -4227,6 +4229,11 @@
     });
 
     _values.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _userValues.set(this, {
       writable: true,
       value: void 0
     });
@@ -4287,16 +4294,21 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }); // attach event: show tooltip of pin
 
-      pin.addEventListener('mouseenter', function () {
+      pin.addEventListener('mouseenter', function (e) {
+        e.stopPropagation();
         var values = [{
           key: 'Count',
           value: "".concat(value.userValueCount.toLocaleString(), " / ").concat(value.count.toLocaleString())
         }];
 
-        if (value.pValue) {
+        var userValue = _classPrivateFieldGet(_this, _userValues).find(function (userValue) {
+          return userValue.categoryId === value.categoryId;
+        });
+
+        if (userValue) {
           values.push({
             key: 'P-value',
-            value: value.pValue.toExponential()
+            value: userValue.pValue.toExponential()
           });
         }
 
@@ -4406,7 +4418,22 @@
 
   function _plotUserIdValues2(detail) {
     if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
+      var _detail$values$;
+
       _classPrivateFieldGet(this, _ROOT$5).classList.add('-pinsticking');
+
+      _classPrivateFieldSet(this, _userValues, detail.values); // calculate min value
+
+
+      var maxPValue;
+
+      if ((_detail$values$ = detail.values[0]) !== null && _detail$values$ !== void 0 && _detail$values$.pValue) {
+        var minPValue = Math.min.apply(Math, _toConsumableArray(detail.values.map(function (value) {
+          return value.pValue;
+        })));
+        maxPValue = 1 - Math.log10(minPValue);
+      } // mapping
+
 
       _classPrivateFieldGet(this, _values).forEach(function (value) {
         var userValue = detail.values.find(function (userValue) {
@@ -4419,8 +4446,7 @@
           var ratio;
 
           if (userValue.pValue) {
-            ratio = userValue.pValue;
-            value.pValue = userValue.pValue;
+            ratio = (1 - Math.log10(userValue.pValue)) / maxPValue; // value.pValue = userValue.pValue;
           } else {
             ratio = userValue.count / value.count;
             ratio = ratio > 1 ? 1 : ratio;

@@ -13,6 +13,7 @@ export default class TrackOverviewCategorical {
   #subject;
   #property;
   #values;
+  #userValues;
   #ROOT;
 
   constructor(elm, subject, property, values) {
@@ -69,17 +70,19 @@ export default class TrackOverviewCategorical {
       });
 
       // attach event: show tooltip of pin
-      pin.addEventListener('mouseenter', () => {
+      pin.addEventListener('mouseenter', e => {
+        e.stopPropagation();
         const values = [
           {
             key: 'Count',
             value: `${value.userValueCount.toLocaleString()} / ${value.count.toLocaleString()}`
           }
         ];
-        if (value.pValue) {
+        const userValue = this.#userValues.find(userValue => userValue.categoryId === value.categoryId);
+        if (userValue) {
           values.push({
             key: 'P-value',
-            value: value.pValue.toExponential()
+            value: userValue.pValue.toExponential()
           });
         }
         const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {
@@ -169,7 +172,18 @@ export default class TrackOverviewCategorical {
 
   #plotUserIdValues(detail) {
     if (this.#property.propertyId === detail.propertyId) {
+
       this.#ROOT.classList.add('-pinsticking');
+      this.#userValues = detail.values;
+
+      // calculate min value
+      let maxPValue;
+      if (detail.values[0]?.pValue) {
+        const minPValue = Math.min(...detail.values.map(value => value.pValue));
+        maxPValue = 1 - Math.log10(minPValue);
+      }
+
+      // mapping
       this.#values.forEach(value => {
         const userValue = detail.values.find(userValue => userValue.categoryId === value.categoryId);
         if (userValue) {
@@ -177,8 +191,8 @@ export default class TrackOverviewCategorical {
           // pin
           let ratio;
           if (userValue.pValue) {
-            ratio = userValue.pValue;
-            value.pValue = userValue.pValue;
+            ratio = (1 - Math.log10(userValue.pValue)) / maxPValue;
+            // value.pValue = userValue.pValue;
           } else {
             ratio = userValue.count / value.count;
             ratio = ratio > 1 ? 1 : ratio;
