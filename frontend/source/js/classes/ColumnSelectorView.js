@@ -188,21 +188,21 @@ export default class ColumnSelectorView {
       checkbox.addEventListener('click', e => {
         e.stopPropagation();
         if (checkbox.checked) { // add
-          const ancestors = [];
-          let id = checkbox.value;
-          let parent;
-          do { // find ancestors
-            parent = this.#items[id].parent;
-            if (parent) ancestors.unshift(this.#items[parent]);
-            id = parent;
-          } while (parent);
+          // const ancestors = [];
+          // let id = checkbox.value;
+          // let parent;
+          // do { // find ancestors
+          //   parent = this.#items[id].parent;
+          //   if (parent) ancestors.unshift(this.#items[parent]);
+          //   id = parent;
+          // } while (parent);
           ConditionBuilder.addPropertyValue({
             subject: this.#subject,
             property: this.#property,
             value: {
               categoryId: checkbox.value,
               label: this.#items[checkbox.value].label,
-              ancestors: ancestors.map(ancestor => ancestor.label)
+              ancestors: this.#getAncestors(checkbox.value).map(ancestor => ancestor.label)
             }
           });
         } else { // remove
@@ -221,7 +221,8 @@ export default class ColumnSelectorView {
           subCategory: {
             parentCategoryId: dataset.parentCategoryId,
             values: dataset.categoryIds.split(','),
-            label: dataset.parentLabel
+            label: dataset.parentLabel,
+            ancestors: this.#getAncestors(dataset.parentCategoryId).map(ancestor => ancestor.label)
           }
         });
       } else { // remove
@@ -264,5 +265,16 @@ export default class ColumnSelectorView {
       });
     });
   }
+
+  #getAncestors(categoryId) {
+    const ancestors = [];
+    let parent;
+    do { // find ancestors
+      parent = this.#items[categoryId].parent;
+      if (parent) ancestors.unshift(this.#items[parent]);
+      categoryId = parent;
+    } while (parent);
+    return ancestors;
+}
 
 }

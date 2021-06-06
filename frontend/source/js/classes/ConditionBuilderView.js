@@ -1,5 +1,6 @@
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import StackingConditionView from "./StackingConditionView";
 import * as event from '../events';
 
 export default class ConditionBuilderView {
@@ -76,21 +77,12 @@ export default class ConditionBuilderView {
 
   #addProperty(subject, property) {
     console.log(property)
-    // make view
-    const view = document.createElement('div');
-    view.classList.add('stacking-condition-view');
-    view.dataset.propertyId = property.propertyId;
-    view.innerHTML = `
-    <div class="close-button-view"></div>
-    <ul class="path">
-      <li>${subject.subject}</li>
-    </ul>
-    <div class="label" style="color: ${subject.colorCSSValue};">${property.label}</div>`;
-    this.#PROPERTIES_CONDITIONS_CONTAINER.insertAdjacentElement('beforeend', view);
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
+    // make view
+    const view = new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {subject, property});
     // event
-    view.querySelector(':scope > .close-button-view').addEventListener('click', () => {
-      ConditionBuilder.removeProperty(view.dataset.propertyId);
+    view.elm.querySelector(':scope > .close-button-view').addEventListener('click', () => {
+      ConditionBuilder.removeProperty(view.elm.dataset.propertyId);
     });
   }
   

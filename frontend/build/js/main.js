@@ -3151,6 +3151,44 @@
 
   var ConditionBuilder$1 = new ConditionBuilder();
 
+  var _elm = new WeakMap();
+
+  var StackingConditionView = /*#__PURE__*/function () {
+    /**
+     * 
+     * @param {HTMLElement} container 
+     * @param {String} type: 'property' or 'value'
+     * @param {Object} condition 
+     */
+    function StackingConditionView(container, type, condition) {
+      _classCallCheck(this, StackingConditionView);
+
+      _elm.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      // make view
+      _classPrivateFieldSet(this, _elm, document.createElement('div'));
+
+      _classPrivateFieldGet(this, _elm).classList.add('stacking-condition-view');
+
+      _classPrivateFieldGet(this, _elm).dataset.propertyId = condition.property.propertyId;
+      _classPrivateFieldGet(this, _elm).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      <li>".concat(condition.subject.subject, "</li>\n    </ul>\n    <div class=\"label\" style=\"color: ").concat(condition.subject.colorCSSValue, ";\">").concat(condition.property.label, "</div>");
+      container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _elm));
+    } // accessor
+
+
+    _createClass(StackingConditionView, [{
+      key: "elm",
+      get: function get() {
+        return _classPrivateFieldGet(this, _elm);
+      }
+    }]);
+
+    return StackingConditionView;
+  }();
+
   var _TOGO_KEYS = new WeakMap();
 
   var _PROPERTIES_CONDITIONS_CONTAINER = new WeakMap();
@@ -3280,20 +3318,18 @@
   }
 
   function _addProperty2(subject, property) {
-    console.log(property); // make view
+    console.log(property);
 
-    var view = document.createElement('div');
-    view.classList.add('stacking-condition-view');
-    view.dataset.propertyId = property.propertyId;
-    view.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      <li>".concat(subject.subject, "</li>\n    </ul>\n    <div class=\"label\" style=\"color: ").concat(subject.colorCSSValue, ";\">").concat(property.label, "</div>");
-
-    _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).insertAdjacentElement('beforeend', view);
-
-    _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.remove('-empty'); // event
+    _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.remove('-empty'); // make view
 
 
-    view.querySelector(':scope > .close-button-view').addEventListener('click', function () {
-      ConditionBuilder$1.removeProperty(view.dataset.propertyId);
+    var view = new StackingConditionView(_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER), 'property', {
+      subject: subject,
+      property: property
+    }); // event
+
+    view.elm.querySelector(':scope > .close-button-view').addEventListener('click', function () {
+      ConditionBuilder$1.removeProperty(view.elm.dataset.propertyId);
     });
   }
 
@@ -3547,10 +3583,14 @@
 
   var _update$2 = new WeakSet();
 
+  var _getAncestors = new WeakSet();
+
   var ColumnSelectorView = function ColumnSelectorView(elm, subject, property, _items2, sparqlist) {
     var _this = this;
 
     _classCallCheck(this, ColumnSelectorView);
+
+    _getAncestors.add(this);
 
     _update$2.add(this);
 
@@ -3807,24 +3847,21 @@
 
         if (checkbox.checked) {
           // add
-          var ancestors = [];
-          var id = checkbox.value;
-          var parent;
-
-          do {
-            // find ancestors
-            parent = _classPrivateFieldGet(_this3, _items$1)[id].parent;
-            if (parent) ancestors.unshift(_classPrivateFieldGet(_this3, _items$1)[parent]);
-            id = parent;
-          } while (parent);
-
+          // const ancestors = [];
+          // let id = checkbox.value;
+          // let parent;
+          // do { // find ancestors
+          //   parent = this.#items[id].parent;
+          //   if (parent) ancestors.unshift(this.#items[parent]);
+          //   id = parent;
+          // } while (parent);
           ConditionBuilder$1.addPropertyValue({
             subject: _classPrivateFieldGet(_this3, _subject$3),
             property: _classPrivateFieldGet(_this3, _property$3),
             value: {
               categoryId: checkbox.value,
               label: _classPrivateFieldGet(_this3, _items$1)[checkbox.value].label,
-              ancestors: ancestors.map(function (ancestor) {
+              ancestors: _classPrivateMethodGet(_this3, _getAncestors, _getAncestors2).call(_this3, checkbox.value).map(function (ancestor) {
                 return ancestor.label;
               })
             }
@@ -3847,7 +3884,10 @@
           subCategory: {
             parentCategoryId: dataset.parentCategoryId,
             values: dataset.categoryIds.split(','),
-            label: dataset.parentLabel
+            label: dataset.parentLabel,
+            ancestors: _classPrivateMethodGet(_this3, _getAncestors, _getAncestors2).call(_this3, dataset.parentCategoryId).map(function (ancestor) {
+              return ancestor.label;
+            })
           }
         });
       } else {
@@ -3903,6 +3943,20 @@
         }).join(','), ")");
       });
     });
+  }
+
+  function _getAncestors2(categoryId) {
+    var ancestors = [];
+    var parent;
+
+    do {
+      // find ancestors
+      parent = _classPrivateFieldGet(this, _items$1)[categoryId].parent;
+      if (parent) ancestors.unshift(_classPrivateFieldGet(this, _items$1)[parent]);
+      categoryId = parent;
+    } while (parent);
+
+    return ancestors;
   }
 
   /**

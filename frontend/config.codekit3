@@ -511,14 +511,6 @@
       "oF" : 0,
       "oS" : 0
     },
-    "\/source\/js\/.prettierrc.json" : {
-      "ft" : 524288,
-      "oA" : 1,
-      "oAP" : "\/build\/js\/.prettierrc-min.json",
-      "oF" : 0,
-      "oO" : 0,
-      "oS" : 1
-    },
     "\/source\/js\/api.js" : {
       "bF" : 4,
       "ft" : 64,
@@ -691,6 +683,17 @@
       "mi" : 0,
       "oA" : 1,
       "oAP" : "\/build\/js\/classes\/ResultsTable.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
+    "\/source\/js\/classes\/StackingConditionView.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/classes\/StackingConditionView.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 1
