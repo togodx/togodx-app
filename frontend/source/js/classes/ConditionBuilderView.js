@@ -31,10 +31,10 @@ export default class ConditionBuilderView {
       console.log(e.detail)
       switch (e.detail.action) {
         case 'add':
-          this.#addProperty(e.detail.condition.subject, e.detail.condition.property);
+          this.#addProperty(e.detail.condition.subject, e.detail.condition.property, e.detail.condition.subCategory);
           break;
         case 'remove':
-          this.#removeProperty(e.detail.propertyId);
+          this.#removeProperty(e.detail.propertyId, e.detail.parentCategoryId);
           break;
       }
     });
@@ -75,19 +75,21 @@ export default class ConditionBuilderView {
     this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }
 
-  #addProperty(subject, property) {
-    console.log(property)
+  #addProperty(subject, property, subCategory) {
+    console.log(property, subCategory)
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
-    const view = new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {subject, property});
+    const view = new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {subject, property, subCategory});
     // event
     view.elm.querySelector(':scope > .close-button-view').addEventListener('click', () => {
-      ConditionBuilder.removeProperty(view.elm.dataset.propertyId);
+      ConditionBuilder.removeProperty(view.elm.dataset.propertyId, view.elm.dataset.parentCategoryId);
     });
   }
   
-  #removeProperty(propertyId) {
-    const view = this.#PROPERTIES_CONDITIONS_CONTAINER.querySelector(`[data-property-id="${propertyId}"]`);
+  #removeProperty(propertyId, parentCategoryId) {
+    let selector = `[data-property-id="${propertyId}"]`;
+    if (parentCategoryId) selector += `[data-parent-category-id="${parentCategoryId}"]`;
+    const view = this.#PROPERTIES_CONDITIONS_CONTAINER.querySelector(selector);
     view.parentNode.removeChild(view);
     if (this.#PROPERTIES_CONDITIONS_CONTAINER.childNodes.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
