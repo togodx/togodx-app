@@ -3184,6 +3184,8 @@
      * @param {Object} condition 
      */
     function StackingConditionView(container, type, condition) {
+      var _condition$value;
+
       _classCallCheck(this, StackingConditionView);
 
       _elm.set(this, {
@@ -3192,15 +3194,30 @@
       });
 
       // make view
-      var labelClassName = "label" + type === 'property' ? ' _subject-color' : '';
+      var labelClassName = 'label' + (type === 'property' ? ' _subject-color' : '');
 
       _classPrivateFieldSet(this, _elm, document.createElement('div'));
 
       _classPrivateFieldGet(this, _elm).classList.add('stacking-condition-view');
 
+      if (type === 'value') _classPrivateFieldGet(this, _elm).classList.add('_subject-background-color');
       _classPrivateFieldGet(this, _elm).dataset.subjectId = condition.subject.subjectId;
       _classPrivateFieldGet(this, _elm).dataset.propertyId = condition.property.propertyId;
-      _classPrivateFieldGet(this, _elm).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      <li>".concat(condition.subject.subject, "</li>\n    </ul>\n    <div class=\"").concat(labelClassName, "\" style=\"color: ").concat(condition.subject.colorCSSValue, ";\">").concat(condition.property.label, "</div>");
+      _classPrivateFieldGet(this, _elm).dataset.categoryId = (_condition$value = condition.value) === null || _condition$value === void 0 ? void 0 : _condition$value.categoryId;
+
+      var ancestors = function () {
+        switch (type) {
+          case 'property':
+            return [condition.subject.subject];
+
+          case 'value':
+            return [condition.subject.subject, condition.property.label].concat(_toConsumableArray(condition.value.ancestors));
+        }
+      }();
+
+      _classPrivateFieldGet(this, _elm).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      ".concat(ancestors.map(function (ancestor) {
+        return "<li>".concat(ancestor, "</li>");
+      }).join(''), "\n    </ul>\n    <div class=\"").concat(labelClassName, "\">").concat(condition.property.label, "</div>");
       container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _elm));
     } // accessor
 
@@ -3367,25 +3384,17 @@
   }
 
   function _addPropertyValue2(subject, property, value) {
-    // make view
-    var view = document.createElement('div');
-    view.classList.add('stacking-condition-view');
-    view.classList.add('-value');
-    view.dataset.propertyId = property.propertyId;
-    view.dataset.categoryId = value.categoryId; // view.dataset.range = [0, 0]; // TODO:
-
-    view.style.backgroundColor = subject.colorCSSValue;
-    view.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      <li>".concat(subject.subject, "</li>\n      <li>").concat(property.label, "</li>\n      ").concat(value.ancestors.map(function (ancestor) {
-      return "<li>".concat(ancestor, "</li>");
-    }).join(''), "\n    </ul>\n    <div class=\"label\">").concat(value.label, "</div>");
-
-    _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).insertAdjacentElement('beforeend', view);
-
-    _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.remove('-empty'); // event
+    _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.remove('-empty'); // make view
 
 
-    view.querySelector(':scope > .close-button-view').addEventListener('click', function () {
-      ConditionBuilder$1.removePropertyValue(view.dataset.propertyId, view.dataset.categoryId);
+    var view = new StackingConditionView(_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER), 'value', {
+      subject: subject,
+      property: property,
+      value: value
+    }); // event
+
+    view.elm.querySelector(':scope > .close-button-view').addEventListener('click', function () {
+      ConditionBuilder$1.removePropertyValue(view.elm.dataset.propertyId, view.elm.dataset.categoryId);
     });
   }
 

@@ -93,27 +93,12 @@ export default class ConditionBuilderView {
   }
 
   #addPropertyValue(subject, property, value) {
-    // make view
-    const view = document.createElement('div');
-    view.classList.add('stacking-condition-view');
-    view.classList.add('-value');
-    view.dataset.propertyId = property.propertyId;
-    view.dataset.categoryId = value.categoryId;
-    // view.dataset.range = [0, 0]; // TODO:
-    view.style.backgroundColor = subject.colorCSSValue;
-    view.innerHTML = `
-    <div class="close-button-view"></div>
-    <ul class="path">
-      <li>${subject.subject}</li>
-      <li>${property.label}</li>
-      ${value.ancestors.map(ancestor => `<li>${ancestor}</li>`).join('')}
-    </ul>
-    <div class="label">${value.label}</div>`;
-    this.#ATTRIBUTES_CONDITIONS_CONTAINER.insertAdjacentElement('beforeend', view);
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
+    // make view
+    const view = new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {subject, property, value});
     // event
-    view.querySelector(':scope > .close-button-view').addEventListener('click', () => {
-      ConditionBuilder.removePropertyValue(view.dataset.propertyId, view.dataset.categoryId);
+    view.elm.querySelector(':scope > .close-button-view').addEventListener('click', () => {
+      ConditionBuilder.removePropertyValue(view.elm.dataset.propertyId, view.elm.dataset.categoryId);
     });
   }
 

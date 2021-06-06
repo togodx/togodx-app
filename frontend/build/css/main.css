@@ -954,13 +954,13 @@ main {
   font-size: 1.4rem;
   font-weight: bold;
 }
-.stacking-condition-view.-value > .path {
+.stacking-condition-view._subject-background-color > .path {
   color: rgba(0, 0, 0, 0.5);
 }
-.stacking-condition-view.-value > .path > li + li::before {
+.stacking-condition-view._subject-background-color > .path > li + li::before {
   border-left-color: rgba(0, 0, 0, 0.5);
 }
-.stacking-condition-view.-value > .label {
+.stacking-condition-view._subject-background-color > .label {
   color: white;
 }
 
