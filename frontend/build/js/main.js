@@ -2749,7 +2749,30 @@
           });
         });
         console.log(_classPrivateFieldGet(this, _subjects));
-        console.log(_classPrivateFieldGet(this, _properties));
+        console.log(_classPrivateFieldGet(this, _properties)); // make stylesheet
+
+        var styleElm = document.createElement('style');
+        document.head.appendChild(styleElm);
+        var styleSheet = styleElm.sheet;
+        styleSheet.insertRule(":root {\n      ".concat(subjects.map(function (subject) {
+          return "--color-subject-".concat(subject.subjectId, ": ").concat(subject.colorCSSValue);
+        }).join(';\r'), "\n    }"));
+
+        var _iterator = _createForOfIteratorHelper(subjects),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var subject = _step.value;
+            styleSheet.insertRule("\n      ._subject-color[data-subject=\"".concat(subject.subjectId, "\"] {\n        color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
+            styleSheet.insertRule("\n      ._subject-background-color[data-subject=\"".concat(subject.subjectId, "\"] {\n        background-color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
+            styleSheet.insertRule("\n      ._subject-border-color[data-subject=\"".concat(subject.subjectId, "\"] {\n        border-color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
       }
     }, {
       key: "setValues",

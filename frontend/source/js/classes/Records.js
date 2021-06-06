@@ -9,6 +9,7 @@ class Records {
   // public methods
 
   setSubjects(subjects) {
+
     // define subjects
     for (let i = 0; i < subjects.length; i++) {
       let hue = 360 - (360 * i / subjects.length) + 130;
@@ -19,6 +20,7 @@ class Records {
       subjects[i].colorCSSValue = `rgb(${srgb.coords.map(channel => channel * 256).join(',')})`;
     }
     this.#subjects = Object.freeze(subjects);
+
     // set properties
     this.#properties = [];
     subjects.forEach(subject => {
@@ -28,6 +30,28 @@ class Records {
     });
     console.log(this.#subjects);
     console.log(this.#properties);
+
+    // make stylesheet
+    const styleElm = document.createElement('style');
+    document.head.appendChild(styleElm);
+    const styleSheet = styleElm.sheet;
+    styleSheet.insertRule(`:root {
+      ${subjects.map(subject => `--color-subject-${subject.subjectId}: ${subject.colorCSSValue}`).join(';\r')}
+    }`);
+    for (const subject of subjects) {
+      styleSheet.insertRule(`
+      ._subject-color[data-subject="${subject.subjectId}"] {
+        color: var(--color-subject-${subject.subjectId});
+      }`);
+      styleSheet.insertRule(`
+      ._subject-background-color[data-subject="${subject.subjectId}"] {
+        background-color: var(--color-subject-${subject.subjectId});
+      }`);
+      styleSheet.insertRule(`
+      ._subject-border-color[data-subject="${subject.subjectId}"] {
+        border-color: var(--color-subject-${subject.subjectId});
+      }`);
+    }
   }
 
   setValues(propertyId, values) {
