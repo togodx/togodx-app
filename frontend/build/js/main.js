@@ -2764,9 +2764,9 @@
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var subject = _step.value;
-            styleSheet.insertRule("\n      ._subject-color[data-subject=\"".concat(subject.subjectId, "\"] {\n        color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
-            styleSheet.insertRule("\n      ._subject-background-color[data-subject=\"".concat(subject.subjectId, "\"] {\n        background-color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
-            styleSheet.insertRule("\n      ._subject-border-color[data-subject=\"".concat(subject.subjectId, "\"] {\n        border-color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
+            styleSheet.insertRule("\n      ._subject-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-color {\n        color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
+            styleSheet.insertRule("\n      ._subject-background-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-background-color {\n        background-color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
+            styleSheet.insertRule("\n      ._subject-border-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-border-color {\n        border-color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
           }
         } catch (err) {
           _iterator.e(err);
@@ -3192,12 +3192,15 @@
       });
 
       // make view
+      var labelClassName = "label" + type === 'property' ? ' _subject-color' : '';
+
       _classPrivateFieldSet(this, _elm, document.createElement('div'));
 
       _classPrivateFieldGet(this, _elm).classList.add('stacking-condition-view');
 
+      _classPrivateFieldGet(this, _elm).dataset.subjectId = condition.subject.subjectId;
       _classPrivateFieldGet(this, _elm).dataset.propertyId = condition.property.propertyId;
-      _classPrivateFieldGet(this, _elm).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      <li>".concat(condition.subject.subject, "</li>\n    </ul>\n    <div class=\"label\" style=\"color: ").concat(condition.subject.colorCSSValue, ";\">").concat(condition.property.label, "</div>");
+      _classPrivateFieldGet(this, _elm).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      <li>".concat(condition.subject.subject, "</li>\n    </ul>\n    <div class=\"").concat(labelClassName, "\" style=\"color: ").concat(condition.subject.colorCSSValue, ";\">").concat(condition.property.label, "</div>");
       container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _elm));
     } // accessor
 

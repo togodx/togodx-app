@@ -40,15 +40,15 @@ class Records {
     }`);
     for (const subject of subjects) {
       styleSheet.insertRule(`
-      ._subject-color[data-subject="${subject.subjectId}"] {
+      ._subject-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-color {
         color: var(--color-subject-${subject.subjectId});
       }`);
       styleSheet.insertRule(`
-      ._subject-background-color[data-subject="${subject.subjectId}"] {
+      ._subject-background-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-background-color {
         background-color: var(--color-subject-${subject.subjectId});
       }`);
       styleSheet.insertRule(`
-      ._subject-border-color[data-subject="${subject.subjectId}"] {
+      ._subject-border-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-border-color {
         border-color: var(--color-subject-${subject.subjectId});
       }`);
     }
