@@ -3738,12 +3738,16 @@
   function _makeColumn2(items, depth, parentCategoryId) {
     var _this3 = this;
 
-    // make column
+    var parentItem = parentCategoryId ? _classPrivateFieldGet(this, _items$1)[parentCategoryId] : undefined;
+    console.log(parentItem); // make column
+
     var ul = document.createElement('ul');
     ul.classList.add('column');
     var max = 0; // make items
 
-    ul.innerHTML = "<li class=\"item -all\">\n      <input type=\"checkbox\" value=\"".concat(ALL_PROPERTIES, "\"/>\n      <span class=\"label\">All properties</span>\n    </li>") + items.map(function (item) {
+    ul.innerHTML = "<li\n      class=\"item -all\"\n      ".concat(parentCategoryId ? "\n        data-parent-category-id=\"".concat(parentCategoryId, "\"\n        data-parent-label=\"").concat(parentItem.label, "\"") : '', "\n      data-category-ids=\"").concat(items.map(function (item) {
+      return item.categoryId;
+    }), "\"\n      data-depth=\"").concat(depth, "\">\n      <input type=\"checkbox\" value=\"").concat(ALL_PROPERTIES, "\"/>\n      <span class=\"label\">All properties</span>\n    </li>") + items.map(function (item) {
       max = Math.max(max, item.count);
       return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");
     }).join('');
@@ -3833,14 +3837,29 @@
     }); // all properties event
 
     ul.querySelector(':scope > .item.-all').addEventListener('change', function (e) {
-      var isChecked = e.target.checked;
-      listItems.forEach(function (item) {
-        var checkbox = item.querySelector(':scope > input[type="checkbox"]');
+      var dataset = e.target.parentNode.dataset;
 
-        if (checkbox.checked !== isChecked) {
-          checkbox.dispatchEvent(new MouseEvent('click'));
-        }
-      });
+      if (e.target.checked) {
+        // add
+        ConditionBuilder$1.addProperty({
+          subject: _classPrivateFieldGet(_this3, _subject$3),
+          property: _classPrivateFieldGet(_this3, _property$3),
+          subCategory: {
+            parentCategoryId: dataset.parentCategoryId,
+            values: dataset.categoryIds.split(','),
+            label: dataset.parentLabel
+          }
+        });
+      } else {
+        // remove
+        ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this3, _property$3).propertyId, dataset.parentCategoryId);
+      } // listItems.forEach(item => {
+      //   const checkbox = item.querySelector(':scope > input[type="checkbox"]');
+      //   if (checkbox.checked !== isChecked) {
+      //     checkbox.dispatchEvent(new MouseEvent('click'));
+      //   }
+      // });
+
     });
 
     _classPrivateFieldGet(this, _columns).push({

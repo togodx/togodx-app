@@ -121,13 +121,22 @@ export default class ColumnSelectorView {
 
   #makeColumn(items, depth, parentCategoryId) {
 
+    const parentItem = parentCategoryId ? this.#items[parentCategoryId] : undefined;
+    console.log(parentItem)
+
     // make column
     const ul = document.createElement('ul');
     ul.classList.add('column');
     let max = 0;
 
     // make items
-    ul.innerHTML = `<li class="item -all">
+    ul.innerHTML = `<li
+      class="item -all"
+      ${parentCategoryId ? `
+        data-parent-category-id="${parentCategoryId}"
+        data-parent-label="${parentItem.label}"` : ''}
+      data-category-ids="${items.map(item => item.categoryId)}"
+      data-depth="${depth}">
       <input type="checkbox" value="${ALL_PROPERTIES}"/>
       <span class="label">All properties</span>
     </li>`
@@ -204,7 +213,20 @@ export default class ColumnSelectorView {
 
     // all properties event
     ul.querySelector(':scope > .item.-all').addEventListener('change', e => {
-      const isChecked = e.target.checked;
+      const dataset = e.target.parentNode.dataset;
+      if (e.target.checked) { // add
+        ConditionBuilder.addProperty({
+          subject: this.#subject,
+          property: this.#property,
+          subCategory: {
+            parentCategoryId: dataset.parentCategoryId,
+            values: dataset.categoryIds.split(','),
+            label: dataset.parentLabel
+          }
+        });
+      } else { // remove
+        ConditionBuilder.removeProperty(this.#property.propertyId, dataset.parentCategoryId);
+      }
       // listItems.forEach(item => {
       //   const checkbox = item.querySelector(':scope > input[type="checkbox"]');
       //   if (checkbox.checked !== isChecked) {
