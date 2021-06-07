@@ -3,7 +3,7 @@
     "subject": "Gene",
     "subjectId": "gene",
     "togoKey": "hgnc",
-    "keyLabel": "HGNC",
+    "keyLabel": "Gene (HGNC)",
     "properties": [
       {
         "propertyId": "ensembl-gene-biotype",
@@ -76,7 +76,7 @@
     "subject": "Protein",
     "subjectId": "protein",
     "togoKey": "uniprot",
-    "keyLabel": "UniProt",
+    "keyLabel": "Protein (UniProt)",
     "properties": [
       {
         "propertyId": "uniprot_keywords_domain",
@@ -191,7 +191,7 @@
     "subject": "Protein structure",
     "subjectId": "proteinStructure",
     "togoKey": "pdb",
-    "keyLabel": "PDB",
+    "keyLabel": "Protein structure (PDB)",
     "properties": [
       {
         "propertyId": "uniprot_pdb_existence",
@@ -305,7 +305,7 @@
     "subject": "Chemical compound",
     "subjectId": "chemicalCompound",
     "togoKey": "pubchem_compound",
-    "keyLabel": "PubChem compound",
+    "keyLabel": "Chemical compound (PubChem)",
     "properties": [
       {
         "propertyId": "chembl_mechanism_action_type",
@@ -361,7 +361,7 @@
     "subject": "Disease",
     "subjectId": "disease",
     "togoKey": "mondo",
-    "keyLabel": "Mondo",
+    "keyLabel": "Disease (Mondo)",
     "properties": [
       {
         "propertyId": "disease_mondo_filter",
@@ -408,8 +408,6 @@
   {
     "subject": "Variant",
     "subjectId": "variant",
-    "togoKey": "togovar",
-    "keyLabel": "TogoVar variant",
     "properties": [
       {
         "propertyId": "variant_consequence",

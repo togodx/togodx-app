@@ -30,6 +30,7 @@ export const addNextRows = 'addNextRows';
 // Table data
 export const selectTableData = 'selectTableData';
 export const deleteTableData = 'deleteTableData';
+export const highlightCol = 'highlightCol';
 
 // Track
 export const enterPropertyValueItemView = 'enterPropertyValueItemView';

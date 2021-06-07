@@ -139,31 +139,60 @@ Protein domains from UniProt
 
 - Identifier: uniprot
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_domain
-- No description
+- Data sources
+    - [UniProt](https://www.uniprot.org/)
+    - For details about UniProt Keywords, see [UniProt documentation](https://www.uniprot.org/help/keywords).
+
+- Query
+    - Input
+        - UniProt ID
+    - Output
+        - UniProt Keyword in the Domain category
 
 ### Cellular component
 
 Gene ontology cellular component annotation from UniProt
 
 - Identifier: uniprot
-- SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_cellular_component
-- No description
-
+- SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_go_cellular_component
+- Data sources
+    - [UniProt](https://www.uniprot.org/)
+    
+- Query
+    - Input
+        - UniProt ID
+    - Output
+        - Gene Ontology terms of cellular component domain
+        
 ### Biological process
 
 Gene ontology biological process annotation from UniProt
 
 - Identifier: uniprot
-- SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_biological_process
-- No description
+- SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_go_biological_process
+- Data sources
+    - [UniProt](https://www.uniprot.org/)
+    
+- Query
+    - Input
+        - UniProt ID
+    - Output
+        - Gene Ontology terms of biological process domain
 
 ### Molecular function
 
 Gene ontology molecular function annotation from UniProt
 
 - Identifier: uniprot
-- SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_molecular_function
-- No description
+- SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_go_molecular_function
+- Data sources
+    - [UniProt](https://www.uniprot.org/)
+    
+- Query
+    - Input
+        - UniProt ID
+    - Output
+        - Gene Ontology terms of molecular function domain
 
 ### Ligands
 
@@ -171,7 +200,15 @@ Ligand bindings from UniProt
 
 - Identifier: uniprot
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_ligand
-- No description
+- Data sources
+    - [UniProt](https://www.uniprot.org/)
+    - For details about UniProt Keywords, see [UniProt documentation](https://www.uniprot.org/help/keywords).
+
+- Query
+    - Input
+        - UniProt ID
+    - Output
+        - UniProt Keyword in the Ligand category
 
 ### Molecular mass
 
@@ -179,7 +216,14 @@ Molecular mass from UniProt
 
 - Identifier: uniprot
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_mass
-- No description
+- Data sources
+    - [UniProt](https://www.uniprot.org/)
+
+- Query
+    - Input
+        - UniProt ID
+    - Output
+        - Molecular mass (kDa) range
 
 ### PTMs
 
@@ -187,7 +231,15 @@ Post-translational modifications from UniProt
 
 - Identifier: uniprot
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_PTM
-- No description
+- Data sources
+    - [UniProt](https://www.uniprot.org/)
+    - For details about UniProt Keywords, see [UniProt documentation](https://www.uniprot.org/help/keywords).
+
+- Query
+    - Input
+        - UniProt ID
+    - Output
+        - UniProt Keyword in the Post-translational modification category
 
 ### # of transmembrane domains
 
@@ -195,7 +247,14 @@ The number of transmembrane segments from UniProt
 
 - Identifier: uniprot
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_transmembranenumber
-- No description
+- Data sources
+    - [UniProt](https://www.uniprot.org/)
+
+- Query
+    - Input
+        - UniProt ID
+    - Output
+        - The number of transmembrane site
 
 ### # of phosphorylation sites
 
@@ -203,7 +262,14 @@ The number of phosphorylation sites from UniProt
 
 - Identifier: uniprot
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_phospho_site
-- No description
+- Data sources
+    - [UniProt](https://www.uniprot.org/)
+
+- Query
+    - Input
+        - UniProt ID
+    - Output
+        - The number of phosphorylation site
 
 ### # of glycosylation sites
 
@@ -211,7 +277,14 @@ The number of glycosylation sites from UniProt
 
 - Identifier: uniprot
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_glyco_site
-- No description
+- Data sources
+    - [UniProt](https://www.uniprot.org/)
+
+- Query
+    - Input
+        - UniProt ID
+    - Output
+        - The number of glycosylation site
 
 ### Disease-related proteins
 
@@ -219,7 +292,15 @@ Disease-related proteins from UniProt
 
 - Identifier: uniprot
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_keywords_disease
-- No description
+- Data sources
+    - [UniProt](https://www.uniprot.org/)
+    - For details about UniProt Keywords, see [UniProt documentation](https://www.uniprot.org/help/keywords).
+
+- Query
+    - Input
+        - UniProt ID
+    - Output
+        - UniProt Keyword in the Disease category
 
 ### Isolation source
 
@@ -227,7 +308,17 @@ Tissues from which the protein was isolated, from UniProt
 
 - Identifier: uniprot
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_isolated_tissue
-- No description
+- Data sources
+    - [UniProt](https://www.uniprot.org/)
+
+- Query
+    - Obtain tissues to which input UniProt entries link with <https://www.uniprot.org/core/isolatedFrom>.
+    - Input UniProt entries contain a reference describing the protein sequence obtained from a clone isolated from output tissues.
+    - Input
+        - UniProt ID
+    - Output
+        - Tissue
+            - [UniProt Controlled vocabulary of tissues](https://www.uniprot.org/docs/tisslist)
 
 ### Evidence of existence
 
@@ -391,7 +482,16 @@ The number of proteins in each pathway from Reactome
 
 - Identifier: uniprot
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_reactome
-- No description
+- Data sources
+    - Reactome-classified pathways for each protein
+    - This item based on the data of Reactome Version 71 (02, December 2019).
+       - The latest data can be obtained from the URL below. https://reactome.org/download-data
+- Query
+    - Input
+        - Reactome ID, Uniprot ID
+    - Output
+        - The number of Uniprot entries included in each pathway in Reactome
+        - If a Uniprot id is entered, it returns the pathway to which the protein belongs
 
 ### Compounds in pathway
 
@@ -399,7 +499,18 @@ The number of chemical compounds in each pathway from Reactome
 
 - Identifier: chebi
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/chebi_reactome
-- No description
+- Data sources
+    - Reactome-classified pathways for each chemical compound
+    - This item based on the data of  Reactome Version 71 (02, December 2019).
+        - The latest data can be obtained from the URL below. https://reactome.org/download-data
+- Query
+    - Input
+        - Reactome ID , ChEBI ID
+    - Output
+        - The number of ChEBI entries included in each pathways in Reactome
+        - If a ChEBI id is entered, it returns the pathway to which the chemical compound belongs
+
+
 
 ### # of interacting proteins
 
@@ -407,7 +518,15 @@ The number of interacting proteins from UniProt
 
 - Identifier: uniprot
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_interact
-- No description
+- Data sources
+    - The number of interacting proteins from UniProt
+    - This item based on the data of March, 2021 of UniProt (human only).
+- Query
+    - Input
+        - UniProt ID, Number of interacting proteins
+    - Output
+        - The number of interacting proteins from UniProt
+        - If a UniProt ID is entered, it returns the number of interacting proteins
 
 ### ChEMBL assay existence
 
@@ -415,7 +534,18 @@ Proteins with or without ChEMBL assay from Uniprot
 
 - Identifier: uniprot
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/uniprot_chembl_assay_existence
-- No description
+ 
+- Data sources
+    - Proteins with or without ChEMBL assay from UniProt
+    - ChEMBL-RDF 28.0: http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/
+- Query
+    - Input
+        - Existence (1: exists, 0: not exists), UniProt ID
+    - Output
+        - The number of UniProt entries link to ChEMBL entries.
+        - If a UniProt ID is entered, it returns whether ChEMBL entry exists or not.
+
+
 
 ## Subject: Chemical compound
 
@@ -427,7 +557,7 @@ Mechanism action types in ChEMBL
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/chembl_mechanism_action_type
 - Data sources
     - (More data sources description goes here..)
-    - ChEMBL-RDF: http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/28.0/
+    - ChEMBL-RDF 28.0: http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/
 - Query
     - (More query details go here..)
     -  Input
@@ -443,7 +573,7 @@ Substance types in ChEMBL
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/chembl_substancetype
 - Data sources
     - (More data sources description goes here..)
-    - ChEMBL-RDF: http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/28.0/
+    - ChEMBL-RDF 28.0: http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/
 - Query
     - (More query details go here..)
     -  Input
@@ -459,7 +589,7 @@ Drug indications in MeSH categories
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/chembl_mesh
 - Data sources
     - (More data sources description goes here..)
-    - ChEMBL-RDF: http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/28.0/
+    - ChEMBL-RDF 28.0: http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/
     - Mesh 2021: ftp://ftp.nlm.nih.gov/online/mesh/rdf/
 - Query
     - (More query details go here..)
@@ -477,7 +607,7 @@ Drug development phase in ChEMBL
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/chembl_development_phase
 - Data sources
     - (More data sources description goes here..)
-    - ChEMBL-RDF: http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/28.0/
+    - ChEMBL-RDF 28.0: http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/
 - Query
     - (More query details go here..)
     -  Input
@@ -491,16 +621,15 @@ Anatomical Therapeutic Chemical (ATC) Classification in PubChem
 
 - Identifier: pubchem_compound
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/atc_classification_haschild
-Description 
-* Data sources
-	* PubChem-RDF: ftp://ftp.ncbi.nlm.nih.gov/pubchem/RDF/ （Version 2021-03-01 ） 
-      * Data for nodes linked to ChEMBL or ChEBI retrieved from https://integbio.jp/rdf/dataset/pubchem
+- Data sources
+	- PubChem-RDF: ftp://ftp.ncbi.nlm.nih.gov/pubchem/RDF/ （Version 2021-03-01 ） 
+        - Data for nodes linked to ChEMBL or ChEBI retrieved from https://integbio.jp/rdf/dataset/pubchem
 
-* Query
-	* Input
-  		* PubChem Compound ID 
-	* Output
-    	* WHO ATC code
+- Query
+	- Input
+  		- PubChem Compound ID 
+	- Output
+    	- WHO ATC code (https://www.whocc.no/atc_ddd_index/)
 
 ### ChEMBL ATC classification
 
@@ -511,13 +640,13 @@ Anatomical Therapeutic Chemical (ATC) Classification in ChEMBL
 - Data sources
     - (More data sources description goes here..)
     - ATC: https://bioportal.bioontology.org/ontologies/ATC
-    - ChEMBL-RDF: http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/28.0/
+    - ChEMBL-RDF 28.0: http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/
 - Query
     - (More query details go here..)
     -  Input
-        - ATC category ID
-    - Output
         - ChEMBL ID
+    - Output
+        - ATC category ID
         - ATC category label
 
 ## Subject: Disease
@@ -528,7 +657,13 @@ Disease or disorder categories in the Mondo Disease Ontology (Mondo)
 
 - Identifier: mondo
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/disease_mondo_filter
-- No description
+- Data sources
+    -  [Mondo Disease Ontology (Mondo) ](https://mondo.monarchinitiative.org/) 
+- Query
+    - Input
+        - Mondo id
+    - Output
+        -  [Disease and disorder (MONDO_0000001)](https://monarchinitiative.org/disease/MONDO:0000001) and its subcategories of Mondo
 
 ### Diseases in MeSH
 
@@ -536,7 +671,13 @@ Disease categories in Medical Subject Headings (MeSH)
 
 - Identifier: mesh
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/disease_mesh_filter
-- No description
+- Data sources
+    -  [Medical Subject Headings (MeSH)](https://www.nlm.nih.gov/mesh/meshhome.html) 
+- Query
+    - Input
+        - MeSH Descriptor
+    - Output
+        -  [Diseases ([C])](https://meshb.nlm.nih.gov/treeView) and its subcategories of MeSH
 
 ### Diseases in NANDO
 
@@ -560,15 +701,29 @@ The number of entries in disease related database in Mondo
 
 - Identifier: mondo
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/Disease-relatedDB
-- No description
-
+- Data sources
+    - (More data sources description goes here..)
+    - Mondo disease ontlogy: https://mondo.monarchinitiative.org/
+- Query
+    - 各MondoIDに紐づいている、関連のデータベースについて、その種類と関連するIDの数を集計
+    -  Input
+        - MONDO id
+    - Output
+        - Related Databases category
+  
 ### Phenotypic abnormality
 
 Phenotypic abnormality categories of the Human Phenotype Ontology (HPO)
 
 - Identifier: hp
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/disease_hpo_filter
-- No description
+- Data sources
+    -  [Human Phenotype Ontology (HPO)](https://hpo.jax.org/app/) 
+- Query
+    - Input
+        - HPO id
+    - Output
+        -  [Phenotypic abnormality (HP:0000118)](https://hpo.jax.org/app/browse/term/HP:0000118)  and its subcategories of HPO
 
 ## Subject: Variant
 
@@ -582,14 +737,9 @@ Variant consequence from TogoVar
     -  [TogoVar](https://togovar.biosciencedbc.jp/?) (limited to variants with frequency data in Japanese populations)
 - Query
     -  Input
-        - SO (sequence ontology) ID that indicates [a variant consequence calculated with Variant Effect Predictor (VEP)](https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html#consequences)
         - TogoVar id
     - Output
-        - The number of variants categorized by the variant consequence.
-
-- author:
-  - 三橋(守屋さんのSPARQListを改造)
-
+        -  [Variant consequence calculated with Variant Effect Predictor (VEP)](https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html#consequences) in terms of [Sequence ontology](http://www.sequenceontology.org/)
 
 ### Clinical significance
 
@@ -601,8 +751,7 @@ Variant clinical significance from TogoVar
     -  [TogoVar](https://togovar.biosciencedbc.jp/?) (limited to variants with frequency data in Japanese populations)
 - Query
     - Input
-        -  [Clinical significance of ClinVar](https://www.ncbi.nlm.nih.gov/clinvar/docs/clinsig/)
         - TogoVar id
     - Output
-        -  The number of variants categorized by clinical significance of ClinVar
+        -   [Clinical significance of ClinVar](https://www.ncbi.nlm.nih.gov/clinvar/docs/clinsig/)
 
