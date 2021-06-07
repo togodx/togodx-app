@@ -1,15 +1,7 @@
-import DefaultEventEmitter from '../classes/DefaultEventEmitter';
-import * as event from '../events';
-// Handle the mousedown event
-// that's triggered when user drags the element
 let x = 0;
 let y = 0;
 
-DefaultEventEmitter.addEventListener(event.dragPopup, e => {
-    dragView(e.detail);
-  });
-
-function dragView(view) {
+export function dragView(view) {
   x = view.x;
   y = view.y;
 

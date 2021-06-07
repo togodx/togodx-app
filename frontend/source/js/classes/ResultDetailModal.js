@@ -2,7 +2,7 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
 import StanzaManager from './StanzaManager';
 import {createPopupEvent} from '../functions/util';
-import dragView from '../functions/dragView';
+import {dragView} from '../functions/dragView';
 import * as event from '../events';
 
 export default class ResultDetailModal {
@@ -25,56 +25,55 @@ export default class ResultDetailModal {
     this.#RESULT_MODAL = document.querySelector('#ResultDetailModal');
     this.#exit_button = document.createElement('div');
     this.#exit_button.className = 'close-button-view';
-    this.#popup_top = '';
-    this.#popup_left = '';
-
 
     // attach event
-    this.#exit_button.addEventListener('click', () => {
-      this.#hidePopUp();
-    });
-
     DefaultEventEmitter.addEventListener(event.showPopup, e => {
-      this.#showPopUp(e);
+      this.#showPopup(e);
     });
 
     DefaultEventEmitter.addEventListener(event.movePopup, e => {
-      this.#hidePopUp();
-      this.#showPopUp(e);
+      this.#hidePopup(false);
+      this.#showPopup(e);
     });
 
-    DefaultEventEmitter.addEventListener(event.hidePopUp, () => {
-      this.#hidePopUp();
+    DefaultEventEmitter.addEventListener(event.dragElement, e => {
+      dragView(e.detail);
+    });
+
+    DefaultEventEmitter.addEventListener(event.hidePopup, () => {
+      this.#hidePopup();
     });
 
     this.#RESULT_MODAL.addEventListener('click', e => {
       if (e.target !== e.currentTarget) return;
-      this.#hidePopUp();
+      DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hidePopup));
+    });
+
+    this.#exit_button.addEventListener('click', () => {
+      DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hidePopup));
     });
   }
   // bind this on handleKeydown so it will keep listening to same event during the whole popup
-  #showPopUp(e) {
-    if (this.#RESULT_MODAL.innerHTML === '') {
-      this.#setHighlight(
-        e.detail.properties.dataX,
-        e.detail.properties.dataY,
-        e.detail.properties.dataSubOrder
-      );
-      this.#handleKeydown = this.#handleKeydown.bind(this);
-      document.addEventListener('keydown', this.#handleKeydown);
+  #showPopup(e) {
+    this.#setHighlight(
+      e.detail.properties.dataX,
+      e.detail.properties.dataY,
+      e.detail.properties.dataSubOrder
+    );
+    this.#handleKeydown = this.#handleKeydown.bind(this);
+    document.addEventListener('keydown', this.#handleKeydown);
 
-      this.#RESULT_MODAL.appendChild(this.#popup(e.detail));
-      this.#RESULT_MODAL.classList.add('backdrop');
-    }
+    this.#RESULT_MODAL.appendChild(this.#popup(e.detail));
+    this.#RESULT_MODAL.classList.add('backdrop');
   }
   // HTML elements
   #popup(detail) {
     const popup = document.createElement('div');
     popup.className = 'popup';
-    popup.appendChild(this.#header(detail.keys, detail.properties));
-    popup.appendChild(this.#container(detail.keys, detail.properties));
     popup.style.left = this.#popup_left;
     popup.style.top = this.#popup_top;
+    popup.appendChild(this.#header(detail.keys, detail.properties));
+    popup.appendChild(this.#container(detail.keys, detail.properties));
 
     return popup;
   }
@@ -107,12 +106,12 @@ export default class ResultDetailModal {
     header.style.backgroundColor = subject.colorCSSValue;
     header.lastChild.appendChild(this.#exit_button);
     header.addEventListener('mousedown', e => {
-      const customEvent = new CustomEvent(event.dragPopup, {
+      const customEvent = new CustomEvent(event.dragElement, {
         detail: {
           x: e.clientX,
           y: e.clientY,
-          container : header.parentElement,
-          dragableElement : header
+          container: header.parentElement,
+          dragableElement: header,
         },
       });
       DefaultEventEmitter.dispatchEvent(customEvent);
@@ -174,7 +173,7 @@ export default class ResultDetailModal {
 
   #handleKeydown = e => {
     if (e.key == 'Escape') {
-      this.#hidePopUp();
+      DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hidePopup));
     } else if (this.#arrowFuncs.has(e.key)) {
       e.preventDefault();
       this.#RESULT_MODAL
@@ -221,7 +220,7 @@ export default class ResultDetailModal {
       targetEntry.scrollIntoView({block: 'center'});
       createPopupEvent(targetEntry, reportLink, event.movePopup);
     } catch (error) {
-      console.log('Out of bounds');
+      console.log('Movement out of bounds');
     }
   }
 
@@ -252,10 +251,12 @@ export default class ResultDetailModal {
     );
   }
 
-  #hidePopUp() {
-    const popupStyle = this.#RESULT_MODAL.querySelector('.popup').style
-    this.#popup_top = popupStyle.top
-    this.#popup_left = popupStyle.left
+  #hidePopup(exitingPopup = true) {
+    // reset popup to the center if it is shown for first time
+    // keep moved axes if user has dragged popup while moving with arrows
+    const popupStyle = this.#RESULT_MODAL.querySelector('.popup').style;
+    this.#popup_top = exitingPopup ? '' : popupStyle.top;
+    this.#popup_left = exitingPopup ? '' : popupStyle.left;
 
     this.#RESULT_MODAL.classList.remove('backdrop');
     this.#RESULT_MODAL.innerHTML = '';
