@@ -18,7 +18,6 @@
           > th, td
             height: 100%
             > .inner
-              height: 100%
               &.-propertyvalue
                 color: white
           &.header, &.subheader
@@ -30,7 +29,6 @@
               line-height: 1.5rem
               > .inner
                 background-color: white
-                // border-bottom: solid .1rem var(--color-separator)
                 border-bottom: solid .1rem var(--color-black)
                 &.-noborder
                   border: none
@@ -44,10 +42,10 @@
                     background-color: var(--color-dark-gray)
             &.header
               > th
-                height: var(--thheight)
                 top: 0
                 &:nth-child(1), &:nth-child(2)
                   > .inner
+                    height: calc(var(--thheight) * 4)
                     padding-top: calc(var(--thheight) * 0.5 + var(--padding-track-block-start))
             &.subheader
               > th
