@@ -13,16 +13,17 @@ export default class ConditionBuilderView {
   constructor(elm) {
 
     // references
-    const body = document.querySelector('body');
     const conditionsContainer = elm.querySelector(':scope > .conditions');
-    this.#TOGO_KEYS = conditionsContainer.querySelector(':scope > .togokey > .inner > select');
-    this.#PROPERTIES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .properties > .inner > .conditions');
-    this.#ATTRIBUTES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .attributes > .inner > .conditions');
+    this.#TOGO_KEYS = conditionsContainer.querySelector('#ConditionTogoKey > .inner > select');
+    this.#PROPERTIES_CONDITIONS_CONTAINER = document.querySelector('#ConditionKeys > .inner > .conditions');
+    this.#ATTRIBUTES_CONDITIONS_CONTAINER = document.querySelector('#ConditionValues > .inner > .conditions');
     this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
 
     // attach event
+    document.querySelector('#ConditionKeys').addEventListener('click', () => document.body.dataset.condition = 'keys');
+    document.querySelector('#ConditionValues').addEventListener('click', () => document.body.dataset.condition = 'values');
     this.#EXEC_BUTTON.addEventListener('click', () => {
-      body.dataset.display = 'results';
+      document.body.dataset.display = 'results';
       ConditionBuilder.makeQueryParameter();
     });
 
@@ -81,7 +82,8 @@ export default class ConditionBuilderView {
     // make view
     const view = new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {subject, property, subCategory});
     // event
-    view.elm.querySelector(':scope > .close-button-view').addEventListener('click', () => {
+    view.elm.querySelector(':scope > .close-button-view').addEventListener('click', e => {
+      e.stopPropagation();
       ConditionBuilder.removeProperty(view.elm.dataset.propertyId, view.elm.dataset.parentCategoryId);
     });
   }
@@ -99,7 +101,8 @@ export default class ConditionBuilderView {
     // make view
     const view = new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {subject, property, value});
     // event
-    view.elm.querySelector(':scope > .close-button-view').addEventListener('click', () => {
+    view.elm.querySelector(':scope > .close-button-view').addEventListener('click', e => {
+      e.stopPropagation();
       ConditionBuilder.removePropertyValue(view.elm.dataset.propertyId, view.elm.dataset.categoryId);
     });
   }

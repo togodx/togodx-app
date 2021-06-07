@@ -3308,20 +3308,26 @@
     });
 
     // references
-    var body = document.querySelector('body');
     var conditionsContainer = elm.querySelector(':scope > .conditions');
 
-    _classPrivateFieldSet(this, _TOGO_KEYS, conditionsContainer.querySelector(':scope > .togokey > .inner > select'));
+    _classPrivateFieldSet(this, _TOGO_KEYS, conditionsContainer.querySelector('#ConditionTogoKey > .inner > select'));
 
-    _classPrivateFieldSet(this, _PROPERTIES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .properties > .inner > .conditions'));
+    _classPrivateFieldSet(this, _PROPERTIES_CONDITIONS_CONTAINER, document.querySelector('#ConditionKeys > .inner > .conditions'));
 
-    _classPrivateFieldSet(this, _ATTRIBUTES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .attributes > .inner > .conditions'));
+    _classPrivateFieldSet(this, _ATTRIBUTES_CONDITIONS_CONTAINER, document.querySelector('#ConditionValues > .inner > .conditions'));
 
     _classPrivateFieldSet(this, _EXEC_BUTTON, elm.querySelector(':scope > footer > button.exec')); // attach event
 
 
+    document.querySelector('#ConditionKeys').addEventListener('click', function () {
+      return document.body.dataset.condition = 'keys';
+    });
+    document.querySelector('#ConditionValues').addEventListener('click', function () {
+      return document.body.dataset.condition = 'values';
+    });
+
     _classPrivateFieldGet(this, _EXEC_BUTTON).addEventListener('click', function () {
-      body.dataset.display = 'results';
+      document.body.dataset.display = 'results';
       ConditionBuilder$1.makeQueryParameter();
     }); // event listeners
 
@@ -3394,7 +3400,8 @@
       subCategory: subCategory
     }); // event
 
-    view.elm.querySelector(':scope > .close-button-view').addEventListener('click', function () {
+    view.elm.querySelector(':scope > .close-button-view').addEventListener('click', function (e) {
+      e.stopPropagation();
       ConditionBuilder$1.removeProperty(view.elm.dataset.propertyId, view.elm.dataset.parentCategoryId);
     });
   }
@@ -3419,7 +3426,8 @@
       value: value
     }); // event
 
-    view.elm.querySelector(':scope > .close-button-view').addEventListener('click', function () {
+    view.elm.querySelector(':scope > .close-button-view').addEventListener('click', function (e) {
+      e.stopPropagation();
       ConditionBuilder$1.removePropertyValue(view.elm.dataset.propertyId, view.elm.dataset.categoryId);
     });
   }
@@ -5114,10 +5122,12 @@
 
     DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
-    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class=\"inner\">Report</div>\n      </th>\n      <th>\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getLabelFromTogoKey(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      ").concat(tableData.condition.attributes.map(function (property) {
-      return "\n      <th>\n        <div class=\"inner _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
-    }).join(''), "\n      ").concat(tableData.condition.properties.map(function (property) {
-      return "\n      <th>\n        <div class=\"inner _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.subCategory ? property.subCategory.label : property.property.label, "</span>\n        </div>\n      </th>");
+    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class=\"inner -noborder\">Report</div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\">\n          <div class=\"togo-key-view\">".concat(Records$1.getLabelFromTogoKey(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      "); // makte table sub header
+
+    _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    <th>\n      <div class=\"inner\"></div>\n    </th>\n    <th>\n      <div class=\"inner\"></div>\n    </th>\n    ".concat(tableData.condition.attributes.map(function (property) {
+      return "\n    <th>\n      <div class=\"inner _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n      <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.property.label, "</span>\n      </div>\n    </th>");
+    }).join(''), "\n    ").concat(tableData.condition.properties.map(function (property) {
+      return "\n    <th>\n      <div class=\"inner _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n        <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.subCategory ? property.subCategory.label : property.property.label, "</span>\n      </div>\n    </th>");
     }).join('')); // make stats
 
     _classPrivateFieldGet(this, _STATS).innerHTML = "<td colspan=\"2\"><div class=\"inner\"><div></td>" + properties.map(function () {

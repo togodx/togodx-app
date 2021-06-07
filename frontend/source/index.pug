@@ -232,7 +232,7 @@ block main
             //- h2.title(data-hidden-by="properties") Results
             h2.title Condition builder
           .conditions
-            .togokey
+            #ConditionTogoKey.condition
               .inner
                 h2.title
                   span.material-icons-outlined layers
@@ -256,10 +256,10 @@ block main
                   button.rounded-button-view.-verysmall.-outline(type="button") Submit
                   button.rounded-button-view.-verysmall.-outline(type="button") Reset
 
-            .attributes
+            #ConditionKeys.condition
               .inner
                 h2.title
-                  span.material-icons-outlined west
+                  span.material-icons-outlined filter_alt
                   | Add filters
                 .conditions.-empty
                 //-
@@ -270,10 +270,10 @@ block main
                       li Position
                       li.end Genital
                     .label Testis
-            .properties
+            #ConditionValues.condition
               .inner
                 h2.title
-                  span.material-icons-outlined west
+                  span.material-icons-outlined insights
                   | Map attributes
                 .conditions.-empty
                 //-

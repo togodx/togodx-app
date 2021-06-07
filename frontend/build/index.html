@@ -14,7 +14,7 @@
     <!-- Place favicon.ico in the root directory-->
     <link rel="stylesheet" href="css/main.css">
   </head>
-  <body data-page="top" data-heatmap="true" data-display="properties">
+  <body data-page="top" data-heatmap="true" data-display="properties" data-condition="keys">
     <header id="Header">
       <h1><a href="./">TogoSite</a></h1>
       <nav>
@@ -78,7 +78,7 @@
               <h2 class="title">Condition builder</h2>
             </header>
             <div class="conditions">
-              <div class="togokey">
+              <div class="condition" id="ConditionTogoKey">
                 <div class="inner">
                   <h2 class="title"><span class="material-icons-outlined">layers</span>Select target category</h2>
                   <select disabled></select>
@@ -95,15 +95,15 @@
                   </div>
                 </div>
               </div>
-              <div class="attributes">
+              <div class="condition" id="ConditionKeys">
                 <div class="inner">
-                  <h2 class="title"><span class="material-icons-outlined">west</span>Add filters</h2>
+                  <h2 class="title"><span class="material-icons-outlined">filter_alt</span>Add filters</h2>
                   <div class="conditions -empty"></div>
                 </div>
               </div>
-              <div class="properties">
+              <div class="condition" id="ConditionValues">
                 <div class="inner">
-                  <h2 class="title"><span class="material-icons-outlined">west</span>Map attributes</h2>
+                  <h2 class="title"><span class="material-icons-outlined">insights</span>Map attributes</h2>
                   <div class="conditions -empty"></div>
                 </div>
               </div>

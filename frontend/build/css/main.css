@@ -368,6 +368,7 @@ template {
   --z-modal-window: 11;
   --shadow-shallow: 0 .1rem .1rem rgba(0,0,0,.3);
   --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3);
+  --opacity-disabled: .4;
 }
 
 @-webkit-keyframes enter-stacking-item {
@@ -1038,7 +1039,7 @@ main {
   -webkit-transform-origin: 0 0;
           transform-origin: 0 0;
   margin-top: 0.6rem;
-  opacity: 0.6;
+  opacity: var(--opacity-disabled);
   cursor: pointer;
   transition: opacity var(--transition-instant);
   position: relative;
@@ -1457,24 +1458,27 @@ body[data-display=results] #App > .inner {
           transform: translateX(calc(-100vw + var(--width-condition)));
 }
 
+#ConditionBuilder {
+  --radius: .4rem;
+}
 #ConditionBuilder > .conditions {
   -webkit-flex-grow: 1;
           flex-grow: 1;
 }
-#ConditionBuilder > .conditions > * {
+#ConditionBuilder > .conditions > .condition {
   padding: 0.7rem 0.6rem;
   background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 0.4rem;
+  border-radius: var(--radius);
 }
-#ConditionBuilder > .conditions > * + * {
+#ConditionBuilder > .conditions > .condition + .condition {
   margin-top: 0.4rem;
 }
-#ConditionBuilder > .conditions > * > .inner > .title {
+#ConditionBuilder > .conditions > .condition > .inner > .title {
   margin-bottom: -0.2rem;
   line-height: 1;
   font-size: 1.2rem;
 }
-#ConditionBuilder > .conditions > * > .inner > .title > .material-icons-outlined {
+#ConditionBuilder > .conditions > .condition > .inner > .title > .material-icons-outlined {
   font-size: 1.4rem;
   vertical-align: middle;
   -webkit-margin-end: 0.3rem;
@@ -1482,22 +1486,43 @@ body[data-display=results] #App > .inner {
   position: relative;
   top: -0.1rem;
 }
-#ConditionBuilder > .conditions > * > .inner > .title > small {
+#ConditionBuilder > .conditions > .condition > .inner > .title > small {
   font-weight: normal;
   margin-left: 0.5rem;
 }
-body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .stacking-condition-view > .close-button-view {
+#ConditionBuilder > .conditions > .condition > hr {
+  border: none;
+  border-top: solid 0.1rem var(--color-separator);
+}
+body[data-display=results] #ConditionBuilder > .conditions > .condition > .conditions > .stacking-condition-view > .close-button-view {
   display: none;
 }
-#ConditionBuilder > .conditions > .togokey {
-  width: 100%;
-  transition: opacity var(--transition-wipe);
+#ConditionBuilder > .conditions > #ConditionKeys, #ConditionBuilder > .conditions > #ConditionValues {
+  transition: opacity var(--transition-instant);
+  opacity: var(--opacity-disabled);
+  cursor: pointer;
 }
-#ConditionBuilder > .conditions > .togokey > .inner > select {
+#ConditionBuilder > .conditions > #ConditionKeys:hover, #ConditionBuilder > .conditions > #ConditionValues:hover {
+  opacity: 1;
+}
+#ConditionBuilder > .conditions > #ConditionKeys {
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+[data-condition=keys] #ConditionBuilder > .conditions > #ConditionKeys {
+  opacity: 1;
+}
+#ConditionBuilder > .conditions > #ConditionValues {
+  border-radius: 0 0 var(--radius) var(--radius);
+  margin-top: 0.1rem;
+}
+[data-condition=values] #ConditionBuilder > .conditions > #ConditionValues {
+  opacity: 1;
+}
+#ConditionBuilder > .conditions > #ConditionTogoKey > .inner > select {
   width: 100%;
   margin-top: 0.4rem;
 }
-body[data-display=results] #ConditionBuilder > .conditions > .togokey {
+body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   pointer-events: none;
   opacity: 0.5;
 }
@@ -1726,7 +1751,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
 #ResultsTable > .body > table > thead > tr > th > .inner._subject-color, #ResultsTable > .body > table > thead > tr td > .inner._subject-color {
   background-color: white;
 }
-#ResultsTable > .body > table > thead > tr.header {
+#ResultsTable > .body > table > thead > tr.header, #ResultsTable > .body > table > thead > tr.subheader {
   font-weight: bold;
   white-space: nowrap;
 }
@@ -1737,7 +1762,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
   z-index: var(--z-results-header);
   line-height: 1.5rem;
 }
-#ResultsTable > .body > table > thead > tr.header > th > .inner {
+#ResultsTable > .body > table > thead > tr.header > th > .inner, #ResultsTable > .body > table > thead > tr.subheader > th > .inner {
   border-bottom: solid 0.1rem var(--color-black);
 }
 #ResultsTable > .body > table > thead > tr.header > th > .inner.-noborder, #ResultsTable > .body > table > thead > tr.subheader > th > .inner.-noborder {

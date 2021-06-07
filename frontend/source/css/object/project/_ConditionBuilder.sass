@@ -1,11 +1,12 @@
 #ConditionBuilder
+  --radius: .4rem
   > .conditions
     flex-grow: 1
-    > *
+    > .condition
       padding: .7rem .6rem
       background-color: rgba(white, .8)
-      border-radius: .4rem
-      + *
+      border-radius: var(--radius)
+      + .condition
         margin-top: .4rem
       > .inner
         > .title
@@ -21,14 +22,30 @@
           > small
             font-weight: normal
             margin-left: .5rem
+      > hr
+        border: none
+        border-top: solid .1rem var(--color-separator)
       > .conditions
         > .stacking-condition-view
           > .close-button-view
             body[data-display="results"] &
               display: none
-    > .togokey
-      width: 100%
-      transition: opacity var(--transition-wipe)
+    > #ConditionKeys, > #ConditionValues
+      transition: opacity var(--transition-instant)
+      opacity: var(--opacity-disabled)
+      cursor: pointer
+      &:hover
+        opacity: 1
+    > #ConditionKeys
+      border-radius: var(--radius) var(--radius) 0 0
+      [data-condition="keys"] &
+        opacity: 1
+    > #ConditionValues
+      border-radius: 0 0 var(--radius) var(--radius)
+      margin-top: .1rem
+      [data-condition="values"] &
+        opacity: 1
+    > #ConditionTogoKey
       > .inner
         > select
           width: 100%
