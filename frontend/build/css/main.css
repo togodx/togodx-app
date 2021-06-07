@@ -1060,7 +1060,7 @@ main {
   color: white;
   background-color: var(--color-lamp-black);
 }
-.table-data-controller-view > .conditions > .condiiton.-value {
+.table-data-controller-view > .conditions > .condiiton._subject-background-color {
   color: white;
 }
 .table-data-controller-view > .conditions > .condiiton > p {
@@ -1070,7 +1070,7 @@ main {
   overflow: hidden;
 }
 .table-data-controller-view > .conditions > .condiiton:last-child {
-  padding-right: 1.9rem;
+  padding-right: 1.8rem;
 }
 .table-data-controller-view > .status {
   padding: 0.3rem 0;
