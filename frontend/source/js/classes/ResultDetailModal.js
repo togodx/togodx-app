@@ -2,6 +2,7 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
 import StanzaManager from './StanzaManager';
 import {createPopupEvent} from '../functions/util';
+import {dragView} from '../functions/dragView';
 import * as event from '../events';
 
 export default class ResultDetailModal {
@@ -9,6 +10,8 @@ export default class ResultDetailModal {
   #RESULTS_TABLE;
   #RESULT_MODAL;
   #exit_button;
+  #popup_top;
+  #popup_left;
 
   constructor() {
     this.#ROOT = document.createElement('section');
@@ -24,44 +27,51 @@ export default class ResultDetailModal {
     this.#exit_button.className = 'close-button-view';
 
     // attach event
-    this.#exit_button.addEventListener('click', () => {
-      this.#hidePopUp();
-    });
-
     DefaultEventEmitter.addEventListener(event.showPopup, e => {
-      this.#showPopUp(e);
+      this.#showPopup(e);
     });
 
     DefaultEventEmitter.addEventListener(event.movePopup, e => {
-      this.#hidePopUp();
-      this.#showPopUp(e);
+      this.#hidePopup(false);
+      this.#showPopup(e);
     });
 
-    DefaultEventEmitter.addEventListener(event.hidePopUp, () => {
-      this.#hidePopUp();
+    DefaultEventEmitter.addEventListener(event.dragElement, e => {
+      dragView(e.detail);
+    });
+
+    DefaultEventEmitter.addEventListener(event.hidePopup, () => {
+      this.#hidePopup();
     });
 
     this.#RESULT_MODAL.addEventListener('click', e => {
       if (e.target !== e.currentTarget) return;
-      this.#hidePopUp();
+      DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hidePopup));
+    });
+
+    this.#exit_button.addEventListener('click', () => {
+      DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hidePopup));
     });
   }
-
   // bind this on handleKeydown so it will keep listening to same event during the whole popup
-  #showPopUp(e) {
-    if (this.#RESULT_MODAL.innerHTML === '') {
-      this.#setHighlight(e.detail.properties.dataOrder);
-      this.#handleKeydown = this.#handleKeydown.bind(this);
-      document.addEventListener('keydown', this.#handleKeydown);
+  #showPopup(e) {
+    this.#setHighlight(
+      e.detail.properties.dataX,
+      e.detail.properties.dataY,
+      e.detail.properties.dataSubOrder
+    );
+    this.#handleKeydown = this.#handleKeydown.bind(this);
+    document.addEventListener('keydown', this.#handleKeydown);
 
-      this.#RESULT_MODAL.appendChild(this.#popup(e.detail));
-      this.#RESULT_MODAL.classList.add('backdrop');
-    }
+    this.#RESULT_MODAL.appendChild(this.#popup(e.detail));
+    this.#RESULT_MODAL.classList.add('backdrop');
   }
   // HTML elements
   #popup(detail) {
     const popup = document.createElement('div');
     popup.className = 'popup';
+    popup.style.left = this.#popup_left;
+    popup.style.top = this.#popup_top;
     popup.appendChild(this.#header(detail.keys, detail.properties));
     popup.appendChild(this.#container(detail.keys, detail.properties));
 
@@ -95,6 +105,17 @@ export default class ResultDetailModal {
     `;
     header.style.backgroundColor = subject.colorCSSValue;
     header.lastChild.appendChild(this.#exit_button);
+    header.addEventListener('mousedown', e => {
+      const customEvent = new CustomEvent(event.dragElement, {
+        detail: {
+          x: e.clientX,
+          y: e.clientY,
+          container: header.parentElement,
+          dragableElement: header,
+        },
+      });
+      DefaultEventEmitter.dispatchEvent(customEvent);
+    });
 
     return header;
   }
@@ -103,7 +124,7 @@ export default class ResultDetailModal {
     const container = document.createElement('div');
     container.className = 'container';
     ['Up', 'Right', 'Down', 'Left'].forEach(direction => {
-      container.appendChild(this.#arrow(direction, props.dataOrder));
+      container.appendChild(this.#arrow(direction, props));
     });
     container.appendChild(
       this.#stanzas(keys.subjectId, keys.uniqueEntryId, keys.dataKey)
@@ -120,35 +141,41 @@ export default class ResultDetailModal {
     return stanzas;
   }
 
-  #arrow(direction, axes) {
+  #arrow(direction, props) {
     const arrow = document.createElement('div');
     arrow.classList.add('arrow', `-${direction.toLowerCase()}`);
     arrow.addEventListener('click', e => {
-      this.#setMovementArrow(this.#arrowFuncs.get('Arrow' + direction), axes);
+      const arrowMovement = {
+        dir: direction,
+        curX: parseInt(props.dataX),
+        curY: parseInt(props.dataY),
+        curInternalIndex: parseInt(props.dataSubOrder),
+        getTargetAxes: this.#arrowFuncs.get('Arrow' + direction),
+      };
+      this.#setMovementArrow(arrowMovement);
     });
 
     return arrow;
   }
 
   // Events, functions
-  #setHighlight(axes) {
-    const curEntry = this.#RESULTS_TABLE.querySelector(
-      `[data-order = '${axes}']`
-    );
-    const curTr = curEntry.closest('tr');
-    curEntry.classList.add('-selected');
-    curTr.classList.add('-selected');
+  #setHighlight(x, y, subOrder) {
+    const entry = this.#entriesByAxes(x, y, subOrder);
+    const tr = entry.closest('tr');
+    entry.classList.add('-selected');
+    tr.classList.add('-selected');
 
     const customEvent = new CustomEvent(event.highlightCol, {
-      detail: axes,
+      detail: x,
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
   #handleKeydown = e => {
     if (e.key == 'Escape') {
-      this.#hidePopUp();
+      DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hidePopup));
     } else if (this.#arrowFuncs.has(e.key)) {
+      e.preventDefault();
       this.#RESULT_MODAL
         .querySelector(`.arrow.-${e.key.replace('Arrow', '').toLowerCase()}`)
         .click();
@@ -170,39 +197,67 @@ export default class ResultDetailModal {
     ],
     [
       'ArrowUp',
-      function (x, y) {
+      function (x, y = x) {
         return [x, y - 1];
       },
     ],
     [
       'ArrowDown',
-      function (x, y) {
+      function (x, y = x) {
         return [x, y + 1];
       },
     ],
   ]);
 
-  #getCorList(str) {
-    let [x, y] = str.split(',');
-    return [x, y].map(cor => parseInt(cor));
+  #setMovementArrow(movement) {
+    try {
+      const targetEntry = this.#getTargetEntry(movement);
+      const targetTr = targetEntry.closest('tr');
+      const reportLink = targetTr.querySelector(
+        ':scope > th > .inner > .report-page-button-view'
+      ).href;
+
+      targetEntry.scrollIntoView({block: 'center'});
+      createPopupEvent(targetEntry, reportLink, event.movePopup);
+    } catch (error) {
+      console.log('Movement out of bounds');
+    }
   }
 
-  #setMovementArrow(movement, axes) {
-    //TODO: Implement functions for data with multiple entries
-    let [x, y] = this.#getCorList(axes);
+  #getTargetEntry(move) {
+    // Check if there are multiple entries in the current cell when going up or down
+    if (['Down', 'Up'].includes(move.dir)) {
+      const allCurEntries = this.#entriesByAxes(move.curX, move.curY);
+      const targetInternalIndex = move.getTargetAxes(move.curInternalIndex)[1];
+      // movement inside cell
+      if (allCurEntries[targetInternalIndex]) {
+        return allCurEntries[targetInternalIndex];
+      }
+    }
+    // default: target outside of current cell
+    const [targetX, targetY] = move.getTargetAxes(move.curX, move.curY);
+    const allTargetEntries = this.#entriesByAxes(targetX, targetY);
+    const targetIndex = move.dir === 'Up' ? allTargetEntries.length - 1 : 0;
 
-    const targetEntry = this.#RESULTS_TABLE.querySelector(
-      `[data-order = '${movement(x, y)}'`
+    return allTargetEntries[targetIndex];
+  }
+
+  #entriesByAxes(x, y, subOrder) {
+    if (subOrder === undefined) {
+      return this.#RESULTS_TABLE.querySelectorAll(`[data-order = '${x},${y}']`);
+    }
+    return this.#RESULTS_TABLE.querySelector(
+      `[data-order = '${x},${y}'][data-sub-order = '${subOrder}']`
     );
-    const targetTr = targetEntry.closest('tr');
-    const reportLink = targetTr.querySelector(
-      ':scope > th > .inner > .report-page-button-view'
-    ).href;
-
-    createPopupEvent(targetEntry, reportLink, event.movePopup);
   }
 
-  #hidePopUp() {
+  #hidePopup(exitingPopup = true) {
+    // reset popup to the center if it is shown for first time
+    // keep moved axes if user has dragged popup while moving with arrows
+    const popupStyle = this.#RESULT_MODAL.querySelector('.popup').style;
+    this.#popup_top = exitingPopup ? '' : popupStyle.top;
+    this.#popup_left = exitingPopup ? '' : popupStyle.left;
+
     this.#RESULT_MODAL.classList.remove('backdrop');
     this.#RESULT_MODAL.innerHTML = '';
     this.#RESULTS_TABLE
