@@ -25,16 +25,6 @@
       "oF" : 0,
       "oS" : 0
     },
-    "\/source\/about.pug" : {
-      "cB" : 0,
-      "cOD" : 1,
-      "ft" : 512,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/build\/about.html",
-      "oF" : 0,
-      "oS" : 0
-    },
     "\/source\/contact.pug" : {
       "cB" : 0,
       "cOD" : 1,
@@ -490,16 +480,6 @@
       "oS" : 1,
       "pg" : 0,
       "sct" : 0
-    },
-    "\/source\/help.pug" : {
-      "cB" : 0,
-      "cOD" : 1,
-      "ft" : 512,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/build\/help.html",
-      "oF" : 0,
-      "oS" : 0
     },
     "\/source\/index.pug" : {
       "cB" : 0,
