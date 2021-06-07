@@ -6,22 +6,18 @@
     white-space: nowrap
     overflow-x: hidden
     height: 100%
-    background-color: var(--color-light-gray)
     > .inner
       height: 100%
       overflow-x: auto
       > .column
         display: inline-block
-        border-left: solid .1rem var(--color-separator)
-        margin: 0
+        margin: 0 .1rem 0 0
         padding: 0
         list-style: none
         max-height: 29.5rem
         height: 100%
         overflow-y: auto
         vertical-align: top
-        &:last-child
-          border-right: solid .1rem var(--color-separator)
         > .item
           margin: 0
           padding: .2rem 1.2rem .2rem .4rem
@@ -63,7 +59,6 @@
             margin-inline-end: .4rem
           > .label
             padding-right: .4rem
-            // font-weight: bold
           > .count
             font-weight: lighter
             padding-left: 1.2rem

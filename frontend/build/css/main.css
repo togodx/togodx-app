@@ -587,7 +587,6 @@ main {
   white-space: nowrap;
   overflow-x: hidden;
   height: 100%;
-  background-color: var(--color-light-gray);
 }
 .column-selector-view > .columns > .inner {
   height: 100%;
@@ -595,17 +594,13 @@ main {
 }
 .column-selector-view > .columns > .inner > .column {
   display: inline-block;
-  border-left: solid 0.1rem var(--color-separator);
-  margin: 0;
+  margin: 0 0.1rem 0 0;
   padding: 0;
   list-style: none;
   max-height: 29.5rem;
   height: 100%;
   overflow-y: auto;
   vertical-align: top;
-}
-.column-selector-view > .columns > .inner > .column:last-child {
-  border-right: solid 0.1rem var(--color-separator);
 }
 .column-selector-view > .columns > .inner > .column > .item {
   margin: 0;
@@ -853,6 +848,7 @@ main {
   border-radius: 0.2rem;
   margin-right: 0.2rem;
   cursor: pointer;
+  white-space: nowrap;
 }
 .report-page-button-view::before {
   content: "Report";
@@ -957,13 +953,13 @@ main {
   font-size: 1.4rem;
   font-weight: bold;
 }
-.stacking-condition-view.-value > .path {
+.stacking-condition-view._subject-background-color > .path {
   color: rgba(0, 0, 0, 0.5);
 }
-.stacking-condition-view.-value > .path > li + li::before {
+.stacking-condition-view._subject-background-color > .path > li + li::before {
   border-left-color: rgba(0, 0, 0, 0.5);
 }
-.stacking-condition-view.-value > .label {
+.stacking-condition-view._subject-background-color > .label {
   color: white;
 }
 
@@ -1068,7 +1064,7 @@ main {
   color: white;
   background-color: var(--color-lamp-black);
 }
-.table-data-controller-view > .conditions > .condiiton.-value {
+.table-data-controller-view > .conditions > .condiiton._subject-background-color {
   color: white;
 }
 .table-data-controller-view > .conditions > .condiiton > p {
@@ -1078,7 +1074,7 @@ main {
   overflow: hidden;
 }
 .table-data-controller-view > .conditions > .condiiton:last-child {
-  padding-right: 1.9rem;
+  padding-right: 1.8rem;
 }
 .table-data-controller-view > .status {
   padding: 0.3rem 0;
@@ -1724,10 +1720,13 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
 #ResultsTable > .body > table > thead > tr > th > .inner, #ResultsTable > .body > table > thead > tr td > .inner {
   height: 100%;
 }
-#ResultsTable > .body > table > thead > tr > th > .inner.-propertyvalue, #ResultsTable > .body > table > thead > tr td > .inner.-propertyvalue {
+#ResultsTable > .body > table > thead > tr > th > .inner._subject-background-color, #ResultsTable > .body > table > thead > tr td > .inner._subject-background-color {
   color: white;
 }
-#ResultsTable > .body > table > thead > tr.header, #ResultsTable > .body > table > thead > tr.subheader {
+#ResultsTable > .body > table > thead > tr > th > .inner._subject-color, #ResultsTable > .body > table > thead > tr td > .inner._subject-color {
+  background-color: white;
+}
+#ResultsTable > .body > table > thead > tr.header {
   font-weight: bold;
   white-space: nowrap;
 }
@@ -1738,8 +1737,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
   z-index: var(--z-results-header);
   line-height: 1.5rem;
 }
-#ResultsTable > .body > table > thead > tr.header > th > .inner, #ResultsTable > .body > table > thead > tr.subheader > th > .inner {
-  background-color: white;
+#ResultsTable > .body > table > thead > tr.header > th > .inner {
   border-bottom: solid 0.1rem var(--color-black);
 }
 #ResultsTable > .body > table > thead > tr.header > th > .inner.-noborder, #ResultsTable > .body > table > thead > tr.subheader > th > .inner.-noborder {

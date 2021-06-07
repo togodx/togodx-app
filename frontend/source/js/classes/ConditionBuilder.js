@@ -21,7 +21,6 @@ class ConditionBuilder {
     console.log('addProperty', condition)
     // store
     this.#propertyConditions.push(condition);
-    console.log(this.#propertyConditions)
     // evaluate
     this.#satisfyAggregation();
     // dispatch event
@@ -46,16 +45,25 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  removeProperty(propertyId) {
-    console.log('removeProperty', propertyId)
+  removeProperty(propertyId, parentCategoryId) {
+    console.log('removeProperty', propertyId, parentCategoryId)
     // remove from store
-    const index = this.#propertyConditions.findIndex(condition => condition.property.propertyId === propertyId);
+    const index = this.#propertyConditions.findIndex(condition => {
+      // condition.property.propertyId === propertyIds;
+      if (condition.property.propertyId === propertyId) {
+        if (parentCategoryId) {
+          return parentCategoryId === condition.subCategory?.parentCategoryId;
+        } else {
+          return true;
+        }
+      }
+    });
     if (index === -1) return;
     this.#propertyConditions.splice(index, 1)[0];
     // evaluate
     this.#satisfyAggregation();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {action: 'remove', propertyId}});
+    const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {action: 'remove', propertyId, parentCategoryId}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
@@ -117,12 +125,13 @@ class ConditionBuilder {
   makeQueryParameter() {
     // create properties
     const properties = this.#propertyConditions.map(condition => {
+      const query = {propertyId: condition.property.propertyId};
+      if (condition.subCategory) query.categoryIds = condition.subCategory.values;
       return {
-        query: {
-          propertyId: condition.property.propertyId
-        },
+        query,
         property: condition.property,
-        subject: condition.subject
+        subject: condition.subject,
+        subCategory: condition.subCategory
       };
     });
     const attributesForEachProperties = {};

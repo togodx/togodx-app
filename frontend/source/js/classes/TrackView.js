@@ -80,9 +80,11 @@ export default class TrackView {
     });
     // event listener
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, e => {
+      if (e.detail.condition?.subCategory !== undefined || e.detail.parentCategoryId !== undefined) return;
       switch (e.detail.action) {
         case 'add':
           if (e.detail.condition.property.propertyId === this.#property.propertyId) {
+            console.log(e.detail.condition)
             this.#CHECKBOX_ALL_PROPERTIES.checked = true;
             this.#ROOT.classList.add('-allselected');
           }
