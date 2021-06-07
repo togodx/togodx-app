@@ -130,7 +130,8 @@ class ConditionBuilder {
           propertyId: condition.property.propertyId
         },
         property: condition.property,
-        subject: condition.subject
+        subject: condition.subject,
+        subCategory: condition.subCategory
       };
     });
     const attributesForEachProperties = {};

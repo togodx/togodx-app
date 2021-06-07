@@ -3102,7 +3102,8 @@
               propertyId: condition.property.propertyId
             },
             property: condition.property,
-            subject: condition.subject
+            subject: condition.subject,
+            subCategory: condition.subCategory
           };
         });
 
@@ -6046,23 +6047,40 @@
 
   function _setTableData2(newCondition) {
     // find matching condition from already existing conditions
-    // TODO: うまく検出できていない
     var sameConditionTableData = _classPrivateFieldGet(this, _tableData).find(function (tableData) {
       var matchTogoKey = newCondition.togoKey === tableData.condition.togoKey; // compare properties
 
-      var matchProperties = newCondition.properties.every(function (newProperty) {
-        return tableData.condition.properties.find(function (property) {
-          return newProperty.query.propertyId === property.query.propertyId;
-        });
-      }); // compare attributes
+      var matchProperties = function () {
+        if (newCondition.properties.length === tableData.condition.properties.length) {
+          return newCondition.properties.every(function (newProperty) {
+            var matchProperty = tableData.condition.properties.find(function (property) {
+              if (newProperty.query.propertyId === property.query.propertyId) {
+                var _newProperty$subCateg, _property$subCategory;
+
+                return newProperty.subCategory === undefined && property.subCategory === undefined || ((_newProperty$subCateg = newProperty.subCategory) === null || _newProperty$subCateg === void 0 ? void 0 : _newProperty$subCateg.parentCategoryId) === ((_property$subCategory = property.subCategory) === null || _property$subCategory === void 0 ? void 0 : _property$subCategory.parentCategoryId);
+              } else {
+                return false;
+              }
+            });
+            return matchProperty;
+          });
+        } else {
+          return false;
+        }
+      }(); // compare attributes
+
 
       var matchAttributes = newCondition.attributes.every(function (newProperty) {
         return tableData.condition.attributes.find(function (property) {
-          var matchId = newProperty.query.propertyId === property.query.propertyId;
-          var matchValues = newProperty.query.categoryIds.every(function (categoryId) {
-            return property.query.categoryIds.indexOf(categoryId) !== -1;
-          });
-          return matchId && matchValues;
+          if (newProperty.query.propertyId === property.query.propertyId && newProperty.query.categoryIds.length === property.query.categoryIds.length) {
+            var matchValues = newProperty.query.categoryIds.every(function (categoryId) {
+              return property.query.categoryIds.indexOf(categoryId) !== -1;
+            });
+            console.log(matchValues, newProperty.query.categoryIds, property.query.categoryIds);
+            return matchValues;
+          } else {
+            return false;
+          }
         });
       });
       return matchTogoKey && matchProperties && matchAttributes;
