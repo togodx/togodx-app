@@ -1,5 +1,5 @@
 #ResultsTable
-  --thheight: 0.8rem 
+  --thheight: 0.8rem
   > .body
     > table
       width: 100%
@@ -26,7 +26,6 @@
             white-space: nowrap
             > th
               position: sticky
-              top: 0
               z-index: var(--z-results-header)
               line-height: 1.5rem
               > .inner
@@ -44,13 +43,12 @@
                   > .togo-key-view
                     background-color: var(--color-dark-gray)
             &.header
-              >th
+              > th
                 height: var(--thheight)
+                top: 0
                 &:nth-child(1), &:nth-child(2)
                   > .inner
                     padding-top: calc(var(--thheight) * 0.5 + var(--padding-track-block-start))
-                    
-                  
             &.subheader
               > th
                 top: var(--thheight)
