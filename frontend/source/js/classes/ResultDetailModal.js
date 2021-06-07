@@ -2,6 +2,7 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
 import StanzaManager from './StanzaManager';
 import {createPopupEvent} from '../functions/util';
+import dragView from '../functions/dragView';
 import * as event from '../events';
 
 export default class ResultDetailModal {
@@ -9,6 +10,8 @@ export default class ResultDetailModal {
   #RESULTS_TABLE;
   #RESULT_MODAL;
   #exit_button;
+  #popup_top;
+  #popup_left;
 
   constructor() {
     this.#ROOT = document.createElement('section');
@@ -22,6 +25,9 @@ export default class ResultDetailModal {
     this.#RESULT_MODAL = document.querySelector('#ResultDetailModal');
     this.#exit_button = document.createElement('div');
     this.#exit_button.className = 'close-button-view';
+    this.#popup_top = '';
+    this.#popup_left = '';
+
 
     // attach event
     this.#exit_button.addEventListener('click', () => {
@@ -67,6 +73,8 @@ export default class ResultDetailModal {
     popup.className = 'popup';
     popup.appendChild(this.#header(detail.keys, detail.properties));
     popup.appendChild(this.#container(detail.keys, detail.properties));
+    popup.style.left = this.#popup_left;
+    popup.style.top = this.#popup_top;
 
     return popup;
   }
@@ -98,6 +106,17 @@ export default class ResultDetailModal {
     `;
     header.style.backgroundColor = subject.colorCSSValue;
     header.lastChild.appendChild(this.#exit_button);
+    header.addEventListener('mousedown', e => {
+      const customEvent = new CustomEvent(event.dragPopup, {
+        detail: {
+          x: e.clientX,
+          y: e.clientY,
+          container : header.parentElement,
+          dragableElement : header
+        },
+      });
+      DefaultEventEmitter.dispatchEvent(customEvent);
+    });
 
     return header;
   }
@@ -220,6 +239,7 @@ export default class ResultDetailModal {
     const [targetX, targetY] = move.getTargetAxes(move.curX, move.curY);
     const allTargetEntries = this.#entriesByAxes(targetX, targetY);
     const targetIndex = move.dir === 'Up' ? allTargetEntries.length - 1 : 0;
+
     return allTargetEntries[targetIndex];
   }
 
@@ -233,6 +253,10 @@ export default class ResultDetailModal {
   }
 
   #hidePopUp() {
+    const popupStyle = this.#RESULT_MODAL.querySelector('.popup').style
+    this.#popup_top = popupStyle.top
+    this.#popup_left = popupStyle.left
+
     this.#RESULT_MODAL.classList.remove('backdrop');
     this.#RESULT_MODAL.innerHTML = '';
     this.#RESULTS_TABLE

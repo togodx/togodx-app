@@ -22,6 +22,7 @@ export const showStanza = 'showStanza';
 export const hidePopup = 'hidePopup';
 export const showPopup = 'showPopup';
 export const movePopup = 'movePopup';
+export const dragPopup = 'dragPopup';
 
 // Polling
 export const failedFetchTableDataIds = 'failedFetchTableDataIds';
