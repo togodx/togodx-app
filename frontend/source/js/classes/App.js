@@ -52,7 +52,6 @@ class App {
     new ResultsTable(document.querySelector('#ResultsTable'));
     new ResultDetailModal();
     new BalloonView();
-    new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
 
     // load config json
     Promise.all([
@@ -64,15 +63,10 @@ class App {
       .then(([subjects, templates, aggregate]) => {
         Records.setSubjects(subjects);
 
+        // setup upload user id
+        new UploadUserIDsView(document.querySelector('#UploadUserIDsView'), aggregate.mapping);
+
         // define primary keys
-        // const togoKeys = subjects.map(subject => {
-        //   return {
-        //     label: subject.subject,
-        //     togoKey: subject.togoKey,
-        //     subjectId: subject.subjectId
-        //   }
-        // });
-        // const customEvent = new CustomEvent(event.defineTogoKey, {detail: togoKeys});
         const customEvent = new CustomEvent(event.defineTogoKey, {detail: subjects});
         DefaultEventEmitter.dispatchEvent(customEvent);
 

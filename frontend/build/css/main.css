@@ -358,11 +358,14 @@ template {
   --z-track-collapse-button: 1;
   --z-track-tracks-header: 3;
   --z-track-pin: 4;
-  --z-fixed-area: 5;
-  --z-header: 6;
-  --z-track-balloon: 7;
-  --z-modal-window-backdrop: 8;
-  --z-modal-window: 9;
+  --z-track-item-hover: 5;
+  --z-track-item-selected-hover: 6;
+  --z-track-pin-hover: 7;
+  --z-fixed-area: 7;
+  --z-header: 8;
+  --z-track-balloon: 9;
+  --z-modal-window-backdrop: 10;
+  --z-modal-window: 11;
   --shadow-shallow: 0 .1rem .1rem rgba(0,0,0,.3);
   --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3);
 }
@@ -882,7 +885,7 @@ main {
   background-color: var(--color-lamp-black);
   color: white;
 }
-.rounded-button-view.-outine {
+.rounded-button-view.-outline {
   border: solid 0.1rem var(--color-separator);
 }
 .rounded-button-view.-spread {
@@ -1256,43 +1259,65 @@ main {
   transition: width var(--transition-wipe), left var(--transition-wipe);
   cursor: pointer;
   transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
-  border-right: solid 0.1rem var(--color-gray);
 }
-.track-value-view > p {
+.track-value-view::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: -0.05rem;
+  height: 100%;
+  border-left: solid 0.005rem var(--color-gray);
+  z-index: var(--z-track-item-border);
+}
+.track-value-view::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: -0.05rem;
+  height: 100%;
+  border-left: solid 0.005rem var(--color-gray);
+  z-index: var(--z-track-item-border);
+}
+.track-value-view > .labels {
+  overflow: hidden;
+}
+.track-value-view > .labels > p {
   padding-left: 0.2rem;
   padding-right: 0.2rem;
   padding-top: var(--padding-track-block-start);
   margin: 0;
   text-overflow: ellipsis;
   white-space: nowrap;
-  overflow: hidden;
   position: relative;
   text-align: center;
   transition: opacity var(--transition-wipe);
 }
-.track-value-view > p > .label {
+.track-value-view > .labels > p > .label {
   font-size: 1.2rem;
 }
-.track-value-view > p > .count {
+.track-value-view > .labels > p > .count {
   padding-left: 0.8rem;
   font-size: 1rem;
   font-weight: lighter;
 }
 .track-value-view > .pin {
   position: absolute;
-  top: -20px;
-  left: calc(0px - 10px);
-  width: 20px;
-  height: 20px;
+  bottom: 100%;
   border: solid 1px rgba(255, 255, 255, 0.5);
   background-color: var(--color-lamp-black);
-  -webkit-transform: rotate(45deg) skew(5deg, 5deg);
-          transform: rotate(45deg) skew(5deg, 5deg);
+  -webkit-transform: translate(-50%, calc(-20% + .4rem)) rotate(45deg) skew(5deg, 5deg);
+          transform: translate(-50%, calc(-20% + .4rem)) rotate(45deg) skew(5deg, 5deg);
   border-top-left-radius: 50%;
   border-bottom-left-radius: 50%;
   border-top-right-radius: 50%;
   z-index: var(--z-track-pin);
   display: none;
+}
+.track-value-view > .pin:hover {
+  border-color: white;
+  z-index: var(--z-track-pin-hover);
 }
 .track-value-view:hover, .track-value-view.-selected {
   background-color: transparent !important;
@@ -1304,7 +1329,15 @@ main {
   width: 100%;
   height: 100%;
   border: solid 1px white;
+}
+.track-value-view.-selected::before {
   z-index: var(--z-track-item-selected);
+}
+.track-value-view:hover::before {
+  z-index: var(--z-track-item-selected-hover);
+}
+.track-value-view:hover > .pin {
+  z-index: var(--z-track-pin-hover);
 }
 .-showuserids .track-value-view:not(.-pinsticking) {
   background-color: var(--color-gray) !important;
@@ -1450,12 +1483,12 @@ body[data-display=results] #App > .inner {
 #ConditionBuilder > .conditions > * + * {
   margin-top: 0.4rem;
 }
-#ConditionBuilder > .conditions > * > .title {
+#ConditionBuilder > .conditions > * > .inner > .title {
   margin-bottom: -0.2rem;
   line-height: 1;
   font-size: 1.2rem;
 }
-#ConditionBuilder > .conditions > * > .title > .material-icons-outlined {
+#ConditionBuilder > .conditions > * > .inner > .title > .material-icons-outlined {
   font-size: 1.4rem;
   vertical-align: middle;
   -webkit-margin-end: 0.3rem;
@@ -1463,31 +1496,22 @@ body[data-display=results] #App > .inner {
   position: relative;
   top: -0.1rem;
 }
-#ConditionBuilder > .conditions > * > .conditions.-empty::after {
-  font-size: 1.2rem;
-  line-height: 1.2;
-  display: block;
-  margin-top: 0.4rem;
-  font-weight: lighter;
+#ConditionBuilder > .conditions > * > .inner > .title > small {
+  font-weight: normal;
+  margin-left: 0.5rem;
 }
 body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .stacking-condition-view > .close-button-view {
   display: none;
 }
-#ConditionBuilder > .conditions > .attributes > .conditions.-empty::after {
-  content: "Add classification/distribution as many as ...";
-}
-#ConditionBuilder > .conditions > .properties > .conditions.-empty::after {
-  content: "Specify additional attributes integrated into resulting table ...";
-}
-#ConditionBuilder > .conditions > .togoKey {
+#ConditionBuilder > .conditions > .togokey {
   width: 100%;
   transition: opacity var(--transition-wipe);
 }
-#ConditionBuilder > .conditions > .togoKey > select {
+#ConditionBuilder > .conditions > .togokey > .inner > select {
   width: 100%;
   margin-top: 0.4rem;
 }
-body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
+body[data-display=results] #ConditionBuilder > .conditions > .togokey {
   pointer-events: none;
   opacity: 0.5;
 }
@@ -1713,28 +1737,31 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
 #ResultsTable > .body > table > thead > tr > th > .inner.-propertyvalue, #ResultsTable > .body > table > thead > tr td > .inner.-propertyvalue {
   color: white;
 }
-#ResultsTable > .body > table > thead > tr.header {
+#ResultsTable > .body > table > thead > tr.header, #ResultsTable > .body > table > thead > tr.subheader {
   font-weight: bold;
   white-space: nowrap;
 }
-#ResultsTable > .body > table > thead > tr.header > th {
+#ResultsTable > .body > table > thead > tr.header > th, #ResultsTable > .body > table > thead > tr.subheader > th {
   position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: var(--z-results-header);
   line-height: 1.5rem;
 }
-#ResultsTable > .body > table > thead > tr.header > th > .inner {
+#ResultsTable > .body > table > thead > tr.header > th > .inner, #ResultsTable > .body > table > thead > tr.subheader > th > .inner {
   background-color: white;
   border-bottom: solid 0.1rem var(--color-black);
 }
-#ResultsTable > .body > table > thead > tr.header > th:first-child > .inner {
+#ResultsTable > .body > table > thead > tr.header > th > .inner.-noborder, #ResultsTable > .body > table > thead > tr.subheader > th > .inner.-noborder {
+  border: none;
+}
+#ResultsTable > .body > table > thead > tr.header > th:first-child > .inner, #ResultsTable > .body > table > thead > tr.subheader > th:first-child > .inner {
   background-color: var(--color-light-gray);
 }
-#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner {
+#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.subheader > th:nth-child(2) > .inner {
   background-color: var(--color-lamp-black);
 }
-#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner > .togo-key-view {
+#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader > th:nth-child(2) > .inner > .togo-key-view {
   background-color: var(--color-dark-gray);
 }
 #ResultsTable > .body > table > thead > tr.statistics > td > .inner {
@@ -1970,7 +1997,6 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   display: block;
 }
 #UploadUserIDsView > form > .buttons {
-  padding-top: 0.4rem;
   text-align: center;
 }
 

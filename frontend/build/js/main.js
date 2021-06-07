@@ -2834,7 +2834,8 @@
   var addNextRows = 'addNextRows'; // Table data
 
   var selectTableData = 'selectTableData';
-  var deleteTableData = 'deleteTableData'; // Track
+  var deleteTableData = 'deleteTableData';
+  var highlightCol = 'highlightCol'; // Track
 
   var enterPropertyValueItemView = 'enterPropertyValueItemView';
   var leavePropertyValueItemView = 'leavePropertyValueItemView';
@@ -2858,6 +2859,7 @@
     addNextRows: addNextRows,
     selectTableData: selectTableData,
     deleteTableData: deleteTableData,
+    highlightCol: highlightCol,
     enterPropertyValueItemView: enterPropertyValueItemView,
     leavePropertyValueItemView: leavePropertyValueItemView
   });
@@ -3208,11 +3210,11 @@
     var body = document.querySelector('body');
     var conditionsContainer = elm.querySelector(':scope > .conditions');
 
-    _classPrivateFieldSet(this, _TOGO_KEYS, conditionsContainer.querySelector(':scope > .togoKey > select'));
+    _classPrivateFieldSet(this, _TOGO_KEYS, conditionsContainer.querySelector(':scope > .togokey > .inner > select'));
 
-    _classPrivateFieldSet(this, _PROPERTIES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .properties > .conditions'));
+    _classPrivateFieldSet(this, _PROPERTIES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .properties > .inner > .conditions'));
 
-    _classPrivateFieldSet(this, _ATTRIBUTES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .attributes > .conditions'));
+    _classPrivateFieldSet(this, _ATTRIBUTES_CONDITIONS_CONTAINER, conditionsContainer.querySelector(':scope > .attributes > .inner > .conditions'));
 
     _classPrivateFieldSet(this, _EXEC_BUTTON, elm.querySelector(':scope > footer > button.exec')); // attach event
 
@@ -3264,7 +3266,7 @@
     // make options
     _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = subjects.map(function (subject) {
       var option = '';
-      if (subject.togoKey) option = "<option value=\"".concat(subject.togoKey, "\" data-subject-id=\"").concat(subjects.subjectId, "\">").concat(subject.keyLabel, "</option>");
+      if (subject.togoKey) option = "<option value=\"".concat(subject.togoKey, "\" data-subject-id=\"").concat(subjects.subjectId, "\">").concat(subject.subject, " - ").concat(subject.keyLabel, "</option>");
       return option;
     }).join('');
     _classPrivateFieldGet(this, _TOGO_KEYS).disabled = false; // attach event
@@ -3887,17 +3889,36 @@
   }
 
   /**
-   * 
-   * @param {Color} baseColor 
-   * @param {Color} tintColor 
+   *
+   * @param {Color} baseColor
+   * @param {Color} tintColor
    */
 
   function colorTintByHue(baseColor, hue) {
-    return baseColor.mix(new h('hsv', [hue, 70, 50]), .2).set({
+    return baseColor.mix(new h('hsv', [hue, 70, 50]), 0.2).set({
       lightness: function lightness(_lightness) {
         return _lightness * 1.2;
       }
     }).to('srgb');
+  }
+  function createPopupEvent(uniqueEntry, reportLink, newEvent) {
+    var customEvent = new CustomEvent(newEvent, {
+      detail: {
+        keys: {
+          dataKey: uniqueEntry.getAttribute('data-key'),
+          subjectId: uniqueEntry.getAttribute('data-subject-id'),
+          mainCategoryId: uniqueEntry.getAttribute('data-main-category-id'),
+          subCategoryId: uniqueEntry.getAttribute('data-sub-category-id'),
+          uniqueEntryId: uniqueEntry.getAttribute('data-unique-entry-id')
+        },
+        properties: {
+          dataOrder: uniqueEntry.getAttribute('data-order'),
+          isPrimaryKey: uniqueEntry.classList.contains('primarykey'),
+          reportLink: reportLink
+        }
+      }
+    });
+    DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
 
   var NUM_OF_GRID = 4;
@@ -4176,6 +4197,8 @@
 
   var _values = new WeakMap();
 
+  var _userValues = new WeakMap();
+
   var _ROOT$5 = new WeakMap();
 
   var _update = new WeakSet();
@@ -4210,6 +4233,11 @@
       value: void 0
     });
 
+    _userValues.set(this, {
+      writable: true,
+      value: void 0
+    });
+
     _ROOT$5.set(this, {
       writable: true,
       value: void 0
@@ -4237,7 +4265,7 @@
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / _sum * 100;
       value.baseColor = colorTintByHue(subject.color, 360 * index / values.length);
-      return "\n        <li class=\"track-value-view\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <p>\n            <span class=\"label\">").concat(value.label, "</span>\n            <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n          </p>\n          <div class=\"pin\"></div>\n        </li>");
+      return "\n        <li class=\"track-value-view\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\"></div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .track-value-view').forEach(function (elm, index) {
       // reference
@@ -4266,14 +4294,28 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }); // attach event: show tooltip of pin
 
-      pin.addEventListener('mouseenter', function () {
+      pin.addEventListener('mouseenter', function (e) {
+        e.stopPropagation();
+        var values = [{
+          key: 'Count',
+          value: "".concat(value.userValueCount.toLocaleString(), " / ").concat(value.count.toLocaleString())
+        }];
+
+        var userValue = _classPrivateFieldGet(_this, _userValues).find(function (userValue) {
+          return userValue.categoryId === value.categoryId;
+        });
+
+        if (userValue) {
+          values.push({
+            key: 'P-value',
+            value: userValue.pValue.toExponential()
+          });
+        }
+
         var customEvent = new CustomEvent(enterPropertyValueItemView, {
           detail: {
             label: label,
-            values: [{
-              key: 'Count',
-              value: "".concat(value.userValueCount.toLocaleString(), " / ").concat(value.count.toLocaleString())
-            }],
+            values: values,
             elm: pin
           }
         });
@@ -4349,7 +4391,7 @@
   };
 
   function _update2(viewModes) {
-    var isArea = viewModes.area;
+    // const isArea = viewModes.area;
     var isLog10 = viewModes.log10;
 
     var sum = _classPrivateFieldGet(this, _values).reduce(function (acc, value) {
@@ -4359,12 +4401,13 @@
     var max = Math.max.apply(Math, _toConsumableArray(_classPrivateFieldGet(this, _values).map(function (value) {
       return value.count;
     })));
-    max = isLog10 ? Math.log10(max) : max;
-    var fixedWidth = isArea ? 0 : 100 / _classPrivateFieldGet(this, _values).length;
+    max = isLog10 ? Math.log10(max) : max; // const fixedWidth = isArea ? 0 : 100 / this.#values.length;
+
     var left = 0;
 
     _classPrivateFieldGet(this, _values).forEach(function (value) {
-      var width = isArea ? (isLog10 ? Math.log10(value.count) : value.count) / sum * 100 : fixedWidth;
+      // const width = isArea ? (isLog10 ? Math.log10(value.count) : value.count) / sum * 100 : fixedWidth;
+      var width = (isLog10 ? value.count === 0 ? 0 : Math.log10(value.count) : value.count) / sum * 100;
       value.elm.style.backgroundColor = "rgb(".concat(value.baseColor.mix(App$1.colorSilver, 1 - (isLog10 ? value.countLog10 : value.count) / max).coords.map(function (cood) {
         return cood * 256;
       }).join(','), ")");
@@ -4376,9 +4419,22 @@
 
   function _plotUserIdValues2(detail) {
     if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
+      var _detail$values$;
+
       _classPrivateFieldGet(this, _ROOT$5).classList.add('-pinsticking');
 
-      console.log(detail, _classPrivateFieldGet(this, _values));
+      _classPrivateFieldSet(this, _userValues, detail.values); // calculate min value
+
+
+      var maxPValue;
+
+      if ((_detail$values$ = detail.values[0]) !== null && _detail$values$ !== void 0 && _detail$values$.pValue) {
+        var minPValue = Math.min.apply(Math, _toConsumableArray(detail.values.map(function (value) {
+          return value.pValue;
+        })));
+        maxPValue = 1 - Math.log10(minPValue);
+      } // mapping
+
 
       _classPrivateFieldGet(this, _values).forEach(function (value) {
         var userValue = detail.values.find(function (userValue) {
@@ -4388,13 +4444,18 @@
         if (userValue) {
           value.elm.classList.add('-pinsticking'); // pin
 
-          var ratio = userValue.count / value.count;
-          ratio = ratio > 1 ? 1 : ratio;
+          var ratio;
+
+          if (userValue.pValue) {
+            ratio = (1 - Math.log10(userValue.pValue)) / maxPValue; // value.pValue = userValue.pValue;
+          } else {
+            ratio = userValue.count / value.count;
+            ratio = ratio > 1 ? 1 : ratio;
+          }
+
           var size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
-          value.pin.style.top = -size + 'px';
-          value.pin.style.left = -size / 2 + 'px';
           value.userValueCount = userValue.count;
         } else {
           value.elm.classList.remove('-pinsticking');
@@ -4734,6 +4795,8 @@
 
   var _THEAD = new WeakMap();
 
+  var _THEAD_SUB = new WeakMap();
+
   var _STATS = new WeakMap();
 
   var _TBODY = new WeakMap();
@@ -4750,162 +4813,143 @@
 
   var _failed = new WeakSet();
 
-  var ResultsTable = /*#__PURE__*/function () {
-    function ResultsTable(_elm) {
-      var _this = this;
+  var _colHighlight = new WeakSet();
 
-      _classCallCheck(this, ResultsTable);
+  var ResultsTable = function ResultsTable(_elm) {
+    var _this = this;
 
-      _failed.add(this);
+    _classCallCheck(this, ResultsTable);
 
-      _addTableRows.add(this);
+    _colHighlight.add(this);
 
-      _setupTable.add(this);
+    _failed.add(this);
 
-      _enterTableEnd.add(this);
+    _addTableRows.add(this);
 
-      _intersctionObserver.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _setupTable.add(this);
 
-      _tableData$1.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _enterTableEnd.add(this);
 
-      _header$1.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _intersctionObserver.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _ROOT$3.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _tableData$1.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _THEAD.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _header$1.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _STATS.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _ROOT$3.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _TBODY.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _THEAD.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _TABLE_END.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _THEAD_SUB.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _LOADING_VIEW.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _STATS.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      // references
-      _classPrivateFieldSet(this, _ROOT$3, _elm);
+    _TBODY.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      var TABLE = _elm.querySelector(':scope > .body > table');
+    _TABLE_END.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _classPrivateFieldSet(this, _THEAD, TABLE.querySelector(':scope > thead > tr.header'));
+    _LOADING_VIEW.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _classPrivateFieldSet(this, _STATS, TABLE.querySelector(':scope > thead > tr.statistics'));
+    // references
+    _classPrivateFieldSet(this, _ROOT$3, _elm);
 
-      _classPrivateFieldSet(this, _TBODY, TABLE.querySelector(':scope > tbody'));
+    var TABLE = _elm.querySelector(':scope > .body > table');
 
-      _classPrivateFieldSet(this, _TABLE_END, _elm.querySelector(':scope > .body > .tableend'));
+    _classPrivateFieldSet(this, _THEAD, TABLE.querySelector(':scope > thead > tr.header'));
 
-      _classPrivateFieldSet(this, _LOADING_VIEW, _classPrivateFieldGet(this, _TABLE_END).querySelector(':scope > .loading-view')); // get next data automatically
+    _classPrivateFieldSet(this, _THEAD_SUB, TABLE.querySelector(':scope > thead > tr.subheader'));
+
+    _classPrivateFieldSet(this, _STATS, TABLE.querySelector(':scope > thead > tr.statistics'));
+
+    _classPrivateFieldSet(this, _TBODY, TABLE.querySelector(':scope > tbody'));
+
+    _classPrivateFieldSet(this, _TABLE_END, _elm.querySelector(':scope > .body > .tableend'));
+
+    _classPrivateFieldSet(this, _LOADING_VIEW, _classPrivateFieldGet(this, _TABLE_END).querySelector(':scope > .loading-view')); // get next data automatically
 
 
-      _classPrivateFieldSet(this, _intersctionObserver, new IntersectionObserver(function (entries) {
-        var _iterator = _createForOfIteratorHelper(entries),
-            _step;
+    _classPrivateFieldSet(this, _intersctionObserver, new IntersectionObserver(function (entries) {
+      var _iterator = _createForOfIteratorHelper(entries),
+          _step;
 
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var entry = _step.value;
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var entry = _step.value;
 
-            if (entry.target === _classPrivateFieldGet(_this, _TABLE_END)) {
-              if (entry.isIntersecting) {
-                _classPrivateMethodGet(_this, _enterTableEnd, _enterTableEnd2).call(_this);
-              }
+          if (entry.target === _classPrivateFieldGet(_this, _TABLE_END)) {
+            if (entry.isIntersecting) {
+              _classPrivateMethodGet(_this, _enterTableEnd, _enterTableEnd2).call(_this);
             }
           }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
         }
-      })); // event listener
-
-
-      DefaultEventEmitter$1.addEventListener(selectTableData, function (e) {
-        return _classPrivateMethodGet(_this, _setupTable, _setupTable2).call(_this, e.detail);
-      });
-      DefaultEventEmitter$1.addEventListener(addNextRows, function (e) {
-        return _classPrivateMethodGet(_this, _addTableRows, _addTableRows2).call(_this, e.detail);
-      });
-      DefaultEventEmitter$1.addEventListener(failedFetchTableDataIds, function (e) {
-        return _classPrivateMethodGet(_this, _failed, _failed2).call(_this, e.detail);
-      }); // turnoff intersection observer after display transition
-
-      var mutationObserver = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-          if (mutation.type === 'attributes' && mutation.attributeName === 'data-display') {
-            if (mutation.target.dataset.display !== 'results') {
-              _classPrivateFieldGet(_this, _intersctionObserver).unobserve(_classPrivateFieldGet(_this, _TABLE_END)); // deselect table data
-
-
-              _classPrivateFieldGet(_this, _tableData$1).deselect();
-            }
-          }
-        });
-      });
-      mutationObserver.observe(document.querySelector('body'), {
-        attributes: true
-      });
-    } // private methods
-
-
-    _createClass(ResultsTable, [{
-      key: "createPopupEvent",
-      value: // public methods
-      // TODO: Set better way to get reportLink
-      function createPopupEvent(uniqueEntry, tr, reportLink, newEvent) {
-        // if (!tr.classList.contains('.-selected')) {
-        //   tr.classList.add('.-selected');
-        // };
-        // uniqueEntry.classList.add('.-selected');
-        var customEvent = new CustomEvent(newEvent, {
-          detail: {
-            keys: {
-              dataKey: uniqueEntry.getAttribute('data-key'),
-              subjectId: uniqueEntry.getAttribute('data-subject-id'),
-              mainCategoryId: uniqueEntry.getAttribute('data-main-category-id'),
-              subCategoryId: uniqueEntry.getAttribute('data-sub-category-id'),
-              uniqueEntryId: uniqueEntry.getAttribute('data-unique-entry-id')
-            },
-            properties: {
-              dataOrder: uniqueEntry.getAttribute('data-order'),
-              isPrimaryKey: uniqueEntry.classList.contains('primarykey'),
-              reportLink: reportLink
-            }
-          }
-        });
-        DefaultEventEmitter$1.dispatchEvent(customEvent);
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
       }
-    }]);
+    })); // event listener
 
-    return ResultsTable;
-  }();
+
+    DefaultEventEmitter$1.addEventListener(selectTableData, function (e) {
+      return _classPrivateMethodGet(_this, _setupTable, _setupTable2).call(_this, e.detail);
+    });
+    DefaultEventEmitter$1.addEventListener(addNextRows, function (e) {
+      return _classPrivateMethodGet(_this, _addTableRows, _addTableRows2).call(_this, e.detail);
+    });
+    DefaultEventEmitter$1.addEventListener(failedFetchTableDataIds, function (e) {
+      return _classPrivateMethodGet(_this, _failed, _failed2).call(_this, e.detail);
+    });
+    DefaultEventEmitter$1.addEventListener(highlightCol, function (e) {
+      _classPrivateMethodGet(_this, _colHighlight, _colHighlight2).call(_this, e.detail);
+    }); // turnoff intersection observer after display transition
+
+    var mutationObserver = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-display') {
+          if (mutation.target.dataset.display !== 'results') {
+            _classPrivateFieldGet(_this, _intersctionObserver).unobserve(_classPrivateFieldGet(_this, _TABLE_END)); // deselect table data
+
+
+            _classPrivateFieldGet(_this, _tableData$1).deselect();
+          }
+        }
+      });
+    });
+    mutationObserver.observe(document.querySelector('body'), {
+      attributes: true
+    });
+  } // private methods
+  ;
 
   function _enterTableEnd2() {
     _classPrivateFieldGet(this, _intersctionObserver).unobserve(_classPrivateFieldGet(this, _TABLE_END));
@@ -4936,10 +4980,12 @@
 
     DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
-    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class=\"inner\">Report</div>\n      </th>\n      <th>\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getLabelFromTogoKey(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      ").concat(tableData.condition.attributes.map(function (property) {
-      return "\n      <th>\n        <div class=\"inner -propertyvalue\" style=\"background-color: ".concat(property.subject.colorCSSValue, "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
-    }).join(''), "\n      ").concat(tableData.condition.properties.map(function (property) {
-      return "\n      <th>\n        <div class=\"inner -property\" style=\"color: ".concat(property.subject.colorCSSValue, "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
+    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class=\"inner -noborder\">Report</div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\">\n          <div class=\"togo-key-view\">".concat(Records$1.getLabelFromTogoKey(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      "); // makte table sub header
+
+    _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    <th>\n      <div class=\"inner\"></div>\n    </th>\n    <th>\n      <div class=\"inner\"></div>\n    </th>\n    ".concat(tableData.condition.attributes.map(function (property) {
+      return "\n    <th>\n      <div class=\"inner -propertyvalue\" style=\"background-color: ".concat(property.subject.colorCSSValue, "\">\n        <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.property.label, "</span>\n      </div>\n    </th>");
+    }).join(''), "\n    ").concat(tableData.condition.properties.map(function (property) {
+      return "\n    <th>\n      <div class=\"inner -property\" style=\"color: ".concat(property.subject.colorCSSValue, "\">\n        <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.property.label, "</span>\n      </div>\n    </th>");
     }).join('')); // make stats
 
     _classPrivateFieldGet(this, _STATS).innerHTML = "<td colspan=\"2\"><div class=\"inner\"><div></td>" + properties.map(function () {
@@ -5012,7 +5058,22 @@
       var uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(function (uniqueEntry) {
         uniqueEntry.addEventListener('click', function () {
-          _this2.createPopupEvent(uniqueEntry, tr, reportLink, showPopup);
+          createPopupEvent(uniqueEntry, reportLink, showPopup);
+        }); // remove highlight on mouseleave only when there is no popup
+
+        var td = uniqueEntry.closest('td');
+        td.addEventListener('mouseenter', function () {
+          var customEvent = new CustomEvent(highlightCol, {
+            detail: uniqueEntry.getAttribute('data-order')
+          });
+          DefaultEventEmitter$1.dispatchEvent(customEvent);
+        });
+        td.addEventListener('mouseleave', function () {
+          if (document.querySelector('#ResultDetailModal').innerHTML === '') {
+            _classPrivateFieldGet(_this2, _TBODY).querySelectorAll('td').forEach(function (td) {
+              return td.classList.remove('-selected');
+            });
+          }
         });
       });
     });
@@ -5026,19 +5087,31 @@
     _classPrivateFieldGet(this, _LOADING_VIEW).classList.remove('-shown');
   }
 
-  var _RESULTS_TABLE = new WeakMap();
+  function _colHighlight2(axes) {
+    var colIndex = axes.slice(0, 1);
+
+    _classPrivateFieldGet(this, _TBODY).querySelectorAll('[data-order]').forEach(function (element) {
+      var td = element.closest('td');
+
+      if (element.getAttribute('data-order').slice(0, 1) === colIndex) {
+        if (!td.classList.contains('.-selected')) {
+          td.classList.add('-selected');
+        }
+      } else {
+        td.classList.remove('-selected');
+      }
+    });
+  }
 
   var _ROOT$2 = new WeakMap();
 
+  var _RESULTS_TABLE = new WeakMap();
+
   var _RESULT_MODAL = new WeakMap();
 
-  var _EXIT_BUTTON = new WeakMap();
+  var _exit_button = new WeakMap();
 
   var _showPopUp = new WeakSet();
-
-  var _setHighlight = new WeakSet();
-
-  var _entryEl = new WeakSet();
 
   var _popup = new WeakSet();
 
@@ -5050,6 +5123,8 @@
 
   var _arrow = new WeakSet();
 
+  var _setHighlight = new WeakSet();
+
   var _handleKeydown = new WeakMap();
 
   var _arrowFuncs = new WeakMap();
@@ -5060,7 +5135,7 @@
 
   var _hidePopUp = new WeakSet();
 
-  var ResultDetailModal = function ResultDetailModal(elm) {
+  var ResultDetailModal = function ResultDetailModal() {
     var _this = this;
 
     _classCallCheck(this, ResultDetailModal);
@@ -5070,6 +5145,8 @@
     _setMovementArrow.add(this);
 
     _getCorList.add(this);
+
+    _setHighlight.add(this);
 
     _arrow.add(this);
 
@@ -5081,18 +5158,14 @@
 
     _popup.add(this);
 
-    _entryEl.add(this);
-
-    _setHighlight.add(this);
-
     _showPopUp.add(this);
 
-    _RESULTS_TABLE.set(this, {
+    _ROOT$2.set(this, {
       writable: true,
       value: void 0
     });
 
-    _ROOT$2.set(this, {
+    _RESULTS_TABLE.set(this, {
       writable: true,
       value: void 0
     });
@@ -5102,7 +5175,7 @@
       value: void 0
     });
 
-    _EXIT_BUTTON.set(this, {
+    _exit_button.set(this, {
       writable: true,
       value: void 0
     });
@@ -5113,7 +5186,6 @@
         if (e.key == 'Escape') {
           _classPrivateMethodGet(_this, _hidePopUp, _hidePopUp2).call(_this);
         } else if (_classPrivateFieldGet(_this, _arrowFuncs).has(e.key)) {
-          // TODO: set actual event handler
           _classPrivateFieldGet(_this, _RESULT_MODAL).querySelector(".arrow.-".concat(e.key.replace('Arrow', '').toLowerCase())).click();
         }
       }
@@ -5141,11 +5213,11 @@
 
     _classPrivateFieldSet(this, _RESULT_MODAL, document.querySelector('#ResultDetailModal'));
 
-    _classPrivateFieldSet(this, _EXIT_BUTTON, document.createElement('div'));
+    _classPrivateFieldSet(this, _exit_button, document.createElement('div'));
 
-    _classPrivateFieldGet(this, _EXIT_BUTTON).className = 'close-button-view'; // attach event
+    _classPrivateFieldGet(this, _exit_button).className = 'close-button-view'; // attach event
 
-    _classPrivateFieldGet(this, _EXIT_BUTTON).addEventListener('click', function () {
+    _classPrivateFieldGet(this, _exit_button).addEventListener('click', function () {
       _classPrivateMethodGet(_this, _hidePopUp, _hidePopUp2).call(_this);
     });
 
@@ -5166,11 +5238,12 @@
 
       _classPrivateMethodGet(_this, _hidePopUp, _hidePopUp2).call(_this);
     });
-  };
+  } // bind this on handleKeydown so it will keep listening to same event during the whole popup
+  ;
 
   function _showPopUp2(e) {
     if (_classPrivateFieldGet(this, _RESULT_MODAL).innerHTML === '') {
-      _classPrivateMethodGet(this, _setHighlight, _setHighlight2).call(this, e.detail.keys.uniqueEntryId, e.detail.properties.dataOrder);
+      _classPrivateMethodGet(this, _setHighlight, _setHighlight2).call(this, e.detail.properties.dataOrder);
 
       _classPrivateFieldSet(this, _handleKeydown, _classPrivateFieldGet(this, _handleKeydown).bind(this));
 
@@ -5182,32 +5255,11 @@
     }
   }
 
-  function _setHighlight2(id, axes) {
-    var curEntry = _classPrivateMethodGet(this, _entryEl, _entryEl2).call(this, id);
-
-    var curTr = curEntry.closest('tr');
-    curEntry.classList.add('-selected');
-    curTr.classList.add('-selected');
-    var rowIndex = axes.slice(0, 1);
-
-    _classPrivateFieldGet(this, _RESULTS_TABLE).querySelectorAll('[data-order]').forEach(function (element) {
-      var td = element.closest('td');
-
-      if (element.getAttribute('data-order').slice(0, 1) === rowIndex) {
-        td.classList.add('-selected');
-      }
-    });
-  }
-
-  function _entryEl2(id) {
-    return _classPrivateFieldGet(this, _RESULTS_TABLE).querySelector("[data-unique-entry-id = '".concat(id, "']"));
-  }
-
   function _popup2(detail) {
     var popup = document.createElement('div');
     popup.className = 'popup';
     popup.appendChild(_classPrivateMethodGet(this, _header, _header2).call(this, detail.keys, detail.properties));
-    popup.appendChild(_classPrivateMethodGet(this, _container, _container2).call(this, detail));
+    popup.appendChild(_classPrivateMethodGet(this, _container, _container2).call(this, detail.keys, detail.properties));
     return popup;
   }
 
@@ -5220,38 +5272,50 @@
     var header = document.createElement('header');
     header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div>\n        <a class='report-page-button-view' href='").concat(props.reportLink, "' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>\n    ");
     header.style.backgroundColor = subject.colorCSSValue;
-    header.lastChild.appendChild(_classPrivateFieldGet(this, _EXIT_BUTTON));
+    header.lastChild.appendChild(_classPrivateFieldGet(this, _exit_button));
     return header;
   }
 
-  function _container2(detail) {
+  function _container2(keys, props) {
     var _this2 = this;
 
     var container = document.createElement('div');
     container.className = 'container';
-    ['Up', 'Right', 'Down', 'Left'].forEach(function (dir) {
-      container.appendChild(_classPrivateMethodGet(_this2, _arrow, _arrow2).call(_this2, dir, detail));
+    ['Up', 'Right', 'Down', 'Left'].forEach(function (direction) {
+      container.appendChild(_classPrivateMethodGet(_this2, _arrow, _arrow2).call(_this2, direction, props.dataOrder));
     });
-    container.appendChild(_classPrivateMethodGet(this, _stanzas, _stanzas2).call(this, detail.keys));
+    container.appendChild(_classPrivateMethodGet(this, _stanzas, _stanzas2).call(this, keys.subjectId, keys.uniqueEntryId, keys.dataKey));
     return container;
   }
 
-  function _stanzas2(keys) {
+  function _stanzas2(subjectId, uniqueEntryId, dataKey) {
     var stanzas = document.createElement('div');
     stanzas.className = 'stanzas';
-    stanzas.innerHTML += StanzaManager$1.draw(keys.subjectId, keys.uniqueEntryId, keys.dataKey);
+    stanzas.innerHTML += StanzaManager$1.draw(subjectId, uniqueEntryId, dataKey);
     return stanzas;
   }
 
-  function _arrow2(direction, detail) {
+  function _arrow2(direction, axes) {
     var _this3 = this;
 
     var arrow = document.createElement('div');
     arrow.classList.add('arrow', "-".concat(direction.toLowerCase()));
     arrow.addEventListener('click', function (e) {
-      _classPrivateMethodGet(_this3, _setMovementArrow, _setMovementArrow2).call(_this3, _classPrivateFieldGet(_this3, _arrowFuncs).get('Arrow' + direction), detail);
+      _classPrivateMethodGet(_this3, _setMovementArrow, _setMovementArrow2).call(_this3, _classPrivateFieldGet(_this3, _arrowFuncs).get('Arrow' + direction), axes);
     });
     return arrow;
+  }
+
+  function _setHighlight2(axes) {
+    var curEntry = _classPrivateFieldGet(this, _RESULTS_TABLE).querySelector("[data-order = '".concat(axes, "']"));
+
+    var curTr = curEntry.closest('tr');
+    curEntry.classList.add('-selected');
+    curTr.classList.add('-selected');
+    var customEvent = new CustomEvent(highlightCol, {
+      detail: axes
+    });
+    DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
 
   function _getCorList2(str) {
@@ -5261,17 +5325,13 @@
         y = _str$split2[1];
 
     return [x, y].map(function (cor) {
-      return parseFloat(cor);
+      return parseInt(cor);
     });
   }
 
-  function _setMovementArrow2(movement, detail) {
+  function _setMovementArrow2(movement, axes) {
     //TODO: Implement functions for data with multiple entries
-    detail.properties.movement = movement;
-
-    var curEntry = _classPrivateMethodGet(this, _entryEl, _entryEl2).call(this, detail.keys.uniqueEntryId);
-
-    var _classPrivateMethodGe = _classPrivateMethodGet(this, _getCorList, _getCorList2).call(this, curEntry.getAttribute('data-order')),
+    var _classPrivateMethodGe = _classPrivateMethodGet(this, _getCorList, _getCorList2).call(this, axes),
         _classPrivateMethodGe2 = _slicedToArray(_classPrivateMethodGe, 2),
         x = _classPrivateMethodGe2[0],
         y = _classPrivateMethodGe2[1];
@@ -5279,8 +5339,8 @@
     var targetEntry = _classPrivateFieldGet(this, _RESULTS_TABLE).querySelector("[data-order = '".concat(movement(x, y), "'"));
 
     var targetTr = targetEntry.closest('tr');
-    var reportLink = targetTr.querySelector('.report-page-button-view').href;
-    ResultsTable.prototype.createPopupEvent(targetEntry, targetTr, reportLink, movePopup);
+    var reportLink = targetTr.querySelector(':scope > th > .inner > .report-page-button-view').href;
+    createPopupEvent(targetEntry, reportLink, movePopup);
   }
 
   function _hidePopUp2() {
@@ -5974,8 +6034,7 @@
     _classPrivateFieldGet(this, _tableData).splice(index, 1);
   }
 
-  var PATH = 'https://integbio.jp/togosite/sparqlist/api/';
-  var DATA_FROM_USER_IDS = 'data_from_user_ids';
+  var _path = new WeakMap();
 
   var _BODY = new WeakMap();
 
@@ -5985,9 +6044,7 @@
 
   var _clear = new WeakSet();
 
-  var UploadUserIDsView = // #ROOT;
-  // #USER_KEY;
-  function UploadUserIDsView(elm) {
+  var UploadUserIDsView = function UploadUserIDsView(elm, path) {
     var _this = this;
 
     _classCallCheck(this, UploadUserIDsView);
@@ -5995,6 +6052,11 @@
     _clear.add(this);
 
     _fetch.add(this);
+
+    _path.set(this, {
+      writable: true,
+      value: void 0
+    });
 
     _BODY.set(this, {
       writable: true,
@@ -6006,22 +6068,22 @@
       value: void 0
     });
 
-    _classPrivateFieldSet(this, _BODY, document.querySelector('body')); // this.#ROOT = elm;
+    _classPrivateFieldSet(this, _path, path);
+
+    _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
+
+    _classPrivateFieldSet(this, _USER_IDS, elm.querySelector(':scope > label > input')); // atache events
 
 
-    var form = elm.querySelector(':scope > form'); // this.#USER_KEY = form.querySelector(':scope > label > select');
-
-    _classPrivateFieldSet(this, _USER_IDS, form.querySelector(':scope > label > input')); // atache events
-
-
-    form.querySelector(':scope > .buttons > button:nth-child(1)').addEventListener('click', function (e) {
+    var buttons = elm.querySelector(':scope > .buttons');
+    buttons.querySelector(':scope > button:nth-child(1)').addEventListener('click', function (e) {
       e.stopPropagation();
 
       _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
 
       return false;
     });
-    form.querySelector(':scope > .buttons > button:nth-child(2)').addEventListener('click', function (e) {
+    buttons.querySelector(':scope > button:nth-child(2)').addEventListener('click', function (e) {
       e.stopPropagation();
 
       _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
@@ -6030,9 +6092,11 @@
     }); // event listeners
 
     _classPrivateFieldGet(this, _USER_IDS).addEventListener('change', function () {
-      console.log(_classPrivateFieldGet(_this, _USER_IDS));
-      console.log(_classPrivateFieldGet(_this, _USER_IDS).value);
       ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value);
+    });
+
+    _classPrivateFieldGet(this, _USER_IDS).addEventListener('keyup', function (e) {
+      if (e.keyCode === 13) _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
     });
   } // private methods
   ;
@@ -6040,10 +6104,9 @@
   function _fetch2() {
     var _this2 = this;
 
-    // console.log(this.#USER_KEY.value)
-    var queryTemplate = "".concat(PATH + DATA_FROM_USER_IDS, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
+    if (_classPrivateFieldGet(this, _USER_IDS).value === '') return;
+    var queryTemplate = "".concat(_classPrivateFieldGet(this, _path).url, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
     Records$1.properties.forEach(function (property) {
-      console.log(property);
       var propertyId = property.propertyId;
       fetch(queryTemplate.replace('@@sparqlet@@', encodeURIComponent(property.data)).replace('@@primaryKey@@', encodeURIComponent(property.primaryKey))).then(function (responce) {
         return responce.json();
@@ -6160,8 +6223,7 @@
         new ReportsView(document.querySelector('#Reports'));
         new ResultsTable(document.querySelector('#ResultsTable'));
         new ResultDetailModal();
-        new BalloonView();
-        new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
+        new BalloonView(); // load config json
 
         Promise.all([fetch(PROPERTIES), fetch(TEMPLATES), fetch(AGGREGATE)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
@@ -6173,15 +6235,9 @@
               templates = _ref2[1],
               aggregate = _ref2[2];
 
-          Records$1.setSubjects(subjects); // define primary keys
-          // const togoKeys = subjects.map(subject => {
-          //   return {
-          //     label: subject.subject,
-          //     togoKey: subject.togoKey,
-          //     subjectId: subject.subjectId
-          //   }
-          // });
-          // const customEvent = new CustomEvent(event.defineTogoKey, {detail: togoKeys});
+          Records$1.setSubjects(subjects); // setup upload user id
+
+          new UploadUserIDsView(document.querySelector('#UploadUserIDsView'), aggregate.mapping); // define primary keys
 
           var customEvent = new CustomEvent(defineTogoKey, {
             detail: subjects
