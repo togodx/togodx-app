@@ -845,6 +845,7 @@ main {
   border-radius: 0.2rem;
   margin-right: 0.2rem;
   cursor: pointer;
+  white-space: nowrap;
 }
 .report-page-button-view::before {
   content: "Report";
@@ -1705,8 +1706,11 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
 #ResultsTable > .body > table > thead > tr > th > .inner, #ResultsTable > .body > table > thead > tr td > .inner {
   height: 100%;
 }
-#ResultsTable > .body > table > thead > tr > th > .inner.-propertyvalue, #ResultsTable > .body > table > thead > tr td > .inner.-propertyvalue {
+#ResultsTable > .body > table > thead > tr > th > .inner._subject-background-color, #ResultsTable > .body > table > thead > tr td > .inner._subject-background-color {
   color: white;
+}
+#ResultsTable > .body > table > thead > tr > th > .inner._subject-color, #ResultsTable > .body > table > thead > tr td > .inner._subject-color {
+  background-color: white;
 }
 #ResultsTable > .body > table > thead > tr.header {
   font-weight: bold;
@@ -1720,7 +1724,6 @@ body[data-display=results] #ConditionBuilder > .conditions > .togoKey {
   line-height: 1.5rem;
 }
 #ResultsTable > .body > table > thead > tr.header > th > .inner {
-  background-color: white;
   border-bottom: solid 0.1rem var(--color-black);
 }
 #ResultsTable > .body > table > thead > tr.header > th:first-child > .inner {

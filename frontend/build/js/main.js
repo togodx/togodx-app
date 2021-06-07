@@ -5071,9 +5071,9 @@
     DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
     _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class=\"inner\">Report</div>\n      </th>\n      <th>\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getLabelFromTogoKey(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      ").concat(tableData.condition.attributes.map(function (property) {
-      return "\n      <th>\n        <div class=\"inner -propertyvalue\" style=\"background-color: ".concat(property.subject.colorCSSValue, "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
+      return "\n      <th>\n        <div class=\"inner _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
     }).join(''), "\n      ").concat(tableData.condition.properties.map(function (property) {
-      return "\n      <th>\n        <div class=\"inner -property\" style=\"color: ".concat(property.subject.colorCSSValue, "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.property.label, "</span>\n        </div>\n      </th>");
+      return "\n      <th>\n        <div class=\"inner _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n          <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n          <span>").concat(property.subCategory ? property.subCategory.label : property.property.label, "</span>\n        </div>\n      </th>");
     }).join('')); // make stats
 
     _classPrivateFieldGet(this, _STATS).innerHTML = "<td colspan=\"2\"><div class=\"inner\"><div></td>" + properties.map(function () {
