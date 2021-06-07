@@ -53,7 +53,6 @@ export default class ConditionsController {
             newProperty.query.propertyId === property.query.propertyId &&
             newProperty.query.categoryIds.length === property.query.categoryIds.length) {
             let matchValues = newProperty.query.categoryIds.every(categoryId => property.query.categoryIds.indexOf(categoryId) !== -1);
-            console.log(matchValues, newProperty.query.categoryIds, property.query.categoryIds)
             return matchValues;
           } else {
             return false;

@@ -125,10 +125,10 @@ class ConditionBuilder {
   makeQueryParameter() {
     // create properties
     const properties = this.#propertyConditions.map(condition => {
+      const query = {propertyId: condition.property.propertyId};
+      if (condition.subCategory) query.categoryIds = condition.subCategory.values;
       return {
-        query: {
-          propertyId: condition.property.propertyId
-        },
+        query,
         property: condition.property,
         subject: condition.subject,
         subCategory: condition.subCategory

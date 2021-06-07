@@ -3097,10 +3097,12 @@
 
         // create properties
         var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (condition) {
+          var query = {
+            propertyId: condition.property.propertyId
+          };
+          if (condition.subCategory) query.categoryIds = condition.subCategory.values;
           return {
-            query: {
-              propertyId: condition.property.propertyId
-            },
+            query: query,
             property: condition.property,
             subject: condition.subject,
             subCategory: condition.subCategory
@@ -6076,7 +6078,6 @@
             var matchValues = newProperty.query.categoryIds.every(function (categoryId) {
               return property.query.categoryIds.indexOf(categoryId) !== -1;
             });
-            console.log(matchValues, newProperty.query.categoryIds, property.query.categoryIds);
             return matchValues;
           } else {
             return false;
