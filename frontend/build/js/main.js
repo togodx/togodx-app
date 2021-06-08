@@ -6251,11 +6251,10 @@
 
     _classPrivateFieldGet(this, _USER_IDS).addEventListener('change', function () {
       ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value);
-    });
+    }); // this.#USER_IDS.addEventListener('keyup', e => {
+    //   if (e.keyCode === 13) this.#fetch();
+    // });
 
-    _classPrivateFieldGet(this, _USER_IDS).addEventListener('keyup', function (e) {
-      if (e.keyCode === 13) _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
-    });
   } // private methods
   ;
 
@@ -6263,7 +6262,7 @@
     var _this2 = this;
 
     if (_classPrivateFieldGet(this, _USER_IDS).value === '') return;
-    var queryTemplate = "".concat(_classPrivateFieldGet(this, _path).url, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value));
+    var queryTemplate = "".concat(_classPrivateFieldGet(this, _path).url, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value.replace(/,/g, " ").split(/\s+/).join(',')));
     Records$1.properties.forEach(function (property) {
       var propertyId = property.propertyId;
       fetch(queryTemplate.replace('@@sparqlet@@', encodeURIComponent(property.data)).replace('@@primaryKey@@', encodeURIComponent(property.primaryKey))).then(function (responce) {

@@ -32,9 +32,9 @@ export default class UploadUserIDsView {
     this.#USER_IDS.addEventListener('change', () => {
       ConditionBuilder.setUserIds(this.#USER_IDS.value);
     });
-    this.#USER_IDS.addEventListener('keyup', e => {
-      if (e.keyCode === 13) this.#fetch();
-    });
+    // this.#USER_IDS.addEventListener('keyup', e => {
+    //   if (e.keyCode === 13) this.#fetch();
+    // });
 
   }
 
@@ -43,7 +43,7 @@ export default class UploadUserIDsView {
   #fetch() {
     if (this.#USER_IDS.value === '') return;
 
-    const queryTemplate = `${this.#path.url}?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=${ConditionBuilder.currentTogoKey}&userIds=${encodeURIComponent(this.#USER_IDS.value)}`;
+    const queryTemplate = `${this.#path.url}?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=${ConditionBuilder.currentTogoKey}&userIds=${encodeURIComponent(this.#USER_IDS.value.replace(/,/g," ").split(/\s+/).join(','))}`;
 
     Records.properties.forEach(property => {
       const propertyId = property.propertyId;
