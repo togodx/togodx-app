@@ -368,6 +368,11 @@ template {
   --z-modal-window: 11;
   --shadow-shallow: 0 .1rem .1rem rgba(0,0,0,.3);
   --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3);
+  --opacity-disabled: .4;
+}
+
+[data-condition=values] {
+  --width-track-column-property: 20rem;
 }
 
 @-webkit-keyframes enter-stacking-item {
@@ -587,7 +592,6 @@ main {
   white-space: nowrap;
   overflow-x: hidden;
   height: 100%;
-  background-color: var(--color-light-gray);
 }
 .column-selector-view > .columns > .inner {
   height: 100%;
@@ -595,17 +599,13 @@ main {
 }
 .column-selector-view > .columns > .inner > .column {
   display: inline-block;
-  border-left: solid 0.1rem var(--color-separator);
-  margin: 0;
+  margin: 0 0.1rem 0 0;
   padding: 0;
   list-style: none;
   max-height: 29.5rem;
   height: 100%;
   overflow-y: auto;
   vertical-align: top;
-}
-.column-selector-view > .columns > .inner > .column:last-child {
-  border-right: solid 0.1rem var(--color-separator);
 }
 .column-selector-view > .columns > .inner > .column > .item {
   margin: 0;
@@ -619,8 +619,15 @@ main {
   display: flex;
 }
 .column-selector-view > .columns > .inner > .column > .item.-all {
-  background-color: var(--color-light-gray);
+  background-color: var(--color-warm-gray);
   border-bottom: solid 0.1rem var(--color-gray);
+  display: none;
+}
+[data-condition=values] .column-selector-view > .columns > .inner > .column > .item.-all {
+  display: inherit;
+}
+[data-condition=values] .column-selector-view > .columns > .inner > .column > .item.-all > input {
+  display: inherit;
 }
 .column-selector-view > .columns > .inner > .column > .item.-haschild::before, .column-selector-view > .columns > .inner > .column > .item.-haschild::after {
   content: "";
@@ -654,6 +661,10 @@ main {
 .column-selector-view > .columns > .inner > .column > .item > input {
   -webkit-margin-end: 0.4rem;
           margin-inline-end: 0.4rem;
+  vertical-align: bottom;
+}
+[data-condition=values] .column-selector-view > .columns > .inner > .column > .item > input {
+  display: none;
 }
 .column-selector-view > .columns > .inner > .column > .item > .label {
   padding-right: 0.4rem;
@@ -853,6 +864,7 @@ main {
   border-radius: 0.2rem;
   margin-right: 0.2rem;
   cursor: pointer;
+  white-space: nowrap;
 }
 .report-page-button-view::before {
   content: "Report";
@@ -957,13 +969,13 @@ main {
   font-size: 1.4rem;
   font-weight: bold;
 }
-.stacking-condition-view.-value > .path {
+.stacking-condition-view._subject-background-color > .path {
   color: rgba(0, 0, 0, 0.5);
 }
-.stacking-condition-view.-value > .path > li + li::before {
+.stacking-condition-view._subject-background-color > .path > li + li::before {
   border-left-color: rgba(0, 0, 0, 0.5);
 }
-.stacking-condition-view.-value > .label {
+.stacking-condition-view._subject-background-color > .label {
   color: white;
 }
 
@@ -1042,7 +1054,7 @@ main {
   -webkit-transform-origin: 0 0;
           transform-origin: 0 0;
   margin-top: 0.6rem;
-  opacity: 0.6;
+  opacity: var(--opacity-disabled);
   cursor: pointer;
   transition: opacity var(--transition-instant);
   position: relative;
@@ -1068,7 +1080,7 @@ main {
   color: white;
   background-color: var(--color-lamp-black);
 }
-.table-data-controller-view > .conditions > .condiiton.-value {
+.table-data-controller-view > .conditions > .condiiton._subject-background-color {
   color: white;
 }
 .table-data-controller-view > .conditions > .condiiton > p {
@@ -1078,7 +1090,7 @@ main {
   overflow: hidden;
 }
 .table-data-controller-view > .conditions > .condiiton:last-child {
-  padding-right: 1.9rem;
+  padding-right: 1.8rem;
 }
 .table-data-controller-view > .status {
   padding: 0.3rem 0;
@@ -1260,15 +1272,8 @@ main {
   cursor: pointer;
   transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
 }
-.track-value-view::after {
-  content: "";
-  display: block;
-  position: absolute;
-  top: 0;
-  right: -0.05rem;
-  height: 100%;
-  border-left: solid 0.005rem var(--color-gray);
-  z-index: var(--z-track-item-border);
+[data-condition=values] .track-value-view {
+  pointer-events: none;
 }
 .track-value-view::after {
   content: "";
@@ -1350,7 +1355,7 @@ main {
 }
 
 .track-view {
-  border-bottom: solid 0.1rem var(--color-separator);
+  margin-bottom: 0.1rem;
   font-size: 1.2rem;
   position: relative;
   transition: opacity var(--transition-wipe);
@@ -1368,15 +1373,18 @@ main {
   height: var(--height-track);
 }
 .track-view > .row > .left {
+  border-right: solid 0.1rem var(--color-gray);
   -webkit-flex-basis: var(--width-track-column-property);
           flex-basis: var(--width-track-column-property);
   min-width: var(--width-track-column-property);
   background-color: white;
+  transition: width var(--transition-instant);
 }
 .track-view > .row > .right {
   -webkit-flex-basis: calc(100% - var(--width-track-column-property));
           flex-basis: calc(100% - var(--width-track-column-property));
   max-width: calc(100% - var(--width-track-column-property));
+  transition: width var(--transition-instant);
 }
 .track-view > .row.-upper > .left {
   position: relative;
@@ -1403,6 +1411,13 @@ main {
   font-size: 1.4rem;
   font-weight: bold;
 }
+.track-view > .row.-upper > .left > .collapsebutton > .mapping {
+  display: none;
+  margin-right: 0.4rem;
+}
+[data-condition=values] .track-view > .row.-upper > .left > .collapsebutton > .mapping {
+  display: inherit;
+}
 .track-view > .row.-upper > .right > .overview {
   height: var(--height-track);
   background-color: #EEE;
@@ -1423,9 +1438,7 @@ main {
   line-height: 3rem;
 }
 .track-view > .row.-lower > .left > .description {
-  margin-bottom: 0.6rem;
-  padding-left: 1.6rem;
-  padding-right: 0.8rem;
+  padding: 0 0.8rem;
   line-height: 1.2;
 }
 .track-view > .row.-lower > .left > label {
@@ -1471,47 +1484,79 @@ body[data-display=results] #App > .inner {
           transform: translateX(calc(-100vw + var(--width-condition)));
 }
 
+#ConditionBuilder {
+  --radius: .4rem;
+}
 #ConditionBuilder > .conditions {
   -webkit-flex-grow: 1;
           flex-grow: 1;
 }
-#ConditionBuilder > .conditions > * {
+#ConditionBuilder > .conditions > .condition {
   padding: 0.7rem 0.6rem;
   background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 0.4rem;
+  border-radius: var(--radius);
 }
-#ConditionBuilder > .conditions > * + * {
+#ConditionBuilder > .conditions > .condition + .condition {
   margin-top: 0.4rem;
 }
-#ConditionBuilder > .conditions > * > .inner > .title {
-  margin-bottom: -0.2rem;
+#ConditionBuilder > .conditions > .condition > .inner > .title {
+  margin: -0.5rem 0 -0.2rem;
   line-height: 1;
   font-size: 1.2rem;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: baseline;
+          align-items: baseline;
 }
-#ConditionBuilder > .conditions > * > .inner > .title > .material-icons-outlined {
+#ConditionBuilder > .conditions > .condition > .inner > .title > .material-icons-outlined {
   font-size: 1.4rem;
   vertical-align: middle;
   -webkit-margin-end: 0.3rem;
           margin-inline-end: 0.3rem;
   position: relative;
-  top: -0.1rem;
+  top: 0.3rem;
 }
-#ConditionBuilder > .conditions > * > .inner > .title > small {
+#ConditionBuilder > .conditions > .condition > .inner > .title > small {
   font-weight: normal;
-  margin-left: 0.5rem;
+  -webkit-flex-grow: 1;
+          flex-grow: 1;
+  text-align: right;
 }
-body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .stacking-condition-view > .close-button-view {
-  display: none;
-}
-#ConditionBuilder > .conditions > .togokey {
-  width: 100%;
-  transition: opacity var(--transition-wipe);
-}
-#ConditionBuilder > .conditions > .togokey > .inner > select {
-  width: 100%;
+#ConditionBuilder > .conditions > .condition > .inner > .title + * {
   margin-top: 0.4rem;
 }
-body[data-display=results] #ConditionBuilder > .conditions > .togokey {
+#ConditionBuilder > .conditions > .condition > hr {
+  border: none;
+  border-top: solid 0.1rem var(--color-separator);
+}
+body[data-display=results] #ConditionBuilder > .conditions > .condition > .conditions > .stacking-condition-view > .close-button-view {
+  display: none;
+}
+#ConditionBuilder > .conditions > #ConditionKeys, #ConditionBuilder > .conditions > #ConditionValues {
+  transition: opacity var(--transition-instant);
+  opacity: var(--opacity-disabled);
+  cursor: pointer;
+}
+#ConditionBuilder > .conditions > #ConditionKeys:hover, #ConditionBuilder > .conditions > #ConditionValues:hover {
+  opacity: 1;
+}
+#ConditionBuilder > .conditions > #ConditionKeys {
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+[data-condition=keys] #ConditionBuilder > .conditions > #ConditionKeys {
+  opacity: 1;
+}
+#ConditionBuilder > .conditions > #ConditionValues {
+  border-radius: 0 0 var(--radius) var(--radius);
+  margin-top: 0.1rem;
+}
+[data-condition=values] #ConditionBuilder > .conditions > #ConditionValues {
+  opacity: 1;
+}
+#ConditionBuilder > .conditions > #ConditionTogoKey > .inner > select {
+  width: 100%;
+}
+body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   pointer-events: none;
   opacity: 0.5;
 }
@@ -1734,8 +1779,11 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
 #ResultsTable > .body > table > thead > tr > th > .inner, #ResultsTable > .body > table > thead > tr td > .inner {
   height: 100%;
 }
-#ResultsTable > .body > table > thead > tr > th > .inner.-propertyvalue, #ResultsTable > .body > table > thead > tr td > .inner.-propertyvalue {
+#ResultsTable > .body > table > thead > tr > th > .inner._subject-background-color, #ResultsTable > .body > table > thead > tr td > .inner._subject-background-color {
   color: white;
+}
+#ResultsTable > .body > table > thead > tr > th > .inner._subject-color, #ResultsTable > .body > table > thead > tr td > .inner._subject-color {
+  background-color: white;
 }
 #ResultsTable > .body > table > thead > tr.header, #ResultsTable > .body > table > thead > tr.subheader {
   font-weight: bold;
@@ -1749,7 +1797,6 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
   line-height: 1.5rem;
 }
 #ResultsTable > .body > table > thead > tr.header > th > .inner, #ResultsTable > .body > table > thead > tr.subheader > th > .inner {
-  background-color: white;
   border-bottom: solid 0.1rem var(--color-black);
 }
 #ResultsTable > .body > table > thead > tr.header > th > .inner.-noborder, #ResultsTable > .body > table > thead > tr.subheader > th > .inner.-noborder {
@@ -1983,20 +2030,11 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
   width: 100%;
 }
 
-#UploadUserIDsView > form {
-  margin-top: 0.2rem;
-}
-#UploadUserIDsView > form > label {
-  display: block;
-}
-#UploadUserIDsView > form > label > p {
-  margin-bottom: 0;
-}
-#UploadUserIDsView > form > label > select, #UploadUserIDsView > form > label input {
+#UploadUserIDsView > textarea {
   width: 100%;
-  display: block;
 }
-#UploadUserIDsView > form > .buttons {
+#UploadUserIDsView > .buttons {
+  margin-top: -0.2rem;
   text-align: center;
 }
 

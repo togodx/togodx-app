@@ -47,11 +47,11 @@ export default class TableData {
       <div class="condiiton">
         <p title="${condition.togoKey}">${Records.getLabelFromTogoKey(condition.togoKey)}</p>
       </div>
-      ${condition.attributes.map(property => `<div class="condiiton -value" style="background-color: hsl(${property.subject.hue}, 45%, 50%)">
+      ${condition.attributes.map(property => `<div class="condiiton _subject-background-color" data-subject-id="${property.subject.subjectId}">
         <p title="${property.property.label}">${property.property.label}</p>
       </div>`).join('')}
-      ${condition.properties.map(property => `<div class="condiiton -value" style="color: hsl(${property.subject.hue}, 45%, 50%)">
-        <p title="${property.property.label}">${property.property.label}</p>
+      ${condition.properties.map(property => `<div class="condiiton _subject-color" data-subject-id="${property.subject.subjectId}">
+        <p title="${property.property.label}">${property.subCategory ? property.subCategory.label : property.property.label}</p>
       </div>`).join('')}
     </div>
     <div class="status">

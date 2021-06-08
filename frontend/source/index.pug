@@ -18,19 +18,6 @@ block main
             h2.attributes Attribute values
           nav
             ul
-              //- li#UploadUserIDsView
-              //-   span.material-icons-outlined file_upload
-              //-   span Upload IDs
-              //-   form
-              //-     label
-              //-       | userKey
-              //-       input#UploadUserIDsUserKey(type="text" value="uniprot")
-              //-     label
-              //-       | userIds
-              //-       input#UploadUserIDsUserIDs(type="text" value="Q9NYF8,Q4V339,A6NCE7,A7E2F4,P69849,A6NN73,Q92928,Q5T1J5,P0C7P4,Q6DN03,P09874,Q08211,Q5T4S7,P12270,Q9UPN3,P07814,P53621,P49321,P0C629,Q9BZK8,Q9BY65")
-              //-     button#UploadUserIDsSubmit(type="button") Submit
-              //-     button#UploadUserIDsClear(type="button") Clear
-                    
               li.viewmodecontroller
                 label.log10
                   input(type="checkbox" value="log10")
@@ -232,7 +219,7 @@ block main
             //- h2.title(data-hidden-by="properties") Results
             h2.title Condition builder
           .conditions
-            .togokey
+            #ConditionTogoKey.condition
               .inner
                 h2.title
                   span.material-icons-outlined layers
@@ -245,21 +232,15 @@ block main
                   span.material-icons-outlined file_upload
                   | Map your IDs
                   small optional
-                //- form
-                  //- label
-                  //-   p userKey
-                  //-   //- input#UploadUserIDsUserKey(type="text" value="uniprot")
-                  //-   select
-                label
-                  input(type="text" placeholder="Enter comma-separated IDs")
+                textarea(type="text" placeholder="Enter IDs")
                 .buttons
                   button.rounded-button-view.-verysmall.-outline(type="button") Submit
                   button.rounded-button-view.-verysmall.-outline(type="button") Reset
 
-            .attributes
+            #ConditionKeys.condition
               .inner
                 h2.title
-                  span.material-icons-outlined west
+                  span.material-icons-outlined filter_alt
                   | Add filters
                 .conditions.-empty
                 //-
@@ -270,10 +251,10 @@ block main
                       li Position
                       li.end Genital
                     .label Testis
-            .properties
+            #ConditionValues.condition
               .inner
                 h2.title
-                  span.material-icons-outlined west
+                  span.material-icons-outlined insights
                   | Map attributes
                 .conditions.-empty
                 //-
@@ -303,5 +284,5 @@ block main
         
         section#Conditions
           header
-            h2.title Saved onditions
+            h2.title Saved Conditions
           .conditions

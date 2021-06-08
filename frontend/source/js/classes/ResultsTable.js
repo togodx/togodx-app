@@ -124,8 +124,8 @@ export default class ResultsTable {
       .map(
         property => `
     <th>
-      <div class="inner -propertyvalue" style="background-color: ${property.subject.colorCSSValue}">
-        <div class="togo-key-view">${property.property.primaryKey}</div>
+      <div class="inner _subject-background-color" data-subject-id="${property.subject.subjectId}">
+      <div class="togo-key-view">${property.property.primaryKey}</div>
         <span>${property.property.label}</span>
       </div>
     </th>`
@@ -135,9 +135,9 @@ export default class ResultsTable {
       .map(
         property => `
     <th>
-      <div class="inner -property" style="color: ${property.subject.colorCSSValue}">
+      <div class="inner _subject-color" data-subject-id="${property.subject.subjectId}">
         <div class="togo-key-view">${property.property.primaryKey}</div>
-        <span>${property.property.label}</span>
+        <span>${property.subCategory ? property.subCategory.label : property.property.label}</span>
       </div>
     </th>`
       )

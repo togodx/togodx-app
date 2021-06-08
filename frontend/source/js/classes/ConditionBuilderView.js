@@ -1,5 +1,6 @@
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import StackingConditionView from "./StackingConditionView";
 import * as event from '../events';
 
 export default class ConditionBuilderView {
@@ -12,16 +13,17 @@ export default class ConditionBuilderView {
   constructor(elm) {
 
     // references
-    const body = document.querySelector('body');
     const conditionsContainer = elm.querySelector(':scope > .conditions');
-    this.#TOGO_KEYS = conditionsContainer.querySelector(':scope > .togokey > .inner > select');
-    this.#PROPERTIES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .properties > .inner > .conditions');
-    this.#ATTRIBUTES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .attributes > .inner > .conditions');
+    this.#TOGO_KEYS = conditionsContainer.querySelector('#ConditionTogoKey > .inner > select');
+    this.#PROPERTIES_CONDITIONS_CONTAINER = document.querySelector('#ConditionValues > .inner > .conditions');
+    this.#ATTRIBUTES_CONDITIONS_CONTAINER = document.querySelector('#ConditionKeys > .inner > .conditions');
     this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
 
     // attach event
+    document.querySelector('#ConditionKeys').addEventListener('click', () => document.body.dataset.condition = 'keys');
+    document.querySelector('#ConditionValues').addEventListener('click', () => document.body.dataset.condition = 'values');
     this.#EXEC_BUTTON.addEventListener('click', () => {
-      body.dataset.display = 'results';
+      document.body.dataset.display = 'results';
       ConditionBuilder.makeQueryParameter();
     });
 
@@ -30,10 +32,10 @@ export default class ConditionBuilderView {
       console.log(e.detail)
       switch (e.detail.action) {
         case 'add':
-          this.#addProperty(e.detail.condition.subject, e.detail.condition.property);
+          this.#addProperty(e.detail.condition.subject, e.detail.condition.property, e.detail.condition.subCategory);
           break;
         case 'remove':
-          this.#removeProperty(e.detail.propertyId);
+          this.#removeProperty(e.detail.propertyId, e.detail.parentCategoryId);
           break;
       }
     });
@@ -74,54 +76,34 @@ export default class ConditionBuilderView {
     this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }
 
-  #addProperty(subject, property) {
-    console.log(property)
-    // make view
-    const view = document.createElement('div');
-    view.classList.add('stacking-condition-view');
-    view.dataset.propertyId = property.propertyId;
-    view.innerHTML = `
-    <div class="close-button-view"></div>
-    <ul class="path">
-      <li>${subject.subject}</li>
-    </ul>
-    <div class="label" style="color: ${subject.colorCSSValue};">${property.label}</div>`;
-    this.#PROPERTIES_CONDITIONS_CONTAINER.insertAdjacentElement('beforeend', view);
+  #addProperty(subject, property, subCategory) {
+    console.log(property, subCategory)
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
+    // make view
+    const view = new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {subject, property, subCategory});
     // event
-    view.querySelector(':scope > .close-button-view').addEventListener('click', () => {
-      ConditionBuilder.removeProperty(view.dataset.propertyId);
+    view.elm.querySelector(':scope > .close-button-view').addEventListener('click', e => {
+      e.stopPropagation();
+      ConditionBuilder.removeProperty(view.elm.dataset.propertyId, view.elm.dataset.parentCategoryId);
     });
   }
   
-  #removeProperty(propertyId) {
-    const view = this.#PROPERTIES_CONDITIONS_CONTAINER.querySelector(`[data-property-id="${propertyId}"]`);
+  #removeProperty(propertyId, parentCategoryId) {
+    let selector = `[data-property-id="${propertyId}"]`;
+    if (parentCategoryId) selector += `[data-parent-category-id="${parentCategoryId}"]`;
+    const view = this.#PROPERTIES_CONDITIONS_CONTAINER.querySelector(selector);
     view.parentNode.removeChild(view);
     if (this.#PROPERTIES_CONDITIONS_CONTAINER.childNodes.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
   #addPropertyValue(subject, property, value) {
-    // make view
-    const view = document.createElement('div');
-    view.classList.add('stacking-condition-view');
-    view.classList.add('-value');
-    view.dataset.propertyId = property.propertyId;
-    view.dataset.categoryId = value.categoryId;
-    // view.dataset.range = [0, 0]; // TODO:
-    view.style.backgroundColor = subject.colorCSSValue;
-    view.innerHTML = `
-    <div class="close-button-view"></div>
-    <ul class="path">
-      <li>${subject.subject}</li>
-      <li>${property.label}</li>
-      ${value.ancestors.map(ancestor => `<li>${ancestor}</li>`).join('')}
-    </ul>
-    <div class="label">${value.label}</div>`;
-    this.#ATTRIBUTES_CONDITIONS_CONTAINER.insertAdjacentElement('beforeend', view);
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
+    // make view
+    const view = new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {subject, property, value});
     // event
-    view.querySelector(':scope > .close-button-view').addEventListener('click', () => {
-      ConditionBuilder.removePropertyValue(view.dataset.propertyId, view.dataset.categoryId);
+    view.elm.querySelector(':scope > .close-button-view').addEventListener('click', e => {
+      e.stopPropagation();
+      ConditionBuilder.removePropertyValue(view.elm.dataset.propertyId, view.elm.dataset.categoryId);
     });
   }
 
