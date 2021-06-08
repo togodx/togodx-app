@@ -14,7 +14,8 @@ export default class TableData {
   #rows;
   #abortController;
   #isAutoLoad;
-  #isLoaded;
+  #isLoading;
+  #isCompleted;
   #startTime;
   #ROOT;
   #STATUS;
@@ -28,7 +29,7 @@ export default class TableData {
     console.log(condition)
 
     this.#isAutoLoad = false;
-    this.#isLoaded = false;
+    this.#isCompleted = false;
     this.#condition = condition;
     this.#serializedHeader = [
       ...condition.attributes.map(property => property.query.propertyId),
@@ -162,7 +163,6 @@ export default class TableData {
 
   /* private methods */
 
-
   #getQueryIds() {
     // reset
     this.#abortController = new AbortController();
@@ -206,6 +206,8 @@ export default class TableData {
   }
 
   #getProperties() {
+    if (this.#isLoading) return;
+    this.#isLoading = true;
     this.#ROOT.classList.add('-fetching');
     this.#STATUS.textContent = 'Getting data';
     fetch(
@@ -217,7 +219,8 @@ export default class TableData {
       .then(rows => {
         console.log(rows)
         this.#rows.push(...rows);
-        this.#isLoaded = this.offset >= this.#queryIds.length;
+        this.#isLoading = false;
+        this.#isCompleted = this.offset >= this.#queryIds.length;
         // display
         this.#ROOT.classList.remove('-fetching');
         this.#STATUS.textContent = 'Awaiting';
@@ -228,11 +231,11 @@ export default class TableData {
         const customEvent = new CustomEvent(event.addNextRows, {detail: {
           tableData: this,
           rows,
-          done: this.#isLoaded
+          done: this.#isCompleted
         }});
         DefaultEventEmitter.dispatchEvent(customEvent);
         // turn off after finished
-        if (this.#isLoaded) {
+        if (this.#isCompleted) {
           this.#complete();
         } else if (this.#isAutoLoad) {
           this.#getProperties();
@@ -266,7 +269,7 @@ export default class TableData {
   };
   
   #autoLoad() {
-    if (this.#isLoaded) return;
+    if (this.#isCompleted) return;
     this.#isAutoLoad = true;
     this.#ROOT.classList.add('-autoload');
     this.#getProperties();
