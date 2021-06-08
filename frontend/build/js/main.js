@@ -3373,7 +3373,7 @@
     // make options
     _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = subjects.map(function (subject) {
       var option = '';
-      if (subject.togoKey) option = "<option value=\"".concat(subject.togoKey, "\" data-subject-id=\"").concat(subjects.subjectId, "\">").concat(subject.subject, " - ").concat(subject.keyLabel, "</option>");
+      if (subject.togoKey) option = "<option value=\"".concat(subject.togoKey, "\" data-subject-id=\"").concat(subjects.subjectId, "\">").concat(subject.keyLabel, "</option>");
       return option;
     }).join('');
     _classPrivateFieldGet(this, _TOGO_KEYS).disabled = false; // attach event

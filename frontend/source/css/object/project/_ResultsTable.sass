@@ -1,4 +1,5 @@
 #ResultsTable
+  --thheight: 0.8rem
   > .body
     > table
       width: 100%
@@ -27,23 +28,31 @@
             white-space: nowrap
             > th
               position: sticky
-              top: 0
               z-index: var(--z-results-header)
               line-height: 1.5rem
               > .inner
-                // background-color: white
-                // border-bottom: solid .1rem var(--color-separator)
+                background-color: white
                 border-bottom: solid .1rem var(--color-black)
                 &.-noborder
                   border: none
               &:first-child
                 > .inner
                   background-color: var(--color-light-gray)
-              &:nth-child(2)
+              &:nth-child(2), &:nth-child(3)
                 > .inner
                   background-color: var(--color-lamp-black)
                   > .togo-key-view
                     background-color: var(--color-dark-gray)
+            &.header
+              > th
+                top: 0
+                &:nth-child(1), &:nth-child(2)
+                  > .inner
+                    height: calc(var(--thheight) * 4)
+                    padding-top: calc(var(--thheight) * 0.5 + var(--padding-track-block-start))
+            &.subheader
+              > th
+                top: var(--thheight)
           &.statistics
             > td
               // position: sticky
