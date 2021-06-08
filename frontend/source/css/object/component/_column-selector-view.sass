@@ -28,8 +28,13 @@
           transition: background var(--transition-instant)
           display: flex
           &.-all
-            background-color: var(--color-light-gray)
+            background-color: var(--color-warm-gray)
             border-bottom: solid .1rem var(--color-gray)
+            display: none
+            [data-condition="values"] &
+              display: inherit
+              > input
+                display: inherit
           &.-haschild
             &::before, &::after
               content: ""
@@ -57,6 +62,9 @@
             padding-bottom: .1rem
           > input
             margin-inline-end: .4rem
+            vertical-align: bottom
+            [data-condition="values"] &
+              display: none
           > .label
             padding-right: .4rem
           > .count

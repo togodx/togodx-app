@@ -3312,9 +3312,9 @@
 
     _classPrivateFieldSet(this, _TOGO_KEYS, conditionsContainer.querySelector('#ConditionTogoKey > .inner > select'));
 
-    _classPrivateFieldSet(this, _PROPERTIES_CONDITIONS_CONTAINER, document.querySelector('#ConditionKeys > .inner > .conditions'));
+    _classPrivateFieldSet(this, _PROPERTIES_CONDITIONS_CONTAINER, document.querySelector('#ConditionValues > .inner > .conditions'));
 
-    _classPrivateFieldSet(this, _ATTRIBUTES_CONDITIONS_CONTAINER, document.querySelector('#ConditionValues > .inner > .conditions'));
+    _classPrivateFieldSet(this, _ATTRIBUTES_CONDITIONS_CONTAINER, document.querySelector('#ConditionKeys > .inner > .conditions'));
 
     _classPrivateFieldSet(this, _EXEC_BUTTON, elm.querySelector(':scope > footer > button.exec')); // attach event
 
@@ -3777,7 +3777,7 @@
               checkbox.checked = isChecked;
               _classPrivateFieldGet(_this, _items$1)[li.dataset.id].checked = isChecked;
             }
-          }); // update all properties
+          }); // update Map attributes
 
           ul.querySelector(':scope > .item.-all > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
           // TODO:
@@ -3867,7 +3867,7 @@
 
     ul.innerHTML = "<li\n      class=\"item -all\"\n      ".concat(parentCategoryId ? "\n        data-parent-category-id=\"".concat(parentCategoryId, "\"\n        data-parent-label=\"").concat(parentItem.label, "\"") : '', "\n      data-category-ids=\"").concat(items.map(function (item) {
       return item.categoryId;
-    }), "\"\n      data-depth=\"").concat(depth, "\">\n      <input type=\"checkbox\" value=\"").concat(ALL_PROPERTIES, "\"/>\n      <span class=\"label\">All properties</span>\n    </li>") + items.map(function (item) {
+    }), "\"\n      data-depth=\"").concat(depth, "\">\n      <input type=\"checkbox\" value=\"").concat(ALL_PROPERTIES, "\"/>\n      <span class=\"label\">Map following attributes</span>\n    </li>") + items.map(function (item) {
       max = Math.max(max, item.count);
       return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");
     }).join('');
@@ -3943,7 +3943,7 @@
           ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _property$3).propertyId, checkbox.value);
         }
       });
-    }); // all properties event
+    }); // Map attributes event
 
     ul.querySelector(':scope > .item.-all').addEventListener('change', function (e) {
       var dataset = e.target.parentNode.dataset;
@@ -4004,7 +4004,7 @@
       max = isLog10 ? Math.log10(max) : max;
       column.ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
         var count = Number(li.dataset.count);
-        li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this4, _subject$3).color.mix(App$1.colorSilver, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
+        li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this4, _subject$3).color.mix(App$1.colorLightGray, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
           return cood * 256;
         }).join(','), ")");
       });
@@ -4690,7 +4690,7 @@
     elm.dataset.propertyId = property.propertyId;
     elm.dataset.collapse = property.propertyId; // make html
 
-    elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <h2 class=\"title\">").concat(property.label, "</h2>\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview\" style=\"background-color: ").concat(subject.colorCSSValue, ";\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <p class=\"description\">").concat(property.description, "</p>\n        <label><input type=\"checkbox\">All properties</label>\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
+    elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <h2 class=\"title\">").concat(property.label, "</h2>\n          <input type=\"checkbox\" class=\"mapping\">\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview\" style=\"background-color: ").concat(subject.colorCSSValue, ";\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <p class=\"description\">").concat(property.description, "</p>\n        <!--<label><input type=\"checkbox\">All properties</label>-->\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
     var valuesContainer = elm.querySelector(':scope > .row.-upper > .values');
 
     _classPrivateFieldSet(this, _OVERVIEW_CONTAINER, valuesContainer.querySelector(':scope > .overview > .inner'));
@@ -4702,9 +4702,9 @@
 
     collapseView(elm); // select/deselect a property
 
-    _classPrivateFieldSet(this, _CHECKBOX_ALL_PROPERTIES, elm.querySelector(':scope > .row.-lower > .left > label > input'));
+    _classPrivateFieldSet(this, _CHECKBOX_ALL_PROPERTIES, elm.querySelector(':scope > .row.-upper > .left > .collapsebutton > input.mapping'));
 
-    _classPrivateFieldGet(this, _CHECKBOX_ALL_PROPERTIES).addEventListener('change', function (e) {
+    _classPrivateFieldGet(this, _CHECKBOX_ALL_PROPERTIES).addEventListener('click', function (e) {
       e.stopPropagation();
 
       if (_classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked) {
@@ -6300,6 +6300,10 @@
 
   var _aggregate = new WeakMap();
 
+  var _colorWhite = new WeakMap();
+
+  var _colorLightGray = new WeakMap();
+
   var _colorSilver = new WeakMap();
 
   var _colorGray = new WeakMap();
@@ -6326,6 +6330,16 @@
         value: void 0
       });
 
+      _colorWhite.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _colorLightGray.set(this, {
+        writable: true,
+        value: void 0
+      });
+
       _colorSilver.set(this, {
         writable: true,
         value: void 0
@@ -6345,6 +6359,10 @@
         writable: true,
         value: void 0
       });
+
+      _classPrivateFieldSet(this, _colorWhite, new h('white').to('srgb'));
+
+      _classPrivateFieldSet(this, _colorLightGray, new h('--color-light-gray').to('srgb'));
 
       _classPrivateFieldSet(this, _colorSilver, new h('--color-silver').to('srgb'));
 
@@ -6426,6 +6444,16 @@
       key: "aggregateRows",
       get: function get() {
         return _classPrivateFieldGet(this, _aggregate).table.url;
+      }
+    }, {
+      key: "colorWhite",
+      get: function get() {
+        return _classPrivateFieldGet(this, _colorWhite);
+      }
+    }, {
+      key: "colorLightGray",
+      get: function get() {
+        return _classPrivateFieldGet(this, _colorLightGray);
       }
     }, {
       key: "colorSilver",

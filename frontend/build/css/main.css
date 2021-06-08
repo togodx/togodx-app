@@ -371,6 +371,10 @@ template {
   --opacity-disabled: .4;
 }
 
+[data-condition=values] {
+  --width-track-column-property: 20rem;
+}
+
 @-webkit-keyframes enter-stacking-item {
   from {
     -webkit-transform: scaleY(0);
@@ -615,8 +619,15 @@ main {
   display: flex;
 }
 .column-selector-view > .columns > .inner > .column > .item.-all {
-  background-color: var(--color-light-gray);
+  background-color: var(--color-warm-gray);
   border-bottom: solid 0.1rem var(--color-gray);
+  display: none;
+}
+[data-condition=values] .column-selector-view > .columns > .inner > .column > .item.-all {
+  display: inherit;
+}
+[data-condition=values] .column-selector-view > .columns > .inner > .column > .item.-all > input {
+  display: inherit;
 }
 .column-selector-view > .columns > .inner > .column > .item.-haschild::before, .column-selector-view > .columns > .inner > .column > .item.-haschild::after {
   content: "";
@@ -650,6 +661,10 @@ main {
 .column-selector-view > .columns > .inner > .column > .item > input {
   -webkit-margin-end: 0.4rem;
           margin-inline-end: 0.4rem;
+  vertical-align: bottom;
+}
+[data-condition=values] .column-selector-view > .columns > .inner > .column > .item > input {
+  display: none;
 }
 .column-selector-view > .columns > .inner > .column > .item > .label {
   padding-right: 0.4rem;
@@ -1257,6 +1272,9 @@ main {
   cursor: pointer;
   transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
 }
+[data-condition=values] .track-value-view {
+  pointer-events: none;
+}
 .track-value-view::after {
   content: "";
   display: block;
@@ -1355,15 +1373,18 @@ main {
   height: var(--height-track);
 }
 .track-view > .row > .left {
+  border-right: solid 0.1rem var(--color-gray);
   -webkit-flex-basis: var(--width-track-column-property);
           flex-basis: var(--width-track-column-property);
   min-width: var(--width-track-column-property);
   background-color: white;
+  transition: width var(--transition-instant);
 }
 .track-view > .row > .right {
   -webkit-flex-basis: calc(100% - var(--width-track-column-property));
           flex-basis: calc(100% - var(--width-track-column-property));
   max-width: calc(100% - var(--width-track-column-property));
+  transition: width var(--transition-instant);
 }
 .track-view > .row.-upper > .left {
   position: relative;
@@ -1390,6 +1411,13 @@ main {
   font-size: 1.4rem;
   font-weight: bold;
 }
+.track-view > .row.-upper > .left > .collapsebutton > .mapping {
+  display: none;
+  margin-right: 0.4rem;
+}
+[data-condition=values] .track-view > .row.-upper > .left > .collapsebutton > .mapping {
+  display: inherit;
+}
 .track-view > .row.-upper > .right > .overview {
   height: var(--height-track);
   background-color: #EEE;
@@ -1410,9 +1438,7 @@ main {
   line-height: 3rem;
 }
 .track-view > .row.-lower > .left > .description {
-  margin-bottom: 0.6rem;
-  padding-left: 1.6rem;
-  padding-right: 0.8rem;
+  padding: 0 0.8rem;
   line-height: 1.2;
 }
 .track-view > .row.-lower > .left > label {

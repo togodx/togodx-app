@@ -74,7 +74,7 @@ export default class ColumnSelectorView {
               this.#items[li.dataset.id].checked = isChecked;
             }
           })
-          // update all properties
+          // update Map attributes
           ul.querySelector(':scope > .item.-all > input[type="checkbox"]').checked = isAllChecked;
           // change ancestor status
           // TODO:
@@ -148,7 +148,7 @@ export default class ColumnSelectorView {
       data-category-ids="${items.map(item => item.categoryId)}"
       data-depth="${depth}">
       <input type="checkbox" value="${ALL_PROPERTIES}"/>
-      <span class="label">All properties</span>
+      <span class="label">Map following attributes</span>
     </li>`
     + items.map(item => {
       max = Math.max(max, item.count);
@@ -213,7 +213,7 @@ export default class ColumnSelectorView {
       });
     });
 
-    // all properties event
+    // Map attributes event
     ul.querySelector(':scope > .item.-all').addEventListener('change', e => {
       const dataset = e.target.parentNode.dataset;
       if (e.target.checked) { // add
@@ -257,7 +257,7 @@ export default class ColumnSelectorView {
       max = isLog10 ? Math.log10(max) : max;
       column.ul.querySelectorAll(':scope > li:not(.-all)').forEach(li => {
         const count = Number(li.dataset.count);
-        li.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorSilver, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
+        li.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorLightGray, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
       });
     });
   }
