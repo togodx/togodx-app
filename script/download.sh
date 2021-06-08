@@ -159,7 +159,7 @@ decompress_tarfiles() {
 
 decompress_gz() {
   local db_dir="${1}"
-  find ${db_dir} -type f -name "*.gz" -execdir gunzip {} \;
+  find ${db_dir} -type f -name "*.gz" -execdir gunzip --force {} \;
 }
 
 decompress_xz() {
