@@ -1084,19 +1084,20 @@ main {
   display: flex;
   color: white;
 }
-.table-data-controller-view > .controller > [data-button=download-json] {
+.table-data-controller-view > .controller > [data-button=download-json], .table-data-controller-view > .controller [data-button=download-tsv] {
   display: none;
 }
-.table-data-controller-view > .controller > [data-button=download-json] > a {
+.table-data-controller-view > .controller > [data-button=download-json] > a, .table-data-controller-view > .controller [data-button=download-tsv] > a {
   color: white;
   text-decoration: none;
   display: block;
 }
-.table-data-controller-view > .controller > [data-button=download-json] > a > span {
+.table-data-controller-view > .controller > [data-button=download-json] > a > span, .table-data-controller-view > .controller [data-button=download-tsv] > a > span {
   vertical-align: middle;
 }
-.table-data-controller-view > .controller > [data-button=download-json] > a > .material-icons-outlined {
+.table-data-controller-view > .controller > [data-button=download-json] > a > .material-icons-outlined, .table-data-controller-view > .controller [data-button=download-tsv] > a > .material-icons-outlined {
   font-size: 1.4rem;
+  width: 16px;
 }
 .table-data-controller-view > .controller > .button {
   padding: 0.2rem 0;
@@ -1169,7 +1170,7 @@ main {
 .table-data-controller-view[data-status=complete] > .controller > [data-button=prepare-data] {
   display: none;
 }
-.table-data-controller-view[data-status=complete] > .controller > [data-button=download-json] {
+.table-data-controller-view[data-status=complete] > .controller > [data-button=download-json], .table-data-controller-view[data-status=complete] > .controller [data-button=download-tsv] {
   display: block;
 }
 .table-data-controller-view[data-status=complete] > .controller > .button[data-button=prepare-data] {

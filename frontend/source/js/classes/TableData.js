@@ -23,6 +23,7 @@ export default class TableData {
   #INDICATOR_BAR;
   #BUTTON_PREPARE_DATA;
   #BUTTON_DOWNLOAD_JSON;
+  #BUTTON_DOWNLOAD_TSV;
 
   constructor(condition, elm) {
     console.log(condition)
@@ -73,8 +74,14 @@ export default class TableData {
       </div>
       <div class="button" data-button="download-json">
         <a class="json" href="" download="sample.json">
-          <span class="material-icons-outlined">download</span>
+          <span class="material-icons-outlined">download json</span>
           <span class="label">JSON</span>
+        </a>
+      </div>
+      <div class="button" data-button="download-tsv">
+        <a class="tsv" href="" download="sample.tsv">
+          <span class="material-icons-outlined">download tsv</span>
+          <span class="label">TSV</span>
         </a>
       </div>
       <div class="button" data-button="restore">
@@ -94,6 +101,7 @@ export default class TableData {
     const BUTTONS = [...elm.querySelectorAll(':scope > .controller > .button')];
     this.#BUTTON_PREPARE_DATA = BUTTONS.find(button => button.dataset.button === 'prepare-data');
     this.#BUTTON_DOWNLOAD_JSON = BUTTONS.find(button => button.dataset.button === 'download-json');
+    this.#BUTTON_DOWNLOAD_TSV = BUTTONS.find(button => button.dataset.button === 'download-tsv');
 
     // events
     elm.addEventListener('click', () => {
@@ -276,9 +284,36 @@ export default class TableData {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = 'Complete';
     this.#BUTTON_PREPARE_DATA.classList.add('-rotating');
+    console.log(this.#rows);
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {type : 'application/json'});
     const jsonUrl = URL.createObjectURL(jsonBlob);
+    console.log(jsonUrl)
     this.#BUTTON_DOWNLOAD_JSON.querySelector(':scope > .json').setAttribute('href', jsonUrl);
+    // tsv
+    let jsonArray = [];
+    this.#rows.map(item => {
+      let singleBox;
+      singleBox = {
+        togokey: this.#condition.togoKey,
+        togokeyId: item.id,
+        attribute: item.properties[0].propertyId,
+        attributeKey: item.properties[0].propertyKey,
+        attributeId: item.properties[0].attributes[0].attribute.categoryId,
+        attribute_label: item.properties[0].attributes[0].attribute.label
+      }
+      jsonArray.push(singleBox);
+    })
+    console.log(jsonArray);
+    let tsv = [];
+    tsv.push(Object.keys(jsonArray[0]) + "\n");
+    jsonArray.map(item => {
+      tsv.push(Object.values(item) + '\n');
+    })
+    console.log(tsv);
+    const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+    const tsvBlob = new Blob([tsv.join('\t')], { type: 'text/plain' });
+    let tsvUrl = URL.createObjectURL(tsvBlob);
+    this.#BUTTON_DOWNLOAD_TSV.querySelector(':scope > .tsv').setAttribute('href', tsvUrl);
   }
 
   /* public methods */

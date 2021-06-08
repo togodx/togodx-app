@@ -5374,6 +5374,8 @@
 
   var _BUTTON_DOWNLOAD_JSON = new WeakMap();
 
+  var _BUTTON_DOWNLOAD_TSV = new WeakMap();
+
   var _getQueryIds = new WeakSet();
 
   var _getProperties = new WeakSet();
@@ -5475,6 +5477,11 @@
         value: void 0
       });
 
+      _BUTTON_DOWNLOAD_TSV.set(this, {
+        writable: true,
+        value: void 0
+      });
+
       console.log(condition);
 
       _classPrivateFieldSet(this, _isAutoLoad, false);
@@ -5500,7 +5507,7 @@
         return "<div class=\"condiiton -value\" style=\"background-color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         return "<div class=\"condiiton -value\" style=\"color: hsl(".concat(property.subject.hue, ", 45%, 50%)\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
-      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button\" data-button=\"prepare-data\">\n        <span class=\"material-icons-outlined\">autorenew</span>\n        <span class=\"label\">Prepare data</span>\n      </div>\n      <div class=\"button\" data-button=\"download-json\">\n        <a class=\"json\" href=\"\" download=\"sample.json\">\n          <span class=\"material-icons-outlined\">download</span>\n          <span class=\"label\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n        <span class=\"label\">Edit</span>\n      </div>\n    </div>\n    "); // reference　
+      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button\" data-button=\"prepare-data\">\n        <span class=\"material-icons-outlined\">autorenew</span>\n        <span class=\"label\">Prepare data</span>\n      </div>\n      <div class=\"button\" data-button=\"download-json\">\n        <a class=\"json\" href=\"\" download=\"sample.json\">\n          <span class=\"material-icons-outlined\">download json</span>\n          <span class=\"label\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" data-button=\"download-tsv\">\n        <a class=\"tsv\" href=\"\" download=\"sample.tsv\">\n          <span class=\"material-icons-outlined\">download tsv</span>\n          <span class=\"label\">TSV</span>\n        </a>\n      </div>\n      <div class=\"button\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">settings_backup_restore</span>\n        <span class=\"label\">Edit</span>\n      </div>\n    </div>\n    "); // reference　
 
       _classPrivateFieldSet(this, _ROOT$7, elm);
 
@@ -5522,6 +5529,10 @@
 
       _classPrivateFieldSet(this, _BUTTON_DOWNLOAD_JSON, BUTTONS.find(function (button) {
         return button.dataset.button === 'download-json';
+      }));
+
+      _classPrivateFieldSet(this, _BUTTON_DOWNLOAD_TSV, BUTTONS.find(function (button) {
+        return button.dataset.button === 'download-tsv';
       })); // events
 
 
@@ -5833,17 +5844,51 @@
   };
 
   var _complete2 = function _complete2() {
+    var _this4 = this;
+
     _classPrivateFieldGet(this, _ROOT$7).dataset.status = 'complete';
     _classPrivateFieldGet(this, _STATUS).textContent = 'Complete';
 
     _classPrivateFieldGet(this, _BUTTON_PREPARE_DATA).classList.add('-rotating');
 
+    console.log(_classPrivateFieldGet(this, _rows));
     var jsonBlob = new Blob([JSON.stringify(_classPrivateFieldGet(this, _rows), null, 2)], {
       type: 'application/json'
     });
     var jsonUrl = URL.createObjectURL(jsonBlob);
+    console.log(jsonUrl);
 
-    _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_JSON).querySelector(':scope > .json').setAttribute('href', jsonUrl);
+    _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_JSON).querySelector(':scope > .json').setAttribute('href', jsonUrl); // tsv
+
+
+    var jsonArray = [];
+
+    _classPrivateFieldGet(this, _rows).map(function (item) {
+      var singleBox;
+      singleBox = {
+        togokey: _classPrivateFieldGet(_this4, _condition).togoKey,
+        togokeyId: item.id,
+        attribute: item.properties[0].propertyId,
+        attributeKey: item.properties[0].propertyKey,
+        attributeId: item.properties[0].attributes[0].attribute.categoryId,
+        attribute_label: item.properties[0].attributes[0].attribute.label
+      };
+      jsonArray.push(singleBox);
+    });
+
+    console.log(jsonArray);
+    var tsv = [];
+    tsv.push(Object.keys(jsonArray[0]) + "\n");
+    jsonArray.map(function (item) {
+      tsv.push(Object.values(item) + '\n');
+    });
+    console.log(tsv);
+    var tsvBlob = new Blob([tsv.join('\t')], {
+      type: 'text/plain'
+    });
+    var tsvUrl = URL.createObjectURL(tsvBlob);
+
+    _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_TSV).querySelector(':scope > .tsv').setAttribute('href', tsvUrl);
   };
 
   var _tableData$1 = new WeakMap();
