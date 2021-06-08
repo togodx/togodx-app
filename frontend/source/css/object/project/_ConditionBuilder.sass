@@ -10,18 +10,24 @@
         margin-top: .4rem
       > .inner
         > .title
-          margin-bottom: -.2rem
+          margin: -.5rem 0 -.2rem
           line-height: 1
           font-size: 1.2rem
+          display: flex
+          align-items: baseline
           > .material-icons-outlined
             font-size: 1.4rem
             vertical-align: middle
             margin-inline-end: .3rem
             position: relative
-            top: -.1rem
+            top: .3rem
           > small
             font-weight: normal
-            margin-left: .5rem
+            // margin-left: .5rem
+            flex-grow: 1
+            text-align: right
+          + *
+            margin-top: .4rem
       > hr
         border: none
         border-top: solid .1rem var(--color-separator)
@@ -49,7 +55,6 @@
       > .inner
         > select
           width: 100%
-          margin-top: .4rem
       body[data-display="results"] &
         pointer-events: none
         opacity: .5

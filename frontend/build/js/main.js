@@ -6230,7 +6230,7 @@
 
     _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
 
-    _classPrivateFieldSet(this, _USER_IDS, elm.querySelector(':scope > label > input')); // atache events
+    _classPrivateFieldSet(this, _USER_IDS, elm.querySelector(':scope > textarea')); // atache events
 
 
     var buttons = elm.querySelector(':scope > .buttons');

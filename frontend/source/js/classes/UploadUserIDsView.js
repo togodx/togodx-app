@@ -13,7 +13,7 @@ export default class UploadUserIDsView {
 
     this.#path = path;
     this.#BODY = document.querySelector('body');
-    this.#USER_IDS = elm.querySelector(':scope > label > input');
+    this.#USER_IDS = elm.querySelector(':scope > textarea');
 
     // atache events
     const buttons = elm.querySelector(':scope > .buttons');

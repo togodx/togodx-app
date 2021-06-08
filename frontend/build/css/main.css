@@ -1500,9 +1500,13 @@ body[data-display=results] #App > .inner {
   margin-top: 0.4rem;
 }
 #ConditionBuilder > .conditions > .condition > .inner > .title {
-  margin-bottom: -0.2rem;
+  margin: -0.5rem 0 -0.2rem;
   line-height: 1;
   font-size: 1.2rem;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: baseline;
+          align-items: baseline;
 }
 #ConditionBuilder > .conditions > .condition > .inner > .title > .material-icons-outlined {
   font-size: 1.4rem;
@@ -1510,11 +1514,16 @@ body[data-display=results] #App > .inner {
   -webkit-margin-end: 0.3rem;
           margin-inline-end: 0.3rem;
   position: relative;
-  top: -0.1rem;
+  top: 0.3rem;
 }
 #ConditionBuilder > .conditions > .condition > .inner > .title > small {
   font-weight: normal;
-  margin-left: 0.5rem;
+  -webkit-flex-grow: 1;
+          flex-grow: 1;
+  text-align: right;
+}
+#ConditionBuilder > .conditions > .condition > .inner > .title + * {
+  margin-top: 0.4rem;
 }
 #ConditionBuilder > .conditions > .condition > hr {
   border: none;
@@ -1546,7 +1555,6 @@ body[data-display=results] #ConditionBuilder > .conditions > .condition > .condi
 }
 #ConditionBuilder > .conditions > #ConditionTogoKey > .inner > select {
   width: 100%;
-  margin-top: 0.4rem;
 }
 body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   pointer-events: none;
@@ -2022,17 +2030,11 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   width: 100%;
 }
 
-#UploadUserIDsView > label {
-  display: block;
-}
-#UploadUserIDsView > label > p {
-  margin-bottom: 0;
-}
-#UploadUserIDsView > label > select, #UploadUserIDsView > label input {
+#UploadUserIDsView > textarea {
   width: 100%;
-  display: block;
 }
 #UploadUserIDsView > .buttons {
+  margin-top: -0.2rem;
   text-align: center;
 }
 
