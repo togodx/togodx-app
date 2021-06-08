@@ -1,5 +1,5 @@
 Database name	Graph name	URL
-ChEBI	http://rdf.integbio.jp/dataset/togosite/chebi	ftp://ftp.ebi.ac.uk/pub/databases/chebi/ontology/nightly/
+ChEBI	http://rdf.integbio.jp/dataset/togosite/chebi	ftp://ftp.ebi.ac.uk/pub/databases/chebi/ontology/nightly/chebi.owl.gz
 ChEMBL	http://rdf.integbio.jp/dataset/togosite/chembl	ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/latest/
 Reactome	http://rdf.integbio.jp/dataset/togosite/reactome	ftp://ftp.ebi.ac.uk/pub/databases/RDF/reactome/r71/
 Rhea	http://rdf.integbio.jp/dataset/togosite/rhea	ftp://ftp.ebi.ac.uk/pub/databases/rhea/rdf/
