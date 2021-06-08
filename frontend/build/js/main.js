@@ -2851,7 +2851,9 @@
 
   var hidePopup = 'hidePopup';
   var showPopup = 'showPopup';
-  var movePopup = 'movePopup'; // Polling
+  var movePopup = 'movePopup'; // Dragging
+
+  var dragElement = 'dragElement'; // Polling
 
   var failedFetchTableDataIds = 'failedFetchTableDataIds';
   var addNextRows = 'addNextRows'; // Table data
@@ -2862,30 +2864,6 @@
 
   var enterPropertyValueItemView = 'enterPropertyValueItemView';
   var leavePropertyValueItemView = 'leavePropertyValueItemView';
-
-  var event = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    defineTogoKey: defineTogoKey,
-    setUserValues: setUserValues,
-    clearUserValues: clearUserValues,
-    changeViewModes: changeViewModes,
-    mutatePropertyCondition: mutatePropertyCondition,
-    mutatePropertyValueCondition: mutatePropertyValueCondition,
-    mutateEstablishConditions: mutateEstablishConditions,
-    completeQueryParameter: completeQueryParameter,
-    hideStanza: hideStanza,
-    showStanza: showStanza,
-    hidePopup: hidePopup,
-    showPopup: showPopup,
-    movePopup: movePopup,
-    failedFetchTableDataIds: failedFetchTableDataIds,
-    addNextRows: addNextRows,
-    selectTableData: selectTableData,
-    deleteTableData: deleteTableData,
-    highlightCol: highlightCol,
-    enterPropertyValueItemView: enterPropertyValueItemView,
-    leavePropertyValueItemView: leavePropertyValueItemView
-  });
 
   var _propertyConditions = new WeakMap();
 
@@ -4039,6 +4017,11 @@
     }).to('srgb');
   }
   function createPopupEvent(uniqueEntry, reportLink, newEvent) {
+    var _uniqueEntry$getAttri = uniqueEntry.getAttribute('data-order').split(','),
+        _uniqueEntry$getAttri2 = _slicedToArray(_uniqueEntry$getAttri, 2),
+        x = _uniqueEntry$getAttri2[0],
+        y = _uniqueEntry$getAttri2[1];
+
     var customEvent = new CustomEvent(newEvent, {
       detail: {
         keys: {
@@ -4049,7 +4032,9 @@
           uniqueEntryId: uniqueEntry.getAttribute('data-unique-entry-id')
         },
         properties: {
-          dataOrder: uniqueEntry.getAttribute('data-order'),
+          dataX: x,
+          dataY: y,
+          dataSubOrder: uniqueEntry.getAttribute('data-sub-order'),
           isPrimaryKey: uniqueEntry.classList.contains('primarykey'),
           reportLink: reportLink
         }
@@ -5122,9 +5107,9 @@
 
     DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
-    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th>\n        <div class=\"inner -noborder\">Report</div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\">\n          <div class=\"togo-key-view\">".concat(Records$1.getLabelFromTogoKey(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      "); // makte table sub header
+    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">Report</div>\n      </th>\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getLabelFromTogoKey(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      "); // makte table sub header
 
-    _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    <th>\n      <div class=\"inner\"></div>\n    </th>\n    <th>\n      <div class=\"inner\"></div>\n    </th>\n    ".concat(tableData.condition.attributes.map(function (property) {
+    _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    ".concat(tableData.condition.attributes.map(function (property) {
       return "\n    <th>\n      <div class=\"inner _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n      <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.property.label, "</span>\n      </div>\n    </th>");
     }).join(''), "\n    ").concat(tableData.condition.properties.map(function (property) {
       return "\n    <th>\n      <div class=\"inner _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n        <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.subCategory ? property.subCategory.label : property.property.label, "</span>\n      </div>\n    </th>");
@@ -5159,12 +5144,12 @@
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
       console.log(row);
-      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n            <th>\n              <div class=\"inner\">\n                <a class=\"report-page-button-view\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(window.btoa(RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n              </div>\n            </th>\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order= \"").concat([0, index], "\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "\n                  </div>\n                  <span>").concat(detail.rows[index].label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.map(function (column, columnIndex) {
+      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n            <th>\n              <div class=\"inner\">\n                <a class=\"report-page-button-view\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(window.btoa(RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n              </div>\n            </th>\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order= \"").concat([0, detail.tableData.offset + index], "\"\n                    data-sub-order= \"0\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "\n                  </div>\n                  <span>").concat(detail.rows[index].label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.map(function (column, columnIndex) {
         // console.log(column)
         if (column) {
-          return "\n                  <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute) {
+          return "\n                  <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute, attributeIndex) {
             if (!attribute.attribute) console.error(attribute);
-            return "\n                      <li>\n                        <div\n                          class=\"togo-key-view\"\n                          data-order=\"".concat([columnIndex + 1, index], "\"\n                          data-key=\"").concat(column.propertyKey, "\"\n                          data-subject-id=\"").concat(_classPrivateFieldGet(_this2, _header$1)[columnIndex].subjectId, "\"\n                          data-main-category-id=\"").concat(_classPrivateFieldGet(_this2, _header$1)[columnIndex].propertyId, "\"\n                          data-sub-category-id=\"").concat(attribute.attribute.categoryId ? attribute.attribute.categoryId : attribute.attribute.categoryIds, "\"\n                          data-unique-entry-id=\"").concat(attribute.id, "\"\n                          data-unique-entry-uri=\"").concat(attribute.attribute.uri, "\"\n                          >").concat(attribute.id, "</div>\n                        <span>").concat(attribute.attribute ? attribute.attribute.label : attribute, "</span>\n                      </li>");
+            return "\n                      <li>\n                        <div\n                          class=\"togo-key-view\"\n                          data-order=\"".concat([columnIndex + 1, detail.tableData.offset + index], "\"\n                          data-sub-order=\"").concat(attributeIndex, "\"\n                          data-key=\"").concat(column.propertyKey, "\"\n                          data-subject-id=\"").concat(_classPrivateFieldGet(_this2, _header$1)[columnIndex].subjectId, "\"\n                          data-main-category-id=\"").concat(_classPrivateFieldGet(_this2, _header$1)[columnIndex].propertyId, "\"\n                          data-sub-category-id=\"").concat(attribute.attribute.categoryId ? attribute.attribute.categoryId : attribute.attribute.categoryIds, "\"\n                          data-unique-entry-id=\"").concat(attribute.id, "\"\n                          >").concat(attribute.id, "</div>\n                        <span>").concat(attribute.attribute ? attribute.attribute.label : attribute, "</span>\n                      </li>");
           }).join(''), "</ul></div></td>");
         } else {
           return "<td><div class=\"inner -empty\"></div></td>";
@@ -5196,7 +5181,7 @@
 
       var tr = _classPrivateFieldGet(_this2, _TBODY).querySelector(":scope > tr[data-index=\"".concat(actualIndex, "\"]"));
 
-      var reportLink = "report.html?togoKey=".concat(_classPrivateFieldGet(_this2, _tableData$1).togoKey, "&id=").concat(tr.getAttribute('data-togo-id'), "&properties=").concat(encodeURIComponent(JSON.stringify(row)));
+      var reportLink = "\n      report.html?togoKey=".concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(window.btoa(RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))));
       var uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(function (uniqueEntry) {
         uniqueEntry.addEventListener('click', function () {
@@ -5206,7 +5191,7 @@
         var td = uniqueEntry.closest('td');
         td.addEventListener('mouseenter', function () {
           var customEvent = new CustomEvent(highlightCol, {
-            detail: uniqueEntry.getAttribute('data-order')
+            detail: uniqueEntry.getAttribute('data-order').split(',')[0]
           });
           DefaultEventEmitter$1.dispatchEvent(customEvent);
         });
@@ -5229,13 +5214,11 @@
     _classPrivateFieldGet(this, _LOADING_VIEW).classList.remove('-shown');
   }
 
-  function _colHighlight2(axes) {
-    var colIndex = axes.slice(0, 1);
-
+  function _colHighlight2(colIndex) {
     _classPrivateFieldGet(this, _TBODY).querySelectorAll('[data-order]').forEach(function (element) {
       var td = element.closest('td');
 
-      if (element.getAttribute('data-order').slice(0, 1) === colIndex) {
+      if (element.getAttribute('data-order').split(',')[0] === colIndex) {
         if (!td.classList.contains('.-selected')) {
           td.classList.add('-selected');
         }
@@ -5243,6 +5226,32 @@
         td.classList.remove('-selected');
       }
     });
+  }
+
+  var x = 0;
+  var y = 0;
+  function dragView(view) {
+    x = view.x;
+    y = view.y;
+    document.addEventListener('mousemove', elementDrag);
+    document.addEventListener('mouseup', closeDrag);
+
+    function elementDrag(e) {
+      var dx = e.clientX - x;
+      var dy = e.clientY - y;
+      console.log('x,y = ' + e.clientX + ',' + e.clientY);
+      console.log('dx, dy =' + dx + ',' + dy);
+      var container = view.container;
+      container.style.top = "".concat(container.offsetTop + dy, "px");
+      container.style.left = "".concat(container.offsetLeft + dx, "px");
+      x = e.clientX;
+      y = e.clientY;
+    }
+
+    function closeDrag() {
+      document.removeEventListener('mousemove', elementDrag);
+      document.removeEventListener('mouseup', closeDrag);
+    }
   }
 
   var _ROOT$2 = new WeakMap();
@@ -5253,7 +5262,11 @@
 
   var _exit_button = new WeakMap();
 
-  var _showPopUp = new WeakSet();
+  var _popup_top = new WeakMap();
+
+  var _popup_left = new WeakMap();
+
+  var _showPopup = new WeakSet();
 
   var _popup = new WeakSet();
 
@@ -5271,22 +5284,26 @@
 
   var _arrowFuncs = new WeakMap();
 
-  var _getCorList = new WeakSet();
-
   var _setMovementArrow = new WeakSet();
 
-  var _hidePopUp = new WeakSet();
+  var _getTargetEntry = new WeakSet();
+
+  var _entriesByAxes = new WeakSet();
+
+  var _hidePopup = new WeakSet();
 
   var ResultDetailModal = function ResultDetailModal() {
     var _this = this;
 
     _classCallCheck(this, ResultDetailModal);
 
-    _hidePopUp.add(this);
+    _hidePopup.add(this);
+
+    _entriesByAxes.add(this);
+
+    _getTargetEntry.add(this);
 
     _setMovementArrow.add(this);
-
-    _getCorList.add(this);
 
     _setHighlight.add(this);
 
@@ -5300,7 +5317,7 @@
 
     _popup.add(this);
 
-    _showPopUp.add(this);
+    _showPopup.add(this);
 
     _ROOT$2.set(this, {
       writable: true,
@@ -5322,12 +5339,24 @@
       value: void 0
     });
 
+    _popup_top.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _popup_left.set(this, {
+      writable: true,
+      value: void 0
+    });
+
     _handleKeydown.set(this, {
       writable: true,
       value: function value(e) {
         if (e.key == 'Escape') {
-          _classPrivateMethodGet(_this, _hidePopUp, _hidePopUp2).call(_this);
+          DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hidePopup));
         } else if (_classPrivateFieldGet(_this, _arrowFuncs).has(e.key)) {
+          e.preventDefault();
+
           _classPrivateFieldGet(_this, _RESULT_MODAL).querySelector(".arrow.-".concat(e.key.replace('Arrow', '').toLowerCase())).click();
         }
       }
@@ -5339,9 +5368,11 @@
         return [x - 1, y];
       }], ['ArrowRight', function (x, y) {
         return [x + 1, y];
-      }], ['ArrowUp', function (x, y) {
+      }], ['ArrowUp', function (x) {
+        var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : x;
         return [x, y - 1];
-      }], ['ArrowDown', function (x, y) {
+      }], ['ArrowDown', function (x) {
+        var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : x;
         return [x, y + 1];
       }]])
     });
@@ -5359,47 +5390,49 @@
 
     _classPrivateFieldGet(this, _exit_button).className = 'close-button-view'; // attach event
 
-    _classPrivateFieldGet(this, _exit_button).addEventListener('click', function () {
-      _classPrivateMethodGet(_this, _hidePopUp, _hidePopUp2).call(_this);
-    });
-
     DefaultEventEmitter$1.addEventListener(showPopup, function (e) {
-      _classPrivateMethodGet(_this, _showPopUp, _showPopUp2).call(_this, e);
+      _classPrivateMethodGet(_this, _showPopup, _showPopup2).call(_this, e);
     });
     DefaultEventEmitter$1.addEventListener(movePopup, function (e) {
-      _classPrivateMethodGet(_this, _hidePopUp, _hidePopUp2).call(_this);
+      _classPrivateMethodGet(_this, _hidePopup, _hidePopup2).call(_this, false);
 
-      _classPrivateMethodGet(_this, _showPopUp, _showPopUp2).call(_this, e);
+      _classPrivateMethodGet(_this, _showPopup, _showPopup2).call(_this, e);
     });
-    DefaultEventEmitter$1.addEventListener(undefined, function () {
-      _classPrivateMethodGet(_this, _hidePopUp, _hidePopUp2).call(_this);
+    DefaultEventEmitter$1.addEventListener(dragElement, function (e) {
+      dragView(e.detail);
+    });
+    DefaultEventEmitter$1.addEventListener(hidePopup, function () {
+      _classPrivateMethodGet(_this, _hidePopup, _hidePopup2).call(_this);
     });
 
     _classPrivateFieldGet(this, _RESULT_MODAL).addEventListener('click', function (e) {
       if (e.target !== e.currentTarget) return;
+      DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hidePopup));
+    });
 
-      _classPrivateMethodGet(_this, _hidePopUp, _hidePopUp2).call(_this);
+    _classPrivateFieldGet(this, _exit_button).addEventListener('click', function () {
+      DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hidePopup));
     });
   } // bind this on handleKeydown so it will keep listening to same event during the whole popup
   ;
 
-  function _showPopUp2(e) {
-    if (_classPrivateFieldGet(this, _RESULT_MODAL).innerHTML === '') {
-      _classPrivateMethodGet(this, _setHighlight, _setHighlight2).call(this, e.detail.properties.dataOrder);
+  function _showPopup2(e) {
+    _classPrivateMethodGet(this, _setHighlight, _setHighlight2).call(this, e.detail.properties.dataX, e.detail.properties.dataY, e.detail.properties.dataSubOrder);
 
-      _classPrivateFieldSet(this, _handleKeydown, _classPrivateFieldGet(this, _handleKeydown).bind(this));
+    _classPrivateFieldSet(this, _handleKeydown, _classPrivateFieldGet(this, _handleKeydown).bind(this));
 
-      document.addEventListener('keydown', _classPrivateFieldGet(this, _handleKeydown));
+    document.addEventListener('keydown', _classPrivateFieldGet(this, _handleKeydown));
 
-      _classPrivateFieldGet(this, _RESULT_MODAL).appendChild(_classPrivateMethodGet(this, _popup, _popup2).call(this, e.detail));
+    _classPrivateFieldGet(this, _RESULT_MODAL).appendChild(_classPrivateMethodGet(this, _popup, _popup2).call(this, e.detail));
 
-      _classPrivateFieldGet(this, _RESULT_MODAL).classList.add('backdrop');
-    }
+    _classPrivateFieldGet(this, _RESULT_MODAL).classList.add('backdrop');
   }
 
   function _popup2(detail) {
     var popup = document.createElement('div');
     popup.className = 'popup';
+    popup.style.left = _classPrivateFieldGet(this, _popup_left);
+    popup.style.top = _classPrivateFieldGet(this, _popup_top);
     popup.appendChild(_classPrivateMethodGet(this, _header, _header2).call(this, detail.keys, detail.properties));
     popup.appendChild(_classPrivateMethodGet(this, _container, _container2).call(this, detail.keys, detail.properties));
     return popup;
@@ -5415,6 +5448,17 @@
     header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div>\n        <a class='report-page-button-view' href='").concat(props.reportLink, "' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>\n    ");
     header.style.backgroundColor = subject.colorCSSValue;
     header.lastChild.appendChild(_classPrivateFieldGet(this, _exit_button));
+    header.addEventListener('mousedown', function (e) {
+      var customEvent = new CustomEvent(dragElement, {
+        detail: {
+          x: e.clientX,
+          y: e.clientY,
+          container: header.parentElement,
+          dragableElement: header
+        }
+      });
+      DefaultEventEmitter$1.dispatchEvent(customEvent);
+    });
     return header;
   }
 
@@ -5424,7 +5468,7 @@
     var container = document.createElement('div');
     container.className = 'container';
     ['Up', 'Right', 'Down', 'Left'].forEach(function (direction) {
-      container.appendChild(_classPrivateMethodGet(_this2, _arrow, _arrow2).call(_this2, direction, props.dataOrder));
+      container.appendChild(_classPrivateMethodGet(_this2, _arrow, _arrow2).call(_this2, direction, props));
     });
     container.appendChild(_classPrivateMethodGet(this, _stanzas, _stanzas2).call(this, keys.subjectId, keys.uniqueEntryId, keys.dataKey));
     return container;
@@ -5437,55 +5481,95 @@
     return stanzas;
   }
 
-  function _arrow2(direction, axes) {
+  function _arrow2(direction, props) {
     var _this3 = this;
 
     var arrow = document.createElement('div');
     arrow.classList.add('arrow', "-".concat(direction.toLowerCase()));
     arrow.addEventListener('click', function (e) {
-      _classPrivateMethodGet(_this3, _setMovementArrow, _setMovementArrow2).call(_this3, _classPrivateFieldGet(_this3, _arrowFuncs).get('Arrow' + direction), axes);
+      var arrowMovement = {
+        dir: direction,
+        curX: parseInt(props.dataX),
+        curY: parseInt(props.dataY),
+        curInternalIndex: parseInt(props.dataSubOrder),
+        getTargetAxes: _classPrivateFieldGet(_this3, _arrowFuncs).get('Arrow' + direction)
+      };
+
+      _classPrivateMethodGet(_this3, _setMovementArrow, _setMovementArrow2).call(_this3, arrowMovement);
     });
     return arrow;
   }
 
-  function _setHighlight2(axes) {
-    var curEntry = _classPrivateFieldGet(this, _RESULTS_TABLE).querySelector("[data-order = '".concat(axes, "']"));
+  function _setHighlight2(x, y, subOrder) {
+    var entry = _classPrivateMethodGet(this, _entriesByAxes, _entriesByAxes2).call(this, x, y, subOrder);
 
-    var curTr = curEntry.closest('tr');
-    curEntry.classList.add('-selected');
-    curTr.classList.add('-selected');
+    var tr = entry.closest('tr');
+    entry.classList.add('-selected');
+    tr.classList.add('-selected');
     var customEvent = new CustomEvent(highlightCol, {
-      detail: axes
+      detail: x
     });
     DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
 
-  function _getCorList2(str) {
-    var _str$split = str.split(','),
-        _str$split2 = _slicedToArray(_str$split, 2),
-        x = _str$split2[0],
-        y = _str$split2[1];
+  function _setMovementArrow2(movement) {
+    try {
+      var targetEntry = _classPrivateMethodGet(this, _getTargetEntry, _getTargetEntry2).call(this, movement);
 
-    return [x, y].map(function (cor) {
-      return parseInt(cor);
-    });
+      var targetTr = targetEntry.closest('tr');
+      var reportLink = targetTr.querySelector(':scope > th > .inner > .report-page-button-view').href;
+      targetEntry.scrollIntoView({
+        block: 'center'
+      });
+      createPopupEvent(targetEntry, reportLink, movePopup);
+    } catch (error) {
+      console.log('Movement out of bounds');
+    }
   }
 
-  function _setMovementArrow2(movement, axes) {
-    //TODO: Implement functions for data with multiple entries
-    var _classPrivateMethodGe = _classPrivateMethodGet(this, _getCorList, _getCorList2).call(this, axes),
-        _classPrivateMethodGe2 = _slicedToArray(_classPrivateMethodGe, 2),
-        x = _classPrivateMethodGe2[0],
-        y = _classPrivateMethodGe2[1];
+  function _getTargetEntry2(move) {
+    // Check if there are multiple entries in the current cell when going up or down
+    if (['Down', 'Up'].includes(move.dir)) {
+      var allCurEntries = _classPrivateMethodGet(this, _entriesByAxes, _entriesByAxes2).call(this, move.curX, move.curY);
 
-    var targetEntry = _classPrivateFieldGet(this, _RESULTS_TABLE).querySelector("[data-order = '".concat(movement(x, y), "'"));
+      var targetInternalIndex = move.getTargetAxes(move.curInternalIndex)[1]; // movement inside cell
 
-    var targetTr = targetEntry.closest('tr');
-    var reportLink = targetTr.querySelector(':scope > th > .inner > .report-page-button-view').href;
-    createPopupEvent(targetEntry, reportLink, movePopup);
+      if (allCurEntries[targetInternalIndex]) {
+        return allCurEntries[targetInternalIndex];
+      }
+    } // default: target outside of current cell
+
+
+    var _move$getTargetAxes = move.getTargetAxes(move.curX, move.curY),
+        _move$getTargetAxes2 = _slicedToArray(_move$getTargetAxes, 2),
+        targetX = _move$getTargetAxes2[0],
+        targetY = _move$getTargetAxes2[1];
+
+    var allTargetEntries = _classPrivateMethodGet(this, _entriesByAxes, _entriesByAxes2).call(this, targetX, targetY);
+
+    var targetIndex = move.dir === 'Up' ? allTargetEntries.length - 1 : 0;
+    return allTargetEntries[targetIndex];
   }
 
-  function _hidePopUp2() {
+  function _entriesByAxes2(x, y, subOrder) {
+    if (subOrder === undefined) {
+      return _classPrivateFieldGet(this, _RESULTS_TABLE).querySelectorAll("[data-order = '".concat(x, ",").concat(y, "']"));
+    }
+
+    return _classPrivateFieldGet(this, _RESULTS_TABLE).querySelector("[data-order = '".concat(x, ",").concat(y, "'][data-sub-order = '").concat(subOrder, "']"));
+  }
+
+  function _hidePopup2() {
+    var exitingPopup = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+    // reset popup to the center if it is shown for first time
+    // keep moved axes if user has dragged popup while moving with arrows
+    var popupStyle = _classPrivateFieldGet(this, _RESULT_MODAL).querySelector('.popup').style;
+
+    _classPrivateFieldSet(this, _popup_top, exitingPopup ? '' : popupStyle.top);
+
+    _classPrivateFieldSet(this, _popup_left, exitingPopup ? '' : popupStyle.left);
+
     _classPrivateFieldGet(this, _RESULT_MODAL).classList.remove('backdrop');
 
     _classPrivateFieldGet(this, _RESULT_MODAL).innerHTML = '';
@@ -5566,7 +5650,9 @@
 
   var _isAutoLoad = new WeakMap();
 
-  var _isLoaded = new WeakMap();
+  var _isLoading = new WeakMap();
+
+  var _isCompleted = new WeakMap();
 
   var _startTime = new WeakMap();
 
@@ -5640,7 +5726,12 @@
         value: void 0
       });
 
-      _isLoaded.set(this, {
+      _isLoading.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _isCompleted.set(this, {
         writable: true,
         value: void 0
       });
@@ -5689,7 +5780,7 @@
 
       _classPrivateFieldSet(this, _isAutoLoad, false);
 
-      _classPrivateFieldSet(this, _isLoaded, false);
+      _classPrivateFieldSet(this, _isCompleted, false);
 
       _classPrivateFieldSet(this, _condition, condition);
 
@@ -5958,6 +6049,10 @@
   function _getProperties2() {
     var _this3 = this;
 
+    if (_classPrivateFieldGet(this, _isLoading)) return;
+
+    _classPrivateFieldSet(this, _isLoading, true);
+
     _classPrivateFieldGet(this, _ROOT).classList.add('-fetching');
 
     _classPrivateFieldGet(this, _STATUS).textContent = 'Getting data';
@@ -5976,7 +6071,9 @@
 
       (_classPrivateFieldGet2 = _classPrivateFieldGet(_this3, _rows)).push.apply(_classPrivateFieldGet2, _toConsumableArray(rows));
 
-      _classPrivateFieldSet(_this3, _isLoaded, _this3.offset >= _classPrivateFieldGet(_this3, _queryIds).length); // display
+      _classPrivateFieldSet(_this3, _isLoading, false);
+
+      _classPrivateFieldSet(_this3, _isCompleted, _this3.offset >= _classPrivateFieldGet(_this3, _queryIds).length); // display
 
 
       _classPrivateFieldGet(_this3, _ROOT).classList.remove('-fetching');
@@ -5992,12 +6089,12 @@
         detail: {
           tableData: _this3,
           rows: rows,
-          done: _classPrivateFieldGet(_this3, _isLoaded)
+          done: _classPrivateFieldGet(_this3, _isCompleted)
         }
       });
       DefaultEventEmitter$1.dispatchEvent(customEvent); // turn off after finished
 
-      if (_classPrivateFieldGet(_this3, _isLoaded)) {
+      if (_classPrivateFieldGet(_this3, _isCompleted)) {
         _classPrivateMethodGet(_this3, _complete, _complete2).call(_this3);
       } else if (_classPrivateFieldGet(_this3, _isAutoLoad)) {
         _classPrivateMethodGet(_this3, _getProperties, _getProperties2).call(_this3);
@@ -6033,7 +6130,7 @@
   }
 
   function _autoLoad2() {
-    if (_classPrivateFieldGet(this, _isLoaded)) return;
+    if (_classPrivateFieldGet(this, _isCompleted)) return;
 
     _classPrivateFieldSet(this, _isAutoLoad, true);
 

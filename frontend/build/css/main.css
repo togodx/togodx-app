@@ -1754,6 +1754,9 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   transition: height var(--transition-instant);
 }
 
+#ResultsTable {
+  --thheight: 0.8rem;
+}
 #ResultsTable > .body > table {
   width: 100%;
   height: 100%;
@@ -1792,11 +1795,11 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #ResultsTable > .body > table > thead > tr.header > th, #ResultsTable > .body > table > thead > tr.subheader > th {
   position: -webkit-sticky;
   position: sticky;
-  top: 0;
   z-index: var(--z-results-header);
   line-height: 1.5rem;
 }
 #ResultsTable > .body > table > thead > tr.header > th > .inner, #ResultsTable > .body > table > thead > tr.subheader > th > .inner {
+  background-color: white;
   border-bottom: solid 0.1rem var(--color-black);
 }
 #ResultsTable > .body > table > thead > tr.header > th > .inner.-noborder, #ResultsTable > .body > table > thead > tr.subheader > th > .inner.-noborder {
@@ -1805,11 +1808,21 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #ResultsTable > .body > table > thead > tr.header > th:first-child > .inner, #ResultsTable > .body > table > thead > tr.subheader > th:first-child > .inner {
   background-color: var(--color-light-gray);
 }
-#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.subheader > th:nth-child(2) > .inner {
+#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.header > th:nth-child(3) > .inner, #ResultsTable > .body > table > thead > tr.subheader > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.subheader > th:nth-child(3) > .inner {
   background-color: var(--color-lamp-black);
 }
-#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader > th:nth-child(2) > .inner > .togo-key-view {
+#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.header > th:nth-child(3) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader > th:nth-child(3) > .inner > .togo-key-view {
   background-color: var(--color-dark-gray);
+}
+#ResultsTable > .body > table > thead > tr.header.header > th, #ResultsTable > .body > table > thead > tr.subheader.header > th {
+  top: 0;
+}
+#ResultsTable > .body > table > thead > tr.header.header > th:nth-child(1) > .inner, #ResultsTable > .body > table > thead > tr.header.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(1) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(2) > .inner {
+  height: calc(var(--thheight) * 4);
+  padding-top: calc(var(--thheight) * 0.5 + var(--padding-track-block-start));
+}
+#ResultsTable > .body > table > thead > tr.header.subheader > th, #ResultsTable > .body > table > thead > tr.subheader.subheader > th {
+  top: var(--thheight);
 }
 #ResultsTable > .body > table > thead > tr.statistics > td > .inner {
   background-color: white;
@@ -1903,6 +1916,7 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   border-radius: 0.4rem;
 }
 #ResultDetailModal.backdrop > .popup > header {
+  cursor: pointer;
   display: -webkit-flex;
   display: flex;
   -webkit-justify-content: space-between;
@@ -1948,7 +1962,6 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   display: -webkit-flex;
   display: flex;
   overflow: hidden;
-  cursor: pointer;
   position: relative;
 }
 #ResultDetailModal.backdrop > .popup > .container > .arrow {
