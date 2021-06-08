@@ -1,7 +1,7 @@
 <div id="metastanza-proteinStructure"></div>
 <script type="text/javascript">
   (() => {
-    const togoidApi = "https://integbio.jp/togosite/sparqlist/api/togoid_route_sparql";
+    // const togoidApi = "https://integbio.jp/togosite/sparqlist/api/togoid_route_sparql";
 
     const type = "{{type}}";
     const id = "{{id}}";
@@ -19,10 +19,11 @@
           {"id": "biological_process", "label": "Biological process", "escape": false},
           {"id": "molecular_function", "label": "Molecular function", "escape": false},
           {"id": "cellular_component", "label": "Cellular component", "escape": false},
-          {"id": "isolated_tissue", "label": "Isolated tissue", "escape": false}
+          {"id": "isolated_tissue", "label": "Isolated tissue", "escape": false},
+	  {"id": "pdbs", "label": "PDB entries", "escape": false}
         ]
       },
-      "chebi": {
+      "pdb": {
         "label": "PDB",
         "dataUrl": "https://integbio.jp/togosite/sparqlist/api/togosite-gene-summary-pdb?id=",
         "columns": [
@@ -52,9 +53,9 @@
     }
 
     const appendStanza = (stanzaDiv, metastanza, id, typelabel, columns, dataUrl, popup, pageSizeOption) => {
-      let title = document.createElement("h2");
-      title.innerHTML = typelabel;
-      stanzaDiv.appendChild(title);
+      // let title = document.createElement("h2");
+      // title.innerHTML = typelabel;
+      // stanzaDiv.appendChild(title);
       let stanza = document.createElement("togostanza-" + metastanza);
       stanza.setAttribute("data-type", "json");
       stanza.setAttribute("format-key", "true");
@@ -71,7 +72,7 @@
     const renderStanzas = async (stanzaDiv, id, type) => {
       // title
       let title = document.createElement("h1");
-      title.innerHTML = "Interaction: " + typeInfo[type].label + ": " + id;
+      title.innerHTML = "Protein structure: " + typeInfo[type].label + ": " + id;
       stanzaDiv.appendChild(title);
 
       // popup stanza
