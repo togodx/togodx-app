@@ -27,6 +27,7 @@ class App {
   constructor() {
     this.#colorWhite = new Color('white').to('srgb');
     this.#colorLightGray = new Color('--color-light-gray').to('srgb');
+    this.#colorLightGray = new Color('--color-light-gray').to('srgb');
     this.#colorSilver = new Color('--color-silver').to('srgb');
     this.#colorGray = new Color('--color-gray').to('srgb');
     this.#colorDarkGray = new Color('--color-dark-gray').to('srgb');

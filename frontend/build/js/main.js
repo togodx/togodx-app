@@ -4004,7 +4004,7 @@
       max = isLog10 ? Math.log10(max) : max;
       column.ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
         var count = Number(li.dataset.count);
-        li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this4, _subject$3).color.mix(App$1.colorLightGray, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
+        li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this4, _subject$3).color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
           return cood * 256;
         }).join(','), ")");
       });
@@ -6361,6 +6361,8 @@
       });
 
       _classPrivateFieldSet(this, _colorWhite, new h('white').to('srgb'));
+
+      _classPrivateFieldSet(this, _colorLightGray, new h('--color-light-gray').to('srgb'));
 
       _classPrivateFieldSet(this, _colorLightGray, new h('--color-light-gray').to('srgb'));
 
