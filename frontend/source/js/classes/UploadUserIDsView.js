@@ -30,7 +30,7 @@ export default class UploadUserIDsView {
 
     // event listeners
     this.#USER_IDS.addEventListener('change', () => {
-      ConditionBuilder.setUserIds(this.#USER_IDS.value);
+      ConditionBuilder.setUserIds(this.#USER_IDS.value.replace(/,/g," ").split(/\s+/).join(','));
     });
     // this.#USER_IDS.addEventListener('keyup', e => {
     //   if (e.keyCode === 13) this.#fetch();

@@ -6347,7 +6347,7 @@
     }); // event listeners
 
     _classPrivateFieldGet(this, _USER_IDS).addEventListener('change', function () {
-      ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value);
+      ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value.replace(/,/g, " ").split(/\s+/).join(','));
     }); // this.#USER_IDS.addEventListener('keyup', e => {
     //   if (e.keyCode === 13) this.#fetch();
     // });
