@@ -17,12 +17,26 @@ class ConditionBuilder {
 
   // public methods
 
+  setSubject(togoKey, subjectId) {
+    this.#togoKey = togoKey;
+    this.#subjectId = subjectId;
+    // post processing (permalink, evaluate)
+    this.#postProcessing();
+  }
+
+  setUserIds(ids) {
+    console.log(ids)
+    this.#userIds = ids;
+    // post processing (permalink, evaluate)
+    this.#postProcessing();
+  }
+
   addProperty(condition) {
     console.log('addProperty', condition)
     // store
     this.#propertyConditions.push(condition);
     // evaluate
-    this.#satisfyAggregation();
+    this.#postProcessing();
     // dispatch event
     const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {
       action: 'add', 
@@ -36,7 +50,7 @@ class ConditionBuilder {
     // store
     this.#attributeConditions.push(condition);
     // evaluate
-    this.#satisfyAggregation();
+    this.#postProcessing();
     // dispatch event
     const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {
       action: 'add', 
@@ -60,8 +74,8 @@ class ConditionBuilder {
     });
     if (index === -1) return;
     this.#propertyConditions.splice(index, 1)[0];
-    // evaluate
-    this.#satisfyAggregation();
+    // post processing (permalink, evaluate)
+    this.#postProcessing();
     // dispatch event
     const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {action: 'remove', propertyId, parentCategoryId}});
     DefaultEventEmitter.dispatchEvent(customEvent);
@@ -72,8 +86,8 @@ class ConditionBuilder {
     const index = this.#attributeConditions.findIndex(condition => condition.property.propertyId === propertyId && condition.value.categoryId === categoryId);
     if (index === -1) return;
     this.#attributeConditions.splice(index, 1)[0];
-    // evaluate
-    this.#satisfyAggregation();
+    // post processing (permalink, evaluate)
+    this.#postProcessing();
     // dispatch event
     const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {action: 'remove', propertyId, categoryId}});
     DefaultEventEmitter.dispatchEvent(customEvent);
@@ -96,6 +110,8 @@ class ConditionBuilder {
         }
       }
     });
+    // post processing (permalink, evaluate)
+    this.#postProcessing();
   }
 
   setPropertyValues(condition) {
@@ -120,6 +136,8 @@ class ConditionBuilder {
         }
       }
     });
+    // post processing (permalink, evaluate)
+    this.#postProcessing();
   }
 
   makeQueryParameter() {
@@ -161,16 +179,6 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  setSubject(togoKey, subjectId) {
-    this.#togoKey = togoKey;
-    this.#subjectId = subjectId;
-    this.#satisfyAggregation();
-  }
-
-  setUserIds(ids) {
-    console.log(ids)
-    this.#userIds = ids;
-  }
 
   // public accessor
 
@@ -182,14 +190,19 @@ class ConditionBuilder {
     return this.#userIds === '' ? undefined : this.#userIds;
   }
 
+
   // private methods
 
-  #satisfyAggregation() {
+  #postProcessing() {
+
+    // evaluate if search is possible
     const established 
       = (this.#togoKey && this.#subjectId)
       && (this.#propertyConditions.length > 0 || this.#attributeConditions.length > 0);
     const customEvent = new CustomEvent(event.mutateEstablishConditions, {detail: established});
     DefaultEventEmitter.dispatchEvent(customEvent);
+
+    // generate permalink
   }
 
 }

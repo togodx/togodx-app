@@ -2876,13 +2876,13 @@
 
   var _userIds = new WeakMap();
 
-  var _satisfyAggregation = new WeakSet();
+  var _postProcessing = new WeakSet();
 
   var ConditionBuilder = /*#__PURE__*/function () {
     function ConditionBuilder() {
       _classCallCheck(this, ConditionBuilder);
 
-      _satisfyAggregation.add(this);
+      _postProcessing.add(this);
 
       _propertyConditions.set(this, {
         writable: true,
@@ -2916,6 +2916,26 @@
 
 
     _createClass(ConditionBuilder, [{
+      key: "setSubject",
+      value: function setSubject(togoKey, subjectId) {
+        _classPrivateFieldSet(this, _togoKey, togoKey);
+
+        _classPrivateFieldSet(this, _subjectId, subjectId); // post processing (permalink, evaluate)
+
+
+        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
+      }
+    }, {
+      key: "setUserIds",
+      value: function setUserIds(ids) {
+        console.log(ids);
+
+        _classPrivateFieldSet(this, _userIds, ids); // post processing (permalink, evaluate)
+
+
+        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
+      }
+    }, {
       key: "addProperty",
       value: function addProperty(condition) {
         console.log('addProperty', condition); // store
@@ -2923,7 +2943,7 @@
         _classPrivateFieldGet(this, _propertyConditions).push(condition); // evaluate
 
 
-        _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
+        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
 
         var customEvent = new CustomEvent(mutatePropertyCondition, {
@@ -2942,7 +2962,7 @@
         _classPrivateFieldGet(this, _attributeConditions).push(condition); // evaluate
 
 
-        _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
+        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
 
         var customEvent = new CustomEvent(mutatePropertyValueCondition, {
@@ -2972,9 +2992,9 @@
         });
 
         if (index === -1) return;
-        _classPrivateFieldGet(this, _propertyConditions).splice(index, 1)[0]; // evaluate
+        _classPrivateFieldGet(this, _propertyConditions).splice(index, 1)[0]; // post processing (permalink, evaluate)
 
-        _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
+        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
 
         var customEvent = new CustomEvent(mutatePropertyCondition, {
@@ -2995,9 +3015,9 @@
         });
 
         if (index === -1) return;
-        _classPrivateFieldGet(this, _attributeConditions).splice(index, 1)[0]; // evaluate
+        _classPrivateFieldGet(this, _attributeConditions).splice(index, 1)[0]; // post processing (permalink, evaluate)
 
-        _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this); // dispatch event
+        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
 
         var customEvent = new CustomEvent(mutatePropertyValueCondition, {
@@ -3037,7 +3057,9 @@
               _this.removeProperty(property.propertyId);
             }
           }
-        });
+        }); // post processing (permalink, evaluate)
+
+        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
     }, {
       key: "setPropertyValues",
@@ -3069,7 +3091,9 @@
               _this2.removePropertyValue(condition.property.propertyId, originalValue.categoryId);
             }
           }
-        });
+        }); // post processing (permalink, evaluate)
+
+        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
     }, {
       key: "makeQueryParameter",
@@ -3123,22 +3147,6 @@
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
-      }
-    }, {
-      key: "setSubject",
-      value: function setSubject(togoKey, subjectId) {
-        _classPrivateFieldSet(this, _togoKey, togoKey);
-
-        _classPrivateFieldSet(this, _subjectId, subjectId);
-
-        _classPrivateMethodGet(this, _satisfyAggregation, _satisfyAggregation2).call(this);
-      }
-    }, {
-      key: "setUserIds",
-      value: function setUserIds(ids) {
-        console.log(ids);
-
-        _classPrivateFieldSet(this, _userIds, ids);
       } // public accessor
 
     }, {
@@ -3157,12 +3165,13 @@
     return ConditionBuilder;
   }();
 
-  function _satisfyAggregation2() {
+  function _postProcessing2() {
+    // evaluate if search is possible
     var established = _classPrivateFieldGet(this, _togoKey) && _classPrivateFieldGet(this, _subjectId) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
     var customEvent = new CustomEvent(mutateEstablishConditions, {
       detail: established
     });
-    DefaultEventEmitter$1.dispatchEvent(customEvent);
+    DefaultEventEmitter$1.dispatchEvent(customEvent); // generate permalink
   }
 
   var ConditionBuilder$1 = new ConditionBuilder();
