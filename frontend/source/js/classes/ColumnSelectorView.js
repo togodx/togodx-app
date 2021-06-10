@@ -1,6 +1,7 @@
 import App from "./App";
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import Records from "./Records";
 import * as event from '../events';
 
 const ALL_PROPERTIES = 'ALL_PROPERTIES';
@@ -116,6 +117,7 @@ export default class ColumnSelectorView {
       fetch(this.#sparqlist + '?categoryIds=' + id)
         .then(responce => responce.json())
         .then(json => {
+          Records.setValues(this.#property.propertyId, json);
           this.#setItems(json, depth, id);
           const column = this.#makeColumn(json, depth, id);
           this.#appendSubColumn(column, depth);

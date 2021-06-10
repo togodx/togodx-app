@@ -25,7 +25,7 @@ class Records {
     this.#properties = [];
     subjects.forEach(subject => {
       subject.properties.forEach(property => {
-        this.#properties.push(Object.assign({subjectId: subject.subjectId}, property));
+        this.#properties.push(Object.assign({subjectId: subject.subjectId, values: []}, property));
       });
     });
     console.log(this.#subjects);
@@ -56,7 +56,7 @@ class Records {
 
   setValues(propertyId, values) {
     const property = this.#properties.find(property => property.propertyId === propertyId);
-    property.values = values;
+    property.values = property.values.concat(values);
   }
 
   getSubject(subjectId) {
