@@ -6384,6 +6384,7 @@
   function _clear2() {
     _classPrivateFieldGet(this, _BODY).classList.remove('-showuserids');
 
+    _classPrivateFieldGet(this, _USER_IDS).value = '';
     var customEvent = new CustomEvent(clearUserValues);
     DefaultEventEmitter$1.dispatchEvent(customEvent);
   }

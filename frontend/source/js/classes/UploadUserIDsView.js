@@ -67,6 +67,7 @@ export default class UploadUserIDsView {
 
   #clear() {
     this.#BODY.classList.remove('-showuserids');
+    this.#USER_IDS.value = '';
     const customEvent = new CustomEvent(event.clearUserValues);
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
