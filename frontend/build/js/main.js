@@ -2744,7 +2744,8 @@
         subjects.forEach(function (subject) {
           subject.properties.forEach(function (property) {
             _classPrivateFieldGet(_this, _properties).push(Object.assign({
-              subjectId: subject.subjectId
+              subjectId: subject.subjectId,
+              values: []
             }, property));
           });
         });
@@ -2781,7 +2782,7 @@
           return property.propertyId === propertyId;
         });
 
-        property.values = values;
+        property.values = property.values.concat(values);
       }
     }, {
       key: "getSubject",
@@ -3817,6 +3818,8 @@
       fetch(_classPrivateFieldGet(this, _sparqlist$1) + '?categoryIds=' + id).then(function (responce) {
         return responce.json();
       }).then(function (json) {
+        Records$1.setValues(_classPrivateFieldGet(_this2, _property$3).propertyId, json);
+
         _classPrivateMethodGet(_this2, _setItems, _setItems2).call(_this2, json, depth, id);
 
         var column = _classPrivateMethodGet(_this2, _makeColumn, _makeColumn2).call(_this2, json, depth, id);
@@ -6347,7 +6350,7 @@
     }); // event listeners
 
     _classPrivateFieldGet(this, _USER_IDS).addEventListener('change', function () {
-      ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value);
+      ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value.replace(/,/g, " ").split(/\s+/).join(','));
     }); // this.#USER_IDS.addEventListener('keyup', e => {
     //   if (e.keyCode === 13) this.#fetch();
     // });
@@ -6384,6 +6387,7 @@
   function _clear2() {
     _classPrivateFieldGet(this, _BODY).classList.remove('-showuserids');
 
+    _classPrivateFieldGet(this, _USER_IDS).value = '';
     var customEvent = new CustomEvent(clearUserValues);
     DefaultEventEmitter$1.dispatchEvent(customEvent);
   }

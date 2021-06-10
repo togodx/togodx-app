@@ -2633,7 +2633,8 @@
         subjects.forEach(function (subject) {
           subject.properties.forEach(function (property) {
             _classPrivateFieldGet(_this, _properties).push(Object.assign({
-              subjectId: subject.subjectId
+              subjectId: subject.subjectId,
+              values: []
             }, property));
           });
         });
@@ -2670,7 +2671,7 @@
           return property.propertyId === propertyId;
         });
 
-        property.values = values;
+        property.values = property.values.concat(values);
       }
     }, {
       key: "getSubject",
