@@ -62,11 +62,10 @@ class ConditionBuilder {
   removeProperty(propertyId, parentCategoryId) {
     console.log('removeProperty', propertyId, parentCategoryId)
     // remove from store
-    const index = this.#propertyConditions.findIndex(condition => {
-      // condition.property.propertyId === propertyIds;
-      if (condition.property.propertyId === propertyId) {
+    const index = this.#propertyConditions.findIndex(({property, subCategory}) => {
+      if (property.propertyId === propertyId) {
         if (parentCategoryId) {
-          return parentCategoryId === condition.subCategory?.parentCategoryId;
+          return parentCategoryId === subCategory?.parentCategoryId;
         } else {
           return true;
         }
@@ -83,7 +82,7 @@ class ConditionBuilder {
 
   removePropertyValue(propertyId, categoryId) {
     // remove from store
-    const index = this.#attributeConditions.findIndex(condition => condition.property.propertyId === propertyId && condition.value.categoryId === categoryId);
+    const index = this.#attributeConditions.findIndex(({property, value}) => property.propertyId === propertyId && value.categoryId === categoryId);
     if (index === -1) return;
     this.#attributeConditions.splice(index, 1)[0];
     // post processing (permalink, evaluate)
@@ -114,20 +113,16 @@ class ConditionBuilder {
     this.#postProcessing();
   }
 
-  setPropertyValues(condition) {
-    const originalValues = Records.getProperty(condition.property.propertyId).values;
-    const startIndex = condition.values.length === 0 ? 0 : originalValues.findIndex(originalValue => originalValue.categoryId === condition.values[0].categoryId);
+  setPropertyValues({subject, property, values}) {
+    const originalValues = Records.getProperty(property.propertyId).values;
+    const startIndex = values.length === 0 ? 0 : originalValues.findIndex(originalValue => originalValue.categoryId === values[0].categoryId);
     originalValues.forEach((originalValue, originalIndex) => {
-      const index = this.#attributeConditions.findIndex(attrCondition => attrCondition.property.propertyId === condition.property.propertyId && attrCondition.value.categoryId === originalValue.categoryId);
-      if (startIndex <= originalIndex && originalIndex < startIndex + condition.values.length) {
-        const value = condition.values[originalIndex - startIndex];
+      const index = this.#attributeConditions.findIndex(attrCondition => attrCondition.property.propertyId === property.propertyId && attrCondition.value.categoryId === originalValue.categoryId);
+      if (startIndex <= originalIndex && originalIndex < startIndex + values.length) {
+        const value = values[originalIndex - startIndex];
         // add
         if (index === -1) {
-          this.addPropertyValue({
-            subject: condition.subject,
-            property: condition.property,
-            value 
-          });
+          this.addPropertyValue({subject, property, value});
         }
       } else {
         // remove
@@ -142,21 +137,16 @@ class ConditionBuilder {
 
   makeQueryParameter() {
     // create properties
-    const properties = this.#propertyConditions.map(condition => {
-      const query = {propertyId: condition.property.propertyId};
-      if (condition.subCategory) query.categoryIds = condition.subCategory.values;
-      return {
-        query,
-        property: condition.property,
-        subject: condition.subject,
-        subCategory: condition.subCategory
-      };
+    const properties = this.#propertyConditions.map(({subject, property, subCategory}) => {
+      const query = {propertyId: property.propertyId};
+      if (subCategory) query.categoryIds = subCategory.values;
+      return {query, subject, property, subCategory};
     });
     const attributesForEachProperties = {};
-    this.#attributeConditions.forEach(condition => {
-      const propertyId = condition.property.propertyId;
+    this.#attributeConditions.forEach(({property, value}) => {
+      const propertyId = property.propertyId;
       if (!attributesForEachProperties[propertyId]) attributesForEachProperties[propertyId] = [];
-      attributesForEachProperties[propertyId].push(condition.value.categoryId);
+      attributesForEachProperties[propertyId].push(value.categoryId);
     });
     // create attributes (property values)
     const attributes = Object.keys(attributesForEachProperties).map(propertyId => {

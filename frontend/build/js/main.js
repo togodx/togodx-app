@@ -2978,13 +2978,13 @@
       value: function removeProperty(propertyId, parentCategoryId) {
         console.log('removeProperty', propertyId, parentCategoryId); // remove from store
 
-        var index = _classPrivateFieldGet(this, _propertyConditions).findIndex(function (condition) {
-          // condition.property.propertyId === propertyIds;
-          if (condition.property.propertyId === propertyId) {
-            if (parentCategoryId) {
-              var _condition$subCategor;
+        var index = _classPrivateFieldGet(this, _propertyConditions).findIndex(function (_ref) {
+          var property = _ref.property,
+              subCategory = _ref.subCategory;
 
-              return parentCategoryId === ((_condition$subCategor = condition.subCategory) === null || _condition$subCategor === void 0 ? void 0 : _condition$subCategor.parentCategoryId);
+          if (property.propertyId === propertyId) {
+            if (parentCategoryId) {
+              return parentCategoryId === (subCategory === null || subCategory === void 0 ? void 0 : subCategory.parentCategoryId);
             } else {
               return true;
             }
@@ -3010,8 +3010,10 @@
       key: "removePropertyValue",
       value: function removePropertyValue(propertyId, categoryId) {
         // remove from store
-        var index = _classPrivateFieldGet(this, _attributeConditions).findIndex(function (condition) {
-          return condition.property.propertyId === propertyId && condition.value.categoryId === categoryId;
+        var index = _classPrivateFieldGet(this, _attributeConditions).findIndex(function (_ref2) {
+          var property = _ref2.property,
+              value = _ref2.value;
+          return property.propertyId === propertyId && value.categoryId === categoryId;
         });
 
         if (index === -1) return;
@@ -3063,25 +3065,28 @@
       }
     }, {
       key: "setPropertyValues",
-      value: function setPropertyValues(condition) {
+      value: function setPropertyValues(_ref3) {
         var _this2 = this;
 
-        var originalValues = Records$1.getProperty(condition.property.propertyId).values;
-        var startIndex = condition.values.length === 0 ? 0 : originalValues.findIndex(function (originalValue) {
-          return originalValue.categoryId === condition.values[0].categoryId;
+        var subject = _ref3.subject,
+            property = _ref3.property,
+            values = _ref3.values;
+        var originalValues = Records$1.getProperty(property.propertyId).values;
+        var startIndex = values.length === 0 ? 0 : originalValues.findIndex(function (originalValue) {
+          return originalValue.categoryId === values[0].categoryId;
         });
         originalValues.forEach(function (originalValue, originalIndex) {
           var index = _classPrivateFieldGet(_this2, _attributeConditions).findIndex(function (attrCondition) {
-            return attrCondition.property.propertyId === condition.property.propertyId && attrCondition.value.categoryId === originalValue.categoryId;
+            return attrCondition.property.propertyId === property.propertyId && attrCondition.value.categoryId === originalValue.categoryId;
           });
 
-          if (startIndex <= originalIndex && originalIndex < startIndex + condition.values.length) {
-            var value = condition.values[originalIndex - startIndex]; // add
+          if (startIndex <= originalIndex && originalIndex < startIndex + values.length) {
+            var value = values[originalIndex - startIndex]; // add
 
             if (index === -1) {
               _this2.addPropertyValue({
-                subject: condition.subject,
-                property: condition.property,
+                subject: subject,
+                property: property,
                 value: value
               });
             }
@@ -3101,25 +3106,30 @@
         var _this3 = this;
 
         // create properties
-        var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (condition) {
+        var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref4) {
+          var subject = _ref4.subject,
+              property = _ref4.property,
+              subCategory = _ref4.subCategory;
           var query = {
-            propertyId: condition.property.propertyId
+            propertyId: property.propertyId
           };
-          if (condition.subCategory) query.categoryIds = condition.subCategory.values;
+          if (subCategory) query.categoryIds = subCategory.values;
           return {
             query: query,
-            property: condition.property,
-            subject: condition.subject,
-            subCategory: condition.subCategory
+            subject: subject,
+            property: property,
+            subCategory: subCategory
           };
         });
 
         var attributesForEachProperties = {};
 
-        _classPrivateFieldGet(this, _attributeConditions).forEach(function (condition) {
-          var propertyId = condition.property.propertyId;
+        _classPrivateFieldGet(this, _attributeConditions).forEach(function (_ref5) {
+          var property = _ref5.property,
+              value = _ref5.value;
+          var propertyId = property.propertyId;
           if (!attributesForEachProperties[propertyId]) attributesForEachProperties[propertyId] = [];
-          attributesForEachProperties[propertyId].push(condition.value.categoryId);
+          attributesForEachProperties[propertyId].push(value.categoryId);
         }); // create attributes (property values)
 
 
