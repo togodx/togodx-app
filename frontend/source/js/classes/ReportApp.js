@@ -53,6 +53,11 @@ class ReportApp {
           </div>`;
         }
       }).join('');
+    main.querySelectorAll('script').forEach(scriptElement => {
+      const _script = document.createElement('script');
+      _script.textContent = scriptElement.textContent;
+      scriptElement.replaceWith(_script);
+    });
   }
 
   // utilities
