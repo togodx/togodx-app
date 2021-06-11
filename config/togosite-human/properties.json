@@ -4,6 +4,7 @@
     "subjectId": "gene",
     "togoKey": "hgnc",
     "keyLabel": "Gene (HGNC)",
+    "togoKeyExamples": ["5","7","16"],
     "properties": [
       {
         "propertyId": "ensembl-gene-biotype",
@@ -77,6 +78,7 @@
     "subjectId": "protein",
     "togoKey": "uniprot",
     "keyLabel": "Protein (UniProt)",
+    "togoKeyExamples": ["P16050", "O75762", "P49407"],
     "properties": [
       {
         "propertyId": "uniprot_keywords_domain",
@@ -192,6 +194,7 @@
     "subjectId": "proteinStructure",
     "togoKey": "pdb",
     "keyLabel": "Protein structure (PDB)",
+    "togoKeyExamples": ["1914", "5PQ5", "5YZU"],
     "properties": [
       {
         "propertyId": "uniprot_pdb_existence",
@@ -306,6 +309,7 @@
     "subjectId": "chemicalCompound",
     "togoKey": "pubchem_compound",
     "keyLabel": "Chemical compound (PubChem)",
+    "togoKeyExamples": ["564", "1046", "1981"],
     "properties": [
       {
         "propertyId": "chembl_mechanism_action_type",
@@ -362,6 +366,7 @@
     "subjectId": "disease",
     "togoKey": "mondo",
     "keyLabel": "Disease (Mondo)",
+    "togoKeyExamples": ["0005678", "0008467", "0023007"],
     "properties": [
       {
         "propertyId": "disease_mondo_filter",
