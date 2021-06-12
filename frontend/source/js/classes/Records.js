@@ -56,7 +56,8 @@ class Records {
 
   setValues(propertyId, values) {
     const property = this.#properties.find(property => property.propertyId === propertyId);
-    property.values = property.values.concat(values);
+    // property.values = property.values.concat(values);
+    property.values.push(...values);
   }
 
   getSubject(subjectId) {

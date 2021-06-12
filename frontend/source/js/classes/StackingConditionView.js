@@ -1,6 +1,10 @@
 export default class StackingConditionView {
 
-  #elm;
+  #delegate;
+  #type;
+  #values;
+  #condition;
+  #ROOT;
   
   /**
    * 
@@ -8,16 +12,21 @@ export default class StackingConditionView {
    * @param {String} type: 'property' or 'value'
    * @param {Object} condition 
    */
-  constructor(container, type, condition) {
+  constructor(delegate, container, type, condition) {
     console.log(condition)
+
+    this.#delegate = delegate;
+    this.#type = type;
+    this.#condition = condition;
+    
     // make view
-    this.#elm = document.createElement('div');
-    this.#elm.classList.add('stacking-condition-view');
-    if (type === 'value') this.#elm.classList.add('_subject-background-color');
-    this.#elm.dataset.subjectId = condition.subject.subjectId;
-    this.#elm.dataset.propertyId = condition.property.propertyId;
-    if (condition.value) this.#elm.dataset.categoryId = condition.value.categoryId;
-    if (condition.subCategory) this.#elm.dataset.parentCategoryId = condition.subCategory.parentCategoryId;
+    this.#ROOT = document.createElement('div');
+    this.#ROOT.classList.add('stacking-condition-view');
+    if (type === 'value') this.#ROOT.classList.add('_subject-background-color');
+    this.#ROOT.dataset.subjectId = condition.subject.subjectId;
+    this.#ROOT.dataset.propertyId = condition.property.propertyId;
+    if (condition.value) this.#ROOT.dataset.categoryId = condition.value.categoryId;
+    if (condition.subCategory) this.#ROOT.dataset.parentCategoryId = condition.subCategory.parentCategoryId;
     const labelClassName = 'label' + (type === 'property' ? ' _subject-color' : '');
     let label, ancestors = [condition.subject.subject];
     switch(type) {
@@ -34,19 +43,44 @@ export default class StackingConditionView {
         ancestors.push(condition.property.label, ...condition.value.ancestors);
         break;
     }
-    this.#elm.innerHTML = `
+    this.#ROOT.innerHTML = `
     <div class="close-button-view"></div>
     <ul class="path">
       ${ancestors.map(ancestor => `<li>${ancestor}</li>`).join('')}
     </ul>
     <div class="${labelClassName}">${label}</div>`;
-    container.insertAdjacentElement('beforeend', this.#elm);
+    container.insertAdjacentElement('beforeend', this.#ROOT);
+
+    // event
+    this.#ROOT.querySelector(':scope > .close-button-view').addEventListener('click', () => {
+      console.log('click')
+      switch (type) {
+        case 'property':
+          delegate.removeProperty(this.#condition.property.propertyId, this.#condition.subCategory?.parentCategoryId);
+          break;
+        case 'value':
+          break;
+      }
+    });
   }
+
+
+  // public methods
+
+  addValue(value) {}
+
+  removeProperty(propertyId, parentCategoryId) {
+    const isMatch = propertyId === this.#condition.property.propertyId
+      && parentCategoryId ? parentCategoryId === this.#condition.subCategory?.parentCategoryId : true;
+    if (isMatch) this.#ROOT.parentNode.removeChild(this.#ROOT);
+    return isMatch;
+  }
+
 
   // accessor
 
   get elm() {
-    return this.#elm;
+    return this.#ROOT;
   }
 
 }

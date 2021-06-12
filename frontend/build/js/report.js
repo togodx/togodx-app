@@ -2667,11 +2667,14 @@
     }, {
       key: "setValues",
       value: function setValues(propertyId, values) {
+        var _property$values;
+
         var property = _classPrivateFieldGet(this, _properties).find(function (property) {
           return property.propertyId === propertyId;
-        });
+        }); // property.values = property.values.concat(values);
 
-        property.values = property.values.concat(values);
+
+        (_property$values = property.values).push.apply(_property$values, _toConsumableArray(values));
       }
     }, {
       key: "getSubject",

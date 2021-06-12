@@ -5,6 +5,8 @@ import * as event from '../events';
 
 export default class ConditionBuilderView {
 
+  #properties;
+  #propertyValues;
   #TOGO_KEYS;
   #PROPERTIES_CONDITIONS_CONTAINER;
   #ATTRIBUTES_CONDITIONS_CONTAINER;
@@ -12,6 +14,9 @@ export default class ConditionBuilderView {
 
   constructor(elm) {
 
+    this.#properties = [];
+    this.#propertyValues = [];
+  
     // references
     const conditionsContainer = elm.querySelector(':scope > .conditions');
     this.#TOGO_KEYS = conditionsContainer.querySelector('#ConditionTogoKey > .inner > select');
@@ -35,7 +40,7 @@ export default class ConditionBuilderView {
           this.#addProperty(e.detail.condition.subject, e.detail.condition.property, e.detail.condition.subCategory);
           break;
         case 'remove':
-          this.#removeProperty(e.detail.propertyId, e.detail.parentCategoryId);
+          this.removeProperty(e.detail.propertyId, e.detail.parentCategoryId);
           break;
       }
     });
@@ -80,26 +85,22 @@ export default class ConditionBuilderView {
     console.log(property, subCategory)
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
-    const view = new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {subject, property, subCategory});
-    // event
-    view.elm.querySelector(':scope > .close-button-view').addEventListener('click', e => {
-      e.stopPropagation();
-      ConditionBuilder.removeProperty(view.elm.dataset.propertyId, view.elm.dataset.parentCategoryId);
-    });
+    this.#properties.push(new StackingConditionView(this, this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {subject, property, subCategory}));
   }
   
-  #removeProperty(propertyId, parentCategoryId) {
-    let selector = `[data-property-id="${propertyId}"]`;
-    if (parentCategoryId) selector += `[data-parent-category-id="${parentCategoryId}"]`;
-    const view = this.#PROPERTIES_CONDITIONS_CONTAINER.querySelector(selector);
-    view.parentNode.removeChild(view);
-    if (this.#PROPERTIES_CONDITIONS_CONTAINER.childNodes.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
+  removeProperty(propertyId, parentCategoryId) {
+    // remove from array
+    const index = this.#properties.findIndex(stackingConditionView => stackingConditionView.removeProperty('property', propertyId, parentCategoryId));
+    this.#properties.splice(index, 1);
+    if (this.#properties.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
+    // notify
+    ConditionBuilder.removeProperty(propertyId, parentCategoryId);
   }
 
   #addPropertyValue(subject, property, value) {
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
-    const view = new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {subject, property, value});
+    const view = new StackingConditionView(this, this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {subject, property, value});
     // event
     view.elm.querySelector(':scope > .close-button-view').addEventListener('click', e => {
       e.stopPropagation();

@@ -47,8 +47,19 @@ class ConditionBuilder {
 
   addPropertyValue(condition) {
     console.log('add condition', condition)
+    // find value of same property
+    const samePropertyCondition = this.#attributeConditions.find(({property}) => property.propertyId === condition.property.propertyId);
+    console.log(samePropertyCondition)
     // store
-    this.#attributeConditions.push(condition);
+    if (samePropertyCondition) {
+      samePropertyCondition.values.push(condition.value);
+    } else {
+      this.#attributeConditions.push({
+        subject: condition.subject,
+        property: condition.property,
+        values: [condition.value]
+      });
+    }
     // evaluate
     this.#postProcessing();
     // dispatch event
@@ -160,6 +171,7 @@ class ConditionBuilder {
       };
     });
     // emmit event
+    console.log(properties, attributes)
     const customEvent = new CustomEvent(event.completeQueryParameter, {detail: {
       togoKey: this.#togoKey,
       subjectId: this.#subjectId,
@@ -193,6 +205,17 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
 
     // generate permalink
+    console.log(this.currentTogoKey, this.userIds, this.#propertyConditions, this.#attributeConditions)
+    // console.log(`togoKey=${this.currentTogoKey}&userIds=${this.userIds ? this.userIds.join(',') : ''}&keys=${JSON.stringify(this.#propertyConditions.map(({property}) => {
+    //   return {
+    //     propertyId: property.propertyId
+    //   }
+    // }))}&values=${this.#attributeConditions.map(({property, value}) => {
+    //   return {
+    //     propertyId: property.propertyId,
+    //     categoryIds: property
+    //   }
+    // })}`)
   }
 
 }
