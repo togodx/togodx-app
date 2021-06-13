@@ -1,3 +1,5 @@
+import ConditionBuilder from "./ConditionBuilder";
+
 export default class StackingConditionView {
 
   #delegate;
@@ -59,7 +61,8 @@ export default class StackingConditionView {
       console.log('click')
       switch (type) {
         case 'property':
-          // delegate.removeProperty(this.#condition.property.propertyId, this.#condition.subCategory?.parentCategoryId);
+          // notify
+          ConditionBuilder.removeProperty(this.#condition.property.propertyId, this.#condition.subCategory?.parentCategoryId);
           break;
         case 'value':
           break;

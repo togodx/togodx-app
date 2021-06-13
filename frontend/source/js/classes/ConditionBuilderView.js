@@ -40,7 +40,7 @@ export default class ConditionBuilderView {
           this.#addProperty(e.detail.condition.subject, e.detail.condition.property, e.detail.condition.subCategory);
           break;
         case 'remove':
-          this.removeProperty(e.detail.propertyId, e.detail.parentCategoryId);
+          this.#removeProperty(e.detail.propertyId, e.detail.parentCategoryId);
           break;
       }
     });
@@ -82,21 +82,22 @@ export default class ConditionBuilderView {
   }
 
   #addProperty(subject, property, subCategory) {
+    // modifier
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
     this.#properties.push(new StackingConditionView(this, this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {subject, property, subCategory}));
   }
   
-  removeProperty(propertyId, parentCategoryId) {
+  #removeProperty(propertyId, parentCategoryId) {
     // remove from array
     const index = this.#properties.findIndex(stackingConditionView => stackingConditionView.removeProperty('property', propertyId, parentCategoryId));
     this.#properties.splice(index, 1);
+    // modifier
     if (this.#properties.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
-    // notify
-    ConditionBuilder.removeProperty(propertyId, parentCategoryId);
   }
 
   #addPropertyValue(subject, property, value) {
+    // modifier
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // find a condition view has same property id
     const stackingConditionView = this.#propertyValues.find(stackingConditionView => stackingConditionView.sameProperty(property.propertyId));
@@ -118,6 +119,7 @@ export default class ConditionBuilderView {
   #removePropertyValue(propertyId, categoryId) {
     const view = this.#ATTRIBUTES_CONDITIONS_CONTAINER.querySelector(`[data-property-id="${propertyId}"][data-category-id="${categoryId}"]`);
     view.parentNode.removeChild(view);
+    // modifier
     if (this.#ATTRIBUTES_CONDITIONS_CONTAINER.childNodes.length === 0) this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
