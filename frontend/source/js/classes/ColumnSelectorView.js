@@ -54,7 +54,7 @@ export default class ColumnSelectorView {
       let propertyId, categoryId;
       switch (e.detail.action) {
         case 'add':
-          propertyId = e.detail.condition.property.propertyId;
+          propertyId = e.detail.condition.propertyId;
           categoryId = e.detail.condition.value.categoryId;
           break;
         case 'remove':
@@ -201,8 +201,7 @@ export default class ColumnSelectorView {
         e.stopPropagation();
         if (checkbox.checked) { // add
           ConditionBuilder.addPropertyValue({
-            subject: this.#subject,
-            property: this.#property,
+            propertyId: this.#property.propertyId,
             value: {
               categoryId: checkbox.value,
               label: this.#items[checkbox.value].label,
@@ -221,8 +220,6 @@ export default class ColumnSelectorView {
       if (e.target.checked) { // add
         ConditionBuilder.addProperty({
           propertyId: this.#property.propertyId,
-          // subject: this.#subject,
-          // property: this.#property,
           subCategory: {
             parentCategoryId: dataset.parentCategoryId,
             values: dataset.categoryIds.split(','),

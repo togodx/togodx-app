@@ -48,15 +48,14 @@ class ConditionBuilder {
   addPropertyValue(condition) {
     console.log('add condition', condition)
     // find value of same property
-    const samePropertyCondition = this.#attributeConditions.find(({property}) => property.propertyId === condition.property.propertyId);
+    const samePropertyCondition = this.#attributeConditions.find(({propertyId}) => propertyId === condition.propertyId);
     console.log(samePropertyCondition)
     // store
     if (samePropertyCondition) {
       samePropertyCondition.values.push(condition.value);
     } else {
       this.#attributeConditions.push({
-        subject: condition.subject,
-        property: condition.property,
+        propertyId: condition.propertyId,
         values: [condition.value]
       });
     }

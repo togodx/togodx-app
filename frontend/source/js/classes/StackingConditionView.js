@@ -20,6 +20,7 @@ export default class StackingConditionView {
     this.#condition = condition;
     const subject = Records.getSubjectWithPropertyId(condition.propertyId);
     const property = Records.getProperty(condition.propertyId);
+    console.log(subject, property)
     // this.#isRange = isRange;
     
     // attributes

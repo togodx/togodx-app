@@ -48,7 +48,7 @@ export default class ConditionBuilderView {
     DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, e => {
       switch (e.detail.action) {
         case 'add':
-          this.#addPropertyValue(e.detail.condition.subject, e.detail.condition.property, e.detail.condition.value);
+          this.#addPropertyValue(e.detail.condition.propertyId, e.detail.condition.value);
           break;
         case 'remove':
           this.#removePropertyValue(e.detail.propertyId, e.detail.categoryId);
@@ -86,7 +86,6 @@ export default class ConditionBuilderView {
     // modifier
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
-    // this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {subject, property, subCategory}));
     this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {propertyId, subCategory}));
   }
   
@@ -98,17 +97,17 @@ export default class ConditionBuilderView {
     if (this.#properties.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
-  #addPropertyValue(subject, property, value) {
+  #addPropertyValue(propertyId, value) {
     // modifier
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // find a condition view has same property id
-    const stackingConditionView = this.#propertyValues.find(stackingConditionView => stackingConditionView.sameProperty(property.propertyId));
+    const stackingConditionView = this.#propertyValues.find(stackingConditionView => stackingConditionView.sameProperty(propertyId));
     if (stackingConditionView) {
       // if it exists, add new value
       stackingConditionView.addValue(value);
     } else {
       // otherwise, make new condition view
-      this.#propertyValues.push(new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {subject, property, value}));
+      this.#propertyValues.push(new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {propertyId, value}));
     }
   }
 

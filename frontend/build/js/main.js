@@ -2973,8 +2973,8 @@
         console.log('add condition', condition); // find value of same property
 
         var samePropertyCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (_ref) {
-          var property = _ref.property;
-          return property.propertyId === condition.property.propertyId;
+          var propertyId = _ref.propertyId;
+          return propertyId === condition.propertyId;
         });
 
         console.log(samePropertyCondition); // store
@@ -2983,8 +2983,7 @@
           samePropertyCondition.values.push(condition.value);
         } else {
           _classPrivateFieldGet(this, _attributeConditions).push({
-            subject: condition.subject,
-            property: condition.property,
+            propertyId: condition.propertyId,
             values: [condition.value]
           });
         } // evaluate
@@ -3290,7 +3289,8 @@
       _classPrivateFieldSet(this, _condition$1, condition);
 
       var subject = Records$1.getSubjectWithPropertyId(condition.propertyId);
-      var property = Records$1.getProperty(condition.propertyId); // this.#isRange = isRange;
+      var property = Records$1.getProperty(condition.propertyId);
+      console.log(subject, property); // this.#isRange = isRange;
       // attributes
 
       _classPrivateFieldSet(this, _ROOT$8, document.createElement('div'));
@@ -3529,7 +3529,7 @@
     DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (e) {
       switch (e.detail.action) {
         case 'add':
-          _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, e.detail.condition.subject, e.detail.condition.property, e.detail.condition.value);
+          _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, e.detail.condition.propertyId, e.detail.condition.value);
 
           break;
 
@@ -3572,7 +3572,6 @@
   propertyId, subCategory) {
     // modifier
     _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.remove('-empty'); // make view
-    // this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {subject, property, subCategory}));
 
 
     _classPrivateFieldGet(this, _properties).push(new StackingConditionView(_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER), 'property', {
@@ -3593,13 +3592,13 @@
     if (_classPrivateFieldGet(this, _properties).length === 0) _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.add('-empty');
   }
 
-  function _addPropertyValue2(subject, property, value) {
+  function _addPropertyValue2(propertyId, value) {
     // modifier
     _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.remove('-empty'); // find a condition view has same property id
 
 
     var stackingConditionView = _classPrivateFieldGet(this, _propertyValues).find(function (stackingConditionView) {
-      return stackingConditionView.sameProperty(property.propertyId);
+      return stackingConditionView.sameProperty(propertyId);
     });
 
     if (stackingConditionView) {
@@ -3608,8 +3607,7 @@
     } else {
       // otherwise, make new condition view
       _classPrivateFieldGet(this, _propertyValues).push(new StackingConditionView(_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER), 'value', {
-        subject: subject,
-        property: property,
+        propertyId: propertyId,
         value: value
       }));
     }
@@ -3941,7 +3939,7 @@
 
       switch (e.detail.action) {
         case 'add':
-          propertyId = e.detail.condition.property.propertyId;
+          propertyId = e.detail.condition.propertyId;
           categoryId = e.detail.condition.value.categoryId;
           break;
 
@@ -4117,8 +4115,7 @@
         if (checkbox.checked) {
           // add
           ConditionBuilder$1.addPropertyValue({
-            subject: _classPrivateFieldGet(_this3, _subject$3),
-            property: _classPrivateFieldGet(_this3, _property$3),
+            propertyId: _classPrivateFieldGet(_this3, _property$3).propertyId,
             value: {
               categoryId: checkbox.value,
               label: _classPrivateFieldGet(_this3, _items$1)[checkbox.value].label,
@@ -4141,8 +4138,6 @@
         // add
         ConditionBuilder$1.addProperty({
           propertyId: _classPrivateFieldGet(_this3, _property$3).propertyId,
-          // subject: this.#subject,
-          // property: this.#property,
           subCategory: {
             parentCategoryId: dataset.parentCategoryId,
             values: dataset.categoryIds.split(','),
@@ -4667,8 +4662,7 @@
         } else {
           elm.classList.add('-selected');
           ConditionBuilder$1.addPropertyValue({
-            subject: _classPrivateFieldGet(_this, _subject$1),
-            property: _classPrivateFieldGet(_this, _property$1),
+            propertyId: _classPrivateFieldGet(_this, _property$1).propertyId,
             value: {
               categoryId: value.categoryId,
               label: value.label,
@@ -4685,7 +4679,7 @@
 
       switch (e.detail.action) {
         case 'add':
-          propertyId = e.detail.condition.property.propertyId;
+          propertyId = e.detail.condition.propertyId;
           categoryId = e.detail.condition.value.categoryId;
           break;
 
@@ -4907,9 +4901,7 @@
       if (_classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked) {
         // add
         ConditionBuilder$1.addProperty({
-          propertyId: _classPrivateFieldGet(_this, _property).propertyId // subject: this.#subject,
-          // property: this.#property
-
+          propertyId: _classPrivateFieldGet(_this, _property).propertyId
         });
 
         _classPrivateFieldGet(_this, _ROOT$4).classList.add('-allselected');
@@ -4930,7 +4922,6 @@
       switch (e.detail.action) {
         case 'add':
           if (e.detail.condition.propertyId === _classPrivateFieldGet(_this, _property).propertyId) {
-            console.log(e.detail.condition);
             _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = true;
 
             _classPrivateFieldGet(_this, _ROOT$4).classList.add('-allselected');

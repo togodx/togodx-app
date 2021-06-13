@@ -107,8 +107,7 @@ export default class TrackOverviewCategorical {
         } else {
           elm.classList.add('-selected');
           ConditionBuilder.addPropertyValue({
-            subject: this.#subject,
-            property: this.#property,
+            propertyId: this.#property.propertyId,
             value: {
               categoryId: value.categoryId,
               label: value.label,
@@ -125,7 +124,7 @@ export default class TrackOverviewCategorical {
       let propertyId, categoryId;
       switch (e.detail.action) {
         case 'add':
-          propertyId = e.detail.condition.property.propertyId;
+          propertyId = e.detail.condition.propertyId;
           categoryId = e.detail.condition.value.categoryId;
           break;
         case 'remove':

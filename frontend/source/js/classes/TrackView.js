@@ -70,9 +70,7 @@ export default class TrackView {
       e.stopPropagation();
       if (this.#CHECKBOX_ALL_PROPERTIES.checked) { // add
         ConditionBuilder.addProperty({
-          propertyId: this.#property.propertyId,
-          // subject: this.#subject,
-          // property: this.#property
+          propertyId: this.#property.propertyId
         });
         this.#ROOT.classList.add('-allselected');
       } else { // remove
@@ -86,7 +84,6 @@ export default class TrackView {
       switch (e.detail.action) {
         case 'add':
           if (e.detail.condition.propertyId === this.#property.propertyId) {
-            console.log(e.detail.condition)
             this.#CHECKBOX_ALL_PROPERTIES.checked = true;
             this.#ROOT.classList.add('-allselected');
           }
