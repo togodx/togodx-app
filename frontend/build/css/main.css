@@ -974,10 +974,9 @@ main {
   list-style: none;
 }
 .stacking-condition-view > .labels > .label {
-  margin-right: -0.1rem;
-  margin-bottom: -0.1rem;
+  margin-right: 0.1rem;
+  margin-bottom: 0.1rem;
   padding: 0 1.4rem 0 0.4rem;
-  border: solid 0.1rem var(--color-gray);
   display: inline-block;
   position: relative;
   white-space: nowrap;

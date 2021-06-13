@@ -93,9 +93,16 @@ class ConditionBuilder {
 
   removePropertyValue(propertyId, categoryId) {
     // remove from store
-    const index = this.#attributeConditions.findIndex(({property, value}) => property.propertyId === propertyId && value.categoryId === categoryId);
-    if (index === -1) return;
-    this.#attributeConditions.splice(index, 1)[0];
+    const index = this.#attributeConditions.findIndex(({property, values}) => {
+      if (property.propertyId === propertyId) {
+        const index = values.findIndex(value => value.categoryId === categoryId);
+        values.splice(index, 1);
+        return values.length === 0;
+      } else {
+        return false;
+      }
+    });
+    if (index !== -1) this.#attributeConditions.splice(index, 1)[0];
     // post processing (permalink, evaluate)
     this.#postProcessing();
     // dispatch event

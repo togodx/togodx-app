@@ -53,7 +53,6 @@ export default class StackingConditionView {
     // reference
     if (type === 'value') {
       this.#LABELS = this.#ROOT.querySelector(':scope > .labels');
-      console.log(this.#LABELS);
     }
 
     // event
@@ -85,15 +84,25 @@ export default class StackingConditionView {
     this.#LABELS.insertAdjacentHTML('beforeend', this.#valueLabel(value.categoryId, value.label));
   }
 
-  removeValue(value) {
-
-  }
-
   removeProperty(propertyId, parentCategoryId) {
     const isMatch = propertyId === this.#condition.property.propertyId
       && parentCategoryId ? parentCategoryId === this.#condition.subCategory?.parentCategoryId : true;
     if (isMatch) this.#ROOT.parentNode.removeChild(this.#ROOT);
     return isMatch;
+  }
+
+  removePropertyValue(propertyId, categoryId) {
+    if (propertyId === this.#condition.property.propertyId) {
+      this.#LABELS.removeChild(this.#LABELS.querySelector(`:scope > [data-category-id="${categoryId}"`));
+      if (this.#LABELS.childNodes.length === 0) {
+        this.#ROOT.parentNode.removeChild(this.#ROOT);
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   sameProperty(propertyId) {

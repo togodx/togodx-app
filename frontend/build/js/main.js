@@ -3030,12 +3030,21 @@
         // remove from store
         var index = _classPrivateFieldGet(this, _attributeConditions).findIndex(function (_ref3) {
           var property = _ref3.property,
-              value = _ref3.value;
-          return property.propertyId === propertyId && value.categoryId === categoryId;
+              values = _ref3.values;
+
+          if (property.propertyId === propertyId) {
+            var _index = values.findIndex(function (value) {
+              return value.categoryId === categoryId;
+            });
+
+            values.splice(_index, 1);
+            return values.length === 0;
+          } else {
+            return false;
+          }
         });
 
-        if (index === -1) return;
-        _classPrivateFieldGet(this, _attributeConditions).splice(index, 1)[0]; // post processing (permalink, evaluate)
+        if (index !== -1) _classPrivateFieldGet(this, _attributeConditions).splice(index, 1)[0]; // post processing (permalink, evaluate)
 
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
@@ -3325,8 +3334,6 @@
 
       if (type === 'value') {
         _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .labels'));
-
-        console.log(_classPrivateFieldGet(this, _LABELS));
       } // event
 
 
@@ -3354,9 +3361,6 @@
         _classPrivateFieldGet(this, _LABELS).insertAdjacentHTML('beforeend', _classPrivateMethodGet(this, _valueLabel, _valueLabel2).call(this, value.categoryId, value.label));
       }
     }, {
-      key: "removeValue",
-      value: function removeValue(value) {}
-    }, {
       key: "removeProperty",
       value: function removeProperty(propertyId, parentCategoryId) {
         var _classPrivateFieldGet3;
@@ -3364,6 +3368,23 @@
         var isMatch = propertyId === _classPrivateFieldGet(this, _condition$1).property.propertyId && parentCategoryId ? parentCategoryId === ((_classPrivateFieldGet3 = _classPrivateFieldGet(this, _condition$1).subCategory) === null || _classPrivateFieldGet3 === void 0 ? void 0 : _classPrivateFieldGet3.parentCategoryId) : true;
         if (isMatch) _classPrivateFieldGet(this, _ROOT$8).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$8));
         return isMatch;
+      }
+    }, {
+      key: "removePropertyValue",
+      value: function removePropertyValue(propertyId, categoryId) {
+        if (propertyId === _classPrivateFieldGet(this, _condition$1).property.propertyId) {
+          _classPrivateFieldGet(this, _LABELS).removeChild(_classPrivateFieldGet(this, _LABELS).querySelector(":scope > [data-category-id=\"".concat(categoryId, "\"")));
+
+          if (_classPrivateFieldGet(this, _LABELS).childNodes.length === 0) {
+            _classPrivateFieldGet(this, _ROOT$8).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$8));
+
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
       }
     }, {
       key: "sameProperty",
@@ -3553,7 +3574,7 @@
   function _removeProperty2(propertyId, parentCategoryId) {
     // remove from array
     var index = _classPrivateFieldGet(this, _properties).findIndex(function (stackingConditionView) {
-      return stackingConditionView.removeProperty('property', propertyId, parentCategoryId);
+      return stackingConditionView.removeProperty(propertyId, parentCategoryId);
     });
 
     _classPrivateFieldGet(this, _properties).splice(index, 1); // modifier
@@ -3591,11 +3612,14 @@
   }
 
   function _removePropertyValue2(propertyId, categoryId) {
-    var view = _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).querySelector("[data-property-id=\"".concat(propertyId, "\"][data-category-id=\"").concat(categoryId, "\"]"));
+    // remove from array
+    var index = _classPrivateFieldGet(this, _propertyValues).findIndex(function (stackingConditionView) {
+      return stackingConditionView.removePropertyValue(propertyId, categoryId);
+    });
 
-    view.parentNode.removeChild(view); // modifier
+    if (index !== -1) _classPrivateFieldGet(this, _propertyValues).splice(index, 1); // modifier
 
-    if (_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).childNodes.length === 0) _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.add('-empty');
+    if (_classPrivateFieldGet(this, _propertyValues).length === 0) _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.add('-empty');
   }
 
   var _templates$1 = new WeakMap();

@@ -90,7 +90,7 @@ export default class ConditionBuilderView {
   
   #removeProperty(propertyId, parentCategoryId) {
     // remove from array
-    const index = this.#properties.findIndex(stackingConditionView => stackingConditionView.removeProperty('property', propertyId, parentCategoryId));
+    const index = this.#properties.findIndex(stackingConditionView => stackingConditionView.removeProperty(propertyId, parentCategoryId));
     this.#properties.splice(index, 1);
     // modifier
     if (this.#properties.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
@@ -117,10 +117,11 @@ export default class ConditionBuilderView {
   }
 
   #removePropertyValue(propertyId, categoryId) {
-    const view = this.#ATTRIBUTES_CONDITIONS_CONTAINER.querySelector(`[data-property-id="${propertyId}"][data-category-id="${categoryId}"]`);
-    view.parentNode.removeChild(view);
+    // remove from array
+    const index = this.#propertyValues.findIndex(stackingConditionView => stackingConditionView.removePropertyValue(propertyId, categoryId));
+    if (index !== -1) this.#propertyValues.splice(index, 1);
     // modifier
-    if (this.#ATTRIBUTES_CONDITIONS_CONTAINER.childNodes.length === 0) this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.add('-empty');
+    if (this.#propertyValues.length === 0) this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
 }
