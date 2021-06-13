@@ -49,7 +49,6 @@ class ConditionBuilder {
     console.log('add condition', condition)
     // find value of same property
     const samePropertyCondition = this.#attributeConditions.find(({propertyId}) => propertyId === condition.propertyId);
-    console.log(samePropertyCondition)
     // store
     if (samePropertyCondition) {
       samePropertyCondition.values.push(condition.value);
@@ -72,7 +71,7 @@ class ConditionBuilder {
   removeProperty(propertyId, parentCategoryId) {
     console.log('removeProperty', propertyId, parentCategoryId)
     // remove from store
-    const index = this.#propertyConditions.findIndex((condition) => {
+    const index = this.#propertyConditions.findIndex(condition => {
       if (propertyId === condition.propertyId) {
         if (parentCategoryId) {
           return parentCategoryId === condition.subCategory?.parentCategoryId;
@@ -92,11 +91,11 @@ class ConditionBuilder {
 
   removePropertyValue(propertyId, categoryId) {
     // remove from store
-    const index = this.#attributeConditions.findIndex(({property, values}) => {
-      if (property.propertyId === propertyId) {
-        const index = values.findIndex(value => value.categoryId === categoryId);
-        values.splice(index, 1);
-        return values.length === 0;
+    const index = this.#attributeConditions.findIndex(condition => {
+      if (condition.propertyId === propertyId) {
+        const index = condition.values.findIndex(value => value.categoryId === categoryId);
+        condition.values.splice(index, 1);
+        return condition.values.length === 0;
       } else {
         return false;
       }

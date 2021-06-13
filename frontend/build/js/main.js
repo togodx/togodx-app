@@ -2975,9 +2975,8 @@
         var samePropertyCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (_ref) {
           var propertyId = _ref.propertyId;
           return propertyId === condition.propertyId;
-        });
+        }); // store
 
-        console.log(samePropertyCondition); // store
 
         if (samePropertyCondition) {
           samePropertyCondition.values.push(condition.value);
@@ -3036,17 +3035,14 @@
       key: "removePropertyValue",
       value: function removePropertyValue(propertyId, categoryId) {
         // remove from store
-        var index = _classPrivateFieldGet(this, _attributeConditions).findIndex(function (_ref2) {
-          var property = _ref2.property,
-              values = _ref2.values;
-
-          if (property.propertyId === propertyId) {
-            var _index = values.findIndex(function (value) {
+        var index = _classPrivateFieldGet(this, _attributeConditions).findIndex(function (condition) {
+          if (condition.propertyId === propertyId) {
+            var _index = condition.values.findIndex(function (value) {
               return value.categoryId === categoryId;
             });
 
-            values.splice(_index, 1);
-            return values.length === 0;
+            condition.values.splice(_index, 1);
+            return condition.values.length === 0;
           } else {
             return false;
           }
@@ -3100,12 +3096,12 @@
       }
     }, {
       key: "setPropertyValues",
-      value: function setPropertyValues(_ref3) {
+      value: function setPropertyValues(_ref2) {
         var _this2 = this;
 
-        var subject = _ref3.subject,
-            property = _ref3.property,
-            values = _ref3.values;
+        var subject = _ref2.subject,
+            property = _ref2.property,
+            values = _ref2.values;
 
         var oldCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
           return condition.property.propertyId === property.propertyId;
@@ -3160,10 +3156,10 @@
       key: "makeQueryParameter",
       value: function makeQueryParameter() {
         // create properties
-        var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref4) {
-          var subject = _ref4.subject,
-              property = _ref4.property,
-              subCategory = _ref4.subCategory;
+        var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref3) {
+          var subject = _ref3.subject,
+              property = _ref3.property,
+              subCategory = _ref3.subCategory;
           var query = {
             propertyId: property.propertyId
           };
@@ -3177,10 +3173,10 @@
         }); // create attributes (property values)
 
 
-        var attributes = _classPrivateFieldGet(this, _attributeConditions).map(function (_ref5) {
-          var subject = _ref5.subject,
-              property = _ref5.property,
-              values = _ref5.values;
+        var attributes = _classPrivateFieldGet(this, _attributeConditions).map(function (_ref4) {
+          var subject = _ref4.subject,
+              property = _ref4.property,
+              values = _ref4.values;
           return {
             query: {
               propertyId: property.propertyId,
