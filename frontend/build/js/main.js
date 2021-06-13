@@ -3394,7 +3394,7 @@
       value: function removeProperty(propertyId, parentCategoryId) {
         var _classPrivateFieldGet3;
 
-        var isMatch = propertyId === _classPrivateFieldGet(this, _condition$1).property.propertyId && parentCategoryId ? parentCategoryId === ((_classPrivateFieldGet3 = _classPrivateFieldGet(this, _condition$1).subCategory) === null || _classPrivateFieldGet3 === void 0 ? void 0 : _classPrivateFieldGet3.parentCategoryId) : true;
+        var isMatch = propertyId === _classPrivateFieldGet(this, _condition$1).property.propertyId && (parentCategoryId ? parentCategoryId === ((_classPrivateFieldGet3 = _classPrivateFieldGet(this, _condition$1).subCategory) === null || _classPrivateFieldGet3 === void 0 ? void 0 : _classPrivateFieldGet3.parentCategoryId) : true);
         if (isMatch) _classPrivateFieldGet(this, _ROOT$8).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$8));
         return isMatch;
       }
