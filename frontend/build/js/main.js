@@ -3340,12 +3340,27 @@
       _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .close-button-view').addEventListener('click', function () {
         var _classPrivateFieldGet2;
 
-        console.log('click');
-
         switch (type) {
           case 'property':
             // notify
             ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this, _condition$1).property.propertyId, (_classPrivateFieldGet2 = _classPrivateFieldGet(_this, _condition$1).subCategory) === null || _classPrivateFieldGet2 === void 0 ? void 0 : _classPrivateFieldGet2.parentCategoryId);
+            break;
+
+          case 'value':
+            var _iterator = _createForOfIteratorHelper(_classPrivateFieldGet(_this, _LABELS).querySelectorAll(':scope > .label')),
+                _step;
+
+            try {
+              for (_iterator.s(); !(_step = _iterator.n()).done;) {
+                var label = _step.value;
+                ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this, _condition$1).property.propertyId, label.dataset.categoryId);
+              }
+            } catch (err) {
+              _iterator.e(err);
+            } finally {
+              _iterator.f();
+            }
+
             break;
         }
       });

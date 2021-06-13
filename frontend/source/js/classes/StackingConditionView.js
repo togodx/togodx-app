@@ -57,13 +57,15 @@ export default class StackingConditionView {
 
     // event
     this.#ROOT.querySelector(':scope > .close-button-view').addEventListener('click', () => {
-      console.log('click')
       switch (type) {
         case 'property':
           // notify
           ConditionBuilder.removeProperty(this.#condition.property.propertyId, this.#condition.subCategory?.parentCategoryId);
           break;
         case 'value':
+          for (const label of this.#LABELS.querySelectorAll(':scope > .label')) {
+            ConditionBuilder.removePropertyValue(this.#condition.property.propertyId, label.dataset.categoryId);
+          }
           break;
       }
     });
