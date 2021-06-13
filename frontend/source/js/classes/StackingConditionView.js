@@ -2,9 +2,6 @@ import ConditionBuilder from "./ConditionBuilder";
 
 export default class StackingConditionView {
 
-  #delegate;
-  #type;
-  #values;
   #isRange;
   #condition;
   #ROOT;
@@ -16,13 +13,11 @@ export default class StackingConditionView {
    * @param {String} type: 'property' or 'value'
    * @param {Object} condition 
    */
-  constructor(delegate, container, type, condition, isRange = false) {
+  constructor(container, type, condition, isRange = false) {
     console.log(condition)
 
-    this.#delegate = delegate;
-    this.#type = type;
     this.#condition = condition;
-    this.#isRange = isRange;
+    // this.#isRange = isRange;
     
     // attributes
     this.#ROOT = document.createElement('div');

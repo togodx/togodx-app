@@ -3236,12 +3236,6 @@
 
   var ConditionBuilder$1 = new ConditionBuilder();
 
-  var _delegate = new WeakMap();
-
-  var _type = new WeakMap();
-
-  var _values$1 = new WeakMap();
-
   var _isRange = new WeakMap();
 
   var _condition$1 = new WeakMap();
@@ -3257,27 +3251,10 @@
      * @param {String} type: 'property' or 'value'
      * @param {Object} condition 
      */
-    function StackingConditionView(delegate, container, type, condition) {
+    function StackingConditionView(container, type, condition) {
       var _this = this;
 
-      var isRange = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
-
       _classCallCheck(this, StackingConditionView);
-
-      _delegate.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _type.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _values$1.set(this, {
-        writable: true,
-        value: void 0
-      });
 
       _isRange.set(this, {
         writable: true,
@@ -3301,13 +3278,8 @@
 
       console.log(condition);
 
-      _classPrivateFieldSet(this, _delegate, delegate);
-
-      _classPrivateFieldSet(this, _type, type);
-
-      _classPrivateFieldSet(this, _condition$1, condition);
-
-      _classPrivateFieldSet(this, _isRange, isRange); // attributes
+      _classPrivateFieldSet(this, _condition$1, condition); // this.#isRange = isRange;
+      // attributes
 
 
       _classPrivateFieldSet(this, _ROOT$8, document.createElement('div'));
@@ -3588,7 +3560,7 @@
     _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.remove('-empty'); // make view
 
 
-    _classPrivateFieldGet(this, _properties).push(new StackingConditionView(this, _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER), 'property', {
+    _classPrivateFieldGet(this, _properties).push(new StackingConditionView(_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER), 'property', {
       subject: subject,
       property: property,
       subCategory: subCategory
@@ -3621,7 +3593,7 @@
       stackingConditionView.addValue(value);
     } else {
       // otherwise, make new condition view
-      _classPrivateFieldGet(this, _propertyValues).push(new StackingConditionView(this, _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER), 'value', {
+      _classPrivateFieldGet(this, _propertyValues).push(new StackingConditionView(_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER), 'value', {
         subject: subject,
         property: property,
         value: value
