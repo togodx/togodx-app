@@ -82,7 +82,6 @@ export default class ConditionBuilderView {
   }
 
   #addProperty(subject, property, subCategory) {
-    console.log(property, subCategory)
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
     this.#properties.push(new StackingConditionView(this, this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {subject, property, subCategory}));
@@ -99,13 +98,21 @@ export default class ConditionBuilderView {
 
   #addPropertyValue(subject, property, value) {
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
-    // make view
-    const view = new StackingConditionView(this, this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {subject, property, value});
-    // event
-    view.elm.querySelector(':scope > .close-button-view').addEventListener('click', e => {
-      e.stopPropagation();
-      ConditionBuilder.removePropertyValue(view.elm.dataset.propertyId, view.elm.dataset.categoryId);
-    });
+    // find a condition view has same property id
+    const stackingConditionView = this.#propertyValues.find(stackingConditionView => stackingConditionView.sameProperty(property.propertyId));
+    if (stackingConditionView) {
+      // if it exists, add new value
+      stackingConditionView.addValue(value);
+    } else {
+      // otherwise, make new condition view
+      this.#propertyValues.push(new StackingConditionView(this, this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {subject, property, value}));
+    }
+    // const view = new StackingConditionView(this, this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {subject, property, value});
+    // // event
+    // view.elm.querySelector(':scope > .close-button-view').addEventListener('click', e => {
+    //   e.stopPropagation();
+    //   ConditionBuilder.removePropertyValue(view.elm.dataset.propertyId, view.elm.dataset.categoryId);
+    // });
   }
 
   #removePropertyValue(propertyId, categoryId) {

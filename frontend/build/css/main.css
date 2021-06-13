@@ -948,7 +948,6 @@ main {
   padding: 0.6rem 1.4rem 0 0;
   list-style: none;
   font-size: 1rem;
-  font-weight: bold;
   line-height: 1;
   color: var(--color-gray);
 }
@@ -968,6 +967,25 @@ main {
   line-height: 1;
   font-size: 1.4rem;
   font-weight: bold;
+}
+.stacking-condition-view > .labels {
+  margin: 0.2rem 0 0;
+  padding: 0 0 0.1rem;
+  list-style: none;
+}
+.stacking-condition-view > .labels > .label {
+  margin-right: -0.1rem;
+  margin-bottom: -0.1rem;
+  padding: 0 1.4rem 0 0.4rem;
+  border: solid 0.1rem var(--color-gray);
+  display: inline-block;
+  position: relative;
+  white-space: nowrap;
+}
+.stacking-condition-view > .labels > .label > .close-button-view {
+  position: absolute;
+  top: 0.1rem;
+  right: 0.1rem;
 }
 .stacking-condition-view._subject-background-color > .path {
   color: rgba(0, 0, 0, 0.5);
