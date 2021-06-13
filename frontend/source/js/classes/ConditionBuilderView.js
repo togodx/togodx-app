@@ -108,12 +108,6 @@ export default class ConditionBuilderView {
       // otherwise, make new condition view
       this.#propertyValues.push(new StackingConditionView(this, this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {subject, property, value}));
     }
-    // const view = new StackingConditionView(this, this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {subject, property, value});
-    // // event
-    // view.elm.querySelector(':scope > .close-button-view').addEventListener('click', e => {
-    //   e.stopPropagation();
-    //   ConditionBuilder.removePropertyValue(view.elm.dataset.propertyId, view.elm.dataset.categoryId);
-    // });
   }
 
   #removePropertyValue(propertyId, categoryId) {

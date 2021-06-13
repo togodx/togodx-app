@@ -132,23 +132,25 @@ class ConditionBuilder {
   }
 
   setPropertyValues({subject, property, values}) {
-    const originalValues = Records.getProperty(property.propertyId).values;
-    const startIndex = values.length === 0 ? 0 : originalValues.findIndex(originalValue => originalValue.categoryId === values[0].categoryId);
-    originalValues.forEach((originalValue, originalIndex) => {
-      const index = this.#attributeConditions.findIndex(attrCondition => attrCondition.property.propertyId === property.propertyId && attrCondition.value.categoryId === originalValue.categoryId);
-      if (startIndex <= originalIndex && originalIndex < startIndex + values.length) {
-        const value = values[originalIndex - startIndex];
-        // add
-        if (index === -1) {
-          this.addPropertyValue({subject, property, value});
+    const oldCondition = this.#attributeConditions.find(condition => condition.property.propertyId === property.propertyId);
+    if (oldCondition) {
+      const originalValues = Records.getProperty(property.propertyId).values;
+      originalValues.forEach(originalValue => {
+        const newValue = values.find(value => value.categoryId === originalValue.categoryId);
+        const oldValue = oldCondition.values.find(value => value.categoryId === originalValue.categoryId);
+        if (newValue !== undefined) {
+          // if new value does not exist in old values, add property value
+          if (oldValue === undefined) this.addPropertyValue({subject, property, value: newValue});
+        } else {
+          // if extra value exists in old values, remove property value
+          if (oldValue !== undefined) this.removePropertyValue(property.propertyId, originalValue.categoryId);
         }
-      } else {
-        // remove
-        if (index !== -1) {
-          this.removePropertyValue(condition.property.propertyId, originalValue.categoryId);
-        }
+      });
+    } else {
+      for (const value of values) {
+        this.addPropertyValue({subject, property, value});
       }
-    });
+    }
     // post processing (permalink, evaluate)
     this.#postProcessing();
   }

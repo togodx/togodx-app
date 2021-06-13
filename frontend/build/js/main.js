@@ -3098,32 +3098,53 @@
         var subject = _ref4.subject,
             property = _ref4.property,
             values = _ref4.values;
-        var originalValues = Records$1.getProperty(property.propertyId).values;
-        var startIndex = values.length === 0 ? 0 : originalValues.findIndex(function (originalValue) {
-          return originalValue.categoryId === values[0].categoryId;
+
+        var oldCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
+          return condition.property.propertyId === property.propertyId;
         });
-        originalValues.forEach(function (originalValue, originalIndex) {
-          var index = _classPrivateFieldGet(_this2, _attributeConditions).findIndex(function (attrCondition) {
-            return attrCondition.property.propertyId === property.propertyId && attrCondition.value.categoryId === originalValue.categoryId;
+
+        if (oldCondition) {
+          var originalValues = Records$1.getProperty(property.propertyId).values;
+          originalValues.forEach(function (originalValue) {
+            var newValue = values.find(function (value) {
+              return value.categoryId === originalValue.categoryId;
+            });
+            var oldValue = oldCondition.values.find(function (value) {
+              return value.categoryId === originalValue.categoryId;
+            });
+
+            if (newValue !== undefined) {
+              // if new value does not exist in old values, add property value
+              if (oldValue === undefined) _this2.addPropertyValue({
+                subject: subject,
+                property: property,
+                value: newValue
+              });
+            } else {
+              // if extra value exists in old values, remove property value
+              if (oldValue !== undefined) _this2.removePropertyValue(property.propertyId, originalValue.categoryId);
+            }
           });
+        } else {
+          var _iterator = _createForOfIteratorHelper(values),
+              _step;
 
-          if (startIndex <= originalIndex && originalIndex < startIndex + values.length) {
-            var value = values[originalIndex - startIndex]; // add
-
-            if (index === -1) {
-              _this2.addPropertyValue({
+          try {
+            for (_iterator.s(); !(_step = _iterator.n()).done;) {
+              var value = _step.value;
+              this.addPropertyValue({
                 subject: subject,
                 property: property,
                 value: value
               });
             }
-          } else {
-            // remove
-            if (index !== -1) {
-              _this2.removePropertyValue(condition.property.propertyId, originalValue.categoryId);
-            }
+          } catch (err) {
+            _iterator.e(err);
+          } finally {
+            _iterator.f();
           }
-        }); // post processing (permalink, evaluate)
+        } // post processing (permalink, evaluate)
+
 
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
@@ -3616,13 +3637,7 @@
         property: property,
         value: value
       }));
-    } // const view = new StackingConditionView(this, this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {subject, property, value});
-    // // event
-    // view.elm.querySelector(':scope > .close-button-view').addEventListener('click', e => {
-    //   e.stopPropagation();
-    //   ConditionBuilder.removePropertyValue(view.elm.dataset.propertyId, view.elm.dataset.categoryId);
-    // });
-
+    }
   }
 
   function _removePropertyValue2(propertyId, categoryId) {
