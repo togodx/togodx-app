@@ -162,23 +162,17 @@ class ConditionBuilder {
       if (subCategory) query.categoryIds = subCategory.values;
       return {query, subject, property, subCategory};
     });
-    const attributesForEachProperties = {};
-    this.#attributeConditions.forEach(({property, value}) => {
-      const propertyId = property.propertyId;
-      if (!attributesForEachProperties[propertyId]) attributesForEachProperties[propertyId] = [];
-      attributesForEachProperties[propertyId].push(value.categoryId);
-    });
     // create attributes (property values)
-    const attributes = Object.keys(attributesForEachProperties).map(propertyId => {
+    const attributes = this.#attributeConditions.map(({subject, property, values}) => {
       return {
         query: {
-          propertyId,
-          categoryIds: attributesForEachProperties[propertyId]
+          propertyId: property.propertyId,
+          categoryIds: values.map(value => value.categoryId)
         },
-        property: this.#attributeConditions.find(condition => condition.property.propertyId === propertyId).property,
-        subject: this.#attributeConditions.find(condition => condition.property.propertyId === propertyId).subject
-      };
-    });
+        property,
+        subject
+      }
+    })
     // emmit event
     console.log(properties, attributes)
     const customEvent = new CustomEvent(event.completeQueryParameter, {detail: {

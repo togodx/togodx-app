@@ -3151,8 +3151,6 @@
     }, {
       key: "makeQueryParameter",
       value: function makeQueryParameter() {
-        var _this3 = this;
-
         // create properties
         var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref5) {
           var subject = _ref5.subject,
@@ -3168,33 +3166,25 @@
             property: property,
             subCategory: subCategory
           };
-        });
-
-        var attributesForEachProperties = {};
-
-        _classPrivateFieldGet(this, _attributeConditions).forEach(function (_ref6) {
-          var property = _ref6.property,
-              value = _ref6.value;
-          var propertyId = property.propertyId;
-          if (!attributesForEachProperties[propertyId]) attributesForEachProperties[propertyId] = [];
-          attributesForEachProperties[propertyId].push(value.categoryId);
         }); // create attributes (property values)
 
 
-        var attributes = Object.keys(attributesForEachProperties).map(function (propertyId) {
+        var attributes = _classPrivateFieldGet(this, _attributeConditions).map(function (_ref6) {
+          var subject = _ref6.subject,
+              property = _ref6.property,
+              values = _ref6.values;
           return {
             query: {
-              propertyId: propertyId,
-              categoryIds: attributesForEachProperties[propertyId]
+              propertyId: property.propertyId,
+              categoryIds: values.map(function (value) {
+                return value.categoryId;
+              })
             },
-            property: _classPrivateFieldGet(_this3, _attributeConditions).find(function (condition) {
-              return condition.property.propertyId === propertyId;
-            }).property,
-            subject: _classPrivateFieldGet(_this3, _attributeConditions).find(function (condition) {
-              return condition.property.propertyId === propertyId;
-            }).subject
+            property: property,
+            subject: subject
           };
         }); // emmit event
+
 
         console.log(properties, attributes);
         var customEvent = new CustomEvent(completeQueryParameter, {
