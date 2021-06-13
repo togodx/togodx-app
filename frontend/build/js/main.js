@@ -3239,8 +3239,6 @@
 
   var _LABELS = new WeakMap();
 
-  var _valueLabel = new WeakSet();
-
   var StackingConditionView = /*#__PURE__*/function () {
     /**
      * 
@@ -3254,8 +3252,6 @@
       var isRange = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
 
       _classCallCheck(this, StackingConditionView);
-
-      _valueLabel.add(this);
 
       _delegate.set(this, {
         writable: true,
@@ -3312,28 +3308,30 @@
       if (condition.value) _classPrivateFieldGet(this, _ROOT$8).dataset.categoryId = condition.value.categoryId;
       if (condition.subCategory) _classPrivateFieldGet(this, _ROOT$8).dataset.parentCategoryId = condition.subCategory.parentCategoryId; // make view
 
-      var _label,
+      var label,
           ancestors = [condition.subject.subject];
 
       switch (type) {
         case 'property':
-          _label = "<div class=\"label _subject-color\">".concat(condition.subCategory ? condition.subCategory.label : condition.property.label, "</div>");
+          label = "<div class=\"label _subject-color\">".concat(condition.subCategory ? condition.subCategory.label : condition.property.label, "</div>");
           if (condition.subCategory) ancestors.push.apply(ancestors, [condition.property.label].concat(_toConsumableArray(condition.subCategory.ancestors)));
           break;
 
         case 'value':
-          _label = "<ul class=\"labels\">".concat(_classPrivateMethodGet(this, _valueLabel, _valueLabel2).call(this, condition.value.categoryId, condition.value.label), "</ul>");
+          label = "<ul class=\"labels\"></ul>";
           ancestors.push.apply(ancestors, [condition.property.label].concat(_toConsumableArray(condition.value.ancestors)));
           break;
       }
 
       _classPrivateFieldGet(this, _ROOT$8).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      ".concat(ancestors.map(function (ancestor) {
         return "<li>".concat(ancestor, "</li>");
-      }).join(''), "\n    </ul>\n    ").concat(_label);
+      }).join(''), "\n    </ul>\n    ").concat(label);
       container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$8)); // reference
 
       if (type === 'value') {
         _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .labels'));
+
+        this.addValue(condition.value);
       } // event
 
 
@@ -3352,8 +3350,8 @@
 
             try {
               for (_iterator.s(); !(_step = _iterator.n()).done;) {
-                var label = _step.value;
-                ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this, _condition$1).property.propertyId, label.dataset.categoryId);
+                var _label = _step.value;
+                ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this, _condition$1).property.propertyId, _label.dataset.categoryId);
               }
             } catch (err) {
               _iterator.e(err);
@@ -3364,16 +3362,21 @@
             break;
         }
       });
-    } // private methods
+    } // public methods
 
 
     _createClass(StackingConditionView, [{
       key: "addValue",
-      value: // public methods
-      function addValue(value) {
-        console.log(this, value);
+      value: function addValue(value) {
+        var _this2 = this;
 
-        _classPrivateFieldGet(this, _LABELS).insertAdjacentHTML('beforeend', _classPrivateMethodGet(this, _valueLabel, _valueLabel2).call(this, value.categoryId, value.label));
+        _classPrivateFieldGet(this, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _subject-background-color\" data-category-id=\"".concat(value.categoryId, "\">").concat(value.label, "<div class=\"close-button-view\"></div></li>")); // attach event
+
+
+        _classPrivateFieldGet(this, _LABELS).querySelector(':scope > .label:last-child').addEventListener('click', function (e) {
+          e.stopPropagation();
+          ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this2, _condition$1).property.propertyId, e.target.parentNode.dataset.categoryId);
+        });
       }
     }, {
       key: "removeProperty",
@@ -3417,10 +3420,6 @@
 
     return StackingConditionView;
   }();
-
-  function _valueLabel2(categoryId, label) {
-    return "<li class=\"label _subject-background-color\" data-category-id=\"".concat(categoryId, "\">").concat(label, "<div class=\"close-button-view\"></div></li>");
-  }
 
   var _properties = new WeakMap();
 

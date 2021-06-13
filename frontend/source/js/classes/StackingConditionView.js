@@ -39,7 +39,7 @@ export default class StackingConditionView {
         if (condition.subCategory) ancestors.push(condition.property.label, ...condition.subCategory.ancestors);
         break;
       case 'value':
-        label = `<ul class="labels">${this.#valueLabel(condition.value.categoryId, condition.value.label)}</ul>`;
+        label = `<ul class="labels"></ul>`;
         ancestors.push(condition.property.label, ...condition.value.ancestors);
         break;
     }
@@ -53,6 +53,7 @@ export default class StackingConditionView {
     // reference
     if (type === 'value') {
       this.#LABELS = this.#ROOT.querySelector(':scope > .labels');
+      this.addValue(condition.value);
     }
 
     // event
@@ -72,18 +73,15 @@ export default class StackingConditionView {
   }
 
 
-  // private methods
-
-  #valueLabel(categoryId, label) {
-    return `<li class="label _subject-background-color" data-category-id="${categoryId}">${label}<div class="close-button-view"></div></li>`;
-  }
-
-
   // public methods
 
   addValue(value) {
-    console.log(this, value)
-    this.#LABELS.insertAdjacentHTML('beforeend', this.#valueLabel(value.categoryId, value.label));
+    this.#LABELS.insertAdjacentHTML('beforeend', `<li class="label _subject-background-color" data-category-id="${value.categoryId}">${value.label}<div class="close-button-view"></div></li>`);
+    // attach event
+    this.#LABELS.querySelector(':scope > .label:last-child').addEventListener('click', e => {
+      e.stopPropagation();
+      ConditionBuilder.removePropertyValue(this.#condition.property.propertyId, e.target.parentNode.dataset.categoryId);
+    });
   }
 
   removeProperty(propertyId, parentCategoryId) {
