@@ -106,7 +106,6 @@ export default class StackingConditionView {
   }
 
   sameProperty(propertyId) {
-    console.log(propertyId, this.#condition)
     return propertyId === this.#condition.property.propertyId;
   }
 

@@ -2617,7 +2617,7 @@
         for (var i = 0; i < subjects.length; i++) {
           var hue = 360 - 360 * i / subjects.length + 130;
           hue -= hue > 360 ? 360 : 0;
-          var srgb = new h('hsv', [hue, 60, 75]).to('srgb');
+          var srgb = new h('hsv', [hue, 45, 85]).to('srgb');
           subjects[i].hue = hue;
           subjects[i].color = srgb;
           subjects[i].colorCSSValue = "rgb(".concat(srgb.coords.map(function (channel) {
