@@ -4235,8 +4235,11 @@
    */
 
   function colorTintByHue(baseColor, hue) {
-    return baseColor.mix(new h('hsv', [hue, 70, 50]), 0.15) // .set({lightness: lightness => lightness * 1.2})
-    .to('srgb');
+    return baseColor.mix(new h('hsv', [hue, 70, 50]), 0.15).set({
+      lightness: function lightness(_lightness) {
+        return _lightness * 1.1;
+      }
+    }).to('srgb');
   }
   function createPopupEvent(uniqueEntry, reportLink, newEvent) {
     var _uniqueEntry$getAttri = uniqueEntry.getAttribute('data-order').split(','),
