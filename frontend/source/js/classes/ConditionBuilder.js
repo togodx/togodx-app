@@ -73,10 +73,10 @@ class ConditionBuilder {
   removeProperty(propertyId, parentCategoryId) {
     console.log('removeProperty', propertyId, parentCategoryId)
     // remove from store
-    const index = this.#propertyConditions.findIndex(({property, subCategory}) => {
-      if (property.propertyId === propertyId) {
+    const index = this.#propertyConditions.findIndex((condition) => {
+      if (propertyId === condition.propertyId) {
         if (parentCategoryId) {
-          return parentCategoryId === subCategory?.parentCategoryId;
+          return parentCategoryId === condition.subCategory?.parentCategoryId;
         } else {
           return true;
         }
