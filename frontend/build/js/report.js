@@ -2671,8 +2671,7 @@
 
         var property = _classPrivateFieldGet(this, _properties).find(function (property) {
           return property.propertyId === propertyId;
-        }); // property.values = property.values.concat(values);
-
+        });
 
         (_property$values = property.values).push.apply(_property$values, _toConsumableArray(values));
       }
@@ -2682,6 +2681,17 @@
         return _classPrivateFieldGet(this, _subjects).find(function (subject) {
           return subject.subjectId === subjectId;
         });
+      }
+    }, {
+      key: "getSubjectWithPropertyId",
+      value: function getSubjectWithPropertyId(propertyId) {
+        var subject = _classPrivateFieldGet(this, _subjects).find(function (subject) {
+          return subject.properties.some(function (property) {
+            return property.propertyId === propertyId;
+          });
+        });
+
+        return subject;
       }
     }, {
       key: "getProperty",

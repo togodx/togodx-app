@@ -37,7 +37,8 @@ export default class ConditionBuilderView {
       console.log(e.detail)
       switch (e.detail.action) {
         case 'add':
-          this.#addProperty(e.detail.condition.subject, e.detail.condition.property, e.detail.condition.subCategory);
+          this.#addProperty(e.detail.condition.propertyId, e.detail.condition.subCategory);
+          // this.#addProperty(e.detail.condition.subject, e.detail.condition.property, e.detail.condition.subCategory);
           break;
         case 'remove':
           this.#removeProperty(e.detail.propertyId, e.detail.parentCategoryId);
@@ -81,11 +82,12 @@ export default class ConditionBuilderView {
     this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }
 
-  #addProperty(subject, property, subCategory) {
+  #addProperty(/*subject, property*/propertyId, subCategory) {
     // modifier
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
-    this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {subject, property, subCategory}));
+    // this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {subject, property, subCategory}));
+    this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {propertyId, subCategory}));
   }
   
   #removeProperty(propertyId, parentCategoryId) {

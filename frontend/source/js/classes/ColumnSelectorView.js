@@ -220,8 +220,9 @@ export default class ColumnSelectorView {
       const dataset = e.target.parentNode.dataset;
       if (e.target.checked) { // add
         ConditionBuilder.addProperty({
-          subject: this.#subject,
-          property: this.#property,
+          propertyId: this.#property.propertyId,
+          // subject: this.#subject,
+          // property: this.#property,
           subCategory: {
             parentCategoryId: dataset.parentCategoryId,
             values: dataset.categoryIds.split(','),
