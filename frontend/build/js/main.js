@@ -3157,9 +3157,10 @@
       value: function makeQueryParameter() {
         // create properties
         var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref3) {
-          var subject = _ref3.subject,
-              property = _ref3.property,
+          var propertyId = _ref3.propertyId,
               subCategory = _ref3.subCategory;
+          var subject = Records$1.getSubjectWithPropertyId(propertyId);
+          var property = Records$1.getProperty(propertyId);
           var query = {
             propertyId: property.propertyId
           };
@@ -3174,9 +3175,10 @@
 
 
         var attributes = _classPrivateFieldGet(this, _attributeConditions).map(function (_ref4) {
-          var subject = _ref4.subject,
-              property = _ref4.property,
+          var propertyId = _ref4.propertyId,
               values = _ref4.values;
+          var subject = Records$1.getSubjectWithPropertyId(propertyId);
+          var property = Records$1.getProperty(propertyId);
           return {
             query: {
               propertyId: property.propertyId,
@@ -3184,8 +3186,8 @@
                 return value.categoryId;
               })
             },
-            property: property,
-            subject: subject
+            subject: subject,
+            property: property
           };
         }); // emmit event
 

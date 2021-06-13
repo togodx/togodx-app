@@ -155,20 +155,24 @@ class ConditionBuilder {
 
   makeQueryParameter() {
     // create properties
-    const properties = this.#propertyConditions.map(({subject, property, subCategory}) => {
+    const properties = this.#propertyConditions.map(({propertyId, subCategory}) => {
+      const subject = Records.getSubjectWithPropertyId(propertyId);
+      const property = Records.getProperty(propertyId);
       const query = {propertyId: property.propertyId};
       if (subCategory) query.categoryIds = subCategory.values;
       return {query, subject, property, subCategory};
     });
     // create attributes (property values)
-    const attributes = this.#attributeConditions.map(({subject, property, values}) => {
+    const attributes = this.#attributeConditions.map(({propertyId, values}) => {
+      const subject = Records.getSubjectWithPropertyId(propertyId);
+      const property = Records.getProperty(propertyId);
       return {
         query: {
           propertyId: property.propertyId,
           categoryIds: values.map(value => value.categoryId)
         },
-        property,
-        subject
+        subject,
+        property
       }
     })
     // emmit event
