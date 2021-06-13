@@ -85,7 +85,7 @@ export default class ConditionBuilderView {
     // modifier
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
-    this.#properties.push(new StackingConditionView(this, this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {subject, property, subCategory}));
+    this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {subject, property, subCategory}));
   }
   
   #removeProperty(propertyId, parentCategoryId) {
@@ -106,7 +106,7 @@ export default class ConditionBuilderView {
       stackingConditionView.addValue(value);
     } else {
       // otherwise, make new condition view
-      this.#propertyValues.push(new StackingConditionView(this, this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {subject, property, value}));
+      this.#propertyValues.push(new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {subject, property, value}));
     }
   }
 
