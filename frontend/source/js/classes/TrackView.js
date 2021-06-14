@@ -69,9 +69,7 @@ export default class TrackView {
     this.#CHECKBOX_ALL_PROPERTIES.addEventListener('click', e => {
       e.stopPropagation();
       if (this.#CHECKBOX_ALL_PROPERTIES.checked) { // add
-        ConditionBuilder.addProperty({
-          propertyId: this.#property.propertyId
-        });
+        ConditionBuilder.addProperty(this.#property.propertyId);
         this.#ROOT.classList.add('-allselected');
       } else { // remove
         ConditionBuilder.removeProperty(this.#property.propertyId);

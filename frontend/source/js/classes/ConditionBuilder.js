@@ -31,16 +31,17 @@ class ConditionBuilder {
     this.#postProcessing();
   }
 
-  addProperty(condition) {
-    console.log('addProperty', condition)
+  addProperty(propertyId, parentCategoryId) {
+    console.log('addProperty', propertyId, parentCategoryId)
     // store
-    this.#propertyConditions.push(condition);
+    this.#propertyConditions.push({propertyId, parentCategoryId});
     // evaluate
     this.#postProcessing();
     // dispatch event
     const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {
       action: 'add', 
-      condition
+      propertyId,
+      parentCategoryId
     }});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
@@ -155,26 +156,24 @@ class ConditionBuilder {
   }
 
   makeQueryParameter() {
+    console.log(this.#propertyConditions, this.#attributeConditions)
     // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
     // create properties
     const properties = this.#propertyConditions.map(({propertyId, parentCategoryId}) => {
       const subject = Records.getSubjectWithPropertyId(propertyId);
       const property = Records.getProperty(propertyId);
-      const query = {propertyId: property.propertyId};
+      const query = {propertyId};
       if (parentCategoryId) {
         query.categoryIds = Records.getValuesWithParentCategoryId(propertyId, parentCategoryId).map(value => value.categoryId);
       };
       return {query, subject, property, parentCategoryId};
     });
     // create attributes (property values)
-    const attributes = this.#attributeConditions.map(({propertyId, values}) => {
+    const attributes = this.#attributeConditions.map(({propertyId, categoryIds}) => {
       const subject = Records.getSubjectWithPropertyId(propertyId);
       const property = Records.getProperty(propertyId);
       return {
-        query: {
-          propertyId: property.propertyId,
-          categoryIds: values.map(value => value.categoryId)
-        },
+        query: {propertyId, categoryIds},
         subject,
         property
       }

@@ -36,7 +36,7 @@ export default class ConditionBuilderView {
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, e => {
       switch (e.detail.action) {
         case 'add':
-          this.#addProperty(e.detail.condition.propertyId, e.detail.condition.parentCategoryId);
+          this.#addProperty(e.detail.propertyId, e.detail.parentCategoryId);
           break;
         case 'remove':
           this.#removeProperty(e.detail.propertyId, e.detail.parentCategoryId);

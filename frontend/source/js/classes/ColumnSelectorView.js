@@ -221,10 +221,7 @@ export default class ColumnSelectorView {
     ul.querySelector(':scope > .item.-all').addEventListener('change', e => {
       const dataset = e.target.parentNode.dataset;
       if (e.target.checked) { // add
-        ConditionBuilder.addProperty({
-          propertyId: this.#property.propertyId,
-          parentCategoryId: dataset.parentCategoryId
-        });
+        ConditionBuilder.addProperty(this.#property.propertyId, dataset.parentCategoryId);
       } else { // remove
         ConditionBuilder.removeProperty(this.#property.propertyId, dataset.parentCategoryId);
       }

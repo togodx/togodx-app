@@ -2979,10 +2979,13 @@
       }
     }, {
       key: "addProperty",
-      value: function addProperty(condition) {
-        console.log('addProperty', condition); // store
+      value: function addProperty(propertyId, parentCategoryId) {
+        console.log('addProperty', propertyId, parentCategoryId); // store
 
-        _classPrivateFieldGet(this, _propertyConditions).push(condition); // evaluate
+        _classPrivateFieldGet(this, _propertyConditions).push({
+          propertyId: propertyId,
+          parentCategoryId: parentCategoryId
+        }); // evaluate
 
 
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
@@ -2991,7 +2994,8 @@
         var customEvent = new CustomEvent(mutatePropertyCondition, {
           detail: {
             action: 'add',
-            condition: condition
+            propertyId: propertyId,
+            parentCategoryId: parentCategoryId
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
@@ -3168,15 +3172,16 @@
     }, {
       key: "makeQueryParameter",
       value: function makeQueryParameter() {
-        // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
+        console.log(_classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions)); // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
         // create properties
+
         var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref2) {
           var propertyId = _ref2.propertyId,
               parentCategoryId = _ref2.parentCategoryId;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
           var property = Records$1.getProperty(propertyId);
           var query = {
-            propertyId: property.propertyId
+            propertyId: propertyId
           };
 
           if (parentCategoryId) {
@@ -3195,15 +3200,13 @@
 
         var attributes = _classPrivateFieldGet(this, _attributeConditions).map(function (_ref3) {
           var propertyId = _ref3.propertyId,
-              values = _ref3.values;
+              categoryIds = _ref3.categoryIds;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
           var property = Records$1.getProperty(propertyId);
           return {
             query: {
-              propertyId: property.propertyId,
-              categoryIds: values.map(function (value) {
-                return value.categoryId;
-              })
+              propertyId: propertyId,
+              categoryIds: categoryIds
             },
             subject: subject,
             property: property
@@ -3534,7 +3537,7 @@
     DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
       switch (e.detail.action) {
         case 'add':
-          _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, e.detail.condition.propertyId, e.detail.condition.parentCategoryId);
+          _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, e.detail.propertyId, e.detail.parentCategoryId);
 
           break;
 
@@ -4158,10 +4161,7 @@
 
       if (e.target.checked) {
         // add
-        ConditionBuilder$1.addProperty({
-          propertyId: _classPrivateFieldGet(_this3, _property$3).propertyId,
-          parentCategoryId: dataset.parentCategoryId
-        });
+        ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this3, _property$3).propertyId, dataset.parentCategoryId);
       } else {
         // remove
         ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this3, _property$3).propertyId, dataset.parentCategoryId);
@@ -4885,9 +4885,7 @@
 
       if (_classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked) {
         // add
-        ConditionBuilder$1.addProperty({
-          propertyId: _classPrivateFieldGet(_this, _property).propertyId
-        });
+        ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this, _property).propertyId);
 
         _classPrivateFieldGet(_this, _ROOT$4).classList.add('-allselected');
       } else {
