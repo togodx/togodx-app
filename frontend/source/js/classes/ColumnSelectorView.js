@@ -206,7 +206,7 @@ export default class ColumnSelectorView {
             value: {
               categoryId: checkbox.value,
               label: this.#items[checkbox.value].label,
-              ancestors: this.#getAncestors(checkbox.value).map(ancestor => ancestor.label)
+              // ancestors: this.#getAncestors(checkbox.value).map(ancestor => ancestor.label)
             }
           });
         } else { // remove
@@ -226,7 +226,7 @@ export default class ColumnSelectorView {
             parentCategoryId: dataset.parentCategoryId,
             values: dataset.categoryIds.split(','),
             label: dataset.parentLabel,
-            ancestors: this.#getAncestors(dataset.parentCategoryId).map(ancestor => ancestor.label)
+            // ancestors: this.#getAncestors(dataset.parentCategoryId).map(ancestor => ancestor.label)
           }
         });
       } else { // remove
@@ -264,15 +264,15 @@ export default class ColumnSelectorView {
     });
   }
 
-  #getAncestors(categoryId) {
-    const ancestors = [];
-    let parent;
-    do { // find ancestors
-      parent = this.#items[categoryId].parent;
-      if (parent) ancestors.unshift(this.#items[parent]);
-      categoryId = parent;
-    } while (parent);
-    return ancestors;
-}
+  // #getAncestors(categoryId) {
+  //   const ancestors = [];
+  //   let parent;
+  //   do { // find ancestors
+  //     parent = this.#items[categoryId].parent;
+  //     if (parent) ancestors.unshift(this.#items[parent]);
+  //     categoryId = parent;
+  //   } while (parent);
+  //   return ancestors;
+  // }
 
 }

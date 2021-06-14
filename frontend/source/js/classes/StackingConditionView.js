@@ -41,7 +41,7 @@ export default class StackingConditionView {
         break;
       case 'value':
         label = `<ul class="labels"></ul>`;
-        ancestorLabels.push(property.label, ...condition.value.ancestorLabels);
+        ancestorLabels.push(property.label, ...condition.value.ancestors);
         break;
     }
     this.#ROOT.innerHTML = `

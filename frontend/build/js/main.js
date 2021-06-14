@@ -3180,7 +3180,8 @@
         // create properties
         var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref3) {
           var propertyId = _ref3.propertyId,
-              subCategory = _ref3.subCategory;
+              subCategory = _ref3.subCategory,
+              parentCategoryId = _ref3.parentCategoryId;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
           var property = Records$1.getProperty(propertyId);
           var query = {
@@ -3191,7 +3192,8 @@
             query: query,
             subject: subject,
             property: property,
-            subCategory: subCategory
+            subCategory: subCategory,
+            parentCategoryId: parentCategoryId
           };
         }); // create attributes (property values)
 
@@ -3338,7 +3340,7 @@
 
         case 'value':
           label = "<ul class=\"labels\"></ul>";
-          ancestorLabels.push.apply(ancestorLabels, [property.label].concat(_toConsumableArray(condition.value.ancestorLabels)));
+          ancestorLabels.push.apply(ancestorLabels, [property.label].concat(_toConsumableArray(condition.value.ancestors)));
           break;
       }
 
@@ -3855,14 +3857,10 @@
 
   var _update$2 = new WeakSet();
 
-  var _getAncestors = new WeakSet();
-
   var ColumnSelectorView = function ColumnSelectorView(elm, subject, property, _items2, sparqlist) {
     var _this = this;
 
     _classCallCheck(this, ColumnSelectorView);
-
-    _getAncestors.add(this);
 
     _update$2.add(this);
 
@@ -3999,7 +3997,17 @@
     var _column = _classPrivateMethodGet(this, _makeColumn, _makeColumn2).call(this, _items2, _depth);
 
     _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, _column, _depth);
-  };
+  } // #getAncestors(categoryId) {
+  //   const ancestors = [];
+  //   let parent;
+  //   do { // find ancestors
+  //     parent = this.#items[categoryId].parent;
+  //     if (parent) ancestors.unshift(this.#items[parent]);
+  //     categoryId = parent;
+  //   } while (parent);
+  //   return ancestors;
+  // }
+  ;
 
   function _setItems2(items, depth, parent) {
     var _iterator = _createForOfIteratorHelper(items),
@@ -4139,10 +4147,8 @@
             propertyId: _classPrivateFieldGet(_this3, _property$3).propertyId,
             value: {
               categoryId: checkbox.value,
-              label: _classPrivateFieldGet(_this3, _items$1)[checkbox.value].label,
-              ancestors: _classPrivateMethodGet(_this3, _getAncestors, _getAncestors2).call(_this3, checkbox.value).map(function (ancestor) {
-                return ancestor.label;
-              })
+              label: _classPrivateFieldGet(_this3, _items$1)[checkbox.value].label // ancestors: this.#getAncestors(checkbox.value).map(ancestor => ancestor.label)
+
             }
           });
         } else {
@@ -4163,10 +4169,8 @@
           subCategory: {
             parentCategoryId: dataset.parentCategoryId,
             values: dataset.categoryIds.split(','),
-            label: dataset.parentLabel,
-            ancestors: _classPrivateMethodGet(_this3, _getAncestors, _getAncestors2).call(_this3, dataset.parentCategoryId).map(function (ancestor) {
-              return ancestor.label;
-            })
+            label: dataset.parentLabel // ancestors: this.#getAncestors(dataset.parentCategoryId).map(ancestor => ancestor.label)
+
           }
         });
       } else {
@@ -4216,20 +4220,6 @@
         }).join(','), ")");
       });
     });
-  }
-
-  function _getAncestors2(categoryId) {
-    var ancestors = [];
-    var parent;
-
-    do {
-      // find ancestors
-      parent = _classPrivateFieldGet(this, _items$1)[categoryId].parent;
-      if (parent) ancestors.unshift(_classPrivateFieldGet(this, _items$1)[parent]);
-      categoryId = parent;
-    } while (parent);
-
-    return ancestors;
   }
 
   /**
@@ -5338,7 +5328,7 @@
     _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    ".concat(tableData.condition.attributes.map(function (property) {
       return "\n    <th>\n      <div class=\"inner _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n      <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.property.label, "</span>\n      </div>\n    </th>");
     }).join(''), "\n    ").concat(tableData.condition.properties.map(function (property) {
-      return "\n    <th>\n      <div class=\"inner _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n        <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.subCategory ? property.subCategory.label : property.property.label, "</span>\n      </div>\n    </th>");
+      return "\n    <th>\n      <div class=\"inner _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n        <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.parentCategoryId ? Records$1.getValue(property.property.propertyId, property.parentCategoryId).label : property.property.label, "</span>\n      </div>\n    </th>");
     }).join('')); // make stats
 
     _classPrivateFieldGet(this, _STATS).innerHTML = "<td colspan=\"2\"><div class=\"inner\"><div></td>" + properties.map(function () {

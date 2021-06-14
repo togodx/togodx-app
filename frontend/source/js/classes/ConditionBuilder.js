@@ -156,12 +156,12 @@ class ConditionBuilder {
   makeQueryParameter() {
     // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
     // create properties
-    const properties = this.#propertyConditions.map(({propertyId, subCategory}) => {
+    const properties = this.#propertyConditions.map(({propertyId, subCategory, parentCategoryId}) => {
       const subject = Records.getSubjectWithPropertyId(propertyId);
       const property = Records.getProperty(propertyId);
       const query = {propertyId: property.propertyId};
       if (subCategory) query.categoryIds = subCategory.values;
-      return {query, subject, property, subCategory};
+      return {query, subject, property, subCategory, parentCategoryId};
     });
     // create attributes (property values)
     const attributes = this.#attributeConditions.map(({propertyId, values}) => {
