@@ -2998,21 +2998,23 @@
       }
     }, {
       key: "addPropertyValue",
-      value: function addPropertyValue(condition) {
-        console.log('add condition', condition); // find value of same property
+      value: function addPropertyValue(propertyId, categoryId) {
+        console.log('add condition', propertyId, categoryId); // find value of same property
 
         var samePropertyCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (_ref) {
           var propertyId = _ref.propertyId;
-          return propertyId === condition.propertyId;
+          return propertyId === propertyId;
         }); // store
 
 
         if (samePropertyCondition) {
-          samePropertyCondition.values.push(condition.value);
+          // samePropertyCondition.values.push(condition.value);
+          samePropertyCondition.categoryIds.push(categoryId);
         } else {
           _classPrivateFieldGet(this, _attributeConditions).push({
-            propertyId: condition.propertyId,
-            values: [condition.value]
+            propertyId: propertyId,
+            // values: [condition.value],
+            categoryIds: [categoryId]
           });
         } // evaluate
 
@@ -3023,7 +3025,10 @@
         var customEvent = new CustomEvent(mutatePropertyValueCondition, {
           detail: {
             action: 'add',
-            condition: condition
+            condition: {
+              propertyId: propertyId,
+              categoryId: categoryId
+            }
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
@@ -3348,8 +3353,9 @@
           break;
 
         case 'value':
-          label = "<ul class=\"labels\"></ul>";
-          ancestorLabels.push.apply(ancestorLabels, [property.label].concat(_toConsumableArray(condition.value.ancestors)));
+          label = "<ul class=\"labels\"></ul>"; // ancestorLabels.push(property.label, ...condition.value.ancestors);
+
+          ancestorLabels.push(property.label);
           break;
       }
 
@@ -3361,7 +3367,7 @@
       if (type === 'value') {
         _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .labels'));
 
-        this.addValue(condition.value);
+        this.addValue(condition.categoryId);
       } // event
 
 
@@ -3395,8 +3401,10 @@
 
     _createClass(StackingConditionView, [{
       key: "addValue",
-      value: function addValue(value) {
+      value: function addValue(categoryId) {
         var _this2 = this;
+
+        var value = Records$1.getValue(_classPrivateFieldGet(this, _condition$1).propertyId, categoryId);
 
         _classPrivateFieldGet(this, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _subject-background-color\" data-category-id=\"".concat(value.categoryId, "\">").concat(value.label, "<div class=\"close-button-view\"></div></li>")); // attach event
 
@@ -3559,7 +3567,8 @@
     DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (e) {
       switch (e.detail.action) {
         case 'add':
-          _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, e.detail.condition.propertyId, e.detail.condition.value);
+          // this.#addPropertyValue(e.detail.condition.propertyId, e.detail.condition.value);
+          _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, e.detail.condition.propertyId, e.detail.condition.categoryId);
 
           break;
 
@@ -3620,7 +3629,7 @@
     if (_classPrivateFieldGet(this, _properties).length === 0) _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.add('-empty');
   }
 
-  function _addPropertyValue2(propertyId, value) {
+  function _addPropertyValue2(propertyId, categoryId) {
     // modifier
     _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.remove('-empty'); // find a condition view has same property id
 
@@ -3630,13 +3639,13 @@
     });
 
     if (stackingConditionView) {
-      // if it exists, add new value
-      stackingConditionView.addValue(value);
+      // if it exists, add new categoryId
+      stackingConditionView.addValue(categoryId);
     } else {
       // otherwise, make new condition view
       _classPrivateFieldGet(this, _propertyValues).push(new StackingConditionView(_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER), 'value', {
         propertyId: propertyId,
-        value: value
+        categoryId: categoryId
       }));
     }
   }
@@ -3964,7 +3973,7 @@
       switch (e.detail.action) {
         case 'add':
           propertyId = e.detail.condition.propertyId;
-          categoryId = e.detail.condition.value.categoryId;
+          categoryId = e.detail.condition.categoryId;
           break;
 
         case 'remove':
@@ -4151,14 +4160,13 @@
 
         if (checkbox.checked) {
           // add
-          ConditionBuilder$1.addPropertyValue({
-            propertyId: _classPrivateFieldGet(_this3, _property$3).propertyId,
-            value: {
-              categoryId: checkbox.value,
-              label: _classPrivateFieldGet(_this3, _items$1)[checkbox.value].label // ancestors: this.#getAncestors(checkbox.value).map(ancestor => ancestor.label)
-
-            }
-          });
+          ConditionBuilder$1.addPropertyValue(_classPrivateFieldGet(_this3, _property$3).propertyId, checkbox.value // value: {
+          //   categoryId: checkbox.value,
+          //   label: this.#items[checkbox.value].label,
+          //   ancestors: [checkbox.value]
+          //   // ancestors: this.#getAncestors(checkbox.value).map(ancestor => ancestor.label)
+          // }
+          );
         } else {
           // remove
           ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _property$3).propertyId, checkbox.value);
@@ -4675,15 +4683,13 @@
           ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this, _property$1).propertyId, value.categoryId);
         } else {
           elm.classList.add('-selected');
-          ConditionBuilder$1.addPropertyValue({
-            propertyId: _classPrivateFieldGet(_this, _property$1).propertyId,
-            value: {
-              categoryId: value.categoryId,
-              label: value.label,
-              count: value.count,
-              ancestors: []
-            }
-          });
+          ConditionBuilder$1.addPropertyValue(_classPrivateFieldGet(_this, _property$1).propertyId, value.categoryId // value: {
+          //   categoryId: value.categoryId,
+          //   label: value.label,
+          //   count: value.count,
+          //   ancestors: []
+          // }
+          );
         }
       });
     }); // event listener
@@ -4694,7 +4700,7 @@
       switch (e.detail.action) {
         case 'add':
           propertyId = e.detail.condition.propertyId;
-          categoryId = e.detail.condition.value.categoryId;
+          categoryId = e.detail.condition.categoryId;
           break;
 
         case 'remove':

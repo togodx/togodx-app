@@ -41,7 +41,8 @@ export default class StackingConditionView {
         break;
       case 'value':
         label = `<ul class="labels"></ul>`;
-        ancestorLabels.push(property.label, ...condition.value.ancestors);
+        // ancestorLabels.push(property.label, ...condition.value.ancestors);
+        ancestorLabels.push(property.label);
         break;
     }
     this.#ROOT.innerHTML = `
@@ -54,7 +55,7 @@ export default class StackingConditionView {
     // reference
     if (type === 'value') {
       this.#LABELS = this.#ROOT.querySelector(':scope > .labels');
-      this.addValue(condition.value);
+      this.addValue(condition.categoryId);
     }
 
     // event
@@ -76,7 +77,8 @@ export default class StackingConditionView {
 
   // public methods
 
-  addValue(value) {
+  addValue(categoryId) {
+    const value = Records.getValue(this.#condition.propertyId, categoryId);
     this.#LABELS.insertAdjacentHTML('beforeend', `<li class="label _subject-background-color" data-category-id="${value.categoryId}">${value.label}<div class="close-button-view"></div></li>`);
     // attach event
     this.#LABELS.querySelector(':scope > .label:last-child').addEventListener('click', e => {

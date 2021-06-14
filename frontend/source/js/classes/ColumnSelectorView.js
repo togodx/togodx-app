@@ -55,7 +55,7 @@ export default class ColumnSelectorView {
       switch (e.detail.action) {
         case 'add':
           propertyId = e.detail.condition.propertyId;
-          categoryId = e.detail.condition.value.categoryId;
+          categoryId = e.detail.condition.categoryId;
           break;
         case 'remove':
           propertyId = e.detail.propertyId;
@@ -201,14 +201,16 @@ export default class ColumnSelectorView {
       checkbox.addEventListener('click', e => {
         e.stopPropagation();
         if (checkbox.checked) { // add
-          ConditionBuilder.addPropertyValue({
-            propertyId: this.#property.propertyId,
-            value: {
-              categoryId: checkbox.value,
-              label: this.#items[checkbox.value].label,
-              // ancestors: this.#getAncestors(checkbox.value).map(ancestor => ancestor.label)
-            }
-          });
+          ConditionBuilder.addPropertyValue(
+            this.#property.propertyId,
+            checkbox.value
+            // value: {
+            //   categoryId: checkbox.value,
+            //   label: this.#items[checkbox.value].label,
+            //   ancestors: [checkbox.value]
+            //   // ancestors: this.#getAncestors(checkbox.value).map(ancestor => ancestor.label)
+            // }
+          );
         } else { // remove
           ConditionBuilder.removePropertyValue(this.#property.propertyId, checkbox.value);
         }

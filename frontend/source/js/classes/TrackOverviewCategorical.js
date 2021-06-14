@@ -106,15 +106,16 @@ export default class TrackOverviewCategorical {
           ConditionBuilder.removePropertyValue(this.#property.propertyId, value.categoryId);
         } else {
           elm.classList.add('-selected');
-          ConditionBuilder.addPropertyValue({
-            propertyId: this.#property.propertyId,
-            value: {
-              categoryId: value.categoryId,
-              label: value.label,
-              count: value.count,
-              ancestors: []
-            }
-          });
+          ConditionBuilder.addPropertyValue(
+            this.#property.propertyId,
+            value.categoryId
+            // value: {
+            //   categoryId: value.categoryId,
+            //   label: value.label,
+            //   count: value.count,
+            //   ancestors: []
+            // }
+          );
         }
       });
     });
@@ -125,7 +126,7 @@ export default class TrackOverviewCategorical {
       switch (e.detail.action) {
         case 'add':
           propertyId = e.detail.condition.propertyId;
-          categoryId = e.detail.condition.value.categoryId;
+          categoryId = e.detail.condition.categoryId;
           break;
         case 'remove':
           propertyId = e.detail.propertyId;

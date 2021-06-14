@@ -45,17 +45,19 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  addPropertyValue(condition) {
-    console.log('add condition', condition)
+  addPropertyValue(propertyId, categoryId) {
+    console.log('add condition', propertyId, categoryId)
     // find value of same property
-    const samePropertyCondition = this.#attributeConditions.find(({propertyId}) => propertyId === condition.propertyId);
+    const samePropertyCondition = this.#attributeConditions.find(({propertyId}) => propertyId === propertyId);
     // store
     if (samePropertyCondition) {
-      samePropertyCondition.values.push(condition.value);
+      // samePropertyCondition.values.push(condition.value);
+      samePropertyCondition.categoryIds.push(categoryId);
     } else {
       this.#attributeConditions.push({
-        propertyId: condition.propertyId,
-        values: [condition.value]
+        propertyId,
+        // values: [condition.value],
+        categoryIds: [categoryId]
       });
     }
     // evaluate
@@ -63,7 +65,7 @@ class ConditionBuilder {
     // dispatch event
     const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {
       action: 'add', 
-      condition
+      condition: {propertyId, categoryId}
     }});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
