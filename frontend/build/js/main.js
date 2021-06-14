@@ -3155,6 +3155,7 @@
     }, {
       key: "makeQueryParameter",
       value: function makeQueryParameter() {
+        // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
         // create properties
         var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref3) {
           var propertyId = _ref3.propertyId,
@@ -6417,7 +6418,9 @@
   function _setTableData2(newCondition) {
     // find matching condition from already existing conditions
     var sameConditionTableData = _classPrivateFieldGet(this, _tableData).find(function (tableData) {
-      var matchTogoKey = newCondition.togoKey === tableData.condition.togoKey; // compare properties
+      console.log(tableData.condition); // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
+
+      if (newCondition.togoKey !== tableData.condition.togoKey) return; // compare properties
 
       var matchProperties = function () {
         if (newCondition.properties.length === tableData.condition.properties.length) {
@@ -6451,7 +6454,7 @@
           }
         });
       });
-      return matchTogoKey && matchProperties && matchAttributes;
+      return matchProperties && matchAttributes;
     });
 
     if (sameConditionTableData) {

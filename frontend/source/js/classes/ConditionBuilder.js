@@ -154,6 +154,7 @@ class ConditionBuilder {
   }
 
   makeQueryParameter() {
+    // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
     // create properties
     const properties = this.#propertyConditions.map(({propertyId, subCategory}) => {
       const subject = Records.getSubjectWithPropertyId(propertyId);
