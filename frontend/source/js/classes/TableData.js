@@ -51,9 +51,14 @@ export default class TableData {
       ${condition.attributes.map(property => `<div class="condiiton _subject-background-color" data-subject-id="${property.subject.subjectId}">
         <p title="${property.property.label}">${property.property.label}</p>
       </div>`).join('')}
-      ${condition.properties.map(property => `<div class="condiiton _subject-color" data-subject-id="${property.subject.subjectId}">
-        <p title="${property.property.label}">${property.subCategory ? property.subCategory.label : property.property.label}</p>
-      </div>`).join('')}
+      ${condition.properties.map(property => {
+        const label = property.parentCategoryId
+          ? Records.getValue(property.query.propertyId, property.parentCategoryId).label
+          : property.property.label;
+        return `<div class="condiiton _subject-color" data-subject-id="${property.subject.subjectId}">
+          <p title="${label}">${label}</p>
+        </div>`;
+    }).join('')}
     </div>
     <div class="status">
       <p>Getting id list</p>

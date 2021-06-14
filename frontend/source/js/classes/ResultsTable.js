@@ -139,7 +139,7 @@ export default class ResultsTable {
         <div class="togo-key-view">${property.property.primaryKey}</div>
         <span>${
           property.parentCategoryId
-            ? Records.getValue(property.property.propertyId, property.parentCategoryId).label
+            ? Records.getValue(property.query.propertyId, property.parentCategoryId).label
             : property.property.label
         }</span>
       </div>
