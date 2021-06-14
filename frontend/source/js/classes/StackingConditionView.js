@@ -116,8 +116,8 @@ export default class StackingConditionView {
 
   // accessor
 
-  get elm() {
-    return this.#ROOT;
-  }
+  // get elm() {
+  //   return this.#ROOT;
+  // }
 
 }

@@ -3247,16 +3247,28 @@
     });
     DefaultEventEmitter$1.dispatchEvent(customEvent); // generate permalink
 
-    console.log(this.currentTogoKey, this.userIds, _classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions)); // console.log(`togoKey=${this.currentTogoKey}&userIds=${this.userIds ? this.userIds.join(',') : ''}&keys=${JSON.stringify(this.#propertyConditions.map(({property}) => {
-    //   return {
-    //     propertyId: property.propertyId
-    //   }
-    // }))}&values=${this.#attributeConditions.map(({property, value}) => {
-    //   return {
-    //     propertyId: property.propertyId,
-    //     categoryIds: property
-    //   }
-    // })}`)
+    var params = new URL(location).searchParams;
+    params.set('togoKey', _classPrivateFieldGet(this, _togoKey));
+    params.set('userIds', this.userIds ? this.userIds : '');
+    params.set('keys', encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _propertyConditions))));
+    params.set('values', encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _attributeConditions))));
+    console.log(params.toString());
+
+    var _iterator2 = _createForOfIteratorHelper(params.entries()),
+        _step2;
+
+    try {
+      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+        var entry = _step2.value;
+        console.log(entry);
+      }
+    } catch (err) {
+      _iterator2.e(err);
+    } finally {
+      _iterator2.f();
+    }
+
+    window.history.pushState('', '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
   }
 
   var ConditionBuilder$1 = new ConditionBuilder();
@@ -3424,12 +3436,10 @@
       value: function sameProperty(propertyId) {
         return propertyId === _classPrivateFieldGet(this, _condition$1).propertyId;
       } // accessor
+      // get elm() {
+      //   return this.#ROOT;
+      // }
 
-    }, {
-      key: "elm",
-      get: function get() {
-        return _classPrivateFieldGet(this, _ROOT$8);
-      }
     }]);
 
     return StackingConditionView;

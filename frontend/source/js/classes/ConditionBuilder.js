@@ -214,17 +214,17 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
 
     // generate permalink
-    console.log(this.currentTogoKey, this.userIds, this.#propertyConditions, this.#attributeConditions)
-    // console.log(`togoKey=${this.currentTogoKey}&userIds=${this.userIds ? this.userIds.join(',') : ''}&keys=${JSON.stringify(this.#propertyConditions.map(({property}) => {
-    //   return {
-    //     propertyId: property.propertyId
-    //   }
-    // }))}&values=${this.#attributeConditions.map(({property, value}) => {
-    //   return {
-    //     propertyId: property.propertyId,
-    //     categoryIds: property
-    //   }
-    // })}`)
+    const params = new URL(location).searchParams;
+    params.set('togoKey', this.#togoKey);
+    params.set('userIds', this.userIds ? this.userIds : '');
+    params.set('keys', encodeURIComponent(JSON.stringify(this.#propertyConditions)));
+    params.set('values', encodeURIComponent(JSON.stringify(this.#attributeConditions)));
+    console.log(params.toString());
+    for (const entry of params.entries()) {
+      console.log(entry);
+    }
+    window.history.pushState('', '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
+
   }
 
 }
