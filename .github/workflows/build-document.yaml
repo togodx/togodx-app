@@ -1,0 +1,24 @@
+name: build-document
+on: workflow_dispatch
+jobs:
+  build_document:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.6
+        bundler-cache: true
+    - run: ruby ./script/generate-document.rb > ./docs/togo-human/data-sources.md
+    - run: |
+        git config --local user.email "togosite[bot]@dbcls.jp"
+        git config --local user.name "togosite github action [bot]"
+        git commit -m "update document" -a
+
+    - uses: peter-evans/create-pull-request@v3
+      with:
+        commit-message: Update documentation
+        branch: documentation-patches
+        title: 'Update documentation'

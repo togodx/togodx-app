@@ -10,7 +10,7 @@
   animation: var(--transition-instant) enter-stacking-item
   transform-origin: 0 0
   margin-top: .6rem
-  opacity: .6
+  opacity: var(--opacity-disabled)
   cursor: pointer
   transition: opacity var(--transition-instant)
   position: relative
@@ -29,7 +29,7 @@
       &:first-child
         color: white
         background-color: var(--color-lamp-black)
-      &.-value
+      &._subject-background-color
         color: white
       > p
         margin-bottom: 0
@@ -37,7 +37,7 @@
         white-space: nowrap
         overflow: hidden
       &:last-child
-        padding-right: 1.9rem
+        padding-right: 1.8rem
   > .status
     padding: .3rem 0
     border-bottom: solid .1rem var(--color-separator)

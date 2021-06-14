@@ -13,6 +13,7 @@ export default class TrackOverviewCategorical {
   #subject;
   #property;
   #values;
+  #userValues;
   #ROOT;
 
   constructor(elm, subject, property, values) {
@@ -32,10 +33,12 @@ export default class TrackOverviewCategorical {
       value.baseColor = util.colorTintByHue(subject.color, 360 * index / values.length);
       return `
         <li class="track-value-view" style="width: ${width}%;" data-category-id="${value.categoryId}">
-          <p>
-            <span class="label">${value.label}</span>
-            <span class="count">${value.count.toLocaleString()}</span>
-          </p>
+          <div class="labels">
+            <p>
+              <span class="label">${value.label}</span>
+              <span class="count">${value.count.toLocaleString()}</span>
+            </p>
+          </div>
           <div class="pin"></div>
         </li>`;
     }).join('');
@@ -69,15 +72,24 @@ export default class TrackOverviewCategorical {
       });
 
       // attach event: show tooltip of pin
-      pin.addEventListener('mouseenter', () => {
+      pin.addEventListener('mouseenter', e => {
+        e.stopPropagation();
+        const values = [
+          {
+            key: 'Count',
+            value: `${value.userValueCount.toLocaleString()} / ${value.count.toLocaleString()}`
+          }
+        ];
+        const userValue = this.#userValues.find(userValue => userValue.categoryId === value.categoryId);
+        if (userValue) {
+          values.push({
+            key: 'P-value',
+            value: userValue.pValue.toExponential()
+          });
+        }
         const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {
           label,
-          values: [
-            {
-              key: 'Count',
-              value: `${value.userValueCount.toLocaleString()} / ${value.count.toLocaleString()}`
-            }
-          ],
+          values,
           elm: pin
         }});
         DefaultEventEmitter.dispatchEvent(customEvent);
@@ -144,15 +156,16 @@ export default class TrackOverviewCategorical {
   }
 
   #update(viewModes) {
-    const isArea = viewModes.area;
+    // const isArea = viewModes.area;
     const isLog10 = viewModes.log10;
     const sum = this.#values.reduce((acc, value) => acc + (isLog10 ? value.countLog10 : value.count), 0);
     let max = Math.max(...this.#values.map(value => value.count));
     max = isLog10 ? Math.log10(max) : max;
-    const fixedWidth = isArea ? 0 : 100 / this.#values.length;
+    // const fixedWidth = isArea ? 0 : 100 / this.#values.length;
     let left = 0;
     this.#values.forEach(value => {
-      const width = isArea ? (isLog10 ? Math.log10(value.count) : value.count) / sum * 100 : fixedWidth;
+      // const width = isArea ? (isLog10 ? Math.log10(value.count) : value.count) / sum * 100 : fixedWidth;
+      const width = (isLog10 ? (value.count === 0 ? 0 : Math.log10(value.count)) : value.count) / sum * 100;
       value.elm.style.backgroundColor = `rgb(${value.baseColor.mix(App.colorSilver, 1 - (isLog10 ? value.countLog10 : value.count) / max).coords.map(cood => cood * 256).join(',')})`;
       value.elm.style.width = width + '%';
       value.elm.style.left = left + '%';
@@ -162,22 +175,34 @@ export default class TrackOverviewCategorical {
 
   #plotUserIdValues(detail) {
     if (this.#property.propertyId === detail.propertyId) {
+
       this.#ROOT.classList.add('-pinsticking');
+      this.#userValues = detail.values;
 
-      console.log(detail, this.#values)
+      // calculate min value
+      let maxPValue;
+      if (detail.values[0]?.pValue) {
+        const minPValue = Math.min(...detail.values.map(value => value.pValue));
+        maxPValue = 1 - Math.log10(minPValue);
+      }
 
+      // mapping
       this.#values.forEach(value => {
         const userValue = detail.values.find(userValue => userValue.categoryId === value.categoryId);
         if (userValue) {
           value.elm.classList.add('-pinsticking');
           // pin
-          let ratio = userValue.count / value.count;
-          ratio = ratio > 1 ? 1 : ratio;
+          let ratio;
+          if (userValue.pValue) {
+            ratio = (1 - Math.log10(userValue.pValue)) / maxPValue;
+            // value.pValue = userValue.pValue;
+          } else {
+            ratio = userValue.count / value.count;
+            ratio = ratio > 1 ? 1 : ratio;
+          }
           const size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
-          value.pin.style.top = -size + 'px';
-          value.pin.style.left = (-size / 2) + 'px';
           value.userValueCount =  userValue.count;
         } else {
           value.elm.classList.remove('-pinsticking');

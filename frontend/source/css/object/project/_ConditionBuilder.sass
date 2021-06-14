@@ -1,50 +1,60 @@
 #ConditionBuilder
+  --radius: .4rem
   > .conditions
     flex-grow: 1
-    > *
+    > .condition
       padding: .7rem .6rem
       background-color: rgba(white, .8)
-      border-radius: .4rem
-      + *
+      border-radius: var(--radius)
+      + .condition
         margin-top: .4rem
-      > .title
-        margin-bottom: -.2rem
-        line-height: 1
-        font-size: 1.2rem
-        > .material-icons-outlined
-          font-size: 1.4rem
-          vertical-align: middle
-          margin-inline-end: .3rem
-          position: relative
-          top: -.1rem
-      > .conditions
-        &.-empty
-          &::after
-            font-size: 1.2rem
-            line-height: 1.2
-            display: block
+      > .inner
+        > .title
+          margin: -.5rem 0 -.2rem
+          line-height: 1
+          font-size: 1.2rem
+          display: flex
+          align-items: baseline
+          > .material-icons-outlined
+            font-size: 1.4rem
+            vertical-align: middle
+            margin-inline-end: .3rem
+            position: relative
+            top: .3rem
+          > small
+            font-weight: normal
+            // margin-left: .5rem
+            flex-grow: 1
+            text-align: right
+          + *
             margin-top: .4rem
-            font-weight: lighter
+      > hr
+        border: none
+        border-top: solid .1rem var(--color-separator)
+      > .conditions
         > .stacking-condition-view
           > .close-button-view
             body[data-display="results"] &
               display: none
-    > .attributes
-      > .conditions
-        &.-empty
-          &::after
-            content: "Add classification/distribution as many as ..."
-    > .properties
-      > .conditions
-        &.-empty
-          &::after
-            content: "Specify additional attributes integrated into resulting table ..."
-    > .togoKey
-      width: 100%
-      transition: opacity var(--transition-wipe)
-      > select
-        width: 100%
-        margin-top: .4rem
+    > #ConditionKeys, > #ConditionValues
+      transition: opacity var(--transition-instant)
+      opacity: var(--opacity-disabled)
+      cursor: pointer
+      &:hover
+        opacity: 1
+    > #ConditionKeys
+      border-radius: var(--radius) var(--radius) 0 0
+      [data-condition="keys"] &
+        opacity: 1
+    > #ConditionValues
+      border-radius: 0 0 var(--radius) var(--radius)
+      margin-top: .1rem
+      [data-condition="values"] &
+        opacity: 1
+    > #ConditionTogoKey
+      > .inner
+        > select
+          width: 100%
       body[data-display="results"] &
         pointer-events: none
         opacity: .5

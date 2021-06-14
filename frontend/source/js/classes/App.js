@@ -17,12 +17,17 @@ class App {
 
   #viewModes;
   #aggregate;
+  #colorWhite;
+  #colorLightGray;
   #colorSilver;
   #colorGray;
   #colorDarkGray;
   #colorLampBlack;
 
   constructor() {
+    this.#colorWhite = new Color('white').to('srgb');
+    this.#colorLightGray = new Color('--color-light-gray').to('srgb');
+    this.#colorLightGray = new Color('--color-light-gray').to('srgb');
     this.#colorSilver = new Color('--color-silver').to('srgb');
     this.#colorGray = new Color('--color-gray').to('srgb');
     this.#colorDarkGray = new Color('--color-dark-gray').to('srgb');
@@ -51,7 +56,6 @@ class App {
     new ResultsTable(document.querySelector('#ResultsTable'));
     new ResultDetailModal();
     new BalloonView();
-    new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
 
     // load config json
     Promise.all([
@@ -63,15 +67,10 @@ class App {
       .then(([subjects, templates, aggregate]) => {
         Records.setSubjects(subjects);
 
+        // setup upload user id
+        new UploadUserIDsView(document.querySelector('#UploadUserIDsView'), aggregate.mapping);
+
         // define primary keys
-        // const togoKeys = subjects.map(subject => {
-        //   return {
-        //     label: subject.subject,
-        //     togoKey: subject.togoKey,
-        //     subjectId: subject.subjectId
-        //   }
-        // });
-        // const customEvent = new CustomEvent(event.defineTogoKey, {detail: togoKeys});
         const customEvent = new CustomEvent(event.defineTogoKey, {detail: subjects});
         DefaultEventEmitter.dispatchEvent(customEvent);
 
@@ -107,6 +106,12 @@ class App {
   }
   get aggregateRows() {
     return this.#aggregate.table.url;
+  }
+  get colorWhite() {
+    return this.#colorWhite;
+  }
+  get colorLightGray() {
+    return this.#colorLightGray;
   }
   get colorSilver() {
     return this.#colorSilver;

@@ -23,6 +23,9 @@ export const hidePopup = 'hidePopup';
 export const showPopup = 'showPopup';
 export const movePopup = 'movePopup';
 
+// Dragging
+export const dragElement = 'dragElement';
+
 // Polling
 export const failedFetchTableDataIds = 'failedFetchTableDataIds';
 export const addNextRows = 'addNextRows';
@@ -30,6 +33,7 @@ export const addNextRows = 'addNextRows';
 // Table data
 export const selectTableData = 'selectTableData';
 export const deleteTableData = 'deleteTableData';
+export const highlightCol = 'highlightCol';
 
 // Track
 export const enterPropertyValueItemView = 'enterPropertyValueItemView';

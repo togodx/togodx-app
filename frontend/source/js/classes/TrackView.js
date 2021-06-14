@@ -39,6 +39,7 @@ export default class TrackView {
       <div class="left definition">
         <div class="collapsebutton" data-collapse="${property.propertyId}">
           <h2 class="title">${property.label}</h2>
+          <input type="checkbox" class="mapping">
         </div>
       </div>
       <div class="right values">
@@ -51,7 +52,7 @@ export default class TrackView {
     <div class="row -lower collapsingcontent" data-collapse="${property.propertyId}">
       <div class="left">
         <p class="description">${property.description}</p>
-        <label><input type="checkbox">All properties</label>
+        <!--<label><input type="checkbox">All properties</label>-->
       </div>
       <div class="right selector"></div>
     </div>`;
@@ -64,8 +65,8 @@ export default class TrackView {
     collapseView(elm);
 
     // select/deselect a property
-    this.#CHECKBOX_ALL_PROPERTIES = elm.querySelector(':scope > .row.-lower > .left > label > input');
-    this.#CHECKBOX_ALL_PROPERTIES.addEventListener('change', e => {
+    this.#CHECKBOX_ALL_PROPERTIES = elm.querySelector(':scope > .row.-upper > .left > .collapsebutton > input.mapping');
+    this.#CHECKBOX_ALL_PROPERTIES.addEventListener('click', e => {
       e.stopPropagation();
       if (this.#CHECKBOX_ALL_PROPERTIES.checked) { // add
         ConditionBuilder.addProperty({
@@ -80,9 +81,11 @@ export default class TrackView {
     });
     // event listener
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, e => {
+      if (e.detail.condition?.subCategory !== undefined || e.detail.parentCategoryId !== undefined) return;
       switch (e.detail.action) {
         case 'add':
           if (e.detail.condition.property.propertyId === this.#property.propertyId) {
+            console.log(e.detail.condition)
             this.#CHECKBOX_ALL_PROPERTIES.checked = true;
             this.#ROOT.classList.add('-allselected');
           }
