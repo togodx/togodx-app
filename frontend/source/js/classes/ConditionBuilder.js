@@ -46,17 +46,15 @@ class ConditionBuilder {
   }
 
   addPropertyValue(propertyId, categoryId) {
-    console.log('add condition', propertyId, categoryId)
+    console.log('addPropertyValue', propertyId, categoryId)
     // find value of same property
     const samePropertyCondition = this.#attributeConditions.find(({propertyId}) => propertyId === propertyId);
     // store
     if (samePropertyCondition) {
-      // samePropertyCondition.values.push(condition.value);
       samePropertyCondition.categoryIds.push(categoryId);
     } else {
       this.#attributeConditions.push({
         propertyId,
-        // values: [condition.value],
         categoryIds: [categoryId]
       });
     }
@@ -92,12 +90,13 @@ class ConditionBuilder {
   }
 
   removePropertyValue(propertyId, categoryId) {
+    console.log('removePropertyValue', propertyId, categoryId)
     // remove from store
     const index = this.#attributeConditions.findIndex(condition => {
       if (condition.propertyId === propertyId) {
-        const index = condition.values.findIndex(value => value.categoryId === categoryId);
-        condition.values.splice(index, 1);
-        return condition.values.length === 0;
+        const index = condition.categoryIds.indexOf(categoryId);
+        condition.categoryIds.splice(index, 1);
+        return condition.categoryIds.length === 0;
       } else {
         return false;
       }

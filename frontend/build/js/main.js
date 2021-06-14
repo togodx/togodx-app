@@ -2999,7 +2999,7 @@
     }, {
       key: "addPropertyValue",
       value: function addPropertyValue(propertyId, categoryId) {
-        console.log('add condition', propertyId, categoryId); // find value of same property
+        console.log('addPropertyValue', propertyId, categoryId); // find value of same property
 
         var samePropertyCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (_ref) {
           var propertyId = _ref.propertyId;
@@ -3008,12 +3008,10 @@
 
 
         if (samePropertyCondition) {
-          // samePropertyCondition.values.push(condition.value);
           samePropertyCondition.categoryIds.push(categoryId);
         } else {
           _classPrivateFieldGet(this, _attributeConditions).push({
             propertyId: propertyId,
-            // values: [condition.value],
             categoryIds: [categoryId]
           });
         } // evaluate
@@ -3066,15 +3064,14 @@
     }, {
       key: "removePropertyValue",
       value: function removePropertyValue(propertyId, categoryId) {
-        // remove from store
+        console.log('removePropertyValue', propertyId, categoryId); // remove from store
+
         var index = _classPrivateFieldGet(this, _attributeConditions).findIndex(function (condition) {
           if (condition.propertyId === propertyId) {
-            var _index = condition.values.findIndex(function (value) {
-              return value.categoryId === categoryId;
-            });
+            var _index = condition.categoryIds.indexOf(categoryId);
 
-            condition.values.splice(_index, 1);
-            return condition.values.length === 0;
+            condition.categoryIds.splice(_index, 1);
+            return condition.categoryIds.length === 0;
           } else {
             return false;
           }
@@ -3353,8 +3350,7 @@
           break;
 
         case 'value':
-          label = "<ul class=\"labels\"></ul>"; // ancestorLabels.push(property.label, ...condition.value.ancestors);
-
+          label = "<ul class=\"labels\"></ul>";
           ancestorLabels.push(property.label);
           break;
       }
@@ -3567,7 +3563,6 @@
     DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (e) {
       switch (e.detail.action) {
         case 'add':
-          // this.#addPropertyValue(e.detail.condition.propertyId, e.detail.condition.value);
           _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, e.detail.condition.propertyId, e.detail.condition.categoryId);
 
           break;
@@ -4683,13 +4678,7 @@
           ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this, _property$1).propertyId, value.categoryId);
         } else {
           elm.classList.add('-selected');
-          ConditionBuilder$1.addPropertyValue(_classPrivateFieldGet(_this, _property$1).propertyId, value.categoryId // value: {
-          //   categoryId: value.categoryId,
-          //   label: value.label,
-          //   count: value.count,
-          //   ancestors: []
-          // }
-          );
+          ConditionBuilder$1.addPropertyValue(_classPrivateFieldGet(_this, _property$1).propertyId, value.categoryId);
         }
       });
     }); // event listener

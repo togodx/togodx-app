@@ -109,12 +109,6 @@ export default class TrackOverviewCategorical {
           ConditionBuilder.addPropertyValue(
             this.#property.propertyId,
             value.categoryId
-            // value: {
-            //   categoryId: value.categoryId,
-            //   label: value.label,
-            //   count: value.count,
-            //   ancestors: []
-            // }
           );
         }
       });
