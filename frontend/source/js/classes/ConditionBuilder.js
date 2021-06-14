@@ -38,11 +38,7 @@ class ConditionBuilder {
     // evaluate
     this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {
-      action: 'add', 
-      propertyId,
-      parentCategoryId
-    }});
+    const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {action: 'add', propertyId, parentCategoryId}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
@@ -62,10 +58,7 @@ class ConditionBuilder {
     // evaluate
     this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {
-      action: 'add', 
-      condition: {propertyId, categoryId}
-    }});
+    const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {action: 'add', propertyId, categoryId}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 

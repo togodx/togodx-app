@@ -3027,10 +3027,8 @@
         var customEvent = new CustomEvent(mutatePropertyValueCondition, {
           detail: {
             action: 'add',
-            condition: {
-              propertyId: propertyId,
-              categoryId: categoryId
-            }
+            propertyId: propertyId,
+            categoryId: categoryId
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
@@ -3550,7 +3548,7 @@
     DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (e) {
       switch (e.detail.action) {
         case 'add':
-          _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, e.detail.condition.propertyId, e.detail.condition.categoryId);
+          _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, e.detail.propertyId, e.detail.categoryId);
 
           break;
 
@@ -3954,8 +3952,8 @@
 
       switch (e.detail.action) {
         case 'add':
-          propertyId = e.detail.condition.propertyId;
-          categoryId = e.detail.condition.categoryId;
+          propertyId = e.detail.propertyId;
+          categoryId = e.detail.categoryId;
           break;
 
         case 'remove':
@@ -4664,8 +4662,8 @@
 
       switch (e.detail.action) {
         case 'add':
-          propertyId = e.detail.condition.propertyId;
-          categoryId = e.detail.condition.categoryId;
+          propertyId = e.detail.propertyId;
+          categoryId = e.detail.categoryId;
           break;
 
         case 'remove':

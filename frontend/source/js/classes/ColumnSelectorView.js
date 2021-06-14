@@ -54,8 +54,8 @@ export default class ColumnSelectorView {
       let propertyId, categoryId;
       switch (e.detail.action) {
         case 'add':
-          propertyId = e.detail.condition.propertyId;
-          categoryId = e.detail.condition.categoryId;
+          propertyId = e.detail.propertyId;
+          categoryId = e.detail.categoryId;
           break;
         case 'remove':
           propertyId = e.detail.propertyId;
