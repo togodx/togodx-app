@@ -37,7 +37,7 @@ export default class ConditionsController {
           return newCondition.properties.every(newProperty => {
             const matchProperty = tableData.condition.properties.find(property => {
               if (newProperty.query.propertyId === property.query.propertyId) {
-                return (newProperty.subCategory === undefined && property.subCategory === undefined) || (newProperty.subCategory?.parentCategoryId === property.subCategory?.parentCategoryId);
+                return newProperty.parentCategoryId === property.parentCategoryId;
               } else {
                 return false;
               }

@@ -79,6 +79,19 @@ class Records {
     return value;
   }
 
+  getAncestors(propertyId, categoryId) {
+    const property = this.getProperty(propertyId);
+    const ancestors = [];
+    let parent;
+    do { // find ancestors
+      parent = property.values.find(value => value.categoryId === categoryId);
+      if (parent) ancestors.unshift(parent);
+      categoryId = parent?.parentCategoryId;
+    } while (parent);
+    ancestors.pop();
+    return ancestors;
+  }
+
   getLabelFromTogoKey(togoKey) {
     return this.#subjects.find(subject => subject.togoKey === togoKey).keyLabel;
   }

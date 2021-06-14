@@ -2712,6 +2712,27 @@
         return value;
       }
     }, {
+      key: "getAncestors",
+      value: function getAncestors(propertyId, categoryId) {
+        var property = this.getProperty(propertyId);
+        var ancestors = [];
+        var parent;
+
+        do {
+          var _parent;
+
+          // find ancestors
+          parent = property.values.find(function (value) {
+            return value.categoryId === categoryId;
+          });
+          if (parent) ancestors.unshift(parent);
+          categoryId = (_parent = parent) === null || _parent === void 0 ? void 0 : _parent.parentCategoryId;
+        } while (parent);
+
+        ancestors.pop();
+        return ancestors;
+      }
+    }, {
       key: "getLabelFromTogoKey",
       value: function getLabelFromTogoKey(togoKey) {
         return _classPrivateFieldGet(this, _subjects).find(function (subject) {

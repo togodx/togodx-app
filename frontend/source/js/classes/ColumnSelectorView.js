@@ -117,6 +117,7 @@ export default class ColumnSelectorView {
       fetch(this.#sparqlist + '?categoryIds=' + id)
         .then(responce => responce.json())
         .then(json => {
+          json.forEach(value => value.parentCategoryId = id);
           Records.setValues(this.#property.propertyId, json);
           this.#setItems(json, depth, id);
           const column = this.#makeColumn(json, depth, id);
@@ -220,6 +221,7 @@ export default class ColumnSelectorView {
       if (e.target.checked) { // add
         ConditionBuilder.addProperty({
           propertyId: this.#property.propertyId,
+          parentCategoryId: dataset.parentCategoryId,
           subCategory: {
             parentCategoryId: dataset.parentCategoryId,
             values: dataset.categoryIds.split(','),

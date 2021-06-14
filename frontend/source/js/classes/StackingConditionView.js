@@ -15,12 +15,10 @@ export default class StackingConditionView {
    * @param {Object} condition 
    */
   constructor(container, type, condition, isRange = false) {
-    console.log(condition)
 
     this.#condition = condition;
     const subject = Records.getSubjectWithPropertyId(condition.propertyId);
     const property = Records.getProperty(condition.propertyId);
-    console.log(subject, property)
     // this.#isRange = isRange;
     
     // attributes
@@ -29,23 +27,27 @@ export default class StackingConditionView {
     this.#ROOT.dataset.subjectId = subject.subjectId;
     this.#ROOT.dataset.propertyId = condition.propertyId;
     if (condition.value) this.#ROOT.dataset.categoryId = condition.value.categoryId;
-    if (condition.subCategory) this.#ROOT.dataset.parentCategoryId = condition.subCategory.parentCategoryId;
+    if (condition.parentCategoryId) this.#ROOT.dataset.parentCategoryId = condition.parentCategoryId;
     // make view
-    let label, ancestors = [subject.subject];
+    let label, ancestorLabels = [subject.subject];
     switch(type) {
-      case 'property':
-        label = `<div class="label _subject-color">${condition.subCategory ? condition.subCategory.label : property.label}</div>`;
-        if (condition.subCategory) ancestors.push(property.label, ...condition.subCategory.ancestors);
+      case 'property': {
+        const parentValue = condition.parentCategoryId ? Records.getValue(condition.propertyId, condition.parentCategoryId) : undefined;
+        label = `<div class="label _subject-color">${parentValue ? parentValue.label : property.label}</div>`;
+        if (condition.parentCategoryId) {
+          ancestorLabels.push(property.label, ...Records.getAncestors(condition.propertyId, condition.parentCategoryId).map(ancestor => ancestor.label));
+        }
+      }
         break;
       case 'value':
         label = `<ul class="labels"></ul>`;
-        ancestors.push(property.label, ...condition.value.ancestors);
+        ancestorLabels.push(property.label, ...condition.value.ancestorLabels);
         break;
     }
     this.#ROOT.innerHTML = `
     <div class="close-button-view"></div>
     <ul class="path">
-      ${ancestors.map(ancestor => `<li>${ancestor}</li>`).join('')}
+      ${ancestorLabels.map(ancestor => `<li>${ancestor}</li>`).join('')}
     </ul>
     ${label}`;
     container.insertAdjacentElement('beforeend', this.#ROOT);
@@ -60,7 +62,7 @@ export default class StackingConditionView {
       switch (type) {
         case 'property':
           // notify
-          ConditionBuilder.removeProperty(this.#condition.propertyId, this.#condition.subCategory?.parentCategoryId);
+          ConditionBuilder.removeProperty(this.#condition.propertyId, this.#condition.parentCategoryId);
           break;
         case 'value':
           for (const label of this.#LABELS.querySelectorAll(':scope > .label')) {
@@ -84,9 +86,10 @@ export default class StackingConditionView {
   }
 
   removeProperty(propertyId, parentCategoryId) {
+    console.log(propertyId, parentCategoryId, this.#condition)
     const isMatch =
       (propertyId === this.#condition.propertyId) &&
-      (parentCategoryId ? parentCategoryId === this.#condition.subCategory?.parentCategoryId : true);
+      (parentCategoryId ? parentCategoryId === this.#condition.parentCategoryId : true);
     if (isMatch) this.#ROOT.parentNode.removeChild(this.#ROOT);
     return isMatch;
   }
