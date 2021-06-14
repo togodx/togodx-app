@@ -2712,6 +2712,14 @@
         return value;
       }
     }, {
+      key: "getValuesWithParentCategoryId",
+      value: function getValuesWithParentCategoryId(propertyId, parentCategoryId) {
+        var property = this.getProperty(propertyId);
+        return property.values.filter(function (value) {
+          return value.parentCategoryId === parentCategoryId;
+        });
+      }
+    }, {
       key: "getAncestors",
       value: function getAncestors(propertyId, categoryId) {
         var property = this.getProperty(propertyId);

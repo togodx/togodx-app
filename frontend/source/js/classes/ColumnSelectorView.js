@@ -221,13 +221,7 @@ export default class ColumnSelectorView {
       if (e.target.checked) { // add
         ConditionBuilder.addProperty({
           propertyId: this.#property.propertyId,
-          parentCategoryId: dataset.parentCategoryId,
-          subCategory: {
-            parentCategoryId: dataset.parentCategoryId,
-            values: dataset.categoryIds.split(','),
-            label: dataset.parentLabel,
-            // ancestors: this.#getAncestors(dataset.parentCategoryId).map(ancestor => ancestor.label)
-          }
+          parentCategoryId: dataset.parentCategoryId
         });
       } else { // remove
         ConditionBuilder.removeProperty(this.#property.propertyId, dataset.parentCategoryId);

@@ -2823,6 +2823,14 @@
         return value;
       }
     }, {
+      key: "getValuesWithParentCategoryId",
+      value: function getValuesWithParentCategoryId(propertyId, parentCategoryId) {
+        var property = this.getProperty(propertyId);
+        return property.values.filter(function (value) {
+          return value.parentCategoryId === parentCategoryId;
+        });
+      }
+    }, {
       key: "getAncestors",
       value: function getAncestors(propertyId, categoryId) {
         var property = this.getProperty(propertyId);
@@ -3028,9 +3036,7 @@
         var index = _classPrivateFieldGet(this, _propertyConditions).findIndex(function (condition) {
           if (propertyId === condition.propertyId) {
             if (parentCategoryId) {
-              var _condition$subCategor;
-
-              return parentCategoryId === ((_condition$subCategor = condition.subCategory) === null || _condition$subCategor === void 0 ? void 0 : _condition$subCategor.parentCategoryId);
+              return parentCategoryId === condition.parentCategoryId;
             } else {
               return true;
             }
@@ -3180,19 +3186,22 @@
         // create properties
         var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref3) {
           var propertyId = _ref3.propertyId,
-              subCategory = _ref3.subCategory,
               parentCategoryId = _ref3.parentCategoryId;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
           var property = Records$1.getProperty(propertyId);
           var query = {
             propertyId: property.propertyId
           };
-          if (subCategory) query.categoryIds = subCategory.values;
+
+          if (parentCategoryId) {
+            query.categoryIds = Records$1.getValuesWithParentCategoryId(propertyId, parentCategoryId).map(function (value) {
+              return value.categoryId;
+            });
+          }
           return {
             query: query,
             subject: subject,
             property: property,
-            subCategory: subCategory,
             parentCategoryId: parentCategoryId
           };
         }); // create attributes (property values)
@@ -3537,7 +3546,7 @@
     DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
       switch (e.detail.action) {
         case 'add':
-          _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, e.detail.condition.propertyId, e.detail.condition.parentCategoryId, e.detail.condition.subCategory);
+          _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, e.detail.condition.propertyId, e.detail.condition.parentCategoryId);
 
           break;
 
@@ -3588,15 +3597,14 @@
     _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));
   }
 
-  function _addProperty2(propertyId, parentCategoryId, subCategory) {
+  function _addProperty2(propertyId, parentCategoryId) {
     // modifier
     _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.remove('-empty'); // make view
 
 
     _classPrivateFieldGet(this, _properties).push(new StackingConditionView(_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER), 'property', {
       propertyId: propertyId,
-      parentCategoryId: parentCategoryId,
-      subCategory: subCategory
+      parentCategoryId: parentCategoryId
     }));
   }
 
@@ -4165,13 +4173,7 @@
         // add
         ConditionBuilder$1.addProperty({
           propertyId: _classPrivateFieldGet(_this3, _property$3).propertyId,
-          parentCategoryId: dataset.parentCategoryId,
-          subCategory: {
-            parentCategoryId: dataset.parentCategoryId,
-            values: dataset.categoryIds.split(','),
-            label: dataset.parentLabel // ancestors: this.#getAncestors(dataset.parentCategoryId).map(ancestor => ancestor.label)
-
-          }
+          parentCategoryId: dataset.parentCategoryId
         });
       } else {
         // remove
@@ -4927,13 +4929,11 @@
 
 
     DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
-      var _e$detail$condition;
-
-      if (((_e$detail$condition = e.detail.condition) === null || _e$detail$condition === void 0 ? void 0 : _e$detail$condition.subCategory) !== undefined || e.detail.parentCategoryId !== undefined) return;
+      if (e.detail.parentCategoryId !== undefined) return;
 
       switch (e.detail.action) {
         case 'add':
-          if (e.detail.condition.propertyId === _classPrivateFieldGet(_this, _property).propertyId) {
+          if (e.detail.propertyId === _classPrivateFieldGet(_this, _property).propertyId) {
             _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = true;
 
             _classPrivateFieldGet(_this, _ROOT$4).classList.add('-allselected');

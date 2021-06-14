@@ -79,6 +79,11 @@ class Records {
     return value;
   }
 
+  getValuesWithParentCategoryId(propertyId, parentCategoryId) {
+    const property = this.getProperty(propertyId);
+    return property.values.filter(value => value.parentCategoryId === parentCategoryId);
+  }
+
   getAncestors(propertyId, categoryId) {
     const property = this.getProperty(propertyId);
     const ancestors = [];
