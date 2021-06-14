@@ -6232,8 +6232,7 @@
     var temporaryArray = [];
 
     _classPrivateFieldGet(this, _rows).map(function (row) {
-      var singleItem;
-      singleItem = {
+      var singleItem = {
         togokey: _classPrivateFieldGet(_this4, _condition).togoKey,
         togokeyId: row.id,
         attribute: row.properties[0].propertyId,
@@ -6245,8 +6244,8 @@
     });
 
     var tsvArray = [];
-    tsvArray.push(Object.keys(temporaryArray[0]) + "\n");
-    temporaryArray.map(function (item) {
+    tsvArray.push(Object.keys(temporaryArray[0]) + '\n');
+    temporaryArray.forEach(function (item) {
       tsvArray.push(Object.values(item) + '\n');
     });
     var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);

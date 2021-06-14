@@ -328,10 +328,9 @@ export default class TableData {
   }
 
   #setTsvUrl() {
-    let temporaryArray = [];
+    const temporaryArray = [];
       this.#rows.map(row => {
-        let singleItem;
-        singleItem = {
+        const singleItem = {
           togokey: this.#condition.togoKey,
           togokeyId: row.id,
           attribute: row.properties[0].propertyId,
@@ -341,9 +340,9 @@ export default class TableData {
         }
         temporaryArray.push(singleItem);
       })
-      let tsvArray = [];
-      tsvArray.push(Object.keys(temporaryArray[0]) + "\n");
-      temporaryArray.map(item => {
+      const tsvArray = [];
+      tsvArray.push(Object.keys(temporaryArray[0]) + '\n');
+      temporaryArray.forEach(item => {
         tsvArray.push(Object.values(item) + '\n');
       })
       const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
