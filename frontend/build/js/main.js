@@ -3125,51 +3125,35 @@
       }
     }, {
       key: "setPropertyValues",
-      value: function setPropertyValues(_ref2) {
+      value: function setPropertyValues(propertyId, categoryIds) {
         var _this2 = this;
 
-        var subject = _ref2.subject,
-            property = _ref2.property,
-            values = _ref2.values;
-
         var oldCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
-          return condition.property.propertyId === property.propertyId;
+          return condition.propertyId === propertyId;
         });
 
         if (oldCondition) {
-          var originalValues = Records$1.getProperty(property.propertyId).values;
+          var originalValues = Records$1.getProperty(propertyId).values;
           originalValues.forEach(function (originalValue) {
-            var newValue = values.find(function (value) {
-              return value.categoryId === originalValue.categoryId;
-            });
-            var oldValue = oldCondition.values.find(function (value) {
-              return value.categoryId === originalValue.categoryId;
-            });
+            var indexInNew = categoryIds.indexOf(originalValue.categoryId);
+            var indexInOld = oldCondition.categoryIds.indexOf(originalValue.categoryId);
 
-            if (newValue !== undefined) {
+            if (indexInNew !== -1) {
               // if new value does not exist in old values, add property value
-              if (oldValue === undefined) _this2.addPropertyValue({
-                subject: subject,
-                property: property,
-                value: newValue
-              });
+              if (indexInOld === -1) _this2.addPropertyValue(propertyId, originalValue.categoryId);
             } else {
               // if extra value exists in old values, remove property value
-              if (oldValue !== undefined) _this2.removePropertyValue(property.propertyId, originalValue.categoryId);
+              if (indexInOld !== -1) _this2.removePropertyValue(propertyId, originalValue.categoryId);
             }
           });
         } else {
-          var _iterator = _createForOfIteratorHelper(values),
+          var _iterator = _createForOfIteratorHelper(categoryIds),
               _step;
 
           try {
             for (_iterator.s(); !(_step = _iterator.n()).done;) {
-              var value = _step.value;
-              this.addPropertyValue({
-                subject: subject,
-                property: property,
-                value: value
-              });
+              var categoryId = _step.value;
+              this.addPropertyValue(propertyId, categoryId);
             }
           } catch (err) {
             _iterator.e(err);
@@ -3186,9 +3170,9 @@
       value: function makeQueryParameter() {
         // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
         // create properties
-        var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref3) {
-          var propertyId = _ref3.propertyId,
-              parentCategoryId = _ref3.parentCategoryId;
+        var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref2) {
+          var propertyId = _ref2.propertyId,
+              parentCategoryId = _ref2.parentCategoryId;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
           var property = Records$1.getProperty(propertyId);
           var query = {
@@ -3209,9 +3193,9 @@
         }); // create attributes (property values)
 
 
-        var attributes = _classPrivateFieldGet(this, _attributeConditions).map(function (_ref4) {
-          var propertyId = _ref4.propertyId,
-              values = _ref4.values;
+        var attributes = _classPrivateFieldGet(this, _attributeConditions).map(function (_ref3) {
+          var propertyId = _ref3.propertyId,
+              values = _ref3.values;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
           var property = Records$1.getProperty(propertyId);
           return {
@@ -4462,17 +4446,9 @@
 
         var selectedItems = _classPrivateFieldGet(_this2, _selectedItems);
 
-        ConditionBuilder$1.setPropertyValues({
-          subject: _classPrivateFieldGet(_this2, _subject$2),
-          property: _classPrivateFieldGet(_this2, _property$2),
-          values: selectedItems.map(function (item) {
-            return {
-              categoryId: item.categoryId,
-              label: item.label,
-              ancestors: []
-            };
-          })
-        });
+        ConditionBuilder$1.setPropertyValues(_classPrivateFieldGet(_this2, _property$2).propertyId, selectedItems.map(function (item) {
+          return item.categoryId;
+        }));
       }
     });
     selectorController.addEventListener('mouseup', function (e) {

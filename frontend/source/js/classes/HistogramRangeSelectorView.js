@@ -117,17 +117,10 @@ export default class HistogramRangeSelectorView {
         this.#update();
         // set condition
         const selectedItems = this.#selectedItems;
-        ConditionBuilder.setPropertyValues({
-          subject: this.#subject,
-          property: this.#property,
-          values: selectedItems.map(item => {
-            return {
-              categoryId: item.categoryId,
-              label: item.label,
-              ancestors: []
-            }
-          })
-        });
+        ConditionBuilder.setPropertyValues(
+          this.#property.propertyId,
+          selectedItems.map(item => item.categoryId)
+        );
       }
     });
     selectorController.addEventListener('mouseup', e => {

@@ -130,24 +130,24 @@ class ConditionBuilder {
     this.#postProcessing();
   }
 
-  setPropertyValues({subject, property, values}) {
-    const oldCondition = this.#attributeConditions.find(condition => condition.property.propertyId === property.propertyId);
+  setPropertyValues(propertyId, categoryIds) {
+    const oldCondition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
     if (oldCondition) {
-      const originalValues = Records.getProperty(property.propertyId).values;
+      const originalValues = Records.getProperty(propertyId).values;
       originalValues.forEach(originalValue => {
-        const newValue = values.find(value => value.categoryId === originalValue.categoryId);
-        const oldValue = oldCondition.values.find(value => value.categoryId === originalValue.categoryId);
-        if (newValue !== undefined) {
+        const indexInNew = categoryIds.indexOf(originalValue.categoryId);
+        const indexInOld = oldCondition.categoryIds.indexOf(originalValue.categoryId);
+        if (indexInNew !== -1) {
           // if new value does not exist in old values, add property value
-          if (oldValue === undefined) this.addPropertyValue({subject, property, value: newValue});
+          if (indexInOld === -1) this.addPropertyValue(propertyId, originalValue.categoryId);
         } else {
           // if extra value exists in old values, remove property value
-          if (oldValue !== undefined) this.removePropertyValue(property.propertyId, originalValue.categoryId);
+          if (indexInOld !== -1) this.removePropertyValue(propertyId, originalValue.categoryId);
         }
       });
     } else {
-      for (const value of values) {
-        this.addPropertyValue({subject, property, value});
+      for (const categoryId of categoryIds) {
+        this.addPropertyValue(propertyId, categoryId);
       }
     }
     // post processing (permalink, evaluate)
