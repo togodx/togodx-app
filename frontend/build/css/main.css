@@ -1085,7 +1085,7 @@ main {
   color: white;
 }
 .table-data-controller-view > .controller > [data-button=download-json], .table-data-controller-view > .controller [data-button=download-tsv] {
-  display: none;
+  display: block;
 }
 .table-data-controller-view > .controller > [data-button=download-json] > a, .table-data-controller-view > .controller [data-button=download-tsv] > a {
   color: white;

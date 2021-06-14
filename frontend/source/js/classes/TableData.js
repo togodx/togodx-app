@@ -16,6 +16,7 @@ export default class TableData {
   #isAutoLoad;
   #isLoaded;
   #startTime;
+  #downloadReserveButton;
   #ROOT;
   #STATUS;
   #INDICATOR_TEXT_AMOUNT;
@@ -24,6 +25,7 @@ export default class TableData {
   #BUTTON_PREPARE_DATA;
   #BUTTON_DOWNLOAD_JSON;
   #BUTTON_DOWNLOAD_TSV;
+  
 
   constructor(condition, elm) {
     console.log(condition)
@@ -68,24 +70,24 @@ export default class TableData {
       </div>
     </div>
     <div class="controller">
-      <div class="button" data-button="prepare-data">
-        <span class="material-icons-outlined">autorenew</span>
-        <span class="label">Prepare data</span>
-      </div>
       <div class="button" data-button="download-json">
-        <a class="json" href="" download="sample.json">
+        <a class="json">
           <span class="material-icons-outlined">download json</span>
           <span class="label">JSON</span>
         </a>
       </div>
       <div class="button" data-button="download-tsv">
-        <a class="tsv" href="" download="sample.tsv">
+        <a class="tsv">
           <span class="material-icons-outlined">download tsv</span>
           <span class="label">TSV</span>
         </a>
       </div>
+      <div class="button none" data-button="prepare-data">
+        <span class="material-icons-outlined">autorenew</span>
+        <span class="label">Pause</span>
+      </div>
       <div class="button" data-button="restore">
-        <span class="material-icons-outlined">settings_backup_restore</span>
+        <span class="material-icons-outlined">edit</span>
         <span class="label">Edit</span>
       </div>
     </div>
@@ -109,6 +111,19 @@ export default class TableData {
       this.select();
     });
     // prepare data
+    [this.#BUTTON_DOWNLOAD_JSON, this.#BUTTON_DOWNLOAD_TSV].forEach(button => {
+      button.addEventListener('click', e => {
+        e.stopPropagation();
+        if (this.#isAutoLoad === false && this.#ROOT.dataset.status !== 'complete') {
+          this.#autoLoad();
+          this.#changeButtons();
+          this.#downloadReserveButton = button;
+        } else {
+          this.#isAutoLoad = false;
+        }
+      })
+    })
+    
     this.#BUTTON_PREPARE_DATA.addEventListener('click', e => {
       e.stopPropagation();
       if (this.#isAutoLoad === false && this.#ROOT.dataset.status !== 'complete') {
@@ -283,37 +298,56 @@ export default class TableData {
   #complete() {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = 'Complete';
+    if ((this.offset >= this.#queryIds.length)) {
+      this.#setJsonUrl();
+      this.#setTsvUrl();
+      if (this.#downloadReserveButton ) {
+        this.#downloadReserveButton.querySelector(':scope > a').click();
+      }
+    }
+  }
+  #changeButtons() {
+    this.#BUTTON_PREPARE_DATA.classList.remove('none');
+    this.#BUTTON_DOWNLOAD_JSON.classList.add('none');
+    this.#BUTTON_DOWNLOAD_TSV.classList.add('none');
     this.#BUTTON_PREPARE_DATA.classList.add('-rotating');
-    console.log(this.#rows);
+  }
+
+  #setJsonUrl() {
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {type : 'application/json'});
     const jsonUrl = URL.createObjectURL(jsonBlob);
-    console.log(jsonUrl)
     this.#BUTTON_DOWNLOAD_JSON.querySelector(':scope > .json').setAttribute('href', jsonUrl);
-    // tsv
-    let jsonArray = [];
-    this.#rows.map(item => {
-      let singleBox;
-      singleBox = {
-        togokey: this.#condition.togoKey,
-        togokeyId: item.id,
-        attribute: item.properties[0].propertyId,
-        attributeKey: item.properties[0].propertyKey,
-        attributeId: item.properties[0].attributes[0].attribute.categoryId,
-        attribute_label: item.properties[0].attributes[0].attribute.label
-      }
-      jsonArray.push(singleBox);
-    })
-    console.log(jsonArray);
-    let tsv = [];
-    tsv.push(Object.keys(jsonArray[0]) + "\n");
-    jsonArray.map(item => {
-      tsv.push(Object.values(item) + '\n');
-    })
-    console.log(tsv);
-    const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
-    const tsvBlob = new Blob([tsv.join('\t')], { type: 'text/plain' });
-    let tsvUrl = URL.createObjectURL(tsvBlob);
-    this.#BUTTON_DOWNLOAD_TSV.querySelector(':scope > .tsv').setAttribute('href', tsvUrl);
+    this.#BUTTON_DOWNLOAD_JSON.querySelector(':scope > .json').setAttribute('download', 'sample.json');
+    // set lavel
+    // let jsonFileName = Date.now();
+    // this.#BUTTON_DOWNLOAD_JSON.querySelector(':scope > .json').setAttribute('download', jsonFileName);
+    // this.#STATUS.insertAdjacentHTML('afterend', jsonFileName);
+  }
+
+  #setTsvUrl() {
+    let temporaryArray = [];
+      this.#rows.map(row => {
+        let singleItem;
+        singleItem = {
+          togokey: this.#condition.togoKey,
+          togokeyId: row.id,
+          attribute: row.properties[0].propertyId,
+          attributeKey: row.properties[0].propertyKey,
+          attributeId: row.properties[0].attributes[0].attribute.categoryId,
+          attributeLabel: row.properties[0].attributes[0].attribute.label
+        }
+        temporaryArray.push(singleItem);
+      })
+      let tsvArray = [];
+      tsvArray.push(Object.keys(temporaryArray[0]) + "\n");
+      temporaryArray.map(item => {
+        tsvArray.push(Object.values(item) + '\n');
+      })
+      const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+      const tsvBlob = new Blob([bom, tsvArray.join('\t')], { type: 'text/plain' });
+      const tsvUrl = URL.createObjectURL(tsvBlob);
+      this.#BUTTON_DOWNLOAD_TSV.querySelector(':scope > .tsv').setAttribute('href', tsvUrl);
+      this.#BUTTON_DOWNLOAD_TSV.querySelector(':scope > .tsv').setAttribute('download', 'sample.tsv');
   }
 
   /* public methods */
