@@ -31,24 +31,22 @@ class ConditionBuilder {
     this.#postProcessing();
   }
 
-  addProperty(condition) {
-    console.log('addProperty', condition)
+  addProperty(propertyId, parentCategoryId) {
+    console.log('addProperty', propertyId, parentCategoryId)
     // store
-    this.#propertyConditions.push(condition);
+    this.#propertyConditions.push({propertyId, parentCategoryId});
     // evaluate
     this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {
-      action: 'add', 
-      condition
-    }});
+    const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {action: 'add', propertyId, parentCategoryId}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
   addPropertyValue(propertyId, categoryId) {
     console.log('addPropertyValue', propertyId, categoryId)
     // find value of same property
-    const samePropertyCondition = this.#attributeConditions.find(({propertyId}) => propertyId === propertyId);
+    console.log(this.#attributeConditions)
+    const samePropertyCondition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
     // store
     if (samePropertyCondition) {
       samePropertyCondition.categoryIds.push(categoryId);
@@ -61,10 +59,7 @@ class ConditionBuilder {
     // evaluate
     this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {
-      action: 'add', 
-      condition: {propertyId, categoryId}
-    }});
+    const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {action: 'add', propertyId, categoryId}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
@@ -110,24 +105,12 @@ class ConditionBuilder {
   }
 
   setProperties(conditions) {
-    const propertyIds = conditions.map(condition => condition.property.propertyId);
-    Records.properties.forEach(property => {
-      const isExistInNewConditions = propertyIds.indexOf(property.propertyId) !== -1;
-      const index = this.#propertyConditions.findIndex(condition => condition.property.propertyId === property.propertyId);
-      if (isExistInNewConditions) {
-        if (index === -1) {
-          // if the property exists in new conditions, and if the property doesn't exist in my conditions, add it
-          this.addProperty(conditions.find(condition => condition.property.propertyId === property.propertyId));
-        }
-      } else {
-        if (index !== -1) {
-          // if the property doesn't exist in new conditions, and the proerty exists in my conditions, remove it
-          this.removeProperty(property.propertyId);
-        }
-      }
-    });
-    // post processing (permalink, evaluate)
-    this.#postProcessing();
+    // delete existing properties
+    while (this.#propertyConditions.length > 0) {
+      this.removeProperty(this.#propertyConditions[0].propertyId, this.#propertyConditions[0].parentCategoryId);
+    };
+    // set new properties
+    conditions.forEach(({propertyId, parentCategoryId}) => this.addProperty(propertyId, parentCategoryId));
   }
 
   setPropertyValues(propertyId, categoryIds) {
@@ -155,25 +138,26 @@ class ConditionBuilder {
   }
 
   makeQueryParameter() {
+    console.log(this.#propertyConditions, this.#attributeConditions)
     // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
     // create properties
     const properties = this.#propertyConditions.map(({propertyId, parentCategoryId}) => {
       const subject = Records.getSubjectWithPropertyId(propertyId);
       const property = Records.getProperty(propertyId);
-      const query = {propertyId: property.propertyId};
+      const query = {propertyId};
       if (parentCategoryId) {
         query.categoryIds = Records.getValuesWithParentCategoryId(propertyId, parentCategoryId).map(value => value.categoryId);
       };
       return {query, subject, property, parentCategoryId};
     });
     // create attributes (property values)
-    const attributes = this.#attributeConditions.map(({propertyId, values}) => {
+    const attributes = this.#attributeConditions.map(({propertyId, categoryIds}) => {
       const subject = Records.getSubjectWithPropertyId(propertyId);
       const property = Records.getProperty(propertyId);
       return {
         query: {
-          propertyId: property.propertyId,
-          categoryIds: values.map(value => value.categoryId)
+          propertyId, 
+          categoryIds: [].concat(categoryIds)
         },
         subject,
         property

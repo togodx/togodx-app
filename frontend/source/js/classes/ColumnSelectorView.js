@@ -54,8 +54,8 @@ export default class ColumnSelectorView {
       let propertyId, categoryId;
       switch (e.detail.action) {
         case 'add':
-          propertyId = e.detail.condition.propertyId;
-          categoryId = e.detail.condition.categoryId;
+          propertyId = e.detail.propertyId;
+          categoryId = e.detail.categoryId;
           break;
         case 'remove':
           propertyId = e.detail.propertyId;
@@ -221,10 +221,7 @@ export default class ColumnSelectorView {
     ul.querySelector(':scope > .item.-all').addEventListener('change', e => {
       const dataset = e.target.parentNode.dataset;
       if (e.target.checked) { // add
-        ConditionBuilder.addProperty({
-          propertyId: this.#property.propertyId,
-          parentCategoryId: dataset.parentCategoryId
-        });
+        ConditionBuilder.addProperty(this.#property.propertyId, dataset.parentCategoryId);
       } else { // remove
         ConditionBuilder.removeProperty(this.#property.propertyId, dataset.parentCategoryId);
       }
@@ -259,16 +256,5 @@ export default class ColumnSelectorView {
       });
     });
   }
-
-  // #getAncestors(categoryId) {
-  //   const ancestors = [];
-  //   let parent;
-  //   do { // find ancestors
-  //     parent = this.#items[categoryId].parent;
-  //     if (parent) ancestors.unshift(this.#items[parent]);
-  //     categoryId = parent;
-  //   } while (parent);
-  //   return ancestors;
-  // }
 
 }

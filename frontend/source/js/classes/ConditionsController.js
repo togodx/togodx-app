@@ -25,6 +25,7 @@ export default class ConditionsController {
   /* private methods */
 
   #setTableData(newCondition) {
+    console.log(newCondition)
 
     // find matching condition from already existing conditions
     const sameConditionTableData = this.#tableData.find(tableData => {

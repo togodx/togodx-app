@@ -2979,10 +2979,13 @@
       }
     }, {
       key: "addProperty",
-      value: function addProperty(condition) {
-        console.log('addProperty', condition); // store
+      value: function addProperty(propertyId, parentCategoryId) {
+        console.log('addProperty', propertyId, parentCategoryId); // store
 
-        _classPrivateFieldGet(this, _propertyConditions).push(condition); // evaluate
+        _classPrivateFieldGet(this, _propertyConditions).push({
+          propertyId: propertyId,
+          parentCategoryId: parentCategoryId
+        }); // evaluate
 
 
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
@@ -2991,7 +2994,8 @@
         var customEvent = new CustomEvent(mutatePropertyCondition, {
           detail: {
             action: 'add',
-            condition: condition
+            propertyId: propertyId,
+            parentCategoryId: parentCategoryId
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
@@ -3001,9 +3005,10 @@
       value: function addPropertyValue(propertyId, categoryId) {
         console.log('addPropertyValue', propertyId, categoryId); // find value of same property
 
-        var samePropertyCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (_ref) {
-          var propertyId = _ref.propertyId;
-          return propertyId === propertyId;
+        console.log(_classPrivateFieldGet(this, _attributeConditions));
+
+        var samePropertyCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
+          return condition.propertyId === propertyId;
         }); // store
 
 
@@ -3023,10 +3028,8 @@
         var customEvent = new CustomEvent(mutatePropertyValueCondition, {
           detail: {
             action: 'add',
-            condition: {
-              propertyId: propertyId,
-              categoryId: categoryId
-            }
+            propertyId: propertyId,
+            categoryId: categoryId
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
@@ -3096,32 +3099,16 @@
       value: function setProperties(conditions) {
         var _this = this;
 
-        var propertyIds = conditions.map(function (condition) {
-          return condition.property.propertyId;
+        // delete existing properties
+        while (_classPrivateFieldGet(this, _propertyConditions).length > 0) {
+          this.removeProperty(_classPrivateFieldGet(this, _propertyConditions)[0].propertyId, _classPrivateFieldGet(this, _propertyConditions)[0].parentCategoryId);
+        }
+
+        conditions.forEach(function (_ref) {
+          var propertyId = _ref.propertyId,
+              parentCategoryId = _ref.parentCategoryId;
+          return _this.addProperty(propertyId, parentCategoryId);
         });
-        Records$1.properties.forEach(function (property) {
-          var isExistInNewConditions = propertyIds.indexOf(property.propertyId) !== -1;
-
-          var index = _classPrivateFieldGet(_this, _propertyConditions).findIndex(function (condition) {
-            return condition.property.propertyId === property.propertyId;
-          });
-
-          if (isExistInNewConditions) {
-            if (index === -1) {
-              // if the property exists in new conditions, and if the property doesn't exist in my conditions, add it
-              _this.addProperty(conditions.find(function (condition) {
-                return condition.property.propertyId === property.propertyId;
-              }));
-            }
-          } else {
-            if (index !== -1) {
-              // if the property doesn't exist in new conditions, and the proerty exists in my conditions, remove it
-              _this.removeProperty(property.propertyId);
-            }
-          }
-        }); // post processing (permalink, evaluate)
-
-        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
     }, {
       key: "setPropertyValues",
@@ -3168,15 +3155,16 @@
     }, {
       key: "makeQueryParameter",
       value: function makeQueryParameter() {
-        // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
+        console.log(_classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions)); // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
         // create properties
+
         var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref2) {
           var propertyId = _ref2.propertyId,
               parentCategoryId = _ref2.parentCategoryId;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
           var property = Records$1.getProperty(propertyId);
           var query = {
-            propertyId: property.propertyId
+            propertyId: propertyId
           };
 
           if (parentCategoryId) {
@@ -3195,15 +3183,13 @@
 
         var attributes = _classPrivateFieldGet(this, _attributeConditions).map(function (_ref3) {
           var propertyId = _ref3.propertyId,
-              values = _ref3.values;
+              categoryIds = _ref3.categoryIds;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
           var property = Records$1.getProperty(propertyId);
           return {
             query: {
-              propertyId: property.propertyId,
-              categoryIds: values.map(function (value) {
-                return value.categoryId;
-              })
+              propertyId: propertyId,
+              categoryIds: [].concat(categoryIds)
             },
             subject: subject,
             property: property
@@ -3544,7 +3530,7 @@
     DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
       switch (e.detail.action) {
         case 'add':
-          _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, e.detail.condition.propertyId, e.detail.condition.parentCategoryId);
+          _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, e.detail.propertyId, e.detail.parentCategoryId);
 
           break;
 
@@ -3557,7 +3543,7 @@
     DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (e) {
       switch (e.detail.action) {
         case 'add':
-          _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, e.detail.condition.propertyId, e.detail.condition.categoryId);
+          _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, e.detail.propertyId, e.detail.categoryId);
 
           break;
 
@@ -3961,8 +3947,8 @@
 
       switch (e.detail.action) {
         case 'add':
-          propertyId = e.detail.condition.propertyId;
-          categoryId = e.detail.condition.categoryId;
+          propertyId = e.detail.propertyId;
+          categoryId = e.detail.categoryId;
           break;
 
         case 'remove':
@@ -4003,17 +3989,7 @@
     var _column = _classPrivateMethodGet(this, _makeColumn, _makeColumn2).call(this, _items2, _depth);
 
     _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, _column, _depth);
-  } // #getAncestors(categoryId) {
-  //   const ancestors = [];
-  //   let parent;
-  //   do { // find ancestors
-  //     parent = this.#items[categoryId].parent;
-  //     if (parent) ancestors.unshift(this.#items[parent]);
-  //     categoryId = parent;
-  //   } while (parent);
-  //   return ancestors;
-  // }
-  ;
+  };
 
   function _setItems2(items, depth, parent) {
     var _iterator = _createForOfIteratorHelper(items),
@@ -4168,10 +4144,7 @@
 
       if (e.target.checked) {
         // add
-        ConditionBuilder$1.addProperty({
-          propertyId: _classPrivateFieldGet(_this3, _property$3).propertyId,
-          parentCategoryId: dataset.parentCategoryId
-        });
+        ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this3, _property$3).propertyId, dataset.parentCategoryId);
       } else {
         // remove
         ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this3, _property$3).propertyId, dataset.parentCategoryId);
@@ -4674,8 +4647,8 @@
 
       switch (e.detail.action) {
         case 'add':
-          propertyId = e.detail.condition.propertyId;
-          categoryId = e.detail.condition.categoryId;
+          propertyId = e.detail.propertyId;
+          categoryId = e.detail.categoryId;
           break;
 
         case 'remove':
@@ -4895,9 +4868,7 @@
 
       if (_classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked) {
         // add
-        ConditionBuilder$1.addProperty({
-          propertyId: _classPrivateFieldGet(_this, _property).propertyId
-        });
+        ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this, _property).propertyId);
 
         _classPrivateFieldGet(_this, _ROOT$4).classList.add('-allselected');
       } else {
@@ -6071,40 +6042,23 @@
       }).addEventListener('click', function (e) {
         e.stopPropagation(); // property (attribute)
 
-        console.log(_classPrivateFieldGet(_this, _condition));
         ConditionBuilder$1.setProperties(_classPrivateFieldGet(_this, _condition).properties.map(function (property) {
           return {
-            subject: property.subject,
-            property: property.property
+            propertyId: property.query.propertyId,
+            parentCategoryId: property.parentCategoryId
           };
         })); // attribute (classification/distribution)
 
-        Records$1.properties.forEach(function (property) {
+        Records$1.properties.forEach(function (_ref) {
+          var propertyId = _ref.propertyId;
+
           var attribute = _classPrivateFieldGet(_this, _condition).attributes.find(function (attribute) {
-            return attribute.property.propertyId === property.propertyId;
+            return attribute.property.propertyId === propertyId;
           });
 
-          var subject,
-              values = [];
-
-          if (attribute) {
-            subject = attribute.subject;
-            values = attribute.query.categoryIds.map(function (categoryId) {
-              return {
-                categoryId: categoryId,
-                label: Records$1.getValue(attribute.query.propertyId, categoryId).label,
-                ancestors: []
-              };
-            });
-          } else {
-            subject = Records$1.getSubject(property.subjectId);
-          }
-
-          ConditionBuilder$1.setPropertyValues({
-            subject: subject,
-            property: property,
-            values: values
-          });
+          var categoryIds = [];
+          if (attribute) categoryIds.push.apply(categoryIds, _toConsumableArray(attribute.query.categoryIds));
+          ConditionBuilder$1.setPropertyValues(propertyId, categoryIds);
         });
       });
       this.select();
@@ -6411,7 +6365,8 @@
   ;
 
   function _setTableData2(newCondition) {
-    // find matching condition from already existing conditions
+    console.log(newCondition); // find matching condition from already existing conditions
+
     var sameConditionTableData = _classPrivateFieldGet(this, _tableData).find(function (tableData) {
       console.log(tableData.condition); // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
 
