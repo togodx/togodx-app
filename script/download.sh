@@ -148,23 +148,23 @@ decompress_files() {
 
 decompress_zipfiles() {
   local db_dir="${1}"
-  find ${db_dir} -type f -name "*.zip" -execdir unzip {} \;
+  cd ${db_dir} && find . -type f -name "*.zip" | xargs unzip {} \;
 }
 
 decompress_tarfiles() {
   local db_dir="${1}"
-  find ${db_dir} -type f -name "*.tar*" -execdir tar xf {} \;
-  find ${db_dir} -type f -name "*.tar*" -execdir rm -f {} \;
+  cd ${db_dir} && find . -type f -name "*.tar*" | xargs tar xf {} \;
+  cd ${db_dir} && find . -type f -name "*.tar*" | xargs rm -f {} \;
 }
 
 decompress_gz() {
   local db_dir="${1}"
-  find ${db_dir} -type f -name "*.gz" -execdir gunzip --force {} \;
+  cd ${db_dir} && find . -type f -name "*.gz" | xargs gunzip --force {} \;
 }
 
 decompress_xz() {
   local db_dir="${1}"
-  find ${db_dir} -type f -name "*.xz" -execdir unxz {} \;
+  cd ${db_dir} && find . -type f -name "*.xz" | xargs unxz {} \;
 }
 
 update_file_list() {
