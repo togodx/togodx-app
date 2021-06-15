@@ -6240,18 +6240,7 @@
           temporaryArray.push(singleItem);
         });
       });
-    }); // this.#rows.map(row => {
-    //   const singleItem = {
-    //     togokey: this.#condition.togoKey,
-    //     togokeyId: row.id,
-    //     attribute: row.properties[0].propertyId,
-    //     attributeKey: row.properties[0].propertyKey,
-    //     attributeId: row.properties[0].attributes[0].attribute.categoryId,
-    //     attributeLabel: row.properties[0].attributes[0].attribute.label
-    //   }
-    //   temporaryArray.push(singleItem);
-    // })
-
+    });
 
     var tsvArray = [];
     tsvArray.push(Object.keys(temporaryArray[0]) + '\n');
