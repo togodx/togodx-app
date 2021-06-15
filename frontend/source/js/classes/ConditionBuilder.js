@@ -45,7 +45,8 @@ class ConditionBuilder {
   addPropertyValue(propertyId, categoryId) {
     console.log('addPropertyValue', propertyId, categoryId)
     // find value of same property
-    const samePropertyCondition = this.#attributeConditions.find(({propertyId}) => propertyId === propertyId);
+    console.log(this.#attributeConditions)
+    const samePropertyCondition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
     // store
     if (samePropertyCondition) {
       samePropertyCondition.categoryIds.push(categoryId);

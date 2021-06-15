@@ -3005,9 +3005,10 @@
       value: function addPropertyValue(propertyId, categoryId) {
         console.log('addPropertyValue', propertyId, categoryId); // find value of same property
 
-        var samePropertyCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (_ref) {
-          var propertyId = _ref.propertyId;
-          return propertyId === propertyId;
+        console.log(_classPrivateFieldGet(this, _attributeConditions));
+
+        var samePropertyCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
+          return condition.propertyId === propertyId;
         }); // store
 
 
@@ -3173,9 +3174,9 @@
         console.log(_classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions)); // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
         // create properties
 
-        var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref2) {
-          var propertyId = _ref2.propertyId,
-              parentCategoryId = _ref2.parentCategoryId;
+        var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref) {
+          var propertyId = _ref.propertyId,
+              parentCategoryId = _ref.parentCategoryId;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
           var property = Records$1.getProperty(propertyId);
           var query = {
@@ -3196,9 +3197,9 @@
         }); // create attributes (property values)
 
 
-        var attributes = _classPrivateFieldGet(this, _attributeConditions).map(function (_ref3) {
-          var propertyId = _ref3.propertyId,
-              categoryIds = _ref3.categoryIds;
+        var attributes = _classPrivateFieldGet(this, _attributeConditions).map(function (_ref2) {
+          var propertyId = _ref2.propertyId,
+              categoryIds = _ref2.categoryIds;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
           var property = Records$1.getProperty(propertyId);
           return {
@@ -6397,7 +6398,8 @@
   ;
 
   function _setTableData2(newCondition) {
-    // find matching condition from already existing conditions
+    console.log(newCondition); // find matching condition from already existing conditions
+
     var sameConditionTableData = _classPrivateFieldGet(this, _tableData).find(function (tableData) {
       console.log(tableData.condition); // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
 
