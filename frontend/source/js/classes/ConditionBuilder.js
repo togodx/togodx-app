@@ -106,7 +106,9 @@ class ConditionBuilder {
 
   setProperties(conditions) {
     // delete existing properties
-    this.#propertyConditions.forEach(({propertyId, parentCategoryId}) => this.removeProperty(propertyId, parentCategoryId));
+    while (this.#propertyConditions.length > 0) {
+      this.removeProperty(this.#propertyConditions[0].propertyId, this.#propertyConditions[0].parentCategoryId);
+    };
     // set new properties
     conditions.forEach(({propertyId, parentCategoryId}) => this.addProperty(propertyId, parentCategoryId));
   }

@@ -3100,16 +3100,13 @@
         var _this = this;
 
         // delete existing properties
-        _classPrivateFieldGet(this, _propertyConditions).forEach(function (_ref) {
+        while (_classPrivateFieldGet(this, _propertyConditions).length > 0) {
+          this.removeProperty(_classPrivateFieldGet(this, _propertyConditions)[0].propertyId, _classPrivateFieldGet(this, _propertyConditions)[0].parentCategoryId);
+        }
+
+        conditions.forEach(function (_ref) {
           var propertyId = _ref.propertyId,
               parentCategoryId = _ref.parentCategoryId;
-          return _this.removeProperty(propertyId, parentCategoryId);
-        }); // set new properties
-
-
-        conditions.forEach(function (_ref2) {
-          var propertyId = _ref2.propertyId,
-              parentCategoryId = _ref2.parentCategoryId;
           return _this.addProperty(propertyId, parentCategoryId);
         });
       }
@@ -3161,9 +3158,9 @@
         console.log(_classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions)); // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
         // create properties
 
-        var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref3) {
-          var propertyId = _ref3.propertyId,
-              parentCategoryId = _ref3.parentCategoryId;
+        var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref2) {
+          var propertyId = _ref2.propertyId,
+              parentCategoryId = _ref2.parentCategoryId;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
           var property = Records$1.getProperty(propertyId);
           var query = {
@@ -3184,9 +3181,9 @@
         }); // create attributes (property values)
 
 
-        var attributes = _classPrivateFieldGet(this, _attributeConditions).map(function (_ref4) {
-          var propertyId = _ref4.propertyId,
-              categoryIds = _ref4.categoryIds;
+        var attributes = _classPrivateFieldGet(this, _attributeConditions).map(function (_ref3) {
+          var propertyId = _ref3.propertyId,
+              categoryIds = _ref3.categoryIds;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
           var property = Records$1.getProperty(propertyId);
           return {
@@ -3982,17 +3979,7 @@
     var _column = _classPrivateMethodGet(this, _makeColumn, _makeColumn2).call(this, _items2, _depth);
 
     _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, _column, _depth);
-  } // #getAncestors(categoryId) {
-  //   const ancestors = [];
-  //   let parent;
-  //   do { // find ancestors
-  //     parent = this.#items[categoryId].parent;
-  //     if (parent) ancestors.unshift(this.#items[parent]);
-  //     categoryId = parent;
-  //   } while (parent);
-  //   return ancestors;
-  // }
-  ;
+  };
 
   function _setItems2(items, depth, parent) {
     var _iterator = _createForOfIteratorHelper(items),

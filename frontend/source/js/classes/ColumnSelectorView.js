@@ -257,15 +257,4 @@ export default class ColumnSelectorView {
     });
   }
 
-  // #getAncestors(categoryId) {
-  //   const ancestors = [];
-  //   let parent;
-  //   do { // find ancestors
-  //     parent = this.#items[categoryId].parent;
-  //     if (parent) ancestors.unshift(this.#items[parent]);
-  //     categoryId = parent;
-  //   } while (parent);
-  //   return ancestors;
-  // }
-
 }
