@@ -6190,14 +6190,12 @@
     _classPrivateFieldGet(this, _ROOT$7).dataset.status = 'complete';
     _classPrivateFieldGet(this, _STATUS).textContent = 'Complete';
 
-    if (this.offset >= _classPrivateFieldGet(this, _queryIds).length) {
-      _classPrivateMethodGet(this, _setJsonUrl, _setJsonUrl2).call(this);
+    _classPrivateMethodGet(this, _setJsonUrl, _setJsonUrl2).call(this);
 
-      _classPrivateMethodGet(this, _setTsvUrl, _setTsvUrl2).call(this);
+    _classPrivateMethodGet(this, _setTsvUrl, _setTsvUrl2).call(this);
 
-      if (_classPrivateFieldGet(this, _downloadReserveButton)) {
-        _classPrivateFieldGet(this, _downloadReserveButton).querySelector(':scope > a').click();
-      }
+    if (_classPrivateFieldGet(this, _downloadReserveButton)) {
+      _classPrivateFieldGet(this, _downloadReserveButton).querySelector(':scope > a').click();
     }
   };
 
@@ -6220,10 +6218,7 @@
     var anchor = _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_JSON).querySelector(':scope > .json');
 
     anchor.setAttribute('href', jsonUrl);
-    anchor.setAttribute('download', 'sample.json'); // set lavel
-    // let jsonFileName = Date.now();
-    // this.#BUTTON_DOWNLOAD_JSON.querySelector(':scope > .json').setAttribute('download', jsonFileName);
-    // this.#STATUS.insertAdjacentHTML('afterend', jsonFileName);
+    anchor.setAttribute('download', 'sample.json');
   };
 
   var _setTsvUrl2 = function _setTsvUrl2() {
@@ -6232,16 +6227,31 @@
     var temporaryArray = [];
 
     _classPrivateFieldGet(this, _rows).map(function (row) {
-      var singleItem = {
-        togokey: _classPrivateFieldGet(_this4, _condition).togoKey,
-        togokeyId: row.id,
-        attribute: row.properties[0].propertyId,
-        attributeKey: row.properties[0].propertyKey,
-        attributeId: row.properties[0].attributes[0].attribute.categoryId,
-        attributeLabel: row.properties[0].attributes[0].attribute.label
-      };
-      temporaryArray.push(singleItem);
-    });
+      row.properties.map(function (property) {
+        property.attributes.map(function (attribute) {
+          var singleItem = {
+            togoKey: _classPrivateFieldGet(_this4, _condition).togoKey,
+            togoKeyId: row.id,
+            attributeId: property.propertyId,
+            attributeValue: attribute.attribute.label,
+            attributeKey: property.propertyKey,
+            attributeKeyId: attribute.id
+          };
+          temporaryArray.push(singleItem);
+        });
+      });
+    }); // this.#rows.map(row => {
+    //   const singleItem = {
+    //     togokey: this.#condition.togoKey,
+    //     togokeyId: row.id,
+    //     attribute: row.properties[0].propertyId,
+    //     attributeKey: row.properties[0].propertyKey,
+    //     attributeId: row.properties[0].attributes[0].attribute.categoryId,
+    //     attributeLabel: row.properties[0].attributes[0].attribute.label
+    //   }
+    //   temporaryArray.push(singleItem);
+    // })
+
 
     var tsvArray = [];
     tsvArray.push(Object.keys(temporaryArray[0]) + '\n');

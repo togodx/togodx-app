@@ -301,12 +301,10 @@ export default class TableData {
   #complete() {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = 'Complete';
-    if ((this.offset >= this.#queryIds.length)) {
-      this.#setJsonUrl();
-      this.#setTsvUrl();
-      if (this.#downloadReserveButton ) {
-        this.#downloadReserveButton.querySelector(':scope > a').click();
-      }
+    this.#setJsonUrl();
+    this.#setTsvUrl();
+    if (this.#downloadReserveButton ) {
+      this.#downloadReserveButton.querySelector(':scope > a').click();
     }
   }
   #changeButtons() {
@@ -322,36 +320,47 @@ export default class TableData {
     const anchor = this.#BUTTON_DOWNLOAD_JSON.querySelector(':scope > .json');
     anchor.setAttribute('href', jsonUrl);
     anchor.setAttribute('download', 'sample.json');
-    // set lavel
-    // let jsonFileName = Date.now();
-    // this.#BUTTON_DOWNLOAD_JSON.querySelector(':scope > .json').setAttribute('download', jsonFileName);
-    // this.#STATUS.insertAdjacentHTML('afterend', jsonFileName);
   }
 
   #setTsvUrl() {
     const temporaryArray = [];
-      this.#rows.map(row => {
-        const singleItem = {
-          togokey: this.#condition.togoKey,
-          togokeyId: row.id,
-          attribute: row.properties[0].propertyId,
-          attributeKey: row.properties[0].propertyKey,
-          attributeId: row.properties[0].attributes[0].attribute.categoryId,
-          attributeLabel: row.properties[0].attributes[0].attribute.label
-        }
-        temporaryArray.push(singleItem);
+    this.#rows.map(row => {
+      row.properties.map(property => {
+        property.attributes.map(attribute => {
+          const singleItem = {
+            togoKey: this.#condition.togoKey,
+            togoKeyId: row.id,
+            attributeId: property.propertyId,
+            attributeValue: attribute.attribute.label,
+            attributeKey: property.propertyKey,
+            attributeKeyId: attribute.id
+          }
+          temporaryArray.push(singleItem);
+        })
       })
-      const tsvArray = [];
-      tsvArray.push(Object.keys(temporaryArray[0]) + '\n');
-      temporaryArray.forEach(item => {
-        tsvArray.push(Object.values(item) + '\n');
-      })
-      const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
-      const tsvBlob = new Blob([bom, tsvArray.join('\t')], { type: 'text/plain' });
-      const tsvUrl = URL.createObjectURL(tsvBlob);
-      const anchor = this.#BUTTON_DOWNLOAD_TSV.querySelector(':scope > .tsv');
-      anchor.setAttribute('href', tsvUrl);
-      anchor.setAttribute('download', 'sample.tsv');
+    })
+    // this.#rows.map(row => {
+    //   const singleItem = {
+    //     togokey: this.#condition.togoKey,
+    //     togokeyId: row.id,
+    //     attribute: row.properties[0].propertyId,
+    //     attributeKey: row.properties[0].propertyKey,
+    //     attributeId: row.properties[0].attributes[0].attribute.categoryId,
+    //     attributeLabel: row.properties[0].attributes[0].attribute.label
+    //   }
+    //   temporaryArray.push(singleItem);
+    // })
+    const tsvArray = [];
+    tsvArray.push(Object.keys(temporaryArray[0]) + '\n');
+    temporaryArray.forEach(item => {
+      tsvArray.push(Object.values(item) + '\n');
+    })
+    const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+    const tsvBlob = new Blob([bom, tsvArray.join('\t')], { type: 'text/plain' });
+    const tsvUrl = URL.createObjectURL(tsvBlob);
+    const anchor = this.#BUTTON_DOWNLOAD_TSV.querySelector(':scope > .tsv');
+    anchor.setAttribute('href', tsvUrl);
+    anchor.setAttribute('download', 'sample.tsv');
   }
 
   /* public methods */
