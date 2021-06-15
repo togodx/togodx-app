@@ -319,8 +319,9 @@ export default class TableData {
   #setJsonUrl() {
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {type : 'application/json'});
     const jsonUrl = URL.createObjectURL(jsonBlob);
-    this.#BUTTON_DOWNLOAD_JSON.querySelector(':scope > .json').setAttribute('href', jsonUrl);
-    this.#BUTTON_DOWNLOAD_JSON.querySelector(':scope > .json').setAttribute('download', 'sample.json');
+    const anchor = this.#BUTTON_DOWNLOAD_JSON.querySelector(':scope > .json');
+    anchor.setAttribute('href', jsonUrl);
+    anchor.setAttribute('download', 'sample.json');
     // set lavel
     // let jsonFileName = Date.now();
     // this.#BUTTON_DOWNLOAD_JSON.querySelector(':scope > .json').setAttribute('download', jsonFileName);
@@ -348,8 +349,9 @@ export default class TableData {
       const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
       const tsvBlob = new Blob([bom, tsvArray.join('\t')], { type: 'text/plain' });
       const tsvUrl = URL.createObjectURL(tsvBlob);
-      this.#BUTTON_DOWNLOAD_TSV.querySelector(':scope > .tsv').setAttribute('href', tsvUrl);
-      this.#BUTTON_DOWNLOAD_TSV.querySelector(':scope > .tsv').setAttribute('download', 'sample.tsv');
+      const anchor = this.#BUTTON_DOWNLOAD_TSV.querySelector(':scope > .tsv');
+      anchor.setAttribute('href', tsvUrl);
+      anchor.setAttribute('download', 'sample.tsv');
   }
 
   /* public methods */

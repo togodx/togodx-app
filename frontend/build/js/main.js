@@ -6217,13 +6217,13 @@
     });
     var jsonUrl = URL.createObjectURL(jsonBlob);
 
-    _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_JSON).querySelector(':scope > .json').setAttribute('href', jsonUrl);
+    var anchor = _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_JSON).querySelector(':scope > .json');
 
-    _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_JSON).querySelector(':scope > .json').setAttribute('download', 'sample.json'); // set lavel
+    anchor.setAttribute('href', jsonUrl);
+    anchor.setAttribute('download', 'sample.json'); // set lavel
     // let jsonFileName = Date.now();
     // this.#BUTTON_DOWNLOAD_JSON.querySelector(':scope > .json').setAttribute('download', jsonFileName);
     // this.#STATUS.insertAdjacentHTML('afterend', jsonFileName);
-
   };
 
   var _setTsvUrl2 = function _setTsvUrl2() {
@@ -6254,9 +6254,10 @@
     });
     var tsvUrl = URL.createObjectURL(tsvBlob);
 
-    _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_TSV).querySelector(':scope > .tsv').setAttribute('href', tsvUrl);
+    var anchor = _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_TSV).querySelector(':scope > .tsv');
 
-    _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_TSV).querySelector(':scope > .tsv').setAttribute('download', 'sample.tsv');
+    anchor.setAttribute('href', tsvUrl);
+    anchor.setAttribute('download', 'sample.tsv');
   };
 
   var _tableData$1 = new WeakMap();
