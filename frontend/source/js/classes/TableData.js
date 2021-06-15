@@ -135,30 +135,18 @@ export default class TableData {
     BUTTONS.find(button => button.dataset.button === 'restore').addEventListener('click', e => {
       e.stopPropagation();
       // property (attribute)
-      console.log(this.#condition)
       ConditionBuilder.setProperties(this.#condition.properties.map(property => {
         return {
-          subject: property.subject,
-          property: property.property
+          propertyId: property.query.propertyId,
+          parentCategoryId: property.parentCategoryId
         }
       }));
       // attribute (classification/distribution)
-      Records.properties.forEach(property => {
-        const attribute = this.#condition.attributes.find(attribute => attribute.property.propertyId === property.propertyId);
-        let subject, values = [];
-        if (attribute) {
-          subject = attribute.subject;
-          values = attribute.query.categoryIds.map(categoryId => {
-            return {
-              categoryId: categoryId,
-              label: Records.getValue(attribute.query.propertyId, categoryId).label,
-              ancestors: []
-            }
-          });
-        } else {
-          subject = Records.getSubject(property.subjectId);
-        }
-        ConditionBuilder.setPropertyValues({subject, property, values});
+      Records.properties.forEach(({propertyId}) => {
+        const attribute = this.#condition.attributes.find(attribute => attribute.property.propertyId === propertyId);
+        const categoryIds = [];
+        if (attribute) categoryIds.push(...attribute.query.categoryIds);
+        ConditionBuilder.setPropertyValues(propertyId, categoryIds);
       });
     });
     this.select();

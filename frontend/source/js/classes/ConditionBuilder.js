@@ -105,24 +105,10 @@ class ConditionBuilder {
   }
 
   setProperties(conditions) {
-    const propertyIds = conditions.map(condition => condition.property.propertyId);
-    Records.properties.forEach(property => {
-      const isExistInNewConditions = propertyIds.indexOf(property.propertyId) !== -1;
-      const index = this.#propertyConditions.findIndex(condition => condition.property.propertyId === property.propertyId);
-      if (isExistInNewConditions) {
-        if (index === -1) {
-          // if the property exists in new conditions, and if the property doesn't exist in my conditions, add it
-          this.addProperty(conditions.find(condition => condition.property.propertyId === property.propertyId));
-        }
-      } else {
-        if (index !== -1) {
-          // if the property doesn't exist in new conditions, and the proerty exists in my conditions, remove it
-          this.removeProperty(property.propertyId);
-        }
-      }
-    });
-    // post processing (permalink, evaluate)
-    this.#postProcessing();
+    // delete existing properties
+    this.#propertyConditions.forEach(({propertyId, parentCategoryId}) => this.removeProperty(propertyId, parentCategoryId));
+    // set new properties
+    conditions.forEach(({propertyId, parentCategoryId}) => this.addProperty(propertyId, parentCategoryId));
   }
 
   setPropertyValues(propertyId, categoryIds) {
@@ -167,7 +153,10 @@ class ConditionBuilder {
       const subject = Records.getSubjectWithPropertyId(propertyId);
       const property = Records.getProperty(propertyId);
       return {
-        query: {propertyId, categoryIds},
+        query: {
+          propertyId, 
+          categoryIds: [].concat(categoryIds)
+        },
         subject,
         property
       }

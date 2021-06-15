@@ -3099,32 +3099,19 @@
       value: function setProperties(conditions) {
         var _this = this;
 
-        var propertyIds = conditions.map(function (condition) {
-          return condition.property.propertyId;
+        // delete existing properties
+        _classPrivateFieldGet(this, _propertyConditions).forEach(function (_ref) {
+          var propertyId = _ref.propertyId,
+              parentCategoryId = _ref.parentCategoryId;
+          return _this.removeProperty(propertyId, parentCategoryId);
+        }); // set new properties
+
+
+        conditions.forEach(function (_ref2) {
+          var propertyId = _ref2.propertyId,
+              parentCategoryId = _ref2.parentCategoryId;
+          return _this.addProperty(propertyId, parentCategoryId);
         });
-        Records$1.properties.forEach(function (property) {
-          var isExistInNewConditions = propertyIds.indexOf(property.propertyId) !== -1;
-
-          var index = _classPrivateFieldGet(_this, _propertyConditions).findIndex(function (condition) {
-            return condition.property.propertyId === property.propertyId;
-          });
-
-          if (isExistInNewConditions) {
-            if (index === -1) {
-              // if the property exists in new conditions, and if the property doesn't exist in my conditions, add it
-              _this.addProperty(conditions.find(function (condition) {
-                return condition.property.propertyId === property.propertyId;
-              }));
-            }
-          } else {
-            if (index !== -1) {
-              // if the property doesn't exist in new conditions, and the proerty exists in my conditions, remove it
-              _this.removeProperty(property.propertyId);
-            }
-          }
-        }); // post processing (permalink, evaluate)
-
-        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
     }, {
       key: "setPropertyValues",
@@ -3174,9 +3161,9 @@
         console.log(_classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions)); // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
         // create properties
 
-        var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref) {
-          var propertyId = _ref.propertyId,
-              parentCategoryId = _ref.parentCategoryId;
+        var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref3) {
+          var propertyId = _ref3.propertyId,
+              parentCategoryId = _ref3.parentCategoryId;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
           var property = Records$1.getProperty(propertyId);
           var query = {
@@ -3197,15 +3184,15 @@
         }); // create attributes (property values)
 
 
-        var attributes = _classPrivateFieldGet(this, _attributeConditions).map(function (_ref2) {
-          var propertyId = _ref2.propertyId,
-              categoryIds = _ref2.categoryIds;
+        var attributes = _classPrivateFieldGet(this, _attributeConditions).map(function (_ref4) {
+          var propertyId = _ref4.propertyId,
+              categoryIds = _ref4.categoryIds;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
           var property = Records$1.getProperty(propertyId);
           return {
             query: {
               propertyId: propertyId,
-              categoryIds: categoryIds
+              categoryIds: [].concat(categoryIds)
             },
             subject: subject,
             property: property
@@ -6058,40 +6045,23 @@
       }).addEventListener('click', function (e) {
         e.stopPropagation(); // property (attribute)
 
-        console.log(_classPrivateFieldGet(_this, _condition));
         ConditionBuilder$1.setProperties(_classPrivateFieldGet(_this, _condition).properties.map(function (property) {
           return {
-            subject: property.subject,
-            property: property.property
+            propertyId: property.query.propertyId,
+            parentCategoryId: property.parentCategoryId
           };
         })); // attribute (classification/distribution)
 
-        Records$1.properties.forEach(function (property) {
+        Records$1.properties.forEach(function (_ref) {
+          var propertyId = _ref.propertyId;
+
           var attribute = _classPrivateFieldGet(_this, _condition).attributes.find(function (attribute) {
-            return attribute.property.propertyId === property.propertyId;
+            return attribute.property.propertyId === propertyId;
           });
 
-          var subject,
-              values = [];
-
-          if (attribute) {
-            subject = attribute.subject;
-            values = attribute.query.categoryIds.map(function (categoryId) {
-              return {
-                categoryId: categoryId,
-                label: Records$1.getValue(attribute.query.propertyId, categoryId).label,
-                ancestors: []
-              };
-            });
-          } else {
-            subject = Records$1.getSubject(property.subjectId);
-          }
-
-          ConditionBuilder$1.setPropertyValues({
-            subject: subject,
-            property: property,
-            values: values
-          });
+          var categoryIds = [];
+          if (attribute) categoryIds.push.apply(categoryIds, _toConsumableArray(attribute.query.categoryIds));
+          ConditionBuilder$1.setPropertyValues(propertyId, categoryIds);
         });
       });
       this.select();
