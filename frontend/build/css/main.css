@@ -1503,6 +1503,8 @@ body[data-display=results] #App > .inner {
 
 #ConditionBuilder {
   --radius: .4rem;
+  --background-color: #FFFFFFCC;
+  --background-color-inactive: #FFFFFF66;
 }
 #ConditionBuilder > .conditions {
   -webkit-flex-grow: 1;
@@ -1510,7 +1512,7 @@ body[data-display=results] #App > .inner {
 }
 #ConditionBuilder > .conditions > .condition {
   padding: 0.7rem 0.6rem;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--background-color);
   border-radius: var(--radius);
 }
 #ConditionBuilder > .conditions > .condition + .condition {
@@ -1551,17 +1553,19 @@ body[data-display=results] #ConditionBuilder > .conditions > .condition > .condi
 }
 #ConditionBuilder > .conditions > #ConditionKeys, #ConditionBuilder > .conditions > #ConditionValues {
   transition: opacity var(--transition-instant);
-  opacity: var(--opacity-disabled);
+  opacity: 0.8;
+  background-color: var(--background-color-inactive);
   cursor: pointer;
 }
 #ConditionBuilder > .conditions > #ConditionKeys:hover, #ConditionBuilder > .conditions > #ConditionValues:hover {
-  opacity: 1;
+  background-color: var(--background-color);
 }
 #ConditionBuilder > .conditions > #ConditionKeys {
   border-radius: var(--radius) var(--radius) 0 0;
 }
 [data-condition=keys] #ConditionBuilder > .conditions > #ConditionKeys {
   opacity: 1;
+  background-color: var(--background-color);
 }
 #ConditionBuilder > .conditions > #ConditionValues {
   border-radius: 0 0 var(--radius) var(--radius);
@@ -1569,6 +1573,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .condition > .condi
 }
 [data-condition=values] #ConditionBuilder > .conditions > #ConditionValues {
   opacity: 1;
+  background-color: var(--background-color);
 }
 #ConditionBuilder > .conditions > #ConditionTogoKey > .inner > select {
   width: 100%;
