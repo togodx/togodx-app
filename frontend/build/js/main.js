@@ -2980,6 +2980,7 @@
     }, {
       key: "addProperty",
       value: function addProperty(propertyId, parentCategoryId) {
+        var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
         console.log('addProperty', propertyId, parentCategoryId); // store
 
         _classPrivateFieldGet(this, _propertyConditions).push({
@@ -2988,8 +2989,7 @@
         }); // evaluate
 
 
-        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
-
+        if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
         var customEvent = new CustomEvent(mutatePropertyCondition, {
           detail: {
@@ -3003,6 +3003,7 @@
     }, {
       key: "addPropertyValue",
       value: function addPropertyValue(propertyId, categoryId) {
+        var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
         console.log('addPropertyValue', propertyId, categoryId); // find value of same property
 
         console.log(_classPrivateFieldGet(this, _attributeConditions));
@@ -3022,8 +3023,7 @@
         } // evaluate
 
 
-        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
-
+        if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
         var customEvent = new CustomEvent(mutatePropertyValueCondition, {
           detail: {
@@ -3037,6 +3037,7 @@
     }, {
       key: "removeProperty",
       value: function removeProperty(propertyId, parentCategoryId) {
+        var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
         console.log('removeProperty', propertyId, parentCategoryId); // remove from store
 
         var index = _classPrivateFieldGet(this, _propertyConditions).findIndex(function (condition) {
@@ -3052,8 +3053,7 @@
         if (index === -1) return;
         _classPrivateFieldGet(this, _propertyConditions).splice(index, 1)[0]; // post processing (permalink, evaluate)
 
-        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
-
+        if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
         var customEvent = new CustomEvent(mutatePropertyCondition, {
           detail: {
@@ -3067,6 +3067,7 @@
     }, {
       key: "removePropertyValue",
       value: function removePropertyValue(propertyId, categoryId) {
+        var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
         console.log('removePropertyValue', propertyId, categoryId); // remove from store
 
         var index = _classPrivateFieldGet(this, _attributeConditions).findIndex(function (condition) {
@@ -3082,8 +3083,7 @@
 
         if (index !== -1) _classPrivateFieldGet(this, _attributeConditions).splice(index, 1)[0]; // post processing (permalink, evaluate)
 
-        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
-
+        if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
         var customEvent = new CustomEvent(mutatePropertyValueCondition, {
           detail: {
@@ -3099,6 +3099,8 @@
       value: function setProperties(conditions) {
         var _this = this;
 
+        var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
         // delete existing properties
         while (_classPrivateFieldGet(this, _propertyConditions).length > 0) {
           this.removeProperty(_classPrivateFieldGet(this, _propertyConditions)[0].propertyId, _classPrivateFieldGet(this, _propertyConditions)[0].parentCategoryId);
@@ -3107,13 +3109,17 @@
         conditions.forEach(function (_ref) {
           var propertyId = _ref.propertyId,
               parentCategoryId = _ref.parentCategoryId;
-          return _this.addProperty(propertyId, parentCategoryId);
-        });
+          return _this.addProperty(propertyId, parentCategoryId, false);
+        }); // post processing (permalink, evaluate)
+
+        if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
     }, {
       key: "setPropertyValues",
       value: function setPropertyValues(propertyId, categoryIds) {
         var _this2 = this;
+
+        var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
         var oldCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
           return condition.propertyId === propertyId;
@@ -3127,10 +3133,10 @@
 
             if (indexInNew !== -1) {
               // if new value does not exist in old values, add property value
-              if (indexInOld === -1) _this2.addPropertyValue(propertyId, originalValue.categoryId);
+              if (indexInOld === -1) _this2.addPropertyValue(propertyId, originalValue.categoryId, false);
             } else {
               // if extra value exists in old values, remove property value
-              if (indexInOld !== -1) _this2.removePropertyValue(propertyId, originalValue.categoryId);
+              if (indexInOld !== -1) _this2.removePropertyValue(propertyId, originalValue.categoryId, false);
             }
           });
         } else {
@@ -3140,7 +3146,7 @@
           try {
             for (_iterator.s(); !(_step = _iterator.n()).done;) {
               var categoryId = _step.value;
-              this.addPropertyValue(propertyId, categoryId);
+              this.addPropertyValue(propertyId, categoryId, false);
             }
           } catch (err) {
             _iterator.e(err);
@@ -3150,6 +3156,11 @@
         } // post processing (permalink, evaluate)
 
 
+        if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
+      }
+    }, {
+      key: "finish",
+      value: function finish() {
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
     }, {
@@ -3821,7 +3832,7 @@
 
   var ALL_PROPERTIES = 'ALL_PROPERTIES';
 
-  var _subject$3 = new WeakMap();
+  var _subject$2 = new WeakMap();
 
   var _property$3 = new WeakMap();
 
@@ -3864,7 +3875,7 @@
 
     _setItems.add(this);
 
-    _subject$3.set(this, {
+    _subject$2.set(this, {
       writable: true,
       value: void 0
     });
@@ -3909,7 +3920,7 @@
       value: void 0
     });
 
-    _classPrivateFieldSet(this, _subject$3, subject);
+    _classPrivateFieldSet(this, _subject$2, subject);
 
     _classPrivateFieldSet(this, _property$3, property);
 
@@ -4187,7 +4198,7 @@
       max = isLog10 ? Math.log10(max) : max;
       column.ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
         var count = Number(li.dataset.count);
-        li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this4, _subject$3).color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
+        li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this4, _subject$2).color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
           return cood * 256;
         }).join(','), ")");
       });
@@ -4238,8 +4249,6 @@
 
   var _items = new WeakMap();
 
-  var _subject$2 = new WeakMap();
-
   var _property$2 = new WeakMap();
 
   var _selectedBarsStart = new WeakMap();
@@ -4283,11 +4292,6 @@
       value: void 0
     });
 
-    _subject$2.set(this, {
-      writable: true,
-      value: void 0
-    });
-
     _property$2.set(this, {
       writable: true,
       value: void 0
@@ -4324,8 +4328,6 @@
     });
 
     // console.log(elm, subject, property, items, sparqlist)
-    _classPrivateFieldSet(this, _subject$2, subject);
-
     this._sparqlist = sparqlist;
 
     _classPrivateFieldSet(this, _property$2, property);
@@ -4427,16 +4429,17 @@
         _classPrivateMethodGet(_this2, _update$1, _update2$1).call(_this2); // set condition
 
 
-        var selectedItems = _classPrivateFieldGet(_this2, _selectedItems);
-
-        ConditionBuilder$1.setPropertyValues(_classPrivateFieldGet(_this2, _property$2).propertyId, selectedItems.map(function (item) {
+        ConditionBuilder$1.setPropertyValues(_classPrivateFieldGet(_this2, _property$2).propertyId, _classPrivateFieldGet(_this2, _selectedItems).map(function (item) {
           return item.categoryId;
-        }));
+        }), false);
       }
     });
     selectorController.addEventListener('mouseup', function (e) {
       if (isMouseDown) {
         isMouseDown = false;
+        ConditionBuilder$1.setPropertyValues(_classPrivateFieldGet(_this2, _property$2).propertyId, _classPrivateFieldGet(_this2, _selectedItems).map(function (item) {
+          return item.categoryId;
+        }));
       }
     });
   }
@@ -6047,7 +6050,7 @@
             propertyId: property.query.propertyId,
             parentCategoryId: property.parentCategoryId
           };
-        })); // attribute (classification/distribution)
+        }), false); // attribute (classification/distribution)
 
         Records$1.properties.forEach(function (_ref) {
           var propertyId = _ref.propertyId;
@@ -6058,9 +6061,10 @@
 
           var categoryIds = [];
           if (attribute) categoryIds.push.apply(categoryIds, _toConsumableArray(attribute.query.categoryIds));
-          ConditionBuilder$1.setPropertyValues(propertyId, categoryIds);
+          ConditionBuilder$1.setPropertyValues(propertyId, categoryIds, false);
         });
       });
+      ConditionBuilder$1.finish();
       this.select();
 
       _classPrivateMethodGet(this, _getQueryIds, _getQueryIds2).call(this);

@@ -9,7 +9,6 @@ const NUM_OF_GRID = 4;
 export default class HistogramRangeSelectorView {
 
   #items;
-  #subject;
   #property;
   #selectedBarsStart;
   #selectedBarsEnd;
@@ -21,7 +20,6 @@ export default class HistogramRangeSelectorView {
   constructor(elm, subject, property, items, sparqlist, overview) {
     // console.log(elm, subject, property, items, sparqlist)
 
-    this.#subject = subject;
     this._sparqlist = sparqlist;
     this.#property = property;
     this.#OVERVIEW_CONTAINER = overview;
@@ -116,16 +114,20 @@ export default class HistogramRangeSelectorView {
         });
         this.#update();
         // set condition
-        const selectedItems = this.#selectedItems;
         ConditionBuilder.setPropertyValues(
           this.#property.propertyId,
-          selectedItems.map(item => item.categoryId)
+          this.#selectedItems.map(item => item.categoryId),
+          false
         );
       }
     });
     selectorController.addEventListener('mouseup', e => {
       if (isMouseDown) {
         isMouseDown = false;
+        ConditionBuilder.setPropertyValues(
+          this.#property.propertyId,
+          this.#selectedItems.map(item => item.categoryId)
+        );
       }
     });
   }

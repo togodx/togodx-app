@@ -31,18 +31,18 @@ class ConditionBuilder {
     this.#postProcessing();
   }
 
-  addProperty(propertyId, parentCategoryId) {
+  addProperty(propertyId, parentCategoryId, isFinal = true) {
     console.log('addProperty', propertyId, parentCategoryId)
     // store
     this.#propertyConditions.push({propertyId, parentCategoryId});
     // evaluate
-    this.#postProcessing();
+    if (isFinal) this.#postProcessing();
     // dispatch event
     const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {action: 'add', propertyId, parentCategoryId}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  addPropertyValue(propertyId, categoryId) {
+  addPropertyValue(propertyId, categoryId, isFinal = true) {
     console.log('addPropertyValue', propertyId, categoryId)
     // find value of same property
     console.log(this.#attributeConditions)
@@ -57,13 +57,13 @@ class ConditionBuilder {
       });
     }
     // evaluate
-    this.#postProcessing();
+    if (isFinal) this.#postProcessing();
     // dispatch event
     const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {action: 'add', propertyId, categoryId}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  removeProperty(propertyId, parentCategoryId) {
+  removeProperty(propertyId, parentCategoryId, isFinal = true) {
     console.log('removeProperty', propertyId, parentCategoryId)
     // remove from store
     const index = this.#propertyConditions.findIndex(condition => {
@@ -78,13 +78,13 @@ class ConditionBuilder {
     if (index === -1) return;
     this.#propertyConditions.splice(index, 1)[0];
     // post processing (permalink, evaluate)
-    this.#postProcessing();
+    if (isFinal) this.#postProcessing();
     // dispatch event
     const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {action: 'remove', propertyId, parentCategoryId}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  removePropertyValue(propertyId, categoryId) {
+  removePropertyValue(propertyId, categoryId, isFinal = true) {
     console.log('removePropertyValue', propertyId, categoryId)
     // remove from store
     const index = this.#attributeConditions.findIndex(condition => {
@@ -98,22 +98,24 @@ class ConditionBuilder {
     });
     if (index !== -1) this.#attributeConditions.splice(index, 1)[0];
     // post processing (permalink, evaluate)
-    this.#postProcessing();
+    if (isFinal) this.#postProcessing();
     // dispatch event
     const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {action: 'remove', propertyId, categoryId}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  setProperties(conditions) {
+  setProperties(conditions, isFinal = true) {
     // delete existing properties
     while (this.#propertyConditions.length > 0) {
       this.removeProperty(this.#propertyConditions[0].propertyId, this.#propertyConditions[0].parentCategoryId);
     };
     // set new properties
-    conditions.forEach(({propertyId, parentCategoryId}) => this.addProperty(propertyId, parentCategoryId));
+    conditions.forEach(({propertyId, parentCategoryId}) => this.addProperty(propertyId, parentCategoryId, false));
+    // post processing (permalink, evaluate)
+    if (isFinal) this.#postProcessing();
   }
 
-  setPropertyValues(propertyId, categoryIds) {
+  setPropertyValues(propertyId, categoryIds, isFinal = true) {
     const oldCondition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
     if (oldCondition) {
       const originalValues = Records.getProperty(propertyId).values;
@@ -122,18 +124,22 @@ class ConditionBuilder {
         const indexInOld = oldCondition.categoryIds.indexOf(originalValue.categoryId);
         if (indexInNew !== -1) {
           // if new value does not exist in old values, add property value
-          if (indexInOld === -1) this.addPropertyValue(propertyId, originalValue.categoryId);
+          if (indexInOld === -1) this.addPropertyValue(propertyId, originalValue.categoryId, false);
         } else {
           // if extra value exists in old values, remove property value
-          if (indexInOld !== -1) this.removePropertyValue(propertyId, originalValue.categoryId);
+          if (indexInOld !== -1) this.removePropertyValue(propertyId, originalValue.categoryId, false);
         }
       });
     } else {
       for (const categoryId of categoryIds) {
-        this.addPropertyValue(propertyId, categoryId);
+        this.addPropertyValue(propertyId, categoryId, false);
       }
     }
     // post processing (permalink, evaluate)
+    if (isFinal) this.#postProcessing();
+  }
+
+  finish() {
     this.#postProcessing();
   }
 

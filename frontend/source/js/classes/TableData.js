@@ -140,15 +140,16 @@ export default class TableData {
           propertyId: property.query.propertyId,
           parentCategoryId: property.parentCategoryId
         }
-      }));
+      }), false);
       // attribute (classification/distribution)
       Records.properties.forEach(({propertyId}) => {
         const attribute = this.#condition.attributes.find(attribute => attribute.property.propertyId === propertyId);
         const categoryIds = [];
         if (attribute) categoryIds.push(...attribute.query.categoryIds);
-        ConditionBuilder.setPropertyValues(propertyId, categoryIds);
+        ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
       });
     });
+    ConditionBuilder.finish();
     this.select();
     this.#getQueryIds();
   }
