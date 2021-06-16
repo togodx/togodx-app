@@ -13,12 +13,18 @@ class ConditionBuilder {
   constructor() {
     this.#propertyConditions = [];
     this.#attributeConditions = [];
-    window.addEventListener('popstate', this.#popstate.bind(this));
+    window.addEventListener('popstate', this.#createSearchConditionFromURLParameters.bind(this));
+    // alert(123)
   }
 
   // public methods
 
+  init() {
+    this.#createSearchConditionFromURLParameters();
+  }
+
   setSubject(togoKey, subjectId) {
+    console.log(togoKey, subjectId)
     this.#togoKey = togoKey;
     this.#subjectId = subjectId;
     // post processing (permalink, evaluate)
@@ -195,6 +201,9 @@ class ConditionBuilder {
   // private methods
 
   #postProcessing(dontLeaveInHistory = true) {
+    console.log(arguments)
+    // alert(`dontLeaveInHistory: ${dontLeaveInHistory ? 'true' : 'false'}`)
+    console.log(this.#propertyConditions, this.#attributeConditions)
 
     // evaluate if search is possible
     const established 
@@ -209,13 +218,17 @@ class ConditionBuilder {
     params.set('userIds', this.userIds ? this.userIds : '');
     params.set('keys', encodeURIComponent(JSON.stringify(this.#propertyConditions)));
     params.set('values', encodeURIComponent(JSON.stringify(this.#attributeConditions)));
+    // alert(456)
     if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
+    // alert(789)
 
   }
 
-  #popstate(e) {
+  #createSearchConditionFromURLParameters(e) {
+    console.log(e)
 
     const params = new URL(location).searchParams;
+    console.log(Object.fromEntries( params.entries() ))
 
     // dispatch event
     const keys = JSON.parse(decodeURIComponent(params.get('keys')));
@@ -227,6 +240,7 @@ class ConditionBuilder {
       values
     }});
     DefaultEventEmitter.dispatchEvent(customEvent);
+    console.log(keys, values)
 
     // restore properties
     this.setProperties(keys, false);

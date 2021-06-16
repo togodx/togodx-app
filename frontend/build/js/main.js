@@ -2922,13 +2922,13 @@
 
   var _postProcessing = new WeakSet();
 
-  var _popstate = new WeakSet();
+  var _createSearchConditionFromURLParameters = new WeakSet();
 
   var ConditionBuilder = /*#__PURE__*/function () {
     function ConditionBuilder() {
       _classCallCheck(this, ConditionBuilder);
 
-      _popstate.add(this);
+      _createSearchConditionFromURLParameters.add(this);
 
       _postProcessing.add(this);
 
@@ -2961,13 +2961,20 @@
 
       _classPrivateFieldSet(this, _attributeConditions, []);
 
-      window.addEventListener('popstate', _classPrivateMethodGet(this, _popstate, _popstate2).bind(this));
+      window.addEventListener('popstate', _classPrivateMethodGet(this, _createSearchConditionFromURLParameters, _createSearchConditionFromURLParameters2).bind(this)); // alert(123)
     } // public methods
 
 
     _createClass(ConditionBuilder, [{
+      key: "init",
+      value: function init() {
+        _classPrivateMethodGet(this, _createSearchConditionFromURLParameters, _createSearchConditionFromURLParameters2).call(this);
+      }
+    }, {
       key: "setSubject",
       value: function setSubject(togoKey, subjectId) {
+        console.log(togoKey, subjectId);
+
         _classPrivateFieldSet(this, _togoKey, togoKey);
 
         _classPrivateFieldSet(this, _subjectId, subjectId); // post processing (permalink, evaluate)
@@ -3244,7 +3251,10 @@
 
   function _postProcessing2() {
     var dontLeaveInHistory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-    // evaluate if search is possible
+    console.log(arguments); // alert(`dontLeaveInHistory: ${dontLeaveInHistory ? 'true' : 'false'}`)
+
+    console.log(_classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions)); // evaluate if search is possible
+
     var established = _classPrivateFieldGet(this, _togoKey) && _classPrivateFieldGet(this, _subjectId) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
     var customEvent = new CustomEvent(mutateEstablishConditions, {
       detail: established
@@ -3255,14 +3265,17 @@
     params.set('togoKey', _classPrivateFieldGet(this, _togoKey));
     params.set('userIds', this.userIds ? this.userIds : '');
     params.set('keys', encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _propertyConditions))));
-    params.set('values', encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _attributeConditions))));
-    if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
+    params.set('values', encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _attributeConditions)))); // alert(456)
+
+    if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString())); // alert(789)
   }
 
-  function _popstate2(e) {
+  function _createSearchConditionFromURLParameters2(e) {
     var _this3 = this;
 
-    var params = new URL(location).searchParams; // dispatch event
+    console.log(e);
+    var params = new URL(location).searchParams;
+    console.log(Object.fromEntries(params.entries())); // dispatch event
 
     var keys = JSON.parse(decodeURIComponent(params.get('keys')));
     var values = JSON.parse(decodeURIComponent(params.get('values')));
@@ -3274,7 +3287,8 @@
         values: values
       }
     });
-    DefaultEventEmitter$1.dispatchEvent(customEvent); // restore properties
+    DefaultEventEmitter$1.dispatchEvent(customEvent);
+    console.log(keys, values); // restore properties
 
     this.setProperties(keys, false);
     Records$1.properties.forEach(function (_ref4) {
@@ -6711,7 +6725,8 @@
               templates = _ref2[1],
               aggregate = _ref2[2];
 
-          Records$1.setSubjects(subjects); // setup upload user id
+          Records$1.setSubjects(subjects);
+          ConditionBuilder$1.init(); // setup upload user id
 
           new UploadUserIDsView(document.querySelector('#UploadUserIDsView'), aggregate.mapping); // define primary keys
 

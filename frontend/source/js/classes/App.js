@@ -1,5 +1,6 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilderView from './ConditionBuilderView';
+import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import ReportsView from './ReportsView';
 import ConceptView from './ConceptView';
@@ -67,6 +68,7 @@ class App {
       .then(responces => Promise.all(responces.map(responce => responce.json())))
       .then(([subjects, templates, aggregate]) => {
         Records.setSubjects(subjects);
+        ConditionBuilder.init();
 
         // setup upload user id
         new UploadUserIDsView(document.querySelector('#UploadUserIDsView'), aggregate.mapping);
