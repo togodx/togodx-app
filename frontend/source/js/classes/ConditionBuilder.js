@@ -13,6 +13,7 @@ class ConditionBuilder {
   constructor() {
     this.#propertyConditions = [];
     this.#attributeConditions = [];
+    window.addEventListener('popstate', this.#popstate.bind(this));
   }
 
   // public methods
@@ -209,12 +210,25 @@ class ConditionBuilder {
     params.set('userIds', this.userIds ? this.userIds : '');
     params.set('keys', encodeURIComponent(JSON.stringify(this.#propertyConditions)));
     params.set('values', encodeURIComponent(JSON.stringify(this.#attributeConditions)));
-    console.log(params.toString());
-    for (const entry of params.entries()) {
-      console.log(entry);
-    }
+    // console.log(params.toString());
+    // for (const entry of params.entries()) {
+    //   console.log(entry);
+    // }
     window.history.pushState('', '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
 
+  }
+
+  #popstate(e) {
+    console.log(e)
+    const params = new URL(location).searchParams;
+    console.log(params)
+    const customEvent = new CustomEvent(event.restoreParameters, {detail: {
+      togoKey: params.get('togoKey'),
+      userIds: params.get('userIds'),
+      keys: JSON.parse(decodeURIComponent(params.get('keys'))),
+      values: JSON.parse(decodeURIComponent(params.get('values')))
+    }});
+    DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
 }

@@ -59,10 +59,17 @@ export default class ConditionBuilderView {
     DefaultEventEmitter.addEventListener(event.mutateEstablishConditions, e => {
       this.#EXEC_BUTTON.disabled = !e.detail;
     });
+    DefaultEventEmitter.addEventListener(event.restoreParameters, e => {
+      this.#restoreParameters(e.detail);
+    });
 
   }
 
   // private methods
+
+  #restoreParameters(parameters) {
+    this.#TOGO_KEYS.value = parameters.togoKey;
+  }
 
   #defineTogoKeys(subjects) {
     // make options

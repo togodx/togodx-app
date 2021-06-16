@@ -2906,7 +2906,9 @@
   var highlightCol = 'highlightCol'; // Track
 
   var enterPropertyValueItemView = 'enterPropertyValueItemView';
-  var leavePropertyValueItemView = 'leavePropertyValueItemView';
+  var leavePropertyValueItemView = 'leavePropertyValueItemView'; // restore
+
+  var restoreParameters = 'restoreParameters';
 
   var _propertyConditions = new WeakMap();
 
@@ -2920,9 +2922,13 @@
 
   var _postProcessing = new WeakSet();
 
+  var _popstate = new WeakSet();
+
   var ConditionBuilder = /*#__PURE__*/function () {
     function ConditionBuilder() {
       _classCallCheck(this, ConditionBuilder);
+
+      _popstate.add(this);
 
       _postProcessing.add(this);
 
@@ -2954,6 +2960,8 @@
       _classPrivateFieldSet(this, _propertyConditions, []);
 
       _classPrivateFieldSet(this, _attributeConditions, []);
+
+      window.addEventListener('popstate', _classPrivateMethodGet(this, _popstate, _popstate2).bind(this));
     } // public methods
 
 
@@ -3248,24 +3256,27 @@
     params.set('togoKey', _classPrivateFieldGet(this, _togoKey));
     params.set('userIds', this.userIds ? this.userIds : '');
     params.set('keys', encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _propertyConditions))));
-    params.set('values', encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _attributeConditions))));
-    console.log(params.toString());
-
-    var _iterator2 = _createForOfIteratorHelper(params.entries()),
-        _step2;
-
-    try {
-      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-        var entry = _step2.value;
-        console.log(entry);
-      }
-    } catch (err) {
-      _iterator2.e(err);
-    } finally {
-      _iterator2.f();
-    }
+    params.set('values', encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _attributeConditions)))); // console.log(params.toString());
+    // for (const entry of params.entries()) {
+    //   console.log(entry);
+    // }
 
     window.history.pushState('', '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
+  }
+
+  function _popstate2(e) {
+    console.log(e);
+    var params = new URL(location).searchParams;
+    console.log(params);
+    var customEvent = new CustomEvent(restoreParameters, {
+      detail: {
+        togoKey: params.get('togoKey'),
+        userIds: params.get('userIds'),
+        keys: JSON.parse(decodeURIComponent(params.get('keys'))),
+        values: JSON.parse(decodeURIComponent(params.get('values')))
+      }
+    });
+    DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
 
   var ConditionBuilder$1 = new ConditionBuilder();
@@ -3454,6 +3465,8 @@
 
   var _EXEC_BUTTON = new WeakMap();
 
+  var _restoreParameters$1 = new WeakSet();
+
   var _defineTogoKeys = new WeakSet();
 
   var _addProperty = new WeakSet();
@@ -3478,6 +3491,8 @@
     _addProperty.add(this);
 
     _defineTogoKeys.add(this);
+
+    _restoreParameters$1.add(this);
 
     _properties.set(this, {
       writable: true,
@@ -3570,8 +3585,15 @@
     DefaultEventEmitter$1.addEventListener(mutateEstablishConditions, function (e) {
       _classPrivateFieldGet(_this, _EXEC_BUTTON).disabled = !e.detail;
     });
+    DefaultEventEmitter$1.addEventListener(restoreParameters, function (e) {
+      _classPrivateMethodGet(_this, _restoreParameters$1, _restoreParameters2$1).call(_this, e.detail);
+    });
   } // private methods
   ;
+
+  function _restoreParameters2$1(parameters) {
+    _classPrivateFieldGet(this, _TOGO_KEYS).value = parameters.togoKey;
+  }
 
   function _defineTogoKeys2(subjects) {
     // make options
@@ -6452,6 +6474,8 @@
 
   var _USER_IDS = new WeakMap();
 
+  var _restoreParameters = new WeakSet();
+
   var _fetch = new WeakSet();
 
   var _clear = new WeakSet();
@@ -6464,6 +6488,8 @@
     _clear.add(this);
 
     _fetch.add(this);
+
+    _restoreParameters.add(this);
 
     _path.set(this, {
       writable: true,
@@ -6509,8 +6535,16 @@
     //   if (e.keyCode === 13) this.#fetch();
     // });
 
+
+    DefaultEventEmitter$1.addEventListener(restoreParameters, function (e) {
+      _classPrivateMethodGet(_this, _restoreParameters, _restoreParameters2).call(_this, e.detail);
+    });
   } // private methods
   ;
+
+  function _restoreParameters2(parameters) {
+    _classPrivateFieldGet(this, _USER_IDS).value = parameters.userIds;
+  }
 
   function _fetch2() {
     var _this2 = this;
