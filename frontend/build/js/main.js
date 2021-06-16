@@ -2989,7 +2989,7 @@
       key: "addProperty",
       value: function addProperty(propertyId, parentCategoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log('addProperty', propertyId, parentCategoryId); // store
+        console.log('addProperty', propertyId, parentCategoryId, isFinal); // store
 
         _classPrivateFieldGet(this, _propertyConditions).push({
           propertyId: propertyId,
@@ -3012,7 +3012,7 @@
       key: "addPropertyValue",
       value: function addPropertyValue(propertyId, categoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log('addPropertyValue', propertyId, categoryId); // find value of same property
+        console.log('addPropertyValue', propertyId, categoryId, isFinal); // find value of same property
 
         console.log(_classPrivateFieldGet(this, _attributeConditions));
 
@@ -3046,7 +3046,7 @@
       key: "removeProperty",
       value: function removeProperty(propertyId, parentCategoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log('removeProperty', propertyId, parentCategoryId); // remove from store
+        console.log('removeProperty', propertyId, parentCategoryId, isFinal); // remove from store
 
         var index = _classPrivateFieldGet(this, _propertyConditions).findIndex(function (condition) {
           if (propertyId === condition.propertyId) {
@@ -3076,7 +3076,7 @@
       key: "removePropertyValue",
       value: function removePropertyValue(propertyId, categoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log('removePropertyValue', propertyId, categoryId); // remove from store
+        console.log('removePropertyValue', propertyId, categoryId, isFinal); // remove from store
 
         var index = _classPrivateFieldGet(this, _attributeConditions).findIndex(function (condition) {
           if (condition.propertyId === propertyId) {
@@ -3108,10 +3108,10 @@
         var _this = this;
 
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+        console.log('isFinal', isFinal); // delete existing properties
 
-        // delete existing properties
         while (_classPrivateFieldGet(this, _propertyConditions).length > 0) {
-          this.removeProperty(_classPrivateFieldGet(this, _propertyConditions)[0].propertyId, _classPrivateFieldGet(this, _propertyConditions)[0].parentCategoryId);
+          this.removeProperty(_classPrivateFieldGet(this, _propertyConditions)[0].propertyId, _classPrivateFieldGet(this, _propertyConditions)[0].parentCategoryId, false);
         }
 
         conditions.forEach(function (_ref) {
@@ -3168,8 +3168,8 @@
       }
     }, {
       key: "finish",
-      value: function finish() {
-        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
+      value: function finish(dontPush) {
+        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this, dontPush);
       }
     }, {
       key: "makeQueryParameter",
@@ -3245,6 +3245,7 @@
   }();
 
   function _postProcessing2() {
+    var dontPush = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
     // evaluate if search is possible
     var established = _classPrivateFieldGet(this, _togoKey) && _classPrivateFieldGet(this, _subjectId) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
     var customEvent = new CustomEvent(mutateEstablishConditions, {
@@ -3261,22 +3262,37 @@
     //   console.log(entry);
     // }
 
-    window.history.pushState('', '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
+    console.log(Object.fromEntries(params.entries()));
+    if (dontPush) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
   }
 
   function _popstate2(e) {
-    console.log(e);
+    console.log('*****************', e);
     var params = new URL(location).searchParams;
-    console.log(params);
+    console.log(window.history.length);
+    console.log(Object.fromEntries(params.entries())); // dispatch event
+
+    var keys = JSON.parse(decodeURIComponent(params.get('keys')));
+    var values = JSON.parse(decodeURIComponent(params.get('values')));
     var customEvent = new CustomEvent(restoreParameters, {
       detail: {
         togoKey: params.get('togoKey'),
         userIds: params.get('userIds'),
-        keys: JSON.parse(decodeURIComponent(params.get('keys'))),
-        values: JSON.parse(decodeURIComponent(params.get('values')))
+        keys: keys,
+        values: values
       }
     });
-    DefaultEventEmitter$1.dispatchEvent(customEvent);
+    DefaultEventEmitter$1.dispatchEvent(customEvent); // restore properties
+
+    console.log(keys, values);
+    this.setProperties(keys, false); // Records.properties.forEach(({propertyId}) => {
+    //   const attribute = this.#condition.attributes.find(attribute => attribute.property.propertyId === propertyId);
+    //   const categoryIds = [];
+    //   if (attribute) categoryIds.push(...attribute.query.categoryIds);
+    //   ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
+    // });
+
+    this.finish(false);
   }
 
   var ConditionBuilder$1 = new ConditionBuilder();
@@ -3417,7 +3433,6 @@
     }, {
       key: "removeProperty",
       value: function removeProperty(propertyId, parentCategoryId) {
-        console.log(propertyId, parentCategoryId, _classPrivateFieldGet(this, _condition$1));
         var isMatch = propertyId === _classPrivateFieldGet(this, _condition$1).propertyId && (parentCategoryId ? parentCategoryId === _classPrivateFieldGet(this, _condition$1).parentCategoryId : true);
         if (isMatch) _classPrivateFieldGet(this, _ROOT$8).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$8));
         return isMatch;

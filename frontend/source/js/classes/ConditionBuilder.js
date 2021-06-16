@@ -33,7 +33,7 @@ class ConditionBuilder {
   }
 
   addProperty(propertyId, parentCategoryId, isFinal = true) {
-    console.log('addProperty', propertyId, parentCategoryId)
+    console.log('addProperty', propertyId, parentCategoryId, isFinal)
     // store
     this.#propertyConditions.push({propertyId, parentCategoryId});
     // evaluate
@@ -44,7 +44,7 @@ class ConditionBuilder {
   }
 
   addPropertyValue(propertyId, categoryId, isFinal = true) {
-    console.log('addPropertyValue', propertyId, categoryId)
+    console.log('addPropertyValue', propertyId, categoryId, isFinal)
     // find value of same property
     console.log(this.#attributeConditions)
     const samePropertyCondition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
@@ -65,7 +65,7 @@ class ConditionBuilder {
   }
 
   removeProperty(propertyId, parentCategoryId, isFinal = true) {
-    console.log('removeProperty', propertyId, parentCategoryId)
+    console.log('removeProperty', propertyId, parentCategoryId, isFinal)
     // remove from store
     const index = this.#propertyConditions.findIndex(condition => {
       if (propertyId === condition.propertyId) {
@@ -86,7 +86,7 @@ class ConditionBuilder {
   }
 
   removePropertyValue(propertyId, categoryId, isFinal = true) {
-    console.log('removePropertyValue', propertyId, categoryId)
+    console.log('removePropertyValue', propertyId, categoryId, isFinal)
     // remove from store
     const index = this.#attributeConditions.findIndex(condition => {
       if (condition.propertyId === propertyId) {
@@ -106,9 +106,10 @@ class ConditionBuilder {
   }
 
   setProperties(conditions, isFinal = true) {
+    console.log('isFinal', isFinal)
     // delete existing properties
     while (this.#propertyConditions.length > 0) {
-      this.removeProperty(this.#propertyConditions[0].propertyId, this.#propertyConditions[0].parentCategoryId);
+      this.removeProperty(this.#propertyConditions[0].propertyId, this.#propertyConditions[0].parentCategoryId, false);
     };
     // set new properties
     conditions.forEach(({propertyId, parentCategoryId}) => this.addProperty(propertyId, parentCategoryId, false));
@@ -140,8 +141,8 @@ class ConditionBuilder {
     if (isFinal) this.#postProcessing();
   }
 
-  finish() {
-    this.#postProcessing();
+  finish(dontPush) {
+    this.#postProcessing(dontPush);
   }
 
   makeQueryParameter() {
@@ -195,7 +196,7 @@ class ConditionBuilder {
 
   // private methods
 
-  #postProcessing() {
+  #postProcessing(dontPush = true) {
 
     // evaluate if search is possible
     const established 
@@ -214,21 +215,37 @@ class ConditionBuilder {
     // for (const entry of params.entries()) {
     //   console.log(entry);
     // }
-    window.history.pushState('', '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
+    console.log(Object.fromEntries( params.entries() ))
+    if (dontPush) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
 
   }
 
   #popstate(e) {
-    console.log(e)
+    console.log('*****************', e)
     const params = new URL(location).searchParams;
-    console.log(params)
+    console.log(window.history.length)
+    console.log(Object.fromEntries( params.entries() ))
+    // dispatch event
+    const keys = JSON.parse(decodeURIComponent(params.get('keys')));
+    const values = JSON.parse(decodeURIComponent(params.get('values')));
     const customEvent = new CustomEvent(event.restoreParameters, {detail: {
       togoKey: params.get('togoKey'),
       userIds: params.get('userIds'),
-      keys: JSON.parse(decodeURIComponent(params.get('keys'))),
-      values: JSON.parse(decodeURIComponent(params.get('values')))
+      keys,
+      values
     }});
     DefaultEventEmitter.dispatchEvent(customEvent);
+
+    // restore properties
+    console.log(keys, values)
+    this.setProperties(keys, false);
+    // Records.properties.forEach(({propertyId}) => {
+    //   const attribute = this.#condition.attributes.find(attribute => attribute.property.propertyId === propertyId);
+    //   const categoryIds = [];
+    //   if (attribute) categoryIds.push(...attribute.query.categoryIds);
+    //   ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
+    // });
+    this.finish(false);
   }
 
 }
