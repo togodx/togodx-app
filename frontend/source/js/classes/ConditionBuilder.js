@@ -46,7 +46,6 @@ class ConditionBuilder {
   addPropertyValue(propertyId, categoryId, isFinal = true) {
     console.log('addPropertyValue', propertyId, categoryId, isFinal)
     // find value of same property
-    console.log(this.#attributeConditions)
     const samePropertyCondition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
     // store
     if (samePropertyCondition) {
@@ -106,7 +105,6 @@ class ConditionBuilder {
   }
 
   setProperties(conditions, isFinal = true) {
-    console.log('isFinal', isFinal)
     // delete existing properties
     while (this.#propertyConditions.length > 0) {
       this.removeProperty(this.#propertyConditions[0].propertyId, this.#propertyConditions[0].parentCategoryId, false);
@@ -141,8 +139,8 @@ class ConditionBuilder {
     if (isFinal) this.#postProcessing();
   }
 
-  finish(dontPush) {
-    this.#postProcessing(dontPush);
+  finish(dontLeaveInHistory) {
+    this.#postProcessing(dontLeaveInHistory);
   }
 
   makeQueryParameter() {
@@ -196,7 +194,7 @@ class ConditionBuilder {
 
   // private methods
 
-  #postProcessing(dontPush = true) {
+  #postProcessing(dontLeaveInHistory = true) {
 
     // evaluate if search is possible
     const established 
@@ -211,20 +209,14 @@ class ConditionBuilder {
     params.set('userIds', this.userIds ? this.userIds : '');
     params.set('keys', encodeURIComponent(JSON.stringify(this.#propertyConditions)));
     params.set('values', encodeURIComponent(JSON.stringify(this.#attributeConditions)));
-    // console.log(params.toString());
-    // for (const entry of params.entries()) {
-    //   console.log(entry);
-    // }
-    console.log(Object.fromEntries( params.entries() ))
-    if (dontPush) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
+    if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
 
   }
 
   #popstate(e) {
-    console.log('*****************', e)
+
     const params = new URL(location).searchParams;
-    console.log(window.history.length)
-    console.log(Object.fromEntries( params.entries() ))
+
     // dispatch event
     const keys = JSON.parse(decodeURIComponent(params.get('keys')));
     const values = JSON.parse(decodeURIComponent(params.get('values')));
@@ -237,14 +229,13 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
 
     // restore properties
-    console.log(keys, values)
     this.setProperties(keys, false);
-    // Records.properties.forEach(({propertyId}) => {
-    //   const attribute = this.#condition.attributes.find(attribute => attribute.property.propertyId === propertyId);
-    //   const categoryIds = [];
-    //   if (attribute) categoryIds.push(...attribute.query.categoryIds);
-    //   ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
-    // });
+    Records.properties.forEach(({propertyId}) => {
+      const property = values.find(property => property.propertyId === propertyId);
+      const categoryIds = [];
+      if (property) categoryIds.push(...property.categoryIds);
+      this.setPropertyValues(propertyId, categoryIds, false);
+    });
     this.finish(false);
   }
 

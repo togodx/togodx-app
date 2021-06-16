@@ -3014,8 +3014,6 @@
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
         console.log('addPropertyValue', propertyId, categoryId, isFinal); // find value of same property
 
-        console.log(_classPrivateFieldGet(this, _attributeConditions));
-
         var samePropertyCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
           return condition.propertyId === propertyId;
         }); // store
@@ -3108,8 +3106,8 @@
         var _this = this;
 
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-        console.log('isFinal', isFinal); // delete existing properties
 
+        // delete existing properties
         while (_classPrivateFieldGet(this, _propertyConditions).length > 0) {
           this.removeProperty(_classPrivateFieldGet(this, _propertyConditions)[0].propertyId, _classPrivateFieldGet(this, _propertyConditions)[0].parentCategoryId, false);
         }
@@ -3168,8 +3166,8 @@
       }
     }, {
       key: "finish",
-      value: function finish(dontPush) {
-        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this, dontPush);
+      value: function finish(dontLeaveInHistory) {
+        _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this, dontLeaveInHistory);
       }
     }, {
       key: "makeQueryParameter",
@@ -3245,7 +3243,7 @@
   }();
 
   function _postProcessing2() {
-    var dontPush = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+    var dontLeaveInHistory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
     // evaluate if search is possible
     var established = _classPrivateFieldGet(this, _togoKey) && _classPrivateFieldGet(this, _subjectId) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
     var customEvent = new CustomEvent(mutateEstablishConditions, {
@@ -3257,20 +3255,14 @@
     params.set('togoKey', _classPrivateFieldGet(this, _togoKey));
     params.set('userIds', this.userIds ? this.userIds : '');
     params.set('keys', encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _propertyConditions))));
-    params.set('values', encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _attributeConditions)))); // console.log(params.toString());
-    // for (const entry of params.entries()) {
-    //   console.log(entry);
-    // }
-
-    console.log(Object.fromEntries(params.entries()));
-    if (dontPush) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
+    params.set('values', encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _attributeConditions))));
+    if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
   }
 
   function _popstate2(e) {
-    console.log('*****************', e);
-    var params = new URL(location).searchParams;
-    console.log(window.history.length);
-    console.log(Object.fromEntries(params.entries())); // dispatch event
+    var _this3 = this;
+
+    var params = new URL(location).searchParams; // dispatch event
 
     var keys = JSON.parse(decodeURIComponent(params.get('keys')));
     var values = JSON.parse(decodeURIComponent(params.get('values')));
@@ -3284,14 +3276,17 @@
     });
     DefaultEventEmitter$1.dispatchEvent(customEvent); // restore properties
 
-    console.log(keys, values);
-    this.setProperties(keys, false); // Records.properties.forEach(({propertyId}) => {
-    //   const attribute = this.#condition.attributes.find(attribute => attribute.property.propertyId === propertyId);
-    //   const categoryIds = [];
-    //   if (attribute) categoryIds.push(...attribute.query.categoryIds);
-    //   ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
-    // });
+    this.setProperties(keys, false);
+    Records$1.properties.forEach(function (_ref4) {
+      var propertyId = _ref4.propertyId;
+      var property = values.find(function (property) {
+        return property.propertyId === propertyId;
+      });
+      var categoryIds = [];
+      if (property) categoryIds.push.apply(categoryIds, _toConsumableArray(property.categoryIds));
 
+      _this3.setPropertyValues(propertyId, categoryIds, false);
+    });
     this.finish(false);
   }
 
