@@ -6243,12 +6243,14 @@
     });
 
     var tsvArray = [];
-    tsvArray.push(Object.keys(temporaryArray[0]) + '\n');
+    tsvArray.push(Object.keys(temporaryArray[0]));
+    console.log(tsvArray);
     temporaryArray.forEach(function (item) {
-      tsvArray.push(Object.values(item) + '\n');
+      tsvArray.push(Object.values(item));
     });
+    console.log(tsvArray);
     var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
-    var tsvBlob = new Blob([bom, tsvArray.join('\t')], {
+    var tsvBlob = new Blob([bom, tsvArray.join('\n')], {
       type: 'text/plain'
     });
     var tsvUrl = URL.createObjectURL(tsvBlob);

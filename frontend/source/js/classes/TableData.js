@@ -3,6 +3,7 @@ import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
 import Records from "./Records";
 import * as event from '../events';
+import ConditionsController from "./ConditionsController";
 
 const LIMIT = 100;
 
@@ -340,12 +341,14 @@ export default class TableData {
       })
     })
     const tsvArray = [];
-    tsvArray.push(Object.keys(temporaryArray[0]) + '\n');
+    tsvArray.push(Object.keys(temporaryArray[0]));
+    console.log(tsvArray);
     temporaryArray.forEach(item => {
-      tsvArray.push(Object.values(item) + '\n');
+      tsvArray.push(Object.values(item));
     })
+    console.log(tsvArray);
     const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
-    const tsvBlob = new Blob([bom, tsvArray.join('\t')], { type: 'text/plain' });
+    const tsvBlob = new Blob([bom, tsvArray.join('\n')], { type: 'text/plain' });
     const tsvUrl = URL.createObjectURL(tsvBlob);
     const anchor = this.#BUTTON_DOWNLOAD_TSV.querySelector(':scope > .tsv');
     anchor.setAttribute('href', tsvUrl);
