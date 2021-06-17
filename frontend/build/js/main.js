@@ -3235,6 +3235,18 @@
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
+      }
+    }, {
+      key: "getSelectedCategoryIds",
+      value: function getSelectedCategoryIds(propertyId) {
+        var categoryIds = [];
+
+        var condition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
+          return condition.propertyId === propertyId;
+        });
+
+        if (condition) categoryIds.push.apply(categoryIds, _toConsumableArray(condition.categoryIds));
+        return categoryIds;
       } // public accessor
 
     }, {
@@ -4127,7 +4139,8 @@
     var _this3 = this;
 
     var parentItem = parentCategoryId ? _classPrivateFieldGet(this, _items$1)[parentCategoryId] : undefined;
-    console.log(parentItem); // make column
+    console.log(parentItem);
+    var selectedCategoryIds = ConditionBuilder$1.getSelectedCategoryIds(_classPrivateFieldGet(this, _property$3).propertyId); // make column
 
     var ul = document.createElement('ul');
     ul.classList.add('column');
@@ -4137,7 +4150,8 @@
       return item.categoryId;
     }), "\"\n      data-depth=\"").concat(depth, "\">\n      <input type=\"checkbox\" value=\"").concat(ALL_PROPERTIES, "\"/>\n      <span class=\"label\">Map following attributes</span>\n    </li>") + items.map(function (item) {
       max = Math.max(max, item.count);
-      return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");
+      var checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
+      return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");
     }).join('');
     var listItems = ul.querySelectorAll(':scope > .item:not(.-all)');
     listItems.forEach(function (li) {
@@ -4618,9 +4632,10 @@
 
     _classPrivateFieldSet(this, _values, values.map(function (value) {
       return Object.assign({}, value);
-    })); // make overview
-    // TODO: ヒストグラムは別処理
+    }));
 
+    var selectedCategoryIds = ConditionBuilder$1.getSelectedCategoryIds(_classPrivateFieldGet(this, _property$1).propertyId); // make overview
+    // TODO: ヒストグラムは別処理
 
     var _sum = values.reduce(function (acc, value) {
       return acc + value.count;
@@ -4632,7 +4647,8 @@
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / _sum * 100;
       value.baseColor = colorTintByHue(subject.color, 360 * index / values.length);
-      return "\n        <li class=\"track-value-view\" style=\"width: ".concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\"></div>\n        </li>");
+      var selectedClass = selectedCategoryIds.indexOf(value.categoryId) !== -1 ? ' -selected' : '';
+      return "\n        <li class=\"track-value-view".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\"></div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .track-value-view').forEach(function (elm, index) {
       // reference
@@ -4705,23 +4721,9 @@
     }); // event listener
 
     DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (e) {
-      var propertyId, categoryId;
-
-      switch (e.detail.action) {
-        case 'add':
-          propertyId = e.detail.propertyId;
-          categoryId = e.detail.categoryId;
-          break;
-
-        case 'remove':
-          propertyId = e.detail.propertyId;
-          categoryId = e.detail.categoryId;
-          break;
-      }
-
-      if (_classPrivateFieldGet(_this, _property$1).propertyId === propertyId) {
+      if (_classPrivateFieldGet(_this, _property$1).propertyId === e.detail.propertyId) {
         _classPrivateFieldGet(_this, _values).forEach(function (value) {
-          if (value.categoryId === categoryId) {
+          if (value.categoryId === e.detail.categoryId) {
             switch (e.detail.action) {
               case 'add':
                 value.elm.classList.add('-selected');

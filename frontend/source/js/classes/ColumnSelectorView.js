@@ -136,6 +136,7 @@ export default class ColumnSelectorView {
 
     const parentItem = parentCategoryId ? this.#items[parentCategoryId] : undefined;
     console.log(parentItem)
+    const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.#property.propertyId);
 
     // make column
     const ul = document.createElement('ul');
@@ -155,12 +156,13 @@ export default class ColumnSelectorView {
     </li>`
     + items.map(item => {
       max = Math.max(max, item.count);
+      const checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
       return `<li
         class="item${item.hasChild ? ' -haschild' : ''}"
         data-id="${item.categoryId}"
         data-category-id="${item.categoryId}"
         data-count="${item.count}">
-        <input type="checkbox" value="${item.categoryId}"/>
+        <input type="checkbox" value="${item.categoryId}"${checked}/>
         <span class="label">${item.label}</span>
         <span class="count">${item.count.toLocaleString()}</span>
       </li>`;

@@ -189,6 +189,13 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
+  getSelectedCategoryIds(propertyId) {
+    const categoryIds = [];
+    const condition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
+    if (condition) categoryIds.push(...condition.categoryIds);
+    return categoryIds;
+  }
+
 
   // public accessor
 
