@@ -1,6 +1,8 @@
 import ConditionBuilder from "./ConditionBuilder";
 import Records from "./Records";
 
+const POLLING_DURATION = 100;
+
 export default class StackingConditionView {
 
   #isRange;
@@ -77,13 +79,20 @@ export default class StackingConditionView {
   // public methods
 
   addValue(categoryId) {
-    const value = Records.getValue(this.#condition.propertyId, categoryId);
-    this.#LABELS.insertAdjacentHTML('beforeend', `<li class="label _subject-background-color" data-category-id="${value.categoryId}">${value.label}<div class="close-button-view"></div></li>`);
-    // attach event
-    this.#LABELS.querySelector(':scope > .label:last-child').addEventListener('click', e => {
-      e.stopPropagation();
-      ConditionBuilder.removePropertyValue(this.#condition.propertyId, e.target.parentNode.dataset.categoryId);
-    });
+    const getValue = () => {
+      const value = Records.getValue(this.#condition.propertyId, categoryId);
+      if (value === undefined) {
+        setTimeout(getValue, POLLING_DURATION);
+      } else {
+        this.#LABELS.insertAdjacentHTML('beforeend', `<li class="label _subject-background-color" data-category-id="${value.categoryId}">${value.label}<div class="close-button-view"></div></li>`);
+        // attach event
+        this.#LABELS.querySelector(':scope > .label:last-child').addEventListener('click', e => {
+          e.stopPropagation();
+          ConditionBuilder.removePropertyValue(this.#condition.propertyId, e.target.parentNode.dataset.categoryId);
+        });
+      }
+    }
+    getValue();
   }
 
   removeProperty(propertyId, parentCategoryId) {
@@ -113,10 +122,7 @@ export default class StackingConditionView {
   }
 
 
-  // accessor
+  // private methods
 
-  // get elm() {
-  //   return this.#ROOT;
-  // }
 
 }

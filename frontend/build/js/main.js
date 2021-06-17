@@ -3312,6 +3312,8 @@
 
   var ConditionBuilder$1 = new ConditionBuilder();
 
+  var POLLING_DURATION = 100;
+
   var _isRange = new WeakMap();
 
   var _condition$1 = new WeakMap();
@@ -3435,15 +3437,23 @@
       value: function addValue(categoryId) {
         var _this2 = this;
 
-        var value = Records$1.getValue(_classPrivateFieldGet(this, _condition$1).propertyId, categoryId);
+        var getValue = function getValue() {
+          var value = Records$1.getValue(_classPrivateFieldGet(_this2, _condition$1).propertyId, categoryId);
 
-        _classPrivateFieldGet(this, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _subject-background-color\" data-category-id=\"".concat(value.categoryId, "\">").concat(value.label, "<div class=\"close-button-view\"></div></li>")); // attach event
+          if (value === undefined) {
+            setTimeout(getValue, POLLING_DURATION);
+          } else {
+            _classPrivateFieldGet(_this2, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _subject-background-color\" data-category-id=\"".concat(value.categoryId, "\">").concat(value.label, "<div class=\"close-button-view\"></div></li>")); // attach event
 
 
-        _classPrivateFieldGet(this, _LABELS).querySelector(':scope > .label:last-child').addEventListener('click', function (e) {
-          e.stopPropagation();
-          ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this2, _condition$1).propertyId, e.target.parentNode.dataset.categoryId);
-        });
+            _classPrivateFieldGet(_this2, _LABELS).querySelector(':scope > .label:last-child').addEventListener('click', function (e) {
+              e.stopPropagation();
+              ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this2, _condition$1).propertyId, e.target.parentNode.dataset.categoryId);
+            });
+          }
+        };
+
+        getValue();
       }
     }, {
       key: "removeProperty",
@@ -3473,10 +3483,7 @@
       key: "sameProperty",
       value: function sameProperty(propertyId) {
         return propertyId === _classPrivateFieldGet(this, _condition$1).propertyId;
-      } // accessor
-      // get elm() {
-      //   return this.#ROOT;
-      // }
+      } // private methods
 
     }]);
 
