@@ -11,6 +11,7 @@ class ConditionBuilder {
   #userIds;
 
   constructor() {
+    console.log('constructor')
     this.#propertyConditions = [];
     this.#attributeConditions = [];
     window.addEventListener('popstate', this.#createSearchConditionFromURLParameters.bind(this));
@@ -20,6 +21,7 @@ class ConditionBuilder {
   // public methods
 
   init() {
+    console.log('init')
     this.#createSearchConditionFromURLParameters();
   }
 
@@ -111,6 +113,7 @@ class ConditionBuilder {
   }
 
   setProperties(conditions, isFinal = true) {
+    console.log(conditions)
     // delete existing properties
     while (this.#propertyConditions.length > 0) {
       this.removeProperty(this.#propertyConditions[0].propertyId, this.#propertyConditions[0].parentCategoryId, false);
@@ -231,8 +234,8 @@ class ConditionBuilder {
     console.log(Object.fromEntries( params.entries() ))
 
     // dispatch event
-    const keys = JSON.parse(decodeURIComponent(params.get('keys')));
-    const values = JSON.parse(decodeURIComponent(params.get('values')));
+    const keys = JSON.parse(decodeURIComponent(params.get('keys'))) ?? [];
+    const values = JSON.parse(decodeURIComponent(params.get('values'))) ?? [];
     const customEvent = new CustomEvent(event.restoreParameters, {detail: {
       togoKey: params.get('togoKey'),
       userIds: params.get('userIds'),

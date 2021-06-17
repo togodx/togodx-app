@@ -2957,6 +2957,8 @@
         value: void 0
       });
 
+      console.log('constructor');
+
       _classPrivateFieldSet(this, _propertyConditions, []);
 
       _classPrivateFieldSet(this, _attributeConditions, []);
@@ -2968,6 +2970,8 @@
     _createClass(ConditionBuilder, [{
       key: "init",
       value: function init() {
+        console.log('init');
+
         _classPrivateMethodGet(this, _createSearchConditionFromURLParameters, _createSearchConditionFromURLParameters2).call(this);
       }
     }, {
@@ -3113,8 +3117,8 @@
         var _this = this;
 
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+        console.log(conditions); // delete existing properties
 
-        // delete existing properties
         while (_classPrivateFieldGet(this, _propertyConditions).length > 0) {
           this.removeProperty(_classPrivateFieldGet(this, _propertyConditions)[0].propertyId, _classPrivateFieldGet(this, _propertyConditions)[0].parentCategoryId, false);
         }
@@ -3271,14 +3275,16 @@
   }
 
   function _createSearchConditionFromURLParameters2(e) {
-    var _this3 = this;
+    var _JSON$parse,
+        _JSON$parse2,
+        _this3 = this;
 
     console.log(e);
     var params = new URL(location).searchParams;
     console.log(Object.fromEntries(params.entries())); // dispatch event
 
-    var keys = JSON.parse(decodeURIComponent(params.get('keys')));
-    var values = JSON.parse(decodeURIComponent(params.get('values')));
+    var keys = (_JSON$parse = JSON.parse(decodeURIComponent(params.get('keys')))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [];
+    var values = (_JSON$parse2 = JSON.parse(decodeURIComponent(params.get('values')))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : [];
     var customEvent = new CustomEvent(restoreParameters, {
       detail: {
         togoKey: params.get('togoKey'),
