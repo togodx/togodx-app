@@ -37,6 +37,8 @@ export default class StackingConditionView {
         const parentValue = condition.parentCategoryId ? Records.getValue(condition.propertyId, condition.parentCategoryId) : undefined;
         label = `<div class="label _subject-color">${parentValue ? parentValue.label : property.label}</div>`;
         if (condition.parentCategoryId) {
+          console.log( Records.getValue(condition.propertyId, condition.parentCategoryId) )
+          console.log( Records.getAncestors(condition.propertyId, condition.parentCategoryId) )
           ancestorLabels.push(property.label, ...Records.getAncestors(condition.propertyId, condition.parentCategoryId).map(ancestor => ancestor.label));
         }
       }

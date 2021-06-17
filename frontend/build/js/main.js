@@ -2957,21 +2957,17 @@
         value: void 0
       });
 
-      console.log('constructor');
-
       _classPrivateFieldSet(this, _propertyConditions, []);
 
       _classPrivateFieldSet(this, _attributeConditions, []);
 
-      window.addEventListener('popstate', _classPrivateMethodGet(this, _createSearchConditionFromURLParameters, _createSearchConditionFromURLParameters2).bind(this)); // alert(123)
+      window.addEventListener('popstate', _classPrivateMethodGet(this, _createSearchConditionFromURLParameters, _createSearchConditionFromURLParameters2).bind(this));
     } // public methods
 
 
     _createClass(ConditionBuilder, [{
       key: "init",
       value: function init() {
-        console.log('init');
-
         _classPrivateMethodGet(this, _createSearchConditionFromURLParameters, _createSearchConditionFromURLParameters2).call(this);
       }
     }, {
@@ -3237,6 +3233,19 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
+      key: "isSelectedProperty",
+      value: function isSelectedProperty(propertyId) {
+        var condiiton = _classPrivateFieldGet(this, _propertyConditions).find(function (condiiton) {
+          return condiiton.propertyId === propertyId;
+        });
+
+        if (condiiton && condiiton.parentCategoryId === undefined) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }, {
       key: "getSelectedCategoryIds",
       value: function getSelectedCategoryIds(propertyId) {
         var categoryIds = [];
@@ -3267,8 +3276,7 @@
 
   function _postProcessing2() {
     var dontLeaveInHistory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-    console.log(arguments); // alert(`dontLeaveInHistory: ${dontLeaveInHistory ? 'true' : 'false'}`)
-
+    console.log(arguments);
     console.log(_classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions)); // evaluate if search is possible
 
     var established = _classPrivateFieldGet(this, _togoKey) && _classPrivateFieldGet(this, _subjectId) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
@@ -3281,9 +3289,8 @@
     params.set('togoKey', _classPrivateFieldGet(this, _togoKey));
     params.set('userIds', this.userIds ? this.userIds : '');
     params.set('keys', encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _propertyConditions))));
-    params.set('values', encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _attributeConditions)))); // alert(456)
-
-    if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString())); // alert(789)
+    params.set('values', encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _attributeConditions))));
+    if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
   }
 
   function _createSearchConditionFromURLParameters2(e) {
@@ -3391,6 +3398,8 @@
             label = "<div class=\"label _subject-color\">".concat(parentValue ? parentValue.label : property.label, "</div>");
 
             if (condition.parentCategoryId) {
+              console.log(Records$1.getValue(condition.propertyId, condition.parentCategoryId));
+              console.log(Records$1.getAncestors(condition.propertyId, condition.parentCategoryId));
               ancestorLabels.push.apply(ancestorLabels, [property.label].concat(_toConsumableArray(Records$1.getAncestors(condition.propertyId, condition.parentCategoryId).map(function (ancestor) {
                 return ancestor.label;
               }))));
@@ -4896,6 +4905,7 @@
     });
 
     // console.log(subject, property, container)
+    var isSelected = ConditionBuilder$1.isSelectedProperty(property.propertyId);
     var elm = document.createElement('div');
     container.insertAdjacentElement('beforeend', elm);
 
@@ -4910,10 +4920,12 @@
     elm.classList.add('track-view');
     elm.classList.add('-preparing');
     elm.classList.add('collapse-view');
+    if (isSelected) elm.classList.add('-allselected');
     elm.dataset.propertyId = property.propertyId;
     elm.dataset.collapse = property.propertyId; // make html
 
-    elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <h2 class=\"title\">").concat(property.label, "</h2>\n          <input type=\"checkbox\" class=\"mapping\">\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview\" style=\"background-color: ").concat(subject.colorCSSValue, ";\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <p class=\"description\">").concat(property.description, "</p>\n        <!--<label><input type=\"checkbox\">All properties</label>-->\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
+    var checked = isSelected ? ' checked' : '';
+    elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <h2 class=\"title\">").concat(property.label, "</h2>\n          <input type=\"checkbox\" class=\"mapping\"").concat(checked, ">\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview\" style=\"background-color: ").concat(subject.colorCSSValue, ";\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <p class=\"description\">").concat(property.description, "</p>\n        <!--<label><input type=\"checkbox\">All properties</label>-->\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
     var valuesContainer = elm.querySelector(':scope > .row.-upper > .values');
 
     _classPrivateFieldSet(this, _OVERVIEW_CONTAINER, valuesContainer.querySelector(':scope > .overview > .inner'));

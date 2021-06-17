@@ -11,17 +11,14 @@ class ConditionBuilder {
   #userIds;
 
   constructor() {
-    console.log('constructor')
     this.#propertyConditions = [];
     this.#attributeConditions = [];
     window.addEventListener('popstate', this.#createSearchConditionFromURLParameters.bind(this));
-    // alert(123)
   }
 
   // public methods
 
   init() {
-    console.log('init')
     this.#createSearchConditionFromURLParameters();
   }
 
@@ -189,6 +186,15 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
+  isSelectedProperty(propertyId) {
+    const condiiton = this.#propertyConditions.find(condiiton => condiiton.propertyId === propertyId);
+    if (condiiton && condiiton.parentCategoryId === undefined) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   getSelectedCategoryIds(propertyId) {
     const categoryIds = [];
     const condition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
@@ -212,7 +218,6 @@ class ConditionBuilder {
 
   #postProcessing(dontLeaveInHistory = true) {
     console.log(arguments)
-    // alert(`dontLeaveInHistory: ${dontLeaveInHistory ? 'true' : 'false'}`)
     console.log(this.#propertyConditions, this.#attributeConditions)
 
     // evaluate if search is possible
@@ -228,9 +233,7 @@ class ConditionBuilder {
     params.set('userIds', this.userIds ? this.userIds : '');
     params.set('keys', encodeURIComponent(JSON.stringify(this.#propertyConditions)));
     params.set('values', encodeURIComponent(JSON.stringify(this.#attributeConditions)));
-    // alert(456)
     if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
-    // alert(789)
 
   }
 

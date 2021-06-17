@@ -21,6 +21,7 @@ export default class TrackView {
   constructor(subject, property, container, positionRate) {
     // console.log(subject, property, container)
 
+    const isSelected = ConditionBuilder.isSelectedProperty(property.propertyId);
     const elm = document.createElement('div');
     container.insertAdjacentElement('beforeend', elm);
     this.#ROOT = elm;
@@ -30,16 +31,18 @@ export default class TrackView {
     elm.classList.add('track-view');
     elm.classList.add('-preparing');
     elm.classList.add('collapse-view');
+    if (isSelected) elm.classList.add('-allselected');
     elm.dataset.propertyId = property.propertyId;
     elm.dataset.collapse = property.propertyId;
 
     // make html
+    const checked = isSelected ? ' checked' : '';
     elm.innerHTML = `
     <div class="row -upper">
       <div class="left definition">
         <div class="collapsebutton" data-collapse="${property.propertyId}">
           <h2 class="title">${property.label}</h2>
-          <input type="checkbox" class="mapping">
+          <input type="checkbox" class="mapping"${checked}>
         </div>
       </div>
       <div class="right values">
