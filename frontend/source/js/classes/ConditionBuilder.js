@@ -10,10 +10,12 @@ class ConditionBuilder {
   #togoKey;
   #userIds;
   #hierarchicConditionsFromURLParameters;
+  #preparingCounter;
 
   constructor() {
     this.#propertyConditions = [];
     this.#attributeConditions = [];
+    this.#preparingCounter = 0;
     window.addEventListener('popstate', this.#createSearchConditionFromURLParameters.bind(this));
   }
 
@@ -24,7 +26,7 @@ class ConditionBuilder {
   }
 
   setSubject(togoKey, subjectId) {
-    console.log(togoKey, subjectId)
+    console.log('setSubject', togoKey, subjectId)
     this.#togoKey = togoKey;
     this.#subjectId = subjectId;
     // post processing (permalink, evaluate)
@@ -32,7 +34,7 @@ class ConditionBuilder {
   }
 
   setUserIds(ids) {
-    console.log(ids)
+    console.log('setUserIds', ids)
     this.#userIds = ids;
     // post processing (permalink, evaluate)
     this.#postProcessing();
@@ -111,7 +113,7 @@ class ConditionBuilder {
   }
 
   setProperties(conditions, isFinal = true) {
-    console.log(conditions)
+    console.log('setProperties', conditions, isFinal)
     // delete existing properties
     while (this.#propertyConditions.length > 0) {
       this.removeProperty(this.#propertyConditions[0].propertyId, this.#propertyConditions[0].parentCategoryId, false);
@@ -123,6 +125,7 @@ class ConditionBuilder {
   }
 
   setPropertyValues(propertyId, categoryIds, isFinal = true) {
+    console.log('setPropertyValues', propertyId, categoryIds, isFinal)
     const oldCondition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
     if (oldCondition) {
       const originalValues = Records.getProperty(propertyId).values;
@@ -147,6 +150,7 @@ class ConditionBuilder {
   }
 
   finish(dontLeaveInHistory) {
+    console.log('finish', dontLeaveInHistory)
     this.#postProcessing(dontLeaveInHistory);
   }
 
@@ -226,7 +230,7 @@ class ConditionBuilder {
   // private methods
 
   #postProcessing(dontLeaveInHistory = true) {
-    console.log(this.#propertyConditions, this.#attributeConditions)
+    console.log(this.#propertyConditions, this.#attributeConditions, dontLeaveInHistory)
 
     // evaluate if search is possible
     const established 
@@ -252,7 +256,6 @@ class ConditionBuilder {
   #createSearchConditionFromURLParameters(e) {
     console.log(e)
 
-    // const [keys, values] = this.#getHierarchicConditionsFromURLParameters();
     const params = new URL(location).searchParams;
     console.log(Object.fromEntries( params.entries() ))
     const keys = JSON.parse(decodeURIComponent(params.get('keys'))) ?? [];

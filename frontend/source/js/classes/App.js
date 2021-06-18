@@ -18,6 +18,7 @@ class App {
 
   #viewModes;
   #aggregate;
+
   #colorWhite;
   #colorLightGray;
   #colorSilver;

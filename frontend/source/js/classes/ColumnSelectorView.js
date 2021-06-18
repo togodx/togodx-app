@@ -14,7 +14,6 @@ export default class ColumnSelectorView {
   #items;
   #columns;
   #currentColumns;
-  #queue;
   #ROOT;
   #CONTAINER;
   #LOADING_VIEW;
@@ -82,14 +81,13 @@ export default class ColumnSelectorView {
     this.#appendSubColumn(column, depth);
 
     // make restore queue
-    this.#queue = [];
+    const queue = [];
     const categoryIds = ConditionBuilder.getSelectedHierarchicCategoryIdsFromURLParameters(property.propertyId);
-    console.log(categoryIds)
     categoryIds.keys.forEach(key => {
       // console.log(key)
       if (key.id) {
         key.id.ancestors.forEach((categoryId, index) => {
-          this.#queue.push({
+          queue.push({
             categoryId,
             depth: index + 1
           });
@@ -101,7 +99,7 @@ export default class ColumnSelectorView {
       value.ids.forEach(id => {
         if (id.ancestors) {
           id.ancestors.forEach((categoryId, index) => {
-            this.#queue.push({
+            queue.push({
               categoryId,
               depth: index + 1
             });
@@ -109,8 +107,7 @@ export default class ColumnSelectorView {
         }
       })
     });
-    console.log(this.#queue)
-    this.#getColumns(this.#queue);
+    this.#getColumns(queue);
   }
 
   // private methods
@@ -168,13 +165,9 @@ export default class ColumnSelectorView {
 
   #getColumns(queue) {
     if (queue.length === 0) return;
-    console.log(queue)
     const {categoryId, depth} = queue.shift();
     this.#getColumn(categoryId, depth)
-      .then(column => {
-        console.log(column)
-        this.#getColumns(queue);
-      });
+      .then(() => this.#getColumns(queue));
   }
 
   #makeColumn(items, depth, parentCategoryId) {

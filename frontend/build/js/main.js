@@ -2922,6 +2922,8 @@
 
   var _hierarchicConditionsFromURLParameters = new WeakMap();
 
+  var _preparingCounter = new WeakMap();
+
   var _postProcessing = new WeakSet();
 
   var _createSearchConditionFromURLParameters = new WeakSet();
@@ -2972,9 +2974,16 @@
         value: void 0
       });
 
+      _preparingCounter.set(this, {
+        writable: true,
+        value: void 0
+      });
+
       _classPrivateFieldSet(this, _propertyConditions, []);
 
       _classPrivateFieldSet(this, _attributeConditions, []);
+
+      _classPrivateFieldSet(this, _preparingCounter, 0);
 
       window.addEventListener('popstate', _classPrivateMethodGet(this, _createSearchConditionFromURLParameters, _createSearchConditionFromURLParameters2).bind(this));
     } // public methods
@@ -2988,7 +2997,7 @@
     }, {
       key: "setSubject",
       value: function setSubject(togoKey, subjectId) {
-        console.log(togoKey, subjectId);
+        console.log('setSubject', togoKey, subjectId);
 
         _classPrivateFieldSet(this, _togoKey, togoKey);
 
@@ -3000,7 +3009,7 @@
     }, {
       key: "setUserIds",
       value: function setUserIds(ids) {
-        console.log(ids);
+        console.log('setUserIds', ids);
 
         _classPrivateFieldSet(this, _userIds, ids); // post processing (permalink, evaluate)
 
@@ -3128,7 +3137,7 @@
         var _this = this;
 
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-        console.log(conditions); // delete existing properties
+        console.log('setProperties', conditions, isFinal); // delete existing properties
 
         while (_classPrivateFieldGet(this, _propertyConditions).length > 0) {
           this.removeProperty(_classPrivateFieldGet(this, _propertyConditions)[0].propertyId, _classPrivateFieldGet(this, _propertyConditions)[0].parentCategoryId, false);
@@ -3148,6 +3157,7 @@
         var _this2 = this;
 
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+        console.log('setPropertyValues', propertyId, categoryIds, isFinal);
 
         var oldCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
           return condition.propertyId === propertyId;
@@ -3189,6 +3199,8 @@
     }, {
       key: "finish",
       value: function finish(dontLeaveInHistory) {
+        console.log('finish', dontLeaveInHistory);
+
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this, dontLeaveInHistory);
       }
     }, {
@@ -3304,7 +3316,7 @@
 
   function _postProcessing2() {
     var dontLeaveInHistory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-    console.log(_classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions)); // evaluate if search is possible
+    console.log(_classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions), dontLeaveInHistory); // evaluate if search is possible
 
     var established = _classPrivateFieldGet(this, _togoKey) && _classPrivateFieldGet(this, _subjectId) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
     var customEvent = new CustomEvent(mutateEstablishConditions, {
@@ -3332,8 +3344,7 @@
         _JSON$parse2,
         _this3 = this;
 
-    console.log(e); // const [keys, values] = this.#getHierarchicConditionsFromURLParameters();
-
+    console.log(e);
     var params = new URL(location).searchParams;
     console.log(Object.fromEntries(params.entries()));
     var keys = (_JSON$parse = JSON.parse(decodeURIComponent(params.get('keys')))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [];
@@ -4041,8 +4052,6 @@
 
   var _currentColumns = new WeakMap();
 
-  var _queue = new WeakMap();
-
   var _ROOT$7 = new WeakMap();
 
   var _CONTAINER$1 = new WeakMap();
@@ -4108,11 +4117,6 @@
     });
 
     _currentColumns.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _queue.set(this, {
       writable: true,
       value: void 0
     });
@@ -4201,15 +4205,13 @@
     _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, _column, _depth); // make restore queue
 
 
-    _classPrivateFieldSet(this, _queue, []);
-
+    var _queue = [];
     var categoryIds = ConditionBuilder$1.getSelectedHierarchicCategoryIdsFromURLParameters(property.propertyId);
-    console.log(categoryIds);
     categoryIds.keys.forEach(function (key) {
       // console.log(key)
       if (key.id) {
         key.id.ancestors.forEach(function (categoryId, index) {
-          _classPrivateFieldGet(_this, _queue).push({
+          _queue.push({
             categoryId: categoryId,
             depth: index + 1
           });
@@ -4221,7 +4223,7 @@
       value.ids.forEach(function (id) {
         if (id.ancestors) {
           id.ancestors.forEach(function (categoryId, index) {
-            _classPrivateFieldGet(_this, _queue).push({
+            _queue.push({
               categoryId: categoryId,
               depth: index + 1
             });
@@ -4229,9 +4231,8 @@
         }
       });
     });
-    console.log(_classPrivateFieldGet(this, _queue));
 
-    _classPrivateMethodGet(this, _getColumns, _getColumns2).call(this, _classPrivateFieldGet(this, _queue));
+    _classPrivateMethodGet(this, _getColumns, _getColumns2).call(this, _queue);
   } // private methods
   ;
 
@@ -4312,16 +4313,13 @@
     var _this4 = this;
 
     if (queue.length === 0) return;
-    console.log(queue);
 
     var _queue$shift = queue.shift(),
         categoryId = _queue$shift.categoryId,
         depth = _queue$shift.depth;
 
-    _classPrivateMethodGet(this, _getColumn, _getColumn2).call(this, categoryId, depth).then(function (column) {
-      console.log(column);
-
-      _classPrivateMethodGet(_this4, _getColumns, _getColumns2).call(_this4, queue);
+    _classPrivateMethodGet(this, _getColumn, _getColumn2).call(this, categoryId, depth).then(function () {
+      return _classPrivateMethodGet(_this4, _getColumns, _getColumns2).call(_this4, queue);
     });
   }
 
