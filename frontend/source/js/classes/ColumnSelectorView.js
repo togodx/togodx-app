@@ -14,6 +14,7 @@ export default class ColumnSelectorView {
   #items;
   #columns;
   #currentColumns;
+  #queue;
   #ROOT;
   #CONTAINER;
   #LOADING_VIEW;
@@ -79,7 +80,31 @@ export default class ColumnSelectorView {
     // make root column
     const column = this.#makeColumn(items, depth);
     this.#appendSubColumn(column, depth);
+
+    // restore
+    this.#queue = [];
+    const categoryIds = ConditionBuilder.getSelectedHierarchicCategoryIdsFromURLParameters(property.propertyId);
+    console.log(categoryIds)
+    categoryIds.keys.forEach((key, index) => {
+      console.log(key)
+      if (key.id) {
+        this.#queue.push({
+          categoryId: key.id.categoryId,
+          depth: index + 1
+        });
+        // this.#getColumn(key.id.categoryId, index + 1)
+        //   .then(column => {
+        //     console.log(column)
+        //   });
+      }
+    });
+    categoryIds.values.forEach((value, index) => {
+      console.log(value)
+
+    });
   }
+
+  // private methods
 
   #setItems(items, depth, parent) {
     for (const item of items) {
@@ -96,32 +121,44 @@ export default class ColumnSelectorView {
     }
   }
 
-  #getSubColumn(id, depth) {
-    const column = this.#columns.find(column => column.parentCategoryId === id);
-    if (column) {
-      this.#appendSubColumn(column.ul, depth);
-    } else {
-      // loading
-      this.#LOADING_VIEW.classList.add('-shown');
-      fetch(this.#sparqlist + '?categoryIds=' + id)
-        .then(responce => responce.json())
-        .then(json => {
-          json.forEach(value => value.parentCategoryId = id);
-          Records.setValues(this.#property.propertyId, json);
-          this.#setItems(json, depth, id);
-          const column = this.#makeColumn(json, depth, id);
-          this.#appendSubColumn(column, depth);
-          this.#LOADING_VIEW.classList.remove('-shown');
-        })
-        .catch(error => {
-          // TODO: エラー処理
-          this.#LOADING_VIEW.classList.remove('-shown');
-          throw Error(error);
-        });
-    }
+  #setSubColumn(categoryId, depth) {
+    this.#LOADING_VIEW.classList.add('-shown');
+    this.#getColumn(categoryId, depth)
+      .then(column => {
+        this.#appendSubColumn(column, depth);
+        this.#LOADING_VIEW.classList.remove('-shown');
+      })
+      .catch(error => {
+        // TODO: エラー処理
+        this.#LOADING_VIEW.classList.remove('-shown');
+        throw Error(error);
+      });
+  }
+
+  #getColumn(categoryId, depth) {
+    return new Promise((resolve, reject) => {
+      const column = this.#columns.find(column => column.parentCategoryId === categoryId);
+      if (column) {
+        resolve(column.ul);
+      } else {
+        fetch(this.#sparqlist + '?categoryIds=' + categoryId)
+          .then(responce => responce.json())
+          .then(json => {
+            json.forEach(value => value.parentCategoryId = categoryId);
+            Records.setValues(this.#property.propertyId, json);
+            this.#setItems(json, depth, categoryId);
+            const column = this.#makeColumn(json, depth, categoryId);
+            resolve(column);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      }
+    });
   }
 
   #makeColumn(items, depth, parentCategoryId) {
+    // console.log(items, depth, parentCategoryId)
 
     const parentItem = parentCategoryId ? this.#items[parentCategoryId] : undefined;
     const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.#property.propertyId);
@@ -176,7 +213,7 @@ export default class ColumnSelectorView {
         }
         // get lower column
         this.#items[li.dataset.id].selected = true;
-        this.#getSubColumn(li.dataset.id, depth + 1);
+        this.#setSubColumn(li.dataset.id, depth + 1);
       });
     });
 

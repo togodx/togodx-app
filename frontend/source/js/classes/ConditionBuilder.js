@@ -9,6 +9,7 @@ class ConditionBuilder {
   #subjectId;
   #togoKey;
   #userIds;
+  #hierarchicConditionsFromURLParameters;
 
   constructor() {
     this.#propertyConditions = [];
@@ -202,6 +203,14 @@ class ConditionBuilder {
     return categoryIds;
   }
 
+  getSelectedHierarchicCategoryIdsFromURLParameters(propertyId) {
+    // const [keys, values] = this.#getHierarchicConditionsFromURLParameters();
+    return {
+      keys: this.#hierarchicConditionsFromURLParameters.keys.filter(key => key.propertyId === propertyId),
+      values: this.#hierarchicConditionsFromURLParameters.values.filter(value => value.propertyId === propertyId)
+    }
+  }
+
 
   // public accessor
 
@@ -226,7 +235,55 @@ class ConditionBuilder {
     const customEvent = new CustomEvent(event.mutateEstablishConditions, {detail: established});
     DefaultEventEmitter.dispatchEvent(customEvent);
 
-    // get ancestors
+    // get hierarchic conditions
+    const [keys, values] = this.#getHierarchicConditions();
+    console.log(keys, values)
+
+    // generate permalink
+    const params = new URL(location).searchParams;
+    params.set('togoKey', this.#togoKey);
+    params.set('userIds', this.userIds ? this.userIds : '');
+    params.set('keys', encodeURIComponent(JSON.stringify(keys)));
+    params.set('values', encodeURIComponent(JSON.stringify(values)));
+    if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
+
+  }
+
+  #createSearchConditionFromURLParameters(e) {
+    console.log(e)
+
+    // const [keys, values] = this.#getHierarchicConditionsFromURLParameters();
+    const params = new URL(location).searchParams;
+    console.log(Object.fromEntries( params.entries() ))
+    const keys = JSON.parse(decodeURIComponent(params.get('keys'))) ?? [];
+    const values = JSON.parse(decodeURIComponent(params.get('values'))) ?? [];
+    this.#hierarchicConditionsFromURLParameters = {keys, values};
+    console.log(this.#hierarchicConditionsFromURLParameters)
+
+    // restore conditions
+    const [properties, attributes] = this.#getCondtionsFromHierarchicConditions(keys, values);
+    console.log(properties, attributes)
+    this.setProperties(properties, false);
+    Records.properties.forEach(({propertyId}) => {
+      const property = attributes.find(property => property.propertyId === propertyId);
+      const categoryIds = [];
+      if (property) categoryIds.push(...property.categoryIds);
+      this.setPropertyValues(propertyId, categoryIds, false);
+    });
+    this.finish(false);
+
+    // dispatch event
+    const customEvent = new CustomEvent(event.restoreParameters, {detail: {
+      togoKey: params.get('togoKey'),
+      userIds: params.get('userIds'),
+      keys,
+      values
+    }});
+    DefaultEventEmitter.dispatchEvent(customEvent);
+
+  }
+
+  #getHierarchicConditions() {
     const keys = [];
     this.#propertyConditions.forEach(({propertyId, parentCategoryId}) => {
       const property = {propertyId};
@@ -249,37 +306,18 @@ class ConditionBuilder {
       })
       values.push({propertyId, ids});
     });
-    console.log(keys, values)
-
-    // generate permalink
-    const params = new URL(location).searchParams;
-    params.set('togoKey', this.#togoKey);
-    params.set('userIds', this.userIds ? this.userIds : '');
-    params.set('keys', encodeURIComponent(JSON.stringify(keys)));
-    params.set('values', encodeURIComponent(JSON.stringify(values)));
-    if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
-
+    return [keys, values];
   }
 
-  #createSearchConditionFromURLParameters(e) {
-    console.log(e)
+  // #getHierarchicConditionsFromURLParameters() {
+  //   const params = new URL(location).searchParams;
+  //   const keys = JSON.parse(decodeURIComponent(params.get('keys'))) ?? [];
+  //   const values = JSON.parse(decodeURIComponent(params.get('values'))) ?? [];
+  //   return [keys, values];
+  // }
 
-    const params = new URL(location).searchParams;
-    console.log(Object.fromEntries( params.entries() ))
-
-    // dispatch event
-    const keys = JSON.parse(decodeURIComponent(params.get('keys'))) ?? [];
-    const values = JSON.parse(decodeURIComponent(params.get('values'))) ?? [];
-    const customEvent = new CustomEvent(event.restoreParameters, {detail: {
-      togoKey: params.get('togoKey'),
-      userIds: params.get('userIds'),
-      keys,
-      values
-    }});
-    DefaultEventEmitter.dispatchEvent(customEvent);
-    console.log(keys, values)
-
-    // restore
+  #getCondtionsFromHierarchicConditions(keys, values) {
+    // restore conditions
     const properties = keys.map(({propertyId, id}) => {
       return {
         propertyId,
@@ -292,15 +330,7 @@ class ConditionBuilder {
         categoryIds: ids.map(id => id.categoryId)
       }
     });
-    console.log(properties, attributes)
-    this.setProperties(properties, false);
-    Records.properties.forEach(({propertyId}) => {
-      const property = attributes.find(property => property.propertyId === propertyId);
-      const categoryIds = [];
-      if (property) categoryIds.push(...property.categoryIds);
-      this.setPropertyValues(propertyId, categoryIds, false);
-    });
-    this.finish(false);
+    return [properties, attributes];
   }
 
 }

@@ -2920,13 +2920,23 @@
 
   var _userIds = new WeakMap();
 
+  var _hierarchicConditionsFromURLParameters = new WeakMap();
+
   var _postProcessing = new WeakSet();
 
   var _createSearchConditionFromURLParameters = new WeakSet();
 
+  var _getHierarchicConditions = new WeakSet();
+
+  var _getCondtionsFromHierarchicConditions = new WeakSet();
+
   var ConditionBuilder = /*#__PURE__*/function () {
     function ConditionBuilder() {
       _classCallCheck(this, ConditionBuilder);
+
+      _getCondtionsFromHierarchicConditions.add(this);
+
+      _getHierarchicConditions.add(this);
 
       _createSearchConditionFromURLParameters.add(this);
 
@@ -2953,6 +2963,11 @@
       });
 
       _userIds.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _hierarchicConditionsFromURLParameters.set(this, {
         writable: true,
         value: void 0
       });
@@ -3256,6 +3271,19 @@
 
         if (condition) categoryIds.push.apply(categoryIds, _toConsumableArray(condition.categoryIds));
         return categoryIds;
+      }
+    }, {
+      key: "getSelectedHierarchicCategoryIdsFromURLParameters",
+      value: function getSelectedHierarchicCategoryIdsFromURLParameters(propertyId) {
+        // const [keys, values] = this.#getHierarchicConditionsFromURLParameters();
+        return {
+          keys: _classPrivateFieldGet(this, _hierarchicConditionsFromURLParameters).keys.filter(function (key) {
+            return key.propertyId === propertyId;
+          }),
+          values: _classPrivateFieldGet(this, _hierarchicConditionsFromURLParameters).values.filter(function (value) {
+            return value.propertyId === propertyId;
+          })
+        };
       } // public accessor
 
     }, {
@@ -3282,13 +3310,78 @@
     var customEvent = new CustomEvent(mutateEstablishConditions, {
       detail: established
     });
-    DefaultEventEmitter$1.dispatchEvent(customEvent); // get ancestors
+    DefaultEventEmitter$1.dispatchEvent(customEvent); // get hierarchic conditions
 
+    var _classPrivateMethodGe = _classPrivateMethodGet(this, _getHierarchicConditions, _getHierarchicConditions2).call(this),
+        _classPrivateMethodGe2 = _slicedToArray(_classPrivateMethodGe, 2),
+        keys = _classPrivateMethodGe2[0],
+        values = _classPrivateMethodGe2[1];
+
+    console.log(keys, values); // generate permalink
+
+    var params = new URL(location).searchParams;
+    params.set('togoKey', _classPrivateFieldGet(this, _togoKey));
+    params.set('userIds', this.userIds ? this.userIds : '');
+    params.set('keys', encodeURIComponent(JSON.stringify(keys)));
+    params.set('values', encodeURIComponent(JSON.stringify(values)));
+    if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
+  }
+
+  function _createSearchConditionFromURLParameters2(e) {
+    var _JSON$parse,
+        _JSON$parse2,
+        _this3 = this;
+
+    console.log(e); // const [keys, values] = this.#getHierarchicConditionsFromURLParameters();
+
+    var params = new URL(location).searchParams;
+    console.log(Object.fromEntries(params.entries()));
+    var keys = (_JSON$parse = JSON.parse(decodeURIComponent(params.get('keys')))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [];
+    var values = (_JSON$parse2 = JSON.parse(decodeURIComponent(params.get('values')))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : [];
+
+    _classPrivateFieldSet(this, _hierarchicConditionsFromURLParameters, {
+      keys: keys,
+      values: values
+    });
+
+    console.log(_classPrivateFieldGet(this, _hierarchicConditionsFromURLParameters)); // restore conditions
+
+    var _classPrivateMethodGe3 = _classPrivateMethodGet(this, _getCondtionsFromHierarchicConditions, _getCondtionsFromHierarchicConditions2).call(this, keys, values),
+        _classPrivateMethodGe4 = _slicedToArray(_classPrivateMethodGe3, 2),
+        properties = _classPrivateMethodGe4[0],
+        attributes = _classPrivateMethodGe4[1];
+
+    console.log(properties, attributes);
+    this.setProperties(properties, false);
+    Records$1.properties.forEach(function (_ref4) {
+      var propertyId = _ref4.propertyId;
+      var property = attributes.find(function (property) {
+        return property.propertyId === propertyId;
+      });
+      var categoryIds = [];
+      if (property) categoryIds.push.apply(categoryIds, _toConsumableArray(property.categoryIds));
+
+      _this3.setPropertyValues(propertyId, categoryIds, false);
+    });
+    this.finish(false); // dispatch event
+
+    var customEvent = new CustomEvent(restoreParameters, {
+      detail: {
+        togoKey: params.get('togoKey'),
+        userIds: params.get('userIds'),
+        keys: keys,
+        values: values
+      }
+    });
+    DefaultEventEmitter$1.dispatchEvent(customEvent);
+  }
+
+  function _getHierarchicConditions2() {
     var keys = [];
 
-    _classPrivateFieldGet(this, _propertyConditions).forEach(function (_ref4) {
-      var propertyId = _ref4.propertyId,
-          parentCategoryId = _ref4.parentCategoryId;
+    _classPrivateFieldGet(this, _propertyConditions).forEach(function (_ref5) {
+      var propertyId = _ref5.propertyId,
+          parentCategoryId = _ref5.parentCategoryId;
       var property = {
         propertyId: propertyId
       };
@@ -3307,9 +3400,9 @@
 
     var values = [];
 
-    _classPrivateFieldGet(this, _attributeConditions).forEach(function (_ref5) {
-      var propertyId = _ref5.propertyId,
-          categoryIds = _ref5.categoryIds;
+    _classPrivateFieldGet(this, _attributeConditions).forEach(function (_ref6) {
+      var propertyId = _ref6.propertyId,
+          categoryIds = _ref6.categoryIds;
       var ids = [];
       categoryIds.forEach(function (categoryId) {
         var id = {
@@ -3327,49 +3420,22 @@
       });
     });
 
-    console.log(keys, values); // generate permalink
-
-    var params = new URL(location).searchParams;
-    params.set('togoKey', _classPrivateFieldGet(this, _togoKey));
-    params.set('userIds', this.userIds ? this.userIds : '');
-    params.set('keys', encodeURIComponent(JSON.stringify(keys)));
-    params.set('values', encodeURIComponent(JSON.stringify(values)));
-    if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
+    return [keys, values];
   }
 
-  function _createSearchConditionFromURLParameters2(e) {
-    var _JSON$parse,
-        _JSON$parse2,
-        _this3 = this;
-
-    console.log(e);
-    var params = new URL(location).searchParams;
-    console.log(Object.fromEntries(params.entries())); // dispatch event
-
-    var keys = (_JSON$parse = JSON.parse(decodeURIComponent(params.get('keys')))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [];
-    var values = (_JSON$parse2 = JSON.parse(decodeURIComponent(params.get('values')))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : [];
-    var customEvent = new CustomEvent(restoreParameters, {
-      detail: {
-        togoKey: params.get('togoKey'),
-        userIds: params.get('userIds'),
-        keys: keys,
-        values: values
-      }
-    });
-    DefaultEventEmitter$1.dispatchEvent(customEvent);
-    console.log(keys, values); // restore
-
-    var properties = keys.map(function (_ref6) {
-      var propertyId = _ref6.propertyId,
-          id = _ref6.id;
+  function _getCondtionsFromHierarchicConditions2(keys, values) {
+    // restore conditions
+    var properties = keys.map(function (_ref7) {
+      var propertyId = _ref7.propertyId,
+          id = _ref7.id;
       return {
         propertyId: propertyId,
         parentCategoryId: id === null || id === void 0 ? void 0 : id.categoryId
       };
     });
-    var attributes = values.map(function (_ref7) {
-      var propertyId = _ref7.propertyId,
-          ids = _ref7.ids;
+    var attributes = values.map(function (_ref8) {
+      var propertyId = _ref8.propertyId,
+          ids = _ref8.ids;
       return {
         propertyId: propertyId,
         categoryIds: ids.map(function (id) {
@@ -3377,19 +3443,7 @@
         })
       };
     });
-    console.log(properties, attributes);
-    this.setProperties(properties, false);
-    Records$1.properties.forEach(function (_ref8) {
-      var propertyId = _ref8.propertyId;
-      var property = attributes.find(function (property) {
-        return property.propertyId === propertyId;
-      });
-      var categoryIds = [];
-      if (property) categoryIds.push.apply(categoryIds, _toConsumableArray(property.categoryIds));
-
-      _this3.setPropertyValues(propertyId, categoryIds, false);
-    });
-    this.finish(false);
+    return [properties, attributes];
   }
 
   var ConditionBuilder$1 = new ConditionBuilder();
@@ -3987,6 +4041,8 @@
 
   var _currentColumns = new WeakMap();
 
+  var _queue = new WeakMap();
+
   var _ROOT$7 = new WeakMap();
 
   var _CONTAINER$1 = new WeakMap();
@@ -3995,7 +4051,9 @@
 
   var _setItems = new WeakSet();
 
-  var _getSubColumn = new WeakSet();
+  var _setSubColumn = new WeakSet();
+
+  var _getColumn = new WeakSet();
 
   var _makeColumn = new WeakSet();
 
@@ -4014,7 +4072,9 @@
 
     _makeColumn.add(this);
 
-    _getSubColumn.add(this);
+    _getColumn.add(this);
+
+    _setSubColumn.add(this);
 
     _setItems.add(this);
 
@@ -4044,6 +4104,11 @@
     });
 
     _currentColumns.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _queue.set(this, {
       writable: true,
       value: void 0
     });
@@ -4129,8 +4194,32 @@
 
     var _column = _classPrivateMethodGet(this, _makeColumn, _makeColumn2).call(this, _items2, _depth);
 
-    _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, _column, _depth);
-  };
+    _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, _column, _depth); // restore
+
+
+    _classPrivateFieldSet(this, _queue, []);
+
+    var categoryIds = ConditionBuilder$1.getSelectedHierarchicCategoryIdsFromURLParameters(property.propertyId);
+    console.log(categoryIds);
+    categoryIds.keys.forEach(function (key, index) {
+      console.log(key);
+
+      if (key.id) {
+        _classPrivateFieldGet(_this, _queue).push({
+          categoryId: key.id.categoryId,
+          depth: index + 1
+        }); // this.#getColumn(key.id.categoryId, index + 1)
+        //   .then(column => {
+        //     console.log(column)
+        //   });
+
+      }
+    });
+    categoryIds.values.forEach(function (value, index) {
+      console.log(value);
+    });
+  } // private methods
+  ;
 
   function _setItems2(items, depth, parent) {
     var _iterator = _createForOfIteratorHelper(items),
@@ -4157,46 +4246,58 @@
     }
   }
 
-  function _getSubColumn2(id, depth) {
+  function _setSubColumn2(categoryId, depth) {
     var _this2 = this;
 
-    var column = _classPrivateFieldGet(this, _columns).find(function (column) {
-      return column.parentCategoryId === id;
+    _classPrivateFieldGet(this, _LOADING_VIEW$2).classList.add('-shown');
+
+    _classPrivateMethodGet(this, _getColumn, _getColumn2).call(this, categoryId, depth).then(function (column) {
+      _classPrivateMethodGet(_this2, _appendSubColumn, _appendSubColumn2).call(_this2, column, depth);
+
+      _classPrivateFieldGet(_this2, _LOADING_VIEW$2).classList.remove('-shown');
+    }).catch(function (error) {
+      // TODO: エラー処理
+      _classPrivateFieldGet(_this2, _LOADING_VIEW$2).classList.remove('-shown');
+
+      throw Error(error);
     });
+  }
 
-    if (column) {
-      _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, column.ul, depth);
-    } else {
-      // loading
-      _classPrivateFieldGet(this, _LOADING_VIEW$2).classList.add('-shown');
+  function _getColumn2(categoryId, depth) {
+    var _this3 = this;
 
-      fetch(_classPrivateFieldGet(this, _sparqlist$1) + '?categoryIds=' + id).then(function (responce) {
-        return responce.json();
-      }).then(function (json) {
-        json.forEach(function (value) {
-          return value.parentCategoryId = id;
-        });
-        Records$1.setValues(_classPrivateFieldGet(_this2, _property$3).propertyId, json);
-
-        _classPrivateMethodGet(_this2, _setItems, _setItems2).call(_this2, json, depth, id);
-
-        var column = _classPrivateMethodGet(_this2, _makeColumn, _makeColumn2).call(_this2, json, depth, id);
-
-        _classPrivateMethodGet(_this2, _appendSubColumn, _appendSubColumn2).call(_this2, column, depth);
-
-        _classPrivateFieldGet(_this2, _LOADING_VIEW$2).classList.remove('-shown');
-      }).catch(function (error) {
-        // TODO: エラー処理
-        _classPrivateFieldGet(_this2, _LOADING_VIEW$2).classList.remove('-shown');
-
-        throw Error(error);
+    return new Promise(function (resolve, reject) {
+      var column = _classPrivateFieldGet(_this3, _columns).find(function (column) {
+        return column.parentCategoryId === categoryId;
       });
-    }
+
+      if (column) {
+        resolve(column.ul);
+      } else {
+        fetch(_classPrivateFieldGet(_this3, _sparqlist$1) + '?categoryIds=' + categoryId).then(function (responce) {
+          return responce.json();
+        }).then(function (json) {
+          json.forEach(function (value) {
+            return value.parentCategoryId = categoryId;
+          });
+          Records$1.setValues(_classPrivateFieldGet(_this3, _property$3).propertyId, json);
+
+          _classPrivateMethodGet(_this3, _setItems, _setItems2).call(_this3, json, depth, categoryId);
+
+          var column = _classPrivateMethodGet(_this3, _makeColumn, _makeColumn2).call(_this3, json, depth, categoryId);
+
+          resolve(column);
+        }).catch(function (error) {
+          reject(error);
+        });
+      }
+    });
   }
 
   function _makeColumn2(items, depth, parentCategoryId) {
-    var _this3 = this;
+    var _this4 = this;
 
+    // console.log(items, depth, parentCategoryId)
     var parentItem = parentCategoryId ? _classPrivateFieldGet(this, _items$1)[parentCategoryId] : undefined;
     var selectedCategoryIds = ConditionBuilder$1.getSelectedCategoryIds(_classPrivateFieldGet(this, _property$3).propertyId); // make column
 
@@ -4213,22 +4314,22 @@
     }).join('');
     var listItems = ul.querySelectorAll(':scope > .item:not(.-all)');
     listItems.forEach(function (li) {
-      return _classPrivateFieldGet(_this3, _items$1)[li.dataset.categoryId].elm = li;
+      return _classPrivateFieldGet(_this4, _items$1)[li.dataset.categoryId].elm = li;
     }); // drill down event
 
     ul.querySelectorAll(':scope > .item.-haschild').forEach(function (li) {
       li.addEventListener('click', function () {
         li.classList.add('-selected'); // delete an existing lower columns
 
-        if (_classPrivateFieldGet(_this3, _currentColumns).length > depth + 1) {
-          for (var i = depth + 1; i < _classPrivateFieldGet(_this3, _currentColumns).length; i++) {
-            if (_classPrivateFieldGet(_this3, _currentColumns)[i].parentNode) _classPrivateFieldGet(_this3, _CONTAINER$1).removeChild(_classPrivateFieldGet(_this3, _currentColumns)[i]);
+        if (_classPrivateFieldGet(_this4, _currentColumns).length > depth + 1) {
+          for (var i = depth + 1; i < _classPrivateFieldGet(_this4, _currentColumns).length; i++) {
+            if (_classPrivateFieldGet(_this4, _currentColumns)[i].parentNode) _classPrivateFieldGet(_this4, _CONTAINER$1).removeChild(_classPrivateFieldGet(_this4, _currentColumns)[i]);
           }
         } // deselect siblings
 
 
-        var selectedItemKeys = Object.keys(_classPrivateFieldGet(_this3, _items$1)).filter(function (id) {
-          return _classPrivateFieldGet(_this3, _items$1)[id].selected && _classPrivateFieldGet(_this3, _items$1)[id].depth >= depth;
+        var selectedItemKeys = Object.keys(_classPrivateFieldGet(_this4, _items$1)).filter(function (id) {
+          return _classPrivateFieldGet(_this4, _items$1)[id].selected && _classPrivateFieldGet(_this4, _items$1)[id].depth >= depth;
         });
 
         var _iterator2 = _createForOfIteratorHelper(selectedItemKeys),
@@ -4239,8 +4340,8 @@
             var _classPrivateFieldGet2;
 
             var key = _step2.value;
-            _classPrivateFieldGet(_this3, _items$1)[key].selected = false;
-            (_classPrivateFieldGet2 = _classPrivateFieldGet(_this3, _currentColumns)[depth].querySelector("[data-id=\"".concat(key, "\"]"))) === null || _classPrivateFieldGet2 === void 0 ? void 0 : _classPrivateFieldGet2.classList.remove('-selected');
+            _classPrivateFieldGet(_this4, _items$1)[key].selected = false;
+            (_classPrivateFieldGet2 = _classPrivateFieldGet(_this4, _currentColumns)[depth].querySelector("[data-id=\"".concat(key, "\"]"))) === null || _classPrivateFieldGet2 === void 0 ? void 0 : _classPrivateFieldGet2.classList.remove('-selected');
           } // get lower column
 
         } catch (err) {
@@ -4249,9 +4350,9 @@
           _iterator2.f();
         }
 
-        _classPrivateFieldGet(_this3, _items$1)[li.dataset.id].selected = true;
+        _classPrivateFieldGet(_this4, _items$1)[li.dataset.id].selected = true;
 
-        _classPrivateMethodGet(_this3, _getSubColumn, _getSubColumn2).call(_this3, li.dataset.id, depth + 1);
+        _classPrivateMethodGet(_this4, _setSubColumn, _setSubColumn2).call(_this4, li.dataset.id, depth + 1);
       });
     }); // select/deselect a item (attribute)
 
@@ -4262,10 +4363,10 @@
 
         if (checkbox.checked) {
           // add
-          ConditionBuilder$1.addPropertyValue(_classPrivateFieldGet(_this3, _property$3).propertyId, checkbox.value);
+          ConditionBuilder$1.addPropertyValue(_classPrivateFieldGet(_this4, _property$3).propertyId, checkbox.value);
         } else {
           // remove
-          ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _property$3).propertyId, checkbox.value);
+          ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this4, _property$3).propertyId, checkbox.value);
         }
       });
     }); // Map attributes event
@@ -4275,10 +4376,10 @@
 
       if (e.target.checked) {
         // add
-        ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this3, _property$3).propertyId, dataset.parentCategoryId);
+        ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this4, _property$3).propertyId, dataset.parentCategoryId);
       } else {
         // remove
-        ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this3, _property$3).propertyId, dataset.parentCategoryId);
+        ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this4, _property$3).propertyId, dataset.parentCategoryId);
       }
     });
 
@@ -4311,14 +4412,14 @@
   }
 
   function _update2$2(isLog10) {
-    var _this4 = this;
+    var _this5 = this;
 
     _classPrivateFieldGet(this, _columns).forEach(function (column) {
       var max = column.max;
       max = isLog10 ? Math.log10(max) : max;
       column.ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
         var count = Number(li.dataset.count);
-        li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this4, _subject$2).color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
+        li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this5, _subject$2).color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
           return cood * 256;
         }).join(','), ")");
       });
