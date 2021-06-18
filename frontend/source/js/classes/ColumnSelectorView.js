@@ -81,27 +81,36 @@ export default class ColumnSelectorView {
     const column = this.#makeColumn(items, depth);
     this.#appendSubColumn(column, depth);
 
-    // restore
+    // make restore queue
     this.#queue = [];
     const categoryIds = ConditionBuilder.getSelectedHierarchicCategoryIdsFromURLParameters(property.propertyId);
     console.log(categoryIds)
-    categoryIds.keys.forEach((key, index) => {
-      console.log(key)
+    categoryIds.keys.forEach(key => {
+      // console.log(key)
       if (key.id) {
-        this.#queue.push({
-          categoryId: key.id.categoryId,
-          depth: index + 1
-        });
-        // this.#getColumn(key.id.categoryId, index + 1)
-        //   .then(column => {
-        //     console.log(column)
-        //   });
+        key.id.ancestors.forEach((categoryId, index) => {
+          this.#queue.push({
+            categoryId,
+            depth: index + 1
+          });
+        })
       }
     });
-    categoryIds.values.forEach((value, index) => {
-      console.log(value)
-
+    categoryIds.values.forEach(value => {
+      // console.log(value)
+      value.ids.forEach(id => {
+        if (id.ancestors) {
+          id.ancestors.forEach((categoryId, index) => {
+            this.#queue.push({
+              categoryId,
+              depth: index + 1
+            });
+          });
+        }
+      })
     });
+    console.log(this.#queue)
+    this.#getColumns(this.#queue);
   }
 
   // private methods
@@ -155,6 +164,17 @@ export default class ColumnSelectorView {
           });
       }
     });
+  }
+
+  #getColumns(queue) {
+    if (queue.length === 0) return;
+    console.log(queue)
+    const {categoryId, depth} = queue.shift();
+    this.#getColumn(categoryId, depth)
+      .then(column => {
+        console.log(column)
+        this.#getColumns(queue);
+      });
   }
 
   #makeColumn(items, depth, parentCategoryId) {
