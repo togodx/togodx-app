@@ -217,7 +217,6 @@ class ConditionBuilder {
   // private methods
 
   #postProcessing(dontLeaveInHistory = true) {
-    console.log(arguments)
     console.log(this.#propertyConditions, this.#attributeConditions)
 
     // evaluate if search is possible
@@ -227,12 +226,37 @@ class ConditionBuilder {
     const customEvent = new CustomEvent(event.mutateEstablishConditions, {detail: established});
     DefaultEventEmitter.dispatchEvent(customEvent);
 
+    // get ancestors
+    const keys = [];
+    this.#propertyConditions.forEach(({propertyId, parentCategoryId}) => {
+      const property = {propertyId};
+      if (parentCategoryId) {
+        property.id = {
+          categoryId: parentCategoryId,
+          ancestors: Records.getAncestors(propertyId, parentCategoryId).map(ancestor => ancestor.categoryId)
+        }
+      }
+      keys.push(property);
+    });
+    const values = [];
+    this.#attributeConditions.forEach(({propertyId, categoryIds}) => {
+      const ids = [];
+      categoryIds.forEach(categoryId => {
+        const id = {categoryId};
+        const ancestors = Records.getAncestors(propertyId, categoryId).map(ancestor => ancestor.categoryId);
+        if (ancestors.length > 0) id.ancestors = ancestors;
+        ids.push(id);
+      })
+      values.push({propertyId, ids});
+    });
+    console.log(keys, values)
+
     // generate permalink
     const params = new URL(location).searchParams;
     params.set('togoKey', this.#togoKey);
     params.set('userIds', this.userIds ? this.userIds : '');
-    params.set('keys', encodeURIComponent(JSON.stringify(this.#propertyConditions)));
-    params.set('values', encodeURIComponent(JSON.stringify(this.#attributeConditions)));
+    params.set('keys', encodeURIComponent(JSON.stringify(keys)));
+    params.set('values', encodeURIComponent(JSON.stringify(values)));
     if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
 
   }
@@ -255,10 +279,23 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
     console.log(keys, values)
 
-    // restore properties
-    this.setProperties(keys, false);
+    // restore
+    const properties = keys.map(({propertyId, id}) => {
+      return {
+        propertyId,
+        parentCategoryId: id?.categoryId
+      }
+    });
+    const attributes = values.map(({propertyId, ids}) => {
+      return {
+        propertyId,
+        categoryIds: ids.map(id => id.categoryId)
+      }
+    });
+    console.log(properties, attributes)
+    this.setProperties(properties, false);
     Records.properties.forEach(({propertyId}) => {
-      const property = values.find(property => property.propertyId === propertyId);
+      const property = attributes.find(property => property.propertyId === propertyId);
       const categoryIds = [];
       if (property) categoryIds.push(...property.categoryIds);
       this.setPropertyValues(propertyId, categoryIds, false);

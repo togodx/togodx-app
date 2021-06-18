@@ -50,27 +50,16 @@ export default class ColumnSelectorView {
         }
       }
     })
-    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, e => {
-      let propertyId, categoryId;
-      switch (e.detail.action) {
-        case 'add':
-          propertyId = e.detail.propertyId;
-          categoryId = e.detail.categoryId;
-          break;
-        case 'remove':
-          propertyId = e.detail.propertyId;
-          categoryId = e.detail.categoryId;
-          break;
-      }
-      if (this.#property.propertyId === propertyId) {
+    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail}) => {
+      if (this.#property.propertyId === detail.propertyId) {
         this.#currentColumns.forEach(ul => {
           let isAllChecked = true;
           ul.querySelectorAll(':scope > li:not(.-all)').forEach(li => {
             const checkbox = li.querySelector(':scope > input[type="checkbox"]');
             if (!checkbox.checked) isAllChecked = false;
-            if (li.dataset.id === categoryId) {
+            if (li.dataset.id === detail.categoryId) {
               // change checkbox status
-              const isChecked = e.detail.action === 'add';
+              const isChecked = detail.action === 'add';
               checkbox.checked = isChecked;
               this.#items[li.dataset.id].checked = isChecked;
             }

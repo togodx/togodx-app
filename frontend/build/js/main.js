@@ -3276,20 +3276,64 @@
 
   function _postProcessing2() {
     var dontLeaveInHistory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-    console.log(arguments);
     console.log(_classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions)); // evaluate if search is possible
 
     var established = _classPrivateFieldGet(this, _togoKey) && _classPrivateFieldGet(this, _subjectId) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
     var customEvent = new CustomEvent(mutateEstablishConditions, {
       detail: established
     });
-    DefaultEventEmitter$1.dispatchEvent(customEvent); // generate permalink
+    DefaultEventEmitter$1.dispatchEvent(customEvent); // get ancestors
+
+    var keys = [];
+
+    _classPrivateFieldGet(this, _propertyConditions).forEach(function (_ref4) {
+      var propertyId = _ref4.propertyId,
+          parentCategoryId = _ref4.parentCategoryId;
+      var property = {
+        propertyId: propertyId
+      };
+
+      if (parentCategoryId) {
+        property.id = {
+          categoryId: parentCategoryId,
+          ancestors: Records$1.getAncestors(propertyId, parentCategoryId).map(function (ancestor) {
+            return ancestor.categoryId;
+          })
+        };
+      }
+
+      keys.push(property);
+    });
+
+    var values = [];
+
+    _classPrivateFieldGet(this, _attributeConditions).forEach(function (_ref5) {
+      var propertyId = _ref5.propertyId,
+          categoryIds = _ref5.categoryIds;
+      var ids = [];
+      categoryIds.forEach(function (categoryId) {
+        var id = {
+          categoryId: categoryId
+        };
+        var ancestors = Records$1.getAncestors(propertyId, categoryId).map(function (ancestor) {
+          return ancestor.categoryId;
+        });
+        if (ancestors.length > 0) id.ancestors = ancestors;
+        ids.push(id);
+      });
+      values.push({
+        propertyId: propertyId,
+        ids: ids
+      });
+    });
+
+    console.log(keys, values); // generate permalink
 
     var params = new URL(location).searchParams;
     params.set('togoKey', _classPrivateFieldGet(this, _togoKey));
     params.set('userIds', this.userIds ? this.userIds : '');
-    params.set('keys', encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _propertyConditions))));
-    params.set('values', encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _attributeConditions))));
+    params.set('keys', encodeURIComponent(JSON.stringify(keys)));
+    params.set('values', encodeURIComponent(JSON.stringify(values)));
     if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
   }
 
@@ -3313,12 +3357,31 @@
       }
     });
     DefaultEventEmitter$1.dispatchEvent(customEvent);
-    console.log(keys, values); // restore properties
+    console.log(keys, values); // restore
 
-    this.setProperties(keys, false);
-    Records$1.properties.forEach(function (_ref4) {
-      var propertyId = _ref4.propertyId;
-      var property = values.find(function (property) {
+    var properties = keys.map(function (_ref6) {
+      var propertyId = _ref6.propertyId,
+          id = _ref6.id;
+      return {
+        propertyId: propertyId,
+        parentCategoryId: id === null || id === void 0 ? void 0 : id.categoryId
+      };
+    });
+    var attributes = values.map(function (_ref7) {
+      var propertyId = _ref7.propertyId,
+          ids = _ref7.ids;
+      return {
+        propertyId: propertyId,
+        categoryIds: ids.map(function (id) {
+          return id.categoryId;
+        })
+      };
+    });
+    console.log(properties, attributes);
+    this.setProperties(properties, false);
+    Records$1.properties.forEach(function (_ref8) {
+      var propertyId = _ref8.propertyId;
+      var property = attributes.find(function (property) {
         return property.propertyId === propertyId;
       });
       var categoryIds = [];
@@ -4033,31 +4096,19 @@
         }
       }
     });
-    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (e) {
-      var propertyId, categoryId;
+    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref) {
+      var detail = _ref.detail;
 
-      switch (e.detail.action) {
-        case 'add':
-          propertyId = e.detail.propertyId;
-          categoryId = e.detail.categoryId;
-          break;
-
-        case 'remove':
-          propertyId = e.detail.propertyId;
-          categoryId = e.detail.categoryId;
-          break;
-      }
-
-      if (_classPrivateFieldGet(_this, _property$3).propertyId === propertyId) {
+      if (_classPrivateFieldGet(_this, _property$3).propertyId === detail.propertyId) {
         _classPrivateFieldGet(_this, _currentColumns).forEach(function (ul) {
           var isAllChecked = true;
           ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
             var checkbox = li.querySelector(':scope > input[type="checkbox"]');
             if (!checkbox.checked) isAllChecked = false;
 
-            if (li.dataset.id === categoryId) {
+            if (li.dataset.id === detail.categoryId) {
               // change checkbox status
-              var isChecked = e.detail.action === 'add';
+              var isChecked = detail.action === 'add';
               checkbox.checked = isChecked;
               _classPrivateFieldGet(_this, _items$1)[li.dataset.id].checked = isChecked;
             }
