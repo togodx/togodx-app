@@ -84,10 +84,10 @@ export default class ColumnSelectorView {
     });
     DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
 
+    const depth = 0;
     this.#setItems(items, depth);
 
     // make root column
-    const depth = 0;
     const column = this.#makeColumn(items, depth);
     this.#appendSubColumn(column, depth);
   }
@@ -135,7 +135,6 @@ export default class ColumnSelectorView {
   #makeColumn(items, depth, parentCategoryId) {
 
     const parentItem = parentCategoryId ? this.#items[parentCategoryId] : undefined;
-    console.log(parentItem)
     const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.#property.propertyId);
 
     // make column
@@ -174,10 +173,6 @@ export default class ColumnSelectorView {
     ul.querySelectorAll(':scope > .item.-haschild').forEach(li => {
       li.addEventListener('click', () => {
         li.classList.add('-selected');
-        // deselect siblings
-        li.parentNode.childNodes.forEach(sibling => {
-          if (sibling !== li) sibling.classList.remove('-selected');
-        });
         // delete an existing lower columns
         if (this.#currentColumns.length > depth + 1) {
           for (let i = depth + 1; i < this.#currentColumns.length; i++) {
@@ -188,8 +183,7 @@ export default class ColumnSelectorView {
         const selectedItemKeys = Object.keys(this.#items).filter(id => this.#items[id].selected && this.#items[id].depth >= depth);
         for (const key of selectedItemKeys) {
           this.#items[key].selected = false;
-          const selectedItem = this.#currentColumns[depth].querySelector(`[data-id="${key}"]`);
-          if (selectedItem) selectedItem.classList.remove('-selected');
+          this.#currentColumns[depth].querySelector(`[data-id="${key}"]`)?.classList.remove('-selected');
         }
         // get lower column
         this.#items[li.dataset.id].selected = true;
@@ -206,12 +200,6 @@ export default class ColumnSelectorView {
           ConditionBuilder.addPropertyValue(
             this.#property.propertyId,
             checkbox.value
-            // value: {
-            //   categoryId: checkbox.value,
-            //   label: this.#items[checkbox.value].label,
-            //   ancestors: [checkbox.value]
-            //   // ancestors: this.#getAncestors(checkbox.value).map(ancestor => ancestor.label)
-            // }
           );
         } else { // remove
           ConditionBuilder.removePropertyValue(this.#property.propertyId, checkbox.value);

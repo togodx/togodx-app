@@ -4071,11 +4071,10 @@
     DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
       return _classPrivateMethodGet(_this, _update$2, _update2$2).call(_this, e.detail.log10);
     });
+    var _depth = 0;
 
     _classPrivateMethodGet(this, _setItems, _setItems2).call(this, _items2, _depth); // make root column
 
-
-    var _depth = 0;
 
     var _column = _classPrivateMethodGet(this, _makeColumn, _makeColumn2).call(this, _items2, _depth);
 
@@ -4148,7 +4147,6 @@
     var _this3 = this;
 
     var parentItem = parentCategoryId ? _classPrivateFieldGet(this, _items$1)[parentCategoryId] : undefined;
-    console.log(parentItem);
     var selectedCategoryIds = ConditionBuilder$1.getSelectedCategoryIds(_classPrivateFieldGet(this, _property$3).propertyId); // make column
 
     var ul = document.createElement('ul');
@@ -4169,11 +4167,7 @@
 
     ul.querySelectorAll(':scope > .item.-haschild').forEach(function (li) {
       li.addEventListener('click', function () {
-        li.classList.add('-selected'); // deselect siblings
-
-        li.parentNode.childNodes.forEach(function (sibling) {
-          if (sibling !== li) sibling.classList.remove('-selected');
-        }); // delete an existing lower columns
+        li.classList.add('-selected'); // delete an existing lower columns
 
         if (_classPrivateFieldGet(_this3, _currentColumns).length > depth + 1) {
           for (var i = depth + 1; i < _classPrivateFieldGet(_this3, _currentColumns).length; i++) {
@@ -4191,12 +4185,11 @@
 
         try {
           for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var _classPrivateFieldGet2;
+
             var key = _step2.value;
             _classPrivateFieldGet(_this3, _items$1)[key].selected = false;
-
-            var selectedItem = _classPrivateFieldGet(_this3, _currentColumns)[depth].querySelector("[data-id=\"".concat(key, "\"]"));
-
-            if (selectedItem) selectedItem.classList.remove('-selected');
+            (_classPrivateFieldGet2 = _classPrivateFieldGet(_this3, _currentColumns)[depth].querySelector("[data-id=\"".concat(key, "\"]"))) === null || _classPrivateFieldGet2 === void 0 ? void 0 : _classPrivateFieldGet2.classList.remove('-selected');
           } // get lower column
 
         } catch (err) {
@@ -4218,13 +4211,7 @@
 
         if (checkbox.checked) {
           // add
-          ConditionBuilder$1.addPropertyValue(_classPrivateFieldGet(_this3, _property$3).propertyId, checkbox.value // value: {
-          //   categoryId: checkbox.value,
-          //   label: this.#items[checkbox.value].label,
-          //   ancestors: [checkbox.value]
-          //   // ancestors: this.#getAncestors(checkbox.value).map(ancestor => ancestor.label)
-          // }
-          );
+          ConditionBuilder$1.addPropertyValue(_classPrivateFieldGet(_this3, _property$3).propertyId, checkbox.value);
         } else {
           // remove
           ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _property$3).propertyId, checkbox.value);
