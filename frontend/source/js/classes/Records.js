@@ -3,12 +3,14 @@ import Color from "./Color";
 class Records {
   #subjects;
   #properties;
+  #fetchedCategoryIds;
 
   constructor() {}
 
   // public methods
 
   setSubjects(subjects) {
+    console.log(subjects)
 
     // define subjects
     for (let i = 0; i < subjects.length; i++) {
@@ -23,13 +25,16 @@ class Records {
 
     // set properties
     this.#properties = [];
+    this.#fetchedCategoryIds = {};
     subjects.forEach(subject => {
       subject.properties.forEach(property => {
         this.#properties.push(Object.assign({subjectId: subject.subjectId, values: []}, property));
+        this.#fetchedCategoryIds[property.propertyId] = [];
       });
     });
     console.log(this.#subjects);
     console.log(this.#properties);
+    console.log(this.#fetchedCategoryIds);
 
     // make stylesheet
     const styleElm = document.createElement('style');
@@ -52,6 +57,20 @@ class Records {
         border-color: var(--color-subject-${subject.subjectId});
       }`);
     }
+  }
+
+  fetchPropertyValues(propertyId, categoryId) {
+    const property = this.getProperty(propertyId);
+    return new Promise((resolve, reject) => {
+      fetch(`${property.data}${categoryId ? `?categoryIds=${categoryId}` : ''}`)
+        .then(responce => responce.json())
+        .then(values => {
+          // set values
+          property.values.push(...values);
+          resolve(values);
+        })
+        .catch(error => reject(error));
+    });
   }
 
   setValues(propertyId, values) {

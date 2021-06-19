@@ -99,12 +99,11 @@ export default class TrackView {
     });
 
     // get property data
-    fetch(property.data)
-      .then(responce => responce.json())
-      .then(json => this.#makeValues(json))
+    Records.fetchPropertyValues(this.#property.propertyId)
+      .then(values => this.#makeValues(values))
       .catch(error => {
         console.error(error)
-        this.#OVERVIEW_CONTAINER.insertAdjacentHTML('afterend',`<div class="error">${error} - <a href="${property.data}" target="_blank">${property.data}</a></div>`);
+        this.#OVERVIEW_CONTAINER.insertAdjacentHTML('afterend', `<div class="error">${error} - <a href="${this.#property.data}" target="_blank">${this.#property.data}</a></div>`);
         this.#LOADING_VIEW.classList.remove('-shown');
       });
   }
@@ -115,7 +114,6 @@ export default class TrackView {
 
     this.#ROOT.classList.remove('-preparing');
     this.#LOADING_VIEW.classList.remove('-shown');
-    Records.setValues(this.#property.propertyId, values);
 
     // make overview
     new TrackOverviewCategorical(this.#OVERVIEW_CONTAINER, this.#subject, this.#property, values);

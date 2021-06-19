@@ -2592,6 +2592,8 @@
 
   var _properties = new WeakMap();
 
+  var _fetchedCategoryIds = new WeakMap();
+
   var Records = /*#__PURE__*/function () {
     function Records() {
       _classCallCheck(this, Records);
@@ -2605,6 +2607,11 @@
         writable: true,
         value: void 0
       });
+
+      _fetchedCategoryIds.set(this, {
+        writable: true,
+        value: void 0
+      });
     } // public methods
 
 
@@ -2613,7 +2620,8 @@
       value: function setSubjects(subjects) {
         var _this = this;
 
-        // define subjects
+        console.log(subjects); // define subjects
+
         for (var i = 0; i < subjects.length; i++) {
           var hue = 360 - 360 * i / subjects.length + 130;
           hue -= hue > 360 ? 360 : 0;
@@ -2630,16 +2638,21 @@
 
         _classPrivateFieldSet(this, _properties, []);
 
+        _classPrivateFieldSet(this, _fetchedCategoryIds, {});
+
         subjects.forEach(function (subject) {
           subject.properties.forEach(function (property) {
             _classPrivateFieldGet(_this, _properties).push(Object.assign({
               subjectId: subject.subjectId,
               values: []
             }, property));
+
+            _classPrivateFieldGet(_this, _fetchedCategoryIds)[property.propertyId] = [];
           });
         });
         console.log(_classPrivateFieldGet(this, _subjects));
-        console.log(_classPrivateFieldGet(this, _properties)); // make stylesheet
+        console.log(_classPrivateFieldGet(this, _properties));
+        console.log(_classPrivateFieldGet(this, _fetchedCategoryIds)); // make stylesheet
 
         var styleElm = document.createElement('style');
         document.head.appendChild(styleElm);
@@ -2665,15 +2678,34 @@
         }
       }
     }, {
+      key: "fetchPropertyValues",
+      value: function fetchPropertyValues(propertyId, categoryId) {
+        var property = this.getProperty(propertyId);
+        return new Promise(function (resolve, reject) {
+          fetch("".concat(property.data).concat(categoryId ? "?categoryIds=".concat(categoryId) : '')).then(function (responce) {
+            return responce.json();
+          }).then(function (values) {
+            var _property$values;
+
+            // set values
+            (_property$values = property.values).push.apply(_property$values, _toConsumableArray(values));
+
+            resolve(values);
+          }).catch(function (error) {
+            return reject(error);
+          });
+        });
+      }
+    }, {
       key: "setValues",
       value: function setValues(propertyId, values) {
-        var _property$values;
+        var _property$values2;
 
         var property = _classPrivateFieldGet(this, _properties).find(function (property) {
           return property.propertyId === propertyId;
         });
 
-        (_property$values = property.values).push.apply(_property$values, _toConsumableArray(values));
+        (_property$values2 = property.values).push.apply(_property$values2, _toConsumableArray(values));
       }
     }, {
       key: "getSubject",

@@ -2703,6 +2703,8 @@
 
   var _properties$1 = new WeakMap();
 
+  var _fetchedCategoryIds = new WeakMap();
+
   var Records = /*#__PURE__*/function () {
     function Records() {
       _classCallCheck(this, Records);
@@ -2716,6 +2718,11 @@
         writable: true,
         value: void 0
       });
+
+      _fetchedCategoryIds.set(this, {
+        writable: true,
+        value: void 0
+      });
     } // public methods
 
 
@@ -2724,7 +2731,8 @@
       value: function setSubjects(subjects) {
         var _this = this;
 
-        // define subjects
+        console.log(subjects); // define subjects
+
         for (var i = 0; i < subjects.length; i++) {
           var hue = 360 - 360 * i / subjects.length + 130;
           hue -= hue > 360 ? 360 : 0;
@@ -2741,16 +2749,21 @@
 
         _classPrivateFieldSet(this, _properties$1, []);
 
+        _classPrivateFieldSet(this, _fetchedCategoryIds, {});
+
         subjects.forEach(function (subject) {
           subject.properties.forEach(function (property) {
             _classPrivateFieldGet(_this, _properties$1).push(Object.assign({
               subjectId: subject.subjectId,
               values: []
             }, property));
+
+            _classPrivateFieldGet(_this, _fetchedCategoryIds)[property.propertyId] = [];
           });
         });
         console.log(_classPrivateFieldGet(this, _subjects));
-        console.log(_classPrivateFieldGet(this, _properties$1)); // make stylesheet
+        console.log(_classPrivateFieldGet(this, _properties$1));
+        console.log(_classPrivateFieldGet(this, _fetchedCategoryIds)); // make stylesheet
 
         var styleElm = document.createElement('style');
         document.head.appendChild(styleElm);
@@ -2776,15 +2789,34 @@
         }
       }
     }, {
+      key: "fetchPropertyValues",
+      value: function fetchPropertyValues(propertyId, categoryId) {
+        var property = this.getProperty(propertyId);
+        return new Promise(function (resolve, reject) {
+          fetch("".concat(property.data).concat(categoryId ? "?categoryIds=".concat(categoryId) : '')).then(function (responce) {
+            return responce.json();
+          }).then(function (values) {
+            var _property$values;
+
+            // set values
+            (_property$values = property.values).push.apply(_property$values, _toConsumableArray(values));
+
+            resolve(values);
+          }).catch(function (error) {
+            return reject(error);
+          });
+        });
+      }
+    }, {
       key: "setValues",
       value: function setValues(propertyId, values) {
-        var _property$values;
+        var _property$values2;
 
         var property = _classPrivateFieldGet(this, _properties$1).find(function (property) {
           return property.propertyId === propertyId;
         });
 
-        (_property$values = property.values).push.apply(_property$values, _toConsumableArray(values));
+        (_property$values2 = property.values).push.apply(_property$values2, _toConsumableArray(values));
       }
     }, {
       key: "getSubject",
@@ -5148,14 +5180,12 @@
       }
     }); // get property data
 
-    fetch(property.data).then(function (responce) {
-      return responce.json();
-    }).then(function (json) {
-      return _classPrivateMethodGet(_this, _makeValues, _makeValues2).call(_this, json);
+    Records$1.fetchPropertyValues(_classPrivateFieldGet(this, _property).propertyId).then(function (values) {
+      return _classPrivateMethodGet(_this, _makeValues, _makeValues2).call(_this, values);
     }).catch(function (error) {
       console.error(error);
 
-      _classPrivateFieldGet(_this, _OVERVIEW_CONTAINER).insertAdjacentHTML('afterend', "<div class=\"error\">".concat(error, " - <a href=\"").concat(property.data, "\" target=\"_blank\">").concat(property.data, "</a></div>"));
+      _classPrivateFieldGet(_this, _OVERVIEW_CONTAINER).insertAdjacentHTML('afterend', "<div class=\"error\">".concat(error, " - <a href=\"").concat(_classPrivateFieldGet(_this, _property).data, "\" target=\"_blank\">").concat(_classPrivateFieldGet(_this, _property).data, "</a></div>"));
 
       _classPrivateFieldGet(_this, _LOADING_VIEW$1).classList.remove('-shown');
     });
@@ -5165,9 +5195,8 @@
   function _makeValues2(values) {
     _classPrivateFieldGet(this, _ROOT$4).classList.remove('-preparing');
 
-    _classPrivateFieldGet(this, _LOADING_VIEW$1).classList.remove('-shown');
+    _classPrivateFieldGet(this, _LOADING_VIEW$1).classList.remove('-shown'); // make overview
 
-    Records$1.setValues(_classPrivateFieldGet(this, _property).propertyId, values); // make overview
 
     new TrackOverviewCategorical(_classPrivateFieldGet(this, _OVERVIEW_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values); // make selector view
 
