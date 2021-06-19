@@ -147,13 +147,10 @@ export default class ColumnSelectorView {
       if (column) {
         resolve(column.ul);
       } else {
-        fetch(this.#sparqlist + '?categoryIds=' + categoryId)
-          .then(responce => responce.json())
-          .then(json => {
-            json.forEach(value => value.parentCategoryId = categoryId);
-            Records.setValues(this.#property.propertyId, json);
-            this.#setItems(json, depth, categoryId);
-            const column = this.#makeColumn(json, depth, categoryId);
+        Records.fetchPropertyValues(this.#property.propertyId, categoryId)
+          .then(values => {
+            this.#setItems(values, depth, categoryId);
+            const column = this.#makeColumn(values, depth, categoryId);
             resolve(column);
           })
           .catch(error => {

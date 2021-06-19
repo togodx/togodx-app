@@ -2791,32 +2791,33 @@
     }, {
       key: "fetchPropertyValues",
       value: function fetchPropertyValues(propertyId, categoryId) {
+        var _this2 = this;
+
         var property = this.getProperty(propertyId);
         return new Promise(function (resolve, reject) {
-          fetch("".concat(property.data).concat(categoryId ? "?categoryIds=".concat(categoryId) : '')).then(function (responce) {
-            return responce.json();
-          }).then(function (values) {
-            var _property$values;
+          if (categoryId && _classPrivateFieldGet(_this2, _fetchedCategoryIds)[propertyId].indexOf(categoryId) !== -1) {
+            resolve(property.values.filter(function (value) {
+              return value.parentCategoryId === categoryId;
+            }));
+          } else {
+            fetch("".concat(property.data).concat(categoryId ? "?categoryIds=".concat(categoryId) : '')).then(function (responce) {
+              return responce.json();
+            }).then(function (values) {
+              var _property$values;
 
-            // set values
-            (_property$values = property.values).push.apply(_property$values, _toConsumableArray(values));
+              // set parent category id
+              if (categoryId) values.forEach(function (value) {
+                return value.parentCategoryId = categoryId;
+              }); // set values
 
-            resolve(values);
-          }).catch(function (error) {
-            return reject(error);
-          });
+              (_property$values = property.values).push.apply(_property$values, _toConsumableArray(values));
+
+              resolve(values);
+            }).catch(function (error) {
+              return reject(error);
+            });
+          }
         });
-      }
-    }, {
-      key: "setValues",
-      value: function setValues(propertyId, values) {
-        var _property$values2;
-
-        var property = _classPrivateFieldGet(this, _properties$1).find(function (property) {
-          return property.propertyId === propertyId;
-        });
-
-        (_property$values2 = property.values).push.apply(_property$values2, _toConsumableArray(values));
       }
     }, {
       key: "getSubject",
@@ -4321,17 +4322,10 @@
       if (column) {
         resolve(column.ul);
       } else {
-        fetch(_classPrivateFieldGet(_this3, _sparqlist$1) + '?categoryIds=' + categoryId).then(function (responce) {
-          return responce.json();
-        }).then(function (json) {
-          json.forEach(function (value) {
-            return value.parentCategoryId = categoryId;
-          });
-          Records$1.setValues(_classPrivateFieldGet(_this3, _property$3).propertyId, json);
+        Records$1.fetchPropertyValues(_classPrivateFieldGet(_this3, _property$3).propertyId, categoryId).then(function (values) {
+          _classPrivateMethodGet(_this3, _setItems, _setItems2).call(_this3, values, depth, categoryId);
 
-          _classPrivateMethodGet(_this3, _setItems, _setItems2).call(_this3, json, depth, categoryId);
-
-          var column = _classPrivateMethodGet(_this3, _makeColumn, _makeColumn2).call(_this3, json, depth, categoryId);
+          var column = _classPrivateMethodGet(_this3, _makeColumn, _makeColumn2).call(_this3, values, depth, categoryId);
 
           resolve(column);
         }).catch(function (error) {

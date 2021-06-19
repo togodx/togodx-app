@@ -2680,32 +2680,33 @@
     }, {
       key: "fetchPropertyValues",
       value: function fetchPropertyValues(propertyId, categoryId) {
+        var _this2 = this;
+
         var property = this.getProperty(propertyId);
         return new Promise(function (resolve, reject) {
-          fetch("".concat(property.data).concat(categoryId ? "?categoryIds=".concat(categoryId) : '')).then(function (responce) {
-            return responce.json();
-          }).then(function (values) {
-            var _property$values;
+          if (categoryId && _classPrivateFieldGet(_this2, _fetchedCategoryIds)[propertyId].indexOf(categoryId) !== -1) {
+            resolve(property.values.filter(function (value) {
+              return value.parentCategoryId === categoryId;
+            }));
+          } else {
+            fetch("".concat(property.data).concat(categoryId ? "?categoryIds=".concat(categoryId) : '')).then(function (responce) {
+              return responce.json();
+            }).then(function (values) {
+              var _property$values;
 
-            // set values
-            (_property$values = property.values).push.apply(_property$values, _toConsumableArray(values));
+              // set parent category id
+              if (categoryId) values.forEach(function (value) {
+                return value.parentCategoryId = categoryId;
+              }); // set values
 
-            resolve(values);
-          }).catch(function (error) {
-            return reject(error);
-          });
+              (_property$values = property.values).push.apply(_property$values, _toConsumableArray(values));
+
+              resolve(values);
+            }).catch(function (error) {
+              return reject(error);
+            });
+          }
         });
-      }
-    }, {
-      key: "setValues",
-      value: function setValues(propertyId, values) {
-        var _property$values2;
-
-        var property = _classPrivateFieldGet(this, _properties).find(function (property) {
-          return property.propertyId === propertyId;
-        });
-
-        (_property$values2 = property.values).push.apply(_property$values2, _toConsumableArray(values));
       }
     }, {
       key: "getSubject",
