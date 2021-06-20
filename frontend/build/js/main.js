@@ -2965,18 +2965,21 @@
 
   var _getChildCategoryIds = new WeakSet();
 
+  var _restoreConditions = new WeakSet();
+
   var _getHierarchicConditions = new WeakSet();
 
   var _getCondtionsFromHierarchicConditions = new WeakSet();
 
   var ConditionBuilder = /*#__PURE__*/function () {
-    // #hierarchicConditionsFromURLParameters;
     function ConditionBuilder() {
       _classCallCheck(this, ConditionBuilder);
 
       _getCondtionsFromHierarchicConditions.add(this);
 
       _getHierarchicConditions.add(this);
+
+      _restoreConditions.add(this);
 
       _getChildCategoryIds.add(this);
 
@@ -3322,14 +3325,7 @@
 
         if (condition) categoryIds.push.apply(categoryIds, _toConsumableArray(condition.categoryIds));
         return categoryIds;
-      } // getSelectedHierarchicCategoryIdsFromURLParameters(propertyId) {
-      //   // const [keys, values] = this.#getHierarchicConditionsFromURLParameters();
-      //   return {
-      //     keys: this.#hierarchicConditionsFromURLParameters.keys.filter(key => key.propertyId === propertyId),
-      //     values: this.#hierarchicConditionsFromURLParameters.values.filter(value => value.propertyId === propertyId)
-      //   }
-      // }
-      // public accessor
+      } // public accessor
 
     }, {
       key: "currentTogoKey",
@@ -3373,85 +3369,76 @@
   }
 
   function _createSearchConditionFromURLParameters2() {
-    var _JSON$parse,
-        _JSON$parse2;
+    var _JSON$parse, _JSON$parse2;
 
     var isFirst = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-    console.log(isFirst); // get conditions with ancestors
-
+    // get conditions with ancestors
     var params = new URL(location).searchParams;
-    console.log(Object.fromEntries(params.entries()));
-    var keys = (_JSON$parse = JSON.parse(decodeURIComponent(params.get('keys')))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [];
-    var values = (_JSON$parse2 = JSON.parse(decodeURIComponent(params.get('values')))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []; // this.#hierarchicConditionsFromURLParameters = {keys, values};
-    // console.log(this.#hierarchicConditionsFromURLParameters)
-    // get child category ids
+    var condition = {
+      togoKey: params.get('togoKey'),
+      userIds: params.get('userIds'),
+      keys: (_JSON$parse = JSON.parse(decodeURIComponent(params.get('keys')))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
+      values: (_JSON$parse2 = JSON.parse(decodeURIComponent(params.get('values')))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
+    };
 
     if (isFirst) {
-      _classPrivateMethodGet(this, _makeQueueOfGettingChildCategoryIds, _makeQueueOfGettingChildCategoryIds2).call(this, keys, values);
+      // get child category ids
+      _classPrivateMethodGet(this, _makeQueueOfGettingChildCategoryIds, _makeQueueOfGettingChildCategoryIds2).call(this, condition);
+    } else {
+      _classPrivateMethodGet(this, _restoreConditions, _restoreConditions2).call(this, condition);
     }
-
-    return; // restore conditions
   }
 
-  function _makeQueueOfGettingChildCategoryIds2(keys, values) {
-    console.log(keys, values);
+  function _makeQueueOfGettingChildCategoryIds2(condition) {
     var queue = [];
-    keys.forEach(function (_ref5) {
-      var propertyId = _ref5.propertyId,
-          id = _ref5.id;
+    condition.keys.forEach(function (_ref4) {
+      var propertyId = _ref4.propertyId,
+          id = _ref4.id;
 
       if (id) {
-        id.ancestors.forEach(function (categoryId, index) {
+        id.ancestors.forEach(function (categoryId) {
           queue.push({
             propertyId: propertyId,
-            categoryId: categoryId,
-            depth: index + 1
+            categoryId: categoryId
           });
         });
       }
     });
-    values.forEach(function (_ref6) {
-      var propertyId = _ref6.propertyId,
-          ids = _ref6.ids;
+    condition.values.forEach(function (_ref5) {
+      var propertyId = _ref5.propertyId,
+          ids = _ref5.ids;
       ids.forEach(function (id) {
         if (id.ancestors) {
-          id.ancestors.forEach(function (categoryId, index) {
+          id.ancestors.forEach(function (categoryId) {
             queue.push({
               propertyId: propertyId,
-              categoryId: categoryId,
-              depth: index + 1
+              categoryId: categoryId
             });
           });
         }
       });
     });
-    console.log(queue);
 
-    _classPrivateMethodGet(this, _progressQueueOfGettingChildCategoryIds, _progressQueueOfGettingChildCategoryIds2).call(this, queue);
+    _classPrivateMethodGet(this, _progressQueueOfGettingChildCategoryIds, _progressQueueOfGettingChildCategoryIds2).call(this, condition, queue);
   }
 
-  function _progressQueueOfGettingChildCategoryIds2(queue) {
-    var _this4 = this;
-
-    console.log(queue, queue.length);
+  function _progressQueueOfGettingChildCategoryIds2(condition, queue) {
+    var _this3 = this;
 
     if (queue.length > 0) {
       var _queue$shift = queue.shift(),
           propertyId = _queue$shift.propertyId,
-          categoryId = _queue$shift.categoryId,
-          depth = _queue$shift.depth;
+          categoryId = _queue$shift.categoryId;
 
-      console.log(propertyId, categoryId, depth);
-
-      _classPrivateMethodGet(this, _getChildCategoryIds, _getChildCategoryIds2).call(this, propertyId, categoryId, depth).then(function () {
-        return _classPrivateMethodGet(_this4, _progressQueueOfGettingChildCategoryIds, _progressQueueOfGettingChildCategoryIds2).call(_this4, queue);
+      _classPrivateMethodGet(this, _getChildCategoryIds, _getChildCategoryIds2).call(this, propertyId, categoryId).then(function () {
+        return _classPrivateMethodGet(_this3, _progressQueueOfGettingChildCategoryIds, _progressQueueOfGettingChildCategoryIds2).call(_this3, condition, queue);
       });
     } else {
-      console.log('***** finish!!!');
+      _classPrivateMethodGet(this, _restoreConditions, _restoreConditions2).call(this, condition);
     }
   }
 
-  function _getChildCategoryIds2(propertyId, categoryId, depth) {
+  function _getChildCategoryIds2(propertyId, categoryId) {
     return new Promise(function (resolve, reject) {
       Records$1.fetchPropertyValues(propertyId, categoryId).then(function (values) {
         resolve();
@@ -3461,12 +3448,51 @@
     });
   }
 
+  function _restoreConditions2(_ref6) {
+    var _this4 = this;
+
+    var togoKey = _ref6.togoKey,
+        userIds = _ref6.userIds,
+        keys = _ref6.keys,
+        values = _ref6.values;
+
+    // restore conditions
+    var _classPrivateMethodGe3 = _classPrivateMethodGet(this, _getCondtionsFromHierarchicConditions, _getCondtionsFromHierarchicConditions2).call(this, keys, values),
+        _classPrivateMethodGe4 = _slicedToArray(_classPrivateMethodGe3, 2),
+        properties = _classPrivateMethodGe4[0],
+        attributes = _classPrivateMethodGe4[1];
+
+    console.log(properties, attributes);
+    this.setProperties(properties, false);
+    Records$1.properties.forEach(function (_ref7) {
+      var propertyId = _ref7.propertyId;
+      var property = attributes.find(function (property) {
+        return property.propertyId === propertyId;
+      });
+      var categoryIds = [];
+      if (property) categoryIds.push.apply(categoryIds, _toConsumableArray(property.categoryIds));
+
+      _this4.setPropertyValues(propertyId, categoryIds, false);
+    });
+    this.finish(false); // dispatch event
+
+    var customEvent = new CustomEvent(restoreParameters, {
+      detail: {
+        togoKey: togoKey,
+        userIds: userIds,
+        keys: keys,
+        values: values
+      }
+    });
+    DefaultEventEmitter$1.dispatchEvent(customEvent);
+  }
+
   function _getHierarchicConditions2() {
     var keys = [];
 
-    _classPrivateFieldGet(this, _propertyConditions).forEach(function (_ref7) {
-      var propertyId = _ref7.propertyId,
-          parentCategoryId = _ref7.parentCategoryId;
+    _classPrivateFieldGet(this, _propertyConditions).forEach(function (_ref8) {
+      var propertyId = _ref8.propertyId,
+          parentCategoryId = _ref8.parentCategoryId;
       var property = {
         propertyId: propertyId
       };
@@ -3485,9 +3511,9 @@
 
     var values = [];
 
-    _classPrivateFieldGet(this, _attributeConditions).forEach(function (_ref8) {
-      var propertyId = _ref8.propertyId,
-          categoryIds = _ref8.categoryIds;
+    _classPrivateFieldGet(this, _attributeConditions).forEach(function (_ref9) {
+      var propertyId = _ref9.propertyId,
+          categoryIds = _ref9.categoryIds;
       var ids = [];
       categoryIds.forEach(function (categoryId) {
         var id = {
@@ -3506,6 +3532,29 @@
     });
 
     return [keys, values];
+  }
+
+  function _getCondtionsFromHierarchicConditions2(keys, values) {
+    // restore conditions
+    var properties = keys.map(function (_ref10) {
+      var propertyId = _ref10.propertyId,
+          id = _ref10.id;
+      return {
+        propertyId: propertyId,
+        parentCategoryId: id === null || id === void 0 ? void 0 : id.categoryId
+      };
+    });
+    var attributes = values.map(function (_ref11) {
+      var propertyId = _ref11.propertyId,
+          ids = _ref11.ids;
+      return {
+        propertyId: propertyId,
+        categoryIds: ids.map(function (id) {
+          return id.categoryId;
+        })
+      };
+    });
+    return [properties, attributes];
   }
 
   var ConditionBuilder$1 = new ConditionBuilder();
@@ -4248,35 +4297,7 @@
 
     var _column = _classPrivateMethodGet(this, _makeColumn, _makeColumn2).call(this, _items2, _depth);
 
-    _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, _column, _depth); // make restore queue
-    // const queue = [];
-    // const categoryIds = ConditionBuilder.getSelectedHierarchicCategoryIdsFromURLParameters(property.propertyId);
-    // categoryIds.keys.forEach(key => {
-    //   // console.log(key)
-    //   if (key.id) {
-    //     key.id.ancestors.forEach((categoryId, index) => {
-    //       queue.push({
-    //         categoryId,
-    //         depth: index + 1
-    //       });
-    //     })
-    //   }
-    // });
-    // categoryIds.values.forEach(value => {
-    //   // console.log(value)
-    //   value.ids.forEach(id => {
-    //     if (id.ancestors) {
-    //       id.ancestors.forEach((categoryId, index) => {
-    //         queue.push({
-    //           categoryId,
-    //           depth: index + 1
-    //         });
-    //       });
-    //     }
-    //   })
-    // });
-    // this.#getColumns(queue);
-
+    _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, _column, _depth);
   } // private methods
   ;
 

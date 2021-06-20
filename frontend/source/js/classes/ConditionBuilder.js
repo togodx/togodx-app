@@ -9,7 +9,6 @@ class ConditionBuilder {
   #subjectId;
   #togoKey;
   #userIds;
-  // #hierarchicConditionsFromURLParameters;
   #preparingCounter;
 
   constructor() {
@@ -207,14 +206,6 @@ class ConditionBuilder {
     return categoryIds;
   }
 
-  // getSelectedHierarchicCategoryIdsFromURLParameters(propertyId) {
-  //   // const [keys, values] = this.#getHierarchicConditionsFromURLParameters();
-  //   return {
-  //     keys: this.#hierarchicConditionsFromURLParameters.keys.filter(key => key.propertyId === propertyId),
-  //     values: this.#hierarchicConditionsFromURLParameters.values.filter(value => value.propertyId === propertyId)
-  //   }
-  // }
-
 
   // public accessor
 
@@ -254,22 +245,69 @@ class ConditionBuilder {
   }
 
   #createSearchConditionFromURLParameters(isFirst = false) {
-    console.log(isFirst)
 
     // get conditions with ancestors
     const params = new URL(location).searchParams;
-    console.log(Object.fromEntries( params.entries() ))
-    const keys = JSON.parse(decodeURIComponent(params.get('keys'))) ?? [];
-    const values = JSON.parse(decodeURIComponent(params.get('values'))) ?? [];
-    // this.#hierarchicConditionsFromURLParameters = {keys, values};
-    // console.log(this.#hierarchicConditionsFromURLParameters)
-
-    // get child category ids
-    if (isFirst) {
-      this.#makeQueueOfGettingChildCategoryIds(keys, values)
+    const condition = {
+      togoKey: params.get('togoKey'),
+      userIds: params.get('userIds'),
+      keys: JSON.parse(decodeURIComponent(params.get('keys'))) ?? [],
+      values: JSON.parse(decodeURIComponent(params.get('values'))) ?? []
     }
 
-    return;
+    if (isFirst) {
+      // get child category ids
+      this.#makeQueueOfGettingChildCategoryIds(condition);
+    } else {
+      this.#restoreConditions(condition);
+    }
+
+  }
+
+  #makeQueueOfGettingChildCategoryIds(condition) {
+    const queue = [];
+    condition.keys.forEach(({propertyId, id}) => {
+      if (id) {
+        id.ancestors.forEach(categoryId => {
+          queue.push({propertyId, categoryId});
+        })
+      }
+    });
+    condition.values.forEach(({propertyId, ids}) => {
+      ids.forEach(id => {
+        if (id.ancestors) {
+          id.ancestors.forEach(categoryId => {
+            queue.push({propertyId, categoryId});
+          });
+        }
+      })
+    });
+    this.#progressQueueOfGettingChildCategoryIds(condition, queue);
+  }
+
+  #progressQueueOfGettingChildCategoryIds(condition, queue) {
+    if (queue.length > 0) {
+      const {propertyId, categoryId} = queue.shift();
+      this.#getChildCategoryIds(propertyId, categoryId)
+        .then(() => this.#progressQueueOfGettingChildCategoryIds(condition, queue));
+    } else {
+      this.#restoreConditions(condition);
+    }
+  }
+
+  #getChildCategoryIds(propertyId, categoryId) {
+    return new Promise((resolve, reject) => {
+      Records.fetchPropertyValues(propertyId, categoryId)
+        .then(values => {
+          resolve();
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  }
+
+  #restoreConditions({togoKey, userIds, keys, values}) {
 
     // restore conditions
     const [properties, attributes] = this.#getCondtionsFromHierarchicConditions(keys, values);
@@ -284,71 +322,10 @@ class ConditionBuilder {
     this.finish(false);
 
     // dispatch event
-    const customEvent = new CustomEvent(event.restoreParameters, {detail: {
-      togoKey: params.get('togoKey'),
-      userIds: params.get('userIds'),
-      keys,
-      values
-    }});
+    const customEvent = new CustomEvent(event.restoreParameters, {detail: {togoKey, userIds, keys, values}});
     DefaultEventEmitter.dispatchEvent(customEvent);
 
   }
-
-  #makeQueueOfGettingChildCategoryIds(keys, values) {
-    console.log(keys, values)
-    const queue = [];
-    keys.forEach(({propertyId, id}) => {
-      if (id) {
-        id.ancestors.forEach((categoryId, index) => {
-          queue.push({
-            propertyId,
-            categoryId,
-            depth: index + 1
-          });
-        })
-      }
-    });
-    values.forEach(({propertyId, ids}) => {
-      ids.forEach(id => {
-        if (id.ancestors) {
-          id.ancestors.forEach((categoryId, index) => {
-            queue.push({
-              propertyId,
-              categoryId,
-              depth: index + 1
-            });
-          });
-        }
-      })
-    });
-    console.log(queue)
-    this.#progressQueueOfGettingChildCategoryIds(queue);
-  }
-
-  #progressQueueOfGettingChildCategoryIds(queue) {
-    console.log(queue, queue.length)
-    if (queue.length > 0) {
-      const {propertyId, categoryId, depth} = queue.shift();
-      console.log(propertyId, categoryId, depth)
-      this.#getChildCategoryIds(propertyId, categoryId, depth)
-        .then(() => this.#progressQueueOfGettingChildCategoryIds(queue));
-    } else {
-      console.log('***** finish!!!')
-    }
-  }
-
-  #getChildCategoryIds(propertyId, categoryId, depth) {
-    return new Promise((resolve, reject) => {
-      Records.fetchPropertyValues(propertyId, categoryId)
-        .then(values => {
-          resolve();
-        })
-        .catch(error => {
-          reject(error);
-        });
-    });
-  }
-
 
   #getHierarchicConditions() {
     const keys = [];
@@ -375,13 +352,6 @@ class ConditionBuilder {
     });
     return [keys, values];
   }
-
-  // #getHierarchicConditionsFromURLParameters() {
-  //   const params = new URL(location).searchParams;
-  //   const keys = JSON.parse(decodeURIComponent(params.get('keys'))) ?? [];
-  //   const values = JSON.parse(decodeURIComponent(params.get('values'))) ?? [];
-  //   return [keys, values];
-  // }
 
   #getCondtionsFromHierarchicConditions(keys, values) {
     // restore conditions
