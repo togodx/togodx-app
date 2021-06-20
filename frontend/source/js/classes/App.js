@@ -38,7 +38,7 @@ class App {
 
   ready() {
 
-    const body = document.querySelector('body');
+    const body = document.body;
 
     // view modes
     this.#viewModes = {};
@@ -52,6 +52,11 @@ class App {
       });
     });
 
+    // events
+    DefaultEventEmitter.addEventListener(event.restoreParameters, () => {
+      document.querySelector('#App > .loading-view').classList.remove('-shown');
+    });
+
     // set up views
     new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
     new ConditionsController(document.querySelector('#Conditions'));
@@ -59,11 +64,6 @@ class App {
     new ResultsTable(document.querySelector('#ResultsTable'));
     new ResultDetailModal();
     new BalloonView();
-
-    // events
-    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, () => {
-      document.querySelector('#App > .loading-view').classList.remove('-shown');
-    });
 
     // load config json
     Promise.all([

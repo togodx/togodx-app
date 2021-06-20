@@ -6939,7 +6939,7 @@
       value: function ready() {
         var _this = this;
 
-        var body = document.querySelector('body'); // view modes
+        var body = document.body; // view modes
 
         _classPrivateFieldSet(this, _viewModes, {});
 
@@ -6953,6 +6953,10 @@
             });
             DefaultEventEmitter$1.dispatchEvent(customEvent);
           });
+        }); // events
+
+        DefaultEventEmitter$1.addEventListener(restoreParameters, function () {
+          document.querySelector('#App > .loading-view').classList.remove('-shown');
         }); // set up views
 
         new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
@@ -6960,11 +6964,7 @@
         new ReportsView(document.querySelector('#Reports'));
         new ResultsTable(document.querySelector('#ResultsTable'));
         new ResultDetailModal();
-        new BalloonView(); // events
-
-        DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function () {
-          document.querySelector('#App > .loading-view').classList.remove('-shown');
-        }); // load config json
+        new BalloonView(); // load config json
 
         Promise.all([fetch(PROPERTIES), fetch(TEMPLATES), fetch(AGGREGATE)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
