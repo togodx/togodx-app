@@ -366,6 +366,7 @@ template {
   --z-track-balloon: 9;
   --z-modal-window-backdrop: 10;
   --z-modal-window: 11;
+  --z-app-loading-view: 12;
   --shadow-shallow: 0 .1rem .1rem rgba(0,0,0,.3);
   --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3);
   --opacity-disabled: .4;
@@ -806,6 +807,7 @@ main {
   height: 100%;
   top: 0;
   left: 0;
+  background-color: transparent;
   opacity: 0;
   pointer-events: none;
   transition: background var(--transition-wipe), opacity var(--transition-wipe);
@@ -826,6 +828,7 @@ main {
   top: calc(50% - .8rem);
 }
 .loading-view.-shown {
+  background-color: var(--color-translucent-lamp-black3);
   opacity: 1;
   pointer-events: auto;
 }
@@ -1499,6 +1502,12 @@ main {
 body[data-display=results] #App > .inner {
   -webkit-transform: translateX(calc(-100vw + var(--width-condition)));
           transform: translateX(calc(-100vw + var(--width-condition)));
+}
+#App > .loading-view {
+  position: fixed;
+  top: var(--height-header);
+  height: calc(100% - var(--height-header));
+  z-index: var(--z-app-loading-view);
 }
 
 #ConditionBuilder {

@@ -60,6 +60,11 @@ class App {
     new ResultDetailModal();
     new BalloonView();
 
+    // events
+    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, () => {
+      document.querySelector('#App > .loading-view').classList.remove('-shown');
+    });
+
     // load config json
     Promise.all([
       fetch(api.PROPERTIES),

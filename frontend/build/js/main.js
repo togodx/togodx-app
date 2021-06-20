@@ -6949,7 +6949,11 @@
         new ReportsView(document.querySelector('#Reports'));
         new ResultsTable(document.querySelector('#ResultsTable'));
         new ResultDetailModal();
-        new BalloonView(); // load config json
+        new BalloonView(); // events
+
+        DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function () {
+          document.querySelector('#App > .loading-view').classList.remove('-shown');
+        }); // load config json
 
         Promise.all([fetch(PROPERTIES), fetch(TEMPLATES), fetch(AGGREGATE)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {

@@ -4,6 +4,7 @@
   height: 100%
   top: 0
   left: 0
+  background-color: transparent
   opacity: 0
   pointer-events: none
   transition: background var(--transition-wipe), opacity var(--transition-wipe)
@@ -22,6 +23,7 @@
     left: calc(50% - .8rem)
     top: calc(50% - .8rem)
   &.-shown
+    background-color: var(--color-translucent-lamp-black3)
     opacity: 1
     pointer-events: auto
     &::before
