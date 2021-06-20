@@ -3315,6 +3315,15 @@
         }
       }
     }, {
+      key: "getSelectedParentCategoryId",
+      value: function getSelectedParentCategoryId(propertyId) {
+        var condition = _classPrivateFieldGet(this, _propertyConditions).find(function (condition) {
+          return condition.propertyId === propertyId;
+        });
+
+        return condition === null || condition === void 0 ? void 0 : condition.parentCategoryId;
+      }
+    }, {
       key: "getSelectedCategoryIds",
       value: function getSelectedCategoryIds(propertyId) {
         var categoryIds = [];
@@ -4367,11 +4376,13 @@
     });
   }
 
-  function _makeColumn2(items, depth, parentCategoryId) {
+  function _makeColumn2(items, depth) {
     var _this4 = this;
 
+    var parentCategoryId = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
     // console.log(items, depth, parentCategoryId)
     var parentItem = parentCategoryId ? _classPrivateFieldGet(this, _items$1)[parentCategoryId] : undefined;
+    var selectedParentCategoryId = ConditionBuilder$1.getSelectedParentCategoryId(_classPrivateFieldGet(this, _property$3).propertyId);
     var selectedCategoryIds = ConditionBuilder$1.getSelectedCategoryIds(_classPrivateFieldGet(this, _property$3).propertyId); // make column
 
     var ul = document.createElement('ul');
@@ -4380,7 +4391,7 @@
 
     ul.innerHTML = "<li\n      class=\"item -all\"\n      ".concat(parentCategoryId ? "\n        data-parent-category-id=\"".concat(parentCategoryId, "\"\n        data-parent-label=\"").concat(parentItem.label, "\"") : '', "\n      data-category-ids=\"").concat(items.map(function (item) {
       return item.categoryId;
-    }), "\"\n      data-depth=\"").concat(depth, "\">\n      <input type=\"checkbox\" value=\"").concat(ALL_PROPERTIES, "\"/>\n      <span class=\"label\">Map following attributes</span>\n    </li>") + items.map(function (item) {
+    }), "\"\n      data-depth=\"").concat(depth, "\">\n      <input type=\"checkbox\" value=\"").concat(ALL_PROPERTIES, "\" \n      ").concat(selectedParentCategoryId === parentCategoryId ? ' checked' : '', "/>\n      <span class=\"label\">Map following attributes</span>\n    </li>") + items.map(function (item) {
       max = Math.max(max, item.count);
       var checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
       return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");

@@ -132,10 +132,11 @@ export default class ColumnSelectorView {
     });
   }
 
-  #makeColumn(items, depth, parentCategoryId) {
+  #makeColumn(items, depth, parentCategoryId = '') {
     // console.log(items, depth, parentCategoryId)
 
     const parentItem = parentCategoryId ? this.#items[parentCategoryId] : undefined;
+    const selectedParentCategoryId = ConditionBuilder.getSelectedParentCategoryId(this.#property.propertyId);
     const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.#property.propertyId);
 
     // make column
@@ -151,7 +152,8 @@ export default class ColumnSelectorView {
         data-parent-label="${parentItem.label}"` : ''}
       data-category-ids="${items.map(item => item.categoryId)}"
       data-depth="${depth}">
-      <input type="checkbox" value="${ALL_PROPERTIES}"/>
+      <input type="checkbox" value="${ALL_PROPERTIES}" 
+      ${selectedParentCategoryId === parentCategoryId ? ' checked' : ''}/>
       <span class="label">Map following attributes</span>
     </li>`
     + items.map(item => {

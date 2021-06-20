@@ -199,6 +199,11 @@ class ConditionBuilder {
     }
   }
 
+  getSelectedParentCategoryId(propertyId) {
+    const condition = this.#propertyConditions.find(condition => condition.propertyId === propertyId);
+    return condition?.parentCategoryId;
+  }
+
   getSelectedCategoryIds(propertyId) {
     const categoryIds = [];
     const condition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
