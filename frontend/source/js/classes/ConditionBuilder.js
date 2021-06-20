@@ -9,7 +9,7 @@ class ConditionBuilder {
   #subjectId;
   #togoKey;
   #userIds;
-  #hierarchicConditionsFromURLParameters;
+  // #hierarchicConditionsFromURLParameters;
   #preparingCounter;
 
   constructor() {
@@ -22,7 +22,7 @@ class ConditionBuilder {
   // public methods
 
   init() {
-    this.#createSearchConditionFromURLParameters();
+    this.#createSearchConditionFromURLParameters(true);
   }
 
   setSubject(togoKey, subjectId) {
@@ -207,13 +207,13 @@ class ConditionBuilder {
     return categoryIds;
   }
 
-  getSelectedHierarchicCategoryIdsFromURLParameters(propertyId) {
-    // const [keys, values] = this.#getHierarchicConditionsFromURLParameters();
-    return {
-      keys: this.#hierarchicConditionsFromURLParameters.keys.filter(key => key.propertyId === propertyId),
-      values: this.#hierarchicConditionsFromURLParameters.values.filter(value => value.propertyId === propertyId)
-    }
-  }
+  // getSelectedHierarchicCategoryIdsFromURLParameters(propertyId) {
+  //   // const [keys, values] = this.#getHierarchicConditionsFromURLParameters();
+  //   return {
+  //     keys: this.#hierarchicConditionsFromURLParameters.keys.filter(key => key.propertyId === propertyId),
+  //     values: this.#hierarchicConditionsFromURLParameters.values.filter(value => value.propertyId === propertyId)
+  //   }
+  // }
 
 
   // public accessor
@@ -253,15 +253,23 @@ class ConditionBuilder {
 
   }
 
-  #createSearchConditionFromURLParameters(e) {
-    console.log(e)
+  #createSearchConditionFromURLParameters(isFirst = false) {
+    console.log(isFirst)
 
+    // get conditions with ancestors
     const params = new URL(location).searchParams;
     console.log(Object.fromEntries( params.entries() ))
     const keys = JSON.parse(decodeURIComponent(params.get('keys'))) ?? [];
     const values = JSON.parse(decodeURIComponent(params.get('values'))) ?? [];
-    this.#hierarchicConditionsFromURLParameters = {keys, values};
-    console.log(this.#hierarchicConditionsFromURLParameters)
+    // this.#hierarchicConditionsFromURLParameters = {keys, values};
+    // console.log(this.#hierarchicConditionsFromURLParameters)
+
+    // get child category ids
+    if (isFirst) {
+      this.#makeQueueOfGettingChildCategoryIds(keys, values)
+    }
+
+    return;
 
     // restore conditions
     const [properties, attributes] = this.#getCondtionsFromHierarchicConditions(keys, values);
@@ -285,6 +293,62 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
 
   }
+
+  #makeQueueOfGettingChildCategoryIds(keys, values) {
+    console.log(keys, values)
+    const queue = [];
+    keys.forEach(({propertyId, id}) => {
+      if (id) {
+        id.ancestors.forEach((categoryId, index) => {
+          queue.push({
+            propertyId,
+            categoryId,
+            depth: index + 1
+          });
+        })
+      }
+    });
+    values.forEach(({propertyId, ids}) => {
+      ids.forEach(id => {
+        if (id.ancestors) {
+          id.ancestors.forEach((categoryId, index) => {
+            queue.push({
+              propertyId,
+              categoryId,
+              depth: index + 1
+            });
+          });
+        }
+      })
+    });
+    console.log(queue)
+    this.#progressQueueOfGettingChildCategoryIds(queue);
+  }
+
+  #progressQueueOfGettingChildCategoryIds(queue) {
+    console.log(queue, queue.length)
+    if (queue.length > 0) {
+      const {propertyId, categoryId, depth} = queue.shift();
+      console.log(propertyId, categoryId, depth)
+      this.#getChildCategoryIds(propertyId, categoryId, depth)
+        .then(() => this.#progressQueueOfGettingChildCategoryIds(queue));
+    } else {
+      console.log('***** finish!!!')
+    }
+  }
+
+  #getChildCategoryIds(propertyId, categoryId, depth) {
+    return new Promise((resolve, reject) => {
+      Records.fetchPropertyValues(propertyId, categoryId)
+        .then(values => {
+          resolve();
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  }
+
 
   #getHierarchicConditions() {
     const keys = [];

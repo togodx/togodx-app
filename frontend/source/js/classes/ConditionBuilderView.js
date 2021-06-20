@@ -84,7 +84,7 @@ export default class ConditionBuilderView {
       const subject = subjects.find(subject => subject.togoKey === e.target.value);
       ConditionBuilder.setSubject(e.target.value, subject.subjectId);
     });
-    this.#TOGO_KEYS.dispatchEvent(new Event('change'));
+    // this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }
 
   #addProperty(propertyId, parentCategoryId) {
