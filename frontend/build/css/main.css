@@ -1428,6 +1428,7 @@ main {
   left: 0.2rem;
 }
 .track-view > .row.-upper > .left > .collapsebutton > .title {
+  margin: 0;
   width: calc(var(--width-track-column-property) - 1.6rem);
   font-size: 1.4rem;
   font-weight: bold;

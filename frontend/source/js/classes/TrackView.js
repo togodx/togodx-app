@@ -32,6 +32,7 @@ export default class TrackView {
     elm.classList.add('-preparing');
     elm.classList.add('collapse-view');
     if (isSelected) elm.classList.add('-allselected');
+    elm.dataset.subjectId = subject.subjectId;
     elm.dataset.propertyId = property.propertyId;
     elm.dataset.collapse = property.propertyId;
 
@@ -41,7 +42,7 @@ export default class TrackView {
     <div class="row -upper">
       <div class="left definition">
         <div class="collapsebutton" data-collapse="${property.propertyId}">
-          <h2 class="title">${property.label}</h2>
+          <h2 class="title _subject-color">${property.label}</h2>
           <input type="checkbox" class="mapping"${checked}>
         </div>
       </div>
