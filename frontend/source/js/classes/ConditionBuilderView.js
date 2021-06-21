@@ -35,6 +35,9 @@ export default class ConditionBuilderView {
       document.body.dataset.display = 'results';
       ConditionBuilder.makeQueryParameter();
     });
+    elm.querySelector(':scope > footer > button.return').addEventListener('click', () => {
+      document.body.dataset.display = 'properties';
+    });
     elm.querySelector(':scope > header > button.rounded-button-view').addEventListener('click', () => {
       console.log(123)
       const customEvent = new CustomEvent(event.clearCondition);

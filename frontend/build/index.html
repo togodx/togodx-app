@@ -74,12 +74,12 @@
       </div>
       <section id="FixedArea">
         <div class="upper">
-          <section id="ConditionBuilder" data-hidden-by="results">
-            <header>
+          <section id="ConditionBuilder">
+            <header data-hidden-by="results">
               <h2 class="title">Condition builder</h2>
               <button class="rounded-button-view -verysmall -outline" type="button">Clear</button>
             </header>
-            <div class="conditions">
+            <div class="conditions" data-hidden-by="results">
               <div class="condition" id="ConditionTogoKey">
                 <div class="inner">
                   <h2 class="title"><span class="material-icons-outlined">layers</span>Select target category</h2>
@@ -109,16 +109,8 @@
               </div>
             </div>
             <footer>
-              <button class="exec rounded-button-view -black -spread" disabled><span class="material-icons-outlined">table_view</span>View results</button>
-            </footer>
-          </section>
-          <section id="Reports" data-hidden-by="properties">
-            <header>
-              <h2 class="title">Reports</h2>
-            </header>
-            <div class="stanzas"></div>
-            <footer>
-              <button class="return rounded-button-view -black -spread"><span class="material-icons-outlined">keyboard_return</span>Return</button>
+              <button class="exec rounded-button-view -black -spread" data-hidden-by="results" disabled><span class="material-icons-outlined">table_view</span>View results</button>
+              <button class="return rounded-button-view -black -spread" data-hidden-by="properties"><span class="material-icons-outlined">keyboard_return</span>Return</button>
             </footer>
           </section>
         </div>
