@@ -2953,6 +2953,8 @@
 
   var _userIds = new WeakMap();
 
+  var _isRestoredConditinoFromURLParameters = new WeakMap();
+
   var _preparingCounter = new WeakMap();
 
   var _postProcessing = new WeakSet();
@@ -3016,6 +3018,11 @@
         value: void 0
       });
 
+      _isRestoredConditinoFromURLParameters.set(this, {
+        writable: true,
+        value: false
+      });
+
       _preparingCounter.set(this, {
         writable: true,
         value: void 0
@@ -3026,6 +3033,8 @@
       _classPrivateFieldSet(this, _attributeConditions, []);
 
       _classPrivateFieldSet(this, _preparingCounter, 0);
+
+      _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, false);
 
       window.addEventListener('popstate', _classPrivateMethodGet(this, _createSearchConditionFromURLParameters, _createSearchConditionFromURLParameters2).bind(this));
     } // public methods
@@ -3354,7 +3363,8 @@
 
   function _postProcessing2() {
     var dontLeaveInHistory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-    console.log(_classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions), dontLeaveInHistory); // evaluate if search is possible
+    console.log(_classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions), dontLeaveInHistory);
+    if (!_classPrivateFieldGet(this, _isRestoredConditinoFromURLParameters)) return; // evaluate if search is possible
 
     var established = _classPrivateFieldGet(this, _togoKey) && _classPrivateFieldGet(this, _subjectId) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
     var customEvent = new CustomEvent(mutateEstablishConditions, {
@@ -3465,7 +3475,9 @@
         keys = _ref6.keys,
         values = _ref6.values;
 
-    // restore conditions
+    _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true); // restore conditions
+
+
     var _classPrivateMethodGe3 = _classPrivateMethodGet(this, _getCondtionsFromHierarchicConditions, _getCondtionsFromHierarchicConditions2).call(this, keys, values),
         _classPrivateMethodGe4 = _slicedToArray(_classPrivateMethodGe3, 2),
         properties = _classPrivateMethodGe4[0],
@@ -3568,7 +3580,7 @@
 
   var ConditionBuilder$1 = new ConditionBuilder();
 
-  var POLLING_DURATION = 100;
+  var POLLING_DURATION$1 = 100;
 
   var _isRange = new WeakMap();
 
@@ -3699,7 +3711,7 @@
           var value = Records$1.getValue(_classPrivateFieldGet(_this2, _condition$1).propertyId, categoryId);
 
           if (value === undefined) {
-            setTimeout(getValue, POLLING_DURATION);
+            setTimeout(getValue, POLLING_DURATION$1);
           } else {
             _classPrivateFieldGet(_this2, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _subject-background-color\" data-category-id=\"".concat(value.categoryId, "\">").concat(value.label, "<div class=\"close-button-view\"></div></li>")); // attach event
 
@@ -3748,9 +3760,13 @@
     return StackingConditionView;
   }();
 
+  var POLLING_DURATION = 100;
+
   var _properties = new WeakMap();
 
   var _propertyValues = new WeakMap();
+
+  var _isDefined = new WeakMap();
 
   var _TOGO_KEYS = new WeakMap();
 
@@ -3799,6 +3815,11 @@
       value: void 0
     });
 
+    _isDefined.set(this, {
+      writable: true,
+      value: void 0
+    });
+
     _TOGO_KEYS.set(this, {
       writable: true,
       value: void 0
@@ -3821,7 +3842,9 @@
 
     _classPrivateFieldSet(this, _properties, []);
 
-    _classPrivateFieldSet(this, _propertyValues, []); // references
+    _classPrivateFieldSet(this, _propertyValues, []);
+
+    _classPrivateFieldSet(this, _isDefined, false); // references
 
 
     var conditionsContainer = elm.querySelector(':scope > .conditions');
@@ -3887,11 +3910,25 @@
   ;
 
   function _restoreParameters2$1(parameters) {
-    _classPrivateFieldGet(this, _TOGO_KEYS).value = parameters.togoKey;
+    var _this2 = this;
+
+    if (parameters.togoKey) {
+      if (_classPrivateFieldGet(this, _isDefined)) {
+        _classPrivateFieldGet(this, _TOGO_KEYS).value = parameters.togoKey;
+      } else {
+        setTimeout(function () {
+          _classPrivateMethodGet(_this2, _restoreParameters$1, _restoreParameters2$1).call(_this2, parameters);
+        }, POLLING_DURATION);
+      }
+    }
   }
 
   function _defineTogoKeys2(subjects) {
-    // make options
+    console.log(subjects);
+
+    _classPrivateFieldSet(this, _isDefined, true); // make options
+
+
     _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = subjects.map(function (subject) {
       var option = '';
       if (subject.togoKey) option = "<option value=\"".concat(subject.togoKey, "\" data-subject-id=\"").concat(subjects.subjectId, "\">").concat(subject.keyLabel, "</option>");
@@ -3904,8 +3941,9 @@
         return subject.togoKey === e.target.value;
       });
       ConditionBuilder$1.setSubject(e.target.value, subject.subjectId);
-    }); // this.#TOGO_KEYS.dispatchEvent(new Event('change'));
+    });
 
+    _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));
   }
 
   function _addProperty2(propertyId, parentCategoryId) {
