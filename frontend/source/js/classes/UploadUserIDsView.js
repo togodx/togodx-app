@@ -13,7 +13,7 @@ export default class UploadUserIDsView {
 
     this.#path = path;
     this.#BODY = document.querySelector('body');
-    this.#USER_IDS = elm.querySelector(':scope > label > input');
+    this.#USER_IDS = elm.querySelector(':scope > textarea');
 
     // atache events
     const buttons = elm.querySelector(':scope > .buttons');
@@ -30,20 +30,27 @@ export default class UploadUserIDsView {
 
     // event listeners
     this.#USER_IDS.addEventListener('change', () => {
-      ConditionBuilder.setUserIds(this.#USER_IDS.value);
+      ConditionBuilder.setUserIds(this.#USER_IDS.value.replace(/,/g," ").split(/\s+/).join(','));
     });
-    this.#USER_IDS.addEventListener('keyup', e => {
-      if (e.keyCode === 13) this.#fetch();
+    // this.#USER_IDS.addEventListener('keyup', e => {
+    //   if (e.keyCode === 13) this.#fetch();
+    // });
+    DefaultEventEmitter.addEventListener(event.restoreParameters, e => {
+      this.#restoreParameters(e.detail);
     });
 
   }
 
   // private methods
 
+  #restoreParameters(parameters) {
+    this.#USER_IDS.value = parameters.userIds;
+  }
+
   #fetch() {
     if (this.#USER_IDS.value === '') return;
 
-    const queryTemplate = `${this.#path.url}?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=${ConditionBuilder.currentTogoKey}&userIds=${encodeURIComponent(this.#USER_IDS.value)}`;
+    const queryTemplate = `${this.#path.url}?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=${ConditionBuilder.currentTogoKey}&userIds=${encodeURIComponent(this.#USER_IDS.value.replace(/,/g," ").split(/\s+/).join(','))}`;
 
     Records.properties.forEach(property => {
       const propertyId = property.propertyId;
@@ -67,6 +74,7 @@ export default class UploadUserIDsView {
 
   #clear() {
     this.#BODY.classList.remove('-showuserids');
+    this.#USER_IDS.value = '';
     const customEvent = new CustomEvent(event.clearUserValues);
     DefaultEventEmitter.dispatchEvent(customEvent);
   }

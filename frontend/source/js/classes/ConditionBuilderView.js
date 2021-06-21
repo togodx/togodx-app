@@ -1,9 +1,12 @@
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import StackingConditionView from "./StackingConditionView";
 import * as event from '../events';
 
 export default class ConditionBuilderView {
 
+  #properties;
+  #propertyValues;
   #TOGO_KEYS;
   #PROPERTIES_CONDITIONS_CONTAINER;
   #ATTRIBUTES_CONDITIONS_CONTAINER;
@@ -11,36 +14,39 @@ export default class ConditionBuilderView {
 
   constructor(elm) {
 
+    this.#properties = [];
+    this.#propertyValues = [];
+  
     // references
-    const body = document.querySelector('body');
     const conditionsContainer = elm.querySelector(':scope > .conditions');
-    this.#TOGO_KEYS = conditionsContainer.querySelector(':scope > .togokey > .inner > select');
-    this.#PROPERTIES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .properties > .inner > .conditions');
-    this.#ATTRIBUTES_CONDITIONS_CONTAINER = conditionsContainer.querySelector(':scope > .attributes > .inner > .conditions');
+    this.#TOGO_KEYS = conditionsContainer.querySelector('#ConditionTogoKey > .inner > select');
+    this.#PROPERTIES_CONDITIONS_CONTAINER = document.querySelector('#ConditionValues > .inner > .conditions');
+    this.#ATTRIBUTES_CONDITIONS_CONTAINER = document.querySelector('#ConditionKeys > .inner > .conditions');
     this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
 
     // attach event
+    document.querySelector('#ConditionKeys').addEventListener('click', () => document.body.dataset.condition = 'keys');
+    document.querySelector('#ConditionValues').addEventListener('click', () => document.body.dataset.condition = 'values');
     this.#EXEC_BUTTON.addEventListener('click', () => {
-      body.dataset.display = 'results';
+      document.body.dataset.display = 'results';
       ConditionBuilder.makeQueryParameter();
     });
 
     // event listeners
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, e => {
-      console.log(e.detail)
       switch (e.detail.action) {
         case 'add':
-          this.#addProperty(e.detail.condition.subject, e.detail.condition.property);
+          this.#addProperty(e.detail.propertyId, e.detail.parentCategoryId);
           break;
         case 'remove':
-          this.#removeProperty(e.detail.propertyId);
+          this.#removeProperty(e.detail.propertyId, e.detail.parentCategoryId);
           break;
       }
     });
     DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, e => {
       switch (e.detail.action) {
         case 'add':
-          this.#addPropertyValue(e.detail.condition.subject, e.detail.condition.property, e.detail.condition.value);
+          this.#addPropertyValue(e.detail.propertyId, e.detail.categoryId);
           break;
         case 'remove':
           this.#removePropertyValue(e.detail.propertyId, e.detail.categoryId);
@@ -53,16 +59,23 @@ export default class ConditionBuilderView {
     DefaultEventEmitter.addEventListener(event.mutateEstablishConditions, e => {
       this.#EXEC_BUTTON.disabled = !e.detail;
     });
+    DefaultEventEmitter.addEventListener(event.restoreParameters, e => {
+      this.#restoreParameters(e.detail);
+    });
 
   }
 
   // private methods
 
+  #restoreParameters(parameters) {
+    this.#TOGO_KEYS.value = parameters.togoKey;
+  }
+
   #defineTogoKeys(subjects) {
     // make options
     this.#TOGO_KEYS.innerHTML = subjects.map(subject => {
       let option = '';
-      if (subject.togoKey) option = `<option value="${subject.togoKey}" data-subject-id="${subjects.subjectId}">${subject.subject} - ${subject.keyLabel}</option>`;
+      if (subject.togoKey) option = `<option value="${subject.togoKey}" data-subject-id="${subjects.subjectId}">${subject.keyLabel}</option>`;
       return option;
     }).join('');
     this.#TOGO_KEYS.disabled = false;
@@ -71,64 +84,44 @@ export default class ConditionBuilderView {
       const subject = subjects.find(subject => subject.togoKey === e.target.value);
       ConditionBuilder.setSubject(e.target.value, subject.subjectId);
     });
-    this.#TOGO_KEYS.dispatchEvent(new Event('change'));
+    // this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }
 
-  #addProperty(subject, property) {
-    console.log(property)
-    // make view
-    const view = document.createElement('div');
-    view.classList.add('stacking-condition-view');
-    view.dataset.propertyId = property.propertyId;
-    view.innerHTML = `
-    <div class="close-button-view"></div>
-    <ul class="path">
-      <li>${subject.subject}</li>
-    </ul>
-    <div class="label" style="color: ${subject.colorCSSValue};">${property.label}</div>`;
-    this.#PROPERTIES_CONDITIONS_CONTAINER.insertAdjacentElement('beforeend', view);
+  #addProperty(propertyId, parentCategoryId) {
+    // modifier
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
-    // event
-    view.querySelector(':scope > .close-button-view').addEventListener('click', () => {
-      ConditionBuilder.removeProperty(view.dataset.propertyId);
-    });
+    // make view
+    this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {propertyId, parentCategoryId}));
   }
   
-  #removeProperty(propertyId) {
-    const view = this.#PROPERTIES_CONDITIONS_CONTAINER.querySelector(`[data-property-id="${propertyId}"]`);
-    view.parentNode.removeChild(view);
-    if (this.#PROPERTIES_CONDITIONS_CONTAINER.childNodes.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
+  #removeProperty(propertyId, parentCategoryId) {
+    // remove from array
+    const index = this.#properties.findIndex(stackingConditionView => stackingConditionView.removeProperty(propertyId, parentCategoryId));
+    this.#properties.splice(index, 1);
+    // modifier
+    if (this.#properties.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
-  #addPropertyValue(subject, property, value) {
-    // make view
-    const view = document.createElement('div');
-    view.classList.add('stacking-condition-view');
-    view.classList.add('-value');
-    view.dataset.propertyId = property.propertyId;
-    view.dataset.categoryId = value.categoryId;
-    // view.dataset.range = [0, 0]; // TODO:
-    view.style.backgroundColor = subject.colorCSSValue;
-    view.innerHTML = `
-    <div class="close-button-view"></div>
-    <ul class="path">
-      <li>${subject.subject}</li>
-      <li>${property.label}</li>
-      ${value.ancestors.map(ancestor => `<li>${ancestor}</li>`).join('')}
-    </ul>
-    <div class="label">${value.label}</div>`;
-    this.#ATTRIBUTES_CONDITIONS_CONTAINER.insertAdjacentElement('beforeend', view);
+  #addPropertyValue(propertyId, categoryId) {
+    // modifier
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
-    // event
-    view.querySelector(':scope > .close-button-view').addEventListener('click', () => {
-      ConditionBuilder.removePropertyValue(view.dataset.propertyId, view.dataset.categoryId);
-    });
+    // find a condition view has same property id
+    const stackingConditionView = this.#propertyValues.find(stackingConditionView => stackingConditionView.sameProperty(propertyId));
+    if (stackingConditionView) {
+      // if it exists, add new categoryId
+      stackingConditionView.addValue(categoryId);
+    } else {
+      // otherwise, make new condition view
+      this.#propertyValues.push(new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {propertyId, categoryId}));
+    }
   }
 
   #removePropertyValue(propertyId, categoryId) {
-    const view = this.#ATTRIBUTES_CONDITIONS_CONTAINER.querySelector(`[data-property-id="${propertyId}"][data-category-id="${categoryId}"]`);
-    view.parentNode.removeChild(view);
-    if (this.#ATTRIBUTES_CONDITIONS_CONTAINER.childNodes.length === 0) this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.add('-empty');
+    // remove from array
+    const index = this.#propertyValues.findIndex(stackingConditionView => stackingConditionView.removePropertyValue(propertyId, categoryId));
+    if (index !== -1) this.#propertyValues.splice(index, 1);
+    // modifier
+    if (this.#propertyValues.length === 0) this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
 }

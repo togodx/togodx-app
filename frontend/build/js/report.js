@@ -103,7 +103,7 @@
     if (typeof Proxy === "function") return true;
 
     try {
-      Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
       return true;
     } catch (e) {
       return false;
@@ -293,28 +293,12 @@
   }
 
   function _classPrivateFieldGet(receiver, privateMap) {
-    var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get");
+    var descriptor = privateMap.get(receiver);
 
-    return _classApplyDescriptorGet(receiver, descriptor);
-  }
-
-  function _classPrivateFieldSet(receiver, privateMap, value) {
-    var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set");
-
-    _classApplyDescriptorSet(receiver, descriptor, value);
-
-    return value;
-  }
-
-  function _classExtractFieldDescriptor(receiver, privateMap, action) {
-    if (!privateMap.has(receiver)) {
-      throw new TypeError("attempted to " + action + " private field on non-instance");
+    if (!descriptor) {
+      throw new TypeError("attempted to get private field on non-instance");
     }
 
-    return privateMap.get(receiver);
-  }
-
-  function _classApplyDescriptorGet(receiver, descriptor) {
     if (descriptor.get) {
       return descriptor.get.call(receiver);
     }
@@ -322,7 +306,13 @@
     return descriptor.value;
   }
 
-  function _classApplyDescriptorSet(receiver, descriptor, value) {
+  function _classPrivateFieldSet(receiver, privateMap, value) {
+    var descriptor = privateMap.get(receiver);
+
+    if (!descriptor) {
+      throw new TypeError("attempted to set private field on non-instance");
+    }
+
     if (descriptor.set) {
       descriptor.set.call(receiver, value);
     } else {
@@ -332,6 +322,8 @@
 
       descriptor.value = value;
     }
+
+    return value;
   }
 
   function _classPrivateMethodGet(receiver, privateSet, fn) {
@@ -480,44 +472,13 @@
     }
 
     _createClass(h, [{
-      key: "space",
-      get: function get() {
-        return h.spaces[this.spaceId];
-      },
-      set: function set(t) {
-        return this.spaceId = t;
-      }
-    }, {
-      key: "spaceId",
-      get: function get() {
-        return this._spaceId;
-      },
-      set: function set(t) {
-        var e = h.space(t);
-
-        if (t = e.id, this.space && e && this.space !== e) {
-          this.coords = this[t];
-
-          for (var _t5 in this.space.instance) {
-            this.hasOwnProperty(_t5) && delete this[_t5];
-          }
-        }
-
-        this._spaceId = t, a(this, this.space.instance);
-      }
-    }, {
-      key: "white",
-      get: function get() {
-        return this.space.white || h.whites.D50;
-      }
-    }, {
       key: "set",
       value: function set(t, e) {
         if (1 === arguments.length && "object" === r(arguments[0])) {
-          var _t6 = arguments[0];
+          var _t5 = arguments[0];
 
-          for (var _e5 in _t6) {
-            this.set(_e5, _t6[_e5]);
+          for (var _e5 in _t5) {
+            this.set(_e5, _t5[_e5]);
           }
         } else if ("function" == typeof e) {
           var _r4 = n(this, t);
@@ -575,15 +536,6 @@
         return this.distance(t, "lab");
       }
     }, {
-      key: "luminance",
-      get: function get() {
-        return h.chromaticAdaptation(h.spaces.xyz.white, h.whites.D65, this.xyz)[1];
-      },
-      set: function set(t) {
-        var e = h.chromaticAdaptation(h.spaces.xyz.white, h.whites.D65, this.xyz);
-        e[1] = t, e = h.chromaticAdaptation(h.whites.D65, h.spaces.xyz.white, e), this.xyz.X = e[0], this.xyz.Y = e[1], this.xyz.Z = e[2];
-      }
-    }, {
       key: "contrast",
       value: function contrast(t) {
         var _ref2;
@@ -592,28 +544,6 @@
         var e = this.luminance,
             r = t.luminance;
         return r > e && (_ref2 = [r, e], e = _ref2[0], r = _ref2[1], _ref2), (e + .05) / (r + .05);
-      }
-    }, {
-      key: "uv",
-      get: function get() {
-        var _this$xyz = _slicedToArray(this.xyz, 3),
-            t = _this$xyz[0],
-            e = _this$xyz[1],
-            r = _this$xyz[2],
-            a = t + 15 * e + 3 * r;
-
-        return [4 * t / a, 9 * e / a];
-      }
-    }, {
-      key: "xy",
-      get: function get() {
-        var _this$xyz2 = _slicedToArray(this.xyz, 3),
-            t = _this$xyz2[0],
-            e = _this$xyz2[1],
-            r = _this$xyz2[2],
-            a = t + e + r;
-
-        return [t / a, e / a];
       }
     }, {
       key: "getCoords",
@@ -626,10 +556,10 @@
         var r = this.coords;
 
         if (t && !this.inGamut() && (r = this.toGamut(!0 === t ? void 0 : t).coords), null != e) {
-          var _t7 = this.space.coords ? Object.values(this.space.coords) : [];
+          var _t6 = this.space.coords ? Object.values(this.space.coords) : [];
 
           r = r.map(function (r, a) {
-            return o(r, e, _t7[a]);
+            return o(r, e, _t6[a]);
           });
         }
 
@@ -676,12 +606,12 @@
                 _l = _o[_a4];
 
             for (; _l - _c > _n;) {
-              var _t8 = _o.toGamut({
+              var _t7 = _o.toGamut({
                 space: r,
                 method: "clip"
               });
 
-              _o.deltaE(_t8, {
+              _o.deltaE(_t7, {
                 method: "2000"
               }) - 2 < _n ? _c = _o[_a4] : _l = _o[_a4], _o[_a4] = (_l + _c) / 2;
             }
@@ -693,12 +623,12 @@
         if ("clip" === t || !s.inGamut(r, {
           epsilon: 0
         })) {
-          var _t9 = Object.values(r.coords);
+          var _t8 = Object.values(r.coords);
 
           s.coords = s.coords.map(function (e, r) {
-            var _t9$r = _slicedToArray(_t9[r], 2),
-                a = _t9$r[0],
-                s = _t9$r[1];
+            var _t8$r = _slicedToArray(_t8[r], 2),
+                a = _t8$r[0],
+                s = _t8$r[1];
 
             return void 0 !== a && (e = Math.max(a, e)), void 0 !== s && (e = Math.min(e, s)), e;
           });
@@ -792,6 +722,68 @@
         return t = h.get(t), this.spaceId === t.spaceId && this.alpha === t.alpha && this.coords.every(function (e, r) {
           return e === t.coords[r];
         });
+      }
+    }, {
+      key: "space",
+      get: function get() {
+        return h.spaces[this.spaceId];
+      },
+      set: function set(t) {
+        return this.spaceId = t;
+      }
+    }, {
+      key: "spaceId",
+      get: function get() {
+        return this._spaceId;
+      },
+      set: function set(t) {
+        var e = h.space(t);
+
+        if (t = e.id, this.space && e && this.space !== e) {
+          this.coords = this[t];
+
+          for (var _t9 in this.space.instance) {
+            this.hasOwnProperty(_t9) && delete this[_t9];
+          }
+        }
+
+        this._spaceId = t, a(this, this.space.instance);
+      }
+    }, {
+      key: "white",
+      get: function get() {
+        return this.space.white || h.whites.D50;
+      }
+    }, {
+      key: "luminance",
+      get: function get() {
+        return h.chromaticAdaptation(h.spaces.xyz.white, h.whites.D65, this.xyz)[1];
+      },
+      set: function set(t) {
+        var e = h.chromaticAdaptation(h.spaces.xyz.white, h.whites.D65, this.xyz);
+        e[1] = t, e = h.chromaticAdaptation(h.whites.D65, h.spaces.xyz.white, e), this.xyz.X = e[0], this.xyz.Y = e[1], this.xyz.Z = e[2];
+      }
+    }, {
+      key: "uv",
+      get: function get() {
+        var _this$xyz = _slicedToArray(this.xyz, 3),
+            t = _this$xyz[0],
+            e = _this$xyz[1],
+            r = _this$xyz[2],
+            a = t + 15 * e + 3 * r;
+
+        return [4 * t / a, 9 * e / a];
+      }
+    }, {
+      key: "xy",
+      get: function get() {
+        var _this$xyz2 = _slicedToArray(this.xyz, 3),
+            t = _this$xyz2[0],
+            e = _this$xyz2[1],
+            r = _this$xyz2[2],
+            a = t + e + r;
+
+        return [t / a, e / a];
       }
     }], [{
       key: "inGamut",
@@ -1471,12 +1463,12 @@
     },
     instance: {
       toString: function toString() {
-        var _ref13 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-            _ref13.precision;
-            var e = _ref13.commas,
-            r = _ref13.format;
-            _ref13.inGamut;
-            var s = _objectWithoutProperties(_ref13, ["precision", "commas", "format", "inGamut"]);
+        var _ref13 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            t = _ref13.precision,
+            e = _ref13.commas,
+            r = _ref13.format,
+            a = _ref13.inGamut,
+            s = _objectWithoutProperties(_ref13, ["precision", "commas", "format", "inGamut"]);
 
         return r || (r = function r(t, e) {
           return e > 0 ? t + "%" : t;
@@ -1577,10 +1569,10 @@
     instance: {
       toString: function toString() {
         var _ref14 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            t = _ref14.format;
-            _ref14.commas;
-            _ref14.inGamut;
-            var a = _objectWithoutProperties(_ref14, ["format", "commas", "inGamut"]);
+            t = _ref14.format,
+            e = _ref14.commas,
+            r = _ref14.inGamut,
+            a = _objectWithoutProperties(_ref14, ["format", "commas", "inGamut"]);
 
         return t || (t = function t(_t32, e) {
           return e > 0 ? _t32 + "%" : _t32;
@@ -2044,9 +2036,9 @@
   }), h.hooks.add("chromatic-adaptation-end", function (t) {
     t.M || (t.M = h.adapt(t.W1, t.W2, t.options.method));
   }), h.defineCAT = function (_ref16) {
-    var t = _ref16.id;
-        _ref16.toCone_M;
-        _ref16.fromCone_M;
+    var t = _ref16.id,
+        e = _ref16.toCone_M,
+        r = _ref16.fromCone_M;
     h.CATs[t] = arguments[0];
   }, h.adapt = function (e, r) {
     var a = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "Bradford";
@@ -2592,6 +2584,8 @@
 
   var _properties = new WeakMap();
 
+  var _fetchedCategoryIds = new WeakMap();
+
   var Records = /*#__PURE__*/function () {
     function Records() {
       _classCallCheck(this, Records);
@@ -2605,6 +2599,11 @@
         writable: true,
         value: void 0
       });
+
+      _fetchedCategoryIds.set(this, {
+        writable: true,
+        value: void 0
+      });
     } // public methods
 
 
@@ -2613,11 +2612,12 @@
       value: function setSubjects(subjects) {
         var _this = this;
 
-        // define subjects
+        console.log(subjects); // define subjects
+
         for (var i = 0; i < subjects.length; i++) {
           var hue = 360 - 360 * i / subjects.length + 130;
           hue -= hue > 360 ? 360 : 0;
-          var srgb = new h('hsv', [hue, 60, 75]).to('srgb');
+          var srgb = new h('hsv', [hue, 45, 85]).to('srgb');
           subjects[i].hue = hue;
           subjects[i].color = srgb;
           subjects[i].colorCSSValue = "rgb(".concat(srgb.coords.map(function (channel) {
@@ -2630,24 +2630,75 @@
 
         _classPrivateFieldSet(this, _properties, []);
 
+        _classPrivateFieldSet(this, _fetchedCategoryIds, {});
+
         subjects.forEach(function (subject) {
           subject.properties.forEach(function (property) {
             _classPrivateFieldGet(_this, _properties).push(Object.assign({
-              subjectId: subject.subjectId
+              subjectId: subject.subjectId,
+              values: []
             }, property));
+
+            _classPrivateFieldGet(_this, _fetchedCategoryIds)[property.propertyId] = [];
           });
         });
         console.log(_classPrivateFieldGet(this, _subjects));
         console.log(_classPrivateFieldGet(this, _properties));
+        console.log(_classPrivateFieldGet(this, _fetchedCategoryIds)); // make stylesheet
+
+        var styleElm = document.createElement('style');
+        document.head.appendChild(styleElm);
+        var styleSheet = styleElm.sheet;
+        styleSheet.insertRule(":root {\n      ".concat(subjects.map(function (subject) {
+          return "--color-subject-".concat(subject.subjectId, ": ").concat(subject.colorCSSValue);
+        }).join(';\r'), "\n    }"));
+
+        var _iterator = _createForOfIteratorHelper(subjects),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var subject = _step.value;
+            styleSheet.insertRule("\n      ._subject-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-color {\n        color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
+            styleSheet.insertRule("\n      ._subject-background-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-background-color {\n        background-color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
+            styleSheet.insertRule("\n      ._subject-border-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-border-color {\n        border-color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
       }
     }, {
-      key: "setValues",
-      value: function setValues(propertyId, values) {
-        var property = _classPrivateFieldGet(this, _properties).find(function (property) {
-          return property.propertyId === propertyId;
-        });
+      key: "fetchPropertyValues",
+      value: function fetchPropertyValues(propertyId, categoryId) {
+        var _this2 = this;
 
-        property.values = values;
+        var property = this.getProperty(propertyId);
+        return new Promise(function (resolve, reject) {
+          if (categoryId && _classPrivateFieldGet(_this2, _fetchedCategoryIds)[propertyId].indexOf(categoryId) !== -1) {
+            resolve(property.values.filter(function (value) {
+              return value.parentCategoryId === categoryId;
+            }));
+          } else {
+            fetch("".concat(property.data).concat(categoryId ? "?categoryIds=".concat(categoryId) : '')).then(function (responce) {
+              return responce.json();
+            }).then(function (values) {
+              var _property$values;
+
+              // set parent category id
+              if (categoryId) values.forEach(function (value) {
+                return value.parentCategoryId = categoryId;
+              }); // set values
+
+              (_property$values = property.values).push.apply(_property$values, _toConsumableArray(values));
+
+              resolve(values);
+            }).catch(function (error) {
+              return reject(error);
+            });
+          }
+        });
       }
     }, {
       key: "getSubject",
@@ -2655,6 +2706,17 @@
         return _classPrivateFieldGet(this, _subjects).find(function (subject) {
           return subject.subjectId === subjectId;
         });
+      }
+    }, {
+      key: "getSubjectWithPropertyId",
+      value: function getSubjectWithPropertyId(propertyId) {
+        var subject = _classPrivateFieldGet(this, _subjects).find(function (subject) {
+          return subject.properties.some(function (property) {
+            return property.propertyId === propertyId;
+          });
+        });
+
+        return subject;
       }
     }, {
       key: "getProperty",
@@ -2673,6 +2735,35 @@
           return value.categoryId === categoryId;
         });
         return value;
+      }
+    }, {
+      key: "getValuesWithParentCategoryId",
+      value: function getValuesWithParentCategoryId(propertyId, parentCategoryId) {
+        var property = this.getProperty(propertyId);
+        return property.values.filter(function (value) {
+          return value.parentCategoryId === parentCategoryId;
+        });
+      }
+    }, {
+      key: "getAncestors",
+      value: function getAncestors(propertyId, categoryId) {
+        var property = this.getProperty(propertyId);
+        var ancestors = [];
+        var parent;
+
+        do {
+          var _parent;
+
+          // find ancestors
+          parent = property.values.find(function (value) {
+            return value.categoryId === categoryId;
+          });
+          if (parent) ancestors.unshift(parent);
+          categoryId = (_parent = parent) === null || _parent === void 0 ? void 0 : _parent.parentCategoryId;
+        } while (parent);
+
+        ancestors.pop();
+        return ancestors;
       }
     }, {
       key: "getLabelFromTogoKey",
@@ -2821,8 +2912,8 @@
       }
     }, {
       key: "getHslColor",
-      value: // utilities
-      function getHslColor(hue) {
+      // utilities
+      value: function getHslColor(hue) {
         return "hsl(".concat(hue, ", 50%, 55%)");
       }
     }]);
@@ -2830,7 +2921,7 @@
     return ReportApp;
   }();
 
-  function _drawStanzas2() {
+  var _drawStanzas2 = function _drawStanzas2() {
     var _this2 = this;
 
     var urlVars = Object.fromEntries(window.location.search.substr(1).split('&').map(function (keyValue) {
@@ -2858,7 +2949,13 @@
         }).join(''), "\n          </div>");
       }
     }).join('');
-  }
+    main.querySelectorAll('script').forEach(function (scriptElement) {
+      var _script = document.createElement('script');
+
+      _script.textContent = scriptElement.textContent;
+      scriptElement.replaceWith(_script);
+    });
+  };
 
   var ReportApp$1 = new ReportApp();
 

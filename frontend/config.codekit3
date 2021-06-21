@@ -25,16 +25,6 @@
       "oF" : 0,
       "oS" : 0
     },
-    "\/source\/about.pug" : {
-      "cB" : 0,
-      "cOD" : 1,
-      "ft" : 512,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/build\/about.html",
-      "oF" : 0,
-      "oS" : 0
-    },
     "\/source\/contact.pug" : {
       "cB" : 0,
       "cOD" : 1,
@@ -491,16 +481,6 @@
       "pg" : 0,
       "sct" : 0
     },
-    "\/source\/help.pug" : {
-      "cB" : 0,
-      "cOD" : 1,
-      "ft" : 512,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/build\/help.html",
-      "oF" : 0,
-      "oS" : 0
-    },
     "\/source\/index.pug" : {
       "cB" : 0,
       "cOD" : 1,
@@ -695,6 +675,17 @@
       "sC" : 3,
       "tS" : 1
     },
+    "\/source\/js\/classes\/StackingConditionView.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/classes\/StackingConditionView.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
     "\/source\/js\/classes\/StanzaManager.js" : {
       "bF" : 4,
       "ft" : 64,
@@ -783,6 +774,17 @@
       "sC" : 3,
       "tS" : 1
     },
+    "\/source\/js\/functions\/dragView.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/functions\/dragView.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
     "\/source\/js\/functions\/util.js" : {
       "bF" : 4,
       "ft" : 64,
@@ -866,7 +868,7 @@
         "active" : 0
       },
       "async-to-generator" : {
-        "active" : 1
+        "active" : 0
       },
       "block-scoped-functions" : {
         "active" : 0

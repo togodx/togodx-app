@@ -23,6 +23,9 @@ export const hidePopup = 'hidePopup';
 export const showPopup = 'showPopup';
 export const movePopup = 'movePopup';
 
+// Dragging
+export const dragElement = 'dragElement';
+
 // Polling
 export const failedFetchTableDataIds = 'failedFetchTableDataIds';
 export const addNextRows = 'addNextRows';
@@ -35,3 +38,6 @@ export const highlightCol = 'highlightCol';
 // Track
 export const enterPropertyValueItemView = 'enterPropertyValueItemView';
 export const leavePropertyValueItemView = 'leavePropertyValueItemView';
+
+// restore
+export const restoreParameters = 'restoreParameters';

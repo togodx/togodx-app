@@ -103,32 +103,29 @@ export default class ResultsTable {
 
     // make table header
     this.#THEAD.innerHTML = `
-      <th>
-        <div class="inner -noborder">Report</div>
+      <th rowspan="2">
+        <div class="inner">Report</div>
       </th>
-      <th colspan="100%">
-        <div class="inner -noborder">
+      <th rowspan="2">
+        <div class="inner">
           <div class="togo-key-view">${Records.getLabelFromTogoKey(
             tableData.condition.togoKey
           )}</div>
         </div>
       </th>
+      <th colspan="100%">
+        <div class="inner -noborder"></div>
+      </th>
       `;
 
     // makte table sub header
     this.#THEAD_SUB.innerHTML = `
-    <th>
-      <div class="inner"></div>
-    </th>
-    <th>
-      <div class="inner"></div>
-    </th>
     ${tableData.condition.attributes
       .map(
         property => `
     <th>
-      <div class="inner -propertyvalue" style="background-color: ${property.subject.colorCSSValue}">
-        <div class="togo-key-view">${property.property.primaryKey}</div>
+      <div class="inner _subject-background-color" data-subject-id="${property.subject.subjectId}">
+      <div class="togo-key-view">${property.property.primaryKey}</div>
         <span>${property.property.label}</span>
       </div>
     </th>`
@@ -138,9 +135,13 @@ export default class ResultsTable {
       .map(
         property => `
     <th>
-      <div class="inner -property" style="color: ${property.subject.colorCSSValue}">
+      <div class="inner _subject-color" data-subject-id="${property.subject.subjectId}">
         <div class="togo-key-view">${property.property.primaryKey}</div>
-        <span>${property.property.label}</span>
+        <span>${
+          property.parentCategoryId
+            ? Records.getValue(property.query.propertyId, property.parentCategoryId).label
+            : property.property.label
+        }</span>
       </div>
     </th>`
       )
@@ -199,7 +200,8 @@ export default class ResultsTable {
                   <div
                     class="togo-key-view primarykey"
                     data-key="${detail.tableData.togoKey}"
-                    data-order= "${[0, index]}"
+                    data-order= "${[0, detail.tableData.offset + index]}"
+                    data-sub-order= "0"
                     data-subject-id="${detail.tableData.subjectId}"
                     data-unique-entry-id="${detail.rows[index].id}">${
             detail.rows[index].id
@@ -215,13 +217,17 @@ export default class ResultsTable {
                 if (column) {
                   return `
                   <td><div class="inner"><ul>${column.attributes
-                    .map(attribute => {
+                    .map((attribute, attributeIndex) => {
                       if (!attribute.attribute) console.error(attribute);
                       return `
                       <li>
                         <div
                           class="togo-key-view"
-                          data-order="${[columnIndex + 1, index]}"
+                          data-order="${[
+                            columnIndex + 1,
+                            detail.tableData.offset + index,
+                          ]}"
+                          data-sub-order="${attributeIndex}"
                           data-key="${column.propertyKey}"
                           data-subject-id="${
                             this.#header[columnIndex].subjectId
@@ -235,7 +241,6 @@ export default class ResultsTable {
                               : attribute.attribute.categoryIds
                           }"
                           data-unique-entry-id="${attribute.id}"
-                          data-unique-entry-uri="${attribute.attribute.uri}"
                           >${attribute.id}</div>
                         <span>${
                           attribute.attribute
@@ -276,11 +281,13 @@ export default class ResultsTable {
       const tr = this.#TBODY.querySelector(
         `:scope > tr[data-index="${actualIndex}"]`
       );
-      const reportLink = `report.html?togoKey=${
-        this.#tableData.togoKey
-      }&id=${tr.getAttribute('data-togo-id')}&properties=${encodeURIComponent(
-        JSON.stringify(row)
+      const reportLink = `
+      report.html?togoKey=${detail.tableData.togoKey}&id=${
+        detail.rows[index].id
+      }&properties=${window.btoa(
+        RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))
       )}`;
+
       const uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(uniqueEntry => {
         uniqueEntry.addEventListener('click', () => {
@@ -290,7 +297,7 @@ export default class ResultsTable {
         const td = uniqueEntry.closest('td');
         td.addEventListener('mouseenter', () => {
           const customEvent = new CustomEvent(event.highlightCol, {
-            detail: uniqueEntry.getAttribute('data-order'),
+            detail: uniqueEntry.getAttribute('data-order').split(',')[0],
           });
           DefaultEventEmitter.dispatchEvent(customEvent);
         });
@@ -311,11 +318,10 @@ export default class ResultsTable {
     this.#LOADING_VIEW.classList.remove('-shown');
   }
 
-  #colHighlight(axes) {
-    const colIndex = axes.slice(0, 1);
+  #colHighlight(colIndex) {
     this.#TBODY.querySelectorAll('[data-order]').forEach(element => {
       const td = element.closest('td');
-      if (element.getAttribute('data-order').slice(0, 1) === colIndex) {
+      if (element.getAttribute('data-order').split(',')[0] === colIndex) {
         if (!td.classList.contains('.-selected')) {
           td.classList.add('-selected');
         }

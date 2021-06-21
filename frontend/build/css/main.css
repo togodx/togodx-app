@@ -366,29 +366,31 @@ template {
   --z-track-balloon: 9;
   --z-modal-window-backdrop: 10;
   --z-modal-window: 11;
+  --z-app-loading-view: 12;
   --shadow-shallow: 0 .1rem .1rem rgba(0,0,0,.3);
   --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3);
+  --opacity-disabled: .4;
+}
+
+[data-condition=values] {
+  --width-track-column-property: 20rem;
 }
 
 @-webkit-keyframes enter-stacking-item {
   from {
-    -webkit-transform: scaleY(0);
-            transform: scaleY(0);
+    transform: scaleY(0);
   }
   to {
-    -webkit-transform: scaleY(1);
-            transform: scaleY(1);
+    transform: scaleY(1);
   }
 }
 
 @keyframes enter-stacking-item {
   from {
-    -webkit-transform: scaleY(0);
-            transform: scaleY(0);
+    transform: scaleY(0);
   }
   to {
-    -webkit-transform: scaleY(1);
-            transform: scaleY(1);
+    transform: scaleY(1);
   }
 }
 @-webkit-keyframes fetching {
@@ -444,8 +446,7 @@ main {
   -webkit-filter: drop-shadow(var(--shadow-normal));
           filter: drop-shadow(var(--shadow-normal));
   z-index: var(--z-track-balloon);
-  -webkit-transform: translate(-50%, calc(-100% + -5px));
-          transform: translate(-50%, calc(-100% + -5px));
+  transform: translate(-50%, calc(-100% + -5px));
   pointer-events: none;
   border-radius: 0.2rem;
 }
@@ -464,8 +465,7 @@ main {
   height: 0;
 }
 .balloon-view.-below {
-  -webkit-transform: translate(-50%, calc(100% - 14px));
-          transform: translate(-50%, calc(100% - 14px));
+  transform: translate(-50%, calc(100% - 14px));
 }
 .balloon-view.-below::before {
   top: -1.4rem;
@@ -482,13 +482,11 @@ main {
   font-weight: bold;
 }
 .balloon-view > .container > dl {
-  display: -webkit-flex;
   display: flex;
   margin: 0;
 }
 .balloon-view > .container > dl > dt {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
 }
 .balloon-view > .container > dl > dd {
   margin: 0;
@@ -511,16 +509,13 @@ main {
   height: 0.8rem;
 }
 .close-button-view::before {
-  -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 .close-button-view::after {
-  -webkit-transform: rotate(-45deg);
-          transform: rotate(-45deg);
+  transform: rotate(-45deg);
 }
 
 .concept-view {
-  display: -webkit-flex;
   display: flex;
 }
 .concept-view > .title {
@@ -545,9 +540,7 @@ main {
   width: 1em;
   height: 1em;
   cursor: pointer;
-  transition: -webkit-transform var(--transition-instant);
   transition: transform var(--transition-instant);
-  transition: transform var(--transition-instant), -webkit-transform var(--transition-instant);
 }
 .collapse-view .collapsebutton::before {
   content: "";
@@ -557,16 +550,14 @@ main {
   border-right: solid 0.1rem var(--color-black);
   border-top: solid 0.1rem var(--color-black);
   position: absolute;
-  -webkit-transform: translate(0.1rem, 0.3rem) rotate(45deg);
-          transform: translate(0.1rem, 0.3rem) rotate(45deg);
+  transform: translate(0.1rem, 0.3rem) rotate(45deg);
 }
 .collapse-view .collapsebutton.-white::before {
   border-right-color: white;
   border-top-color: white;
 }
 .collapse-view .collapsebutton.-spread::before {
-  -webkit-transform: translate(0.2rem, 0.2rem) rotate(135deg);
-          transform: translate(0.2rem, 0.2rem) rotate(135deg);
+  transform: translate(0.2rem, 0.2rem) rotate(135deg);
 }
 .collapse-view .collapsingcontent {
   max-height: 0;
@@ -587,7 +578,6 @@ main {
   white-space: nowrap;
   overflow-x: hidden;
   height: 100%;
-  background-color: var(--color-light-gray);
 }
 .column-selector-view > .columns > .inner {
   height: 100%;
@@ -595,17 +585,13 @@ main {
 }
 .column-selector-view > .columns > .inner > .column {
   display: inline-block;
-  border-left: solid 0.1rem var(--color-separator);
-  margin: 0;
+  margin: 0 0.1rem 0 0;
   padding: 0;
   list-style: none;
   max-height: 29.5rem;
   height: 100%;
   overflow-y: auto;
   vertical-align: top;
-}
-.column-selector-view > .columns > .inner > .column:last-child {
-  border-right: solid 0.1rem var(--color-separator);
 }
 .column-selector-view > .columns > .inner > .column > .item {
   margin: 0;
@@ -615,12 +601,18 @@ main {
   line-height: 1;
   cursor: pointer;
   transition: background var(--transition-instant);
-  display: -webkit-flex;
   display: flex;
 }
 .column-selector-view > .columns > .inner > .column > .item.-all {
-  background-color: var(--color-light-gray);
+  background-color: var(--color-warm-gray);
   border-bottom: solid 0.1rem var(--color-gray);
+  display: none;
+}
+[data-condition=values] .column-selector-view > .columns > .inner > .column > .item.-all {
+  display: inherit;
+}
+[data-condition=values] .column-selector-view > .columns > .inner > .column > .item.-all > input {
+  display: inherit;
 }
 .column-selector-view > .columns > .inner > .column > .item.-haschild::before, .column-selector-view > .columns > .inner > .column > .item.-haschild::after {
   content: "";
@@ -654,6 +646,10 @@ main {
 .column-selector-view > .columns > .inner > .column > .item > input {
   -webkit-margin-end: 0.4rem;
           margin-inline-end: 0.4rem;
+  vertical-align: bottom;
+}
+[data-condition=values] .column-selector-view > .columns > .inner > .column > .item > input {
+  display: none;
 }
 .column-selector-view > .columns > .inner > .column > .item > .label {
   padding-right: 0.4rem;
@@ -661,8 +657,7 @@ main {
 .column-selector-view > .columns > .inner > .column > .item > .count {
   font-weight: lighter;
   padding-left: 1.2rem;
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
   text-align: right;
 }
 .column-selector-view > .loading-view {
@@ -690,10 +685,8 @@ main {
   height: 100%;
 }
 .histogram-range-selector-view > .selector > .overview {
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: flex-end;
-          align-items: flex-end;
+  align-items: flex-end;
 }
 .histogram-range-selector-view > .selector > .overview > .bar {
   opacity: 0.2;
@@ -727,10 +720,8 @@ main {
   left: 0;
 }
 .histogram-range-selector-view > .histogram > .graph {
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: flex-end;
-          align-items: flex-end;
+  align-items: flex-end;
 }
 .histogram-range-selector-view > .histogram > .graph > .bar {
   position: relative;
@@ -752,10 +743,8 @@ main {
   margin: 0;
   left: 50%;
   white-space: nowrap;
-  -webkit-transform: translate(0, 1rem) rotate(90deg);
-          transform: translate(0, 1rem) rotate(90deg);
-  -webkit-transform-origin: 0 50%;
-          transform-origin: 0 50%;
+  transform: translate(0, 1rem) rotate(90deg);
+  transform-origin: 0 50%;
 }
 .histogram-range-selector-view > .histogram > .graph > .bar.-filtered {
   height: 0%;
@@ -773,8 +762,7 @@ main {
   width: 100%;
   position: absolute;
   border-bottom: dotted 0.1rem var(--color-separator);
-  -webkit-transform: translateY(0.1rem);
-          transform: translateY(0.1rem);
+  transform: translateY(0.1rem);
   transition: bottom var(--transition-instant);
 }
 .histogram-range-selector-view > .histogram > .gridcontainer > .grid > .label {
@@ -795,6 +783,7 @@ main {
   height: 100%;
   top: 0;
   left: 0;
+  background-color: transparent;
   opacity: 0;
   pointer-events: none;
   transition: background var(--transition-wipe), opacity var(--transition-wipe);
@@ -815,6 +804,7 @@ main {
   top: calc(50% - .8rem);
 }
 .loading-view.-shown {
+  background-color: var(--color-translucent-lamp-black3);
   opacity: 1;
   pointer-events: auto;
 }
@@ -825,23 +815,19 @@ main {
 
 @-webkit-keyframes loading {
   from {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
+    transform: rotate(0deg);
   }
   to {
-    -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
 @keyframes loading {
   from {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
+    transform: rotate(0deg);
   }
   to {
-    -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 .report-page-button-view {
@@ -853,6 +839,7 @@ main {
   border-radius: 0.2rem;
   margin-right: 0.2rem;
   cursor: pointer;
+  white-space: nowrap;
 }
 .report-page-button-view::before {
   content: "Report";
@@ -922,8 +909,7 @@ main {
   box-shadow: var(--shadow-shallow);
   -webkit-animation: var(--transition-instant) enter-stacking-item;
           animation: var(--transition-instant) enter-stacking-item;
-  -webkit-transform-origin: 0 0;
-          transform-origin: 0 0;
+  transform-origin: 0 0;
   margin-top: 0.4rem;
 }
 .stacking-condition-view > .close-button-view {
@@ -936,7 +922,6 @@ main {
   padding: 0.6rem 1.4rem 0 0;
   list-style: none;
   font-size: 1rem;
-  font-weight: bold;
   line-height: 1;
   color: var(--color-gray);
 }
@@ -948,8 +933,7 @@ main {
   display: inline-block;
   border-left: solid 0.1rem var(--color-gray);
   height: 1.4rem;
-  -webkit-transform: rotate(20deg);
-          transform: rotate(20deg);
+  transform: rotate(20deg);
   margin: -0.6rem 0.4rem 0 0.4rem;
 }
 .stacking-condition-view > .label {
@@ -957,13 +941,31 @@ main {
   font-size: 1.4rem;
   font-weight: bold;
 }
-.stacking-condition-view.-value > .path {
+.stacking-condition-view > .labels {
+  margin: 0.2rem 0 0;
+  padding: 0 0 0.1rem;
+  list-style: none;
+}
+.stacking-condition-view > .labels > .label {
+  margin-right: 0.1rem;
+  margin-bottom: 0.1rem;
+  padding: 0 1.4rem 0 0.4rem;
+  display: inline-block;
+  position: relative;
+  white-space: nowrap;
+}
+.stacking-condition-view > .labels > .label > .close-button-view {
+  position: absolute;
+  top: 0.1rem;
+  right: 0.1rem;
+}
+.stacking-condition-view._subject-background-color > .path {
   color: rgba(0, 0, 0, 0.5);
 }
-.stacking-condition-view.-value > .path > li + li::before {
+.stacking-condition-view._subject-background-color > .path > li + li::before {
   border-left-color: rgba(0, 0, 0, 0.5);
 }
-.stacking-condition-view.-value > .label {
+.stacking-condition-view._subject-background-color > .label {
   color: white;
 }
 
@@ -995,10 +997,8 @@ main {
   font-size: 1rem;
   bottom: 0;
   left: 0.9rem;
-  -webkit-transform-origin: 0% 0%;
-          transform-origin: 0% 0%;
-  -webkit-transform: rotate(30deg);
-          transform: rotate(30deg);
+  transform-origin: 0% 0%;
+  transform: rotate(30deg);
 }
 .statistics-view > .statistics > * > .bar > .value {
   color: white;
@@ -1039,10 +1039,9 @@ main {
   font-size: 1rem;
   -webkit-animation: var(--transition-instant) enter-stacking-item;
           animation: var(--transition-instant) enter-stacking-item;
-  -webkit-transform-origin: 0 0;
-          transform-origin: 0 0;
+  transform-origin: 0 0;
   margin-top: 0.6rem;
-  opacity: 0.6;
+  opacity: var(--opacity-disabled);
   cursor: pointer;
   transition: opacity var(--transition-instant);
   position: relative;
@@ -1053,7 +1052,6 @@ main {
   right: 0.4rem;
 }
 .table-data-controller-view > .conditions {
-  display: -webkit-flex;
   display: flex;
   font-weight: bold;
   border-bottom: solid 0.1rem var(--color-separator);
@@ -1061,14 +1059,13 @@ main {
 .table-data-controller-view > .conditions > .condiiton {
   padding: 0.2rem 0.4rem;
   overflow: hidden;
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
 }
 .table-data-controller-view > .conditions > .condiiton:first-child {
   color: white;
   background-color: var(--color-lamp-black);
 }
-.table-data-controller-view > .conditions > .condiiton.-value {
+.table-data-controller-view > .conditions > .condiiton._subject-background-color {
   color: white;
 }
 .table-data-controller-view > .conditions > .condiiton > p {
@@ -1078,7 +1075,7 @@ main {
   overflow: hidden;
 }
 .table-data-controller-view > .conditions > .condiiton:last-child {
-  padding-right: 1.9rem;
+  padding-right: 1.8rem;
 }
 .table-data-controller-view > .status {
   padding: 0.3rem 0;
@@ -1100,10 +1097,8 @@ main {
 }
 .table-data-controller-view > .indicator > .text {
   line-height: 1;
-  display: -webkit-flex;
   display: flex;
-  -webkit-justify-content: space-between;
-          justify-content: space-between;
+  justify-content: space-between;
 }
 .table-data-controller-view > .indicator > .progress {
   margin: 0.4rem 0;
@@ -1121,28 +1116,27 @@ main {
   transition: width var(--transition-wipe);
 }
 .table-data-controller-view > .controller {
-  display: -webkit-flex;
   display: flex;
   color: white;
 }
-.table-data-controller-view > .controller > [data-button=download-json] {
-  display: none;
+.table-data-controller-view > .controller > [data-button=download-json], .table-data-controller-view > .controller > [data-button=download-tsv] {
+  display: block;
 }
-.table-data-controller-view > .controller > [data-button=download-json] > a {
+.table-data-controller-view > .controller > [data-button=download-json] > a, .table-data-controller-view > .controller > [data-button=download-tsv] > a {
   color: white;
   text-decoration: none;
   display: block;
 }
-.table-data-controller-view > .controller > [data-button=download-json] > a > span {
+.table-data-controller-view > .controller > [data-button=download-json] > a > span, .table-data-controller-view > .controller > [data-button=download-tsv] > a > span {
   vertical-align: middle;
 }
-.table-data-controller-view > .controller > [data-button=download-json] > a > .material-icons-outlined {
+.table-data-controller-view > .controller > [data-button=download-json] > a > .material-icons-outlined, .table-data-controller-view > .controller > [data-button=download-tsv] > a > .material-icons-outlined {
   font-size: 1.4rem;
+  width: 1.6rem;
 }
 .table-data-controller-view > .controller > .button {
   padding: 0.2rem 0;
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
   background-color: var(--color-translucent-lamp-black2);
   transition: background-color var(--transition-instant);
   cursor: pointer;
@@ -1197,7 +1191,6 @@ main {
   display: block;
 }
 .table-data-controller-view[data-status="load rows"] > .controller {
-  display: -webkit-flex;
   display: flex;
 }
 .table-data-controller-view[data-status=complete] > .status > p {
@@ -1207,13 +1200,12 @@ main {
   display: block;
 }
 .table-data-controller-view[data-status=complete] > .controller {
-  display: -webkit-flex;
   display: flex;
 }
 .table-data-controller-view[data-status=complete] > .controller > [data-button=prepare-data] {
   display: none;
 }
-.table-data-controller-view[data-status=complete] > .controller > [data-button=download-json] {
+.table-data-controller-view[data-status=complete] > .controller > [data-button=download-json], .table-data-controller-view[data-status=complete] > .controller > [data-button=download-tsv] {
   display: block;
 }
 .table-data-controller-view[data-status=complete] > .controller > .button[data-button=prepare-data] {
@@ -1223,23 +1215,19 @@ main {
 
 @-webkit-keyframes rotation {
   0% {
-    -webkit-transform: rotate(0);
-            transform: rotate(0);
+    transform: rotate(0);
   }
   100% {
-    -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
 @keyframes rotation {
   0% {
-    -webkit-transform: rotate(0);
-            transform: rotate(0);
+    transform: rotate(0);
   }
   100% {
-    -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 .togo-key-view {
@@ -1260,15 +1248,8 @@ main {
   cursor: pointer;
   transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
 }
-.track-value-view::after {
-  content: "";
-  display: block;
-  position: absolute;
-  top: 0;
-  right: -0.05rem;
-  height: 100%;
-  border-left: solid 0.005rem var(--color-gray);
-  z-index: var(--z-track-item-border);
+[data-condition=values] .track-value-view {
+  pointer-events: none;
 }
 .track-value-view::after {
   content: "";
@@ -1307,8 +1288,7 @@ main {
   bottom: 100%;
   border: solid 1px rgba(255, 255, 255, 0.5);
   background-color: var(--color-lamp-black);
-  -webkit-transform: translate(-50%, calc(-20% + .4rem)) rotate(45deg) skew(5deg, 5deg);
-          transform: translate(-50%, calc(-20% + .4rem)) rotate(45deg) skew(5deg, 5deg);
+  transform: translate(-50%, calc(-20% + .4rem)) rotate(45deg) skew(5deg, 5deg);
   border-top-left-radius: 50%;
   border-bottom-left-radius: 50%;
   border-top-right-radius: 50%;
@@ -1350,7 +1330,7 @@ main {
 }
 
 .track-view {
-  border-bottom: solid 0.1rem var(--color-separator);
+  margin-bottom: 0.1rem;
   font-size: 1.2rem;
   position: relative;
   transition: opacity var(--transition-wipe);
@@ -1363,20 +1343,20 @@ main {
   background-color: transparent !important;
 }
 .track-view > .row {
-  display: -webkit-flex;
   display: flex;
   height: var(--height-track);
 }
 .track-view > .row > .left {
-  -webkit-flex-basis: var(--width-track-column-property);
-          flex-basis: var(--width-track-column-property);
+  border-right: solid 0.1rem var(--color-gray);
+  flex-basis: var(--width-track-column-property);
   min-width: var(--width-track-column-property);
   background-color: white;
+  transition: width var(--transition-instant);
 }
 .track-view > .row > .right {
-  -webkit-flex-basis: calc(100% - var(--width-track-column-property));
-          flex-basis: calc(100% - var(--width-track-column-property));
+  flex-basis: calc(100% - var(--width-track-column-property));
   max-width: calc(100% - var(--width-track-column-property));
+  transition: width var(--transition-instant);
 }
 .track-view > .row.-upper > .left {
   position: relative;
@@ -1389,10 +1369,8 @@ main {
   width: 100%;
   height: var(--height-track);
   z-index: var(--z-track-collapse-button);
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: center;
-          align-items: center;
+  align-items: center;
 }
 .track-view > .row.-upper > .left > .collapsebutton::before {
   top: 0.8rem;
@@ -1402,6 +1380,13 @@ main {
   width: calc(var(--width-track-column-property) - 1.6rem);
   font-size: 1.4rem;
   font-weight: bold;
+}
+.track-view > .row.-upper > .left > .collapsebutton > .mapping {
+  display: none;
+  margin-right: 0.4rem;
+}
+[data-condition=values] .track-view > .row.-upper > .left > .collapsebutton > .mapping {
+  display: inherit;
 }
 .track-view > .row.-upper > .right > .overview {
   height: var(--height-track);
@@ -1423,9 +1408,7 @@ main {
   line-height: 3rem;
 }
 .track-view > .row.-lower > .left > .description {
-  margin-bottom: 0.6rem;
-  padding-left: 1.6rem;
-  padding-right: 0.8rem;
+  padding: 0 0.8rem;
   line-height: 1.2;
 }
 .track-view > .row.-lower > .left > label {
@@ -1460,58 +1443,93 @@ main {
 #App > .inner {
   height: 100%;
   width: calc(200vw - var(--width-condition));
-  display: -webkit-flex;
   display: flex;
-  transition: -webkit-transform var(--transition-wipe);
   transition: transform var(--transition-wipe);
-  transition: transform var(--transition-wipe), -webkit-transform var(--transition-wipe);
 }
 body[data-display=results] #App > .inner {
-  -webkit-transform: translateX(calc(-100vw + var(--width-condition)));
-          transform: translateX(calc(-100vw + var(--width-condition)));
+  transform: translateX(calc(-100vw + var(--width-condition)));
+}
+#App > .loading-view {
+  position: fixed;
+  top: var(--height-header);
+  height: calc(100% - var(--height-header));
+  z-index: var(--z-app-loading-view);
 }
 
+#ConditionBuilder {
+  --radius: .4rem;
+  --background-color: #FFFFFFCC;
+  --background-color-inactive: #FFFFFF66;
+}
 #ConditionBuilder > .conditions {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
 }
-#ConditionBuilder > .conditions > * {
+#ConditionBuilder > .conditions > .condition {
   padding: 0.7rem 0.6rem;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 0.4rem;
+  background-color: var(--background-color);
+  border-radius: var(--radius);
 }
-#ConditionBuilder > .conditions > * + * {
+#ConditionBuilder > .conditions > .condition + .condition {
   margin-top: 0.4rem;
 }
-#ConditionBuilder > .conditions > * > .inner > .title {
-  margin-bottom: -0.2rem;
+#ConditionBuilder > .conditions > .condition > .inner > .title {
+  margin: -0.5rem 0 -0.2rem;
   line-height: 1;
   font-size: 1.2rem;
+  display: flex;
+  align-items: baseline;
 }
-#ConditionBuilder > .conditions > * > .inner > .title > .material-icons-outlined {
+#ConditionBuilder > .conditions > .condition > .inner > .title > .material-icons-outlined {
   font-size: 1.4rem;
   vertical-align: middle;
   -webkit-margin-end: 0.3rem;
           margin-inline-end: 0.3rem;
   position: relative;
-  top: -0.1rem;
+  top: 0.3rem;
 }
-#ConditionBuilder > .conditions > * > .inner > .title > small {
+#ConditionBuilder > .conditions > .condition > .inner > .title > small {
   font-weight: normal;
-  margin-left: 0.5rem;
+  flex-grow: 1;
+  text-align: right;
 }
-body[data-display=results] #ConditionBuilder > .conditions > * > .conditions > .stacking-condition-view > .close-button-view {
-  display: none;
-}
-#ConditionBuilder > .conditions > .togokey {
-  width: 100%;
-  transition: opacity var(--transition-wipe);
-}
-#ConditionBuilder > .conditions > .togokey > .inner > select {
-  width: 100%;
+#ConditionBuilder > .conditions > .condition > .inner > .title + * {
   margin-top: 0.4rem;
 }
-body[data-display=results] #ConditionBuilder > .conditions > .togokey {
+#ConditionBuilder > .conditions > .condition > hr {
+  border: none;
+  border-top: solid 0.1rem var(--color-separator);
+}
+body[data-display=results] #ConditionBuilder > .conditions > .condition > .conditions > .stacking-condition-view > .close-button-view {
+  display: none;
+}
+#ConditionBuilder > .conditions > #ConditionKeys, #ConditionBuilder > .conditions > #ConditionValues {
+  transition: opacity var(--transition-instant);
+  opacity: 0.8;
+  background-color: var(--background-color-inactive);
+  cursor: pointer;
+}
+#ConditionBuilder > .conditions > #ConditionKeys:hover, #ConditionBuilder > .conditions > #ConditionValues:hover {
+  background-color: var(--background-color);
+}
+#ConditionBuilder > .conditions > #ConditionKeys {
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+[data-condition=keys] #ConditionBuilder > .conditions > #ConditionKeys {
+  opacity: 1;
+  background-color: var(--background-color);
+}
+#ConditionBuilder > .conditions > #ConditionValues {
+  border-radius: 0 0 var(--radius) var(--radius);
+  margin-top: 0.1rem;
+}
+[data-condition=values] #ConditionBuilder > .conditions > #ConditionValues {
+  opacity: 1;
+  background-color: var(--background-color);
+}
+#ConditionBuilder > .conditions > #ConditionTogoKey > .inner > select {
+  width: 100%;
+}
+body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   pointer-events: none;
   opacity: 0.5;
 }
@@ -1542,17 +1560,13 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
   position: fixed;
   top: var(--height-header);
   right: 0;
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
   z-index: var(--z-fixed-area);
 }
 #FixedArea > div > section {
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
   padding: var(--padding-block-start) var(--padding-inline-start);
 }
 #FixedArea > div > section > header {
@@ -1582,7 +1596,6 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
   padding: 0 1.6rem;
   height: var(--height-header);
   line-height: calc(var(--height-header));
-  display: -webkit-flex;
   display: flex;
   background-color: white;
   z-index: var(--z-header);
@@ -1600,8 +1613,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
   font-size: 1.6rem;
 }
 #Header > nav {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
   text-align: right;
 }
 #Header > nav > ul > li {
@@ -1618,10 +1630,8 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
 #Properties > .header {
   border-bottom: solid 0.1rem var(--color-lamp-black);
   padding: var(--padding-track-block-start) var(--padding-track-inline-start);
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: center;
-          align-items: center;
+  align-items: center;
   height: var(--height-header);
   line-height: calc(var(--height-header) - var(--padding-track-block-start) * 2);
   position: -webkit-sticky;
@@ -1642,8 +1652,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
   width: calc(var(--width-track-column-subject) + var(--width-track-column-property) - var(--padding-track-inline-start));
 }
 #Properties > .header > nav {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
   text-align: right;
 }
 #Properties > .header > nav > ul {
@@ -1671,8 +1680,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
 }
 
 #Reports > .stanzas {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
 }
 
 #ReportsPageView {
@@ -1709,6 +1717,9 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
   transition: height var(--transition-instant);
 }
 
+#ResultsTable {
+  --thheight: 0.8rem;
+}
 #ResultsTable > .body > table {
   width: 100%;
   height: 100%;
@@ -1734,9 +1745,6 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
 #ResultsTable > .body > table > thead > tr > th > .inner, #ResultsTable > .body > table > thead > tr td > .inner {
   height: 100%;
 }
-#ResultsTable > .body > table > thead > tr > th > .inner.-propertyvalue, #ResultsTable > .body > table > thead > tr td > .inner.-propertyvalue {
-  color: white;
-}
 #ResultsTable > .body > table > thead > tr.header, #ResultsTable > .body > table > thead > tr.subheader {
   font-weight: bold;
   white-space: nowrap;
@@ -1744,25 +1752,39 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
 #ResultsTable > .body > table > thead > tr.header > th, #ResultsTable > .body > table > thead > tr.subheader > th {
   position: -webkit-sticky;
   position: sticky;
-  top: 0;
   z-index: var(--z-results-header);
   line-height: 1.5rem;
 }
 #ResultsTable > .body > table > thead > tr.header > th > .inner, #ResultsTable > .body > table > thead > tr.subheader > th > .inner {
-  background-color: white;
   border-bottom: solid 0.1rem var(--color-black);
 }
 #ResultsTable > .body > table > thead > tr.header > th > .inner.-noborder, #ResultsTable > .body > table > thead > tr.subheader > th > .inner.-noborder {
   border: none;
 }
-#ResultsTable > .body > table > thead > tr.header > th:first-child > .inner, #ResultsTable > .body > table > thead > tr.subheader > th:first-child > .inner {
+#ResultsTable > .body > table > thead > tr.header.header > th, #ResultsTable > .body > table > thead > tr.subheader.header > th {
+  top: 0;
+}
+#ResultsTable > .body > table > thead > tr.header.header > th:first-child > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:first-child > .inner {
   background-color: var(--color-light-gray);
 }
-#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.subheader > th:nth-child(2) > .inner {
+#ResultsTable > .body > table > thead > tr.header.header > th:nth-child(1) > .inner, #ResultsTable > .body > table > thead > tr.header.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(1) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(2) > .inner {
+  height: calc(var(--thheight) * 4);
+  padding-top: calc(var(--thheight) * 0.5 + var(--padding-track-block-start));
+}
+#ResultsTable > .body > table > thead > tr.header.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.header.header > th:nth-child(3) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(3) > .inner {
   background-color: var(--color-lamp-black);
 }
-#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader > th:nth-child(2) > .inner > .togo-key-view {
+#ResultsTable > .body > table > thead > tr.header.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.header.header > th:nth-child(3) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(3) > .inner > .togo-key-view {
   background-color: var(--color-dark-gray);
+}
+#ResultsTable > .body > table > thead > tr.header.subheader > th, #ResultsTable > .body > table > thead > tr.subheader.subheader > th {
+  top: var(--thheight);
+}
+#ResultsTable > .body > table > thead > tr.header.subheader > th > .inner._subject-background-color, #ResultsTable > .body > table > thead > tr.subheader.subheader > th > .inner._subject-background-color {
+  color: white;
+}
+#ResultsTable > .body > table > thead > tr.header.subheader > th > .inner._subject-color, #ResultsTable > .body > table > thead > tr.subheader.subheader > th > .inner._subject-color {
+  background-color: white;
 }
 #ResultsTable > .body > table > thead > tr.statistics > td > .inner {
   background-color: white;
@@ -1821,12 +1843,9 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
 }
 #ResultDetailModal.backdrop {
   position: fixed;
-  display: -webkit-flex;
   display: flex;
-  -webkit-justify-content: center;
-          justify-content: center;
-  -webkit-align-items: center;
-          align-items: center;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   height: 100%;
   top: 0;
@@ -1840,28 +1859,21 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
 #ResultDetailModal.backdrop > .popup {
   z-index: var(--z-modal-window);
   position: absolute;
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: column;
-          flex-direction: column;
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-direction: column;
+  flex-grow: 1;
   min-width: 80rem;
   height: 85%;
-  -webkit-align-items: center;
-          align-items: center;
-  -webkit-align-content: center;
-          align-content: center;
+  align-items: center;
+  align-content: center;
   background-color: rgba(255, 255, 255, 0.85);
   border-radius: 0.4rem;
 }
 #ResultDetailModal.backdrop > .popup > header {
-  display: -webkit-flex;
+  cursor: pointer;
   display: flex;
-  -webkit-justify-content: space-between;
-          justify-content: space-between;
-  -webkit-align-items: center;
-          align-items: center;
+  justify-content: space-between;
+  align-items: center;
   height: var(--height-header);
   width: 100%;
   color: white;
@@ -1871,17 +1883,13 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
   padding: calc((var(--height-header) - 1.6rem) * .5) var(--padding-side);
 }
 #ResultDetailModal.backdrop > .popup > header > div {
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: center;
-          align-items: center;
+  align-items: center;
 }
 #ResultDetailModal.backdrop > .popup > header > div.label {
-  -webkit-align-items: baseline;
-          align-items: baseline;
+  align-items: baseline;
   font-weight: bold;
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
   font-size: 1.4rem;
 }
 #ResultDetailModal.backdrop > .popup > header > div.label > * {
@@ -1898,10 +1906,8 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
 #ResultDetailModal.backdrop > .popup > .container {
   height: 100%;
   width: 100%;
-  display: -webkit-flex;
   display: flex;
   overflow: hidden;
-  cursor: pointer;
   position: relative;
 }
 #ResultDetailModal.backdrop > .popup > .container > .arrow {
@@ -1983,21 +1989,10 @@ body[data-display=results] #ConditionBuilder > .conditions > .togokey {
   width: 100%;
 }
 
-#UploadUserIDsView > form {
-  margin-top: 0.2rem;
-}
-#UploadUserIDsView > form > label {
-  display: block;
-}
-#UploadUserIDsView > form > label > p {
-  margin-bottom: 0;
-}
-#UploadUserIDsView > form > label > select, #UploadUserIDsView > form > label input {
+#UploadUserIDsView > textarea {
   width: 100%;
-  display: block;
 }
-#UploadUserIDsView > form > .buttons {
+#UploadUserIDsView > .buttons {
+  margin-top: -0.2rem;
   text-align: center;
 }
-
-/*# sourceMappingURL=main.css.map */

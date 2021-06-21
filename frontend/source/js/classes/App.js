@@ -1,5 +1,6 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilderView from './ConditionBuilderView';
+import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import ReportsView from './ReportsView';
 import ConceptView from './ConceptView';
@@ -17,12 +18,18 @@ class App {
 
   #viewModes;
   #aggregate;
+
+  #colorWhite;
+  #colorLightGray;
   #colorSilver;
   #colorGray;
   #colorDarkGray;
   #colorLampBlack;
 
   constructor() {
+    this.#colorWhite = new Color('white').to('srgb');
+    this.#colorLightGray = new Color('--color-light-gray').to('srgb');
+    this.#colorLightGray = new Color('--color-light-gray').to('srgb');
     this.#colorSilver = new Color('--color-silver').to('srgb');
     this.#colorGray = new Color('--color-gray').to('srgb');
     this.#colorDarkGray = new Color('--color-dark-gray').to('srgb');
@@ -31,7 +38,7 @@ class App {
 
   ready() {
 
-    const body = document.querySelector('body');
+    const body = document.body;
 
     // view modes
     this.#viewModes = {};
@@ -43,6 +50,11 @@ class App {
         const customEvent = new CustomEvent(event.changeViewModes, {detail: this.#viewModes});
         DefaultEventEmitter.dispatchEvent(customEvent);
       });
+    });
+
+    // events
+    DefaultEventEmitter.addEventListener(event.restoreParameters, () => {
+      document.querySelector('#App > .loading-view').classList.remove('-shown');
     });
 
     // set up views
@@ -62,6 +74,7 @@ class App {
       .then(responces => Promise.all(responces.map(responce => responce.json())))
       .then(([subjects, templates, aggregate]) => {
         Records.setSubjects(subjects);
+        ConditionBuilder.init();
 
         // setup upload user id
         new UploadUserIDsView(document.querySelector('#UploadUserIDsView'), aggregate.mapping);
@@ -102,6 +115,12 @@ class App {
   }
   get aggregateRows() {
     return this.#aggregate.table.url;
+  }
+  get colorWhite() {
+    return this.#colorWhite;
+  }
+  get colorLightGray() {
+    return this.#colorLightGray;
   }
   get colorSilver() {
     return this.#colorSilver;

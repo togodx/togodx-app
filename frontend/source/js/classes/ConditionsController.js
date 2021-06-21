@@ -25,24 +25,44 @@ export default class ConditionsController {
   /* private methods */
 
   #setTableData(newCondition) {
+    console.log(newCondition)
 
     // find matching condition from already existing conditions
-    // TODO: うまく検出できていない
     const sameConditionTableData = this.#tableData.find(tableData => {
-      const matchTogoKey = newCondition.togoKey === tableData.condition.togoKey;
+      console.log(tableData.condition)
+      // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
+      if (newCondition.togoKey !== tableData.condition.togoKey) return;
       // compare properties
-      const matchProperties = newCondition.properties.every(newProperty => {
-        return tableData.condition.properties.find(property => newProperty.query.propertyId === property.query.propertyId)
-      });
+      const matchProperties = (() => {
+        if (newCondition.properties.length === tableData.condition.properties.length) {
+          return newCondition.properties.every(newProperty => {
+            const matchProperty = tableData.condition.properties.find(property => {
+              if (newProperty.query.propertyId === property.query.propertyId) {
+                return newProperty.parentCategoryId === property.parentCategoryId;
+              } else {
+                return false;
+              }
+            });
+            return matchProperty;
+          });
+        } else {
+          return false;
+        }
+      })();
       // compare attributes
       const matchAttributes = newCondition.attributes.every(newProperty => {
         return tableData.condition.attributes.find(property => {
-          const matchId = newProperty.query.propertyId === property.query.propertyId;
-          let matchValues = newProperty.query.categoryIds.every(categoryId => property.query.categoryIds.indexOf(categoryId) !== -1);
-          return matchId && matchValues;
+          if (
+            newProperty.query.propertyId === property.query.propertyId &&
+            newProperty.query.categoryIds.length === property.query.categoryIds.length) {
+            let matchValues = newProperty.query.categoryIds.every(categoryId => property.query.categoryIds.indexOf(categoryId) !== -1);
+            return matchValues;
+          } else {
+            return false;
+          }
         });
       });
-      return matchTogoKey && matchProperties && matchAttributes;
+      return matchProperties && matchAttributes;
     });
 
     if (sameConditionTableData) {
