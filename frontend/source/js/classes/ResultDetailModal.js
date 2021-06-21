@@ -137,7 +137,11 @@ export default class ResultDetailModal {
     const stanzas = document.createElement('div');
     stanzas.className = 'stanzas';
     stanzas.innerHTML += StanzaManager.draw(subjectId, uniqueEntryId, dataKey);
-
+    stanzas.querySelectorAll('script').forEach(scriptElement => {
+      const _script = document.createElement('script');
+      _script.textContent = scriptElement.textContent;
+      scriptElement.replaceWith(_script);
+    });
     return stanzas;
   }
 

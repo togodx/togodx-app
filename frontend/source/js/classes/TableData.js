@@ -3,6 +3,7 @@ import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
 import Records from "./Records";
 import * as event from '../events';
+import ConditionsController from "./ConditionsController";
 
 const LIMIT = 100;
 
@@ -17,6 +18,7 @@ export default class TableData {
   #isLoading;
   #isCompleted;
   #startTime;
+  #downloadReserveButton;
   #ROOT;
   #STATUS;
   #INDICATOR_TEXT_AMOUNT;
@@ -24,6 +26,8 @@ export default class TableData {
   #INDICATOR_BAR;
   #BUTTON_PREPARE_DATA;
   #BUTTON_DOWNLOAD_JSON;
+  #BUTTON_DOWNLOAD_TSV;
+  
 
   constructor(condition, elm) {
     console.log(condition)
@@ -73,18 +77,24 @@ export default class TableData {
       </div>
     </div>
     <div class="controller">
-      <div class="button" data-button="prepare-data">
-        <span class="material-icons-outlined">autorenew</span>
-        <span class="label">Prepare data</span>
-      </div>
       <div class="button" data-button="download-json">
-        <a class="json" href="" download="sample.json">
-          <span class="material-icons-outlined">download</span>
+        <a class="json">
+          <span class="material-icons-outlined">download json</span>
           <span class="label">JSON</span>
         </a>
       </div>
+      <div class="button" data-button="download-tsv">
+        <a class="tsv">
+          <span class="material-icons-outlined">download tsv</span>
+          <span class="label">TSV</span>
+        </a>
+      </div>
+      <div class="button none" data-button="prepare-data">
+        <span class="material-icons-outlined">autorenew</span>
+        <span class="label">Pause</span>
+      </div>
       <div class="button" data-button="restore">
-        <span class="material-icons-outlined">settings_backup_restore</span>
+        <span class="material-icons-outlined">edit</span>
         <span class="label">Edit</span>
       </div>
     </div>
@@ -100,6 +110,7 @@ export default class TableData {
     const BUTTONS = [...elm.querySelectorAll(':scope > .controller > .button')];
     this.#BUTTON_PREPARE_DATA = BUTTONS.find(button => button.dataset.button === 'prepare-data');
     this.#BUTTON_DOWNLOAD_JSON = BUTTONS.find(button => button.dataset.button === 'download-json');
+    this.#BUTTON_DOWNLOAD_TSV = BUTTONS.find(button => button.dataset.button === 'download-tsv');
 
     // events
     elm.addEventListener('click', () => {
@@ -107,6 +118,19 @@ export default class TableData {
       this.select();
     });
     // prepare data
+    [this.#BUTTON_DOWNLOAD_JSON, this.#BUTTON_DOWNLOAD_TSV].forEach(button => {
+      button.addEventListener('click', e => {
+        e.stopPropagation();
+        if (this.#isAutoLoad === false && this.#ROOT.dataset.status !== 'complete') {
+          this.#autoLoad();
+          this.#changeButtons();
+          this.#downloadReserveButton = button;
+        } else {
+          this.#isAutoLoad = false;
+        }
+      })
+    })
+    
     this.#BUTTON_PREPARE_DATA.addEventListener('click', e => {
       e.stopPropagation();
       if (this.#isAutoLoad === false && this.#ROOT.dataset.status !== 'complete') {
@@ -272,10 +296,55 @@ export default class TableData {
   #complete() {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = 'Complete';
+    this.#setJsonUrl();
+    this.#setTsvUrl();
+    if (this.#downloadReserveButton ) {
+      this.#downloadReserveButton.querySelector(':scope > a').click();
+    }
+  }
+  #changeButtons() {
+    this.#BUTTON_PREPARE_DATA.classList.remove('none');
+    this.#BUTTON_DOWNLOAD_JSON.classList.add('none');
+    this.#BUTTON_DOWNLOAD_TSV.classList.add('none');
     this.#BUTTON_PREPARE_DATA.classList.add('-rotating');
+  }
+
+  #setJsonUrl() {
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {type : 'application/json'});
     const jsonUrl = URL.createObjectURL(jsonBlob);
-    this.#BUTTON_DOWNLOAD_JSON.querySelector(':scope > .json').setAttribute('href', jsonUrl);
+    const anchor = this.#BUTTON_DOWNLOAD_JSON.querySelector(':scope > .json');
+    anchor.setAttribute('href', jsonUrl);
+    anchor.setAttribute('download', 'sample.json');
+  }
+
+  #setTsvUrl() {
+    const temporaryArray = [];
+    this.#rows.map(row => {
+      row.properties.map(property => {
+        property.attributes.map(attribute => {
+          const singleItem = {
+            togoKey: this.#condition.togoKey,
+            togoKeyId: row.id,
+            attributeId: property.propertyId,
+            attributeValue: attribute.attribute.label,
+            attributeKey: property.propertyKey,
+            attributeKeyId: attribute.id
+          }
+          temporaryArray.push(singleItem);
+        })
+      })
+    })
+    const tsvArray = [];
+    tsvArray.push(Object.keys(temporaryArray[0]).join('\t'));
+    temporaryArray.forEach(item => {
+      tsvArray.push(Object.values(item).join('\t'));
+    })
+    const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+    const tsvBlob = new Blob([bom, tsvArray.join('\n')], { type: 'text/plain' });
+    const tsvUrl = URL.createObjectURL(tsvBlob);
+    const anchor = this.#BUTTON_DOWNLOAD_TSV.querySelector(':scope > .tsv');
+    anchor.setAttribute('href', tsvUrl);
+    anchor.setAttribute('download', 'sample.tsv');
   }
 
   /* public methods */
