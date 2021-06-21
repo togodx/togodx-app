@@ -3794,7 +3794,11 @@
 
   var _isDefined = new WeakMap();
 
+  var _placeHolders = new WeakMap();
+
   var _TOGO_KEYS = new WeakMap();
+
+  var _USER_IDS$1 = new WeakMap();
 
   var _PROPERTIES_CONDITIONS_CONTAINER = new WeakMap();
 
@@ -3846,7 +3850,17 @@
       value: void 0
     });
 
+    _placeHolders.set(this, {
+      writable: true,
+      value: void 0
+    });
+
     _TOGO_KEYS.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _USER_IDS$1.set(this, {
       writable: true,
       value: void 0
     });
@@ -3876,6 +3890,8 @@
     var conditionsContainer = elm.querySelector(':scope > .conditions');
 
     _classPrivateFieldSet(this, _TOGO_KEYS, conditionsContainer.querySelector('#ConditionTogoKey > .inner > select'));
+
+    _classPrivateFieldSet(this, _USER_IDS$1, elm.querySelector('#UploadUserIDsView > textarea'));
 
     _classPrivateFieldSet(this, _PROPERTIES_CONDITIONS_CONTAINER, document.querySelector('#ConditionValues > .inner > .conditions'));
 
@@ -3958,9 +3974,15 @@
   }
 
   function _defineTogoKeys2(subjects) {
-    console.log(subjects);
+    var _this3 = this;
 
-    _classPrivateFieldSet(this, _isDefined, true); // make options
+    _classPrivateFieldSet(this, _isDefined, true);
+
+    _classPrivateFieldSet(this, _placeHolders, Object.fromEntries(subjects.filter(function (subject) {
+      return subject.togoKey;
+    }).map(function (subject) {
+      return [subject.togoKey, subject.togoKeyExamples];
+    }))); // make options
 
 
     _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = subjects.map(function (subject) {
@@ -3975,6 +3997,7 @@
         return subject.togoKey === e.target.value;
       });
       ConditionBuilder$1.setSubject(e.target.value, subject.subjectId);
+      _classPrivateFieldGet(_this3, _USER_IDS$1).placeholder = _classPrivateFieldGet(_this3, _placeHolders)[e.target.value].join(', ');
     });
 
     _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));
