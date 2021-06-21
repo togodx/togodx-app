@@ -61,6 +61,10 @@ class Records {
         background-color: var(--color-subject-${subject.subjectId});
       }`);
       styleSheet.insertRule(`
+      ._subject-background-color-strong[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-background-color-strong {
+        background-color: var(--color-subject-${subject.subjectId}-strong);
+      }`);
+      styleSheet.insertRule(`
       ._subject-border-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-border-color {
         border-color: var(--color-subject-${subject.subjectId});
       }`);

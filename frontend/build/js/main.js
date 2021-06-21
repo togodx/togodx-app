@@ -2784,6 +2784,7 @@
             var subject = _step.value;
             styleSheet.insertRule("\n      ._subject-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-color {\n        color: var(--color-subject-").concat(subject.subjectId, "-strong);\n      }"));
             styleSheet.insertRule("\n      ._subject-background-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-background-color {\n        background-color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
+            styleSheet.insertRule("\n      ._subject-background-color-strong[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-background-color-strong {\n        background-color: var(--color-subject-").concat(subject.subjectId, "-strong);\n      }"));
             styleSheet.insertRule("\n      ._subject-border-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-border-color {\n        border-color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
           }
         } catch (err) {
@@ -5276,7 +5277,7 @@
     _classCallCheck(this, ConceptView);
 
     elm.classList.add('concept-view');
-    elm.innerHTML = "\n    <h3 class=\"title\" style=\"background-color: ".concat(subject.colorCSSValue, ";\">\n      <span>").concat(subject.subject, "</span>\n    </h3>\n    <div class=\"properties\"></div>"); // make tracks
+    elm.innerHTML = "\n    <h3 class=\"title _subject-background-color-strong\" data-subject-id=\"".concat(subject.subjectId, "\">\n      <span>").concat(subject.subject, "</span>\n    </h3>\n    <div class=\"properties\"></div>"); // make tracks
 
     var properties = subject.properties;
     var propertiesContainer = elm.querySelector(':scope > .properties');
