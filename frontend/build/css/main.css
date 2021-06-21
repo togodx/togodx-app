@@ -894,7 +894,8 @@ main {
   cursor: pointer;
 }
 .rounded-button-view:hover {
-  top: 0.1rem;
+  -webkit-transform: translateY(0.1rem);
+          transform: translateY(0.1rem);
 }
 .rounded-button-view.-black {
   background-color: var(--color-lamp-black);
@@ -1639,10 +1640,16 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   line-height: 1;
   font-weight: bold;
   color: white;
+  position: relative;
 }
 #FixedArea > div > section > header > .title {
   margin: 0;
   font-size: var(--font-size-title);
+}
+#FixedArea > div > section > header > .rounded-button-view {
+  position: absolute;
+  top: -0.2rem;
+  right: 0;
 }
 #FixedArea > div > section > footer {
   -webkit-padding-before: 1rem;

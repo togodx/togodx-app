@@ -13,11 +13,16 @@ class ConditionBuilder {
   #preparingCounter;
 
   constructor() {
+
     this.#propertyConditions = [];
     this.#attributeConditions = [];
     this.#preparingCounter = 0;
     this.#isRestoredConditinoFromURLParameters = false;
+
+    // event listeners
     window.addEventListener('popstate', this.#createSearchConditionFromURLParameters.bind(this));
+    DefaultEventEmitter.addEventListener(event.clearCondition, this.#clearConditinos.bind(this));
+
   }
 
   // public methods
@@ -336,6 +341,20 @@ class ConditionBuilder {
     const customEvent = new CustomEvent(event.restoreParameters, {detail: {togoKey, userIds, keys, values}});
     DefaultEventEmitter.dispatchEvent(customEvent);
 
+  }
+
+  #clearConditinos() {
+    while (this.#propertyConditions.length > 0) {
+      const {propertyId, parentCategoryId} = this.#propertyConditions[0];
+      this.removeProperty(propertyId, parentCategoryId, false);
+    };
+    while (this.#attributeConditions.length > 0) {
+      const {propertyId, categoryIds} = this.#attributeConditions[0];
+      while (categoryIds.length > 0) {
+        this.removePropertyValue(propertyId, categoryIds[0], false);
+      }
+    };
+    this.#postProcessing();
   }
 
   #getHierarchicConditions() {

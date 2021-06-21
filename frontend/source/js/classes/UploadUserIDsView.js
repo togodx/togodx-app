@@ -37,6 +37,9 @@ export default class UploadUserIDsView {
     DefaultEventEmitter.addEventListener(event.restoreParameters, e => {
       this.#restoreParameters(e.detail);
     });
+    DefaultEventEmitter.addEventListener(event.clearCondition, e => {
+      this.#clear();
+    });
 
   }
 

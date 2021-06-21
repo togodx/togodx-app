@@ -2920,7 +2920,9 @@
   var mutatePropertyCondition = 'mutatePropertyCondition';
   var mutatePropertyValueCondition = 'mutatePropertyValueCondition';
   var mutateEstablishConditions = 'mutateEstablishConditions';
-  var completeQueryParameter = 'completeQueryParameter'; // Stanza
+  var completeQueryParameter = 'completeQueryParameter';
+  var restoreParameters = 'restoreParameters';
+  var clearCondition = 'clearCondition'; // Stanza
 
   var hideStanza = 'hideStanza';
   var showStanza = 'showStanza'; // Popup
@@ -2939,9 +2941,7 @@
   var highlightCol = 'highlightCol'; // Track
 
   var enterPropertyValueItemView = 'enterPropertyValueItemView';
-  var leavePropertyValueItemView = 'leavePropertyValueItemView'; // restore
-
-  var restoreParameters = 'restoreParameters';
+  var leavePropertyValueItemView = 'leavePropertyValueItemView';
 
   var _propertyConditions = new WeakMap();
 
@@ -2969,6 +2969,8 @@
 
   var _restoreConditions = new WeakSet();
 
+  var _clearConditinos = new WeakSet();
+
   var _getHierarchicConditions = new WeakSet();
 
   var _getCondtionsFromHierarchicConditions = new WeakSet();
@@ -2980,6 +2982,8 @@
       _getCondtionsFromHierarchicConditions.add(this);
 
       _getHierarchicConditions.add(this);
+
+      _clearConditinos.add(this);
 
       _restoreConditions.add(this);
 
@@ -3034,9 +3038,11 @@
 
       _classPrivateFieldSet(this, _preparingCounter, 0);
 
-      _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, false);
+      _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, false); // event listeners
+
 
       window.addEventListener('popstate', _classPrivateMethodGet(this, _createSearchConditionFromURLParameters, _createSearchConditionFromURLParameters2).bind(this));
+      DefaultEventEmitter$1.addEventListener(clearCondition, _classPrivateMethodGet(this, _clearConditinos, _clearConditinos2).bind(this));
     } // public methods
 
 
@@ -3508,6 +3514,28 @@
     DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
 
+  function _clearConditinos2() {
+    while (_classPrivateFieldGet(this, _propertyConditions).length > 0) {
+      var _classPrivateFieldGet2 = _classPrivateFieldGet(this, _propertyConditions)[0],
+          propertyId = _classPrivateFieldGet2.propertyId,
+          parentCategoryId = _classPrivateFieldGet2.parentCategoryId;
+
+      this.removeProperty(propertyId, parentCategoryId, false);
+    }
+
+    while (_classPrivateFieldGet(this, _attributeConditions).length > 0) {
+      var _classPrivateFieldGet3 = _classPrivateFieldGet(this, _attributeConditions)[0],
+          _propertyId = _classPrivateFieldGet3.propertyId,
+          categoryIds = _classPrivateFieldGet3.categoryIds;
+
+      while (categoryIds.length > 0) {
+        this.removePropertyValue(_propertyId, categoryIds[0], false);
+      }
+    }
+
+    _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
+  }
+
   function _getHierarchicConditions2() {
     var keys = [];
 
@@ -3753,8 +3781,7 @@
       key: "sameProperty",
       value: function sameProperty(propertyId) {
         return propertyId === _classPrivateFieldGet(this, _condition$1).propertyId;
-      } // private methods
-
+      }
     }]);
 
     return StackingConditionView;
@@ -3868,8 +3895,13 @@
     _classPrivateFieldGet(this, _EXEC_BUTTON).addEventListener('click', function () {
       document.body.dataset.display = 'results';
       ConditionBuilder$1.makeQueryParameter();
-    }); // event listeners
+    });
 
+    elm.querySelector(':scope > header > button.rounded-button-view').addEventListener('click', function () {
+      console.log(123);
+      var customEvent = new CustomEvent(clearCondition);
+      DefaultEventEmitter$1.dispatchEvent(customEvent);
+    }); // event listeners
 
     DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
       switch (e.detail.action) {
@@ -6957,6 +6989,9 @@
 
       DefaultEventEmitter$1.addEventListener(restoreParameters, function (e) {
         _classPrivateMethodGet(_this, _restoreParameters, _restoreParameters2).call(_this, e.detail);
+      });
+      DefaultEventEmitter$1.addEventListener(clearCondition, function (e) {
+        _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
       });
     } // public methods
 
