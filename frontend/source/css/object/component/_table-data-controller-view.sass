@@ -72,8 +72,8 @@
   > .controller
     display: flex
     color: white
-    > [data-button="download-json"]
-      display: none
+    > [data-button="download-json"], > [data-button="download-tsv"]
+      display: block
       > a
         color: white
         text-decoration: none
@@ -82,6 +82,7 @@
           vertical-align: middle
         > .material-icons-outlined
           font-size: 1.4rem
+          width: 1.6rem
     > .button
       padding: .2rem 0
       flex-grow: 1
@@ -142,7 +143,7 @@
       display: flex
       > [data-button="prepare-data"]
         display: none
-      > [data-button="download-json"]
+      > [data-button="download-json"], > [data-button="download-tsv"]
         display: block
     > .controller
       > .button

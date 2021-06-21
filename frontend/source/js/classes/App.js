@@ -35,7 +35,6 @@ class App {
   }
 
   ready() {
-
     const body = document.querySelector('body');
 
     // view modes
