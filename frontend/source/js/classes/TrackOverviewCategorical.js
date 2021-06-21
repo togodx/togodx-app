@@ -54,7 +54,7 @@ export default class TrackOverviewCategorical {
       value.pin = pin;
 
       // attach event: show tooltip
-      const label = `<span style="color: ${this.#subject.colorCSSValue}">${value.label}</span>`;
+      const label = `<span class="_subject-color" data-subject-id="${this.#subject.subjectId}">${value.label}</span>`;
       elm.addEventListener('mouseenter', () => {
         const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {
           label,
