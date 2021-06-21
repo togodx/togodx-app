@@ -2737,9 +2737,13 @@
           var hue = 360 - 360 * i / subjects.length + 130;
           hue -= hue > 360 ? 360 : 0;
           var srgb = new h('hsv', [hue, 45, 85]).to('srgb');
+          var srgbStrong = new h('hsv', [hue, 65, 65]).to('srgb');
           subjects[i].hue = hue;
           subjects[i].color = srgb;
           subjects[i].colorCSSValue = "rgb(".concat(srgb.coords.map(function (channel) {
+            return channel * 256;
+          }).join(','), ")");
+          subjects[i].colorCSSStrongValue = "rgb(".concat(srgbStrong.coords.map(function (channel) {
             return channel * 256;
           }).join(','), ")");
         }
@@ -2769,8 +2773,8 @@
         document.head.appendChild(styleElm);
         var styleSheet = styleElm.sheet;
         styleSheet.insertRule(":root {\n      ".concat(subjects.map(function (subject) {
-          return "--color-subject-".concat(subject.subjectId, ": ").concat(subject.colorCSSValue);
-        }).join(';\r'), "\n    }"));
+          return "\n        --color-subject-".concat(subject.subjectId, ": ").concat(subject.colorCSSValue, ";\n        --color-subject-").concat(subject.subjectId, "-strong: ").concat(subject.colorCSSStrongValue, ";\n        ");
+        }).join(''), "\n    }"));
 
         var _iterator = _createForOfIteratorHelper(subjects),
             _step;
@@ -2778,7 +2782,7 @@
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var subject = _step.value;
-            styleSheet.insertRule("\n      ._subject-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-color {\n        color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
+            styleSheet.insertRule("\n      ._subject-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-color {\n        color: var(--color-subject-").concat(subject.subjectId, "-strong);\n      }"));
             styleSheet.insertRule("\n      ._subject-background-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-background-color {\n        background-color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
             styleSheet.insertRule("\n      ._subject-border-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-border-color {\n        border-color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
           }

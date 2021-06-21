@@ -17,9 +17,11 @@ class Records {
       let hue = 360 - (360 * i / subjects.length) + 130;
       hue -= hue > 360 ? 360 : 0;
       const srgb = new Color('hsv', [hue, 45, 85]).to('srgb');
+      const srgbStrong = new Color('hsv', [hue, 65, 65]).to('srgb');
       subjects[i].hue = hue;
       subjects[i].color = srgb;
       subjects[i].colorCSSValue = `rgb(${srgb.coords.map(channel => channel * 256).join(',')})`;
+      subjects[i].colorCSSStrongValue = `rgb(${srgbStrong.coords.map(channel => channel * 256).join(',')})`;
     }
     this.#subjects = Object.freeze(subjects);
 
@@ -44,12 +46,15 @@ class Records {
     document.head.appendChild(styleElm);
     const styleSheet = styleElm.sheet;
     styleSheet.insertRule(`:root {
-      ${subjects.map(subject => `--color-subject-${subject.subjectId}: ${subject.colorCSSValue}`).join(';\r')}
+      ${subjects.map(subject => `
+        --color-subject-${subject.subjectId}: ${subject.colorCSSValue};
+        --color-subject-${subject.subjectId}-strong: ${subject.colorCSSStrongValue};
+        `).join('')}
     }`);
     for (const subject of subjects) {
       styleSheet.insertRule(`
       ._subject-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-color {
-        color: var(--color-subject-${subject.subjectId});
+        color: var(--color-subject-${subject.subjectId}-strong);
       }`);
       styleSheet.insertRule(`
       ._subject-background-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-background-color {
