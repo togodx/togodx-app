@@ -9,9 +9,8 @@ export default class UploadUserIDsView {
   #BODY;
   #USER_IDS;
 
-  constructor(elm, path) {
+  constructor(elm) {
 
-    this.#path = path;
     this.#BODY = document.querySelector('body');
     this.#USER_IDS = elm.querySelector(':scope > textarea');
 
@@ -40,6 +39,14 @@ export default class UploadUserIDsView {
     });
 
   }
+
+
+  // public methods
+  
+  definePath(path) {
+    this.#path = path;
+  }
+
 
   // private methods
 

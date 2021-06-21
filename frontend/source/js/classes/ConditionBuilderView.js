@@ -3,10 +3,13 @@ import DefaultEventEmitter from "./DefaultEventEmitter";
 import StackingConditionView from "./StackingConditionView";
 import * as event from '../events';
 
+const POLLING_DURATION = 100;
+
 export default class ConditionBuilderView {
 
   #properties;
   #propertyValues;
+  #isDefined;
   #TOGO_KEYS;
   #PROPERTIES_CONDITIONS_CONTAINER;
   #ATTRIBUTES_CONDITIONS_CONTAINER;
@@ -16,6 +19,7 @@ export default class ConditionBuilderView {
 
     this.#properties = [];
     this.#propertyValues = [];
+    this.#isDefined = false;
   
     // references
     const conditionsContainer = elm.querySelector(':scope > .conditions');
@@ -64,14 +68,25 @@ export default class ConditionBuilderView {
     });
 
   }
+  
 
   // private methods
 
   #restoreParameters(parameters) {
-    this.#TOGO_KEYS.value = parameters.togoKey;
+    if (parameters.togoKey) {
+      if (this.#isDefined) {
+        this.#TOGO_KEYS.value = parameters.togoKey;
+      } else {
+        setTimeout(() => {
+          this.#restoreParameters(parameters);
+        }, POLLING_DURATION);
+      }
+    }
   }
 
   #defineTogoKeys(subjects) {
+    console.log(subjects)
+    this.#isDefined = true;
     // make options
     this.#TOGO_KEYS.innerHTML = subjects.map(subject => {
       let option = '';
@@ -84,7 +99,7 @@ export default class ConditionBuilderView {
       const subject = subjects.find(subject => subject.togoKey === e.target.value);
       ConditionBuilder.setSubject(e.target.value, subject.subjectId);
     });
-    // this.#TOGO_KEYS.dispatchEvent(new Event('change'));
+    this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }
 
   #addProperty(propertyId, parentCategoryId) {

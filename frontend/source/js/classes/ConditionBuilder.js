@@ -9,12 +9,14 @@ class ConditionBuilder {
   #subjectId;
   #togoKey;
   #userIds;
+  #isRestoredConditinoFromURLParameters = false;
   #preparingCounter;
 
   constructor() {
     this.#propertyConditions = [];
     this.#attributeConditions = [];
     this.#preparingCounter = 0;
+    this.#isRestoredConditinoFromURLParameters = false;
     window.addEventListener('popstate', this.#createSearchConditionFromURLParameters.bind(this));
   }
 
@@ -228,6 +230,8 @@ class ConditionBuilder {
   #postProcessing(dontLeaveInHistory = true) {
     console.log(this.#propertyConditions, this.#attributeConditions, dontLeaveInHistory)
 
+    if (!this.#isRestoredConditinoFromURLParameters) return;
+
     // evaluate if search is possible
     const established 
       = (this.#togoKey && this.#subjectId)
@@ -313,6 +317,8 @@ class ConditionBuilder {
   }
 
   #restoreConditions({togoKey, userIds, keys, values}) {
+
+    this.#isRestoredConditinoFromURLParameters = true;
 
     // restore conditions
     const [properties, attributes] = this.#getCondtionsFromHierarchicConditions(keys, values);
