@@ -35,10 +35,17 @@ export default class UploadUserIDsView {
     // this.#USER_IDS.addEventListener('keyup', e => {
     //   if (e.keyCode === 13) this.#fetch();
     // });
+    DefaultEventEmitter.addEventListener(event.restoreParameters, e => {
+      this.#restoreParameters(e.detail);
+    });
 
   }
 
   // private methods
+
+  #restoreParameters(parameters) {
+    this.#USER_IDS.value = parameters.userIds;
+  }
 
   #fetch() {
     if (this.#USER_IDS.value === '') return;

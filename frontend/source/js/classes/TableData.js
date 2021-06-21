@@ -55,9 +55,14 @@ export default class TableData {
       ${condition.attributes.map(property => `<div class="condiiton _subject-background-color" data-subject-id="${property.subject.subjectId}">
         <p title="${property.property.label}">${property.property.label}</p>
       </div>`).join('')}
-      ${condition.properties.map(property => `<div class="condiiton _subject-color" data-subject-id="${property.subject.subjectId}">
-        <p title="${property.property.label}">${property.subCategory ? property.subCategory.label : property.property.label}</p>
-      </div>`).join('')}
+      ${condition.properties.map(property => {
+        const label = property.parentCategoryId
+          ? Records.getValue(property.query.propertyId, property.parentCategoryId).label
+          : property.property.label;
+        return `<div class="condiiton _subject-color" data-subject-id="${property.subject.subjectId}">
+          <p title="${label}">${label}</p>
+        </div>`;
+    }).join('')}
     </div>
     <div class="status">
       <p>Getting id list</p>
@@ -154,32 +159,21 @@ export default class TableData {
     BUTTONS.find(button => button.dataset.button === 'restore').addEventListener('click', e => {
       e.stopPropagation();
       // property (attribute)
-      console.log(this.#condition)
       ConditionBuilder.setProperties(this.#condition.properties.map(property => {
         return {
-          subject: property.subject,
-          property: property.property
+          propertyId: property.query.propertyId,
+          parentCategoryId: property.parentCategoryId
         }
-      }));
+      }), false);
       // attribute (classification/distribution)
-      Records.properties.forEach(property => {
-        const attribute = this.#condition.attributes.find(attribute => attribute.property.propertyId === property.propertyId);
-        let subject, values = [];
-        if (attribute) {
-          subject = attribute.subject;
-          values = attribute.query.categoryIds.map(categoryId => {
-            return {
-              categoryId: categoryId,
-              label: Records.getValue(attribute.query.propertyId, categoryId).label,
-              ancestors: []
-            }
-          });
-        } else {
-          subject = Records.getSubject(property.subjectId);
-        }
-        ConditionBuilder.setPropertyValues({subject, property, values});
+      Records.properties.forEach(({propertyId}) => {
+        const attribute = this.#condition.attributes.find(attribute => attribute.property.propertyId === propertyId);
+        const categoryIds = [];
+        if (attribute) categoryIds.push(...attribute.query.categoryIds);
+        ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
       });
     });
+    ConditionBuilder.finish();
     this.select();
     this.#getQueryIds();
   }

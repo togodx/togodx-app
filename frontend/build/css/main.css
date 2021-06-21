@@ -366,6 +366,7 @@ template {
   --z-track-balloon: 9;
   --z-modal-window-backdrop: 10;
   --z-modal-window: 11;
+  --z-app-loading-view: 12;
   --shadow-shallow: 0 .1rem .1rem rgba(0,0,0,.3);
   --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3);
   --opacity-disabled: .4;
@@ -782,6 +783,7 @@ main {
   height: 100%;
   top: 0;
   left: 0;
+  background-color: transparent;
   opacity: 0;
   pointer-events: none;
   transition: background var(--transition-wipe), opacity var(--transition-wipe);
@@ -802,6 +804,7 @@ main {
   top: calc(50% - .8rem);
 }
 .loading-view.-shown {
+  background-color: var(--color-translucent-lamp-black3);
   opacity: 1;
   pointer-events: auto;
 }
@@ -919,7 +922,6 @@ main {
   padding: 0.6rem 1.4rem 0 0;
   list-style: none;
   font-size: 1rem;
-  font-weight: bold;
   line-height: 1;
   color: var(--color-gray);
 }
@@ -938,6 +940,24 @@ main {
   line-height: 1;
   font-size: 1.4rem;
   font-weight: bold;
+}
+.stacking-condition-view > .labels {
+  margin: 0.2rem 0 0;
+  padding: 0 0 0.1rem;
+  list-style: none;
+}
+.stacking-condition-view > .labels > .label {
+  margin-right: 0.1rem;
+  margin-bottom: 0.1rem;
+  padding: 0 1.4rem 0 0.4rem;
+  display: inline-block;
+  position: relative;
+  white-space: nowrap;
+}
+.stacking-condition-view > .labels > .label > .close-button-view {
+  position: absolute;
+  top: 0.1rem;
+  right: 0.1rem;
 }
 .stacking-condition-view._subject-background-color > .path {
   color: rgba(0, 0, 0, 0.5);
@@ -1429,16 +1449,24 @@ main {
 body[data-display=results] #App > .inner {
   transform: translateX(calc(-100vw + var(--width-condition)));
 }
+#App > .loading-view {
+  position: fixed;
+  top: var(--height-header);
+  height: calc(100% - var(--height-header));
+  z-index: var(--z-app-loading-view);
+}
 
 #ConditionBuilder {
   --radius: .4rem;
+  --background-color: #FFFFFFCC;
+  --background-color-inactive: #FFFFFF66;
 }
 #ConditionBuilder > .conditions {
   flex-grow: 1;
 }
 #ConditionBuilder > .conditions > .condition {
   padding: 0.7rem 0.6rem;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--background-color);
   border-radius: var(--radius);
 }
 #ConditionBuilder > .conditions > .condition + .condition {
@@ -1476,17 +1504,19 @@ body[data-display=results] #ConditionBuilder > .conditions > .condition > .condi
 }
 #ConditionBuilder > .conditions > #ConditionKeys, #ConditionBuilder > .conditions > #ConditionValues {
   transition: opacity var(--transition-instant);
-  opacity: var(--opacity-disabled);
+  opacity: 0.8;
+  background-color: var(--background-color-inactive);
   cursor: pointer;
 }
 #ConditionBuilder > .conditions > #ConditionKeys:hover, #ConditionBuilder > .conditions > #ConditionValues:hover {
-  opacity: 1;
+  background-color: var(--background-color);
 }
 #ConditionBuilder > .conditions > #ConditionKeys {
   border-radius: var(--radius) var(--radius) 0 0;
 }
 [data-condition=keys] #ConditionBuilder > .conditions > #ConditionKeys {
   opacity: 1;
+  background-color: var(--background-color);
 }
 #ConditionBuilder > .conditions > #ConditionValues {
   border-radius: 0 0 var(--radius) var(--radius);
@@ -1494,6 +1524,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .condition > .condi
 }
 [data-condition=values] #ConditionBuilder > .conditions > #ConditionValues {
   opacity: 1;
+  background-color: var(--background-color);
 }
 #ConditionBuilder > .conditions > #ConditionTogoKey > .inner > select {
   width: 100%;

@@ -137,7 +137,11 @@ export default class ResultsTable {
     <th>
       <div class="inner _subject-color" data-subject-id="${property.subject.subjectId}">
         <div class="togo-key-view">${property.property.primaryKey}</div>
-        <span>${property.subCategory ? property.subCategory.label : property.property.label}</span>
+        <span>${
+          property.parentCategoryId
+            ? Records.getValue(property.query.propertyId, property.parentCategoryId).label
+            : property.property.label
+        }</span>
       </div>
     </th>`
       )
