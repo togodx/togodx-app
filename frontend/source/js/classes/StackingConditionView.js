@@ -123,8 +123,4 @@ export default class StackingConditionView {
     return propertyId === this.#condition.propertyId;
   }
 
-
-  // private methods
-
-
 }

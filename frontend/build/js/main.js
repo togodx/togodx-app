@@ -2920,10 +2920,11 @@
   var mutatePropertyCondition = 'mutatePropertyCondition';
   var mutatePropertyValueCondition = 'mutatePropertyValueCondition';
   var mutateEstablishConditions = 'mutateEstablishConditions';
-  var completeQueryParameter = 'completeQueryParameter'; // Stanza
+  var completeQueryParameter = 'completeQueryParameter';
+  var restoreParameters = 'restoreParameters';
+  var clearCondition = 'clearCondition'; // Stanza
 
   var hideStanza = 'hideStanza';
-  var showStanza = 'showStanza'; // Popup
 
   var hidePopup = 'hidePopup';
   var showPopup = 'showPopup';
@@ -2939,9 +2940,7 @@
   var highlightCol = 'highlightCol'; // Track
 
   var enterPropertyValueItemView = 'enterPropertyValueItemView';
-  var leavePropertyValueItemView = 'leavePropertyValueItemView'; // restore
-
-  var restoreParameters = 'restoreParameters';
+  var leavePropertyValueItemView = 'leavePropertyValueItemView';
 
   var _propertyConditions = new WeakMap();
 
@@ -2969,6 +2968,8 @@
 
   var _restoreConditions = new WeakSet();
 
+  var _clearConditinos = new WeakSet();
+
   var _getHierarchicConditions = new WeakSet();
 
   var _getCondtionsFromHierarchicConditions = new WeakSet();
@@ -2980,6 +2981,8 @@
       _getCondtionsFromHierarchicConditions.add(this);
 
       _getHierarchicConditions.add(this);
+
+      _clearConditinos.add(this);
 
       _restoreConditions.add(this);
 
@@ -3034,9 +3037,11 @@
 
       _classPrivateFieldSet(this, _preparingCounter, 0);
 
-      _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, false);
+      _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, false); // event listeners
+
 
       window.addEventListener('popstate', _classPrivateMethodGet(this, _createSearchConditionFromURLParameters, _createSearchConditionFromURLParameters2).bind(this));
+      DefaultEventEmitter$1.addEventListener(clearCondition, _classPrivateMethodGet(this, _clearConditinos, _clearConditinos2).bind(this));
     } // public methods
 
 
@@ -3508,6 +3513,28 @@
     DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
 
+  function _clearConditinos2() {
+    while (_classPrivateFieldGet(this, _propertyConditions).length > 0) {
+      var _classPrivateFieldGet2 = _classPrivateFieldGet(this, _propertyConditions)[0],
+          propertyId = _classPrivateFieldGet2.propertyId,
+          parentCategoryId = _classPrivateFieldGet2.parentCategoryId;
+
+      this.removeProperty(propertyId, parentCategoryId, false);
+    }
+
+    while (_classPrivateFieldGet(this, _attributeConditions).length > 0) {
+      var _classPrivateFieldGet3 = _classPrivateFieldGet(this, _attributeConditions)[0],
+          _propertyId = _classPrivateFieldGet3.propertyId,
+          categoryIds = _classPrivateFieldGet3.categoryIds;
+
+      while (categoryIds.length > 0) {
+        this.removePropertyValue(_propertyId, categoryIds[0], false);
+      }
+    }
+
+    _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
+  }
+
   function _getHierarchicConditions2() {
     var keys = [];
 
@@ -3753,8 +3780,7 @@
       key: "sameProperty",
       value: function sameProperty(propertyId) {
         return propertyId === _classPrivateFieldGet(this, _condition$1).propertyId;
-      } // private methods
-
+      }
     }]);
 
     return StackingConditionView;
@@ -3768,7 +3794,11 @@
 
   var _isDefined = new WeakMap();
 
+  var _placeHolders = new WeakMap();
+
   var _TOGO_KEYS = new WeakMap();
+
+  var _USER_IDS$1 = new WeakMap();
 
   var _PROPERTIES_CONDITIONS_CONTAINER = new WeakMap();
 
@@ -3820,7 +3850,17 @@
       value: void 0
     });
 
+    _placeHolders.set(this, {
+      writable: true,
+      value: void 0
+    });
+
     _TOGO_KEYS.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _USER_IDS$1.set(this, {
       writable: true,
       value: void 0
     });
@@ -3851,6 +3891,8 @@
 
     _classPrivateFieldSet(this, _TOGO_KEYS, conditionsContainer.querySelector('#ConditionTogoKey > .inner > select'));
 
+    _classPrivateFieldSet(this, _USER_IDS$1, elm.querySelector('#UploadUserIDsView > textarea'));
+
     _classPrivateFieldSet(this, _PROPERTIES_CONDITIONS_CONTAINER, document.querySelector('#ConditionValues > .inner > .conditions'));
 
     _classPrivateFieldSet(this, _ATTRIBUTES_CONDITIONS_CONTAINER, document.querySelector('#ConditionKeys > .inner > .conditions'));
@@ -3868,8 +3910,16 @@
     _classPrivateFieldGet(this, _EXEC_BUTTON).addEventListener('click', function () {
       document.body.dataset.display = 'results';
       ConditionBuilder$1.makeQueryParameter();
-    }); // event listeners
+    });
 
+    elm.querySelector(':scope > footer > button.return').addEventListener('click', function () {
+      document.body.dataset.display = 'properties';
+    });
+    elm.querySelector(':scope > header > button.rounded-button-view').addEventListener('click', function () {
+      console.log(123);
+      var customEvent = new CustomEvent(clearCondition);
+      DefaultEventEmitter$1.dispatchEvent(customEvent);
+    }); // event listeners
 
     DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
       switch (e.detail.action) {
@@ -3924,9 +3974,15 @@
   }
 
   function _defineTogoKeys2(subjects) {
-    console.log(subjects);
+    var _this3 = this;
 
-    _classPrivateFieldSet(this, _isDefined, true); // make options
+    _classPrivateFieldSet(this, _isDefined, true);
+
+    _classPrivateFieldSet(this, _placeHolders, Object.fromEntries(subjects.filter(function (subject) {
+      return subject.togoKey;
+    }).map(function (subject) {
+      return [subject.togoKey, subject.togoKeyExamples];
+    }))); // make options
 
 
     _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = subjects.map(function (subject) {
@@ -3941,6 +3997,7 @@
         return subject.togoKey === e.target.value;
       });
       ConditionBuilder$1.setSubject(e.target.value, subject.subjectId);
+      _classPrivateFieldGet(_this3, _USER_IDS$1).placeholder = _classPrivateFieldGet(_this3, _placeHolders)[e.target.value].join(', ');
     });
 
     _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));
@@ -3999,179 +4056,6 @@
     if (index !== -1) _classPrivateFieldGet(this, _propertyValues).splice(index, 1); // modifier
 
     if (_classPrivateFieldGet(this, _propertyValues).length === 0) _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.add('-empty');
-  }
-
-  var _templates$1 = new WeakMap();
-
-  var _isReady = new WeakMap();
-
-  var StanzaManager = /*#__PURE__*/function () {
-    function StanzaManager() {
-      _classCallCheck(this, StanzaManager);
-
-      _templates$1.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _isReady.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _classPrivateFieldSet(this, _isReady, false);
-    }
-
-    _createClass(StanzaManager, [{
-      key: "init",
-      value: function init(data) {
-        var _this = this;
-
-        // embed modules
-        var head = document.querySelector('head');
-        data.stanzas.forEach(function (stanza) {
-          var script = document.createElement('script');
-          script.setAttribute('type', 'module');
-          script.setAttribute('src', stanza);
-          script.setAttribute('async', 1);
-          head.appendChild(script);
-        }); // fetch templates
-
-        Promise.all(Object.keys(data.templates).map(function (key) {
-          return fetch(data.templates[key]);
-        })).then(function (responces) {
-          return Promise.all(responces.map(function (responce) {
-            return responce.text();
-          }));
-        }).then(function (templates) {
-          // set stanza templates
-          _classPrivateFieldSet(_this, _templates$1, Object.fromEntries(Object.keys(data.templates).map(function (stanza, index) {
-            return [stanza, templates[index]];
-          })));
-
-          _classPrivateFieldSet(_this, _isReady, true);
-
-          console.log(_classPrivateFieldGet(_this, _templates$1));
-        });
-      }
-      /**
-       * 
-       * @param {String} subjectId  e.g. gene, protein (category name)
-       * @param {String} id  ID of dataset
-       * @param {String} key  e.g. hgnc, uniplot (dataset name)
-       * @returns {String} HTML
-       */
-
-    }, {
-      key: "draw",
-      value: function draw(subjectId, id, key) {
-        return "<div class=\"stanza\">".concat(_classPrivateFieldGet(this, _templates$1)[subjectId].replace(/{{id}}/g, id).replace(/{{type}}/g, key), "</div>");
-      }
-    }, {
-      key: "isReady",
-      get: function get() {
-        return _classPrivateFieldGet(this, _isReady);
-      }
-    }]);
-
-    return StanzaManager;
-  }();
-
-  var StanzaManager$1 = new StanzaManager();
-
-  var _templates = new WeakMap();
-
-  var _BODY$1 = new WeakMap();
-
-  var _STANZAS_CONTAINER = new WeakMap();
-
-  var _showStanza = new WeakSet();
-
-  var _hideStanza = new WeakSet();
-
-  var ReportsView = /*#__PURE__*/function () {
-    function ReportsView(elm) {
-      var _this = this;
-
-      _classCallCheck(this, ReportsView);
-
-      _hideStanza.add(this);
-
-      _showStanza.add(this);
-
-      _templates.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _BODY$1.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _STANZAS_CONTAINER.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      this._stanzas = {}; // references
-
-      _classPrivateFieldSet(this, _BODY$1, document.querySelector('body'));
-
-      _classPrivateFieldSet(this, _STANZAS_CONTAINER, elm.querySelector(':scope > .stanzas'));
-
-      var returnButton = elm.querySelector(':scope > footer > button.return'); // attach event
-
-      returnButton.addEventListener('click', function () {
-        _classPrivateFieldGet(_this, _BODY$1).dataset.display = 'properties';
-      }); // event listener
-
-      DefaultEventEmitter$1.addEventListener(showStanza, function (e) {
-        _classPrivateMethodGet(_this, _showStanza, _showStanza2).call(_this, e.detail.subject, e.detail.properties);
-      });
-      DefaultEventEmitter$1.addEventListener(hideStanza, function (e) {
-        _classPrivateMethodGet(_this, _hideStanza, _hideStanza2).call(_this);
-      });
-    } // private methods
-
-
-    _createClass(ReportsView, [{
-      key: "defineTemplates",
-      value: // #stanza(subjectId, value) {
-      //   return `<div class="stanza-view">${this.#templates[subjectId].replace(/{{id}}/g, value)}</div>`;
-      // }
-      // public methods
-      function defineTemplates(templates) {
-        console.log(templates);
-
-        _classPrivateFieldSet(this, _templates, templates);
-      }
-    }]);
-
-    return ReportsView;
-  }();
-
-  function _showStanza2(subject, properties) {
-    console.log(subject, properties); // make stanzas
-
-    _classPrivateFieldGet(this, _STANZAS_CONTAINER).innerHTML = StanzaManager$1.draw(subject.id, subject.value, 'uniplot') + properties.map(function (property) {
-      if (property === undefined) {
-        return '';
-      } else {
-        var _subject = Records$1.subjects.find(function (subject) {
-          return subject.properties.some(function (subjectProperty) {
-            return subjectProperty.propertyId === property.propertyId;
-          });
-        }); // TODO: 1個目のアトリビュートしか返していない
-
-
-        return StanzaManager$1.draw(_subject.subjectId, property.attributes[0].id, 'uniplot');
-      }
-    }).join('');
-  }
-
-  function _hideStanza2() {
-    _classPrivateFieldGet(this, _STANZAS_CONTAINER).innerHTML = '';
   }
 
   function collapseView(elm) {
@@ -5730,6 +5614,84 @@
     });
   }
 
+  var _templates = new WeakMap();
+
+  var _isReady = new WeakMap();
+
+  var StanzaManager = /*#__PURE__*/function () {
+    function StanzaManager() {
+      _classCallCheck(this, StanzaManager);
+
+      _templates.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _isReady.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldSet(this, _isReady, false);
+    }
+
+    _createClass(StanzaManager, [{
+      key: "init",
+      value: function init(data) {
+        var _this = this;
+
+        // embed modules
+        var head = document.querySelector('head');
+        data.stanzas.forEach(function (stanza) {
+          var script = document.createElement('script');
+          script.setAttribute('type', 'module');
+          script.setAttribute('src', stanza);
+          script.setAttribute('async', 1);
+          head.appendChild(script);
+        }); // fetch templates
+
+        Promise.all(Object.keys(data.templates).map(function (key) {
+          return fetch(data.templates[key]);
+        })).then(function (responces) {
+          return Promise.all(responces.map(function (responce) {
+            return responce.text();
+          }));
+        }).then(function (templates) {
+          // set stanza templates
+          _classPrivateFieldSet(_this, _templates, Object.fromEntries(Object.keys(data.templates).map(function (stanza, index) {
+            return [stanza, templates[index]];
+          })));
+
+          _classPrivateFieldSet(_this, _isReady, true);
+
+          console.log(_classPrivateFieldGet(_this, _templates));
+        });
+      }
+      /**
+       * 
+       * @param {String} subjectId  e.g. gene, protein (category name)
+       * @param {String} id  ID of dataset
+       * @param {String} key  e.g. hgnc, uniplot (dataset name)
+       * @returns {String} HTML
+       */
+
+    }, {
+      key: "draw",
+      value: function draw(subjectId, id, key) {
+        return "<div class=\"stanza\">".concat(_classPrivateFieldGet(this, _templates)[subjectId].replace(/{{id}}/g, id).replace(/{{type}}/g, key), "</div>");
+      }
+    }, {
+      key: "isReady",
+      get: function get() {
+        return _classPrivateFieldGet(this, _isReady);
+      }
+    }]);
+
+    return StanzaManager;
+  }();
+
+  var StanzaManager$1 = new StanzaManager();
+
   var x = 0;
   var y = 0;
   function dragView(view) {
@@ -6958,6 +6920,9 @@
       DefaultEventEmitter$1.addEventListener(restoreParameters, function (e) {
         _classPrivateMethodGet(_this, _restoreParameters, _restoreParameters2).call(_this, e.detail);
       });
+      DefaultEventEmitter$1.addEventListener(clearCondition, function (e) {
+        _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
+      });
     } // public methods
 
 
@@ -7120,7 +7085,6 @@
 
         new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
         new ConditionsController(document.querySelector('#Conditions'));
-        new ReportsView(document.querySelector('#Reports'));
         new ResultsTable(document.querySelector('#ResultsTable'));
         new ResultDetailModal();
         new BalloonView();

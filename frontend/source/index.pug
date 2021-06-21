@@ -210,15 +210,12 @@ block main
 
       .upper
 
-        section#ConditionBuilder(data-hidden-by="results")
+        section#ConditionBuilder
 
-          header
-            //- nav.tabmenu(data-hidden-by="results")
-            //-   .item.-current Condition
-            //-   .item Relations
-            //- h2.title(data-hidden-by="properties") Results
+          header(data-hidden-by="results")
             h2.title Condition builder
-          .conditions
+            button.rounded-button-view.-verysmall.-outline(type="button") Clear
+          .conditions(data-hidden-by="results")
             #ConditionTogoKey.condition
               .inner
                 h2.title
@@ -265,18 +262,10 @@ block main
                     .label Testis
               
           footer
-            button.exec.rounded-button-view.-black.-spread(disabled)
+            button.exec.rounded-button-view.-black.-spread(data-hidden-by="results" disabled)
               span.material-icons-outlined table_view
               | View results
-
-        section#Reports(data-hidden-by="properties")
-          header
-            h2.title Reports
-
-          .stanzas
-
-          footer
-            button.return.rounded-button-view.-black.-spread
+            button.return.rounded-button-view.-black.-spread(data-hidden-by="properties")
               span.material-icons-outlined keyboard_return
               | Return
 

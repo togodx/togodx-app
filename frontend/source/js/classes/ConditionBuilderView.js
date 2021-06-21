@@ -10,7 +10,9 @@ export default class ConditionBuilderView {
   #properties;
   #propertyValues;
   #isDefined;
+  #placeHolders;
   #TOGO_KEYS;
+  #USER_IDS;
   #PROPERTIES_CONDITIONS_CONTAINER;
   #ATTRIBUTES_CONDITIONS_CONTAINER;
   #EXEC_BUTTON;
@@ -24,6 +26,7 @@ export default class ConditionBuilderView {
     // references
     const conditionsContainer = elm.querySelector(':scope > .conditions');
     this.#TOGO_KEYS = conditionsContainer.querySelector('#ConditionTogoKey > .inner > select');
+    this.#USER_IDS = elm.querySelector('#UploadUserIDsView > textarea');
     this.#PROPERTIES_CONDITIONS_CONTAINER = document.querySelector('#ConditionValues > .inner > .conditions');
     this.#ATTRIBUTES_CONDITIONS_CONTAINER = document.querySelector('#ConditionKeys > .inner > .conditions');
     this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
@@ -34,6 +37,14 @@ export default class ConditionBuilderView {
     this.#EXEC_BUTTON.addEventListener('click', () => {
       document.body.dataset.display = 'results';
       ConditionBuilder.makeQueryParameter();
+    });
+    elm.querySelector(':scope > footer > button.return').addEventListener('click', () => {
+      document.body.dataset.display = 'properties';
+    });
+    elm.querySelector(':scope > header > button.rounded-button-view').addEventListener('click', () => {
+      console.log(123)
+      const customEvent = new CustomEvent(event.clearCondition);
+      DefaultEventEmitter.dispatchEvent(customEvent);
     });
 
     // event listeners
@@ -85,8 +96,8 @@ export default class ConditionBuilderView {
   }
 
   #defineTogoKeys(subjects) {
-    console.log(subjects)
     this.#isDefined = true;
+    this.#placeHolders = Object.fromEntries(subjects.filter(subject => subject.togoKey).map(subject => [subject.togoKey, subject.togoKeyExamples]));
     // make options
     this.#TOGO_KEYS.innerHTML = subjects.map(subject => {
       let option = '';
@@ -98,6 +109,7 @@ export default class ConditionBuilderView {
     this.#TOGO_KEYS.addEventListener('change', e => {
       const subject = subjects.find(subject => subject.togoKey === e.target.value);
       ConditionBuilder.setSubject(e.target.value, subject.subjectId);
+      this.#USER_IDS.placeholder = this.#placeHolders[e.target.value].join(', ');
     });
     this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }

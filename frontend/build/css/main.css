@@ -894,7 +894,8 @@ main {
   cursor: pointer;
 }
 .rounded-button-view:hover {
-  top: 0.1rem;
+  -webkit-transform: translateY(0.1rem);
+          transform: translateY(0.1rem);
 }
 .rounded-button-view.-black {
   background-color: var(--color-lamp-black);
@@ -1519,6 +1520,7 @@ body[data-display=results] #App > .inner {
 #ConditionBuilder > .conditions {
   -webkit-flex-grow: 1;
           flex-grow: 1;
+  padding-bottom: 1rem;
 }
 #ConditionBuilder > .conditions > .condition {
   padding: 0.7rem 0.6rem;
@@ -1529,7 +1531,7 @@ body[data-display=results] #App > .inner {
   margin-top: 0.4rem;
 }
 #ConditionBuilder > .conditions > .condition > .inner > .title {
-  margin: -0.5rem 0 -0.2rem;
+  margin: -0.2rem 0;
   line-height: 1;
   font-size: 1.2rem;
   display: -webkit-flex;
@@ -1639,14 +1641,16 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   line-height: 1;
   font-weight: bold;
   color: white;
+  position: relative;
 }
 #FixedArea > div > section > header > .title {
   margin: 0;
   font-size: var(--font-size-title);
 }
-#FixedArea > div > section > footer {
-  -webkit-padding-before: 1rem;
-          padding-block-start: 1rem;
+#FixedArea > div > section > header > .rounded-button-view {
+  position: absolute;
+  top: -0.2rem;
+  right: 0;
 }
 #FixedArea > .upper {
   border-bottom: solid 0.1rem rgba(0, 0, 0, 0.2);
@@ -1745,11 +1749,6 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 }
 #Properties > .header > nav > ul > li.viewmodecontroller > .area, #Properties > .header > nav > ul > li.viewmodecontroller > .heatmap {
   display: none;
-}
-
-#Reports > .stanzas {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
 }
 
 #ReportsPageView {
