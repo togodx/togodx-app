@@ -64,6 +64,7 @@ class App {
     new ResultsTable(document.querySelector('#ResultsTable'));
     new ResultDetailModal();
     new BalloonView();
+    const uploadUserIDsView = new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
 
     // load config json
     Promise.all([
@@ -77,7 +78,7 @@ class App {
         ConditionBuilder.init();
 
         // setup upload user id
-        new UploadUserIDsView(document.querySelector('#UploadUserIDsView'), aggregate.mapping);
+        uploadUserIDsView.definePath(aggregate.mapping);
 
         // define primary keys
         const customEvent = new CustomEvent(event.defineTogoKey, {detail: subjects});

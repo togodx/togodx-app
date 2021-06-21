@@ -68,6 +68,7 @@ export default class ConditionBuilderView {
     });
 
   }
+  
 
   // private methods
 

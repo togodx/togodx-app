@@ -6900,67 +6900,77 @@
 
   var _clear = new WeakSet();
 
-  var UploadUserIDsView = function UploadUserIDsView(elm, path) {
-    var _this = this;
+  var UploadUserIDsView = /*#__PURE__*/function () {
+    function UploadUserIDsView(elm) {
+      var _this = this;
 
-    _classCallCheck(this, UploadUserIDsView);
+      _classCallCheck(this, UploadUserIDsView);
 
-    _clear.add(this);
+      _clear.add(this);
 
-    _fetch.add(this);
+      _fetch.add(this);
 
-    _restoreParameters.add(this);
+      _restoreParameters.add(this);
 
-    _path.set(this, {
-      writable: true,
-      value: void 0
-    });
+      _path.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _BODY.set(this, {
-      writable: true,
-      value: void 0
-    });
+      _BODY.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _USER_IDS.set(this, {
-      writable: true,
-      value: void 0
-    });
+      _USER_IDS.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _classPrivateFieldSet(this, _path, path);
+      _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
 
-    _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
-
-    _classPrivateFieldSet(this, _USER_IDS, elm.querySelector(':scope > textarea')); // atache events
-
-
-    var buttons = elm.querySelector(':scope > .buttons');
-    buttons.querySelector(':scope > button:nth-child(1)').addEventListener('click', function (e) {
-      e.stopPropagation();
-
-      _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
-
-      return false;
-    });
-    buttons.querySelector(':scope > button:nth-child(2)').addEventListener('click', function (e) {
-      e.stopPropagation();
-
-      _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
-
-      return false;
-    }); // event listeners
-
-    _classPrivateFieldGet(this, _USER_IDS).addEventListener('change', function () {
-      ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value.replace(/,/g, " ").split(/\s+/).join(','));
-    }); // this.#USER_IDS.addEventListener('keyup', e => {
-    //   if (e.keyCode === 13) this.#fetch();
-    // });
+      _classPrivateFieldSet(this, _USER_IDS, elm.querySelector(':scope > textarea')); // atache events
 
 
-    DefaultEventEmitter$1.addEventListener(restoreParameters, function (e) {
-      _classPrivateMethodGet(_this, _restoreParameters, _restoreParameters2).call(_this, e.detail);
-    });
-  } // private methods
-  ;
+      var buttons = elm.querySelector(':scope > .buttons');
+      buttons.querySelector(':scope > button:nth-child(1)').addEventListener('click', function (e) {
+        e.stopPropagation();
+
+        _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
+
+        return false;
+      });
+      buttons.querySelector(':scope > button:nth-child(2)').addEventListener('click', function (e) {
+        e.stopPropagation();
+
+        _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
+
+        return false;
+      }); // event listeners
+
+      _classPrivateFieldGet(this, _USER_IDS).addEventListener('change', function () {
+        ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value.replace(/,/g, " ").split(/\s+/).join(','));
+      }); // this.#USER_IDS.addEventListener('keyup', e => {
+      //   if (e.keyCode === 13) this.#fetch();
+      // });
+
+
+      DefaultEventEmitter$1.addEventListener(restoreParameters, function (e) {
+        _classPrivateMethodGet(_this, _restoreParameters, _restoreParameters2).call(_this, e.detail);
+      });
+    } // public methods
+
+
+    _createClass(UploadUserIDsView, [{
+      key: "definePath",
+      value: function definePath(path) {
+        _classPrivateFieldSet(this, _path, path);
+      } // private methods
+
+    }]);
+
+    return UploadUserIDsView;
+  }();
 
   function _restoreParameters2(parameters) {
     _classPrivateFieldGet(this, _USER_IDS).value = parameters.userIds;
@@ -7113,7 +7123,8 @@
         new ReportsView(document.querySelector('#Reports'));
         new ResultsTable(document.querySelector('#ResultsTable'));
         new ResultDetailModal();
-        new BalloonView(); // load config json
+        new BalloonView();
+        var uploadUserIDsView = new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
 
         Promise.all([fetch(PROPERTIES), fetch(TEMPLATES), fetch(AGGREGATE)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
@@ -7128,7 +7139,7 @@
           Records$1.setSubjects(subjects);
           ConditionBuilder$1.init(); // setup upload user id
 
-          new UploadUserIDsView(document.querySelector('#UploadUserIDsView'), aggregate.mapping); // define primary keys
+          uploadUserIDsView.definePath(aggregate.mapping); // define primary keys
 
           var customEvent = new CustomEvent(defineTogoKey, {
             detail: subjects
