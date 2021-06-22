@@ -15,6 +15,14 @@
         "keyLabel": "Ensembl gene"
       },
       {
+        "propertyId": "ensembl-gene-chromosome",
+        "label": "Chromosome",
+        "description": "The chromosome where a gene is located",
+        "data": "https://integbio.jp/togosite/sparqlist/api/gene_chromosome_ensembl",
+        "primaryKey": "ensembl_gene",
+        "keyLabel": "Ensembl gene"
+      },
+      {
         "propertyId": "ensembl-exon-count",
         "label": "# of exons",
         "description": "The number of exons",
