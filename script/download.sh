@@ -116,8 +116,10 @@ post_download() {
 
   rename_files "${db_dir}"
 
-  remove_robotstxt "${db_dir}"
-  decompress_files "${db_dir}"
+  if [[ -z "${RAW}" ]]; then
+    remove_robotstxt "${db_dir}"
+    decompress_files "${db_dir}"
+  fi
 
   create_date_triple "${graph_name}" "${db_dir}"
   update_file_list "${graph_name}" "${db_dir}"
@@ -148,23 +150,23 @@ decompress_files() {
 
 decompress_zipfiles() {
   local db_dir="${1}"
-  cd ${db_dir} && find . -type f -name "*.zip" | xargs unzip
+  cd ${db_dir} && find . -type f -name "*.zip" | xargs -I{} -L 1024 unzip {}
 }
 
 decompress_tarfiles() {
   local db_dir="${1}"
-  cd ${db_dir} && find . -type f -name "*.tar*" | xargs -L 256 tar xf
-  cd ${db_dir} && find . -type f -name "*.tar*" | xargs -L 256 rm -f
+  cd ${db_dir} && find . -type f -name "*.tar*" | xargs -I{} -L 1024 tar xf {}
+  cd ${db_dir} && find . -type f -name "*.tar*" | xargs -I{} -L 1024 rm -f {}
 }
 
 decompress_gz() {
   local db_dir="${1}"
-  cd ${db_dir} && find . -type f -name "*.gz" | xargs -L 256 gunzip --force
+  cd ${db_dir} && find . -type f -name "*.gz" | xargs -I{} -L 256 gunzip --force {}
 }
 
 decompress_xz() {
   local db_dir="${1}"
-  cd ${db_dir} && find . -type f -name "*.xz" | xargs -L 256 unxz
+  cd ${db_dir} && find . -type f -name "*.xz" | xargs -I{} -L 256 unxz {}
 }
 
 update_file_list() {
@@ -263,6 +265,9 @@ else
       --debug)
         set -eux
         DEBUG="true"
+        ;;
+      --raw)
+        RAW="true"
         ;;
       --parallel)
         PARALLEL="true"
