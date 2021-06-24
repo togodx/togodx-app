@@ -323,7 +323,7 @@
         "propertyId": "chebi_chemical_role",
         "label": "Chemical role",
         "description": "Chemical roles in ChEBI",
-        "data": "http://integbio.jp/togosite/sparqlist/compound_biological_role_chebi",
+        "data": "http://integbio.jp/togosite/sparqlist/compound_chemical_role_chebi",
         "primaryKey": "chebi_compound",
         "keyLabel": "ChEBI compound"
       },
@@ -376,7 +376,7 @@
         "keyLabel": "PubChem compound"
       },
       {
-        "propertyId": "atc_classification_pubchem_chembl",
+        "propertyId": "atc_classification_chembl",
         "label": "ChEMBL ATC classification",
         "description": "Anatomical Therapeutic Chemical (ATC) Classification in ChEMBL",
         "data": "https://integbio.jp/togosite/sparqlist/api/atcClassificationChEMBL",
