@@ -312,6 +312,30 @@
     "togoKeyExamples": ["564", "1046", "1981"],
     "properties": [
       {
+        "propertyId": "chembl_substance_type",
+        "label": "Substance type",
+        "description": "Substance types in ChEMBL",
+        "data": "https://integbio.jp/togosite/sparqlist/api/chembl_substancetype",
+        "primaryKey": "chembl_compound",
+        "keyLabel": "ChEMBL compound"
+      },
+      {
+        "propertyId": "chebi_chemical_role",
+        "label": "Chemical role",
+        "description": "Chemical roles in ChEBI",
+        "data": "http://integbio.jp/togosite/sparqlist/compound_biological_role_chebi",
+        "primaryKey": "chebi_compound",
+        "keyLabel": "ChEBI compound"
+      },
+      {
+        "propertyId": "chebi_application_type",
+        "label": "Application type",
+        "description": "Application types in ChEBI",
+        "data": "http://integbio.jp/togosite/sparqlist/compound_application_chebi",
+        "primaryKey": "chebi_compound",
+        "keyLabel": "ChEBI compound"
+      },
+      {
         "propertyId": "chembl_mechanism_action_type",
         "label": "Action type",
         "description": "Mechanism action types in ChEMBL",
@@ -320,12 +344,12 @@
         "keyLabel": "ChEMBL compound"
       },
       {
-        "propertyId": "chembl_substance_type",
-        "label": "Substance type",
-        "description": "Substance types in ChEMBL",
-        "data": "https://integbio.jp/togosite/sparqlist/api/chembl_substancetype",
-        "primaryKey": "chembl_compound",
-        "keyLabel": "ChEMBL compound"
+        "propertyId": "chebi_biological_role",
+        "label": "Biological role",
+        "description": "Biological roles in ChEBI",
+        "data": "http://integbio.jp/togosite/sparqlist/compound_biological_role_chebi",
+        "primaryKey": "chebi_compound",
+        "keyLabel": "ChEBI compound"
       },
       {
         "propertyId": "chembl_mesh",
