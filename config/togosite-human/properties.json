@@ -331,7 +331,7 @@
         "propertyId": "chebi_application_type",
         "label": "Application type",
         "description": "Application types in ChEBI",
-        "data": "http://integbio.jp/togosite/sparqlist/compound_application_chebi",
+        "data": "http://integbio.jp/togosite/sparqlist/compound_application_type_chebi",
         "primaryKey": "chebi_compound",
         "keyLabel": "ChEBI compound"
       },
