@@ -3,18 +3,20 @@ import Color from "./Color";
 class Records {
   #subjects;
   #properties;
+  #fetchedCategoryIds;
 
   constructor() {}
 
   // public methods
 
   setSubjects(subjects) {
+    console.log(subjects)
 
     // define subjects
     for (let i = 0; i < subjects.length; i++) {
       let hue = 360 - (360 * i / subjects.length) + 130;
       hue -= hue > 360 ? 360 : 0;
-      const srgb = new Color('hsv', [hue, 60, 75]).to('srgb');
+      const srgb = new Color('hsv', [hue, 45, 85]).to('srgb');
       subjects[i].hue = hue;
       subjects[i].color = srgb;
       subjects[i].colorCSSValue = `rgb(${srgb.coords.map(channel => channel * 256).join(',')})`;
@@ -23,13 +25,19 @@ class Records {
 
     // set properties
     this.#properties = [];
+    this.#fetchedCategoryIds = {};
     subjects.forEach(subject => {
       subject.properties.forEach(property => {
-        this.#properties.push(Object.assign({subjectId: subject.subjectId, values: []}, property));
+        this.#properties.push(Object.assign({
+          subjectId: subject.subjectId,
+          values: []
+        }, property));
+        this.#fetchedCategoryIds[property.propertyId] = [];
       });
     });
     console.log(this.#subjects);
     console.log(this.#properties);
+    console.log(this.#fetchedCategoryIds);
 
     // make stylesheet
     const styleElm = document.createElement('style');
@@ -54,13 +62,33 @@ class Records {
     }
   }
 
-  setValues(propertyId, values) {
-    const property = this.#properties.find(property => property.propertyId === propertyId);
-    property.values = property.values.concat(values);
+  fetchPropertyValues(propertyId, categoryId) {
+    const property = this.getProperty(propertyId);
+    return new Promise((resolve, reject) => {
+      if (categoryId && this.#fetchedCategoryIds[propertyId].indexOf(categoryId) !== -1) {
+        resolve(property.values.filter(value => value.parentCategoryId === categoryId));
+      } else {
+        fetch(`${property.data}${categoryId ? `?categoryIds=${categoryId}` : ''}`)
+        .then(responce => responce.json())
+        .then(values => {
+          // set parent category id
+          if (categoryId) values.forEach(value => value.parentCategoryId = categoryId);
+          // set values
+          property.values.push(...values);
+          resolve(values);
+        })
+        .catch(error => reject(error));
+      }
+    });
   }
 
   getSubject(subjectId) {
     return this.#subjects.find((subject) => subject.subjectId === subjectId);
+  }
+
+  getSubjectWithPropertyId(propertyId) {
+    const subject = this.#subjects.find(subject => subject.properties.some(property => property.propertyId === propertyId));
+    return subject;
   }
 
   getProperty(propertyId) {
@@ -72,6 +100,24 @@ class Records {
     const property = this.getProperty(propertyId);
     const value = property.values.find(value => value.categoryId === categoryId);
     return value;
+  }
+
+  getValuesWithParentCategoryId(propertyId, parentCategoryId) {
+    const property = this.getProperty(propertyId);
+    return property.values.filter(value => value.parentCategoryId === parentCategoryId);
+  }
+
+  getAncestors(propertyId, categoryId) {
+    const property = this.getProperty(propertyId);
+    const ancestors = [];
+    let parent;
+    do { // find ancestors
+      parent = property.values.find(value => value.categoryId === categoryId);
+      if (parent) ancestors.unshift(parent);
+      categoryId = parent?.parentCategoryId;
+    } while (parent);
+    ancestors.pop();
+    return ancestors;
   }
 
   getLabelFromTogoKey(togoKey) {

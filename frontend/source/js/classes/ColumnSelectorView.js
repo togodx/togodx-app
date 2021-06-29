@@ -50,27 +50,16 @@ export default class ColumnSelectorView {
         }
       }
     })
-    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, e => {
-      let propertyId, categoryId;
-      switch (e.detail.action) {
-        case 'add':
-          propertyId = e.detail.condition.property.propertyId;
-          categoryId = e.detail.condition.value.categoryId;
-          break;
-        case 'remove':
-          propertyId = e.detail.propertyId;
-          categoryId = e.detail.categoryId;
-          break;
-      }
-      if (this.#property.propertyId === propertyId) {
+    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail}) => {
+      if (this.#property.propertyId === detail.propertyId) {
         this.#currentColumns.forEach(ul => {
           let isAllChecked = true;
           ul.querySelectorAll(':scope > li:not(.-all)').forEach(li => {
             const checkbox = li.querySelector(':scope > input[type="checkbox"]');
             if (!checkbox.checked) isAllChecked = false;
-            if (li.dataset.id === categoryId) {
+            if (li.dataset.id === detail.categoryId) {
               // change checkbox status
-              const isChecked = e.detail.action === 'add';
+              const isChecked = detail.action === 'add';
               checkbox.checked = isChecked;
               this.#items[li.dataset.id].checked = isChecked;
             }
@@ -84,13 +73,16 @@ export default class ColumnSelectorView {
     });
     DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
 
+    const depth = 0;
     this.#setItems(items, depth);
 
     // make root column
-    const depth = 0;
     const column = this.#makeColumn(items, depth);
     this.#appendSubColumn(column, depth);
+
   }
+
+  // private methods
 
   #setItems(items, depth, parent) {
     for (const item of items) {
@@ -107,34 +99,45 @@ export default class ColumnSelectorView {
     }
   }
 
-  #getSubColumn(id, depth) {
-    const column = this.#columns.find(column => column.parentCategoryId === id);
-    if (column) {
-      this.#appendSubColumn(column.ul, depth);
-    } else {
-      // loading
-      this.#LOADING_VIEW.classList.add('-shown');
-      fetch(this.#sparqlist + '?categoryIds=' + id)
-        .then(responce => responce.json())
-        .then(json => {
-          Records.setValues(this.#property.propertyId, json);
-          this.#setItems(json, depth, id);
-          const column = this.#makeColumn(json, depth, id);
-          this.#appendSubColumn(column, depth);
-          this.#LOADING_VIEW.classList.remove('-shown');
-        })
-        .catch(error => {
-          // TODO: エラー処理
-          this.#LOADING_VIEW.classList.remove('-shown');
-          throw Error(error);
-        });
-    }
+  #setSubColumn(categoryId, depth) {
+    this.#LOADING_VIEW.classList.add('-shown');
+    this.#getColumn(categoryId, depth)
+      .then(column => {
+        this.#appendSubColumn(column, depth);
+        this.#LOADING_VIEW.classList.remove('-shown');
+      })
+      .catch(error => {
+        // TODO: エラー処理
+        this.#LOADING_VIEW.classList.remove('-shown');
+        throw Error(error);
+      });
   }
 
-  #makeColumn(items, depth, parentCategoryId) {
+  #getColumn(categoryId, depth) {
+    return new Promise((resolve, reject) => {
+      const column = this.#columns.find(column => column.parentCategoryId === categoryId);
+      if (column) {
+        resolve(column.ul);
+      } else {
+        Records.fetchPropertyValues(this.#property.propertyId, categoryId)
+          .then(values => {
+            this.#setItems(values, depth, categoryId);
+            const column = this.#makeColumn(values, depth, categoryId);
+            resolve(column);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      }
+    });
+  }
+
+  #makeColumn(items, depth, parentCategoryId = '') {
+    // console.log(items, depth, parentCategoryId)
 
     const parentItem = parentCategoryId ? this.#items[parentCategoryId] : undefined;
-    console.log(parentItem)
+    const selectedParentCategoryId = ConditionBuilder.getSelectedParentCategoryId(this.#property.propertyId);
+    const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.#property.propertyId);
 
     // make column
     const ul = document.createElement('ul');
@@ -149,17 +152,19 @@ export default class ColumnSelectorView {
         data-parent-label="${parentItem.label}"` : ''}
       data-category-ids="${items.map(item => item.categoryId)}"
       data-depth="${depth}">
-      <input type="checkbox" value="${ALL_PROPERTIES}"/>
+      <input type="checkbox" value="${ALL_PROPERTIES}" 
+      ${selectedParentCategoryId === parentCategoryId ? ' checked' : ''}/>
       <span class="label">Map following attributes</span>
     </li>`
     + items.map(item => {
       max = Math.max(max, item.count);
+      const checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
       return `<li
         class="item${item.hasChild ? ' -haschild' : ''}"
         data-id="${item.categoryId}"
         data-category-id="${item.categoryId}"
         data-count="${item.count}">
-        <input type="checkbox" value="${item.categoryId}"/>
+        <input type="checkbox" value="${item.categoryId}"${checked}/>
         <span class="label">${item.label}</span>
         <span class="count">${item.count.toLocaleString()}</span>
       </li>`;
@@ -171,10 +176,6 @@ export default class ColumnSelectorView {
     ul.querySelectorAll(':scope > .item.-haschild').forEach(li => {
       li.addEventListener('click', () => {
         li.classList.add('-selected');
-        // deselect siblings
-        li.parentNode.childNodes.forEach(sibling => {
-          if (sibling !== li) sibling.classList.remove('-selected');
-        });
         // delete an existing lower columns
         if (this.#currentColumns.length > depth + 1) {
           for (let i = depth + 1; i < this.#currentColumns.length; i++) {
@@ -185,12 +186,11 @@ export default class ColumnSelectorView {
         const selectedItemKeys = Object.keys(this.#items).filter(id => this.#items[id].selected && this.#items[id].depth >= depth);
         for (const key of selectedItemKeys) {
           this.#items[key].selected = false;
-          const selectedItem = this.#currentColumns[depth].querySelector(`[data-id="${key}"]`);
-          if (selectedItem) selectedItem.classList.remove('-selected');
+          this.#currentColumns[depth].querySelector(`[data-id="${key}"]`)?.classList.remove('-selected');
         }
         // get lower column
         this.#items[li.dataset.id].selected = true;
-        this.#getSubColumn(li.dataset.id, depth + 1);
+        this.#setSubColumn(li.dataset.id, depth + 1);
       });
     });
 
@@ -200,15 +200,10 @@ export default class ColumnSelectorView {
       checkbox.addEventListener('click', e => {
         e.stopPropagation();
         if (checkbox.checked) { // add
-          ConditionBuilder.addPropertyValue({
-            subject: this.#subject,
-            property: this.#property,
-            value: {
-              categoryId: checkbox.value,
-              label: this.#items[checkbox.value].label,
-              ancestors: this.#getAncestors(checkbox.value).map(ancestor => ancestor.label)
-            }
-          });
+          ConditionBuilder.addPropertyValue(
+            this.#property.propertyId,
+            checkbox.value
+          );
         } else { // remove
           ConditionBuilder.removePropertyValue(this.#property.propertyId, checkbox.value);
         }
@@ -219,16 +214,7 @@ export default class ColumnSelectorView {
     ul.querySelector(':scope > .item.-all').addEventListener('change', e => {
       const dataset = e.target.parentNode.dataset;
       if (e.target.checked) { // add
-        ConditionBuilder.addProperty({
-          subject: this.#subject,
-          property: this.#property,
-          subCategory: {
-            parentCategoryId: dataset.parentCategoryId,
-            values: dataset.categoryIds.split(','),
-            label: dataset.parentLabel,
-            ancestors: this.#getAncestors(dataset.parentCategoryId).map(ancestor => ancestor.label)
-          }
-        });
+        ConditionBuilder.addProperty(this.#property.propertyId, dataset.parentCategoryId);
       } else { // remove
         ConditionBuilder.removeProperty(this.#property.propertyId, dataset.parentCategoryId);
       }
@@ -263,16 +249,5 @@ export default class ColumnSelectorView {
       });
     });
   }
-
-  #getAncestors(categoryId) {
-    const ancestors = [];
-    let parent;
-    do { // find ancestors
-      parent = this.#items[categoryId].parent;
-      if (parent) ancestors.unshift(this.#items[parent]);
-      categoryId = parent;
-    } while (parent);
-    return ancestors;
-}
 
 }

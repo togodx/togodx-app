@@ -1,6 +1,4 @@
-<div id="metastanza-gene">
-  <h1>Gene: {{type}}: {{id}}</h1>
-</div>
+<div id="metastanza-gene"></div>
 <style>
   togostanza-pagination-table {
     --togostanza-tbody-font-size: 12px;
@@ -80,9 +78,15 @@
       'hgnc': 'HGNC'
     };
 
-    const addHeader = (id, type, level, text=titleDict[type] + ': ' + id) => {
+    const addHeader = (id, type, level, text=titleDict[type] + ': ' + id, selected = false) => {
       const header = document.createElement(level);
-      const headerText = document.createTextNode(text);
+      const headerText = (() => {
+        if (selected) {
+          return document.createTextNode('Selected Key ' + text);
+        } else {
+          return document.createTextNode(text);
+        }
+      })();
       header.appendChild(headerText);
       metastanzaDiv.appendChild(header);
     }
@@ -177,12 +181,20 @@
       metastanzaDiv.appendChild(barchart);
     }
 
+    const addMainHeader = () => {
+      const header = document.createElement('h1');
+      const headerText = document.createTextNode('Gene');
+      header.appendChild(headerText);
+      metastanzaDiv.appendChild(header);
+    }
+
     const addMainSubject = () => {
       addHeader(subjectId, subjectIdType, 'h2');
       addHashTable(subjectId, subjectIdType);
     }
 
     const createMetastanza = async () => {
+      addMainHeader();
       //addMainSubject();
       const array = await convertId(subjectId, subjectIdType);
       for (const idObj of array) {

@@ -25,17 +25,20 @@ export default class ConditionsController {
   /* private methods */
 
   #setTableData(newCondition) {
+    console.log(newCondition)
 
     // find matching condition from already existing conditions
     const sameConditionTableData = this.#tableData.find(tableData => {
-      const matchTogoKey = newCondition.togoKey === tableData.condition.togoKey;
+      console.log(tableData.condition)
+      // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
+      if (newCondition.togoKey !== tableData.condition.togoKey) return;
       // compare properties
       const matchProperties = (() => {
         if (newCondition.properties.length === tableData.condition.properties.length) {
           return newCondition.properties.every(newProperty => {
             const matchProperty = tableData.condition.properties.find(property => {
               if (newProperty.query.propertyId === property.query.propertyId) {
-                return (newProperty.subCategory === undefined && property.subCategory === undefined) || (newProperty.subCategory?.parentCategoryId === property.subCategory?.parentCategoryId);
+                return newProperty.parentCategoryId === property.parentCategoryId;
               } else {
                 return false;
               }
@@ -59,7 +62,7 @@ export default class ConditionsController {
           }
         });
       });
-      return matchTogoKey && matchProperties && matchAttributes;
+      return matchProperties && matchAttributes;
     });
 
     if (sameConditionTableData) {

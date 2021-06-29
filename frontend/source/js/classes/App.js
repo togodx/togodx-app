@@ -1,7 +1,7 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilderView from './ConditionBuilderView';
+import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
-import ReportsView from './ReportsView';
 import ConceptView from './ConceptView';
 import ResultsTable from './ResultsTable';
 import ResultDetailModal from "./ResultDetailModal";
@@ -17,6 +17,7 @@ class App {
 
   #viewModes;
   #aggregate;
+
   #colorWhite;
   #colorLightGray;
   #colorSilver;
@@ -35,7 +36,8 @@ class App {
   }
 
   ready() {
-    const body = document.querySelector('body');
+
+    const body = document.body;
 
     // view modes
     this.#viewModes = {};
@@ -49,13 +51,18 @@ class App {
       });
     });
 
+    // events
+    DefaultEventEmitter.addEventListener(event.restoreParameters, () => {
+      document.querySelector('#App > .loading-view').classList.remove('-shown');
+    });
+
     // set up views
     new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
     new ConditionsController(document.querySelector('#Conditions'));
-    const reportsView = new ReportsView(document.querySelector('#Reports'));
     new ResultsTable(document.querySelector('#ResultsTable'));
     new ResultDetailModal();
     new BalloonView();
+    const uploadUserIDsView = new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
 
     // load config json
     Promise.all([
@@ -66,9 +73,10 @@ class App {
       .then(responces => Promise.all(responces.map(responce => responce.json())))
       .then(([subjects, templates, aggregate]) => {
         Records.setSubjects(subjects);
+        ConditionBuilder.init();
 
         // setup upload user id
-        new UploadUserIDsView(document.querySelector('#UploadUserIDsView'), aggregate.mapping);
+        uploadUserIDsView.definePath(aggregate.mapping);
 
         // define primary keys
         const customEvent = new CustomEvent(event.defineTogoKey, {detail: subjects});

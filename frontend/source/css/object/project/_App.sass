@@ -9,3 +9,8 @@
     transition: transform var(--transition-wipe)
     body[data-display="results"] &
       transform: translateX(calc(-100vw + var(--width-condition)))
+  > .loading-view
+    position: fixed
+    top: var(--height-header)
+    height: calc(100% - var(--height-header))
+    z-index: var(--z-app-loading-view)

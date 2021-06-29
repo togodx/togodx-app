@@ -22,6 +22,7 @@ export default class TrackOverviewCategorical {
     this.#subject = subject;
     this.#property = property;
     this.#values = values.map(value => Object.assign({}, value));
+    const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.#property.propertyId);
 
     // make overview
     // TODO: ヒストグラムは別処理
@@ -31,8 +32,9 @@ export default class TrackOverviewCategorical {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / sum * 100;
       value.baseColor = util.colorTintByHue(subject.color, 360 * index / values.length);
+      const selectedClass = selectedCategoryIds.indexOf(value.categoryId) !== -1 ? ' -selected' : '';
       return `
-        <li class="track-value-view" style="width: ${width}%;" data-category-id="${value.categoryId}">
+        <li class="track-value-view${selectedClass}" style="width: ${width}%;" data-category-id="${value.categoryId}">
           <div class="labels">
             <p>
               <span class="label">${value.label}</span>
@@ -106,36 +108,19 @@ export default class TrackOverviewCategorical {
           ConditionBuilder.removePropertyValue(this.#property.propertyId, value.categoryId);
         } else {
           elm.classList.add('-selected');
-          ConditionBuilder.addPropertyValue({
-            subject: this.#subject,
-            property: this.#property,
-            value: {
-              categoryId: value.categoryId,
-              label: value.label,
-              count: value.count,
-              ancestors: []
-            }
-          });
+          ConditionBuilder.addPropertyValue(
+            this.#property.propertyId,
+            value.categoryId
+          );
         }
       });
     });
 
     // event listener
     DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, e => {
-      let propertyId, categoryId;
-      switch (e.detail.action) {
-        case 'add':
-          propertyId = e.detail.condition.property.propertyId;
-          categoryId = e.detail.condition.value.categoryId;
-          break;
-        case 'remove':
-          propertyId = e.detail.propertyId;
-          categoryId = e.detail.categoryId;
-          break;
-      }
-      if (this.#property.propertyId === propertyId) {
+      if (this.#property.propertyId === e.detail.propertyId) {
         this.#values.forEach(value => {
-          if (value.categoryId === categoryId) {
+          if (value.categoryId === e.detail.categoryId) {
             switch (e.detail.action) {
               case 'add':
                 value.elm.classList.add('-selected');
@@ -156,6 +141,7 @@ export default class TrackOverviewCategorical {
   }
 
   #update(viewModes) {
+    
     // const isArea = viewModes.area;
     const isLog10 = viewModes.log10;
     const sum = this.#values.reduce((acc, value) => acc + (isLog10 ? value.countLog10 : value.count), 0);
