@@ -5,7 +5,7 @@ export default class ConceptView {
   constructor(subject, elm) {
     elm.classList.add('concept-view');
     elm.innerHTML = `
-    <h3 class="title" style="background-color: ${subject.colorCSSValue};">
+    <h3 class="title _subject-background-color-strong" data-subject-id="${subject.subjectId}">
       <span>${subject.subject}</span>
     </h3>
     <div class="properties"></div>`;

@@ -3,7 +3,6 @@ import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
 import Records from "./Records";
 import * as event from '../events';
-import ConditionsController from "./ConditionsController";
 
 const LIMIT = 100;
 
