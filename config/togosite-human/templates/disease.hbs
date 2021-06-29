@@ -67,11 +67,13 @@
 
     const addHeader = (id, type, selected = false) => {
       const header = document.createElement('h2');
-      if (selected) {
-        const headerText = document.createTextNode('Selected Key ' + titleDict[type] + ': ' + id);
-      } else {
-        const headerText = document.createTextNode(titleDict[type] + ': ' + id);
-      }
+      const headerText = (() => {
+        if (selected) {
+          return document.createTextNode('Selected Key ' + titleDict[type] + ': ' + id);
+        } else {
+          return document.createTextNode(titleDict[type] + ': ' + id);
+        }
+      })();
       header.appendChild(headerText);
       metastanzaDiv.appendChild(header);
     }
