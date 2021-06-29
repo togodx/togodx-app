@@ -1,6 +1,4 @@
-<div id="metastanza-gene">
-  <h1>Gene: {{type}}: {{id}}</h1>
-</div>
+<div id="metastanza-gene"></div>
 <style>
   togostanza-pagination-table {
     --togostanza-tbody-font-size: 12px;
@@ -177,12 +175,20 @@
       metastanzaDiv.appendChild(barchart);
     }
 
+    const addMainHeader = () => {
+      const header = document.createElement('h1');
+      const headerText = document.createTextNode('Disease ' + titleDict[type] + ':' + id);
+      header.appendChild(headerText);
+      metastanzaDiv.appendChild(header);
+    }
+
     const addMainSubject = () => {
       addHeader(subjectId, subjectIdType, 'h2');
       addHashTable(subjectId, subjectIdType);
     }
 
     const createMetastanza = async () => {
+      addMainHeader();
       //addMainSubject();
       const array = await convertId(subjectId, subjectIdType);
       for (const idObj of array) {

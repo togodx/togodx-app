@@ -1,6 +1,4 @@
-<div id="metastanza-disease">
-  <h1>Disease: {{type}}: {{id}}</h1>
-</div>
+<div id="metastanza-disease"></div>
 <script>
   (() => {
     // togoid endpoint
@@ -98,12 +96,20 @@
       metastanzaDiv.appendChild(hashTable);
     }
 
+    const addMainHeader = () => {
+      const header = document.createElement('h1');
+      const headerText = document.createTextNode('Disease ' + titleDict[type] + ':' + id);
+      header.appendChild(headerText);
+      metastanzaDiv.appendChild(header);
+    }
+
     const addMainSubject = () => {
       addHeader(subjectId, subjectIdType);
       addHashTable(subjectId, subjectIdType);
     }
 
     const createMetastanza = async () => {
+      addMainHeader();
       addMainSubject();
       const array = await convertId(subjectId, subjectIdType);
       for (const idObj of array) {
