@@ -2935,8 +2935,6 @@
   }();
 
   function _drawStanzas2() {
-    var _this2 = this;
-
     var urlVars = Object.fromEntries(window.location.search.substr(1).split('&').map(function (keyValue) {
       return keyValue.split('=');
     }));
@@ -2957,7 +2955,7 @@
         var property2 = subject.properties.find(function (property) {
           return property.propertyId === property.propertyId;
         });
-        return "<hr>\n          <div class=\"attributes\">\n            <header style=\"background-color: ".concat(_this2.getHslColor(subject.colorCSSValue), ";\">").concat(property2.label, "</header>\n            ").concat(property.attributes.map(function (attribute) {
+        return "<hr>\n          <div class=\"attributes\" data-subject-id=\"".concat(subject.subjectId, "\">\n            <header class=\"_subject-background-color\">").concat(property2.label, "</header>\n            ").concat(property.attributes.map(function (attribute) {
           return StanzaManager$1.draw(subject.subjectId, attribute.id, property.propertyKey);
         }).join(''), "\n          </div>");
       }

@@ -4707,7 +4707,7 @@
     var _width = 100 / _classPrivateFieldGet(this, _items).length;
 
     selector.querySelector(':scope > .overview').innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
-      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(_width, "%; height: ").concat(item.count / _max * 100, "%; background-color: ").concat(subject.colorCSSValue, ";\"></div>");
+      return "<div\n      class=\"bar _subject-background-color\"\n      data-category-id=\"".concat(item.categoryId, "\"\n      data-subject-id=\"").concat(subject.subjectId, "\"\n      data-count=\"").concat(item.count, "\"\n      style=\"width: ").concat(_width, "%; height: ").concat(item.count / _max * 100, "%;\"></div>");
     }).join('');
     var graph = histogram.querySelector(':scope > .graph');
     graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
@@ -4923,7 +4923,7 @@
       value.width = value.count / _sum * 100;
       value.baseColor = colorTintByHue(subject.color, 360 * index / values.length);
       var selectedClass = selectedCategoryIds.indexOf(value.categoryId) !== -1 ? ' -selected' : '';
-      return "\n        <li class=\"track-value-view".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\"></div>\n        </li>");
+      return "\n        <li class=\"track-value-view _subject-background-color".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\"></div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .track-value-view').forEach(function (elm, index) {
       // reference
@@ -5183,16 +5183,14 @@
 
     _classPrivateFieldSet(this, _sparqlist, property.data);
 
-    elm.classList.add('track-view');
-    elm.classList.add('-preparing');
-    elm.classList.add('collapse-view');
+    elm.classList.add('track-view', '-preparing', 'collapse-view');
     if (isSelected) elm.classList.add('-allselected');
     elm.dataset.subjectId = subject.subjectId;
     elm.dataset.propertyId = property.propertyId;
     elm.dataset.collapse = property.propertyId; // make html
 
     var checked = isSelected ? ' checked' : '';
-    elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <h2 class=\"title _subject-color\">").concat(property.label, "</h2>\n          <input type=\"checkbox\" class=\"mapping\"").concat(checked, ">\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview\" style=\"background-color: ").concat(subject.colorCSSValue, ";\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <p class=\"description\">").concat(property.description, "</p>\n        <!--<label><input type=\"checkbox\">All properties</label>-->\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
+    elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <h2 class=\"title _subject-color\">").concat(property.label, "</h2>\n          <input type=\"checkbox\" class=\"mapping\"").concat(checked, ">\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview _subject-background-color\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <p class=\"description\">").concat(property.description, "</p>\n        <!--<label><input type=\"checkbox\">All properties</label>-->\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
     var valuesContainer = elm.querySelector(':scope > .row.-upper > .values');
 
     _classPrivateFieldSet(this, _OVERVIEW_CONTAINER, valuesContainer.querySelector(':scope > .overview > .inner'));
@@ -5291,8 +5289,6 @@
 
   var _propertyId = new WeakMap();
 
-  var _color = new WeakMap();
-
   var _COUNTS = new WeakMap();
 
   var _RATES = new WeakMap();
@@ -5301,19 +5297,17 @@
 
   var _draw = new WeakSet();
 
-  var StatisticsView = function StatisticsView(elm, _property) {
+  var StatisticsView = function StatisticsView(elm, _ref) {
     var _this = this;
+
+    var subject = _ref.subject,
+        _property = _ref.property;
 
     _classCallCheck(this, StatisticsView);
 
     _draw.add(this);
 
     _propertyId.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _color.set(this, {
       writable: true,
       value: void 0
     });
@@ -5333,13 +5327,10 @@
       value: void 0
     });
 
-    console.log(_property);
+    _classPrivateFieldSet(this, _propertyId, _property.propertyId);
 
-    _classPrivateFieldSet(this, _propertyId, _property.property.propertyId);
-
-    _classPrivateFieldSet(this, _color, _property.subject.colorCSSValue);
-
-    elm.classList.add('statistics-view'); // make HTML
+    elm.classList.add('statistics-view');
+    elm.dataset.subjectId = subject.subjectId; // make HTML
 
     elm.innerHTML = "<div class=\"statistics\">\n      <div class=\"counts\"></div>\n      <div class=\"rates\"></div>\n      <div class=\"ticks\"></div>\n    </div>"; // references
 
@@ -5393,7 +5384,7 @@
 
     _classPrivateFieldGet(this, _COUNTS).innerHTML = counts.map(function (count) {
       var position = count / countMax < .5 ? ' -below' : '';
-      return "\n      <div class=\"bar\" style=\"height: ".concat(count / countMax * 100, "%; background-color: ").concat(_classPrivateFieldGet(_this2, _color), ";\">\n        <div class=\"value").concat(position, "\">").concat(count.toLocaleString(), "</div>\n      </div>");
+      return "\n      <div class=\"bar _subject-background-color\" style=\"height: ".concat(count / countMax * 100, "%;\">\n        <div class=\"value").concat(position, "\">").concat(count.toLocaleString(), "</div>\n      </div>");
     }).join(''); // rate
 
     var rates = categoryIds.map(function (categoryId, index) {
@@ -5405,7 +5396,7 @@
 
     _classPrivateFieldGet(this, _RATES).innerHTML = rates.map(function (rate) {
       var position = rate / rateMax < .5 ? ' -below' : '';
-      return "\n      <div class=\"bar\" style=\"height: ".concat(rate / rateMax * 100, "%; background-color: ").concat(_classPrivateFieldGet(_this2, _color), ";\">\n        <div class=\"value").concat(position, "\">").concat(rate.toLocaleString(), "</div>\n      </div>");
+      return "\n      <div class=\"bar _subject-background-color\" style=\"height: ".concat(rate / rateMax * 100, "%;\">\n        <div class=\"value").concat(position, "\">").concat(rate.toLocaleString(), "</div>\n      </div>");
     }).join(''); // tick
 
     var labels = categoryIds.map(function (categoryId) {
@@ -5937,6 +5928,7 @@
   }
 
   function _popup2(detail) {
+    _classPrivateFieldGet(this, _ROOT$2).dataset.subjectId = detail.keys.subjectId;
     var popup = document.createElement('div');
     popup.className = 'popup';
     popup.style.left = _classPrivateFieldGet(this, _popup_left);
@@ -5954,7 +5946,7 @@
     var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(subject.subject, " / ").concat(subCategory.label, "</span>");
     var header = document.createElement('header');
     header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div>\n        <a class='report-page-button-view' href='").concat(props.reportLink, "' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>\n    ");
-    header.style.backgroundColor = subject.colorCSSValue;
+    header.classList.add('_subject-background-color');
     header.lastChild.appendChild(_classPrivateFieldGet(this, _exit_button));
     header.addEventListener('mousedown', function (e) {
       var customEvent = new CustomEvent(dragElement, {

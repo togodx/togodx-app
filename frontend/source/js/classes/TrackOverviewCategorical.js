@@ -34,7 +34,7 @@ export default class TrackOverviewCategorical {
       value.baseColor = util.colorTintByHue(subject.color, 360 * index / values.length);
       const selectedClass = selectedCategoryIds.indexOf(value.categoryId) !== -1 ? ' -selected' : '';
       return `
-        <li class="track-value-view${selectedClass}" style="width: ${width}%;" data-category-id="${value.categoryId}">
+        <li class="track-value-view _subject-background-color${selectedClass}" style="width: ${width}%;" data-category-id="${value.categoryId}">
           <div class="labels">
             <p>
               <span class="label">${value.label}</span>

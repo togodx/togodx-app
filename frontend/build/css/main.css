@@ -495,6 +495,7 @@ main {
 .balloon-view > .container > dl > dt {
   -webkit-flex-grow: 1;
           flex-grow: 1;
+  font-weight: lighter;
 }
 .balloon-view > .container > dl > dd {
   margin: 0;
@@ -1439,7 +1440,6 @@ main {
 }
 .track-view > .row.-upper > .right > .overview {
   height: var(--height-track);
-  background-color: #EEE;
   list-style: none;
   white-space: nowrap;
   font-size: 0;

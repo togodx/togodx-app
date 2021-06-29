@@ -28,9 +28,7 @@ export default class TrackView {
     this.#subject = subject;
     this.#property = property;
     this.#sparqlist = property.data;
-    elm.classList.add('track-view');
-    elm.classList.add('-preparing');
-    elm.classList.add('collapse-view');
+    elm.classList.add('track-view', '-preparing', 'collapse-view');
     if (isSelected) elm.classList.add('-allselected');
     elm.dataset.subjectId = subject.subjectId;
     elm.dataset.propertyId = property.propertyId;
@@ -47,7 +45,7 @@ export default class TrackView {
         </div>
       </div>
       <div class="right values">
-        <div class="overview" style="background-color: ${subject.colorCSSValue};">
+        <div class="overview _subject-background-color">
           <ul class="inner"></ul>
           <div class="loading-view -shown"></div>
         </div>

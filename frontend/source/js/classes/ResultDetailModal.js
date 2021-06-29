@@ -68,6 +68,7 @@ export default class ResultDetailModal {
   }
   // HTML elements
   #popup(detail) {
+    this.#ROOT.dataset.subjectId = detail.keys.subjectId;
     const popup = document.createElement('div');
     popup.className = 'popup';
     popup.style.left = this.#popup_left;
@@ -103,7 +104,7 @@ export default class ResultDetailModal {
           props.reportLink
         }' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>
     `;
-    header.style.backgroundColor = subject.colorCSSValue;
+    header.classList.add('_subject-background-color');
     header.lastChild.appendChild(this.#exit_button);
     header.addEventListener('mousedown', e => {
       const customEvent = new CustomEvent(event.dragElement, {
