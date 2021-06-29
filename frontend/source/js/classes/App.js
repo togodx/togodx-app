@@ -2,7 +2,6 @@ import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilderView from './ConditionBuilderView';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
-import ReportsView from './ReportsView';
 import ConceptView from './ConceptView';
 import ResultsTable from './ResultsTable';
 import ResultDetailModal from "./ResultDetailModal";
@@ -60,7 +59,6 @@ class App {
     // set up views
     new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
     new ConditionsController(document.querySelector('#Conditions'));
-    const reportsView = new ReportsView(document.querySelector('#Reports'));
     new ResultsTable(document.querySelector('#ResultsTable'));
     new ResultDetailModal();
     new BalloonView();
