@@ -112,6 +112,7 @@
     const addMainSubject = () => {
       const stanzaDiv = document.createElement('div');
       stanzaDiv.setAttribute('id', subjectId);
+      metastanzaDiv.appendChild(stanzaDiv);
       addHeader(subjectId, subjectIdType, stanzaDiv, true);
       addHashTable(subjectId, subjectIdType, stanzaDiv);
     }
@@ -127,6 +128,7 @@
           if (data.length > 0) {
             const stanzaDiv = document.createElement('div');
             stanzaDiv.setAttribute('id', id);
+            metastanzaDiv.appendChild(stanzaDiv);
             addHeader(id, type, stanzaDiv);
             addHashTable(id, type, stanzaDiv);
           }
