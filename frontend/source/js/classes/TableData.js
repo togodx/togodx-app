@@ -3,7 +3,6 @@ import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
 import Records from "./Records";
 import * as event from '../events';
-import ConditionsController from "./ConditionsController";
 
 const LIMIT = 100;
 
@@ -15,10 +14,8 @@ export default class TableData {
   #rows;
   #abortController;
   #isAutoLoad;
-  #isLoading;
   #isCompleted;
   #startTime;
-  #downloadReserveButton;
   #ROOT;
   #STATUS;
   #INDICATOR_TEXT_AMOUNT;
@@ -72,19 +69,19 @@ export default class TableData {
       </div>
     </div>
     <div class="controller">
-      <div class="button" data-button="download-json">
+      <div class="button none" data-button="download-json">
         <a class="json">
           <span class="material-icons-outlined">download json</span>
           <span class="label">JSON</span>
         </a>
       </div>
-      <div class="button" data-button="download-tsv">
+      <div class="button none" data-button="download-tsv">
         <a class="tsv">
           <span class="material-icons-outlined">download tsv</span>
           <span class="label">TSV</span>
         </a>
       </div>
-      <div class="button none" data-button="prepare-data">
+      <div class="button -rotating" data-button="prepare-data">
         <span class="material-icons-outlined">autorenew</span>
         <span class="label">Pause</span>
       </div>
@@ -112,23 +109,10 @@ export default class TableData {
       if (elm.classList.contains('-current')) return;
       this.select();
     });
-    // prepare data
-    [this.#BUTTON_DOWNLOAD_JSON, this.#BUTTON_DOWNLOAD_TSV].forEach(button => {
-      button.addEventListener('click', e => {
-        e.stopPropagation();
-        if (this.#isAutoLoad === false && this.#ROOT.dataset.status !== 'complete') {
-          this.#autoLoad();
-          this.#changeButtons();
-          this.#downloadReserveButton = button;
-        } else {
-          this.#isAutoLoad = false;
-        }
-      })
-    })
     
     this.#BUTTON_PREPARE_DATA.addEventListener('click', e => {
       e.stopPropagation();
-      if (this.#isAutoLoad === false && this.#ROOT.dataset.status !== 'complete') {
+      if (this.#isAutoLoad === false) {
         this.#autoLoad();
         this.#BUTTON_PREPARE_DATA.classList.add('-rotating');
         this.#BUTTON_PREPARE_DATA.querySelector(':scope > .label').innerHTML = 'Pause';
@@ -230,8 +214,7 @@ export default class TableData {
   }
 
   #getProperties() {
-    if (this.#isLoading) return;
-    this.#isLoading = true;
+    this.#isAutoLoad = true;
     this.#ROOT.classList.add('-fetching');
     this.#STATUS.textContent = 'Getting data';
     fetch(
@@ -243,7 +226,6 @@ export default class TableData {
       .then(rows => {
         console.log(rows)
         this.#rows.push(...rows);
-        this.#isLoading = false;
         this.#isCompleted = this.offset >= this.#queryIds.length;
         // display
         this.#ROOT.classList.remove('-fetching');
@@ -304,17 +286,8 @@ export default class TableData {
     this.#STATUS.textContent = 'Complete';
     this.#setJsonUrl();
     this.#setTsvUrl();
-    if (this.#downloadReserveButton ) {
-      this.#downloadReserveButton.querySelector(':scope > a').click();
-    }
   }
-  #changeButtons() {
-    this.#BUTTON_PREPARE_DATA.classList.remove('none');
-    this.#BUTTON_DOWNLOAD_JSON.classList.add('none');
-    this.#BUTTON_DOWNLOAD_TSV.classList.add('none');
-    this.#BUTTON_PREPARE_DATA.classList.add('-rotating');
-  }
-
+  
   #setJsonUrl() {
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {type : 'application/json'});
     const jsonUrl = URL.createObjectURL(jsonBlob);
@@ -325,9 +298,9 @@ export default class TableData {
 
   #setTsvUrl() {
     const temporaryArray = [];
-    this.#rows.map(row => {
-      row.properties.map(property => {
-        property.attributes.map(attribute => {
+    this.#rows.forEach(row => {
+      row.properties.forEach(property => {
+        property.attributes.forEach(attribute => {
           const singleItem = {
             togoKey: this.#condition.togoKey,
             togoKeyId: row.id,
@@ -340,11 +313,12 @@ export default class TableData {
         })
       })
     })
-    const tsvArray = [];
-    tsvArray.push(Object.keys(temporaryArray[0]).join('\t'));
-    temporaryArray.forEach(item => {
-      tsvArray.push(Object.values(item).join('\t'));
+    const tsvArray = temporaryArray.map(item => {
+      return Object.values(item).join('\t');
     })
+    if (tsvArray.length !== 0 ) {
+      tsvArray.unshift(Object.keys(temporaryArray[0]).join('\t'));
+    }
     const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
     const tsvBlob = new Blob([bom, tsvArray.join('\n')], { type: 'text/plain' });
     const tsvUrl = URL.createObjectURL(tsvBlob);
