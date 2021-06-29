@@ -75,6 +75,11 @@
       title.innerHTML = "Protein structure";
       stanzaDiv.appendChild(title);
 
+      const header = document.createElement('h2');
+      const headerText = document.createTextNode('Selected Key PDB: ' + id);
+      header.appendChild(headerText);
+      stanzaDiv.appendChild(header);
+
       // popup stanza
       appendStanza(stanzaDiv, "hash-table", id, typeInfo[type].label, typeInfo[type].columns, typeInfo[type].dataUrl + id, true);
     }

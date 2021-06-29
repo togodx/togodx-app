@@ -78,9 +78,15 @@
       'hgnc': 'HGNC'
     };
 
-    const addHeader = (id, type, level, text=titleDict[type] + ': ' + id) => {
+    const addHeader = (id, type, level, text=titleDict[type] + ': ' + id, selected = false) => {
       const header = document.createElement(level);
-      const headerText = document.createTextNode(text);
+      const headerText = (() => {
+        if (selected) {
+          return document.createTextNode('Selected Key ' + text);
+        } else {
+          return document.createTextNode(text);
+        }
+      })();
       header.appendChild(headerText);
       metastanzaDiv.appendChild(header);
     }

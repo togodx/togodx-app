@@ -82,6 +82,11 @@
       title.innerHTML = "Interaction";
       stanzaDiv.appendChild(title);
 
+      const header = document.createElement('h2');
+      const headerText = document.createTextNode('Selected Key Uniprot: ' + id);
+      header.appendChild(headerText);
+      stanzaDiv.appendChild(header);
+
       // popup stanza
       appendStanza(stanzaDiv, "hash-table", id, typeInfo[type].label, typeInfo[type].columns, typeInfo[type].dataUrl + id, true);
       appendStanza(stanzaDiv, "pagination-table", id, typeInfo["interactions"].label, typeInfo["interactions"].columns, typeInfo["interactions"].dataUrl + "?type=" + type + "&id=" + id, false, "10,20,50,100");
