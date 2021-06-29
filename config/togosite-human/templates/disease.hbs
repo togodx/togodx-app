@@ -65,7 +65,7 @@
       'mesh': 'MeSH'
     };
 
-    const addHeader = async (id, type, target, selected = false) => {
+    const addHeader = async (id, type, selected = false) => {
       const header = document.createElement('h2');
       const headerText = (() => {
         if (selected) {
@@ -75,7 +75,7 @@
         }
       })();
       header.appendChild(headerText);
-      target.appendChild(header);
+      return header;
     }
 
     const generateColumnSetting = async (id, type) => {
@@ -90,7 +90,7 @@
       });
     }
 
-    const addHashTable = async (id, type, target) => {
+    const addHashTable = async (id, type) => {
       const hashTable = document.createElement('togostanza-hash-table');
       const columnSetting = await generateColumnSetting(id, type);
       updateAttributes(hashTable, {
@@ -99,7 +99,7 @@
         'format-key': true,
         columns: JSON.stringify(columnSetting)
       });
-      target.appendChild(hashTable);
+      return hashTable;
     }
 
     const addMainHeader = () => {
@@ -110,11 +110,13 @@
     }
 
     const addMainSubject = () => {
+      const header = await addHeader(subjectId, subjectIdType, true);
+      const table = await addHashTable(subjectId, subjectIdType);
       const stanzaDiv = document.createElement('div');
       stanzaDiv.setAttribute('id', subjectId);
+      stanzaDiv.appendChild(header);
+      stanzaDiv.appendChild(table);      
       metastanzaDiv.appendChild(stanzaDiv);
-      addHeader(subjectId, subjectIdType, stanzaDiv, true);
-      addHashTable(subjectId, subjectIdType, stanzaDiv);
     }
 
     const createMetastanza = async () => {
@@ -126,11 +128,13 @@
           const type = idObj.type;
           const data = await fetchJSON(dataUrl(id, type));
           if (data.length > 0) {
+            const header = await addHeader(id, type);
+            const table = await addHashTable(id, type);
             const stanzaDiv = document.createElement('div');
             stanzaDiv.setAttribute('id', id);
+            stanzaDiv.appendChild(header);
+            stanzaDiv.appendChild(table);
             metastanzaDiv.appendChild(stanzaDiv);
-            addHeader(id, type, stanzaDiv);
-            addHashTable(id, type, stanzaDiv);
           }
         }
       }
