@@ -109,13 +109,13 @@
       metastanzaDiv.appendChild(header);
     }
 
-    const addMainSubject = () => {
+    const addMainSubject = async () => {
       const header = await addHeader(subjectId, subjectIdType, true);
       const table = await addHashTable(subjectId, subjectIdType);
       const stanzaDiv = document.createElement('div');
       stanzaDiv.setAttribute('id', subjectId);
       stanzaDiv.appendChild(header);
-      stanzaDiv.appendChild(table);      
+      stanzaDiv.appendChild(table);
       metastanzaDiv.appendChild(stanzaDiv);
     }
 
