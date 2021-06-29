@@ -1,6 +1,4 @@
-<div id="metastanza-chemicalCompound">
-  <h1>Chemical compound: {{type}}: {{id}}</h1>
-</div>
+<div id="metastanza-chemicalCompound"></div>
 <script>
   (() => {
     // togoid endpoint
@@ -66,9 +64,15 @@
       'chebi': 'ChEBI'
     };
 
-    const addHeader = (id, type) => {
+    const addHeader = (id, type, selected = false) => {
       const header = document.createElement('h2');
-      const headerText = document.createTextNode(titleDict[type] + ': ' + id);
+      const headerText = (() => {
+        if (selected) {
+          return document.createTextNode('Selected Key ' + titleDict[type] + ': ' + id);
+        } else {
+          return document.createTextNode(titleDict[type] + ': ' + id);
+        }
+      })();
       header.appendChild(headerText);
       metastanzaDiv.appendChild(header);
     }
@@ -99,12 +103,20 @@
       console.log(hashTable);
     }
 
+    const addMainHeader = () => {
+      const header = document.createElement('h1');
+      const headerText = document.createTextNode('Chemical Compound');
+      header.appendChild(headerText);
+      metastanzaDiv.appendChild(header);
+    }
+
     const addMainSubject = () => {
-      addHeader(subjectId, subjectIdType);
+      addHeader(subjectId, subjectIdType, true);
       addHashTable(subjectId, subjectIdType);
     }
 
     const createMetastanza = async () => {
+      addMainHeader();
       addMainSubject();
 
       const array = await convertId(subjectId, subjectIdType);
