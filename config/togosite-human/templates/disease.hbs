@@ -65,9 +65,12 @@
       'mesh': 'MeSH'
     };
 
-    const addHeader = (id, type) => {
+    const addHeader = (id, type, selected = false) => {
       const header = document.createElement('h2');
-      const headerText = document.createTextNode(titleDict[type] + ': ' + id);
+      let headerText = document.createTextNode(titleDict[type] + ': ' + id);
+      if (selected) {
+        let headerText = "Selected Key: " + headerText;
+      }
       header.appendChild(headerText);
       metastanzaDiv.appendChild(header);
     }
@@ -104,7 +107,7 @@
     }
 
     const addMainSubject = () => {
-      addHeader(subjectId, subjectIdType);
+      addHeader(subjectId, subjectIdType, true);
       addHashTable(subjectId, subjectIdType);
     }
 
