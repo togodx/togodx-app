@@ -66,9 +66,10 @@
 
     const addHeader = (id, type, selected = false) => {
       const header = document.createElement('h2');
-      let headerText = document.createTextNode(titleDict[type] + ': ' + id);
       if (selected) {
-        let headerText = "Selected Key: " + headerText;
+        const headerText = document.createTextNode('Selected Key ' + titleDict[type] + ': ' + id);
+      } else {
+        const headerText = document.createTextNode(titleDict[type] + ': ' + id);
       }
       header.appendChild(headerText);
       metastanzaDiv.appendChild(header);
