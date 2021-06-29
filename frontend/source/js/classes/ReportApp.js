@@ -41,7 +41,7 @@ class ReportApp {
     main.innerHTML =
       StanzaManager.draw(subjectId, urlVars.id, urlVars.togoKey) +
       properties.map(property => {
-        if (property === undefined) {
+        if (!property) {
           return '';
         } else {
           const subject = Records.subjects.find(subject => subject.properties.some(subjectProperty => subjectProperty.propertyId === property.propertyId));
