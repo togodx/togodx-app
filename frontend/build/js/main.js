@@ -2737,9 +2737,13 @@
           var hue = 360 - 360 * i / subjects.length + 130;
           hue -= hue > 360 ? 360 : 0;
           var srgb = new h('hsv', [hue, 45, 85]).to('srgb');
+          var srgbStrong = new h('hsv', [hue, 65, 65]).to('srgb');
           subjects[i].hue = hue;
           subjects[i].color = srgb;
           subjects[i].colorCSSValue = "rgb(".concat(srgb.coords.map(function (channel) {
+            return channel * 256;
+          }).join(','), ")");
+          subjects[i].colorCSSStrongValue = "rgb(".concat(srgbStrong.coords.map(function (channel) {
             return channel * 256;
           }).join(','), ")");
         }
@@ -2769,8 +2773,8 @@
         document.head.appendChild(styleElm);
         var styleSheet = styleElm.sheet;
         styleSheet.insertRule(":root {\n      ".concat(subjects.map(function (subject) {
-          return "--color-subject-".concat(subject.subjectId, ": ").concat(subject.colorCSSValue);
-        }).join(';\r'), "\n    }"));
+          return "\n        --color-subject-".concat(subject.subjectId, ": ").concat(subject.colorCSSValue, ";\n        --color-subject-").concat(subject.subjectId, "-strong: ").concat(subject.colorCSSStrongValue, ";\n        ");
+        }).join(''), "\n    }"));
 
         var _iterator = _createForOfIteratorHelper(subjects),
             _step;
@@ -2778,8 +2782,9 @@
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var subject = _step.value;
-            styleSheet.insertRule("\n      ._subject-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-color {\n        color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
+            styleSheet.insertRule("\n      ._subject-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-color {\n        color: var(--color-subject-").concat(subject.subjectId, "-strong);\n      }"));
             styleSheet.insertRule("\n      ._subject-background-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-background-color {\n        background-color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
+            styleSheet.insertRule("\n      ._subject-background-color-strong[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-background-color-strong {\n        background-color: var(--color-subject-").concat(subject.subjectId, "-strong);\n      }"));
             styleSheet.insertRule("\n      ._subject-border-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-border-color {\n        border-color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
           }
         } catch (err) {
@@ -4586,7 +4591,7 @@
     var _width = 100 / _classPrivateFieldGet(this, _items).length;
 
     selector.querySelector(':scope > .overview').innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
-      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\" style=\"width: ").concat(_width, "%; height: ").concat(item.count / _max * 100, "%; background-color: ").concat(subject.colorCSSValue, ";\"></div>");
+      return "<div\n      class=\"bar _subject-background-color\"\n      data-category-id=\"".concat(item.categoryId, "\"\n      data-subject-id=\"").concat(subject.subjectId, "\"\n      data-count=\"").concat(item.count, "\"\n      style=\"width: ").concat(_width, "%; height: ").concat(item.count / _max * 100, "%;\"></div>");
     }).join('');
     var graph = histogram.querySelector(':scope > .graph');
     graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
@@ -4802,7 +4807,7 @@
       value.width = value.count / _sum * 100;
       value.baseColor = colorTintByHue(subject.color, 360 * index / values.length);
       var selectedClass = selectedCategoryIds.indexOf(value.categoryId) !== -1 ? ' -selected' : '';
-      return "\n        <li class=\"track-value-view".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\"></div>\n        </li>");
+      return "\n        <li class=\"track-value-view _subject-background-color".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\"></div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .track-value-view').forEach(function (elm, index) {
       // reference
@@ -4812,7 +4817,7 @@
       var pin = elm.querySelector(':scope > .pin');
       value.pin = pin; // attach event: show tooltip
 
-      var label = "<span style=\"color: ".concat(_classPrivateFieldGet(_this, _subject$1).colorCSSValue, "\">").concat(value.label, "</span>");
+      var label = "<span class=\"_subject-color\" data-subject-id=\"".concat(_classPrivateFieldGet(_this, _subject$1).subjectId, "\">").concat(value.label, "</span>");
       elm.addEventListener('mouseenter', function () {
         var customEvent = new CustomEvent(enterPropertyValueItemView, {
           detail: {
@@ -5062,15 +5067,14 @@
 
     _classPrivateFieldSet(this, _sparqlist, property.data);
 
-    elm.classList.add('track-view');
-    elm.classList.add('-preparing');
-    elm.classList.add('collapse-view');
+    elm.classList.add('track-view', '-preparing', 'collapse-view');
     if (isSelected) elm.classList.add('-allselected');
+    elm.dataset.subjectId = subject.subjectId;
     elm.dataset.propertyId = property.propertyId;
     elm.dataset.collapse = property.propertyId; // make html
 
     var checked = isSelected ? ' checked' : '';
-    elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <h2 class=\"title\">").concat(property.label, "</h2>\n          <input type=\"checkbox\" class=\"mapping\"").concat(checked, ">\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview\" style=\"background-color: ").concat(subject.colorCSSValue, ";\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <p class=\"description\">").concat(property.description, "</p>\n        <!--<label><input type=\"checkbox\">All properties</label>-->\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
+    elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <h2 class=\"title _subject-color\">").concat(property.label, "</h2>\n          <input type=\"checkbox\" class=\"mapping\"").concat(checked, ">\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview _subject-background-color\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <p class=\"description\">").concat(property.description, "</p>\n        <!--<label><input type=\"checkbox\">All properties</label>-->\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
     var valuesContainer = elm.querySelector(':scope > .row.-upper > .values');
 
     _classPrivateFieldSet(this, _OVERVIEW_CONTAINER, valuesContainer.querySelector(':scope > .overview > .inner'));
@@ -5156,7 +5160,7 @@
     _classCallCheck(this, ConceptView);
 
     elm.classList.add('concept-view');
-    elm.innerHTML = "\n    <h3 class=\"title\" style=\"background-color: ".concat(subject.colorCSSValue, ";\">\n      <span>").concat(subject.subject, "</span>\n    </h3>\n    <div class=\"properties\"></div>"); // make tracks
+    elm.innerHTML = "\n    <h3 class=\"title _subject-background-color-strong\" data-subject-id=\"".concat(subject.subjectId, "\">\n      <span>").concat(subject.subject, "</span>\n    </h3>\n    <div class=\"properties\"></div>"); // make tracks
 
     var properties = subject.properties;
     var propertiesContainer = elm.querySelector(':scope > .properties');
@@ -5169,8 +5173,6 @@
 
   var _propertyId = new WeakMap();
 
-  var _color = new WeakMap();
-
   var _COUNTS = new WeakMap();
 
   var _RATES = new WeakMap();
@@ -5179,19 +5181,17 @@
 
   var _draw = new WeakSet();
 
-  var StatisticsView = function StatisticsView(elm, _property) {
+  var StatisticsView = function StatisticsView(elm, _ref) {
     var _this = this;
+
+    var subject = _ref.subject,
+        _property = _ref.property;
 
     _classCallCheck(this, StatisticsView);
 
     _draw.add(this);
 
     _propertyId.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _color.set(this, {
       writable: true,
       value: void 0
     });
@@ -5211,13 +5211,10 @@
       value: void 0
     });
 
-    console.log(_property);
+    _classPrivateFieldSet(this, _propertyId, _property.propertyId);
 
-    _classPrivateFieldSet(this, _propertyId, _property.property.propertyId);
-
-    _classPrivateFieldSet(this, _color, _property.subject.colorCSSValue);
-
-    elm.classList.add('statistics-view'); // make HTML
+    elm.classList.add('statistics-view');
+    elm.dataset.subjectId = subject.subjectId; // make HTML
 
     elm.innerHTML = "<div class=\"statistics\">\n      <div class=\"counts\"></div>\n      <div class=\"rates\"></div>\n      <div class=\"ticks\"></div>\n    </div>"; // references
 
@@ -5271,7 +5268,7 @@
 
     _classPrivateFieldGet(this, _COUNTS).innerHTML = counts.map(function (count) {
       var position = count / countMax < .5 ? ' -below' : '';
-      return "\n      <div class=\"bar\" style=\"height: ".concat(count / countMax * 100, "%; background-color: ").concat(_classPrivateFieldGet(_this2, _color), ";\">\n        <div class=\"value").concat(position, "\">").concat(count.toLocaleString(), "</div>\n      </div>");
+      return "\n      <div class=\"bar _subject-background-color\" style=\"height: ".concat(count / countMax * 100, "%;\">\n        <div class=\"value").concat(position, "\">").concat(count.toLocaleString(), "</div>\n      </div>");
     }).join(''); // rate
 
     var rates = categoryIds.map(function (categoryId, index) {
@@ -5283,7 +5280,7 @@
 
     _classPrivateFieldGet(this, _RATES).innerHTML = rates.map(function (rate) {
       var position = rate / rateMax < .5 ? ' -below' : '';
-      return "\n      <div class=\"bar\" style=\"height: ".concat(rate / rateMax * 100, "%; background-color: ").concat(_classPrivateFieldGet(_this2, _color), ";\">\n        <div class=\"value").concat(position, "\">").concat(rate.toLocaleString(), "</div>\n      </div>");
+      return "\n      <div class=\"bar _subject-background-color\" style=\"height: ".concat(rate / rateMax * 100, "%;\">\n        <div class=\"value").concat(position, "\">").concat(rate.toLocaleString(), "</div>\n      </div>");
     }).join(''); // tick
 
     var labels = categoryIds.map(function (categoryId) {
@@ -5893,6 +5890,7 @@
   }
 
   function _popup2(detail) {
+    _classPrivateFieldGet(this, _ROOT$2).dataset.subjectId = detail.keys.subjectId;
     var popup = document.createElement('div');
     popup.className = 'popup';
     popup.style.left = _classPrivateFieldGet(this, _popup_left);
@@ -5910,7 +5908,7 @@
     var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(subject.subject, " / ").concat(subCategory.label, "</span>");
     var header = document.createElement('header');
     header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div>\n        <a class='report-page-button-view' href='").concat(props.reportLink, "' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>\n    ");
-    header.style.backgroundColor = subject.colorCSSValue;
+    header.classList.add('_subject-background-color');
     header.lastChild.appendChild(_classPrivateFieldGet(this, _exit_button));
     header.addEventListener('mousedown', function (e) {
       var customEvent = new CustomEvent(dragElement, {
@@ -6120,13 +6118,9 @@
 
   var _isAutoLoad = new WeakMap();
 
-  var _isLoading = new WeakMap();
-
   var _isCompleted = new WeakMap();
 
   var _startTime = new WeakMap();
-
-  var _downloadReserveButton = new WeakMap();
 
   var _ROOT = new WeakMap();
 
@@ -6154,8 +6148,6 @@
 
   var _complete = new WeakSet();
 
-  var _changeButtons = new WeakSet();
-
   var _setJsonUrl = new WeakSet();
 
   var _setTsvUrl = new WeakSet();
@@ -6169,8 +6161,6 @@
       _setTsvUrl.add(this);
 
       _setJsonUrl.add(this);
-
-      _changeButtons.add(this);
 
       _complete.add(this);
 
@@ -6212,22 +6202,12 @@
         value: void 0
       });
 
-      _isLoading.set(this, {
-        writable: true,
-        value: void 0
-      });
-
       _isCompleted.set(this, {
         writable: true,
         value: void 0
       });
 
       _startTime.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _downloadReserveButton.set(this, {
         writable: true,
         value: void 0
       });
@@ -6298,7 +6278,7 @@
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         var label = property.parentCategoryId ? Records$1.getValue(property.query.propertyId, property.parentCategoryId).label : property.property.label;
         return "<div class=\"condiiton _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n          <p title=\"").concat(label, "\">").concat(label, "</p>\n        </div>");
-      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button\" data-button=\"download-json\">\n        <a class=\"json\">\n          <span class=\"material-icons-outlined\">download json</span>\n          <span class=\"label\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" data-button=\"download-tsv\">\n        <a class=\"tsv\">\n          <span class=\"material-icons-outlined\">download tsv</span>\n          <span class=\"label\">TSV</span>\n        </a>\n      </div>\n      <div class=\"button none\" data-button=\"prepare-data\">\n        <span class=\"material-icons-outlined\">autorenew</span>\n        <span class=\"label\">Pause</span>\n      </div>\n      <div class=\"button\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">edit</span>\n        <span class=\"label\">Edit</span>\n      </div>\n    </div>\n    "); // reference　
+      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button none\" data-button=\"download-json\">\n        <a class=\"json\">\n          <span class=\"material-icons-outlined\">download json</span>\n          <span class=\"label\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button none\" data-button=\"download-tsv\">\n        <a class=\"tsv\">\n          <span class=\"material-icons-outlined\">download tsv</span>\n          <span class=\"label\">TSV</span>\n        </a>\n      </div>\n      <div class=\"button -rotating\" data-button=\"prepare-data\">\n        <span class=\"material-icons-outlined\">autorenew</span>\n        <span class=\"label\">Pause</span>\n      </div>\n      <div class=\"button\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">edit</span>\n        <span class=\"label\">Edit</span>\n      </div>\n    </div>\n    "); // reference　
 
       _classPrivateFieldSet(this, _ROOT, elm);
 
@@ -6331,28 +6311,12 @@
         if (elm.classList.contains('-current')) return;
 
         _this.select();
-      }); // prepare data
-
-      [_classPrivateFieldGet(this, _BUTTON_DOWNLOAD_JSON), _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_TSV)].forEach(function (button) {
-        button.addEventListener('click', function (e) {
-          e.stopPropagation();
-
-          if (_classPrivateFieldGet(_this, _isAutoLoad) === false && _classPrivateFieldGet(_this, _ROOT).dataset.status !== 'complete') {
-            _classPrivateMethodGet(_this, _autoLoad, _autoLoad2).call(_this);
-
-            _classPrivateMethodGet(_this, _changeButtons, _changeButtons2).call(_this);
-
-            _classPrivateFieldSet(_this, _downloadReserveButton, button);
-          } else {
-            _classPrivateFieldSet(_this, _isAutoLoad, false);
-          }
-        });
       });
 
       _classPrivateFieldGet(this, _BUTTON_PREPARE_DATA).addEventListener('click', function (e) {
         e.stopPropagation();
 
-        if (_classPrivateFieldGet(_this, _isAutoLoad) === false && _classPrivateFieldGet(_this, _ROOT).dataset.status !== 'complete') {
+        if (_classPrivateFieldGet(_this, _isAutoLoad) === false) {
           _classPrivateMethodGet(_this, _autoLoad, _autoLoad2).call(_this);
 
           _classPrivateFieldGet(_this, _BUTTON_PREPARE_DATA).classList.add('-rotating');
@@ -6550,9 +6514,7 @@
   function _getProperties2() {
     var _this3 = this;
 
-    if (_classPrivateFieldGet(this, _isLoading)) return;
-
-    _classPrivateFieldSet(this, _isLoading, true);
+    _classPrivateFieldSet(this, _isAutoLoad, true);
 
     _classPrivateFieldGet(this, _ROOT).classList.add('-fetching');
 
@@ -6571,8 +6533,6 @@
       console.log(rows);
 
       (_classPrivateFieldGet2 = _classPrivateFieldGet(_this3, _rows)).push.apply(_classPrivateFieldGet2, _toConsumableArray(rows));
-
-      _classPrivateFieldSet(_this3, _isLoading, false);
 
       _classPrivateFieldSet(_this3, _isCompleted, _this3.offset >= _classPrivateFieldGet(_this3, _queryIds).length); // display
 
@@ -6647,20 +6607,6 @@
     _classPrivateMethodGet(this, _setJsonUrl, _setJsonUrl2).call(this);
 
     _classPrivateMethodGet(this, _setTsvUrl, _setTsvUrl2).call(this);
-
-    if (_classPrivateFieldGet(this, _downloadReserveButton)) {
-      _classPrivateFieldGet(this, _downloadReserveButton).querySelector(':scope > a').click();
-    }
-  }
-
-  function _changeButtons2() {
-    _classPrivateFieldGet(this, _BUTTON_PREPARE_DATA).classList.remove('none');
-
-    _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_JSON).classList.add('none');
-
-    _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_TSV).classList.add('none');
-
-    _classPrivateFieldGet(this, _BUTTON_PREPARE_DATA).classList.add('-rotating');
   }
 
   function _setJsonUrl2() {
@@ -6680,9 +6626,9 @@
 
     var temporaryArray = [];
 
-    _classPrivateFieldGet(this, _rows).map(function (row) {
-      row.properties.map(function (property) {
-        property.attributes.map(function (attribute) {
+    _classPrivateFieldGet(this, _rows).forEach(function (row) {
+      row.properties.forEach(function (property) {
+        property.attributes.forEach(function (attribute) {
           var singleItem = {
             togoKey: _classPrivateFieldGet(_this4, _condition).togoKey,
             togoKeyId: row.id,
@@ -6696,11 +6642,14 @@
       });
     });
 
-    var tsvArray = [];
-    tsvArray.push(Object.keys(temporaryArray[0]).join('\t'));
-    temporaryArray.forEach(function (item) {
-      tsvArray.push(Object.values(item).join('\t'));
+    var tsvArray = temporaryArray.map(function (item) {
+      return Object.values(item).join('\t');
     });
+
+    if (tsvArray.length !== 0) {
+      tsvArray.unshift(Object.keys(temporaryArray[0]).join('\t'));
+    }
+
     var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
     var tsvBlob = new Blob([bom, tsvArray.join('\n')], {
       type: 'text/plain'
