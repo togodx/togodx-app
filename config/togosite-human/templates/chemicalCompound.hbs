@@ -64,17 +64,25 @@
       'chebi': 'ChEBI'
     };
 
-    const addHeader = (id, type, selected = false) => {
+    const addHeader = async (id, type, selected = false) => {
       const header = document.createElement('h2');
+
+      const code = document.createElement('code');
+      const codeLabel = document.createTextNode(titleDict[type] + ': ' + id);
+      code.appendChild(codeLabel);
+
       const headerText = (() => {
         if (selected) {
-          return document.createTextNode('Selected Key ' + titleDict[type] + ': ' + id);
+          return document.createTextNode('Selected Key ');
         } else {
-          return document.createTextNode(titleDict[type] + ': ' + id);
+          return '';
         }
       })();
+
       header.appendChild(headerText);
-      metastanzaDiv.appendChild(header);
+      header.appendChild(code);
+
+      return header;
     }
 
     const generateColumnSetting = async (id, type) => {
