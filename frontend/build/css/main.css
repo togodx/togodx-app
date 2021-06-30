@@ -495,6 +495,7 @@ main {
 .balloon-view > .container > dl > dt {
   -webkit-flex-grow: 1;
           flex-grow: 1;
+  font-weight: lighter;
 }
 .balloon-view > .container > dl > dd {
   margin: 0;
@@ -1101,9 +1102,6 @@ main {
   color: white;
   background-color: var(--color-lamp-black);
 }
-.table-data-controller-view > .conditions > .condiiton._subject-background-color {
-  color: white;
-}
 .table-data-controller-view > .conditions > .condiiton > p {
   margin-bottom: 0;
   text-overflow: ellipsis;
@@ -1429,6 +1427,7 @@ main {
   left: 0.2rem;
 }
 .track-view > .row.-upper > .left > .collapsebutton > .title {
+  margin: 0;
   width: calc(var(--width-track-column-property) - 1.6rem);
   font-size: 1.4rem;
   font-weight: bold;
@@ -1442,7 +1441,6 @@ main {
 }
 .track-view > .row.-upper > .right > .overview {
   height: var(--height-track);
-  background-color: #EEE;
   list-style: none;
   white-space: nowrap;
   font-size: 0;
@@ -1847,9 +1845,6 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 }
 #ResultsTable > .body > table > thead > tr.header.subheader > th, #ResultsTable > .body > table > thead > tr.subheader.subheader > th {
   top: var(--thheight);
-}
-#ResultsTable > .body > table > thead > tr.header.subheader > th > .inner._subject-background-color, #ResultsTable > .body > table > thead > tr.subheader.subheader > th > .inner._subject-background-color {
-  color: white;
 }
 #ResultsTable > .body > table > thead > tr.header.subheader > th > .inner._subject-color, #ResultsTable > .body > table > thead > tr.subheader.subheader > th > .inner._subject-color {
   background-color: white;

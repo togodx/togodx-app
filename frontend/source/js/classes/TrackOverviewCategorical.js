@@ -34,7 +34,7 @@ export default class TrackOverviewCategorical {
       value.baseColor = util.colorTintByHue(subject.color, 360 * index / values.length);
       const selectedClass = selectedCategoryIds.indexOf(value.categoryId) !== -1 ? ' -selected' : '';
       return `
-        <li class="track-value-view${selectedClass}" style="width: ${width}%;" data-category-id="${value.categoryId}">
+        <li class="track-value-view _subject-background-color${selectedClass}" style="width: ${width}%;" data-category-id="${value.categoryId}">
           <div class="labels">
             <p>
               <span class="label">${value.label}</span>
@@ -54,7 +54,7 @@ export default class TrackOverviewCategorical {
       value.pin = pin;
 
       // attach event: show tooltip
-      const label = `<span style="color: ${this.#subject.colorCSSValue}">${value.label}</span>`;
+      const label = `<span class="_subject-color" data-subject-id="${this.#subject.subjectId}">${value.label}</span>`;
       elm.addEventListener('mouseenter', () => {
         const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {
           label,
