@@ -1,0 +1,82 @@
+<div id="metastanza-pubchemCompound">
+  <h1>PubChem compound: {{id}}</h1>
+</div>
+<script>
+  (() => {
+    // togoid endpoint
+    const dataUrlEndpoint = 'https://integbio.jp/togosite/sparqlist/api/test_chemical_details5';
+
+    // embed the id and id type via handlebars variable
+    const subjectId = "{{id}}";
+    const subjectIdType = 'pubchem_compound';
+
+    // for testing
+    // const subjectId = "2244";
+    // const subjectIdType = 'pubchem_compound';
+
+    // access API and return JSON
+    const fetchJSON = async (api) => {
+      const response = await fetch(api);
+      const json = await response.json();
+      console.log(api);  // debug
+      console.log(json); // debug
+      return json;
+    }
+
+    // helper function to set multiple attributes
+    const updateAttributes = (element, attributes) => {
+      for (let key in attributes) {
+        element.setAttribute(key, attributes[key]);
+      }
+    }
+
+    const metastanzaDiv = document.getElementById("metastanza-pubchemCompound");
+    const dataUrl = (id, type) => dataUrlEndpoint + '?id=' + id + '&type=' + type;
+    const titleDict = {
+      'pubchem_compound': 'PubChem',
+      'chembl_compound': 'ChEMBL',
+      'chebi': 'ChEBI'
+    };
+
+    const addHeader = (id, type) => {
+      const header = document.createElement('h2');
+      const headerText = document.createTextNode(titleDict[type] + ': ' + id);
+      header.appendChild(headerText);
+      metastanzaDiv.appendChild(header);
+    }
+
+    const generateColumnSetting = async (id, type) => {
+      const data = await fetchJSON(dataUrl(id, type));
+      return Object.entries(data[0]).map(([key, value]) => {
+        const obj = {};
+        obj.id = key;
+        if (/^http(s|)\:\/\//.test(value)) {
+          obj.link = key;
+        }
+        return obj;
+      });
+    }
+
+    const addHashTable = async (id, type) => {
+      const hashTable = document.createElement('togostanza-hash-table');
+      const columnSetting = await generateColumnSetting(id, type);
+      updateAttributes(hashTable, {
+        'data-url': dataUrl(id, type),
+        'data-type': 'json',
+        'format-key': true,
+        columns: JSON.stringify(columnSetting)
+      });
+      metastanzaDiv.appendChild(hashTable);
+
+      console.log(hashTable);
+    }
+
+    const addMainSubject = () => {
+      addHeader(subjectId, subjectIdType);
+      addHashTable(subjectId, subjectIdType);
+    }
+
+    // exec
+    addMainSubject();
+  })()
+</script>
