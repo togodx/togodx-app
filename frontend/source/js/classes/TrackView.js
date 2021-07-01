@@ -55,6 +55,7 @@ export default class TrackView {
       <div class="left">
         <p class="description">${property.description}</p>
         <!--<label><input type="checkbox">All properties</label>-->
+        <a class="external-link-button-view" href="${this.#sparqlist}" target="_blank">API</a>
       </div>
       <div class="right selector"></div>
     </div>`;
