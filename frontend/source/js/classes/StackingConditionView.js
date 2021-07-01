@@ -34,20 +34,38 @@ export default class StackingConditionView {
     let label, ancestorLabels = [subject.subject];
     switch(type) {
       case 'property': {
-        const parentValue = condition.parentCategoryId ? Records.getValue(condition.propertyId, condition.parentCategoryId) : undefined;
-        label = `<div class="label _subject-color">${parentValue ? parentValue.label : property.label}</div>`;
         if (condition.parentCategoryId) {
-          console.log( Records.getValue(condition.propertyId, condition.parentCategoryId) )
-          console.log( Records.getAncestors(condition.propertyId, condition.parentCategoryId) )
-          ancestorLabels.push(property.label, ...Records.getAncestors(condition.propertyId, condition.parentCategoryId).map(ancestor => ancestor.label));
+          const getValue = () => {
+            const value = Records.getValue(condition.propertyId, condition.parentCategoryId);
+            if (value) {
+              const ancestors = Records.getAncestors(condition.propertyId, condition.parentCategoryId);
+              label = `<div class="label _subject-color">${value.label}</div>`;
+              ancestorLabels.push(property.label, ...ancestors.map(ancestor => ancestor.label));
+              this.#make(container, type, ancestorLabels, label);
+            } else {
+              setTimeout(getValue, POLLING_DURATION);
+            }
+          }
+          getValue();
+        } else {
+          label = `<div class="label _subject-color">${property.label}</div>`;
+          this.#make(container, type, ancestorLabels, label);
         }
       }
         break;
       case 'value':
         label = `<ul class="labels"></ul>`;
         ancestorLabels.push(property.label);
+        this.#make(container, type, ancestorLabels, label);
         break;
     }
+  }
+
+
+  // private methods
+
+  #make(container, type, ancestorLabels, label) {
+    console.log(container, type, ancestorLabels, label)
     this.#ROOT.innerHTML = `
     <div class="close-button-view"></div>
     <ul class="path">
@@ -58,7 +76,7 @@ export default class StackingConditionView {
     // reference
     if (type === 'value') {
       this.#LABELS = this.#ROOT.querySelector(':scope > .labels');
-      this.addValue(condition.categoryId);
+      this.addValue(this.#condition.categoryId);
     }
 
     // event
@@ -122,9 +140,5 @@ export default class StackingConditionView {
   sameProperty(propertyId) {
     return propertyId === this.#condition.propertyId;
   }
-
-
-  // private methods
-
 
 }

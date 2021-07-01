@@ -2,7 +2,6 @@ import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilderView from './ConditionBuilderView';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
-import ReportsView from './ReportsView';
 import ConceptView from './ConceptView';
 import ResultsTable from './ResultsTable';
 import ResultDetailModal from "./ResultDetailModal";
@@ -12,7 +11,6 @@ import UploadUserIDsView from "./UploadUserIDsView";
 import Color from "./Color";
 import StanzaManager from "./StanzaManager";
 import * as event from '../events'
-import * as api from '../api'
 
 class App {
 
@@ -36,7 +34,7 @@ class App {
     this.#colorLampBlack = new Color('--color-lamp-black').to('srgb');
   }
 
-  ready() {
+  ready(api) {
 
     const body = document.body;
 
@@ -60,10 +58,10 @@ class App {
     // set up views
     new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
     new ConditionsController(document.querySelector('#Conditions'));
-    const reportsView = new ReportsView(document.querySelector('#Reports'));
     new ResultsTable(document.querySelector('#ResultsTable'));
     new ResultDetailModal();
     new BalloonView();
+    const uploadUserIDsView = new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
 
     // load config json
     Promise.all([
@@ -77,7 +75,7 @@ class App {
         ConditionBuilder.init();
 
         // setup upload user id
-        new UploadUserIDsView(document.querySelector('#UploadUserIDsView'), aggregate.mapping);
+        uploadUserIDsView.definePath(aggregate.mapping);
 
         // define primary keys
         const customEvent = new CustomEvent(event.defineTogoKey, {detail: subjects});

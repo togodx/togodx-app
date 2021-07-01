@@ -41,14 +41,14 @@ class ReportApp {
     main.innerHTML =
       StanzaManager.draw(subjectId, urlVars.id, urlVars.togoKey) +
       properties.map(property => {
-        if (property === undefined) {
+        if (!property) {
           return '';
         } else {
           const subject = Records.subjects.find(subject => subject.properties.some(subjectProperty => subjectProperty.propertyId === property.propertyId));
           const property2 = subject.properties.find(property => property.propertyId === property.propertyId);
           return `<hr>
-          <div class="attributes">
-            <header style="background-color: ${this.getHslColor(subject.colorCSSValue)};">${property2.label}</header>
+          <div class="attributes" data-subject-id="${subject.subjectId}">
+            <header class="_subject-background-color">${property2.label}</header>
             ${property.attributes.map(attribute => StanzaManager.draw(subject.subjectId, attribute.id, property.propertyKey)).join('')}
           </div>`;
         }

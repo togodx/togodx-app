@@ -15,6 +15,14 @@
         "keyLabel": "Ensembl gene"
       },
       {
+        "propertyId": "ensembl-gene-chromosome",
+        "label": "Chromosome",
+        "description": "The chromosome where a gene is located",
+        "data": "https://integbio.jp/togosite/sparqlist/api/gene_chromosome_ensembl",
+        "primaryKey": "ensembl_gene",
+        "keyLabel": "Ensembl gene"
+      },
+      {
         "propertyId": "ensembl-exon-count",
         "label": "# of exons",
         "description": "The number of exons",
@@ -205,19 +213,19 @@
         "keyLabel": "UniProt"
       },
       {
-        "propertyId": "pdb_alphahelix",
+        "propertyId": "structure_number_of_alpha_helices_pdb",
         "label": "# of alpha-helices",
         "description": "The number of alpha-helices in a PDB entry",
-        "data": "https://integbio.jp/togosite/sparqlist/api/pdb_alphahelix_bin",
+        "data": "https://integbio.jp/togosite/sparqlist/api/structure_number_of_alpha_helices_pdb",
         "primaryKey": "pdb",
         "keyLabel": "PDB",
         "viewMethod": "histogram"
       },
       {
-        "propertyId": "pdb_betasheet",
+        "propertyId": "structure_number_of_beta_sheets_pdb",
         "label": "# of beta-sheets",
         "description": "The number of beta-sheets in a PDB entry",
-        "data": "https://integbio.jp/togosite/sparqlist/api/pdb_betasheet_bin",
+        "data": "https://integbio.jp/togosite/sparqlist/api/structure_number_of_beta_sheets_pdb",
         "primaryKey": "pdb",
         "keyLabel": "PDB",
         "viewMethod": "histogram"

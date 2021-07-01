@@ -1,6 +1,4 @@
-<div id="metastanza-disease">
-  <h1>Disease: {{type}}: {{id}}</h1>
-</div>
+<div id="metastanza-disease"></div>
 <script>
   (() => {
     // togoid endpoint
@@ -67,11 +65,25 @@
       'mesh': 'MeSH'
     };
 
-    const addHeader = (id, type) => {
+    const addHeader = async (id, type, selected = false) => {
       const header = document.createElement('h2');
-      const headerText = document.createTextNode(titleDict[type] + ': ' + id);
+
+      const code = document.createElement('code');
+      const codeLabel = document.createTextNode(titleDict[type] + ': ' + id);
+      code.appendChild(codeLabel);
+
+      const headerText = (() => {
+        if (selected) {
+          return document.createTextNode('Selected Key ');
+        } else {
+          return '';
+        }
+      })();
+
       header.appendChild(headerText);
-      metastanzaDiv.appendChild(header);
+      header.appendChild(code);
+
+      return header;
     }
 
     const generateColumnSetting = async (id, type) => {
@@ -95,15 +107,28 @@
         'format-key': true,
         columns: JSON.stringify(columnSetting)
       });
-      metastanzaDiv.appendChild(hashTable);
+      return hashTable;
     }
 
-    const addMainSubject = () => {
-      addHeader(subjectId, subjectIdType);
-      addHashTable(subjectId, subjectIdType);
+    const addMainHeader = () => {
+      const header = document.createElement('h1');
+      const headerText = document.createTextNode('Disease');
+      header.appendChild(headerText);
+      metastanzaDiv.appendChild(header);
+    }
+
+    const addMainSubject = async () => {
+      const header = await addHeader(subjectId, subjectIdType, true);
+      const table = await addHashTable(subjectId, subjectIdType);
+      const stanzaDiv = document.createElement('div');
+      stanzaDiv.setAttribute('id', subjectId);
+      stanzaDiv.appendChild(header);
+      stanzaDiv.appendChild(table);
+      metastanzaDiv.appendChild(stanzaDiv);
     }
 
     const createMetastanza = async () => {
+      addMainHeader();
       addMainSubject();
       const array = await convertId(subjectId, subjectIdType);
       for (const idObj of array) {
@@ -111,8 +136,13 @@
           const type = idObj.type;
           const data = await fetchJSON(dataUrl(id, type));
           if (data.length > 0) {
-            addHeader(id, type);
-            addHashTable(id, type);
+            const header = await addHeader(id, type);
+            const table = await addHashTable(id, type);
+            const stanzaDiv = document.createElement('div');
+            stanzaDiv.setAttribute('id', id);
+            stanzaDiv.appendChild(header);
+            stanzaDiv.appendChild(table);
+            metastanzaDiv.appendChild(stanzaDiv);
           }
         }
       }

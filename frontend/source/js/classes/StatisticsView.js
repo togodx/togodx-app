@@ -5,18 +5,16 @@ import * as event from '../events';
 export default class StatisticsView {
 
   #propertyId;
-  #color;
   #COUNTS;
   #RATES;
   #TICKS;
 
-  constructor(elm, property) {
-    console.log(property)
+  constructor(elm, {subject, property}) {
 
-    this.#propertyId = property.property.propertyId;
-    this.#color = property.subject.colorCSSValue;
+    this.#propertyId = property.propertyId;
 
     elm.classList.add('statistics-view');
+    elm.dataset.subjectId = subject.subjectId;
 
     // make HTML
     elm.innerHTML = `<div class="statistics">
@@ -59,7 +57,7 @@ export default class StatisticsView {
     this.#COUNTS.innerHTML = counts.map(count => {
       const position = (count / countMax < .5) ? ' -below' : '';
       return `
-      <div class="bar" style="height: ${count / countMax * 100}%; background-color: ${this.#color};">
+      <div class="bar _subject-background-color" style="height: ${count / countMax * 100}%;">
         <div class="value${position}">${count.toLocaleString()}</div>
       </div>`;
     }).join('');
@@ -75,7 +73,7 @@ export default class StatisticsView {
     this.#RATES.innerHTML = rates.map(rate => {
       const position = (rate / rateMax < .5) ? ' -below' : '';
       return `
-      <div class="bar" style="height: ${rate / rateMax * 100}%; background-color: ${this.#color};">
+      <div class="bar _subject-background-color" style="height: ${rate / rateMax * 100}%;">
         <div class="value${position}">${rate.toLocaleString()}</div>
       </div>`;
     }).join('');

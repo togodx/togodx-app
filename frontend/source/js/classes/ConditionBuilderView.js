@@ -3,11 +3,16 @@ import DefaultEventEmitter from "./DefaultEventEmitter";
 import StackingConditionView from "./StackingConditionView";
 import * as event from '../events';
 
+const POLLING_DURATION = 100;
+
 export default class ConditionBuilderView {
 
   #properties;
   #propertyValues;
+  #isDefined;
+  #placeHolders;
   #TOGO_KEYS;
+  #USER_IDS;
   #PROPERTIES_CONDITIONS_CONTAINER;
   #ATTRIBUTES_CONDITIONS_CONTAINER;
   #EXEC_BUTTON;
@@ -16,10 +21,12 @@ export default class ConditionBuilderView {
 
     this.#properties = [];
     this.#propertyValues = [];
+    this.#isDefined = false;
   
     // references
     const conditionsContainer = elm.querySelector(':scope > .conditions');
     this.#TOGO_KEYS = conditionsContainer.querySelector('#ConditionTogoKey > .inner > select');
+    this.#USER_IDS = elm.querySelector('#UploadUserIDsView > textarea');
     this.#PROPERTIES_CONDITIONS_CONTAINER = document.querySelector('#ConditionValues > .inner > .conditions');
     this.#ATTRIBUTES_CONDITIONS_CONTAINER = document.querySelector('#ConditionKeys > .inner > .conditions');
     this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
@@ -30,6 +37,15 @@ export default class ConditionBuilderView {
     this.#EXEC_BUTTON.addEventListener('click', () => {
       document.body.dataset.display = 'results';
       ConditionBuilder.makeQueryParameter();
+    });
+    elm.querySelector(':scope > footer > button.return').addEventListener('click', () => {
+      document.body.dataset.display = 'properties';
+    });
+    elm.querySelector(':scope > header > button.rounded-button-view').addEventListener('click', () => {
+      this.#TOGO_KEYS.options[0].selected = true;
+      this.#TOGO_KEYS.dispatchEvent(new Event('change'));
+      const customEvent = new CustomEvent(event.clearCondition);
+      DefaultEventEmitter.dispatchEvent(customEvent);
     });
 
     // event listeners
@@ -59,32 +75,46 @@ export default class ConditionBuilderView {
     DefaultEventEmitter.addEventListener(event.mutateEstablishConditions, e => {
       this.#EXEC_BUTTON.disabled = !e.detail;
     });
-    DefaultEventEmitter.addEventListener(event.restoreParameters, e => {
-      this.#restoreParameters(e.detail);
-    });
+    // DefaultEventEmitter.addEventListener(event.restoreParameters, e => {
+    //   this.#restoreParameters(e.detail);
+    // });
 
   }
+  
 
   // private methods
 
-  #restoreParameters(parameters) {
-    this.#TOGO_KEYS.value = parameters.togoKey;
-  }
+  // #restoreParameters(parameters) {
+  //   console.log(parameters)
+  //   if (parameters.togoKey) {
+  //     if (this.#isDefined) {
+  //       this.#TOGO_KEYS.value = parameters.togoKey;
+  //     } else {
+  //       setTimeout(() => {
+  //         this.#restoreParameters(parameters);
+  //       }, POLLING_DURATION);
+  //     }
+  //   }
+  // }
 
   #defineTogoKeys(subjects) {
+    this.#isDefined = true;
+    this.#placeHolders = Object.fromEntries(subjects.filter(subject => subject.togoKey).map(subject => [subject.togoKey, subject.togoKeyExamples]));
     // make options
     this.#TOGO_KEYS.innerHTML = subjects.map(subject => {
       let option = '';
-      if (subject.togoKey) option = `<option value="${subject.togoKey}" data-subject-id="${subjects.subjectId}">${subject.keyLabel}</option>`;
+      if (subject.togoKey) option = `<option value="${subject.togoKey}" data-subject-id="${subject.subjectId}">${subject.keyLabel}</option>`;
       return option;
     }).join('');
     this.#TOGO_KEYS.disabled = false;
+    this.#TOGO_KEYS.value = ConditionBuilder.currentTogoKey;
     // attach event
     this.#TOGO_KEYS.addEventListener('change', e => {
       const subject = subjects.find(subject => subject.togoKey === e.target.value);
       ConditionBuilder.setSubject(e.target.value, subject.subjectId);
+      this.#USER_IDS.placeholder = this.#placeHolders[e.target.value].join(', ');
     });
-    // this.#TOGO_KEYS.dispatchEvent(new Event('change'));
+    this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }
 
   #addProperty(propertyId, parentCategoryId) {
