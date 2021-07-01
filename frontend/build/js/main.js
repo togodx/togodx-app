@@ -6955,10 +6955,6 @@
     DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
 
-  var PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
-  var TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
-  var AGGREGATE = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/aggregate.json';
-
   var _viewModes = new WeakMap();
 
   var _aggregate = new WeakMap();
@@ -7040,7 +7036,7 @@
 
     _createClass(App, [{
       key: "ready",
-      value: function ready() {
+      value: function ready(api) {
         var _this = this;
 
         var body = document.body; // view modes
@@ -7070,7 +7066,7 @@
         new BalloonView();
         var uploadUserIDsView = new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
 
-        Promise.all([fetch(PROPERTIES), fetch(TEMPLATES), fetch(AGGREGATE)]).then(function (responces) {
+        Promise.all([fetch(api.PROPERTIES), fetch(api.TEMPLATES), fetch(api.AGGREGATE)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
           }));
@@ -7161,8 +7157,12 @@
 
   var App$1 = new App();
 
-  globalThis.togositeapp = App$1;
-  App$1.ready();
+  fetch('./api.json').then(function (response) {
+    return response.json();
+  }).then(function (api) {
+    globalThis.togositeapp = App$1;
+    App$1.ready(api);
+  });
 
 }());
 //# sourceMappingURL=main.js.map
