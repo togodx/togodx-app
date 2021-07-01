@@ -4850,7 +4850,7 @@
         if (userValue) {
           values.push({
             key: 'P-value',
-            value: userValue.pValue.toExponential()
+            value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(4)
           });
         }
 
