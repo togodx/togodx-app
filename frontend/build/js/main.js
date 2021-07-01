@@ -4002,7 +4002,7 @@
         return subject.togoKey === e.target.value;
       });
       ConditionBuilder$1.setSubject(e.target.value, subject.subjectId);
-      _classPrivateFieldGet(_this3, _USER_IDS$1).placeholder = _classPrivateFieldGet(_this3, _placeHolders)[e.target.value].join(', ');
+      _classPrivateFieldGet(_this3, _USER_IDS$1).placeholder = "e.g. ".concat(_classPrivateFieldGet(_this3, _placeHolders)[e.target.value].join(', '));
     });
 
     _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));

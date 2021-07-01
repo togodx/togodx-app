@@ -109,7 +109,7 @@ export default class ConditionBuilderView {
     this.#TOGO_KEYS.addEventListener('change', e => {
       const subject = subjects.find(subject => subject.togoKey === e.target.value);
       ConditionBuilder.setSubject(e.target.value, subject.subjectId);
-      this.#USER_IDS.placeholder = this.#placeHolders[e.target.value].join(', ');
+      this.#USER_IDS.placeholder = `e.g. ${this.#placeHolders[e.target.value].join(', ')}`;
     });
     this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }

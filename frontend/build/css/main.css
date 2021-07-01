@@ -2071,6 +2071,18 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #UploadUserIDsView > textarea {
   width: 100%;
 }
+#UploadUserIDsView > textarea::-webkit-input-placeholder {
+  color: gray;
+}
+#UploadUserIDsView > textarea::-moz-placeholder {
+  color: gray;
+}
+#UploadUserIDsView > textarea:-ms-input-placeholder {
+  color: gray;
+}
+#UploadUserIDsView > textarea::placeholder {
+  color: gray;
+}
 #UploadUserIDsView > .buttons {
   margin-top: -0.2rem;
   text-align: center;
