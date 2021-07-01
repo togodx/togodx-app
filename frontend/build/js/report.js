@@ -2935,6 +2935,8 @@
   }();
 
   function _drawStanzas2() {
+    var _this2 = this;
+
     var urlVars = Object.fromEntries(window.location.search.substr(1).split('&').map(function (keyValue) {
       return keyValue.split('=');
     }));
@@ -2944,7 +2946,7 @@
       return subject.togoKey === urlVars.togoKey;
     }).subjectId;
     main.innerHTML = StanzaManager$1.draw(subjectId, urlVars.id, urlVars.togoKey) + properties.map(function (property) {
-      if (property === undefined) {
+      if (!property) {
         return '';
       } else {
         var subject = Records$1.subjects.find(function (subject) {

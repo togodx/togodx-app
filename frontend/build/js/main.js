@@ -6149,13 +6149,9 @@
 
   var _isAutoLoad = new WeakMap();
 
-  var _isLoading = new WeakMap();
-
   var _isCompleted = new WeakMap();
 
   var _startTime = new WeakMap();
-
-  var _downloadReserveButton = new WeakMap();
 
   var _ROOT = new WeakMap();
 
@@ -6183,8 +6179,6 @@
 
   var _complete = new WeakSet();
 
-  var _changeButtons = new WeakSet();
-
   var _setJsonUrl = new WeakSet();
 
   var _setTsvUrl = new WeakSet();
@@ -6198,8 +6192,6 @@
       _setTsvUrl.add(this);
 
       _setJsonUrl.add(this);
-
-      _changeButtons.add(this);
 
       _complete.add(this);
 
@@ -6241,22 +6233,12 @@
         value: void 0
       });
 
-      _isLoading.set(this, {
-        writable: true,
-        value: void 0
-      });
-
       _isCompleted.set(this, {
         writable: true,
         value: void 0
       });
 
       _startTime.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _downloadReserveButton.set(this, {
         writable: true,
         value: void 0
       });
@@ -6327,7 +6309,7 @@
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         var label = property.parentCategoryId ? Records$1.getValue(property.query.propertyId, property.parentCategoryId).label : property.property.label;
         return "<div class=\"condiiton _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n          <p title=\"").concat(label, "\">").concat(label, "</p>\n        </div>");
-      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button\" data-button=\"download-json\">\n        <a class=\"json\">\n          <span class=\"material-icons-outlined\">download json</span>\n          <span class=\"label\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button\" data-button=\"download-tsv\">\n        <a class=\"tsv\">\n          <span class=\"material-icons-outlined\">download tsv</span>\n          <span class=\"label\">TSV</span>\n        </a>\n      </div>\n      <div class=\"button none\" data-button=\"prepare-data\">\n        <span class=\"material-icons-outlined\">autorenew</span>\n        <span class=\"label\">Pause</span>\n      </div>\n      <div class=\"button\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">edit</span>\n        <span class=\"label\">Edit</span>\n      </div>\n    </div>\n    "); // reference　
+      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button none\" data-button=\"download-json\">\n        <a class=\"json\">\n          <span class=\"material-icons-outlined\">download json</span>\n          <span class=\"label\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button none\" data-button=\"download-tsv\">\n        <a class=\"tsv\">\n          <span class=\"material-icons-outlined\">download tsv</span>\n          <span class=\"label\">TSV</span>\n        </a>\n      </div>\n      <div class=\"button -rotating\" data-button=\"prepare-data\">\n        <span class=\"material-icons-outlined\">autorenew</span>\n        <span class=\"label\">Pause</span>\n      </div>\n      <div class=\"button\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">edit</span>\n        <span class=\"label\">Edit</span>\n      </div>\n    </div>\n    "); // reference　
 
       _classPrivateFieldSet(this, _ROOT, elm);
 
@@ -6360,28 +6342,12 @@
         if (elm.classList.contains('-current')) return;
 
         _this.select();
-      }); // prepare data
-
-      [_classPrivateFieldGet(this, _BUTTON_DOWNLOAD_JSON), _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_TSV)].forEach(function (button) {
-        button.addEventListener('click', function (e) {
-          e.stopPropagation();
-
-          if (_classPrivateFieldGet(_this, _isAutoLoad) === false && _classPrivateFieldGet(_this, _ROOT).dataset.status !== 'complete') {
-            _classPrivateMethodGet(_this, _autoLoad, _autoLoad2).call(_this);
-
-            _classPrivateMethodGet(_this, _changeButtons, _changeButtons2).call(_this);
-
-            _classPrivateFieldSet(_this, _downloadReserveButton, button);
-          } else {
-            _classPrivateFieldSet(_this, _isAutoLoad, false);
-          }
-        });
       });
 
       _classPrivateFieldGet(this, _BUTTON_PREPARE_DATA).addEventListener('click', function (e) {
         e.stopPropagation();
 
-        if (_classPrivateFieldGet(_this, _isAutoLoad) === false && _classPrivateFieldGet(_this, _ROOT).dataset.status !== 'complete') {
+        if (_classPrivateFieldGet(_this, _isAutoLoad) === false) {
           _classPrivateMethodGet(_this, _autoLoad, _autoLoad2).call(_this);
 
           _classPrivateFieldGet(_this, _BUTTON_PREPARE_DATA).classList.add('-rotating');
@@ -6579,9 +6545,7 @@
   function _getProperties2() {
     var _this3 = this;
 
-    if (_classPrivateFieldGet(this, _isLoading)) return;
-
-    _classPrivateFieldSet(this, _isLoading, true);
+    _classPrivateFieldSet(this, _isAutoLoad, true);
 
     _classPrivateFieldGet(this, _ROOT).classList.add('-fetching');
 
@@ -6600,8 +6564,6 @@
       console.log(rows);
 
       (_classPrivateFieldGet2 = _classPrivateFieldGet(_this3, _rows)).push.apply(_classPrivateFieldGet2, _toConsumableArray(rows));
-
-      _classPrivateFieldSet(_this3, _isLoading, false);
 
       _classPrivateFieldSet(_this3, _isCompleted, _this3.offset >= _classPrivateFieldGet(_this3, _queryIds).length); // display
 
@@ -6676,20 +6638,6 @@
     _classPrivateMethodGet(this, _setJsonUrl, _setJsonUrl2).call(this);
 
     _classPrivateMethodGet(this, _setTsvUrl, _setTsvUrl2).call(this);
-
-    if (_classPrivateFieldGet(this, _downloadReserveButton)) {
-      _classPrivateFieldGet(this, _downloadReserveButton).querySelector(':scope > a').click();
-    }
-  }
-
-  function _changeButtons2() {
-    _classPrivateFieldGet(this, _BUTTON_PREPARE_DATA).classList.remove('none');
-
-    _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_JSON).classList.add('none');
-
-    _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_TSV).classList.add('none');
-
-    _classPrivateFieldGet(this, _BUTTON_PREPARE_DATA).classList.add('-rotating');
   }
 
   function _setJsonUrl2() {
@@ -6709,9 +6657,9 @@
 
     var temporaryArray = [];
 
-    _classPrivateFieldGet(this, _rows).map(function (row) {
-      row.properties.map(function (property) {
-        property.attributes.map(function (attribute) {
+    _classPrivateFieldGet(this, _rows).forEach(function (row) {
+      row.properties.forEach(function (property) {
+        property.attributes.forEach(function (attribute) {
           var singleItem = {
             togoKey: _classPrivateFieldGet(_this4, _condition).togoKey,
             togoKeyId: row.id,
@@ -6725,11 +6673,14 @@
       });
     });
 
-    var tsvArray = [];
-    tsvArray.push(Object.keys(temporaryArray[0]).join('\t'));
-    temporaryArray.forEach(function (item) {
-      tsvArray.push(Object.values(item).join('\t'));
+    var tsvArray = temporaryArray.map(function (item) {
+      return Object.values(item).join('\t');
     });
+
+    if (tsvArray.length !== 0) {
+      tsvArray.unshift(Object.keys(temporaryArray[0]).join('\t'));
+    }
+
     var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
     var tsvBlob = new Blob([bom, tsvArray.join('\n')], {
       type: 'text/plain'

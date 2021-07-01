@@ -403,6 +403,20 @@
       "pg" : 0,
       "sct" : 0
     },
+    "\/source\/css\/object\/project\/_Reports.sass" : {
+      "aP" : 1,
+      "bl" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 2,
+      "ma" : 1,
+      "oA" : 1,
+      "oAP" : "\/build\/css\/object\/project\/_Reports.css",
+      "oF" : 0,
+      "oS" : 1,
+      "pg" : 0,
+      "sct" : 0
+    },
     "\/source\/css\/object\/project\/_ReportsPageView.sass" : {
       "aP" : 1,
       "bl" : 0,
@@ -630,6 +644,17 @@
       "mi" : 0,
       "oA" : 1,
       "oAP" : "\/build\/js\/classes\/ReportApp.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
+    "\/source\/js\/classes\/ReportsView.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/classes\/ReportsView.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 1
