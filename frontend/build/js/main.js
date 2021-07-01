@@ -5098,7 +5098,6 @@
 
     _classPrivateFieldSet(this, _sparqlist, property.data);
 
-    console.log(_classPrivateFieldGet(this, _sparqlist));
     elm.classList.add('track-view', '-preparing', 'collapse-view');
     if (isSelected) elm.classList.add('-allselected');
     elm.dataset.subjectId = subject.subjectId;
@@ -5559,7 +5558,7 @@
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
       console.log(row);
-      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n            <th>\n              <div class=\"inner\">\n                <a class=\"external-link-button-view\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(window.btoa(RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))), "\" target=\"_blank\">Report</a>\n              </div>\n            </th>\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order= \"").concat([0, detail.tableData.offset + index], "\"\n                    data-sub-order= \"0\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "\n                  </div>\n                  <span>").concat(detail.rows[index].label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.map(function (column, columnIndex) {
+      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n            <th>\n              <div class=\"inner\">\n                <a class=\"report-page-button-view\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(window.btoa(RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n              </div>\n            </th>\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order= \"").concat([0, detail.tableData.offset + index], "\"\n                    data-sub-order= \"0\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "\n                  </div>\n                  <span>").concat(detail.rows[index].label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.map(function (column, columnIndex) {
         // console.log(column)
         if (column) {
           return "\n                  <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute, attributeIndex) {
@@ -5939,7 +5938,7 @@
     var subCategory = isPrimaryKey ? '' : Records$1.getValue(keys.mainCategoryId, keys.subCategoryId);
     var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(subject.subject, " / ").concat(subCategory.label, "</span>");
     var header = document.createElement('header');
-    header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div>\n        <a class='external-link-button-view' href='").concat(props.reportLink, "' target='_blank'>Report</a>\n    ");
+    header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div>\n        <a class='report-page-button-view' href='").concat(props.reportLink, "' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>\n    ");
     header.classList.add('_subject-background-color');
     header.lastChild.appendChild(_classPrivateFieldGet(this, _exit_button));
     header.addEventListener('mousedown', function (e) {
@@ -6017,7 +6016,7 @@
       var targetEntry = _classPrivateMethodGet(this, _getTargetEntry, _getTargetEntry2).call(this, movement);
 
       var targetTr = targetEntry.closest('tr');
-      var reportLink = targetTr.querySelector(':scope > th > .inner > .external-link-button-view').href;
+      var reportLink = targetTr.querySelector(':scope > th > .inner > .report-page-button-view').href;
       targetEntry.scrollIntoView({
         block: 'center'
       });

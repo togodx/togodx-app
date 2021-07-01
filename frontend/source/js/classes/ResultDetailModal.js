@@ -100,9 +100,9 @@ export default class ResultDetailModal {
         ${path}
       </div>
       <div>
-        <a class='external-link-button-view' href='${
+        <a class='report-page-button-view' href='${
           props.reportLink
-        }' target='_blank'>Report</a>
+        }' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>
     `;
     header.classList.add('_subject-background-color');
     header.lastChild.appendChild(this.#exit_button);
@@ -219,7 +219,7 @@ export default class ResultDetailModal {
       const targetEntry = this.#getTargetEntry(movement);
       const targetTr = targetEntry.closest('tr');
       const reportLink = targetTr.querySelector(
-        ':scope > th > .inner > .external-link-button-view'
+        ':scope > th > .inner > .report-page-button-view'
       ).href;
 
       targetEntry.scrollIntoView({block: 'center'});
