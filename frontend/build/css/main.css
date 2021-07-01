@@ -1461,17 +1461,13 @@ main {
   line-height: 3rem;
 }
 .track-view > .row.-lower > .left > .description {
+  margin-bottom: 0.4rem;
   padding: 0 0.8rem;
   line-height: 1.2;
 }
-.track-view > .row.-lower > .left > label {
-  padding-left: 1.6rem;
-  font-weight: bold;
-}
-.track-view > .row.-lower > .left > label > input {
-  vertical-align: middle;
-  -webkit-margin-end: 0.4rem;
-          margin-inline-end: 0.4rem;
+.track-view > .row.-lower > .left > .external-link-button-view {
+  font-size: 1rem;
+  margin-left: 0.8rem;
 }
 .track-view > .row > .selector {
   height: 100%;
