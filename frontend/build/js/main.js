@@ -6660,25 +6660,26 @@
     _classPrivateFieldGet(this, _rows).forEach(function (row) {
       row.properties.forEach(function (property) {
         property.attributes.forEach(function (attribute) {
-          var singleItem = {
-            togoKey: _classPrivateFieldGet(_this4, _condition).togoKey,
-            togoKeyId: row.id,
-            attributeId: property.propertyId,
-            attributeValue: attribute.attribute.label,
-            attributeKey: property.propertyKey,
-            attributeKeyId: attribute.id
-          };
+          var singleItem = [_classPrivateFieldGet(_this4, _condition).togoKey, // togoKey
+          row.id, // togoKeyId
+          row.label, // togoKeyLabel
+          property.propertyId, // attribute
+          property.propertyKey, // attributeKey
+          attribute.id, // attributeKeyId
+          attribute.attribute.label // attributeValue
+          ];
           temporaryArray.push(singleItem);
         });
       });
     });
 
     var tsvArray = temporaryArray.map(function (item) {
-      return Object.values(item).join('\t');
+      return item.join('\t');
     });
 
     if (tsvArray.length !== 0) {
-      tsvArray.unshift(Object.keys(temporaryArray[0]).join('\t'));
+      var tsvHeader = ["togoKey", "togoKeyId", "togoKeyLabel", "attribute", "attributeKey", "attributeKeyId", "attributeValue"];
+      tsvArray.unshift(tsvHeader.join('\t'));
     }
 
     var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
