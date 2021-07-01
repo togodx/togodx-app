@@ -47,7 +47,7 @@ class ConditionBuilder {
   }
 
   addProperty(propertyId, parentCategoryId, isFinal = true) {
-    console.log('addProperty', propertyId, parentCategoryId, isFinal)
+    // console.log('addProperty', propertyId, parentCategoryId, isFinal)
     // store
     this.#propertyConditions.push({propertyId, parentCategoryId});
     // evaluate
@@ -58,7 +58,7 @@ class ConditionBuilder {
   }
 
   addPropertyValue(propertyId, categoryId, isFinal = true) {
-    console.log('addPropertyValue', propertyId, categoryId, isFinal)
+    // console.log('addPropertyValue', propertyId, categoryId, isFinal)
     // find value of same property
     const samePropertyCondition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
     // store
@@ -78,7 +78,7 @@ class ConditionBuilder {
   }
 
   removeProperty(propertyId, parentCategoryId, isFinal = true) {
-    console.log('removeProperty', propertyId, parentCategoryId, isFinal)
+    // console.log('removeProperty', propertyId, parentCategoryId, isFinal)
     // remove from store
     const index = this.#propertyConditions.findIndex(condition => {
       if (propertyId === condition.propertyId) {
@@ -99,7 +99,7 @@ class ConditionBuilder {
   }
 
   removePropertyValue(propertyId, categoryId, isFinal = true) {
-    console.log('removePropertyValue', propertyId, categoryId, isFinal)
+    // console.log('removePropertyValue', propertyId, categoryId, isFinal)
     // remove from store
     const index = this.#attributeConditions.findIndex(condition => {
       if (condition.propertyId === propertyId) {
@@ -119,7 +119,7 @@ class ConditionBuilder {
   }
 
   setProperties(conditions, isFinal = true) {
-    console.log('setProperties', conditions, isFinal)
+    // console.log('setProperties', conditions, isFinal)
     // delete existing properties
     while (this.#propertyConditions.length > 0) {
       this.removeProperty(this.#propertyConditions[0].propertyId, this.#propertyConditions[0].parentCategoryId, false);
@@ -131,7 +131,7 @@ class ConditionBuilder {
   }
 
   setPropertyValues(propertyId, categoryIds, isFinal = true) {
-    console.log('setPropertyValues', propertyId, categoryIds, isFinal)
+    // console.log('setPropertyValues', propertyId, categoryIds, isFinal)
     const oldCondition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
     if (oldCondition) {
       const originalValues = Records.getProperty(propertyId).values;
@@ -322,10 +322,12 @@ class ConditionBuilder {
   }
 
   #restoreConditions({togoKey, userIds, keys, values}) {
+    console.log(togoKey, userIds, keys, values)
 
     this.#isRestoredConditinoFromURLParameters = true;
 
     // restore conditions
+    this.#togoKey = togoKey;
     const [properties, attributes] = this.#getCondtionsFromHierarchicConditions(keys, values);
     console.log(properties, attributes)
     this.setProperties(properties, false);

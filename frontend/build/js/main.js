@@ -3081,8 +3081,9 @@
       key: "addProperty",
       value: function addProperty(propertyId, parentCategoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log('addProperty', propertyId, parentCategoryId, isFinal); // store
 
+        // console.log('addProperty', propertyId, parentCategoryId, isFinal)
+        // store
         _classPrivateFieldGet(this, _propertyConditions).push({
           propertyId: propertyId,
           parentCategoryId: parentCategoryId
@@ -3104,8 +3105,9 @@
       key: "addPropertyValue",
       value: function addPropertyValue(propertyId, categoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log('addPropertyValue', propertyId, categoryId, isFinal); // find value of same property
 
+        // console.log('addPropertyValue', propertyId, categoryId, isFinal)
+        // find value of same property
         var samePropertyCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
           return condition.propertyId === propertyId;
         }); // store
@@ -3136,8 +3138,9 @@
       key: "removeProperty",
       value: function removeProperty(propertyId, parentCategoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log('removeProperty', propertyId, parentCategoryId, isFinal); // remove from store
 
+        // console.log('removeProperty', propertyId, parentCategoryId, isFinal)
+        // remove from store
         var index = _classPrivateFieldGet(this, _propertyConditions).findIndex(function (condition) {
           if (propertyId === condition.propertyId) {
             if (parentCategoryId) {
@@ -3166,8 +3169,9 @@
       key: "removePropertyValue",
       value: function removePropertyValue(propertyId, categoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log('removePropertyValue', propertyId, categoryId, isFinal); // remove from store
 
+        // console.log('removePropertyValue', propertyId, categoryId, isFinal)
+        // remove from store
         var index = _classPrivateFieldGet(this, _attributeConditions).findIndex(function (condition) {
           if (condition.propertyId === propertyId) {
             var _index = condition.categoryIds.indexOf(categoryId);
@@ -3198,8 +3202,9 @@
         var _this = this;
 
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-        console.log('setProperties', conditions, isFinal); // delete existing properties
 
+        // console.log('setProperties', conditions, isFinal)
+        // delete existing properties
         while (_classPrivateFieldGet(this, _propertyConditions).length > 0) {
           this.removeProperty(_classPrivateFieldGet(this, _propertyConditions)[0].propertyId, _classPrivateFieldGet(this, _propertyConditions)[0].parentCategoryId, false);
         }
@@ -3218,8 +3223,8 @@
         var _this2 = this;
 
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log('setPropertyValues', propertyId, categoryIds, isFinal);
 
+        // console.log('setPropertyValues', propertyId, categoryIds, isFinal)
         var oldCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
           return condition.propertyId === propertyId;
         });
@@ -3484,9 +3489,12 @@
         userIds = _ref6.userIds,
         keys = _ref6.keys,
         values = _ref6.values;
+    console.log(togoKey, userIds, keys, values);
 
     _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true); // restore conditions
 
+
+    _classPrivateFieldSet(this, _togoKey, togoKey);
 
     var _classPrivateMethodGe3 = _classPrivateMethodGet(this, _getCondtionsFromHierarchicConditions, _getCondtionsFromHierarchicConditions2).call(this, keys, values),
         _classPrivateMethodGe4 = _slicedToArray(_classPrivateMethodGe3, 2),
@@ -3612,7 +3620,7 @@
 
   var ConditionBuilder$1 = new ConditionBuilder();
 
-  var POLLING_DURATION$1 = 100;
+  var POLLING_DURATION = 100;
 
   var _isRange = new WeakMap();
 
@@ -3622,6 +3630,8 @@
 
   var _LABELS = new WeakMap();
 
+  var _make = new WeakSet();
+
   var StackingConditionView = /*#__PURE__*/function () {
     /**
      * 
@@ -3629,10 +3639,12 @@
      * @param {String} type: 'property' or 'value'
      * @param {Object} condition 
      */
-    function StackingConditionView(container, type, condition) {
+    function StackingConditionView(_container, _type, condition) {
       var _this = this;
 
       _classCallCheck(this, StackingConditionView);
+
+      _make.add(this);
 
       _isRange.set(this, {
         writable: true,
@@ -3669,81 +3681,62 @@
       if (condition.value) _classPrivateFieldGet(this, _ROOT$8).dataset.categoryId = condition.value.categoryId;
       if (condition.parentCategoryId) _classPrivateFieldGet(this, _ROOT$8).dataset.parentCategoryId = condition.parentCategoryId; // make view
 
-      var label,
-          ancestorLabels = [subject.subject];
+      var _label,
+          _ancestorLabels = [subject.subject];
 
-      switch (type) {
+      switch (_type) {
         case 'property':
           {
-            var parentValue = condition.parentCategoryId ? Records$1.getValue(condition.propertyId, condition.parentCategoryId) : undefined;
-            label = "<div class=\"label _subject-color\">".concat(parentValue ? parentValue.label : property.label, "</div>");
-
             if (condition.parentCategoryId) {
-              console.log(Records$1.getValue(condition.propertyId, condition.parentCategoryId));
-              console.log(Records$1.getAncestors(condition.propertyId, condition.parentCategoryId));
-              ancestorLabels.push.apply(ancestorLabels, [property.label].concat(_toConsumableArray(Records$1.getAncestors(condition.propertyId, condition.parentCategoryId).map(function (ancestor) {
-                return ancestor.label;
-              }))));
+              var getValue = function getValue() {
+                var value = Records$1.getValue(condition.propertyId, condition.parentCategoryId);
+
+                if (value) {
+                  var ancestors = Records$1.getAncestors(condition.propertyId, condition.parentCategoryId);
+                  _label = "<div class=\"label _subject-color\">".concat(value.label, "</div>");
+
+                  _ancestorLabels.push.apply(_ancestorLabels, [property.label].concat(_toConsumableArray(ancestors.map(function (ancestor) {
+                    return ancestor.label;
+                  }))));
+
+                  _classPrivateMethodGet(_this, _make, _make2).call(_this, _container, _type, _ancestorLabels, _label);
+                } else {
+                  setTimeout(getValue, POLLING_DURATION);
+                }
+              };
+
+              getValue();
+            } else {
+              _label = "<div class=\"label _subject-color\">".concat(property.label, "</div>");
+
+              _classPrivateMethodGet(this, _make, _make2).call(this, _container, _type, _ancestorLabels, _label);
             }
           }
           break;
 
         case 'value':
-          label = "<ul class=\"labels\"></ul>";
-          ancestorLabels.push(property.label);
+          _label = "<ul class=\"labels\"></ul>";
+
+          _ancestorLabels.push(property.label);
+
+          _classPrivateMethodGet(this, _make, _make2).call(this, _container, _type, _ancestorLabels, _label);
+
           break;
       }
-
-      _classPrivateFieldGet(this, _ROOT$8).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      ".concat(ancestorLabels.map(function (ancestor) {
-        return "<li>".concat(ancestor, "</li>");
-      }).join(''), "\n    </ul>\n    ").concat(label);
-      container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$8)); // reference
-
-      if (type === 'value') {
-        _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .labels'));
-
-        this.addValue(condition.categoryId);
-      } // event
-
-
-      _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .close-button-view').addEventListener('click', function () {
-        switch (type) {
-          case 'property':
-            // notify
-            ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this, _condition$1).propertyId, _classPrivateFieldGet(_this, _condition$1).parentCategoryId);
-            break;
-
-          case 'value':
-            var _iterator = _createForOfIteratorHelper(_classPrivateFieldGet(_this, _LABELS).querySelectorAll(':scope > .label')),
-                _step;
-
-            try {
-              for (_iterator.s(); !(_step = _iterator.n()).done;) {
-                var _label = _step.value;
-                ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this, _condition$1).propertyId, _label.dataset.categoryId);
-              }
-            } catch (err) {
-              _iterator.e(err);
-            } finally {
-              _iterator.f();
-            }
-
-            break;
-        }
-      });
-    } // public methods
+    } // private methods
 
 
     _createClass(StackingConditionView, [{
       key: "addValue",
-      value: function addValue(categoryId) {
+      value: // public methods
+      function addValue(categoryId) {
         var _this2 = this;
 
         var getValue = function getValue() {
           var value = Records$1.getValue(_classPrivateFieldGet(_this2, _condition$1).propertyId, categoryId);
 
           if (value === undefined) {
-            setTimeout(getValue, POLLING_DURATION$1);
+            setTimeout(getValue, POLLING_DURATION);
           } else {
             _classPrivateFieldGet(_this2, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _subject-background-color\" data-category-id=\"".concat(value.categoryId, "\">").concat(value.label, "<div class=\"close-button-view\"></div></li>")); // attach event
 
@@ -3791,7 +3784,48 @@
     return StackingConditionView;
   }();
 
-  var POLLING_DURATION = 100;
+  function _make2(container, type, ancestorLabels, label) {
+    var _this3 = this;
+
+    console.log(container, type, ancestorLabels, label);
+    _classPrivateFieldGet(this, _ROOT$8).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      ".concat(ancestorLabels.map(function (ancestor) {
+      return "<li>".concat(ancestor, "</li>");
+    }).join(''), "\n    </ul>\n    ").concat(label);
+    container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$8)); // reference
+
+    if (type === 'value') {
+      _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .labels'));
+
+      this.addValue(_classPrivateFieldGet(this, _condition$1).categoryId);
+    } // event
+
+
+    _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .close-button-view').addEventListener('click', function () {
+      switch (type) {
+        case 'property':
+          // notify
+          ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this3, _condition$1).propertyId, _classPrivateFieldGet(_this3, _condition$1).parentCategoryId);
+          break;
+
+        case 'value':
+          var _iterator = _createForOfIteratorHelper(_classPrivateFieldGet(_this3, _LABELS).querySelectorAll(':scope > .label')),
+              _step;
+
+          try {
+            for (_iterator.s(); !(_step = _iterator.n()).done;) {
+              var _label2 = _step.value;
+              ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _condition$1).propertyId, _label2.dataset.categoryId);
+            }
+          } catch (err) {
+            _iterator.e(err);
+          } finally {
+            _iterator.f();
+          }
+
+          break;
+      }
+    });
+  }
 
   var _properties = new WeakMap();
 
@@ -3810,8 +3844,6 @@
   var _ATTRIBUTES_CONDITIONS_CONTAINER = new WeakMap();
 
   var _EXEC_BUTTON = new WeakMap();
-
-  var _restoreParameters$1 = new WeakSet();
 
   var _defineTogoKeys = new WeakSet();
 
@@ -3837,8 +3869,6 @@
     _addProperty.add(this);
 
     _defineTogoKeys.add(this);
-
-    _restoreParameters$1.add(this);
 
     _properties.set(this, {
       writable: true,
@@ -3921,7 +3951,10 @@
       document.body.dataset.display = 'properties';
     });
     elm.querySelector(':scope > header > button.rounded-button-view').addEventListener('click', function () {
-      console.log(123);
+      _classPrivateFieldGet(_this, _TOGO_KEYS).options[0].selected = true;
+
+      _classPrivateFieldGet(_this, _TOGO_KEYS).dispatchEvent(new Event('change'));
+
       var customEvent = new CustomEvent(clearCondition);
       DefaultEventEmitter$1.dispatchEvent(customEvent);
     }); // event listeners
@@ -3957,29 +3990,26 @@
     });
     DefaultEventEmitter$1.addEventListener(mutateEstablishConditions, function (e) {
       _classPrivateFieldGet(_this, _EXEC_BUTTON).disabled = !e.detail;
-    });
-    DefaultEventEmitter$1.addEventListener(restoreParameters, function (e) {
-      _classPrivateMethodGet(_this, _restoreParameters$1, _restoreParameters2$1).call(_this, e.detail);
-    });
+    }); // DefaultEventEmitter.addEventListener(event.restoreParameters, e => {
+    //   this.#restoreParameters(e.detail);
+    // });
   } // private methods
+  // #restoreParameters(parameters) {
+  //   console.log(parameters)
+  //   if (parameters.togoKey) {
+  //     if (this.#isDefined) {
+  //       this.#TOGO_KEYS.value = parameters.togoKey;
+  //     } else {
+  //       setTimeout(() => {
+  //         this.#restoreParameters(parameters);
+  //       }, POLLING_DURATION);
+  //     }
+  //   }
+  // }
   ;
 
-  function _restoreParameters2$1(parameters) {
-    var _this2 = this;
-
-    if (parameters.togoKey) {
-      if (_classPrivateFieldGet(this, _isDefined)) {
-        _classPrivateFieldGet(this, _TOGO_KEYS).value = parameters.togoKey;
-      } else {
-        setTimeout(function () {
-          _classPrivateMethodGet(_this2, _restoreParameters$1, _restoreParameters2$1).call(_this2, parameters);
-        }, POLLING_DURATION);
-      }
-    }
-  }
-
   function _defineTogoKeys2(subjects) {
-    var _this3 = this;
+    var _this2 = this;
 
     _classPrivateFieldSet(this, _isDefined, true);
 
@@ -3992,17 +4022,18 @@
 
     _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = subjects.map(function (subject) {
       var option = '';
-      if (subject.togoKey) option = "<option value=\"".concat(subject.togoKey, "\" data-subject-id=\"").concat(subjects.subjectId, "\">").concat(subject.keyLabel, "</option>");
+      if (subject.togoKey) option = "<option value=\"".concat(subject.togoKey, "\" data-subject-id=\"").concat(subject.subjectId, "\">").concat(subject.keyLabel, "</option>");
       return option;
     }).join('');
-    _classPrivateFieldGet(this, _TOGO_KEYS).disabled = false; // attach event
+    _classPrivateFieldGet(this, _TOGO_KEYS).disabled = false;
+    _classPrivateFieldGet(this, _TOGO_KEYS).value = ConditionBuilder$1.currentTogoKey; // attach event
 
     _classPrivateFieldGet(this, _TOGO_KEYS).addEventListener('change', function (e) {
       var subject = subjects.find(function (subject) {
         return subject.togoKey === e.target.value;
       });
       ConditionBuilder$1.setSubject(e.target.value, subject.subjectId);
-      _classPrivateFieldGet(_this3, _USER_IDS$1).placeholder = _classPrivateFieldGet(_this3, _placeHolders)[e.target.value].join(', ');
+      _classPrivateFieldGet(_this2, _USER_IDS$1).placeholder = _classPrivateFieldGet(_this2, _placeHolders)[e.target.value].join(', ');
     });
 
     _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));
