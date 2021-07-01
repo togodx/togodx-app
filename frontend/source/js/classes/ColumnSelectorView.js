@@ -242,7 +242,7 @@ export default class ColumnSelectorView {
   #update(isLog10) {
     this.#columns.forEach(column => {
       let max = column.max;
-      max = isLog10 ? Math.log10(max) : max;
+      max = isLog10 && max > 1 ? Math.log10(max) : max;
       column.ul.querySelectorAll(':scope > li:not(.-all)').forEach(li => {
         const count = Number(li.dataset.count);
         li.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
