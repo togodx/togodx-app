@@ -2935,8 +2935,6 @@
   }();
 
   function _drawStanzas2() {
-    var _this2 = this;
-
     var urlVars = Object.fromEntries(window.location.search.substr(1).split('&').map(function (keyValue) {
       return keyValue.split('=');
     }));
