@@ -4458,7 +4458,7 @@
 
     _classPrivateFieldGet(this, _columns).forEach(function (column) {
       var max = column.max;
-      max = isLog10 ? Math.log10(max) : max;
+      max = isLog10 && max > 1 ? Math.log10(max) : max;
       column.ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
         var count = Number(li.dataset.count);
         li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this5, _subject$2).color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
@@ -6660,25 +6660,26 @@
     _classPrivateFieldGet(this, _rows).forEach(function (row) {
       row.properties.forEach(function (property) {
         property.attributes.forEach(function (attribute) {
-          var singleItem = {
-            togoKey: _classPrivateFieldGet(_this4, _condition).togoKey,
-            togoKeyId: row.id,
-            attributeId: property.propertyId,
-            attributeValue: attribute.attribute.label,
-            attributeKey: property.propertyKey,
-            attributeKeyId: attribute.id
-          };
+          var singleItem = [_classPrivateFieldGet(_this4, _condition).togoKey, // togoKey
+          row.id, // togoKeyId
+          row.label, // togoKeyLabel
+          property.propertyId, // attribute
+          property.propertyKey, // attributeKey
+          attribute.id, // attributeKeyId
+          attribute.attribute.label // attributeValue
+          ];
           temporaryArray.push(singleItem);
         });
       });
     });
 
     var tsvArray = temporaryArray.map(function (item) {
-      return Object.values(item).join('\t');
+      return item.join('\t');
     });
 
     if (tsvArray.length !== 0) {
-      tsvArray.unshift(Object.keys(temporaryArray[0]).join('\t'));
+      var tsvHeader = ["togoKey", "togoKeyId", "togoKeyLabel", "attribute", "attributeKey", "attributeKeyId", "attributeValue"];
+      tsvArray.unshift(tsvHeader.join('\t'));
     }
 
     var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
@@ -6955,10 +6956,6 @@
     DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
 
-  var PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
-  var TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
-  var AGGREGATE = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/aggregate.json';
-
   var _viewModes = new WeakMap();
 
   var _aggregate = new WeakMap();
@@ -7040,7 +7037,7 @@
 
     _createClass(App, [{
       key: "ready",
-      value: function ready() {
+      value: function ready(api) {
         var _this = this;
 
         var body = document.body; // view modes
@@ -7070,7 +7067,7 @@
         new BalloonView();
         var uploadUserIDsView = new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
 
-        Promise.all([fetch(PROPERTIES), fetch(TEMPLATES), fetch(AGGREGATE)]).then(function (responces) {
+        Promise.all([fetch(api.PROPERTIES), fetch(api.TEMPLATES), fetch(api.AGGREGATE)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
           }));
@@ -7161,8 +7158,12 @@
 
   var App$1 = new App();
 
-  globalThis.togositeapp = App$1;
-  App$1.ready();
+  fetch('./api.json').then(function (response) {
+    return response.json();
+  }).then(function (api) {
+    globalThis.togositeapp = App$1;
+    App$1.ready(api);
+  });
 
 }());
 //# sourceMappingURL=main.js.map

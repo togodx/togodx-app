@@ -24,7 +24,7 @@ export default class TableData {
   #BUTTON_PREPARE_DATA;
   #BUTTON_DOWNLOAD_JSON;
   #BUTTON_DOWNLOAD_TSV;
-  
+
 
   constructor(condition, elm) {
     console.log(condition)
@@ -114,7 +114,7 @@ export default class TableData {
       if (elm.classList.contains('-current')) return;
       this.select();
     });
-    
+
     this.#BUTTON_PREPARE_DATA.addEventListener('click', e => {
       e.stopPropagation();
       if (this.#isAutoLoad === false) {
@@ -161,7 +161,7 @@ export default class TableData {
     this.select();
     this.#getQueryIds();
   }
-  
+
 
   /* private methods */
 
@@ -246,9 +246,9 @@ export default class TableData {
         console.error(error) // TODO:
       });
   };
-  
+
   #updateRemainingTime() {
-    let singleTime = (Date.now() - this.#startTime) / this.offset; 
+    let singleTime = (Date.now() - this.#startTime) / this.offset;
     let remainingTime;
     if (this.offset == 0) {
       remainingTime = '';
@@ -267,7 +267,7 @@ export default class TableData {
       this.#INDICATOR_TEXT_TIME.innerHTML = ``;
     }
   };
-  
+
   #autoLoad() {
     if (this.#isCompleted) return;
     this.#isAutoLoad = true;
@@ -281,7 +281,7 @@ export default class TableData {
     this.#setJsonUrl();
     this.#setTsvUrl();
   }
-  
+
   #setJsonUrl() {
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {type : 'application/json'});
     const jsonUrl = URL.createObjectURL(jsonBlob);
@@ -295,23 +295,33 @@ export default class TableData {
     this.#rows.forEach(row => {
       row.properties.forEach(property => {
         property.attributes.forEach(attribute => {
-          const singleItem = {
-            togoKey: this.#condition.togoKey,
-            togoKeyId: row.id,
-            attributeId: property.propertyId,
-            attributeValue: attribute.attribute.label,
-            attributeKey: property.propertyKey,
-            attributeKeyId: attribute.id
-          }
+          const singleItem = [
+            this.#condition.togoKey, // togoKey
+            row.id, // togoKeyId
+            row.label, // togoKeyLabel
+            property.propertyId, // attribute
+            property.propertyKey, // attributeKey
+            attribute.id, // attributeKeyId
+            attribute.attribute.label, // attributeValue
+          ];
           temporaryArray.push(singleItem);
         })
       })
     })
     const tsvArray = temporaryArray.map(item => {
-      return Object.values(item).join('\t');
+      return item.join('\t');
     })
     if (tsvArray.length !== 0 ) {
-      tsvArray.unshift(Object.keys(temporaryArray[0]).join('\t'));
+      const tsvHeader = [
+        "togoKey",
+        "togoKeyId",
+        "togoKeyLabel",
+        "attribute",
+        "attributeKey",
+        "attributeKeyId",
+        "attributeValue",
+      ];
+      tsvArray.unshift(tsvHeader.join('\t'));
     }
     const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
     const tsvBlob = new Blob([bom, tsvArray.join('\n')], { type: 'text/plain' });
@@ -332,7 +342,7 @@ export default class TableData {
     if (this.#ROOT.dataset.status !== 'load ids') {
       const done = this.offset >= this.#queryIds.length;
       const customEvent2 = new CustomEvent(event.addNextRows, {detail: {
-        tableData: this, 
+        tableData: this,
         rows: this.#rows,
         done
       }});
