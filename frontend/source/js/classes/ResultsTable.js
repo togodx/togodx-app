@@ -187,11 +187,11 @@ export default class ResultsTable {
           }" data-togo-id="${detail.rows[index].id}">
             <th>
               <div class="inner">
-                <a class="report-page-button-view" href="report.html?togoKey=${
+                <a class="external-link-button-view" href="report.html?togoKey=${
                   detail.tableData.togoKey
                 }&id=${detail.rows[index].id}&properties=${window.btoa(
             RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))
-          )}" target="_blank"><span class="material-icons-outlined">open_in_new</span></a>
+          )}" target="_blank">Report</a>
               </div>
             </th>
             <td>

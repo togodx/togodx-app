@@ -1,4 +1,4 @@
-.report-page-button-view
+.external-link-button-view
   display: inline-block
   background-color: var(--color-lamp-black)
   color: white
@@ -8,12 +8,14 @@
   margin-right: .2rem
   cursor: pointer
   white-space: nowrap
-  &::before
-    content: "Report"
-  > .material-icons-outlined
-    font-size: 1rem
+  &:hover
+    color: white
+  &::after
+    content: "\e89e"
+    font-family: "Material Icons Outlined"
+    font-size: 1em
     vertical-align: middle
-    margin-left: .3rem
+    margin-left: .3em
     position: relative
-    top: -.1rem
-    margin-right: -.1rem
+    top: -.1em
+    margin-right: -.1em
