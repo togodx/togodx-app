@@ -337,8 +337,8 @@
       },
       {
         "propertyId": "chembl_mesh",
-        "label": "Drug indication (MeSH)",
-        "description": "Drug indications in MeSH categories",
+        "label": "Drug indication",
+        "description": "Number of drugs with indications (disease or symptom) categorized in MeSH hierarchy",
         "data": "https://integbio.jp/togosite/sparqlist/api/chembl_mesh",
         "primaryKey": "chembl_compound",
         "keyLabel": "ChEMBL compound"
