@@ -323,7 +323,7 @@
         "propertyId": "chebi_chemical_role",
         "label": "Chemical role",
         "description": "Chemical roles in ChEBI",
-        "data": "http://integbio.jp/togosite/sparqlist/compound_chemical_role_chebi",
+        "data": "http://integbio.jp/togosite/sparqlist/api/compound_chemical_role_chebi",
         "primaryKey": "chebi_compound",
         "keyLabel": "ChEBI compound"
       },
@@ -331,7 +331,7 @@
         "propertyId": "chebi_application_type",
         "label": "Application type",
         "description": "Application types in ChEBI",
-        "data": "http://integbio.jp/togosite/sparqlist/compound_application_type_chebi",
+        "data": "http://integbio.jp/togosite/sparqlist/api/compound_application_type_chebi",
         "primaryKey": "chebi_compound",
         "keyLabel": "ChEBI compound"
       },
@@ -347,7 +347,7 @@
         "propertyId": "chebi_biological_role",
         "label": "Biological role",
         "description": "Biological roles in ChEBI",
-        "data": "http://integbio.jp/togosite/sparqlist/compound_biological_role_chebi",
+        "data": "http://integbio.jp/togosite/sparqlist/api/compound_biological_role_chebi",
         "primaryKey": "chebi_compound",
         "keyLabel": "ChEBI compound"
       },
