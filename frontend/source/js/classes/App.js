@@ -79,7 +79,7 @@ class App {
         uploadUserIDsView.definePath(aggregate.mapping);
 
         // define primary keys
-        const customEvent = new CustomEvent(event.defineTogoKey, {detail: subjects});
+        const customEvent = new CustomEvent(event.defineTogoKey, {detail: {subjects}});
         DefaultEventEmitter.dispatchEvent(customEvent);
 
         // initialize stanza manager

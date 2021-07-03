@@ -42,7 +42,6 @@ export default class ConditionBuilderView {
       document.body.dataset.display = 'properties';
     });
     elm.querySelector(':scope > header > button.rounded-button-view').addEventListener('click', () => {
-      console.log(123)
       const customEvent = new CustomEvent(event.clearCondition);
       DefaultEventEmitter.dispatchEvent(customEvent);
     });
@@ -68,33 +67,17 @@ export default class ConditionBuilderView {
           break;
       }
     });
-    DefaultEventEmitter.addEventListener(event.defineTogoKey, e => {
-      this.#defineTogoKeys(e.detail);
-    });
+    DefaultEventEmitter.addEventListener(event.defineTogoKey, this.#defineTogoKeys.bind(this));
     DefaultEventEmitter.addEventListener(event.mutateEstablishConditions, e => {
       this.#EXEC_BUTTON.disabled = !e.detail;
     });
-    // DefaultEventEmitter.addEventListener(event.restoreParameters, this.#restoreParameters.bind(this));
 
   }
   
 
   // private methods
 
-  // #restoreParameters({detail}) {
-  //   console.log(detail)
-  //   if (detail.togoKey) {
-  //     if (this.#isDefined) {
-  //       this.#TOGO_KEYS.value = detail.togoKey;
-  //     } else {
-  //       setTimeout(() => {
-  //         this.#restoreParameters(detail);
-  //       }, POLLING_DURATION);
-  //     }
-  //   }
-  // }
-
-  #defineTogoKeys(subjects) {
+  #defineTogoKeys({detail: {subjects}}) {
     this.#isDefined = true;
     this.#placeHolderExamples = Object.fromEntries(subjects.filter(subject => subject.togoKey).map(subject => [subject.togoKey, subject.togoKeyExamples]));
     // make options
@@ -107,13 +90,10 @@ export default class ConditionBuilderView {
     // attach event
     this.#TOGO_KEYS.addEventListener('change', e => {
       const subject = subjects.find(subject => subject.togoKey === e.target.value);
-      console.log(subject)
       ConditionBuilder.setSubject(e.target.value, subject.subjectId);
       this.#USER_IDS.placeholder = `e.g. ${this.#placeHolderExamples[e.target.value].join(', ')}`;
     });
     // preset
-    console.log(ConditionBuilder.currentTogoKey);
-    console.log(ConditionBuilder.currentTogoKey === '');
     const togoKey = ConditionBuilder.currentTogoKey;
     if (togoKey) {
       if (Array.from(this.#TOGO_KEYS.options).map(option => option.value).indexOf(togoKey) !== -1) {

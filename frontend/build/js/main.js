@@ -3924,7 +3924,6 @@
       document.body.dataset.display = 'properties';
     });
     elm.querySelector(':scope > header > button.rounded-button-view').addEventListener('click', function () {
-      console.log(123);
       var customEvent = new CustomEvent(clearCondition);
       DefaultEventEmitter$1.dispatchEvent(customEvent);
     }); // event listeners
@@ -3955,29 +3954,17 @@
           break;
       }
     });
-    DefaultEventEmitter$1.addEventListener(defineTogoKey, function (e) {
-      _classPrivateMethodGet(_this, _defineTogoKeys, _defineTogoKeys2).call(_this, e.detail);
-    });
+    DefaultEventEmitter$1.addEventListener(defineTogoKey, _classPrivateMethodGet(this, _defineTogoKeys, _defineTogoKeys2).bind(this));
     DefaultEventEmitter$1.addEventListener(mutateEstablishConditions, function (e) {
       _classPrivateFieldGet(_this, _EXEC_BUTTON).disabled = !e.detail;
-    }); // DefaultEventEmitter.addEventListener(event.restoreParameters, this.#restoreParameters.bind(this));
+    });
   } // private methods
-  // #restoreParameters({detail}) {
-  //   console.log(detail)
-  //   if (detail.togoKey) {
-  //     if (this.#isDefined) {
-  //       this.#TOGO_KEYS.value = detail.togoKey;
-  //     } else {
-  //       setTimeout(() => {
-  //         this.#restoreParameters(detail);
-  //       }, POLLING_DURATION);
-  //     }
-  //   }
-  // }
   ;
 
-  function _defineTogoKeys2(subjects) {
+  function _defineTogoKeys2(_ref) {
     var _this2 = this;
+
+    var subjects = _ref.detail.subjects;
 
     _classPrivateFieldSet(this, _isDefined, true);
 
@@ -3999,14 +3986,11 @@
       var subject = subjects.find(function (subject) {
         return subject.togoKey === e.target.value;
       });
-      console.log(subject);
       ConditionBuilder$1.setSubject(e.target.value, subject.subjectId);
       _classPrivateFieldGet(_this2, _USER_IDS$1).placeholder = "e.g. ".concat(_classPrivateFieldGet(_this2, _placeHolderExamples)[e.target.value].join(', '));
     }); // preset
 
 
-    console.log(ConditionBuilder$1.currentTogoKey);
-    console.log(ConditionBuilder$1.currentTogoKey === '');
     var togoKey = ConditionBuilder$1.currentTogoKey;
 
     if (togoKey) {
@@ -7067,7 +7051,9 @@
           uploadUserIDsView.definePath(aggregate.mapping); // define primary keys
 
           var customEvent = new CustomEvent(defineTogoKey, {
-            detail: subjects
+            detail: {
+              subjects: subjects
+            }
           });
           DefaultEventEmitter$1.dispatchEvent(customEvent); // initialize stanza manager
 
