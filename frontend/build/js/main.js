@@ -4851,7 +4851,7 @@
         if (userValue !== null && userValue !== void 0 && userValue.pValue) {
           values.push({
             key: 'P-value',
-            value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(4)
+            value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(3)
           });
         }
 
