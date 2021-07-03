@@ -6079,19 +6079,23 @@
     _classPrivateFieldSet(this, _CONTAINER, _classPrivateFieldGet(this, _ROOT$1).querySelector(':scope > .container')); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener(enterPropertyValueItemView, function (e) {
-      _classPrivateFieldGet(_this, _CONTAINER).innerHTML = "\n        <header>".concat(e.detail.label, "</header>\n        ").concat(e.detail.values.map(function (value) {
+    DefaultEventEmitter$1.addEventListener(enterPropertyValueItemView, function (_ref) {
+      var _ref$detail = _ref.detail,
+          elm = _ref$detail.elm,
+          label = _ref$detail.label,
+          values = _ref$detail.values;
+      _classPrivateFieldGet(_this, _CONTAINER).innerHTML = "\n        <header>".concat(label, "</header>\n        ").concat(values.map(function (value) {
         return "<dl>\n          <dt>".concat(value.key, ":</dt>\n          <dd>").concat(value.value, "</dd>\n        </dl>");
       }).join('')); // geography
 
-      var rect = e.detail.elm.getBoundingClientRect();
+      var rect = elm.getBoundingClientRect();
       var isBelow = window.innerHeight * .3 > rect.top;
       _classPrivateFieldGet(_this, _ROOT$1).style.left = rect.left + rect.width * .5 + 'px';
 
       if (isBelow) {
         _classPrivateFieldGet(_this, _ROOT$1).classList.add('-below');
 
-        _classPrivateFieldGet(_this, _ROOT$1).style.top = rect.top + 10 + 'px';
+        _classPrivateFieldGet(_this, _ROOT$1).style.top = rect.bottom + 'px';
       } else {
         _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-below');
 
@@ -6100,7 +6104,7 @@
 
       _classPrivateFieldGet(_this, _ROOT$1).classList.add('-showing');
     });
-    DefaultEventEmitter$1.addEventListener(leavePropertyValueItemView, function (e) {
+    DefaultEventEmitter$1.addEventListener(leavePropertyValueItemView, function () {
       _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-showing');
     });
   };

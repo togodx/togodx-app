@@ -450,8 +450,8 @@ main {
   -webkit-filter: drop-shadow(var(--shadow-normal));
           filter: drop-shadow(var(--shadow-normal));
   z-index: var(--z-track-balloon);
-  -webkit-transform: translate(-50%, calc(-100% + -5px));
-          transform: translate(-50%, calc(-100% + -5px));
+  -webkit-transform: translate(-50%, calc(-100% + -.5rem));
+          transform: translate(-50%, calc(-100% + -.5rem));
   pointer-events: none;
   border-radius: 0.2rem;
 }
@@ -470,8 +470,8 @@ main {
   height: 0;
 }
 .balloon-view.-below {
-  -webkit-transform: translate(-50%, calc(100% - 14px));
-          transform: translate(-50%, calc(100% - 14px));
+  -webkit-transform: translate(-50%, 0.7rem);
+          transform: translate(-50%, 0.7rem);
 }
 .balloon-view.-below::before {
   top: -1.4rem;
