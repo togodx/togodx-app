@@ -10,7 +10,7 @@ export default class ConditionBuilderView {
   #properties;
   #propertyValues;
   #isDefined;
-  #placeHolders;
+  #placeHolderExamples;
   #TOGO_KEYS;
   #USER_IDS;
   #PROPERTIES_CONDITIONS_CONTAINER;
@@ -74,30 +74,29 @@ export default class ConditionBuilderView {
     DefaultEventEmitter.addEventListener(event.mutateEstablishConditions, e => {
       this.#EXEC_BUTTON.disabled = !e.detail;
     });
-    DefaultEventEmitter.addEventListener(event.restoreParameters, e => {
-      this.#restoreParameters(e.detail);
-    });
+    // DefaultEventEmitter.addEventListener(event.restoreParameters, this.#restoreParameters.bind(this));
 
   }
   
 
   // private methods
 
-  #restoreParameters(parameters) {
-    if (parameters.togoKey) {
-      if (this.#isDefined) {
-        this.#TOGO_KEYS.value = parameters.togoKey;
-      } else {
-        setTimeout(() => {
-          this.#restoreParameters(parameters);
-        }, POLLING_DURATION);
-      }
-    }
-  }
+  // #restoreParameters({detail}) {
+  //   console.log(detail)
+  //   if (detail.togoKey) {
+  //     if (this.#isDefined) {
+  //       this.#TOGO_KEYS.value = detail.togoKey;
+  //     } else {
+  //       setTimeout(() => {
+  //         this.#restoreParameters(detail);
+  //       }, POLLING_DURATION);
+  //     }
+  //   }
+  // }
 
   #defineTogoKeys(subjects) {
     this.#isDefined = true;
-    this.#placeHolders = Object.fromEntries(subjects.filter(subject => subject.togoKey).map(subject => [subject.togoKey, subject.togoKeyExamples]));
+    this.#placeHolderExamples = Object.fromEntries(subjects.filter(subject => subject.togoKey).map(subject => [subject.togoKey, subject.togoKeyExamples]));
     // make options
     this.#TOGO_KEYS.innerHTML = subjects.map(subject => {
       let option = '';
@@ -108,9 +107,19 @@ export default class ConditionBuilderView {
     // attach event
     this.#TOGO_KEYS.addEventListener('change', e => {
       const subject = subjects.find(subject => subject.togoKey === e.target.value);
+      console.log(subject)
       ConditionBuilder.setSubject(e.target.value, subject.subjectId);
-      this.#USER_IDS.placeholder = `e.g. ${this.#placeHolders[e.target.value].join(', ')}`;
+      this.#USER_IDS.placeholder = `e.g. ${this.#placeHolderExamples[e.target.value].join(', ')}`;
     });
+    // preset
+    console.log(ConditionBuilder.currentTogoKey);
+    console.log(ConditionBuilder.currentTogoKey === '');
+    const togoKey = ConditionBuilder.currentTogoKey;
+    if (togoKey) {
+      if (Array.from(this.#TOGO_KEYS.options).map(option => option.value).indexOf(togoKey) !== -1) {
+        this.#TOGO_KEYS.value = togoKey;
+      }
+    }
     this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }
 

@@ -3072,7 +3072,7 @@
       value: function setUserIds(ids) {
         console.log('setUserIds', ids);
 
-        _classPrivateFieldSet(this, _userIds, ids); // post processing (permalink, evaluate)
+        _classPrivateFieldSet(this, _userIds, ids.replace(/,/g, " ").split(/\s+/).join(',')); // post processing (permalink, evaluate)
 
 
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
@@ -3081,8 +3081,9 @@
       key: "addProperty",
       value: function addProperty(propertyId, parentCategoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log('addProperty', propertyId, parentCategoryId, isFinal); // store
 
+        // console.log('addProperty', propertyId, parentCategoryId, isFinal)
+        // store
         _classPrivateFieldGet(this, _propertyConditions).push({
           propertyId: propertyId,
           parentCategoryId: parentCategoryId
@@ -3104,8 +3105,9 @@
       key: "addPropertyValue",
       value: function addPropertyValue(propertyId, categoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log('addPropertyValue', propertyId, categoryId, isFinal); // find value of same property
 
+        // console.log('addPropertyValue', propertyId, categoryId, isFinal)
+        // find value of same property
         var samePropertyCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
           return condition.propertyId === propertyId;
         }); // store
@@ -3198,8 +3200,9 @@
         var _this = this;
 
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-        console.log('setProperties', conditions, isFinal); // delete existing properties
 
+        // console.log('setProperties', conditions, isFinal)
+        // delete existing properties
         while (_classPrivateFieldGet(this, _propertyConditions).length > 0) {
           this.removeProperty(_classPrivateFieldGet(this, _propertyConditions)[0].propertyId, _classPrivateFieldGet(this, _propertyConditions)[0].parentCategoryId, false);
         }
@@ -3218,8 +3221,8 @@
         var _this2 = this;
 
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log('setPropertyValues', propertyId, categoryIds, isFinal);
 
+        // console.log('setPropertyValues', propertyId, categoryIds, isFinal)
         var oldCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
           return condition.propertyId === propertyId;
         });
@@ -3392,8 +3395,8 @@
     var params = new URL(location).searchParams;
     params.set('togoKey', _classPrivateFieldGet(this, _togoKey));
     params.set('userIds', this.userIds ? this.userIds : '');
-    params.set('keys', encodeURIComponent(JSON.stringify(keys)));
-    params.set('values', encodeURIComponent(JSON.stringify(values)));
+    params.set('keys', JSON.stringify(keys));
+    params.set('values', JSON.stringify(values));
     if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
   }
 
@@ -3403,12 +3406,14 @@
     var isFirst = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     // get conditions with ancestors
     var params = new URL(location).searchParams;
+    console.log(params);
     var condition = {
       togoKey: params.get('togoKey'),
-      userIds: params.get('userIds'),
-      keys: (_JSON$parse = JSON.parse(decodeURIComponent(params.get('keys')))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
-      values: (_JSON$parse2 = JSON.parse(decodeURIComponent(params.get('values')))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
+      userIds: params.get('userIds').split(','),
+      keys: (_JSON$parse = JSON.parse(params.get('keys'))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
+      values: (_JSON$parse2 = JSON.parse(params.get('values'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
     };
+    console.log(condition);
 
     if (isFirst) {
       // get child category ids
@@ -3487,6 +3492,10 @@
 
     _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true); // restore conditions
 
+
+    _classPrivateFieldSet(this, _togoKey, togoKey);
+
+    _classPrivateFieldSet(this, _userIds, userIds);
 
     var _classPrivateMethodGe3 = _classPrivateMethodGet(this, _getCondtionsFromHierarchicConditions, _getCondtionsFromHierarchicConditions2).call(this, keys, values),
         _classPrivateMethodGe4 = _slicedToArray(_classPrivateMethodGe3, 2),
@@ -3612,7 +3621,7 @@
 
   var ConditionBuilder$1 = new ConditionBuilder();
 
-  var POLLING_DURATION$1 = 100;
+  var POLLING_DURATION = 100;
 
   var _isRange = new WeakMap();
 
@@ -3743,7 +3752,7 @@
           var value = Records$1.getValue(_classPrivateFieldGet(_this2, _condition$1).propertyId, categoryId);
 
           if (value === undefined) {
-            setTimeout(getValue, POLLING_DURATION$1);
+            setTimeout(getValue, POLLING_DURATION);
           } else {
             _classPrivateFieldGet(_this2, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _subject-background-color\" data-category-id=\"".concat(value.categoryId, "\">").concat(value.label, "<div class=\"close-button-view\"></div></li>")); // attach event
 
@@ -3791,15 +3800,13 @@
     return StackingConditionView;
   }();
 
-  var POLLING_DURATION = 100;
-
   var _properties = new WeakMap();
 
   var _propertyValues = new WeakMap();
 
   var _isDefined = new WeakMap();
 
-  var _placeHolders = new WeakMap();
+  var _placeHolderExamples = new WeakMap();
 
   var _TOGO_KEYS = new WeakMap();
 
@@ -3810,8 +3817,6 @@
   var _ATTRIBUTES_CONDITIONS_CONTAINER = new WeakMap();
 
   var _EXEC_BUTTON = new WeakMap();
-
-  var _restoreParameters$1 = new WeakSet();
 
   var _defineTogoKeys = new WeakSet();
 
@@ -3838,8 +3843,6 @@
 
     _defineTogoKeys.add(this);
 
-    _restoreParameters$1.add(this);
-
     _properties.set(this, {
       writable: true,
       value: void 0
@@ -3855,7 +3858,7 @@
       value: void 0
     });
 
-    _placeHolders.set(this, {
+    _placeHolderExamples.set(this, {
       writable: true,
       value: void 0
     });
@@ -3957,33 +3960,28 @@
     });
     DefaultEventEmitter$1.addEventListener(mutateEstablishConditions, function (e) {
       _classPrivateFieldGet(_this, _EXEC_BUTTON).disabled = !e.detail;
-    });
-    DefaultEventEmitter$1.addEventListener(restoreParameters, function (e) {
-      _classPrivateMethodGet(_this, _restoreParameters$1, _restoreParameters2$1).call(_this, e.detail);
-    });
+    }); // DefaultEventEmitter.addEventListener(event.restoreParameters, this.#restoreParameters.bind(this));
   } // private methods
+  // #restoreParameters({detail}) {
+  //   console.log(detail)
+  //   if (detail.togoKey) {
+  //     if (this.#isDefined) {
+  //       this.#TOGO_KEYS.value = detail.togoKey;
+  //     } else {
+  //       setTimeout(() => {
+  //         this.#restoreParameters(detail);
+  //       }, POLLING_DURATION);
+  //     }
+  //   }
+  // }
   ;
 
-  function _restoreParameters2$1(parameters) {
-    var _this2 = this;
-
-    if (parameters.togoKey) {
-      if (_classPrivateFieldGet(this, _isDefined)) {
-        _classPrivateFieldGet(this, _TOGO_KEYS).value = parameters.togoKey;
-      } else {
-        setTimeout(function () {
-          _classPrivateMethodGet(_this2, _restoreParameters$1, _restoreParameters2$1).call(_this2, parameters);
-        }, POLLING_DURATION);
-      }
-    }
-  }
-
   function _defineTogoKeys2(subjects) {
-    var _this3 = this;
+    var _this2 = this;
 
     _classPrivateFieldSet(this, _isDefined, true);
 
-    _classPrivateFieldSet(this, _placeHolders, Object.fromEntries(subjects.filter(function (subject) {
+    _classPrivateFieldSet(this, _placeHolderExamples, Object.fromEntries(subjects.filter(function (subject) {
       return subject.togoKey;
     }).map(function (subject) {
       return [subject.togoKey, subject.togoKeyExamples];
@@ -4001,9 +3999,23 @@
       var subject = subjects.find(function (subject) {
         return subject.togoKey === e.target.value;
       });
+      console.log(subject);
       ConditionBuilder$1.setSubject(e.target.value, subject.subjectId);
-      _classPrivateFieldGet(_this3, _USER_IDS$1).placeholder = "e.g. ".concat(_classPrivateFieldGet(_this3, _placeHolders)[e.target.value].join(', '));
-    });
+      _classPrivateFieldGet(_this2, _USER_IDS$1).placeholder = "e.g. ".concat(_classPrivateFieldGet(_this2, _placeHolderExamples)[e.target.value].join(', '));
+    }); // preset
+
+
+    console.log(ConditionBuilder$1.currentTogoKey);
+    console.log(ConditionBuilder$1.currentTogoKey === '');
+    var togoKey = ConditionBuilder$1.currentTogoKey;
+
+    if (togoKey) {
+      if (Array.from(_classPrivateFieldGet(this, _TOGO_KEYS).options).map(function (option) {
+        return option.value;
+      }).indexOf(togoKey) !== -1) {
+        _classPrivateFieldGet(this, _TOGO_KEYS).value = togoKey;
+      }
+    }
 
     _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));
   }
@@ -6862,18 +6874,14 @@
       }); // event listeners
 
       _classPrivateFieldGet(this, _USER_IDS).addEventListener('change', function () {
-        ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value.replace(/,/g, " ").split(/\s+/).join(','));
+        ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value);
       }); // this.#USER_IDS.addEventListener('keyup', e => {
       //   if (e.keyCode === 13) this.#fetch();
       // });
 
 
-      DefaultEventEmitter$1.addEventListener(restoreParameters, function (e) {
-        _classPrivateMethodGet(_this, _restoreParameters, _restoreParameters2).call(_this, e.detail);
-      });
-      DefaultEventEmitter$1.addEventListener(clearCondition, function (e) {
-        _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
-      });
+      DefaultEventEmitter$1.addEventListener(restoreParameters, _classPrivateMethodGet(this, _restoreParameters, _restoreParameters2).bind(this));
+      DefaultEventEmitter$1.addEventListener(clearCondition, _classPrivateMethodGet(this, _clear, _clear2).bind(this));
     } // public methods
 
 
@@ -6888,8 +6896,10 @@
     return UploadUserIDsView;
   }();
 
-  function _restoreParameters2(parameters) {
-    _classPrivateFieldGet(this, _USER_IDS).value = parameters.userIds;
+  function _restoreParameters2(_ref) {
+    var detail = _ref.detail;
+    console.log(detail, this);
+    _classPrivateFieldGet(this, _USER_IDS).value = detail.userIds;
   }
 
   function _fetch2() {

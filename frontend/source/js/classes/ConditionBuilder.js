@@ -41,13 +41,13 @@ class ConditionBuilder {
 
   setUserIds(ids) {
     console.log('setUserIds', ids)
-    this.#userIds = ids;
+    this.#userIds = ids.replace(/,/g," ").split(/\s+/).join(',');
     // post processing (permalink, evaluate)
     this.#postProcessing();
   }
 
   addProperty(propertyId, parentCategoryId, isFinal = true) {
-    console.log('addProperty', propertyId, parentCategoryId, isFinal)
+    // console.log('addProperty', propertyId, parentCategoryId, isFinal)
     // store
     this.#propertyConditions.push({propertyId, parentCategoryId});
     // evaluate
@@ -58,7 +58,7 @@ class ConditionBuilder {
   }
 
   addPropertyValue(propertyId, categoryId, isFinal = true) {
-    console.log('addPropertyValue', propertyId, categoryId, isFinal)
+    // console.log('addPropertyValue', propertyId, categoryId, isFinal)
     // find value of same property
     const samePropertyCondition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
     // store
@@ -119,7 +119,7 @@ class ConditionBuilder {
   }
 
   setProperties(conditions, isFinal = true) {
-    console.log('setProperties', conditions, isFinal)
+    // console.log('setProperties', conditions, isFinal)
     // delete existing properties
     while (this.#propertyConditions.length > 0) {
       this.removeProperty(this.#propertyConditions[0].propertyId, this.#propertyConditions[0].parentCategoryId, false);
@@ -131,7 +131,7 @@ class ConditionBuilder {
   }
 
   setPropertyValues(propertyId, categoryIds, isFinal = true) {
-    console.log('setPropertyValues', propertyId, categoryIds, isFinal)
+    // console.log('setPropertyValues', propertyId, categoryIds, isFinal)
     const oldCondition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
     if (oldCondition) {
       const originalValues = Records.getProperty(propertyId).values;
@@ -252,8 +252,8 @@ class ConditionBuilder {
     const params = new URL(location).searchParams;
     params.set('togoKey', this.#togoKey);
     params.set('userIds', this.userIds ? this.userIds : '');
-    params.set('keys', encodeURIComponent(JSON.stringify(keys)));
-    params.set('values', encodeURIComponent(JSON.stringify(values)));
+    params.set('keys', JSON.stringify(keys));
+    params.set('values', JSON.stringify(values));
     if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
 
   }
@@ -262,12 +262,14 @@ class ConditionBuilder {
 
     // get conditions with ancestors
     const params = new URL(location).searchParams;
+    console.log(params)
     const condition = {
       togoKey: params.get('togoKey'),
-      userIds: params.get('userIds'),
-      keys: JSON.parse(decodeURIComponent(params.get('keys'))) ?? [],
-      values: JSON.parse(decodeURIComponent(params.get('values'))) ?? []
+      userIds: params.get('userIds').split(','),
+      keys: JSON.parse(params.get('keys')) ?? [],
+      values: JSON.parse(params.get('values')) ?? []
     }
+    console.log(condition)
 
     if (isFirst) {
       // get child category ids
@@ -326,6 +328,8 @@ class ConditionBuilder {
     this.#isRestoredConditinoFromURLParameters = true;
 
     // restore conditions
+    this.#togoKey = togoKey;
+    this.#userIds = userIds;
     const [properties, attributes] = this.#getCondtionsFromHierarchicConditions(keys, values);
     console.log(properties, attributes)
     this.setProperties(properties, false);
