@@ -3401,15 +3401,18 @@
   }
 
   function _createSearchConditionFromURLParameters2() {
-    var _JSON$parse, _JSON$parse2;
+    var _params$get, _JSON$parse, _JSON$parse2;
 
     var isFirst = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     // get conditions with ancestors
     var params = new URL(location).searchParams;
     console.log(params);
+    console.log(params.get('userIds'));
     var condition = {
       togoKey: params.get('togoKey'),
-      userIds: params.get('userIds').split(','),
+      userIds: ((_params$get = params.get('userIds')) !== null && _params$get !== void 0 ? _params$get : '').split(',').filter(function (id) {
+        return id !== '';
+      }),
       keys: (_JSON$parse = JSON.parse(params.get('keys'))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
       values: (_JSON$parse2 = JSON.parse(params.get('values'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
     };
@@ -6882,7 +6885,6 @@
 
   function _restoreParameters2(_ref) {
     var detail = _ref.detail;
-    console.log(detail, this);
     _classPrivateFieldGet(this, _USER_IDS).value = detail.userIds;
   }
 

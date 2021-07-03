@@ -263,9 +263,10 @@ class ConditionBuilder {
     // get conditions with ancestors
     const params = new URL(location).searchParams;
     console.log(params)
+    console.log(params.get('userIds'))
     const condition = {
       togoKey: params.get('togoKey'),
-      userIds: params.get('userIds').split(','),
+      userIds: (params.get('userIds') ?? '').split(',').filter(id => id !== ''),
       keys: JSON.parse(params.get('keys')) ?? [],
       values: JSON.parse(params.get('values')) ?? []
     }

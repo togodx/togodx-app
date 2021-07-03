@@ -50,7 +50,6 @@ export default class UploadUserIDsView {
   // private methods
 
   #restoreParameters({detail}) {
-    console.log(detail, this)
     this.#USER_IDS.value = detail.userIds;
   }
 
