@@ -1344,6 +1344,27 @@ main {
   border-color: white;
   z-index: var(--z-track-pin-hover);
 }
+.track-value-view[data-p-value-greater-than="1"] > .pin {
+  opacity: 0.1429;
+}
+.track-value-view[data-p-value-greater-than="<1"] > .pin {
+  opacity: 0.2857;
+}
+.track-value-view[data-p-value-greater-than="<0.1"] > .pin {
+  opacity: 0.429;
+}
+.track-value-view[data-p-value-greater-than="<0.05"] > .pin {
+  opacity: 0.571;
+}
+.track-value-view[data-p-value-greater-than="<0.01"] > .pin {
+  opacity: 0.714;
+}
+.track-value-view[data-p-value-greater-than="<0.005"] > .pin {
+  opacity: 0.857;
+}
+.track-value-view[data-p-value-greater-than="<0.001"] > .pin {
+  opacity: 1;
+}
 .track-value-view:hover, .track-value-view.-selected {
   background-color: transparent !important;
 }
@@ -1362,6 +1383,7 @@ main {
   z-index: var(--z-track-item-selected-hover);
 }
 .track-value-view:hover > .pin {
+  opacity: 1;
   z-index: var(--z-track-pin-hover);
 }
 .-showuserids .track-value-view:not(.-pinsticking) {

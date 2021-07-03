@@ -4727,7 +4727,7 @@
   }
 
   var MIN_PIN_SIZE = 12;
-  var MAX_PIN_SIZE = 36;
+  var MAX_PIN_SIZE = 24;
   var RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
 
   var _subject$1 = new WeakMap();
@@ -4880,11 +4880,16 @@
       });
     }); // event listener
 
-    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (e) {
-      if (_classPrivateFieldGet(_this, _property$1).propertyId === e.detail.propertyId) {
+    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref) {
+      var _ref$detail = _ref.detail,
+          action = _ref$detail.action,
+          propertyId = _ref$detail.propertyId,
+          categoryId = _ref$detail.categoryId;
+
+      if (_classPrivateFieldGet(_this, _property$1).propertyId === propertyId) {
         _classPrivateFieldGet(_this, _values).forEach(function (value) {
-          if (value.categoryId === e.detail.categoryId) {
-            switch (e.detail.action) {
+          if (value.categoryId === categoryId) {
+            switch (action) {
               case 'add':
                 value.elm.classList.add('-selected');
                 break;
@@ -4938,22 +4943,18 @@
   }
 
   function _plotUserIdValues2(detail) {
-    if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
-      var _detail$values$;
+    console.log(detail);
 
+    if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
       _classPrivateFieldGet(this, _ROOT$5).classList.add('-pinsticking');
 
       _classPrivateFieldSet(this, _userValues, detail.values); // calculate min value
-
-
-      var maxPValue;
-
-      if ((_detail$values$ = detail.values[0]) !== null && _detail$values$ !== void 0 && _detail$values$.pValue) {
-        var minPValue = Math.min.apply(Math, _toConsumableArray(detail.values.map(function (value) {
-          return value.pValue;
-        })));
-        maxPValue = 1 - Math.log10(minPValue);
-      } // mapping
+      // let maxPValue;
+      // if (detail.values[0]?.pValue) {
+      //   const minPValue = Math.min(...detail.values.map(value => value.pValue));
+      //   maxPValue = 1 - Math.log10(minPValue);
+      // }
+      // mapping
 
 
       _classPrivateFieldGet(this, _values).forEach(function (value) {
@@ -4964,19 +4965,49 @@
         if (userValue) {
           value.elm.classList.add('-pinsticking'); // pin
 
-          var ratio;
+          var ratio,
+              pValueGreaterThan = 1;
+          ratio = userValue.count / value.count;
+          ratio = ratio > 1 ? 1 : ratio;
 
           if (userValue.pValue) {
-            ratio = (1 - Math.log10(userValue.pValue)) / maxPValue; // value.pValue = userValue.pValue;
+            // ratio = (1 - Math.log10(userValue.pValue)) / maxPValue;
+            switch (true) {
+              case userValue.pValue < 0.001:
+                pValueGreaterThan = '<0.001';
+                break;
+
+              case userValue.pValue < 0.005:
+                pValueGreaterThan = '<0.005';
+                break;
+
+              case userValue.pValue < 0.01:
+                pValueGreaterThan = '<0.01';
+                break;
+
+              case userValue.pValue < 0.05:
+                pValueGreaterThan = '<0.05';
+                break;
+
+              case userValue.pValue < 0.1:
+                pValueGreaterThan = '<0.1';
+                break;
+
+              case userValue.pValue < 1:
+                pValueGreaterThan = '<1';
+                break;
+            }
           } else {
-            ratio = userValue.count / value.count;
-            ratio = ratio > 1 ? 1 : ratio;
+            // ratio = userValue.count / value.count;
+            // ratio = ratio > 1 ? 1 : ratio;
+            pValueGreaterThan = 1;
           }
 
           var size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
           value.userValueCount = userValue.count;
+          value.elm.dataset.pValueGreaterThan = pValueGreaterThan;
         } else {
           value.elm.classList.remove('-pinsticking');
         }

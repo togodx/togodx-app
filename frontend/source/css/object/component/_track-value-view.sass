@@ -47,6 +47,27 @@
     &:hover
       border-color: white
       z-index: var(--z-track-pin-hover)
+  &[data-p-value-greater-than="1"]
+    > .pin
+      opacity: .1429
+  &[data-p-value-greater-than="<1"]
+    > .pin
+      opacity: .2857
+  &[data-p-value-greater-than="<0.1"]
+    > .pin
+      opacity: .429
+  &[data-p-value-greater-than="<0.05"]
+    > .pin
+      opacity: .571
+  &[data-p-value-greater-than="<0.01"]
+    > .pin
+      opacity: .714
+  &[data-p-value-greater-than="<0.005"]
+    > .pin
+      opacity: .857
+  &[data-p-value-greater-than="<0.001"]
+    > .pin
+      opacity: 1
   &:hover, &.-selected
     background-color: transparent !important
     &::before
@@ -60,10 +81,10 @@
     &::before
       z-index: var(--z-track-item-selected)
   &:hover
-    // z-index: var(--z-track-item-hover)
     &::before
       z-index: var(--z-track-item-selected-hover)
     > .pin
+      opacity: 1
       z-index: var(--z-track-pin-hover)
   .-showuserids &
     &:not(.-pinsticking)
