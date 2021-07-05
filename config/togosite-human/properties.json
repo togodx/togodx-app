@@ -41,8 +41,8 @@
       },
       {
         "propertyId": "homologene_category",
-        "label": "Evolutionary conservation",
-        "description": "Evolutionary conservation of genes",
+        "label": "Evolutionary divergence",
+        "description": "The most distant organisms from human that have orthologous genes in HomoloGene",
         "data": "https://integbio.jp/togosite/sparqlist/api/homologene_category",
         "primaryKey": "ncbigene",
         "keyLabel": "NCBI gene"
