@@ -5,15 +5,20 @@ import Records from './Records';
 import * as event from '../events';
 
 const LIMIT = 100;
-
-// TODO: set text info here
+const downloadUrls = new Map();
+/**
+ * @typedef {Object} Mode
+ * @property {string} label
+ * @property {string} icon
+ * @property {string} dataButton
+ */
 const dataButtonModes = new Map([
   [
     'edit',
     {
       label: 'Edit',
       icon: 'edit',
-      dataButton: 'prepare-data',
+      dataButton: 'edit',
     },
   ],
   [
@@ -174,24 +179,15 @@ export default class TableData {
 
     this.#CONTROLLER = elm.querySelector(':scope > .controller');
     this.#CONTROLLER.appendChild(this.#makeDataButton('left'));
-    this.#CONTROLLER.appendChild(this.#makeDataButton('right'));
+    this.#CONTROLLER.appendChild(
+      this.#makeDataButton('right', dataButtonModes.get('edit'))
+    );
     this.#BUTTON_LEFT = elm.querySelector(
       ':scope > .controller > .button.left'
     );
     this.#BUTTON_RIGHT = elm.querySelector(
       ':scope > .controller > .button.right'
     );
-    this.#updateDataButton(this.#BUTTON_RIGHT, dataButtonModes.get('edit'));
-
-    // this.#BUTTON_PREPARE_DATA = BUTTONS.find(
-    //   button => button.dataset.button === 'prepare-data'
-    // );
-    // this.#BUTTON_DOWNLOAD_JSON = BUTTONS.find(
-    //   button => button.dataset.button === 'download-json'
-    // );
-    // this.#BUTTON_DOWNLOAD_TSV = BUTTONS.find(
-    //   button => button.dataset.button === 'download-tsv'
-    // );
 
     // events
     elm.addEventListener('click', () => {
@@ -199,114 +195,34 @@ export default class TableData {
       this.select();
     });
 
-    DefaultEventEmitter.addEventListener(event.editConditionButton, e => {
-      this.#updateDataButton(e.detail);
+    DefaultEventEmitter.addEventListener(event.buttonEventByMode, e => {
+      this.#dataButtonEvent(e);
     });
 
-    // this.#BUTTON_PREPARE_DATA.addEventListener('click', e => {
-    //   e.stopPropagation();
-    //   if (this.#isAutoLoad === false) {
-    //     this.#autoLoad();
-    //     this.#BUTTON_PREPARE_DATA.classList.add('-rotating');
-    //     this.#BUTTON_PREPARE_DATA.querySelector(':scope > .label').innerHTML =
-    //       'Pause';
-    //   } else {
-    //     this.#isAutoLoad = false;
-    //     this.#BUTTON_PREPARE_DATA.classList.remove('-rotating');
-    //     this.#BUTTON_PREPARE_DATA.querySelector(':scope > .label').innerHTML =
-    //       'Resume';
-    //   }
-    // });
     // delete
     this.#ROOT
       .querySelector(':scope > .close-button-view')
-      .addEventListener('click', e => {
-        e.stopPropagation();
-        const customEvent = new CustomEvent(event.deleteTableData, {
-          detail: this,
-        });
-        DefaultEventEmitter.dispatchEvent(customEvent);
-        // abort fetch
-        this.#abortController.abort();
-        // delete element
-        this.#ROOT.parentNode.removeChild(this.#ROOT);
-        // transition
-        document.querySelector('body').dataset.display = 'properties';
-      });
-    // restore
-    // BUTTONS.find(
-    //   button => button.dataset.button === 'restore'
-    // ).addEventListener('click', e => {
-    //   e.stopPropagation();
-    //   // property (attribute)
-    //   ConditionBuilder.setProperties(
-    //     this.#condition.properties.map(property => {
-    //       return {
-    //         propertyId: property.query.propertyId,
-    //         parentCategoryId: property.parentCategoryId,
-    //       };
-    //     }),
-    //     false
-    //   );
-    //   // attribute (classification/distribution)
-    //   Records.properties.forEach(({propertyId}) => {
-    //     const attribute = this.#condition.attributes.find(
-    //       attribute => attribute.property.propertyId === propertyId
-    //     );
-    //     const categoryIds = [];
-    //     if (attribute) categoryIds.push(...attribute.query.categoryIds);
-    //     ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
-    //   });
-    // });
-    this.#BUTTON_RIGHT.addEventListener('click', e => {
-      e.stopPropagation();
-      // property (attribute)
-      ConditionBuilder.setProperties(
-        this.#condition.properties.map(property => {
-          return {
-            propertyId: property.query.propertyId,
-            parentCategoryId: property.parentCategoryId,
-          };
-        }),
-        false
-      );
-      // attribute (classification/distribution)
-      Records.properties.forEach(({propertyId}) => {
-        const attribute = this.#condition.attributes.find(
-          attribute => attribute.property.propertyId === propertyId
-        );
-        const categoryIds = [];
-        if (attribute) categoryIds.push(...attribute.query.categoryIds);
-        ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
-      });
-    });
+      .addEventListener('click', this.#deleteCondition.bind(this));
+
     ConditionBuilder.finish();
     this.select();
     this.#getQueryIds();
   }
 
   /* private methods */
-  #editCondition(e) {
+
+  #deleteCondition() {
     e.stopPropagation();
-    // property (attribute)
-    ConditionBuilder.setProperties(
-      this.#condition.properties.map(property => {
-        return {
-          propertyId: property.query.propertyId,
-          parentCategoryId: property.parentCategoryId,
-        };
-      }),
-      false
-    );
-    // attribute (classification/distribution)
-    Records.properties.forEach(({propertyId}) => {
-      const attribute = this.#condition.attributes.find(
-        attribute => attribute.property.propertyId === propertyId
-      );
-      const categoryIds = [];
-      if (attribute) categoryIds.push(...attribute.query.categoryIds);
-      ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
+    const customEvent = new CustomEvent(event.deleteTableData, {
+      detail: this,
     });
+    DefaultEventEmitter.dispatchEvent(customEvent);
+    // abort fetch
+    this.#abortController.abort();
+    // delete element
+    this.#ROOT.parentNode.removeChild(this.#ROOT);
+    // transition
+    document.querySelector('body').dataset.display = 'properties';
   }
 
   #getQueryIds() {
@@ -365,66 +281,124 @@ export default class TableData {
         this.#ROOT.classList.remove('-fetching');
       });
   }
-
-  #makeDataButton(str, data = '') {
-    const span = document.createElement('span');
-    span.classList.add('material-icons-outlined');
-    const span2 = document.createElement('span');
-    span2.classList.add('label');
+  // *** Responsive Buttons based on dataButtonModes ***
+  /**
+   * @param {string} className
+   * @param {Mode} mode
+   */
+  #makeDataButton(className, mode = undefined) {
+    const iconSpan = document.createElement('span');
+    iconSpan.classList.add('material-icons-outlined');
+    const labelSpan = document.createElement('span');
+    labelSpan.classList.add('label');
     const a = document.createElement('a');
-    a.appendChild(span);
-    a.appendChild(span2);
+    a.appendChild(iconSpan);
+    a.appendChild(labelSpan);
 
     const button = document.createElement('div');
-    button.classList.add('button', str);
-    button['data-button'] = data;
+    button.classList.add('button', className);
     button.appendChild(a);
 
+    if (mode) {
+      this.#updateDataButton(button, mode);
+      button['data-button'] = mode.dataButton;
+    }
+
+    button.addEventListener('click', e => {
+      const customEvent = new CustomEvent(event.buttonEventByMode, {
+        detail: className,
+      });
+      DefaultEventEmitter.dispatchEvent(customEvent);
+    });
+
     return button;
-
-    // <div class="button none" data-button="download-json">
-    //   <a class="json">
-    //     <span class="material-icons-outlined">download json</span>
-    //     <span class="label">JSON</span>
-    //   </a>
-    // </div>;
   }
-  // data.event = eventlistiner
-  // data.isDownload = boolean
-  // data.url = tsv csv url
-  // data.type = tsv/ csv
+
   /**
-   *
-   * @param {Object} data
+   * @param {HTMLElement} target
+   * @param {Mode} mode
    */
-  #updateDataButton(target, data) {
-    target.onclick = null;
-    // if (data.icon === 'download') {
-    //   const anchor = target.querySelector(':scope > a');
-    //   anchor.setAttribute('href', data.url);
-    //   anchor.setAttribute('download', `sample.${data.type}`);
-    // } else {
-    //   target.addEventListener('click', this.#editCondition.bind(this));
-    // }
-    target.dataset.button = data.dataButton;
-    target.querySelector('a > .material-icons-outlined').innerText = data.icon;
-    target.querySelector('a > .label').innerText = data.label;
+
+  #updateDataButton(target, mode) {
+    target.dataset.button = mode.dataButton;
+    target.querySelector('a > .material-icons-outlined').innerText = mode.icon;
+    target.querySelector('a > .label').innerText = mode.label;
   }
 
-  // TODO static
+  // Button events by Mode
+  #dataButtonPauseOrResume() {
+    e.stopPropagation();
+    this.#isAutoLoad
+      ? this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('resume'))
+      : this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
+    this.#isAutoLoad = !this.#isAutoLoad;
+  }
 
-  // makeButtonEvent = details => {
-  //   const customEvent = new CustomEvent(event.editConditionButton, {
-  //     detail: details,
-  //   });
-  //   DefaultEventEmitter.dispatchEvent(customEvent);
-  // };
+  #dataButtonEdit(e) {
+    e.stopPropagation();
+    // property (attribute)
+    ConditionBuilder.setProperties(
+      this.#condition.properties.map(property => {
+        return {
+          propertyId: property.query.propertyId,
+          parentCategoryId: property.parentCategoryId,
+        };
+      }),
+      false
+    );
+    // attribute (classification/distribution)
+    Records.properties.forEach(({propertyId}) => {
+      const attribute = this.#condition.attributes.find(
+        attribute => attribute.property.propertyId === propertyId
+      );
+      const categoryIds = [];
+      if (attribute) categoryIds.push(...attribute.query.categoryIds);
+      ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
+    });
+  }
+  /**
+   * @param { string } type
+   * @param { HTMLElement } parent
+   */
+
+  #dataButtonDownload(parent, type) {
+    const url = downloadUrls.get(type);
+    const anchor = parent.querySelector(':scope > a');
+    anchor.setAttribute('href', url);
+    anchor.setAttribute('download', `sample.${type}`);
+    anchor.click();
+  }
+
+  /**
+   * @param { string } buttonType
+   */
+
+  // If not neccesary, only use e.detail
+  #dataButtonEvent(e) {
+    const button = this.#CONTROLLER.querySelector(`.${e.detail}`);
+    const mode = button.dataset.button;
+    switch (mode) {
+      case 'edit':
+        this.#dataButtonEdit.bind(this);
+        break;
+
+      case 'resume':
+      case 'pause':
+        this.#dataButtonPauseOrResume.bind(this);
+        break;
+
+      case 'tsv':
+      case 'csv':
+        this.#dataButtonDownload(button, mode);
+        break;
+    }
+  }
 
   #getProperties() {
     this.#isAutoLoad = true;
     this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
     this.#ROOT.classList.add('-fetching');
-    this.#STATUS.textContent = 'Getting data';
+    this.#STATUS.textContent = 'Getting Data';
     fetch(
       `${App.aggregateRows}?togoKey=${
         this.#condition.togoKey
@@ -469,7 +443,7 @@ export default class TableData {
             this.#BUTTON_LEFT,
             dataButtonModes.get('json')
           );
-          const secondButton = this.#makeDataButton('csv', 'download-csv');
+          const secondButton = this.#makeDataButton('middle', 'download-csv');
           this.#CONTROLLER.appendChild(secondButton);
         } else if (this.#isAutoLoad) {
           this.#getProperties();
@@ -529,9 +503,10 @@ export default class TableData {
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {
       type: 'application/json',
     });
-    const anchor = this.#BUTTON_LEFT.querySelector(':scope > .json');
-    anchor.setAttribute('href', jsonUrl);
-    anchor.setAttribute('download', 'sample.json');
+    downloadUrls.set('json', jsonBlob);
+    // const anchor = this.#BUTTON_LEFT.querySelector(':scope > .json');
+    // anchor.setAttribute('href', jsonUrl);
+    // anchor.setAttribute('download', 'sample.json');
   }
 
   #setTsvUrl() {
@@ -569,17 +544,12 @@ export default class TableData {
     }
     const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
     const tsvBlob = new Blob([bom, tsvArray.join('\n')], {type: 'text/plain'});
-    // this.#dataButtonModes.set('download-tsv', {
-    //   isDownload: true,
-    //   url: URL.createObjectURL(tsvBlob),
-    //   type: 'tsv',
-    //   icon: 'download',
-    //   label: 'TSV',
-    // });
     const tsvUrl = URL.createObjectURL(tsvBlob);
-    const anchor = this.#BUTTON_DOWNLOAD_TSV.querySelector(':scope > .tsv');
-    anchor.setAttribute('href', tsvUrl);
-    anchor.setAttribute('download', 'sample.tsv');
+    downloadUrls.set('tsv', tsvUrl);
+
+    // const anchor = this.#BUTTON_LEFT.querySelector(':scope > a');
+    // anchor.setAttribute('href', tsvUrl);
+    // anchor.setAttribute('download', 'sample.tsv');
   }
 
   /* public methods */
