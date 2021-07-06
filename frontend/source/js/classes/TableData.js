@@ -170,7 +170,7 @@ export default class TableData {
     this.#abortController = new AbortController();
     this.#ROOT.classList.add('-fetching');
     fetch(
-      `${App.aggregatePrimaryKeys}?togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(JSON.stringify(this.#condition.attributes.map(property => property.query)))}${ConditionBuilder.userIds ? `&inputIds=${encodeURIComponent(JSON.stringify(ConditionBuilder.userIds))}` : ''}`,
+      `${App.aggregatePrimaryKeys}?togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(JSON.stringify(this.#condition.attributes.map(property => property.query)))}${ConditionBuilder.userIds?.length > 0 ? `&inputIds=${encodeURIComponent(JSON.stringify(ConditionBuilder.userIds))}` : ''}`,
       {
         signal: this.#abortController.signal
       })

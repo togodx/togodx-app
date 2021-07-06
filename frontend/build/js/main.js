@@ -6532,7 +6532,8 @@
   }();
 
   function _getQueryIds2() {
-    var _this2 = this;
+    var _ConditionBuilder$use,
+        _this2 = this;
 
     // reset
     _classPrivateFieldSet(this, _abortController, new AbortController());
@@ -6541,7 +6542,7 @@
 
     fetch("".concat(App$1.aggregatePrimaryKeys, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
       return property.query;
-    })))).concat(ConditionBuilder$1.userIds ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds))) : ''), {
+    })))).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds))) : ''), {
       signal: _classPrivateFieldGet(this, _abortController).signal
     }).catch(function (error) {
       throw Error(error);
