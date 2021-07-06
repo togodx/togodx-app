@@ -9,7 +9,7 @@
       {
         "propertyId": "ensembl-gene-biotype",
         "label": "Gene biotype",
-        "description": "Biotypes of genes annotated in Ensembl",
+        "description": "A gene or transcript classification annotated in Ensembl.",
         "data": "https://integbio.jp/togosite/sparqlist/api/Ensembl_gene_type",
         "primaryKey": "ensembl_gene",
         "keyLabel": "Ensembl gene"
@@ -17,7 +17,7 @@
       {
         "propertyId": "ensembl-gene-chromosome",
         "label": "Chromosome",
-        "description": "The chromosome where a gene is located",
+        "description": "The chromosome on which each human gene is located.",
         "data": "https://integbio.jp/togosite/sparqlist/api/gene_chromosome_ensembl",
         "primaryKey": "ensembl_gene",
         "keyLabel": "Ensembl gene"
@@ -25,7 +25,7 @@
       {
         "propertyId": "ensembl-exon-count",
         "label": "# of exons",
-        "description": "The number of exons",
+        "description": "The number of exons for each transcript of each gene.",
         "data": "https://integbio.jp/togosite/sparqlist/api/Ensembl-exon-count",
         "primaryKey": "ensembl_transcript",
         "keyLabel": "Ensembl transcript",
@@ -34,7 +34,7 @@
       {
         "propertyId": "homologene_human_paralog_count",
         "label": "# of paralogs",
-        "description": "The number of paralogs calculated based on HomoloGene",
+        "description": "The number of duplicated genes (paralogs) in each human gene calculated based on HomoloGene.",
         "data": "https://integbio.jp/togosite/sparqlist/api/homologene_human_paralog_count",
         "primaryKey": "ncbigene",
         "keyLabel": "NCBI gene"
@@ -42,7 +42,7 @@
       {
         "propertyId": "homologene_category",
         "label": "Evolutionary divergence",
-        "description": "The most distant organisms from human that have orthologous genes in HomoloGene",
+        "description": "The most distant organisms from human that have orthologous genes in HomoloGene.",
         "data": "https://integbio.jp/togosite/sparqlist/api/homologene_category",
         "primaryKey": "ncbigene",
         "keyLabel": "NCBI gene"
@@ -50,7 +50,7 @@
       {
         "propertyId": "refex_specific_high_expression",
         "label": "High-level expression",
-        "description": "Highly expressed genes in organs from RefEx",
+        "description": "Organs in which a gene is tissue-specific highly expressed only in a single organ in 34 tissues of RefEx.",
         "data": "https://integbio.jp/togosite/sparqlist/api/refex_specific_high_expression",
         "primaryKey": "ncbigene",
         "keyLabel": "NCBI gene"
@@ -58,7 +58,7 @@
       {
         "propertyId": "refex_specific_low_expression",
         "label": "Low-level expression",
-        "description": "Low expressed genes in organs from RefEx",
+        "description": "Organs in which a gene is tissue-specific lowly expressed only in a single organ in 34 tissues of RefEx.",
         "data": "https://integbio.jp/togosite/sparqlist/api/refex_specific_low_expression",
         "primaryKey": "ncbigene",
         "keyLabel": "NCBI gene"
@@ -66,7 +66,7 @@
       {
         "propertyId": "gtex6_tissues",
         "label": "Expressed in tissues",
-        "description": "Genes expressed in tissues from GTEx",
+        "description": "Organs in which a gene is tissue-specific highly expressed only in 48 tissues of GTEx.",
         "data": "https://integbio.jp/togosite/sparqlist/api/gtex6_tissues",
         "primaryKey": "ensembl_gene",
         "keyLabel": "Ensembl gene"
