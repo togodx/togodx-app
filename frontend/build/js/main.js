@@ -3138,8 +3138,9 @@
       key: "removeProperty",
       value: function removeProperty(propertyId, parentCategoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log('removeProperty', propertyId, parentCategoryId, isFinal); // remove from store
 
+        // console.log('removeProperty', propertyId, parentCategoryId, isFinal)
+        // remove from store
         var index = _classPrivateFieldGet(this, _propertyConditions).findIndex(function (condition) {
           if (propertyId === condition.propertyId) {
             if (parentCategoryId) {
@@ -3168,8 +3169,9 @@
       key: "removePropertyValue",
       value: function removePropertyValue(propertyId, categoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log('removePropertyValue', propertyId, categoryId, isFinal); // remove from store
 
+        // console.log('removePropertyValue', propertyId, categoryId, isFinal)
+        // remove from store
         var index = _classPrivateFieldGet(this, _attributeConditions).findIndex(function (condition) {
           if (condition.propertyId === propertyId) {
             var _index = condition.categoryIds.indexOf(categoryId);
@@ -3408,6 +3410,8 @@
     var params = new URL(location).searchParams;
     console.log(params);
     console.log(params.get('userIds'));
+    console.log(params.get('keys'));
+    console.log(JSON.parse(params.get('keys')));
     var condition = {
       togoKey: params.get('togoKey'),
       userIds: ((_params$get = params.get('userIds')) !== null && _params$get !== void 0 ? _params$get : '').split(',').filter(function (id) {
@@ -3492,6 +3496,7 @@
         userIds = _ref6.userIds,
         keys = _ref6.keys,
         values = _ref6.values;
+    console.log(togoKey, userIds, keys, values);
 
     _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true); // restore conditions
 
@@ -3634,6 +3639,8 @@
 
   var _LABELS = new WeakMap();
 
+  var _make = new WeakSet();
+
   var StackingConditionView = /*#__PURE__*/function () {
     /**
      * 
@@ -3641,10 +3648,12 @@
      * @param {String} type: 'property' or 'value'
      * @param {Object} condition 
      */
-    function StackingConditionView(container, type, condition) {
+    function StackingConditionView(_container, _type, condition) {
       var _this = this;
 
       _classCallCheck(this, StackingConditionView);
+
+      _make.add(this);
 
       _isRange.set(this, {
         writable: true,
@@ -3681,74 +3690,55 @@
       if (condition.value) _classPrivateFieldGet(this, _ROOT$8).dataset.categoryId = condition.value.categoryId;
       if (condition.parentCategoryId) _classPrivateFieldGet(this, _ROOT$8).dataset.parentCategoryId = condition.parentCategoryId; // make view
 
-      var label,
-          ancestorLabels = [subject.subject];
+      var _label,
+          _ancestorLabels = [subject.subject];
 
-      switch (type) {
+      switch (_type) {
         case 'property':
           {
-            var parentValue = condition.parentCategoryId ? Records$1.getValue(condition.propertyId, condition.parentCategoryId) : undefined;
-            label = "<div class=\"label _subject-color\">".concat(parentValue ? parentValue.label : property.label, "</div>");
-
             if (condition.parentCategoryId) {
-              console.log(Records$1.getValue(condition.propertyId, condition.parentCategoryId));
-              console.log(Records$1.getAncestors(condition.propertyId, condition.parentCategoryId));
-              ancestorLabels.push.apply(ancestorLabels, [property.label].concat(_toConsumableArray(Records$1.getAncestors(condition.propertyId, condition.parentCategoryId).map(function (ancestor) {
-                return ancestor.label;
-              }))));
+              var getValue = function getValue() {
+                var value = Records$1.getValue(condition.propertyId, condition.parentCategoryId);
+
+                if (value) {
+                  var ancestors = Records$1.getAncestors(condition.propertyId, condition.parentCategoryId);
+                  _label = "<div class=\"label _subject-color\">".concat(value.label, "</div>");
+
+                  _ancestorLabels.push.apply(_ancestorLabels, [property.label].concat(_toConsumableArray(ancestors.map(function (ancestor) {
+                    return ancestor.label;
+                  }))));
+
+                  _classPrivateMethodGet(_this, _make, _make2).call(_this, _container, _type, _ancestorLabels, _label);
+                } else {
+                  setTimeout(getValue, POLLING_DURATION);
+                }
+              };
+
+              getValue();
+            } else {
+              _label = "<div class=\"label _subject-color\">".concat(property.label, "</div>");
+
+              _classPrivateMethodGet(this, _make, _make2).call(this, _container, _type, _ancestorLabels, _label);
             }
           }
           break;
 
         case 'value':
-          label = "<ul class=\"labels\"></ul>";
-          ancestorLabels.push(property.label);
+          _label = "<ul class=\"labels\"></ul>";
+
+          _ancestorLabels.push(property.label);
+
+          _classPrivateMethodGet(this, _make, _make2).call(this, _container, _type, _ancestorLabels, _label);
+
           break;
       }
-
-      _classPrivateFieldGet(this, _ROOT$8).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      ".concat(ancestorLabels.map(function (ancestor) {
-        return "<li>".concat(ancestor, "</li>");
-      }).join(''), "\n    </ul>\n    ").concat(label);
-      container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$8)); // reference
-
-      if (type === 'value') {
-        _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .labels'));
-
-        this.addValue(condition.categoryId);
-      } // event
-
-
-      _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .close-button-view').addEventListener('click', function () {
-        switch (type) {
-          case 'property':
-            // notify
-            ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this, _condition$1).propertyId, _classPrivateFieldGet(_this, _condition$1).parentCategoryId);
-            break;
-
-          case 'value':
-            var _iterator = _createForOfIteratorHelper(_classPrivateFieldGet(_this, _LABELS).querySelectorAll(':scope > .label')),
-                _step;
-
-            try {
-              for (_iterator.s(); !(_step = _iterator.n()).done;) {
-                var _label = _step.value;
-                ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this, _condition$1).propertyId, _label.dataset.categoryId);
-              }
-            } catch (err) {
-              _iterator.e(err);
-            } finally {
-              _iterator.f();
-            }
-
-            break;
-        }
-      });
-    } // public methods
+    } // private methods
 
 
     _createClass(StackingConditionView, [{
       key: "addValue",
-      value: function addValue(categoryId) {
+      value: // public methods
+      function addValue(categoryId) {
         var _this2 = this;
 
         var getValue = function getValue() {
@@ -3802,6 +3792,49 @@
 
     return StackingConditionView;
   }();
+
+  function _make2(container, type, ancestorLabels, label) {
+    var _this3 = this;
+
+    console.log(container, type, ancestorLabels, label);
+    _classPrivateFieldGet(this, _ROOT$8).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      ".concat(ancestorLabels.map(function (ancestor) {
+      return "<li>".concat(ancestor, "</li>");
+    }).join(''), "\n    </ul>\n    ").concat(label);
+    container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$8)); // reference
+
+    if (type === 'value') {
+      _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .labels'));
+
+      this.addValue(_classPrivateFieldGet(this, _condition$1).categoryId);
+    } // event
+
+
+    _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .close-button-view').addEventListener('click', function () {
+      switch (type) {
+        case 'property':
+          // notify
+          ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this3, _condition$1).propertyId, _classPrivateFieldGet(_this3, _condition$1).parentCategoryId);
+          break;
+
+        case 'value':
+          var _iterator = _createForOfIteratorHelper(_classPrivateFieldGet(_this3, _LABELS).querySelectorAll(':scope > .label')),
+              _step;
+
+          try {
+            for (_iterator.s(); !(_step = _iterator.n()).done;) {
+              var _label2 = _step.value;
+              ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _condition$1).propertyId, _label2.dataset.categoryId);
+            }
+          } catch (err) {
+            _iterator.e(err);
+          } finally {
+            _iterator.f();
+          }
+
+          break;
+      }
+    });
+  }
 
   var _properties = new WeakMap();
 
@@ -3980,10 +4013,11 @@
 
     _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = subjects.map(function (subject) {
       var option = '';
-      if (subject.togoKey) option = "<option value=\"".concat(subject.togoKey, "\" data-subject-id=\"").concat(subjects.subjectId, "\">").concat(subject.keyLabel, "</option>");
+      if (subject.togoKey) option = "<option value=\"".concat(subject.togoKey, "\" data-subject-id=\"").concat(subject.subjectId, "\">").concat(subject.keyLabel, "</option>");
       return option;
     }).join('');
-    _classPrivateFieldGet(this, _TOGO_KEYS).disabled = false; // attach event
+    _classPrivateFieldGet(this, _TOGO_KEYS).disabled = false;
+    _classPrivateFieldGet(this, _TOGO_KEYS).value = ConditionBuilder$1.currentTogoKey; // attach event
 
     _classPrivateFieldGet(this, _TOGO_KEYS).addEventListener('change', function (e) {
       var subject = subjects.find(function (subject) {
@@ -4426,7 +4460,7 @@
 
     _classPrivateFieldGet(this, _columns).forEach(function (column) {
       var max = column.max;
-      max = isLog10 ? Math.log10(max) : max;
+      max = isLog10 && max > 1 ? Math.log10(max) : max;
       column.ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
         var count = Number(li.dataset.count);
         li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this5, _subject$2).color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
@@ -5106,7 +5140,7 @@
     elm.dataset.collapse = property.propertyId; // make html
 
     var checked = isSelected ? ' checked' : '';
-    elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <h2 class=\"title _subject-color\">").concat(property.label, "</h2>\n          <input type=\"checkbox\" class=\"mapping\"").concat(checked, ">\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview _subject-background-color\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <p class=\"description\">").concat(property.description, "</p>\n        <!--<label><input type=\"checkbox\">All properties</label>-->\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
+    elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <h2 class=\"title _subject-color\">").concat(property.label, "</h2>\n          <input type=\"checkbox\" class=\"mapping\"").concat(checked, ">\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview _subject-background-color\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <p class=\"description\">").concat(property.description, "</p>\n        <!--<label><input type=\"checkbox\">All properties</label>-->\n        <a class=\"external-link-button-view\" href=\"").concat(_classPrivateFieldGet(this, _sparqlist), "\" target=\"_blank\">API</a>\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
     var valuesContainer = elm.querySelector(':scope > .row.-upper > .values');
 
     _classPrivateFieldSet(this, _OVERVIEW_CONTAINER, valuesContainer.querySelector(':scope > .overview > .inner'));
@@ -5559,7 +5593,7 @@
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
       console.log(row);
-      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n            <th>\n              <div class=\"inner\">\n                <a class=\"report-page-button-view\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(window.btoa(RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))), "\" target=\"_blank\"><span class=\"material-icons-outlined\">open_in_new</span></a>\n              </div>\n            </th>\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order= \"").concat([0, detail.tableData.offset + index], "\"\n                    data-sub-order= \"0\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "\n                  </div>\n                  <span>").concat(detail.rows[index].label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.map(function (column, columnIndex) {
+      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n            <th>\n              <div class=\"inner\">\n                <a class=\"external-link-button-view\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(window.btoa(RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))), "\" target=\"_blank\">Report</a>\n              </div>\n            </th>\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order= \"").concat([0, detail.tableData.offset + index], "\"\n                    data-sub-order= \"0\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "\n                  </div>\n                  <span>").concat(detail.rows[index].label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.map(function (column, columnIndex) {
         // console.log(column)
         if (column) {
           return "\n                  <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute, attributeIndex) {
@@ -5939,7 +5973,7 @@
     var subCategory = isPrimaryKey ? '' : Records$1.getValue(keys.mainCategoryId, keys.subCategoryId);
     var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(subject.subject, " / ").concat(subCategory.label, "</span>");
     var header = document.createElement('header');
-    header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div>\n        <a class='report-page-button-view' href='").concat(props.reportLink, "' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>\n    ");
+    header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div>\n        <a class='external-link-button-view' href='").concat(props.reportLink, "' target='_blank'>Report</a>\n    ");
     header.classList.add('_subject-background-color');
     header.lastChild.appendChild(_classPrivateFieldGet(this, _exit_button));
     header.addEventListener('mousedown', function (e) {
@@ -6017,7 +6051,7 @@
       var targetEntry = _classPrivateMethodGet(this, _getTargetEntry, _getTargetEntry2).call(this, movement);
 
       var targetTr = targetEntry.closest('tr');
-      var reportLink = targetTr.querySelector(':scope > th > .inner > .report-page-button-view').href;
+      var reportLink = targetTr.querySelector(':scope > th > .inner > .external-link-button-view').href;
       targetEntry.scrollIntoView({
         block: 'center'
       });
@@ -6665,25 +6699,26 @@
     _classPrivateFieldGet(this, _rows).forEach(function (row) {
       row.properties.forEach(function (property) {
         property.attributes.forEach(function (attribute) {
-          var singleItem = {
-            togoKey: _classPrivateFieldGet(_this4, _condition).togoKey,
-            togoKeyId: row.id,
-            attributeId: property.propertyId,
-            attributeValue: attribute.attribute.label,
-            attributeKey: property.propertyKey,
-            attributeKeyId: attribute.id
-          };
+          var singleItem = [_classPrivateFieldGet(_this4, _condition).togoKey, // togoKey
+          row.id, // togoKeyId
+          row.label, // togoKeyLabel
+          property.propertyId, // attribute
+          property.propertyKey, // attributeKey
+          attribute.id, // attributeKeyId
+          attribute.attribute.label // attributeValue
+          ];
           temporaryArray.push(singleItem);
         });
       });
     });
 
     var tsvArray = temporaryArray.map(function (item) {
-      return Object.values(item).join('\t');
+      return item.join('\t');
     });
 
     if (tsvArray.length !== 0) {
-      tsvArray.unshift(Object.keys(temporaryArray[0]).join('\t'));
+      var tsvHeader = ["togoKey", "togoKeyId", "togoKeyLabel", "attribute", "attributeKey", "attributeKeyId", "attributeValue"];
+      tsvArray.unshift(tsvHeader.join('\t'));
     }
 
     var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
@@ -6957,10 +6992,6 @@
     DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
 
-  var PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
-  var TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
-  var AGGREGATE = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/aggregate.json';
-
   var _viewModes = new WeakMap();
 
   var _aggregate = new WeakMap();
@@ -7042,7 +7073,7 @@
 
     _createClass(App, [{
       key: "ready",
-      value: function ready() {
+      value: function ready(api) {
         var _this = this;
 
         var body = document.body; // view modes
@@ -7072,7 +7103,7 @@
         new BalloonView();
         var uploadUserIDsView = new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
 
-        Promise.all([fetch(PROPERTIES), fetch(TEMPLATES), fetch(AGGREGATE)]).then(function (responces) {
+        Promise.all([fetch(api.PROPERTIES), fetch(api.TEMPLATES), fetch(api.AGGREGATE)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
           }));
@@ -7165,8 +7196,12 @@
 
   var App$1 = new App();
 
-  globalThis.togositeapp = App$1;
-  App$1.ready();
+  fetch('./api.json').then(function (response) {
+    return response.json();
+  }).then(function (api) {
+    globalThis.togositeapp = App$1;
+    App$1.ready(api);
+  });
 
 }());
 //# sourceMappingURL=main.js.map

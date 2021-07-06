@@ -78,7 +78,7 @@ class ConditionBuilder {
   }
 
   removeProperty(propertyId, parentCategoryId, isFinal = true) {
-    console.log('removeProperty', propertyId, parentCategoryId, isFinal)
+    // console.log('removeProperty', propertyId, parentCategoryId, isFinal)
     // remove from store
     const index = this.#propertyConditions.findIndex(condition => {
       if (propertyId === condition.propertyId) {
@@ -99,7 +99,7 @@ class ConditionBuilder {
   }
 
   removePropertyValue(propertyId, categoryId, isFinal = true) {
-    console.log('removePropertyValue', propertyId, categoryId, isFinal)
+    // console.log('removePropertyValue', propertyId, categoryId, isFinal)
     // remove from store
     const index = this.#attributeConditions.findIndex(condition => {
       if (condition.propertyId === propertyId) {
@@ -264,6 +264,8 @@ class ConditionBuilder {
     const params = new URL(location).searchParams;
     console.log(params)
     console.log(params.get('userIds'))
+    console.log(params.get('keys'))
+    console.log(JSON.parse(params.get('keys')))
     const condition = {
       togoKey: params.get('togoKey'),
       userIds: (params.get('userIds') ?? '').split(',').filter(id => id !== ''),
@@ -325,6 +327,7 @@ class ConditionBuilder {
   }
 
   #restoreConditions({togoKey, userIds, keys, values}) {
+    console.log(togoKey, userIds, keys, values)
 
     this.#isRestoredConditinoFromURLParameters = true;
 

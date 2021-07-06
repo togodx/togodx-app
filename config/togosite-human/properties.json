@@ -41,8 +41,8 @@
       },
       {
         "propertyId": "homologene_category",
-        "label": "Evolutionary conservation",
-        "description": "Evolutionary conservation of genes",
+        "label": "Evolutionary divergence",
+        "description": "The most distant organisms from human that have orthologous genes in HomoloGene",
         "data": "https://integbio.jp/togosite/sparqlist/api/homologene_category",
         "primaryKey": "ncbigene",
         "keyLabel": "NCBI gene"
@@ -320,14 +320,6 @@
     "togoKeyExamples": ["564", "1046", "1981"],
     "properties": [
       {
-        "propertyId": "chembl_mechanism_action_type",
-        "label": "Action type",
-        "description": "Mechanism action types in ChEMBL",
-        "data": "https://integbio.jp/togosite/sparqlist/api/chembl_mechanism_action_type",
-        "primaryKey": "chembl_compound",
-        "keyLabel": "ChEMBL compound"
-      },
-      {
         "propertyId": "chembl_substance_type",
         "label": "Substance type",
         "description": "Substance types in ChEMBL",
@@ -336,9 +328,41 @@
         "keyLabel": "ChEMBL compound"
       },
       {
+        "propertyId": "chebi_chemical_role",
+        "label": "Chemical role",
+        "description": "Chemical roles in ChEBI",
+        "data": "http://integbio.jp/togosite/sparqlist/api/compound_chemical_role_chebi",
+        "primaryKey": "chebi_compound",
+        "keyLabel": "ChEBI compound"
+      },
+      {
+        "propertyId": "chebi_application_type",
+        "label": "Application type",
+        "description": "Application types in ChEBI",
+        "data": "http://integbio.jp/togosite/sparqlist/api/compound_application_type_chebi",
+        "primaryKey": "chebi_compound",
+        "keyLabel": "ChEBI compound"
+      },
+      {
+        "propertyId": "chembl_mechanism_action_type",
+        "label": "Action type",
+        "description": "Mechanism action types in ChEMBL",
+        "data": "https://integbio.jp/togosite/sparqlist/api/chembl_mechanism_action_type",
+        "primaryKey": "chembl_compound",
+        "keyLabel": "ChEMBL compound"
+      },
+      {
+        "propertyId": "chebi_biological_role",
+        "label": "Biological role",
+        "description": "Biological roles in ChEBI",
+        "data": "http://integbio.jp/togosite/sparqlist/api/compound_biological_role_chebi",
+        "primaryKey": "chebi_compound",
+        "keyLabel": "ChEBI compound"
+      },
+      {
         "propertyId": "chembl_mesh",
-        "label": "Drug indication (MeSH)",
-        "description": "Drug indications in MeSH categories",
+        "label": "Drug indication",
+        "description": "Number of drugs with indications (disease or symptom) categorized in MeSH hierarchy",
         "data": "https://integbio.jp/togosite/sparqlist/api/chembl_mesh",
         "primaryKey": "chembl_compound",
         "keyLabel": "ChEMBL compound"
@@ -360,7 +384,7 @@
         "keyLabel": "PubChem compound"
       },
       {
-        "propertyId": "atc_classification_pubchem_chembl",
+        "propertyId": "atc_classification_chembl",
         "label": "ChEMBL ATC classification",
         "description": "Anatomical Therapeutic Chemical (ATC) Classification in ChEMBL",
         "data": "https://integbio.jp/togosite/sparqlist/api/atcClassificationChEMBL",

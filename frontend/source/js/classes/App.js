@@ -11,7 +11,6 @@ import UploadUserIDsView from "./UploadUserIDsView";
 import Color from "./Color";
 import StanzaManager from "./StanzaManager";
 import * as event from '../events'
-import * as api from '../api'
 
 class App {
 
@@ -35,7 +34,7 @@ class App {
     this.#colorLampBlack = new Color('--color-lamp-black').to('srgb');
   }
 
-  ready() {
+  ready(api) {
 
     const body = document.body;
 
