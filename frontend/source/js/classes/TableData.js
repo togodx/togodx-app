@@ -72,8 +72,6 @@ export default class TableData {
   #CONTROLLER;
   #BUTTON_LEFT;
   #BUTTON_RIGHT;
-  #BUTTON_DOWNLOAD_JSON;
-  #BUTTON_DOWNLOAD_TSV;
 
   constructor(condition, elm) {
     // console.log(condition);
@@ -137,33 +135,6 @@ export default class TableData {
 
     </div>
     `;
-    // EDIT BUTTON ALWAYS HERE
-    // <div class="button left" data-button="">
-    //   <a class="">
-    //     <span class="material-icons-outlined"></span>
-    //     <span class="label"></span>
-    //   </a>
-    // </div>
-    // <div class="button right" data-button="">
-    //   <a class="">
-    //     <span class="material-icons-outlined"></span>
-    //     <span class="label"></span>
-    //   </a>
-    // </div>
-    // <div class="button none" data-button="download-tsv">
-    //   <a class="tsv">
-    //     <span class="material-icons-outlined">download tsv</span>
-    //     <span class="label">TSV</span>
-    //   </a>
-    // </div>;
-    // <div class="button -rotating" data-button="prepare-data">
-    //   <span class="material-icons-outlined">autorenew</span>
-    //   <span class="label">Pause</span>
-    // </div>
-    // <div class="button" data-button="restore">
-    //   <span class="material-icons-outlined">edit</span>
-    //   <span class="label">Edit</span>
-    // </div>
 
     // reference
     this.#ROOT = elm;
@@ -287,22 +258,15 @@ export default class TableData {
    * @param {Mode} mode
    */
   #makeDataButton(className, mode = undefined) {
-    const iconSpan = document.createElement('span');
-    iconSpan.classList.add('material-icons-outlined');
-    const labelSpan = document.createElement('span');
-    labelSpan.classList.add('label');
-    const a = document.createElement('a');
-    a.appendChild(iconSpan);
-    a.appendChild(labelSpan);
-
     const button = document.createElement('div');
+    button.innerHTML = `
+      <a>
+        <span class="material-icons-outlined"></span>
+        <span class="label"></span>
+      </a>`;
     button.classList.add('button', className);
-    button.appendChild(a);
 
-    if (mode) {
-      this.#updateDataButton(button, mode);
-      button['data-button'] = mode.dataButton;
-    }
+    if (mode) this.#updateDataButton(button, mode);
 
     button.addEventListener('click', e => {
       const customEvent = new CustomEvent(event.buttonEventByMode, {
@@ -328,7 +292,7 @@ export default class TableData {
   // Button events by Mode
   #dataButtonPauseOrResume() {
     e.stopPropagation();
-    this.#isAutoLoad
+    this.#autoLoad
       ? this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('resume'))
       : this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
     this.#isAutoLoad = !this.#isAutoLoad;
@@ -499,16 +463,15 @@ export default class TableData {
     this.#setTsvUrl();
   }
 
+  // Setters for downloadUrls
   #setJsonUrl() {
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {
       type: 'application/json',
     });
     downloadUrls.set('json', jsonBlob);
-    // const anchor = this.#BUTTON_LEFT.querySelector(':scope > .json');
-    // anchor.setAttribute('href', jsonUrl);
-    // anchor.setAttribute('download', 'sample.json');
   }
 
+  // TODO: look at possible improvements looping
   #setTsvUrl() {
     const temporaryArray = [];
     this.#rows.forEach(row => {
@@ -546,10 +509,6 @@ export default class TableData {
     const tsvBlob = new Blob([bom, tsvArray.join('\n')], {type: 'text/plain'});
     const tsvUrl = URL.createObjectURL(tsvBlob);
     downloadUrls.set('tsv', tsvUrl);
-
-    // const anchor = this.#BUTTON_LEFT.querySelector(':scope > a');
-    // anchor.setAttribute('href', tsvUrl);
-    // anchor.setAttribute('download', 'sample.tsv');
   }
 
   /* public methods */
