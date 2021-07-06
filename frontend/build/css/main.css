@@ -451,8 +451,8 @@ main {
   -webkit-filter: drop-shadow(var(--shadow-normal));
           filter: drop-shadow(var(--shadow-normal));
   z-index: var(--z-track-balloon);
-  -webkit-transform: translate(-50%, calc(-100% + -5px));
-          transform: translate(-50%, calc(-100% + -5px));
+  -webkit-transform: translate(-50%, calc(-100% + -.5rem));
+          transform: translate(-50%, calc(-100% + -.5rem));
   pointer-events: none;
   border-radius: 0.2rem;
 }
@@ -471,8 +471,8 @@ main {
   height: 0;
 }
 .balloon-view.-below {
-  -webkit-transform: translate(-50%, calc(100% - 14px));
-          transform: translate(-50%, calc(100% - 14px));
+  -webkit-transform: translate(-50%, 0.7rem);
+          transform: translate(-50%, 0.7rem);
 }
 .balloon-view.-below::before {
   top: -1.4rem;
@@ -1347,6 +1347,27 @@ main {
   border-color: white;
   z-index: var(--z-track-pin-hover);
 }
+.track-value-view[data-p-value-greater-than="1"] > .pin {
+  opacity: 0.1429;
+}
+.track-value-view[data-p-value-greater-than="<1"] > .pin {
+  opacity: 0.2857;
+}
+.track-value-view[data-p-value-greater-than="<0.1"] > .pin {
+  opacity: 0.429;
+}
+.track-value-view[data-p-value-greater-than="<0.05"] > .pin {
+  opacity: 0.571;
+}
+.track-value-view[data-p-value-greater-than="<0.01"] > .pin {
+  opacity: 0.714;
+}
+.track-value-view[data-p-value-greater-than="<0.005"] > .pin {
+  opacity: 0.857;
+}
+.track-value-view[data-p-value-greater-than="<0.001"] > .pin {
+  opacity: 1;
+}
 .track-value-view:hover, .track-value-view.-selected {
   background-color: transparent !important;
 }
@@ -1365,6 +1386,7 @@ main {
   z-index: var(--z-track-item-selected-hover);
 }
 .track-value-view:hover > .pin {
+  opacity: 1;
   z-index: var(--z-track-pin-hover);
 }
 .-showuserids .track-value-view:not(.-pinsticking) {
@@ -2069,6 +2091,18 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 
 #UploadUserIDsView > textarea {
   width: 100%;
+}
+#UploadUserIDsView > textarea::-webkit-input-placeholder {
+  color: gray;
+}
+#UploadUserIDsView > textarea::-moz-placeholder {
+  color: gray;
+}
+#UploadUserIDsView > textarea:-ms-input-placeholder {
+  color: gray;
+}
+#UploadUserIDsView > textarea::placeholder {
+  color: gray;
 }
 #UploadUserIDsView > .buttons {
   margin-top: -0.2rem;

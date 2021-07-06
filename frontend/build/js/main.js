@@ -3072,7 +3072,7 @@
       value: function setUserIds(ids) {
         console.log('setUserIds', ids);
 
-        _classPrivateFieldSet(this, _userIds, ids); // post processing (permalink, evaluate)
+        _classPrivateFieldSet(this, _userIds, ids.replace(/,/g, " ").split(/\s+/).join(',')); // post processing (permalink, evaluate)
 
 
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
@@ -3397,23 +3397,30 @@
     var params = new URL(location).searchParams;
     params.set('togoKey', _classPrivateFieldGet(this, _togoKey));
     params.set('userIds', this.userIds ? this.userIds : '');
-    params.set('keys', encodeURIComponent(JSON.stringify(keys)));
-    params.set('values', encodeURIComponent(JSON.stringify(values)));
+    params.set('keys', JSON.stringify(keys));
+    params.set('values', JSON.stringify(values));
     if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
   }
 
   function _createSearchConditionFromURLParameters2() {
-    var _JSON$parse, _JSON$parse2;
+    var _params$get, _JSON$parse, _JSON$parse2;
 
     var isFirst = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     // get conditions with ancestors
     var params = new URL(location).searchParams;
+    console.log(params);
+    console.log(params.get('userIds'));
+    console.log(params.get('keys'));
+    console.log(JSON.parse(params.get('keys')));
     var condition = {
       togoKey: params.get('togoKey'),
-      userIds: params.get('userIds'),
-      keys: (_JSON$parse = JSON.parse(decodeURIComponent(params.get('keys')))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
-      values: (_JSON$parse2 = JSON.parse(decodeURIComponent(params.get('values')))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
+      userIds: ((_params$get = params.get('userIds')) !== null && _params$get !== void 0 ? _params$get : '').split(',').filter(function (id) {
+        return id !== '';
+      }),
+      keys: (_JSON$parse = JSON.parse(params.get('keys'))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
+      values: (_JSON$parse2 = JSON.parse(params.get('values'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
     };
+    console.log(condition);
 
     if (isFirst) {
       // get child category ids
@@ -3495,6 +3502,8 @@
 
 
     _classPrivateFieldSet(this, _togoKey, togoKey);
+
+    _classPrivateFieldSet(this, _userIds, userIds);
 
     var _classPrivateMethodGe3 = _classPrivateMethodGet(this, _getCondtionsFromHierarchicConditions, _getCondtionsFromHierarchicConditions2).call(this, keys, values),
         _classPrivateMethodGe4 = _slicedToArray(_classPrivateMethodGe3, 2),
@@ -3833,7 +3842,7 @@
 
   var _isDefined = new WeakMap();
 
-  var _placeHolders = new WeakMap();
+  var _placeHolderExamples = new WeakMap();
 
   var _TOGO_KEYS = new WeakMap();
 
@@ -3885,7 +3894,7 @@
       value: void 0
     });
 
-    _placeHolders.set(this, {
+    _placeHolderExamples.set(this, {
       writable: true,
       value: void 0
     });
@@ -3951,10 +3960,6 @@
       document.body.dataset.display = 'properties';
     });
     elm.querySelector(':scope > header > button.rounded-button-view').addEventListener('click', function () {
-      _classPrivateFieldGet(_this, _TOGO_KEYS).options[0].selected = true;
-
-      _classPrivateFieldGet(_this, _TOGO_KEYS).dispatchEvent(new Event('change'));
-
       var customEvent = new CustomEvent(clearCondition);
       DefaultEventEmitter$1.dispatchEvent(customEvent);
     }); // event listeners
@@ -3985,35 +3990,21 @@
           break;
       }
     });
-    DefaultEventEmitter$1.addEventListener(defineTogoKey, function (e) {
-      _classPrivateMethodGet(_this, _defineTogoKeys, _defineTogoKeys2).call(_this, e.detail);
-    });
+    DefaultEventEmitter$1.addEventListener(defineTogoKey, _classPrivateMethodGet(this, _defineTogoKeys, _defineTogoKeys2).bind(this));
     DefaultEventEmitter$1.addEventListener(mutateEstablishConditions, function (e) {
       _classPrivateFieldGet(_this, _EXEC_BUTTON).disabled = !e.detail;
-    }); // DefaultEventEmitter.addEventListener(event.restoreParameters, e => {
-    //   this.#restoreParameters(e.detail);
-    // });
+    });
   } // private methods
-  // #restoreParameters(parameters) {
-  //   console.log(parameters)
-  //   if (parameters.togoKey) {
-  //     if (this.#isDefined) {
-  //       this.#TOGO_KEYS.value = parameters.togoKey;
-  //     } else {
-  //       setTimeout(() => {
-  //         this.#restoreParameters(parameters);
-  //       }, POLLING_DURATION);
-  //     }
-  //   }
-  // }
   ;
 
-  function _defineTogoKeys2(subjects) {
+  function _defineTogoKeys2(_ref) {
     var _this2 = this;
+
+    var subjects = _ref.detail.subjects;
 
     _classPrivateFieldSet(this, _isDefined, true);
 
-    _classPrivateFieldSet(this, _placeHolders, Object.fromEntries(subjects.filter(function (subject) {
+    _classPrivateFieldSet(this, _placeHolderExamples, Object.fromEntries(subjects.filter(function (subject) {
       return subject.togoKey;
     }).map(function (subject) {
       return [subject.togoKey, subject.togoKeyExamples];
@@ -4033,8 +4024,19 @@
         return subject.togoKey === e.target.value;
       });
       ConditionBuilder$1.setSubject(e.target.value, subject.subjectId);
-      _classPrivateFieldGet(_this2, _USER_IDS$1).placeholder = _classPrivateFieldGet(_this2, _placeHolders)[e.target.value].join(', ');
-    });
+      _classPrivateFieldGet(_this2, _USER_IDS$1).placeholder = "e.g. ".concat(_classPrivateFieldGet(_this2, _placeHolderExamples)[e.target.value].join(', '));
+    }); // preset
+
+
+    var togoKey = ConditionBuilder$1.currentTogoKey;
+
+    if (togoKey && Array.from(_classPrivateFieldGet(this, _TOGO_KEYS).options).map(function (option) {
+      return option.value;
+    }).indexOf(togoKey) !== -1) {
+      _classPrivateFieldGet(this, _TOGO_KEYS).value = togoKey;
+    } else {
+      _classPrivateFieldGet(this, _TOGO_KEYS).options[0].selected = true;
+    }
 
     _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));
   }
@@ -4759,7 +4761,7 @@
   }
 
   var MIN_PIN_SIZE = 12;
-  var MAX_PIN_SIZE = 36;
+  var MAX_PIN_SIZE = 24;
   var RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
 
   var _subject$1 = new WeakMap();
@@ -4878,10 +4880,12 @@
           return userValue.categoryId === value.categoryId;
         });
 
-        if (userValue) {
+        console.log(userValue);
+
+        if (userValue !== null && userValue !== void 0 && userValue.pValue) {
           values.push({
             key: 'P-value',
-            value: userValue.pValue.toExponential()
+            value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(3)
           });
         }
 
@@ -4910,11 +4914,16 @@
       });
     }); // event listener
 
-    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (e) {
-      if (_classPrivateFieldGet(_this, _property$1).propertyId === e.detail.propertyId) {
+    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref) {
+      var _ref$detail = _ref.detail,
+          action = _ref$detail.action,
+          propertyId = _ref$detail.propertyId,
+          categoryId = _ref$detail.categoryId;
+
+      if (_classPrivateFieldGet(_this, _property$1).propertyId === propertyId) {
         _classPrivateFieldGet(_this, _values).forEach(function (value) {
-          if (value.categoryId === e.detail.categoryId) {
-            switch (e.detail.action) {
+          if (value.categoryId === categoryId) {
+            switch (action) {
               case 'add':
                 value.elm.classList.add('-selected');
                 break;
@@ -4968,22 +4977,18 @@
   }
 
   function _plotUserIdValues2(detail) {
-    if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
-      var _detail$values$;
+    console.log(detail);
 
+    if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
       _classPrivateFieldGet(this, _ROOT$5).classList.add('-pinsticking');
 
       _classPrivateFieldSet(this, _userValues, detail.values); // calculate min value
-
-
-      var maxPValue;
-
-      if ((_detail$values$ = detail.values[0]) !== null && _detail$values$ !== void 0 && _detail$values$.pValue) {
-        var minPValue = Math.min.apply(Math, _toConsumableArray(detail.values.map(function (value) {
-          return value.pValue;
-        })));
-        maxPValue = 1 - Math.log10(minPValue);
-      } // mapping
+      // let maxPValue;
+      // if (detail.values[0]?.pValue) {
+      //   const minPValue = Math.min(...detail.values.map(value => value.pValue));
+      //   maxPValue = 1 - Math.log10(minPValue);
+      // }
+      // mapping
 
 
       _classPrivateFieldGet(this, _values).forEach(function (value) {
@@ -4994,19 +4999,49 @@
         if (userValue) {
           value.elm.classList.add('-pinsticking'); // pin
 
-          var ratio;
+          var ratio,
+              pValueGreaterThan = 1;
+          ratio = userValue.count / value.count;
+          ratio = ratio > 1 ? 1 : ratio;
 
           if (userValue.pValue) {
-            ratio = (1 - Math.log10(userValue.pValue)) / maxPValue; // value.pValue = userValue.pValue;
+            // ratio = (1 - Math.log10(userValue.pValue)) / maxPValue;
+            switch (true) {
+              case userValue.pValue < 0.001:
+                pValueGreaterThan = '<0.001';
+                break;
+
+              case userValue.pValue < 0.005:
+                pValueGreaterThan = '<0.005';
+                break;
+
+              case userValue.pValue < 0.01:
+                pValueGreaterThan = '<0.01';
+                break;
+
+              case userValue.pValue < 0.05:
+                pValueGreaterThan = '<0.05';
+                break;
+
+              case userValue.pValue < 0.1:
+                pValueGreaterThan = '<0.1';
+                break;
+
+              case userValue.pValue < 1:
+                pValueGreaterThan = '<1';
+                break;
+            }
           } else {
-            ratio = userValue.count / value.count;
-            ratio = ratio > 1 ? 1 : ratio;
+            // ratio = userValue.count / value.count;
+            // ratio = ratio > 1 ? 1 : ratio;
+            pValueGreaterThan = 1;
           }
 
           var size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
           value.userValueCount = userValue.count;
+          value.elm.dataset.pValueGreaterThan = pValueGreaterThan;
         } else {
           value.elm.classList.remove('-pinsticking');
         }
@@ -6109,19 +6144,23 @@
     _classPrivateFieldSet(this, _CONTAINER, _classPrivateFieldGet(this, _ROOT$1).querySelector(':scope > .container')); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener(enterPropertyValueItemView, function (e) {
-      _classPrivateFieldGet(_this, _CONTAINER).innerHTML = "\n        <header>".concat(e.detail.label, "</header>\n        ").concat(e.detail.values.map(function (value) {
+    DefaultEventEmitter$1.addEventListener(enterPropertyValueItemView, function (_ref) {
+      var _ref$detail = _ref.detail,
+          elm = _ref$detail.elm,
+          label = _ref$detail.label,
+          values = _ref$detail.values;
+      _classPrivateFieldGet(_this, _CONTAINER).innerHTML = "\n        <header>".concat(label, "</header>\n        ").concat(values.map(function (value) {
         return "<dl>\n          <dt>".concat(value.key, ":</dt>\n          <dd>").concat(value.value, "</dd>\n        </dl>");
       }).join('')); // geography
 
-      var rect = e.detail.elm.getBoundingClientRect();
+      var rect = elm.getBoundingClientRect();
       var isBelow = window.innerHeight * .3 > rect.top;
       _classPrivateFieldGet(_this, _ROOT$1).style.left = rect.left + rect.width * .5 + 'px';
 
       if (isBelow) {
         _classPrivateFieldGet(_this, _ROOT$1).classList.add('-below');
 
-        _classPrivateFieldGet(_this, _ROOT$1).style.top = rect.top + 10 + 'px';
+        _classPrivateFieldGet(_this, _ROOT$1).style.top = rect.bottom + 'px';
       } else {
         _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-below');
 
@@ -6130,7 +6169,7 @@
 
       _classPrivateFieldGet(_this, _ROOT$1).classList.add('-showing');
     });
-    DefaultEventEmitter$1.addEventListener(leavePropertyValueItemView, function (e) {
+    DefaultEventEmitter$1.addEventListener(leavePropertyValueItemView, function () {
       _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-showing');
     });
   };
@@ -6892,18 +6931,14 @@
       }); // event listeners
 
       _classPrivateFieldGet(this, _USER_IDS).addEventListener('change', function () {
-        ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value.replace(/,/g, " ").split(/\s+/).join(','));
+        ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value);
       }); // this.#USER_IDS.addEventListener('keyup', e => {
       //   if (e.keyCode === 13) this.#fetch();
       // });
 
 
-      DefaultEventEmitter$1.addEventListener(restoreParameters, function (e) {
-        _classPrivateMethodGet(_this, _restoreParameters, _restoreParameters2).call(_this, e.detail);
-      });
-      DefaultEventEmitter$1.addEventListener(clearCondition, function (e) {
-        _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
-      });
+      DefaultEventEmitter$1.addEventListener(restoreParameters, _classPrivateMethodGet(this, _restoreParameters, _restoreParameters2).bind(this));
+      DefaultEventEmitter$1.addEventListener(clearCondition, _classPrivateMethodGet(this, _clear, _clear2).bind(this));
     } // public methods
 
 
@@ -6918,8 +6953,9 @@
     return UploadUserIDsView;
   }();
 
-  function _restoreParameters2(parameters) {
-    _classPrivateFieldGet(this, _USER_IDS).value = parameters.userIds;
+  function _restoreParameters2(_ref) {
+    var detail = _ref.detail;
+    _classPrivateFieldGet(this, _USER_IDS).value = detail.userIds;
   }
 
   function _fetch2() {
@@ -7083,7 +7119,9 @@
           uploadUserIDsView.definePath(aggregate.mapping); // define primary keys
 
           var customEvent = new CustomEvent(defineTogoKey, {
-            detail: subjects
+            detail: {
+              subjects: subjects
+            }
           });
           DefaultEventEmitter$1.dispatchEvent(customEvent); // initialize stanza manager
 

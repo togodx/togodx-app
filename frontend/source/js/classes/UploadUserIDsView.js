@@ -29,17 +29,13 @@ export default class UploadUserIDsView {
 
     // event listeners
     this.#USER_IDS.addEventListener('change', () => {
-      ConditionBuilder.setUserIds(this.#USER_IDS.value.replace(/,/g," ").split(/\s+/).join(','));
+      ConditionBuilder.setUserIds(this.#USER_IDS.value);
     });
     // this.#USER_IDS.addEventListener('keyup', e => {
     //   if (e.keyCode === 13) this.#fetch();
     // });
-    DefaultEventEmitter.addEventListener(event.restoreParameters, e => {
-      this.#restoreParameters(e.detail);
-    });
-    DefaultEventEmitter.addEventListener(event.clearCondition, e => {
-      this.#clear();
-    });
+    DefaultEventEmitter.addEventListener(event.restoreParameters, this.#restoreParameters.bind(this));
+    DefaultEventEmitter.addEventListener(event.clearCondition, this.#clear.bind(this));
 
   }
 
@@ -53,8 +49,8 @@ export default class UploadUserIDsView {
 
   // private methods
 
-  #restoreParameters(parameters) {
-    this.#USER_IDS.value = parameters.userIds;
+  #restoreParameters({detail}) {
+    this.#USER_IDS.value = detail.userIds;
   }
 
   #fetch() {
