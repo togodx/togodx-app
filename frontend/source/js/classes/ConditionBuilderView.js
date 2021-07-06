@@ -96,10 +96,10 @@ export default class ConditionBuilderView {
     });
     // preset
     const togoKey = ConditionBuilder.currentTogoKey;
-    if (togoKey) {
-      if (Array.from(this.#TOGO_KEYS.options).map(option => option.value).indexOf(togoKey) !== -1) {
-        this.#TOGO_KEYS.value = togoKey;
-      }
+    if (togoKey && Array.from(this.#TOGO_KEYS.options).map(option => option.value).indexOf(togoKey) !== -1) {
+      this.#TOGO_KEYS.value = togoKey;
+    } else {
+      this.#TOGO_KEYS.options[0].selected = true;
     }
     this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }

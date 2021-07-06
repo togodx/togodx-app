@@ -4030,12 +4030,12 @@
 
     var togoKey = ConditionBuilder$1.currentTogoKey;
 
-    if (togoKey) {
-      if (Array.from(_classPrivateFieldGet(this, _TOGO_KEYS).options).map(function (option) {
-        return option.value;
-      }).indexOf(togoKey) !== -1) {
-        _classPrivateFieldGet(this, _TOGO_KEYS).value = togoKey;
-      }
+    if (togoKey && Array.from(_classPrivateFieldGet(this, _TOGO_KEYS).options).map(function (option) {
+      return option.value;
+    }).indexOf(togoKey) !== -1) {
+      _classPrivateFieldGet(this, _TOGO_KEYS).value = togoKey;
+    } else {
+      _classPrivateFieldGet(this, _TOGO_KEYS).options[0].selected = true;
     }
 
     _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));
