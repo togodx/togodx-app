@@ -181,8 +181,8 @@
       },
       {
         "propertyId": "uniprot_isolated_tissue",
-        "label": "Isolation source",
-        "description": "Tissues from which the protein was isolated, from UniProt",
+        "label": "Tissues w/expression reported",
+        "description": "Classification based on the name of the tissue from which the clone was isolated in the reference describing the protein sequence.",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_isolated_tissue",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt"
