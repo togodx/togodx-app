@@ -10,13 +10,31 @@ Biotypes of genes annotated in Ensembl
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/Ensembl_gene_type
 - Data sources
     - Ensembl human release 102: [http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index](http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index)
-    - Definition of gene biotypes is described [here](http://useast.ensembl.org/info/genome/genebuild/biotypes.html).
-- Query
-    - (More query details go here..)
+- Input/Output
     -  Input
         - Ensembl Gene ID
     - Output
         - Gene type
+ - Supplementary information
+ 	- A gene or transcript classification such as "protein coding" and "lincRNA". Definition of gene biotypes is described [here](http://useast.ensembl.org/info/genome/genebuild/biotypes.html).
+	- protein coding, lncRNA といった遺伝子/転写産物の分類です。遺伝子の分類の定義については [こちらをご覧ください](http://useast.ensembl.org/info/genome/genebuild/biotypes.html)。
+
+### Chromosome
+
+The chromosome where a gene is located
+
+- Identifier: ensembl_gene
+- SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/gene_chromosome_ensembl
+- Data sources
+    - Ensembl Human
+- Query
+    -  Input
+        - Ensembl gene ID
+    - Output
+        - Chromosome number
+- Supplementary information
+    - The chromosome on which each human gene is located.
+    - ヒトの各遺伝子が位置している染色体の番号を示します。
 
 ### # of exons
 
@@ -34,6 +52,10 @@ The number of exons
         - Output1("mode": none): List of number of exons for each category
         - Output2("mode": idList): List of Ensembl Transcription ID
         - Output3("mode": objectList): List of Ensembl Transcription ID and attribute of category
+- Supplementary information
+	- The number of exons for each transcript of each gene.
+	- 各遺伝子の転写産物ごとにエクソン数をカウントした結果です。
+        
         
 ### # of paralogs
 
@@ -51,9 +73,9 @@ The number of paralogs calculated based on HomoloGene
   * Output
     * Number of paralogs
 
-### Evolutionary conservation
+### Evolutionary divergence
 
-Evolutionary conservation of genes
+The most distant organisms from human that have orthologous genes in HomoloGene
 
 - Identifier: ncbigene
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/homologene_category
@@ -112,7 +134,7 @@ Genes expressed in tissues from GTEx
     - Input
         - Ensembl gene ID
     - Output
-        - UBERON ID or EFO ID
+        - UBERON ID or EFO ID or "low_specificity"
 
 ### Transcription factors
 
@@ -354,7 +376,7 @@ Uniprot entries with links to PDB data entries
 The number of alpha-helices in a PDB entry
 
 - Identifier: pdb
-- SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/pdb_alphahelix_bin
+- SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/structure_number_of_alpha_helices_pdb
 - Data sources
     - The number of alpha-helices recorded in the PDB entry.
     - This item based on the data of January 20, 2021 of PDBj. 
@@ -371,7 +393,7 @@ The number of alpha-helices in a PDB entry
 The number of beta-sheets in a PDB entry
 
 - Identifier: pdb
-- SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/pdb_betasheet_bin
+- SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/structure_number_of_beta_sheets_pdb
 - Data sources
     - The number of beta-sheets recorded in the PDB entry.
     - This item based on the data of January 20, 2021 of PDBj. 
@@ -523,9 +545,9 @@ The number of interacting proteins from UniProt
     - This item based on the data of March, 2021 of UniProt (human only).
 - Query
     - Input
-        - UniProt ID, Number of interacting proteins
+        - UniProt ID, Number of interacting human proteins
     - Output
-        - The number of interacting proteins from UniProt
+        - The number of interacting human proteins from UniProt
         - If a UniProt ID is entered, it returns the number of interacting proteins
 
 ### ChEMBL assay existence
@@ -549,22 +571,6 @@ Proteins with or without ChEMBL assay from Uniprot
 
 ## Subject: Chemical compound
 
-### Action type
-
-Mechanism action types in ChEMBL
-
-- Identifier: chembl_compound
-- SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/chembl_mechanism_action_type
-- Data sources
-    - (More data sources description goes here..)
-    - ChEMBL-RDF 28.0: http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/
-- Query
-    - (More query details go here..)
-    -  Input
-        - ChEMBL ID
-    - Output
-        - Mechanism action type
-
 ### Substance type
 
 Substance types in ChEMBL
@@ -581,9 +587,67 @@ Substance types in ChEMBL
     - Output
         - Substance type
 
-### Drug indication (MeSH)
+### Chemical role
 
-Drug indications in MeSH categories
+Chemical roles in ChEBI
+
+- Identifier: chebi_compound
+- SPARQList endpoint: http://integbio.jp/togosite/sparqlist/api/compound_chemical_role_chebi
+- Data sources
+    -  [Chemical Entities of Biological Interest (ChEBI) ](https://www.ebi.ac.uk/chebi/) 
+- Query
+    - Input
+        - ChEBI id (number)
+    - Output
+        -  [Chemical Role (CHEBI:51086)](https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:51086) and its subcategories of Mondo
+
+### Application type
+
+Application types in ChEBI
+
+- Identifier: chebi_compound
+- SPARQList endpoint: http://integbio.jp/togosite/sparqlist/api/compound_application_type_chebi
+- Data sources
+    -  [Chemical Entities of Biological Interest (ChEBI) ](https://www.ebi.ac.uk/chebi/) 
+- Query
+    - Input
+        - ChEBI id (number)
+    - Output
+        -  [Application (CHEBI:33232)](https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:33232) and its subcategories of Mondo
+
+### Action type
+
+Mechanism action types in ChEMBL
+
+- Identifier: chembl_compound
+- SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/chembl_mechanism_action_type
+- Data sources
+    - (More data sources description goes here..)
+    - ChEMBL-RDF 28.0: http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/
+- Query
+    - (More query details go here..)
+    -  Input
+        - ChEMBL ID
+    - Output
+        - Mechanism action type
+
+### Biological role
+
+Biological roles in ChEBI
+
+- Identifier: chebi_compound
+- SPARQList endpoint: http://integbio.jp/togosite/sparqlist/api/compound_biological_role_chebi
+- Data sources
+    -  [Chemical Entities of Biological Interest (ChEBI) ](https://www.ebi.ac.uk/chebi/) 
+- Query
+    - Input
+        - ChEBI id (number)
+    - Output
+        -  [Biological Role (CHEBI:24432)](https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:24432) and its subcategories of Mondo
+
+### Drug indication
+
+Number of drugs with indications (disease or symptom) categorized in MeSH hierarchy
 
 - Identifier: chembl_compound
 - SPARQList endpoint: https://integbio.jp/togosite/sparqlist/api/chembl_mesh

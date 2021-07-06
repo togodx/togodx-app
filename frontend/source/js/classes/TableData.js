@@ -208,9 +208,9 @@ export default class TableData {
           this.#condition.attributes.map(property => property.query)
         )
       )}${
-        ConditionBuilder.userIds
+        ConditionBuilder.userIds?.length > 0
           ? `&inputIds=${encodeURIComponent(
-              JSON.stringify(ConditionBuilder.userIds.split(','))
+              JSON.stringify(ConditionBuilder.userIds)
             )}`
           : ''
       }`,
