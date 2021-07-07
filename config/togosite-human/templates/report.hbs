@@ -1,0 +1,30 @@
+<div id="reportBody"></div>
+<script>
+  (() => {
+    // Get row data from frontend table view
+    const data = {{data}};
+
+    // Get target body
+    const reportBody = document.getElementById("reportBody");
+
+    // Remove duplicated items
+    const deduplicateData = async () => {
+      return data;
+    }
+
+    // function to append column information to the body
+    const appendTemplate = async (id) => {
+      const templateDiv = document.createElement('div');
+      templateDiv.setAttribute('id', id);
+      reportBody.appendChild(templateDiv);
+    }
+
+    // itearete each item to append hbs templates
+    const appendTemplates = async () => {
+      const d = await deduplicateData();
+      for (const column of d) {
+        appendTemplate(column);
+      }
+    }
+  })()
+</script>
