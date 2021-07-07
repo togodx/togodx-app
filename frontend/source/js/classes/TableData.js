@@ -25,7 +25,7 @@ const dataButtonModes = new Map([
     'resume',
     {
       label: 'Resume',
-      icon: 'home',
+      icon: 'play_arrow',
       dataButton: 'resume',
     },
   ],
@@ -167,13 +167,16 @@ export default class TableData {
     });
 
     DefaultEventEmitter.addEventListener(event.buttonEventByMode, e => {
-      this.#dataButtonEvent(e);
+      this.#dataButtonEvent(e.detail);
     });
 
     // delete
     this.#ROOT
       .querySelector(':scope > .close-button-view')
-      .addEventListener('click', this.#deleteCondition.bind(this));
+      .addEventListener('click', e => {
+        this.#deleteCondition.bind(this);
+        this.#deleteCondition(e);
+      });
 
     ConditionBuilder.finish();
     this.select();
@@ -182,7 +185,7 @@ export default class TableData {
 
   /* private methods */
 
-  #deleteCondition() {
+  #deleteCondition(e) {
     e.stopPropagation();
     const customEvent = new CustomEvent(event.deleteTableData, {
       detail: this,
@@ -270,7 +273,10 @@ export default class TableData {
 
     button.addEventListener('click', e => {
       const customEvent = new CustomEvent(event.buttonEventByMode, {
-        detail: className,
+        detail: {
+          className,
+          mouseEvent: e,
+        },
       });
       DefaultEventEmitter.dispatchEvent(customEvent);
     });
@@ -281,23 +287,43 @@ export default class TableData {
   /**
    * @param {HTMLElement} target
    * @param {Mode} mode
+   * @param {string} urlType
    */
 
-  #updateDataButton(target, mode) {
+  #updateDataButton(target, mode, urlType) {
     target.dataset.button = mode.dataButton;
-    target.querySelector('a > .material-icons-outlined').innerText = mode.icon;
-    target.querySelector('a > .label').innerText = mode.label;
+    const anchor = target.querySelector(':scope > a');
+    anchor.querySelector(':scope > .material-icons-outlined').innerText =
+      mode.icon;
+    anchor.querySelector(':scope > .label').innerText = mode.label;
+    if (urlType) {
+      const url = downloadUrls.get(urlType);
+      anchor.setAttribute('href', url);
+      anchor.setAttribute('download', `sample.${urlType}`);
+    }
   }
+  //  #autoLoad() {
+  //     if (this.#isCompleted) return;
+  //     // this.#isAutoLoad = true;
+  //     // this.#ROOT.classList.add('-autoload');
+  //     // this.#getProperties();
+  //   }
 
   // Button events by Mode
-  #dataButtonPauseOrResume() {
+  /**
+   * @param {MouseEvent} e
+   * @param {HTMLElement} targetBtn
+   */
+  #dataButtonPauseOrResume(targetBtn, e) {
     e.stopPropagation();
-    this.#autoLoad
-      ? this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('resume'))
-      : this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
+    const modeToChangeTo = this.#isAutoLoad ? 'resume' : 'pause';
+    this.#updateDataButton(targetBtn, dataButtonModes.get(modeToChangeTo));
     this.#isAutoLoad = !this.#isAutoLoad;
+    if (this.#isAutoLoad) this.#getProperties();
   }
-
+  /**
+   * @param {MouseEvent} e
+   */
   #dataButtonEdit(e) {
     e.stopPropagation();
     // property (attribute)
@@ -325,42 +351,46 @@ export default class TableData {
    * @param { HTMLElement } parent
    */
 
-  #dataButtonDownload(parent, type) {
-    const url = downloadUrls.get(type);
-    const anchor = parent.querySelector(':scope > a');
-    anchor.setAttribute('href', url);
-    anchor.setAttribute('download', `sample.${type}`);
-    anchor.click();
-  }
+  // #dataButtonDownload(parent, type) {
+  //   const anchor = parent.querySelector(':scope > a');
+  //   if (!anchor.hasAttribute('href')) {
+  //     const url = downloadUrls.get(type);
+  //     anchor.setAttribute('href', url);
+  //     anchor.setAttribute('download', `sample.${type}`);
+  //   } else {
+  //     anchor.click();
+  //   }
+  // }
 
   /**
-   * @param { string } buttonType
+   * @param { string } className - 'left' | 'middle' | 'right'
    */
 
   // If not neccesary, only use e.detail
-  #dataButtonEvent(e) {
-    const button = this.#CONTROLLER.querySelector(`.${e.detail}`);
+  #dataButtonEvent({className, mouseEvent}) {
+    const button = this.#CONTROLLER.querySelector(`:scope > .${className}`);
     const mode = button.dataset.button;
     switch (mode) {
       case 'edit':
         this.#dataButtonEdit.bind(this);
+        this.#dataButtonEdit(mouseEvent);
         break;
 
       case 'resume':
       case 'pause':
         this.#dataButtonPauseOrResume.bind(this);
+        this.#dataButtonPauseOrResume(button, mouseEvent);
         break;
 
-      case 'tsv':
-      case 'csv':
-        this.#dataButtonDownload(button, mode);
+      case 'download-tsv':
+      case 'download-csv':
+        // this.#dataButtonDownload(button, mode.replace('download-', ''));
         break;
     }
   }
 
   #getProperties() {
     this.#isAutoLoad = true;
-    this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
     this.#ROOT.classList.add('-fetching');
     this.#STATUS.textContent = 'Getting Data';
     fetch(
@@ -403,13 +433,11 @@ export default class TableData {
         // turn off after finished
         if (this.#isCompleted) {
           this.#complete();
+        } else if (this.#isAutoLoad) {
           this.#updateDataButton(
             this.#BUTTON_LEFT,
-            dataButtonModes.get('json')
+            dataButtonModes.get('pause')
           );
-          const secondButton = this.#makeDataButton('middle', 'download-csv');
-          this.#CONTROLLER.appendChild(secondButton);
-        } else if (this.#isAutoLoad) {
           this.#getProperties();
         }
       })
@@ -449,26 +477,41 @@ export default class TableData {
     }
   }
 
-  #autoLoad() {
-    if (this.#isCompleted) return;
-    this.#isAutoLoad = true;
-    this.#ROOT.classList.add('-autoload');
-    this.#getProperties();
-  }
+  // #autoLoad() {
+  //   if (this.#isCompleted) return;
+  //   this.#isAutoLoad = true;
+  //   this.#ROOT.classList.add('-autoload');
+  //   this.#getProperties();
+  // }
 
   #complete() {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = 'Complete';
-    this.#setJsonUrl();
+
+    this.#setDownloadButtons();
+  }
+
+  #setDownloadButtons() {
     this.#setTsvUrl();
+    this.#updateDataButton(
+      this.#BUTTON_LEFT,
+      dataButtonModes.get('tsv'),
+      'tsv'
+    );
+
+    this.#setCsvUrl();
+    const middleButton = this.#makeDataButton('middle', 'csv');
+    this.#updateDataButton(middleButton, dataButtonModes.get('csv'), 'csv');
+    this.#CONTROLLER.insertBefore(middleButton, this.#BUTTON_RIGHT);
   }
 
   // Setters for downloadUrls
-  #setJsonUrl() {
+  #setCsvUrl() {
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {
       type: 'application/json',
     });
-    downloadUrls.set('json', jsonBlob);
+    const csvUrl = URL.createObjectURL(jsonBlob);
+    downloadUrls.set('csv', csvUrl);
   }
 
   // TODO: look at possible improvements looping
@@ -509,6 +552,7 @@ export default class TableData {
     const tsvBlob = new Blob([bom, tsvArray.join('\n')], {type: 'text/plain'});
     const tsvUrl = URL.createObjectURL(tsvBlob);
     downloadUrls.set('tsv', tsvUrl);
+    // return tsvUrl;
   }
 
   /* public methods */

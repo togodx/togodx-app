@@ -70,7 +70,7 @@
   > .controller
     display: flex
     color: white
-    > [data-button="download-json"], > [data-button="download-tsv"]
+    > [data-button="download-csv"], > [data-button="download-tsv"]
       display: block
       > a
         color: white
@@ -89,12 +89,10 @@
       cursor: pointer
       &:hover
         background-color: var(--color-lamp-black)
-      &[data-button="restore"]
-        [data-display="results"] &
-          +button-disabled
-      &.none
-        display: none
-      > .material-icons-outlined
+      // &[data-button="restore"]
+      //   [data-display="results"] &
+      //     +button-disabled
+      .material-icons-outlined
         position: relative
         top: -.1rem
         font-size: 1.4rem
@@ -119,12 +117,12 @@
   &.-autoload
     > .controller
       > .button
-        &[data-button="prepare-data"]
+        &[data-button="edit"]
           +button-disabled
   &[data-status="load ids"]
     > .controller
       > .button
-        &[data-button="prepare-data"]
+        &[data-button="edit"]
           +button-disabled
   &[data-status="load rows"]
     > .indicator
@@ -139,17 +137,15 @@
       display: block
     > .controller
       display: flex
-      > [data-button="prepare-data"]
-        display: none
       > [data-button="download-json"], > [data-button="download-tsv"]
         display: block
     > .controller
       > .button
-        &[data-button="prepare-data"]
+        &[data-button="edit"]
           +button-disabled
 
 @keyframes rotation
-  0%  
+  0%
     transform: rotate(0)
-  100%  
+  100%
     transform: rotate(360deg)
