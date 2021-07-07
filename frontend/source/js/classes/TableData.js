@@ -289,7 +289,6 @@ export default class TableData {
    * @param {Mode} mode
    * @param {string} urlType
    */
-
   #updateDataButton(target, mode, urlType) {
     target.dataset.button = mode.dataButton;
     const anchor = target.querySelector(':scope > a');
@@ -302,14 +301,7 @@ export default class TableData {
       anchor.setAttribute('download', `sample.${urlType}`);
     }
   }
-  //  #autoLoad() {
-  //     if (this.#isCompleted) return;
-  //     // this.#isAutoLoad = true;
-  //     // this.#ROOT.classList.add('-autoload');
-  //     // this.#getProperties();
-  //   }
 
-  // Button events by Mode
   /**
    * @param {MouseEvent} e
    * @param {HTMLElement} targetBtn
@@ -346,27 +338,11 @@ export default class TableData {
       ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
     });
   }
-  /**
-   * @param { string } type
-   * @param { HTMLElement } parent
-   */
-
-  // #dataButtonDownload(parent, type) {
-  //   const anchor = parent.querySelector(':scope > a');
-  //   if (!anchor.hasAttribute('href')) {
-  //     const url = downloadUrls.get(type);
-  //     anchor.setAttribute('href', url);
-  //     anchor.setAttribute('download', `sample.${type}`);
-  //   } else {
-  //     anchor.click();
-  //   }
-  // }
 
   /**
    * @param { string } className - 'left' | 'middle' | 'right'
+   * @param { mouseEvent } mouseEvent
    */
-
-  // If not neccesary, only use e.detail
   #dataButtonEvent({className, mouseEvent}) {
     const button = this.#CONTROLLER.querySelector(`:scope > .${className}`);
     const mode = button.dataset.button;
@@ -389,6 +365,69 @@ export default class TableData {
     }
   }
 
+  #setDownloadButtons() {
+    this.#setTsvUrl();
+    this.#updateDataButton(
+      this.#BUTTON_LEFT,
+      dataButtonModes.get('tsv'),
+      'tsv'
+    );
+
+    this.#setCsvUrl();
+    const middleButton = this.#makeDataButton('middle', 'csv');
+    this.#updateDataButton(middleButton, dataButtonModes.get('csv'), 'csv');
+    this.#CONTROLLER.insertBefore(middleButton, this.#BUTTON_RIGHT);
+  }
+
+  // Setters for downloadUrls
+  #setCsvUrl() {
+    const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {
+      type: 'application/json',
+    });
+    const csvUrl = URL.createObjectURL(jsonBlob);
+    downloadUrls.set('csv', csvUrl);
+  }
+
+  // TODO: look at possible improvements looping
+  #setTsvUrl() {
+    const temporaryArray = [];
+    this.#rows.forEach(row => {
+      row.properties.forEach(property => {
+        property.attributes.forEach(attribute => {
+          const singleItem = [
+            this.#condition.togoKey, // togoKey
+            row.id, // togoKeyId
+            row.label, // togoKeyLabel
+            property.propertyId, // attribute
+            property.propertyKey, // attributeKey
+            attribute.id, // attributeKeyId
+            attribute.attribute.label, // attributeValue
+          ];
+          temporaryArray.push(singleItem);
+        });
+      });
+    });
+    const tsvArray = temporaryArray.map(item => {
+      return item.join('\t');
+    });
+    if (tsvArray.length !== 0) {
+      const tsvHeader = [
+        'togoKey',
+        'togoKeyId',
+        'togoKeyLabel',
+        'attribute',
+        'attributeKey',
+        'attributeKeyId',
+        'attributeValue',
+      ];
+      tsvArray.unshift(tsvHeader.join('\t'));
+    }
+    const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+    const tsvBlob = new Blob([bom, tsvArray.join('\n')], {type: 'text/plain'});
+    const tsvUrl = URL.createObjectURL(tsvBlob);
+    downloadUrls.set('tsv', tsvUrl);
+  }
+  // *** Properties & Loading ***
   #getProperties() {
     this.#isAutoLoad = true;
     this.#ROOT.classList.add('-fetching');
@@ -477,82 +516,10 @@ export default class TableData {
     }
   }
 
-  // #autoLoad() {
-  //   if (this.#isCompleted) return;
-  //   this.#isAutoLoad = true;
-  //   this.#ROOT.classList.add('-autoload');
-  //   this.#getProperties();
-  // }
-
   #complete() {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = 'Complete';
-
     this.#setDownloadButtons();
-  }
-
-  #setDownloadButtons() {
-    this.#setTsvUrl();
-    this.#updateDataButton(
-      this.#BUTTON_LEFT,
-      dataButtonModes.get('tsv'),
-      'tsv'
-    );
-
-    this.#setCsvUrl();
-    const middleButton = this.#makeDataButton('middle', 'csv');
-    this.#updateDataButton(middleButton, dataButtonModes.get('csv'), 'csv');
-    this.#CONTROLLER.insertBefore(middleButton, this.#BUTTON_RIGHT);
-  }
-
-  // Setters for downloadUrls
-  #setCsvUrl() {
-    const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {
-      type: 'application/json',
-    });
-    const csvUrl = URL.createObjectURL(jsonBlob);
-    downloadUrls.set('csv', csvUrl);
-  }
-
-  // TODO: look at possible improvements looping
-  #setTsvUrl() {
-    const temporaryArray = [];
-    this.#rows.forEach(row => {
-      row.properties.forEach(property => {
-        property.attributes.forEach(attribute => {
-          const singleItem = [
-            this.#condition.togoKey, // togoKey
-            row.id, // togoKeyId
-            row.label, // togoKeyLabel
-            property.propertyId, // attribute
-            property.propertyKey, // attributeKey
-            attribute.id, // attributeKeyId
-            attribute.attribute.label, // attributeValue
-          ];
-          temporaryArray.push(singleItem);
-        });
-      });
-    });
-    const tsvArray = temporaryArray.map(item => {
-      return item.join('\t');
-    });
-    if (tsvArray.length !== 0) {
-      const tsvHeader = [
-        'togoKey',
-        'togoKeyId',
-        'togoKeyLabel',
-        'attribute',
-        'attributeKey',
-        'attributeKeyId',
-        'attributeValue',
-      ];
-      tsvArray.unshift(tsvHeader.join('\t'));
-    }
-    const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
-    const tsvBlob = new Blob([bom, tsvArray.join('\n')], {type: 'text/plain'});
-    const tsvUrl = URL.createObjectURL(tsvBlob);
-    downloadUrls.set('tsv', tsvUrl);
-    // return tsvUrl;
   }
 
   /* public methods */
@@ -578,11 +545,6 @@ export default class TableData {
 
   deselect() {
     this.#ROOT.classList.remove('-current');
-  }
-
-  next() {
-    if (this.#isAutoLoad) return;
-    this.#getProperties();
   }
 
   /* public accessors */
