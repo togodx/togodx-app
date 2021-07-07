@@ -1,0 +1,48 @@
+<script type="module" src="https://togostanza.github.io/metastanza/pagination-table.js" async></script>
+<script type="module" src="https://togostanza.github.io/metastanza/barchart.js" async></script>
+
+<h3>Transcripts from {{id}}</h3>
+<togostanza-pagination-table
+  data-url="https://integbio.jp/togosite/sparqlist/api/togosite_transcript_summary?ensg={{id}}"
+  data-type="json"
+  padding="0"
+  page-size-option="10,20,50,100"
+  page-slider="true"
+  columns="[{&quot;id&quot;:&quot;enst_id&quot;,&quot;label&quot;:&quot;Ensembl Transcript ID&quot;,&quot;link&quot;:&quot;enst_url&quot;},{&quot;id&quot;:&quot;label&quot;,&quot;label&quot;:&quot;Name&quot;},{&quot;id&quot;:&quot;type&quot;,&quot;label&quot;:&quot;Biotype&quot;},{&quot;id&quot;:&quot;location&quot;,&quot;label&quot;:&quot;Location&quot;},{&quot;id&quot;:&quot;exon_count&quot;,&quot;label&quot;:&quot;# of Exons&quot;},{&quot;id&quot;:&quot;uniprot_id&quot;,&quot;label&quot;:&quot;Uniprot&quot;,&quot;escape&quot;:false}]"
+></togostanza-pagination-table>
+<h3>Expression of {{id}} (GTEx v8)</h3>
+<togostanza-barchart
+  chart-type="stacked"
+  data-url="https://integbio.jp/togosite/sparqlist/api/gtex_log_tpm?id={{id}}&amp;type=ensembl_gene"
+  data-type="json"
+  category="desc"
+  value="logTPM"
+  group-by="tissueCategory"
+  category-title="Tissue"
+  value-title="Expression value (log2(TPM+1))"
+  legend-title="Tissue"
+  legend-padding="30"
+  width="800"
+  height="300"
+  padding="5"
+  padding-inner="0.3"
+  padding-outer="0.4"
+  xaxis-placement="bottom"
+  yaxis-placement="left"
+  xgrid="false"
+  ygrid="true"
+  xtick="false"
+  ytick="true"
+  xlabel-angle="45"
+  xlabel-alignment="left"
+  ylabel-angle="0"
+  xlabel-padding="5"
+  ylabel-padding="5"
+  xtitle-padding="10"
+  ytitle-padding="10"
+  xlabel-max-width="500"
+  bar-width="0.8"
+  legend="true"
+  metastanza-menu-placement="top-right"
+></togostanza-barchart>
+<a href="https://gtexportal.org/home/gene/{{id}}">View at GTEx Portal</a>
