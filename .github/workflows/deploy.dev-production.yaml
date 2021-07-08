@@ -1,24 +1,15 @@
-name: release-and-deploy
+name: upload-s3-dev
 on:
   push:
     branches:
-      - main
+      - develop
 jobs:
   upload_web_source:
     runs-on: ubuntu-latest
     steps:
-      - id: date
-        run: echo "::set-output name=date::$(TZ=Asia/Tokyo date +'%Y%m%d-%H%M%S')"
-
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
-
-      - uses: avakar/tag-and-release@v1
-        with:
-          tag_name: release-${{ steps.date.outputs.date }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: opspresso/action-s3-sync@master
         env:
@@ -26,5 +17,5 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: "ap-northeast-1"
           FROM_PATH: "./frontend/build"
-          DEST_PATH: "s3://${{ secrets.S3_BUCKET }}/"
+          DEST_PATH: "s3://togosite-dev/"
           OPTIONS: "--delete --acl public-read --exclude 'README.md'"
