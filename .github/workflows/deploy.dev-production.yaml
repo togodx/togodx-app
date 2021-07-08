@@ -1,4 +1,4 @@
-name: upload-s3-dev
+name: deploy dev-production
 on:
   push:
     branches:

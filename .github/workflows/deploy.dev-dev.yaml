@@ -1,4 +1,4 @@
-name: upload-s3-dev
+name: deploy dev-dev
 on:
   push:
     branches:
@@ -11,11 +11,15 @@ jobs:
         with:
           fetch-depth: 1
 
+      - id: update-configuration
+        run: |
+          find ./frontend -name "*" -exec sed -i "s:dbcls/togosite/develop:dbcls/togosite/main:g" {} \;
+
       - uses: opspresso/action-s3-sync@master
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: "ap-northeast-1"
           FROM_PATH: "./frontend/build"
-          DEST_PATH: "s3://togosite-dev/"
+          DEST_PATH: "s3://${{ secrets.S3_BUCKET }}/"
           OPTIONS: "--delete --acl public-read --exclude 'README.md'"
