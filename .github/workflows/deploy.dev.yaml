@@ -20,7 +20,7 @@ jobs:
           DEST_PATH: "s3://togosite-dev-production/"
           OPTIONS: "--delete --acl public-read --exclude 'README.md'"
 
-      - id: update-configuration
+      - id: update-properties
         run: |
           sed -i "s:integbio.jp/togosite/:integbio.jp/togosite_dev/:g" ./config/togosite-human/properties.json
 
