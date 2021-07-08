@@ -1,6 +1,23 @@
 <div id="reportBody"></div>
 <script>
   (() => {
+    // Functions
+    // access API and return JSON
+    const fetchJSON = async (api) => {
+      const response = await fetch(api);
+      const json = await response.json();
+      console.log(api);  // debug
+      console.log(json); // debug
+      return json;
+    }
+
+    // configuration files
+    const propertiesConfig = async () => {
+      const propertiesConfigUrl = "https://github.com/dbcls/togosite/raw/develop/config/togosite-human/properties.json";
+      const config = await fetchJSON(propertiesConfigUrl);
+      return config;
+    }
+
     // Get row data from frontend table view
     const data = {{data}};
 
