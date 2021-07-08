@@ -1,18 +1,28 @@
-name: release-and-deploy
+name: deploy production
 on:
   push:
     branches:
       - main
 jobs:
-  upload_web_source:
+  deploy-production:
     runs-on: ubuntu-latest
     steps:
-      - id: date
-        run: echo "::set-output name=date::$(TZ=Asia/Tokyo date +'%Y%m%d-%H%M%S')"
-
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
+
+      - id: update-configuration
+        run: |
+          find ./frontend -name "*" -exec sed -i "s:dbcls/togosite/develop:dbcls/togosite/main:g" {} \;
+
+      - name: Commit & Push changes
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+
+      - id: date
+        run: echo "::set-output name=date::$(TZ=Asia/Tokyo date +'%Y%m%d-%H%M%S')"
 
       - uses: avakar/tag-and-release@v1
         with:
