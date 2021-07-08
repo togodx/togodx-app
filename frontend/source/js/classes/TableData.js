@@ -93,14 +93,14 @@ export default class TableData {
     elm.innerHTML = `
     <div class="close-button-view"></div>
     <div class="conditions">
-      <div class="condiiton">
+      <div class="condition">
         <p title="${condition.togoKey}">${Records.getLabelFromTogoKey(
       condition.togoKey
     )}</p>
       </div>
       ${condition.attributes
         .map(
-          property => `<div class="condiiton _subject-background-color" data-subject-id="${property.subject.subjectId}">
+          property => `<div class="condition _subject-background-color" data-subject-id="${property.subject.subjectId}">
         <p title="${property.property.label}">${property.property.label}</p>
       </div>`
         )
@@ -113,7 +113,7 @@ export default class TableData {
                 property.parentCategoryId
               ).label
             : property.property.label;
-          return `<div class="condiiton _subject-color" data-subject-id="${property.subject.subjectId}">
+          return `<div class="condition _subject-color" data-subject-id="${property.subject.subjectId}">
           <p title="${label}">${label}</p>
         </div>`;
         })
@@ -160,6 +160,7 @@ export default class TableData {
     this.#BUTTON_RIGHT = elm.querySelector(
       ':scope > .controller > .button.right'
     );
+    this.#BUTTON_RIGHT.classList.add('none');
 
     // events
     elm.addEventListener('click', () => {
@@ -518,6 +519,11 @@ export default class TableData {
 
   select() {
     this.#ROOT.classList.add('-current');
+    document
+      .querySelectorAll(
+        '.conditions > .table-data-controller-view > .controller > .right'
+      )
+      .forEach(button => button.classList.add('none'));
     // dispatch event
     const customEvent1 = new CustomEvent(event.selectTableData, {detail: this});
     DefaultEventEmitter.dispatchEvent(customEvent1);
