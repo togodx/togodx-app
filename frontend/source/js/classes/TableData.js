@@ -121,6 +121,7 @@ export default class TableData {
     </div>
     <div class="status">
       <p>Getting ID list</p>
+      <span class="material-icons-outlined -rotating">autorenew</span>
     </div>
     <div class="indicator">
       <div class="text">
@@ -166,15 +167,10 @@ export default class TableData {
       this.select();
     });
 
-    DefaultEventEmitter.addEventListener(event.buttonEventByMode, e => {
-      this.#dataButtonEvent(e.detail);
-    });
-
     // delete
     this.#ROOT
       .querySelector(':scope > .close-button-view')
       .addEventListener('click', e => {
-        this.#deleteCondition.bind(this);
         this.#deleteCondition(e);
       });
 
@@ -272,13 +268,7 @@ export default class TableData {
     if (mode) this.#updateDataButton(button, mode);
 
     button.addEventListener('click', e => {
-      const customEvent = new CustomEvent(event.buttonEventByMode, {
-        detail: {
-          className,
-          mouseEvent: e,
-        },
-      });
-      DefaultEventEmitter.dispatchEvent(customEvent);
+      this.#dataButtonEvent(e);
     });
 
     return button;
@@ -304,12 +294,18 @@ export default class TableData {
 
   /**
    * @param {MouseEvent} e
-   * @param {HTMLElement} targetBtn
    */
-  #dataButtonPauseOrResume(targetBtn, e) {
+  #dataButtonPauseOrResume(e) {
     e.stopPropagation();
+    const span = this.#ROOT.querySelector(
+      ':scope > .status > .material-icons-outlined'
+    );
+    span.classList.toggle('-rotating');
     const modeToChangeTo = this.#isAutoLoad ? 'resume' : 'pause';
-    this.#updateDataButton(targetBtn, dataButtonModes.get(modeToChangeTo));
+    this.#updateDataButton(
+      e.currentTarget,
+      dataButtonModes.get(modeToChangeTo)
+    );
     this.#isAutoLoad = !this.#isAutoLoad;
     if (this.#isAutoLoad) this.#getProperties();
   }
@@ -340,27 +336,23 @@ export default class TableData {
   }
 
   /**
-   * @param { string } className - 'left' | 'middle' | 'right'
-   * @param { mouseEvent } mouseEvent
+   * @param { mouseEvent } e
    */
-  #dataButtonEvent({className, mouseEvent}) {
-    const button = this.#CONTROLLER.querySelector(`:scope > .${className}`);
+  #dataButtonEvent(e) {
+    const button = e.currentTarget;
     const mode = button.dataset.button;
     switch (mode) {
       case 'edit':
-        this.#dataButtonEdit.bind(this);
-        this.#dataButtonEdit(mouseEvent);
+        this.#dataButtonEdit(e);
         break;
 
       case 'resume':
       case 'pause':
-        this.#dataButtonPauseOrResume.bind(this);
-        this.#dataButtonPauseOrResume(button, mouseEvent);
+        this.#dataButtonPauseOrResume(e);
         break;
 
       case 'download-tsv':
       case 'download-csv':
-        // this.#dataButtonDownload(button, mode.replace('download-', ''));
         break;
     }
   }

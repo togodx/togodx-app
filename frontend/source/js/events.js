@@ -36,7 +36,6 @@ export const addNextRows = 'addNextRows';
 export const selectTableData = 'selectTableData';
 export const deleteTableData = 'deleteTableData';
 export const highlightCol = 'highlightCol';
-export const buttonEventByMode = 'buttonEventByMode';
 
 // Track
 export const enterPropertyValueItemView = 'enterPropertyValueItemView';
