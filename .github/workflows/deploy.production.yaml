@@ -4,7 +4,7 @@ on:
     branches:
       - main
 jobs:
-  upload_web_source:
+  deploy-production:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
