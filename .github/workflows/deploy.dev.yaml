@@ -1,4 +1,4 @@
-name: deploy dev-production
+name: deploy develpment (dev-production, dev-dev)
 on:
   push:
     branches:
@@ -17,12 +17,22 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: "ap-northeast-1"
           FROM_PATH: "./frontend/build"
-          DEST_PATH: "s3://togosite-dev/"
+          DEST_PATH: "s3://togosite-dev-production/"
           OPTIONS: "--delete --acl public-read --exclude 'README.md'"
 
       - id: update-configuration
         run: |
-          find ./frontend -name "*" -exec sed -i "s:dbcls/togosite/develop:dbcls/togosite/main:g" {} \;
+          sed -i "s:integbio.jp/togosite/:integbio.jp/togosite_dev/:g" ./config/togosite-human/properties.json
+
+      - name: Commit & Push changes
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: sparqlist-develop
+
+      - id: update-configuration
+        run: |
+          find ./frontend -name "*" -exec sed -i "s:dbcls/togosite/develop:dbcls/togosite/sparqlist-develop:g" {} \;
 
       - uses: opspresso/action-s3-sync@master
         env:
@@ -30,5 +40,5 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: "ap-northeast-1"
           FROM_PATH: "./frontend/build"
-          DEST_PATH: "s3://${{ secrets.S3_BUCKET }}/"
+          DEST_PATH: "s3://togosite-dev-dev/"
           OPTIONS: "--delete --acl public-read --exclude 'README.md'"
