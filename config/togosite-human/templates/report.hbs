@@ -1,47 +1,198 @@
+<script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 <div id="reportBody"></div>
-<script>
+<script type="text/javascript">
   (() => {
+    // Get row data from frontend table view
+    // const data = {{data}};
+
+    // For testing
+    const data = {
+        "id": "37266",
+        "label": "DUX4L7",
+        "properties": [
+          {
+            "propertyId": "homologene_human_paralog_count",
+            "propertyLabel": "# of paralogs",
+            "propertyKey": "ncbigene",
+            "attributes": [
+              {
+                "attribute": {
+                  "categoryId": "15",
+                  "label": "15 genes"
+                },
+                "id": "653543"
+              }
+            ]
+          },
+          {
+            "propertyId": "uniprot_keywords_domain",
+            "propertyLabel": "Protein domains",
+            "propertyKey": "uniprot",
+            "attributes": [
+              {
+                "attribute": {
+                  "categoryId": "677",
+                  "label": "Repeat",
+                  "uri": "http://purl.uniprot.org/keywords/677"
+                },
+                "id": "P0CJ90"
+              },
+              {
+                "attribute": {
+                  "categoryId": "371",
+                  "label": "Homeobox",
+                  "uri": "http://purl.uniprot.org/keywords/371"
+                },
+                "id": "P0CJ90"
+              }
+            ]
+          }
+        ]
+      };
+
     // Functions
     // access API and return JSON
     const fetchJSON = async (api) => {
       const response = await fetch(api);
       const json = await response.json();
-      console.log(api);  // debug
-      console.log(json); // debug
+      // console.log(api);  // debug
+      // console.log(json); // debug
       return json;
     }
 
     // configuration files
     const propertiesConfig = async () => {
-      const propertiesConfigUrl = "https://github.com/dbcls/togosite/raw/develop/config/togosite-human/properties.json";
+      const propertiesConfigUrl = "https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json";
       const config = await fetchJSON(propertiesConfigUrl);
       return config;
     }
 
-    // Get row data from frontend table view
-    const data = {{data}};
-
-    // Get target body
-    const reportBody = document.getElementById("reportBody");
-
-    // Remove duplicated items
-    const deduplicateData = async () => {
-      return data;
+    const templatesConfig = async () => {
+      const templatesConfigUrl = "https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json";
+      const config = await fetchJSON(templatesConfigUrl);
+      return config;
     }
 
-    // function to append column information to the body
-    const appendTemplate = async (id) => {
-      const templateDiv = document.createElement('div');
-      templateDiv.setAttribute('id', id);
-      reportBody.appendChild(templateDiv);
+    // dict to return subject for a given attribute id
+    const subjectDict = async () => {
+      const config = await propertiesConfig();
+      const dict = {};
+      for (const subject of config) {
+        const subjectId = subject.subjectId;
+        for (const prop of subject.properties) {
+          const id = prop.propertyId;
+          dict[id] = subjectId;
+        }
+      }
+      return dict;
+    }
+
+    // Return deduplicated id list, e.g. [{id: xxx, key: uniprot, subject: protein}, {}, ...]
+    const idList = async (row) => {
+      const list = [];
+      const dict = await subjectDict();
+
+      const togokeyId = row.id;
+      const togokeyLabel = row.label;
+      // row should have togoKey type e.g. hgnc and togokey also should be in the list
+
+      for (const prop of row.properties) {
+        const propId = prop.propertyId;
+        const propLabel = prop.propertyLabel;
+        const propKey = prop.propertyKey;
+
+        for (const attr of prop.attributes) {
+          const attrId = attr.id;
+          const attrLabel = attr.attribute.label;
+          const attrUri = attr.attribute.uri;
+
+          const entry = {
+            'id': attrId,
+            'key': propKey,
+            'subject': dict[propId]
+          };
+
+          list.push(JSON.stringify(entry));
+        }
+      }
+
+      // unique and return
+      // const filtered = list.filter((elem, index, self) => self.indexOf(elem) === index);
+      // return filtered;
+
+      // another unique method: suitable for bigger array, too much overhead for small ones
+      const uniqueArray = Array.from(new Set(list));
+      return uniqueArray.map(x => JSON.parse(x));
+    }
+
+    // Get handlebars template
+    const handlebarsTemplate = async (id, key, subject) => {
+      const config = await templatesConfig();
+      const url = config["templates"][subject]
+      const response = await fetch(url);
+      const text = await response.text();
+      const template = Handlebars.compile(text);
+      return template({ id: id, type: key }); // return html string compiled from template with params
+    }
+
+    // append string to element and enable script tag
+    const appendString = async (str, node) => {
+      node.innerHTML = str;
+      node.querySelectorAll('script').forEach(scriptElement => {
+          const _script = document.createElement('script');
+          _script.textContent = scriptElement.textContent;
+          scriptElement.replaceWith(_script);
+      });
+      return node;
+    }
+
+    // Append column information to the body
+    const appendTemplate = async (id, key, subject) => {
+      const divId = key + '_' + id;
+      const div = document.getElementById(divId);
+
+      const template = await handlebarsTemplate(id, key, subject);
+      const templateDiv = await appendString(template, div)
+    }
+
+    // Create div for each ids
+    const appendDiv = (id, key) => {
+      const div = document.createElement('div');
+      const divId = key + '_' + id;
+      div.setAttribute('id', divId);
+
+      const reportBody = document.getElementById("reportBody");
+      reportBody.appendChild(div);
+    }
+
+    // Create script elements of metastanza external script
+    const importMetastanzaScript = async () => {
+      const reportBody = document.getElementById("reportBody");
+      const config = await templatesConfig();
+      for (const url of config["stanzas"]) {
+        const script = document.createElement('script');
+        script.src = url;
+        script.type = 'module';
+        script.async = true;
+        reportBody.appendChild(script);
+      }
     }
 
     // itearete each item to append hbs templates
-    const appendTemplates = async () => {
-      const d = await deduplicateData();
-      for (const column of d) {
-        appendTemplate(column);
+    const main = async () => {
+      importMetastanzaScript();
+      const list = await idList(data);
+      console.log(list);
+
+      for (const d of list) {
+        appendDiv(d.id, d.key);
+      }
+
+      for (const d of list) {
+        appendTemplate(d.id, d.key, d.subject);
       }
     }
+
+    main();
   })()
 </script>
