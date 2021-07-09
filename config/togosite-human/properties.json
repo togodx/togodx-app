@@ -34,7 +34,7 @@
       {
         "propertyId": "homologene_human_paralog_count",
         "label": "# of paralogs",
-        "description": "The number of duplicated genes (paralogs) in each human gene calculated based on HomoloGene.",
+        "description": "The number of duplicated genes (paralogs) in each human gene calculated based on HomoloGene",
         "data": "https://integbio.jp/togosite/sparqlist/api/homologene_human_paralog_count",
         "primaryKey": "ncbigene",
         "keyLabel": "NCBI gene"
@@ -42,7 +42,7 @@
       {
         "propertyId": "homologene_category",
         "label": "Evolutionary divergence",
-        "description": "The most distant organisms from human that have orthologous genes in HomoloGene.",
+        "description": "The most distant organisms from human that have orthologous genes in HomoloGene",
         "data": "https://integbio.jp/togosite/sparqlist/api/homologene_category",
         "primaryKey": "ncbigene",
         "keyLabel": "NCBI gene"
@@ -50,7 +50,7 @@
       {
         "propertyId": "refex_specific_high_expression",
         "label": "High-level expression",
-        "description": "Organs in which a gene is tissue-specific highly expressed only in a single organ in 34 tissues of RefEx.",
+        "description": "Tissues in which a gene is tissue-specific highly expressed only in a single tissue in 34 tissues of RefEx",
         "data": "https://integbio.jp/togosite/sparqlist/api/refex_specific_high_expression",
         "primaryKey": "ncbigene",
         "keyLabel": "NCBI gene"
@@ -58,7 +58,7 @@
       {
         "propertyId": "refex_specific_low_expression",
         "label": "Low-level expression",
-        "description": "Organs in which a gene is tissue-specific lowly expressed only in a single organ in 34 tissues of RefEx.",
+        "description": "Tissues in which a gene is tissue-specific lowly expressed only in a single tissue in 34 tissues of RefEx",
         "data": "https://integbio.jp/togosite/sparqlist/api/refex_specific_low_expression",
         "primaryKey": "ncbigene",
         "keyLabel": "NCBI gene"
@@ -66,7 +66,7 @@
       {
         "propertyId": "gtex6_tissues",
         "label": "Expressed in tissues",
-        "description": "Organs in which a gene is tissue-specific highly expressed in 48 tissues of GTEx.",
+        "description": "Tissues in which a gene is tissue-specific highly expressed in 48 tissues of GTEx",
         "data": "https://integbio.jp/togosite/sparqlist/api/gtex6_tissues",
         "primaryKey": "ensembl_gene",
         "keyLabel": "Ensembl gene"
@@ -182,7 +182,7 @@
       {
         "propertyId": "uniprot_isolated_tissue",
         "label": "Tissues w/expression reported",
-        "description": "Classification based on the name of the tissue from which the clone was isolated in the reference describing the protein sequence.",
+        "description": "Classification based on the name of the tissue from which the clone was isolated in the reference describing the protein sequence",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_isolated_tissue",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt"
@@ -457,7 +457,7 @@
       {
         "propertyId": "variant_clinical_significance",
         "label": "Clinical significance",
-        "description": "Classification of variants according to their clinical significance, such as whether they are the cause of the disease or not. Obtained from ClinVar via TogoVar.",
+        "description": "Classification of variants according to their clinical significance, such as whether they are the cause of the disease or not. Obtained from ClinVar via TogoVar",
         "data": "https://integbio.jp/togosite/sparqlist/api/variant_clinical_significance",
         "primaryKey": "togovar",
         "keyLabel": "TogoVar variant"
