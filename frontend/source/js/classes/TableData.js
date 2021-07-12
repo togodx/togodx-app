@@ -3,7 +3,6 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
-const axios = require('axios');
 
 const LIMIT = 100;
 const downloadUrls = new Map();
@@ -47,19 +46,11 @@ const dataButtonModes = new Map([
     },
   ],
   [
-    'csv',
+    'json',
     {
-      label: 'CSV',
+      label: 'JSON',
       icon: 'download',
-      dataButton: 'download-csv',
-    },
-  ],
-  [
-    'retry',
-    {
-      label: 'Retry',
-      icon: 'replay',
-      dataButton: 'retry',
+      dataButton: 'download-json',
     },
   ],
 ]);
@@ -169,7 +160,6 @@ export default class TableData {
     this.#BUTTON_RIGHT = elm.querySelector(
       ':scope > .controller > .button.right'
     );
-    this.#BUTTON_RIGHT.classList.add('none');
 
     // events
     elm.addEventListener('click', () => {
@@ -205,24 +195,53 @@ export default class TableData {
     document.querySelector('body').dataset.display = 'properties';
   }
 
-  // #fetchQueryIds = async () => {
-  //   try {
-  //     const response = await fetch(`nothing`, {
-  //       signal: this.#abortController.signal,
-  //     });
-  //     const data = await response.json();
-  //     console.log(data);
-  //   } catch (e) {
-  //     console.log('ERROR FETCHING');
-  //   }
-  // };
-
-  #errorDuringFetch(response) {
-    this.#STATUS.classList.add('-error');
-    this.#STATUS.textContent = `${response.status} (${response.statusText})`;
-    this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('retry'));
+  #getQueryIds() {
+    // reset
+    this.#abortController = new AbortController();
+    this.#ROOT.classList.add('-fetching');
+    axios
+      .get(
+        `${App.aggregatePrimaryKeys}?togoKey=${
+          this.#condition.togoKey
+        }&properties=${encodeURIComponent(
+          JSON.stringify(
+            this.#condition.attributes.map(property => property.query)
+          )
+        )}${
+          ConditionBuilder.userIds?.length > 0
+            ? `&inputIds=${encodeURIComponent(
+                JSON.stringify(ConditionBuilder.userIds)
+              )}`
+            : ''
+        }`,
+        {
+          signal: this.#abortController.signal,
+        }
+      )
+      .then(response => {
+        console.log(response);
+        this.#queryIds = response.data;
+        // display
+        this.#ROOT.dataset.status = 'load rows';
+        this.#STATUS.textContent = '';
+        this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
+        this.#startTime = Date.now();
+        this.#getProperties();
+      })
+      .catch(error => {
+        // TODO:
+        console.error(error);
+        this.#STATUS.classList.add('-error');
+        this.#STATUS.textContent = `${error.status} (${error.statusText})`;
+        const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
+          detail: this,
+        });
+        DefaultEventEmitter.dispatchEvent(customEvent);
+      })
+      .then(() => {
+        this.#ROOT.classList.remove('-fetching');
+      });
   }
-
   // *** Responsive Buttons based on dataButtonModes ***
   /**
    * @param {string} className
@@ -323,27 +342,8 @@ export default class TableData {
         this.#dataButtonPauseOrResume(e);
         break;
 
-      case 'retry':
-        this.#STATUS.classList.remove('-error');
-        this.#fetchQueryIds(
-          `${App.aggregatePrimaryKeys}?togoKey=${
-            this.#condition.togoKey
-          }&properties=${encodeURIComponent(
-            JSON.stringify(
-              this.#condition.attributes.map(property => property.query)
-            )
-          )}${
-            ConditionBuilder.userIds?.length > 0
-              ? `&inputIds=${encodeURIComponent(
-                  JSON.stringify(ConditionBuilder.userIds)
-                )}`
-              : ''
-          }`
-        );
-        break;
-
       case 'download-tsv':
-      case 'download-csv':
+      case 'download-json':
         break;
     }
   }
@@ -356,19 +356,19 @@ export default class TableData {
       'tsv'
     );
 
-    this.#setCsvUrl();
-    const middleButton = this.#makeDataButton('middle', 'csv');
-    this.#updateDataButton(middleButton, dataButtonModes.get('csv'), 'csv');
+    this.#setJsonUrl();
+    const middleButton = this.#makeDataButton('middle', 'json');
+    this.#updateDataButton(middleButton, dataButtonModes.get('json'), 'json');
     this.#CONTROLLER.insertBefore(middleButton, this.#BUTTON_RIGHT);
   }
 
   // Setters for downloadUrls
-  #setCsvUrl() {
+  #setJsonUrl() {
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {
       type: 'application/json',
     });
-    const csvUrl = URL.createObjectURL(jsonBlob);
-    downloadUrls.set('csv', csvUrl);
+    const jsonUrl = URL.createObjectURL(jsonBlob);
+    downloadUrls.set('json', jsonUrl);
   }
 
   // TODO: look at possible improvements looping
@@ -411,169 +411,31 @@ export default class TableData {
     downloadUrls.set('tsv', tsvUrl);
   }
   // *** Properties & Loading ***
-  #getQueryIds(str = 'nothing') {
-    // reset
-    this.#abortController = new AbortController();
-    this.#ROOT.classList.add('-fetching');
-    this.#fetchQueryIds(str);
-    // .then(response => response.json())
-    // .then(queryIds => {
-    //   // console.log(queryIds);
-    //   this.#queryIds = queryIds;
-    //   // display
-    //   this.#ROOT.dataset.status = 'load rows';
-    //   this.#STATUS.textContent = '';
-    //   this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
-    //   this.#startTime = Date.now();
-
-    // })
-    // .catch(error => {
-    //   // TODO:
-    //   console.error(error);
-    //           console.log('trying again!');
-    //           this.#getQueryIds();
-    //   const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
-    //     detail: this,
-    //   });
-    //   DefaultEventEmitter.dispatchEvent(customEvent);
-    // })
-    // .finally(() => {
-    //   this.#ROOT.classList.remove('-fetching');
-    // });
-    //fetch(
-    //   `${App.aggregatePrimaryKeys}?togoKey=${
-    //     this.#condition.togoKey
-    //   }&properties=${encodeURIComponent(
-    //     JSON.stringify(
-    //       this.#condition.attributes.map(property => property.query)
-    //     )
-    //   )}${
-    //     ConditionBuilder.userIds?.length > 0
-    //       ? `&inputIds=${encodeURIComponent(
-    //           JSON.stringify(ConditionBuilder.userIds)
-    //         )}`
-    //       : ''
-    //   }`,
-    //   {
-    //     signal: this.#abortController.signal,
-    //   }
-    // )
-    //   .catch(error => {
-    //     throw Error(error);
-    //   })
-    //   .then(response => {
-    //     if (response.ok) {
-    //       return response;
-    //     }
-    //     this.#STATUS.classList.add('-error');
-    //     this.#STATUS.textContent = `${response.status} (${response.statusText})`;
-    //     throw Error(response);
-    //   })
-    //   .then(response => response.json())
-    //   .then(queryIds => {
-    //     // console.log(queryIds);
-    //     this.#queryIds = queryIds;
-    //     // display
-    //     this.#ROOT.dataset.status = 'load rows';
-    //     this.#STATUS.textContent = '';
-    //     this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
-    //     this.#startTime = Date.now();
-    //     this.#getProperties();
-    //   })
-    //   .catch(error => {
-    //     // TODO:
-    //     console.error(error);
-    //     const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
-    //       detail: this,
-    //     });
-    //     DefaultEventEmitter.dispatchEvent(customEvent);
-    //   })
-    //   .finally(() => {
-    //     this.#ROOT.classList.remove('-fetching');
-    //   });
-  }
-  
-  #fetchQueryIds(string) {
-    axios.get(
-      // `${App.aggregatePrimaryKeys}?togoKey=${
-      //   this.#condition.togoKey
-      // }&properties=${encodeURIComponent(
-      //   JSON.stringify(
-      //     this.#condition.attributes.map(property => property.query)
-      //   )
-      // )}${
-      //   ConditionBuilder.userIds?.length > 0
-      //     ? `&inputIds=${encodeURIComponent(
-      //         JSON.stringify(ConditionBuilder.userIds)
-      //       )}`
-      //     : ''
-      // }`,
-      string,
-      {
-        signal: this.#abortController.signal,
-      }
-    )
-      .catch(error => {
-        throw Error(error);
-      })
-      .then(response => {
-        if (response.ok) {
-          return response;
-        }
-        this.#errorDuringFetch(response);
-
-        throw Error(response);
-      })
-      .then(response => response.json())
-      .then(queryIds => {
-        // console.log(queryIds);
-        this.#queryIds = queryIds;
-        // display
-        this.#ROOT.dataset.status = 'load rows';
-        this.#STATUS.textContent = '';
-        this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
-        this.#startTime = Date.now();
-        this.#getProperties();
-      })
-      .catch(error => {
-        // TODO:
-        console.error(error);
-        const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
-          detail: this,
-        });
-        DefaultEventEmitter.dispatchEvent(customEvent);
-        console.log('ERROR FETCHING');
-        // this.fetchQueryIds();
-      })
-      .finally(() => {
-        this.#ROOT.classList.remove('-fetching');
-      });
-  }
-
   #getProperties() {
     this.#isAutoLoad = true;
     this.#ROOT.classList.add('-fetching');
     this.#STATUS.textContent = 'Getting Data';
-    fetch(
-      // 'nothing',
-      `${App.aggregateRows}?togoKey=${
-        this.#condition.togoKey
-      }&properties=${encodeURIComponent(
-        JSON.stringify(
-          this.#condition.attributes
-            .map(property => property.query)
-            .concat(this.#condition.properties.map(property => property.query))
-        )
-      )}&queryIds=${encodeURIComponent(
-        JSON.stringify(this.#queryIds.slice(this.offset, this.offset + LIMIT))
-      )}`,
-      {
-        signal: this.#abortController.signal,
-      }
-    )
-      .then(response => response.json())
-      .then(rows => {
-        this.#rows.push(...rows);
+    axios
+      .get(
+        `${App.aggregateRows}?togoKey=${
+          this.#condition.togoKey
+        }&properties=${encodeURIComponent(
+          JSON.stringify(
+            this.#condition.attributes
+              .map(property => property.query)
+              .concat(
+                this.#condition.properties.map(property => property.query)
+              )
+          )
+        )}&queryIds=${encodeURIComponent(
+          JSON.stringify(this.#queryIds.slice(this.offset, this.offset + LIMIT))
+        )}`,
+        {
+          signal: this.#abortController.signal,
+        }
+      )
+      .then(response => {
+        this.#rows.push(...response.data);
         this.#isCompleted = this.offset >= this.#queryIds.length;
         // display
         this.#ROOT.classList.remove('-fetching');
@@ -587,7 +449,7 @@ export default class TableData {
         const customEvent = new CustomEvent(event.addNextRows, {
           detail: {
             tableData: this,
-            rows,
+            rows: response.data,
             done: this.#isCompleted,
           },
         });
@@ -606,7 +468,6 @@ export default class TableData {
       .catch(error => {
         this.#ROOT.classList.remove('-fetching');
         console.error(error); // TODO:
-        console.log('ERROR IN GET PROPERTIES');
       });
   }
 
@@ -650,11 +511,6 @@ export default class TableData {
 
   select() {
     this.#ROOT.classList.add('-current');
-    document
-      .querySelectorAll(
-        '.conditions > .table-data-controller-view > .controller > .right'
-      )
-      .forEach(button => button.classList.add('none'));
     // dispatch event
     const customEvent1 = new CustomEvent(event.selectTableData, {detail: this});
     DefaultEventEmitter.dispatchEvent(customEvent1);
