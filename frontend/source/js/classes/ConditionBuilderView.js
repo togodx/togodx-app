@@ -40,7 +40,6 @@ export default class ConditionBuilderView {
     });
     elm.querySelector(':scope > footer > button.return').addEventListener('click', () => {
       document.body.dataset.display = 'properties';
-      document.querySelectorAll('.conditions > .table-data-controller-view > .controller > .right').forEach(button => button.classList.remove('none'));
     });
     elm.querySelector(':scope > header > button.rounded-button-view').addEventListener('click', () => {
       const customEvent = new CustomEvent(event.clearCondition);
