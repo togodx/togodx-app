@@ -3,6 +3,7 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
+const axios = require('axios');
 
 const LIMIT = 100;
 const downloadUrls = new Map();
@@ -51,6 +52,14 @@ const dataButtonModes = new Map([
       label: 'CSV',
       icon: 'download',
       dataButton: 'download-csv',
+    },
+  ],
+  [
+    'retry',
+    {
+      label: 'Retry',
+      icon: 'replay',
+      dataButton: 'retry',
     },
   ],
 ]);
@@ -196,62 +205,24 @@ export default class TableData {
     document.querySelector('body').dataset.display = 'properties';
   }
 
-  #getQueryIds() {
-    // reset
-    this.#abortController = new AbortController();
-    this.#ROOT.classList.add('-fetching');
-    fetch(
-      `${App.aggregatePrimaryKeys}?togoKey=${
-        this.#condition.togoKey
-      }&properties=${encodeURIComponent(
-        JSON.stringify(
-          this.#condition.attributes.map(property => property.query)
-        )
-      )}${
-        ConditionBuilder.userIds?.length > 0
-          ? `&inputIds=${encodeURIComponent(
-              JSON.stringify(ConditionBuilder.userIds)
-            )}`
-          : ''
-      }`,
-      {
-        signal: this.#abortController.signal,
-      }
-    )
-      .catch(error => {
-        throw Error(error);
-      })
-      .then(responce => {
-        if (responce.ok) {
-          return responce;
-        }
-        this.#STATUS.classList.add('-error');
-        this.#STATUS.textContent = `${responce.status} (${responce.statusText})`;
-        throw Error(responce);
-      })
-      .then(responce => responce.json())
-      .then(queryIds => {
-        // console.log(queryIds);
-        this.#queryIds = queryIds;
-        // display
-        this.#ROOT.dataset.status = 'load rows';
-        this.#STATUS.textContent = '';
-        this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
-        this.#startTime = Date.now();
-        this.#getProperties();
-      })
-      .catch(error => {
-        // TODO:
-        console.error(error);
-        const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
-          detail: this,
-        });
-        DefaultEventEmitter.dispatchEvent(customEvent);
-      })
-      .finally(() => {
-        this.#ROOT.classList.remove('-fetching');
-      });
+  // #fetchQueryIds = async () => {
+  //   try {
+  //     const response = await fetch(`nothing`, {
+  //       signal: this.#abortController.signal,
+  //     });
+  //     const data = await response.json();
+  //     console.log(data);
+  //   } catch (e) {
+  //     console.log('ERROR FETCHING');
+  //   }
+  // };
+
+  #errorDuringFetch(response) {
+    this.#STATUS.classList.add('-error');
+    this.#STATUS.textContent = `${response.status} (${response.statusText})`;
+    this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('retry'));
   }
+
   // *** Responsive Buttons based on dataButtonModes ***
   /**
    * @param {string} className
@@ -352,6 +323,25 @@ export default class TableData {
         this.#dataButtonPauseOrResume(e);
         break;
 
+      case 'retry':
+        this.#STATUS.classList.remove('-error');
+        this.#fetchQueryIds(
+          `${App.aggregatePrimaryKeys}?togoKey=${
+            this.#condition.togoKey
+          }&properties=${encodeURIComponent(
+            JSON.stringify(
+              this.#condition.attributes.map(property => property.query)
+            )
+          )}${
+            ConditionBuilder.userIds?.length > 0
+              ? `&inputIds=${encodeURIComponent(
+                  JSON.stringify(ConditionBuilder.userIds)
+                )}`
+              : ''
+          }`
+        );
+        break;
+
       case 'download-tsv':
       case 'download-csv':
         break;
@@ -421,11 +411,151 @@ export default class TableData {
     downloadUrls.set('tsv', tsvUrl);
   }
   // *** Properties & Loading ***
+  #getQueryIds(str = 'nothing') {
+    // reset
+    this.#abortController = new AbortController();
+    this.#ROOT.classList.add('-fetching');
+    this.#fetchQueryIds(str);
+    // .then(response => response.json())
+    // .then(queryIds => {
+    //   // console.log(queryIds);
+    //   this.#queryIds = queryIds;
+    //   // display
+    //   this.#ROOT.dataset.status = 'load rows';
+    //   this.#STATUS.textContent = '';
+    //   this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
+    //   this.#startTime = Date.now();
+
+    // })
+    // .catch(error => {
+    //   // TODO:
+    //   console.error(error);
+    //           console.log('trying again!');
+    //           this.#getQueryIds();
+    //   const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
+    //     detail: this,
+    //   });
+    //   DefaultEventEmitter.dispatchEvent(customEvent);
+    // })
+    // .finally(() => {
+    //   this.#ROOT.classList.remove('-fetching');
+    // });
+    //fetch(
+    //   `${App.aggregatePrimaryKeys}?togoKey=${
+    //     this.#condition.togoKey
+    //   }&properties=${encodeURIComponent(
+    //     JSON.stringify(
+    //       this.#condition.attributes.map(property => property.query)
+    //     )
+    //   )}${
+    //     ConditionBuilder.userIds?.length > 0
+    //       ? `&inputIds=${encodeURIComponent(
+    //           JSON.stringify(ConditionBuilder.userIds)
+    //         )}`
+    //       : ''
+    //   }`,
+    //   {
+    //     signal: this.#abortController.signal,
+    //   }
+    // )
+    //   .catch(error => {
+    //     throw Error(error);
+    //   })
+    //   .then(response => {
+    //     if (response.ok) {
+    //       return response;
+    //     }
+    //     this.#STATUS.classList.add('-error');
+    //     this.#STATUS.textContent = `${response.status} (${response.statusText})`;
+    //     throw Error(response);
+    //   })
+    //   .then(response => response.json())
+    //   .then(queryIds => {
+    //     // console.log(queryIds);
+    //     this.#queryIds = queryIds;
+    //     // display
+    //     this.#ROOT.dataset.status = 'load rows';
+    //     this.#STATUS.textContent = '';
+    //     this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
+    //     this.#startTime = Date.now();
+    //     this.#getProperties();
+    //   })
+    //   .catch(error => {
+    //     // TODO:
+    //     console.error(error);
+    //     const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
+    //       detail: this,
+    //     });
+    //     DefaultEventEmitter.dispatchEvent(customEvent);
+    //   })
+    //   .finally(() => {
+    //     this.#ROOT.classList.remove('-fetching');
+    //   });
+  }
+  
+  #fetchQueryIds(string) {
+    axios.get(
+      // `${App.aggregatePrimaryKeys}?togoKey=${
+      //   this.#condition.togoKey
+      // }&properties=${encodeURIComponent(
+      //   JSON.stringify(
+      //     this.#condition.attributes.map(property => property.query)
+      //   )
+      // )}${
+      //   ConditionBuilder.userIds?.length > 0
+      //     ? `&inputIds=${encodeURIComponent(
+      //         JSON.stringify(ConditionBuilder.userIds)
+      //       )}`
+      //     : ''
+      // }`,
+      string,
+      {
+        signal: this.#abortController.signal,
+      }
+    )
+      .catch(error => {
+        throw Error(error);
+      })
+      .then(response => {
+        if (response.ok) {
+          return response;
+        }
+        this.#errorDuringFetch(response);
+
+        throw Error(response);
+      })
+      .then(response => response.json())
+      .then(queryIds => {
+        // console.log(queryIds);
+        this.#queryIds = queryIds;
+        // display
+        this.#ROOT.dataset.status = 'load rows';
+        this.#STATUS.textContent = '';
+        this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
+        this.#startTime = Date.now();
+        this.#getProperties();
+      })
+      .catch(error => {
+        // TODO:
+        console.error(error);
+        const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
+          detail: this,
+        });
+        DefaultEventEmitter.dispatchEvent(customEvent);
+        console.log('ERROR FETCHING');
+        // this.fetchQueryIds();
+      })
+      .finally(() => {
+        this.#ROOT.classList.remove('-fetching');
+      });
+  }
+
   #getProperties() {
     this.#isAutoLoad = true;
     this.#ROOT.classList.add('-fetching');
     this.#STATUS.textContent = 'Getting Data';
     fetch(
+      // 'nothing',
       `${App.aggregateRows}?togoKey=${
         this.#condition.togoKey
       }&properties=${encodeURIComponent(
@@ -441,7 +571,7 @@ export default class TableData {
         signal: this.#abortController.signal,
       }
     )
-      .then(responce => responce.json())
+      .then(response => response.json())
       .then(rows => {
         this.#rows.push(...rows);
         this.#isCompleted = this.offset >= this.#queryIds.length;
@@ -476,6 +606,7 @@ export default class TableData {
       .catch(error => {
         this.#ROOT.classList.remove('-fetching');
         console.error(error); // TODO:
+        console.log('ERROR IN GET PROPERTIES');
       });
   }
 
