@@ -106,8 +106,7 @@
       },{
         "propertyId": "uniprot_go_cellular_component",
         "label": "Cellular component",
-        "description": "Functional annotations (GO terms) derived from the Cellular component category of GeneOntology, which Uniprot has assigned to each human protein with evidence information
-        ",
+        "description": "Functional annotations (GO terms) derived from the Cellular component category of GeneOntology, which Uniprot has assigned to each human protein with evidence information",
         "data": "https://integbio.jp/togosite/sparqlist/api/uniprot_go_cellular_component",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt"
