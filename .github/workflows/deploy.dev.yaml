@@ -24,11 +24,12 @@ jobs:
         run: |
           sed -i "s:integbio.jp/togosite/:integbio.jp/togosite_dev/:g" ./config/togosite-human/properties.json
 
-      - name: Commit & Push changes
+      - name: Commit & Push changes to sparqlist-develop
         uses: actions-js/push@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: sparqlist-develop
+          force: true
 
       - id: update-configuration
         run: |
