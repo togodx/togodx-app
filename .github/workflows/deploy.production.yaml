@@ -15,11 +15,12 @@ jobs:
         run: |
           find ./frontend -name "*" -exec sed -i "s:dbcls/togosite/develop:dbcls/togosite/main:g" {} \;
 
-      - name: Commit & Push changes
+      - name: Commit & Push changes to main
         uses: actions-js/push@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main
+          force: true
 
       - id: date
         run: echo "::set-output name=date::$(TZ=Asia/Tokyo date +'%Y%m%d-%H%M%S')"
