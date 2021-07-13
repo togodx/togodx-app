@@ -3,9 +3,11 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
+import axiosRetry from 'axios-retry';
 
 const LIMIT = 100;
 const downloadUrls = new Map();
+
 /**
  * @typedef {Object} Mode
  * @property {string} label
@@ -60,7 +62,8 @@ export default class TableData {
   #serializedHeader;
   #queryIds;
   #rows;
-  #abortController;
+  #CancelToken;
+  #source;
   #isAutoLoad;
   #isCompleted;
   #startTime;
@@ -74,7 +77,9 @@ export default class TableData {
   #BUTTON_RIGHT;
 
   constructor(condition, elm) {
-    // console.log(condition);
+    axiosRetry(axios, {retries: 5, retryDelay: axiosRetry.exponentialDelay});
+    this.#CancelToken = axios.CancelToken;
+    this.#source = this.#CancelToken.source();
 
     this.#isAutoLoad = false;
     this.#isCompleted = false;
@@ -176,7 +181,8 @@ export default class TableData {
 
     ConditionBuilder.finish();
     this.select();
-    this.#getQueryIds();
+    this.#ROOT.classList.add('-fetching');
+    this.getQueryIds();
   }
 
   /* private methods */
@@ -188,60 +194,13 @@ export default class TableData {
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
     // abort fetch
-    this.#abortController.abort();
+    this.#source.cancel();
     // delete element
     this.#ROOT.parentNode.removeChild(this.#ROOT);
     // transition
     document.querySelector('body').dataset.display = 'properties';
   }
 
-  #getQueryIds() {
-    // reset
-    this.#abortController = new AbortController();
-    this.#ROOT.classList.add('-fetching');
-    axios
-      .get(
-        `${App.aggregatePrimaryKeys}?togoKey=${
-          this.#condition.togoKey
-        }&properties=${encodeURIComponent(
-          JSON.stringify(
-            this.#condition.attributes.map(property => property.query)
-          )
-        )}${
-          ConditionBuilder.userIds?.length > 0
-            ? `&inputIds=${encodeURIComponent(
-                JSON.stringify(ConditionBuilder.userIds)
-              )}`
-            : ''
-        }`,
-        {
-          signal: this.#abortController.signal,
-        }
-      )
-      .then(response => {
-        console.log(response);
-        this.#queryIds = response.data;
-        // display
-        this.#ROOT.dataset.status = 'load rows';
-        this.#STATUS.textContent = '';
-        this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
-        this.#startTime = Date.now();
-        this.#getProperties();
-      })
-      .catch(error => {
-        // TODO:
-        console.error(error);
-        this.#STATUS.classList.add('-error');
-        this.#STATUS.textContent = `${error.status} (${error.statusText})`;
-        const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
-          detail: this,
-        });
-        DefaultEventEmitter.dispatchEvent(customEvent);
-      })
-      .then(() => {
-        this.#ROOT.classList.remove('-fetching');
-      });
-  }
   // *** Responsive Buttons based on dataButtonModes ***
   /**
    * @param {string} className
@@ -342,8 +301,7 @@ export default class TableData {
         this.#dataButtonPauseOrResume(e);
         break;
 
-      case 'download-tsv':
-      case 'download-json':
+      default:
         break;
     }
   }
@@ -367,8 +325,7 @@ export default class TableData {
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {
       type: 'application/json',
     });
-    const jsonUrl = URL.createObjectURL(jsonBlob);
-    downloadUrls.set('json', jsonUrl);
+    downloadUrls.set('json', URL.createObjectURL(jsonBlob));
   }
 
   // TODO: look at possible improvements looping
@@ -411,29 +368,97 @@ export default class TableData {
     downloadUrls.set('tsv', tsvUrl);
   }
   // *** Properties & Loading ***
+
+  /**
+   * @param { Error } err
+   */
+  #displayError(err) {
+    this.#STATUS.classList.add('-error');
+    this.#STATUS.textContent = `${err.request.status} (${err.request.statusText})`;
+    const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
+      detail: this,
+    });
+    DefaultEventEmitter.dispatchEvent(customEvent);
+    if (err.status === 505) {
+      this.#STATUS.textContent = 'Retrying';
+    }
+    return;
+  }
+
+  #getQueryIdsFetch = () => {
+    return `${App.aggregatePrimaryKeys}?togoKey=${
+      this.#condition.togoKey
+    }&properties=${encodeURIComponent(
+      JSON.stringify(this.#condition.attributes.map(property => property.query))
+    )}${
+      ConditionBuilder.userIds?.length > 0
+        ? `&inputIds=${encodeURIComponent(
+            JSON.stringify(ConditionBuilder.userIds)
+          )}`
+        : ''
+    }`;
+  };
+
+  getQueryIds() {
+    // reset
+
+    // axios
+    //   .get('https://bac2021.men.gov.ma/undifined-endpoint')
+    //   .then(response => {
+    //     console.log(response);
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //   });
+
+    axios
+      .get(
+        this.#getQueryIdsFetch(),
+        {cancelToken: this.#source.token},
+        {timeout: 20}
+      )
+      .then(response => {
+        console.log(response);
+        this.#queryIds = response.data;
+        // display
+        this.#ROOT.dataset.status = 'load rows';
+        this.#STATUS.textContent = '';
+        this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
+        this.#startTime = Date.now();
+        this.#getProperties();
+      })
+      .catch(error => {
+        if (axios.isCancel) {
+          return;
+        }
+        console.log(error);
+        this.#displayError(error);
+      })
+      .then(() => {
+        this.#ROOT.classList.remove('-fetching');
+      });
+  }
+
+  #getPropertiesFetch() {
+    return `${App.aggregateRows}?togoKey=${
+      this.#condition.togoKey
+    }&properties=${encodeURIComponent(
+      JSON.stringify(
+        this.#condition.attributes
+          .map(property => property.query)
+          .concat(this.#condition.properties.map(property => property.query))
+      )
+    )}&queryIds=${encodeURIComponent(
+      JSON.stringify(this.#queryIds.slice(this.offset, this.offset + LIMIT))
+    )}`;
+  }
+
   #getProperties() {
     this.#isAutoLoad = true;
     this.#ROOT.classList.add('-fetching');
     this.#STATUS.textContent = 'Getting Data';
     axios
-      .get(
-        `${App.aggregateRows}?togoKey=${
-          this.#condition.togoKey
-        }&properties=${encodeURIComponent(
-          JSON.stringify(
-            this.#condition.attributes
-              .map(property => property.query)
-              .concat(
-                this.#condition.properties.map(property => property.query)
-              )
-          )
-        )}&queryIds=${encodeURIComponent(
-          JSON.stringify(this.#queryIds.slice(this.offset, this.offset + LIMIT))
-        )}`,
-        {
-          signal: this.#abortController.signal,
-        }
-      )
+      .get(this.#getPropertiesFetch(), {cancelToken: this.#source.token})
       .then(response => {
         this.#rows.push(...response.data);
         this.#isCompleted = this.offset >= this.#queryIds.length;
@@ -466,8 +491,11 @@ export default class TableData {
         }
       })
       .catch(error => {
+        if (axios.isCancel) {
+          return;
+        }
         this.#ROOT.classList.remove('-fetching');
-        console.error(error); // TODO:
+        this.#displayError(error);
       });
   }
 
