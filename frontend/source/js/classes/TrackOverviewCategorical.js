@@ -41,7 +41,9 @@ export default class TrackOverviewCategorical {
               <span class="count">${value.count.toLocaleString()}</span>
             </p>
           </div>
-          <div class="pin"></div>
+          <div class="pin">
+            <span class="material-icons">location_on</span>
+          </div>
         </li>`;
     }).join('');
 
@@ -50,8 +52,8 @@ export default class TrackOverviewCategorical {
       // reference
       const value = this.#values[index];
       value.elm = elm;
-      const pin = elm.querySelector(':scope > .pin');
-      value.pin = pin;
+      value.pin = elm.querySelector(':scope > .pin');
+      value.icon = value.pin.querySelector(':scope > .material-icons');
 
       // attach event: show tooltip
       const label = `<span class="_subject-color" data-subject-id="${this.#subject.subjectId}">${value.label}</span>`;
@@ -196,6 +198,7 @@ export default class TrackOverviewCategorical {
           const size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
+          value.icon.style.fontSize = size + 'px';
           value.userValueCount =  userValue.count;
           value.elm.dataset.pValueGreaterThan = pValueGreaterThan;
         } else {
