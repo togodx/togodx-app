@@ -465,8 +465,7 @@
       {
         "propertyId": "variant_clinical_significance",
         "label": "Clinical significance",
-        "description": "Classification of variants according to their clinical significance, such as whether they are the cause of the disease or not. Obtained from ClinVar via TogoVar
-        ",
+        "description": "Classification of variants according to their clinical significance, such as whether they are the cause of the disease or not. Obtained from ClinVar via TogoVar",
         "data": "https://integbio.jp/togosite/sparqlist/api/variant_clinical_significance",
         "primaryKey": "togovar",
         "keyLabel": "TogoVar variant"
