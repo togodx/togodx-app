@@ -56,48 +56,31 @@ export default class TrackOverviewCategorical {
       // attach event: show tooltip
       const label = `<span class="_subject-color" data-subject-id="${this.#subject.subjectId}">${value.label}</span>`;
       elm.addEventListener('mouseenter', () => {
-        const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {
-          label,
-          values: [
-            {
-              key: 'Count',
-              value: value.count.toLocaleString()
-            }
-          ],
-          elm
-        }});
+        const values = [];
+        const userValue = this.#userValues?.find(userValue => userValue.categoryId === value.categoryId);
+        if (userValue) {
+          // does not have user value
+          values.push({
+            key: 'Count',
+            value: `${value.userValueCount.toLocaleString()} / ${value.count.toLocaleString()}`
+          });
+          if (userValue?.pValue) {
+            values.push({
+              key: 'P-value',
+              value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(3)
+            });
+          }
+        } else {
+          // has user value
+          values.push({
+            key: 'Count',
+            value: value.count.toLocaleString()
+          });
+        }
+        const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {label, values, elm}});
         DefaultEventEmitter.dispatchEvent(customEvent);
       });
       elm.addEventListener('mouseleave', () => {
-        const customEvent = new CustomEvent(event.leavePropertyValueItemView);
-        DefaultEventEmitter.dispatchEvent(customEvent);
-      });
-
-      // attach event: show tooltip of pin
-      pin.addEventListener('mouseenter', e => {
-        e.stopPropagation();
-        const values = [
-          {
-            key: 'Count',
-            value: `${value.userValueCount.toLocaleString()} / ${value.count.toLocaleString()}`
-          }
-        ];
-        const userValue = this.#userValues.find(userValue => userValue.categoryId === value.categoryId);
-        console.log(userValue)
-        if (userValue?.pValue) {
-          values.push({
-            key: 'P-value',
-            value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(3)
-          });
-        }
-        const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {
-          label,
-          values,
-          elm: pin
-        }});
-        DefaultEventEmitter.dispatchEvent(customEvent);
-      });
-      pin.addEventListener('mouseleave', () => {
         const customEvent = new CustomEvent(event.leavePropertyValueItemView);
         DefaultEventEmitter.dispatchEvent(customEvent);
       });
@@ -224,6 +207,7 @@ export default class TrackOverviewCategorical {
 
   #clearUserIdValues() {
     this.#values.forEach(value => value.elm.classList.remove('-pinsticking'));
+    this.#userValues = undefined;
   }
 
 }

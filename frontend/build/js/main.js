@@ -4844,40 +4844,31 @@
 
       var label = "<span class=\"_subject-color\" data-subject-id=\"".concat(_classPrivateFieldGet(_this, _subject$1).subjectId, "\">").concat(value.label, "</span>");
       elm.addEventListener('mouseenter', function () {
-        var customEvent = new CustomEvent(enterPropertyValueItemView, {
-          detail: {
-            label: label,
-            values: [{
-              key: 'Count',
-              value: value.count.toLocaleString()
-            }],
-            elm: elm
-          }
-        });
-        DefaultEventEmitter$1.dispatchEvent(customEvent);
-      });
-      elm.addEventListener('mouseleave', function () {
-        var customEvent = new CustomEvent(leavePropertyValueItemView);
-        DefaultEventEmitter$1.dispatchEvent(customEvent);
-      }); // attach event: show tooltip of pin
+        var _classPrivateFieldGet2;
 
-      pin.addEventListener('mouseenter', function (e) {
-        e.stopPropagation();
-        var values = [{
-          key: 'Count',
-          value: "".concat(value.userValueCount.toLocaleString(), " / ").concat(value.count.toLocaleString())
-        }];
-
-        var userValue = _classPrivateFieldGet(_this, _userValues).find(function (userValue) {
+        var values = [];
+        var userValue = (_classPrivateFieldGet2 = _classPrivateFieldGet(_this, _userValues)) === null || _classPrivateFieldGet2 === void 0 ? void 0 : _classPrivateFieldGet2.find(function (userValue) {
           return userValue.categoryId === value.categoryId;
         });
 
-        console.log(userValue);
-
-        if (userValue !== null && userValue !== void 0 && userValue.pValue) {
+        if (userValue) {
+          // does not have user value
           values.push({
-            key: 'P-value',
-            value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(3)
+            key: 'Count',
+            value: "".concat(value.userValueCount.toLocaleString(), " / ").concat(value.count.toLocaleString())
+          });
+
+          if (userValue !== null && userValue !== void 0 && userValue.pValue) {
+            values.push({
+              key: 'P-value',
+              value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(3)
+            });
+          }
+        } else {
+          // has user value
+          values.push({
+            key: 'Count',
+            value: value.count.toLocaleString()
           });
         }
 
@@ -4885,12 +4876,12 @@
           detail: {
             label: label,
             values: values,
-            elm: pin
+            elm: elm
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       });
-      pin.addEventListener('mouseleave', function () {
+      elm.addEventListener('mouseleave', function () {
         var customEvent = new CustomEvent(leavePropertyValueItemView);
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }); // attach event: select/deselect a value
@@ -5045,6 +5036,8 @@
     _classPrivateFieldGet(this, _values).forEach(function (value) {
       return value.elm.classList.remove('-pinsticking');
     });
+
+    _classPrivateFieldSet(this, _userValues, undefined);
   }
 
   var _subject = new WeakMap();
