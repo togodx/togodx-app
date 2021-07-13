@@ -4130,10 +4130,18 @@
 
   var _update$2 = new WeakSet();
 
+  var _setUserValues = new WeakSet();
+
+  var _clearUserValues = new WeakSet();
+
   var ColumnSelectorView = function ColumnSelectorView(elm, subject, property, _items2, sparqlist) {
     var _this = this;
 
     _classCallCheck(this, ColumnSelectorView);
+
+    _clearUserValues.add(this);
+
+    _setUserValues.add(this);
 
     _update$2.add(this);
 
@@ -4251,6 +4259,12 @@
     DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
       return _classPrivateMethodGet(_this, _update$2, _update2$2).call(_this, e.detail.log10);
     });
+    DefaultEventEmitter$1.addEventListener(setUserValues, function (e) {
+      return _classPrivateMethodGet(_this, _setUserValues, _setUserValues2).call(_this, e.detail);
+    });
+    DefaultEventEmitter$1.addEventListener(clearUserValues, function (e) {
+      return _classPrivateMethodGet(_this, _clearUserValues, _clearUserValues2).call(_this);
+    });
     var _depth = 0;
 
     _classPrivateMethodGet(this, _setItems, _setItems2).call(this, _items2, _depth); // make root column
@@ -4346,7 +4360,7 @@
     }), "\"\n      data-depth=\"").concat(depth, "\">\n      <input type=\"checkbox\" value=\"").concat(ALL_PROPERTIES, "\" \n      ").concat(selectedParentCategoryId === parentCategoryId ? ' checked' : '', "/>\n      <span class=\"label\">Map following attributes</span>\n    </li>") + items.map(function (item) {
       max = Math.max(max, item.count);
       var checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
-      return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");
+      return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n        <span class=\"pin\">\n          <span class=\"material-icons\">location_on</span>\n          <span class=\"value\"></span>\n        </span>\n      </li>");
     }).join('');
     var listItems = ul.querySelectorAll(':scope > .item:not(.-all)');
     listItems.forEach(function (li) {
@@ -4390,9 +4404,9 @@
 
         _classPrivateMethodGet(_this4, _setSubColumn, _setSubColumn2).call(_this4, li.dataset.id, depth + 1);
       });
-    }); // select/deselect a item (attribute)
-
+    });
     listItems.forEach(function (li) {
+      // select/deselect a item (attribute)
       var checkbox = li.querySelector(':scope > input[type="checkbox"]');
       checkbox.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -4460,6 +4474,39 @@
         }).join(','), ")");
       });
     });
+  }
+
+  function _setUserValues2(_ref2) {
+    var propertyId = _ref2.propertyId,
+        values = _ref2.values;
+
+    if (_classPrivateFieldGet(this, _property$3).propertyId === propertyId) {
+      var _iterator3 = _createForOfIteratorHelper(values),
+          _step3;
+
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var value = _step3.value;
+
+          var item = _classPrivateFieldGet(this, _items$1)[value.categoryId];
+
+          if (item) {
+            item.elm.classList.add('-pinsticking');
+            item.elm.querySelector(':scope > .pin > .value').innerHTML = "".concat(value.count).concat(value.pValue ? ",  <small>P-value:</small> ".concat(value.pValue === 1 ? value.pValue : value.pValue.toExponential(3)) : '');
+          }
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+    }
+  }
+
+  function _clearUserValues2() {
+    for (var item in _classPrivateFieldGet(this, _items$1)) {
+      _classPrivateFieldGet(this, _items$1)[item].elm.classList.remove('-pinsticking');
+    }
   }
 
   /**
@@ -4960,8 +5007,6 @@
   }
 
   function _plotUserIdValues2(detail) {
-    console.log(detail);
-
     if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
       _classPrivateFieldGet(this, _ROOT$5).classList.add('-pinsticking');
 

@@ -680,6 +680,29 @@ main {
           flex-grow: 1;
   text-align: right;
 }
+.column-selector-view > .columns > .inner > .column > .item > .pin {
+  padding-left: 1rem;
+  display: none;
+}
+.column-selector-view > .columns > .inner > .column > .item > .pin > .material-icons {
+  font-size: 1.2rem;
+  vertical-align: middle;
+  position: relative;
+  top: -0.1rem;
+}
+.column-selector-view > .columns > .inner > .column > .item > .pin > .value > small {
+  font-size: 1rem;
+  font-weight: lighter;
+}
+body.-showuserids .column-selector-view > .columns > .inner > .column > .item {
+  opacity: 0.25;
+}
+body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-pinsticking {
+  opacity: 1;
+}
+body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-pinsticking > .pin {
+  display: inline;
+}
 .column-selector-view > .loading-view {
   background-color: rgba(204, 204, 204, 0.5);
 }
