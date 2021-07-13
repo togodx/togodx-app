@@ -44,27 +44,24 @@
     border-top-right-radius: 50%
     z-index: var(--z-track-pin)
     display: none
-    &:hover
-      border-color: white
-      z-index: var(--z-track-pin-hover)
   &[data-p-value-greater-than="1"]
     > .pin
-      opacity: .1429
+      opacity: .4
   &[data-p-value-greater-than="<1"]
     > .pin
-      opacity: .2857
+      opacity: .5
   &[data-p-value-greater-than="<0.1"]
     > .pin
-      opacity: .429
+      opacity: .6
   &[data-p-value-greater-than="<0.05"]
     > .pin
-      opacity: .571
+      opacity: .7
   &[data-p-value-greater-than="<0.01"]
     > .pin
-      opacity: .714
+      opacity: .8
   &[data-p-value-greater-than="<0.005"]
     > .pin
-      opacity: .857
+      opacity: .9
   &[data-p-value-greater-than="<0.001"]
     > .pin
       opacity: 1
@@ -85,11 +82,12 @@
       z-index: var(--z-track-item-selected-hover)
     > .pin
       opacity: 1
+      border-color: white
       z-index: var(--z-track-pin-hover)
   .-showuserids &
     &:not(.-pinsticking)
       background-color: var(--color-gray) !important
-      > p
+      > .labels
         opacity: .25
     &.-pinsticking
       > .pin
