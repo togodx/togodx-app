@@ -72,6 +72,14 @@
         "keyLabel": "Ensembl gene"
       },
       {
+        "propertyId": "gtex8_no_expression",
+        "label": "Not expressed in tissues",
+        "description": "Tissues in which expression of a gene is not detected in GTEx",
+        "data": "https://integbio.jp/togosite/sparqlist/api/gene_not_expressed_in_tissue_gtex",
+        "primaryKey": "ensembl_gene",
+        "keyLabel": "Ensembl gene"
+      },
+      {
         "propertyId": "chip_atlas",
         "label": "Transcription factors",
         "description": "Genes with hypothetical upstream TFs in ChIP-Atlas",
