@@ -55,6 +55,14 @@ const dataButtonModes = new Map([
       dataButton: 'download-json',
     },
   ],
+  [
+    'retry',
+    {
+      label: 'Retry',
+      icon: 'refresh',
+      dataButton: 'retry',
+    },
+  ],
 ]);
 
 export default class TableData {
@@ -78,7 +86,7 @@ export default class TableData {
   constructor(condition, elm) {
     axios.defaults.timeout = 60000;
     axiosRetry(axios, {
-      retries: 5,
+      retries: 2,
       shouldResetTimeout: true,
       retryDelay: axiosRetry.exponentialDelay,
       retryCondition: _error => true,
@@ -307,6 +315,9 @@ export default class TableData {
         this.#dataButtonPauseOrResume(e);
         break;
 
+      case 'retry':
+        getQueryIds();
+
       default:
         break;
     }
@@ -374,36 +385,48 @@ export default class TableData {
     downloadUrls.set('tsv', tsvUrl);
   }
   // *** Properties & Loading ***
-
   /**
-   * @param { Error } err
+   * @param { Error } error - first check userCancel, then server error, timeout err part of else
    */
-  #displayError(err) {
+  #handleError(error) {
+    let message, errCode;
+    if (axios.isCancel && error.message === 'Operation canceled by the user.') {
+      return;
+    } else if (error.response) {
+      message = error.response.statusText;
+      errCode = error.response.status;
+    } else {
+      message = error.message;
+    }
+    this.#displayError(message, errCode);
+  }
+  /**
+   * @param { string } message - errorMessage
+   * @param { number } code - errorCode na in case of timeout or cancellation,
+   */
+  #displayError(message, code) {
     this.#STATUS.classList.add('-error');
-    this.#STATUS.textContent = `${err.message} (${err.request.statusText})`;
+    this.#STATUS.textContent = code ? `${message} (${code})` : message;
     const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
       detail: this,
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
-    if (err.status === 505) {
-      this.#STATUS.textContent = 'Retrying';
-    }
+    // if (err.status === 505) {
+    //   this.#STATUS.textContent = 'Retrying';
+    //   this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes('retry'));
+    // }
     return;
   }
 
-  #getQueryIdsFetch = () => {
-    return `${App.aggregatePrimaryKeys}?togoKey=${
-      this.#condition.togoKey
-    }&properties=${encodeURIComponent(
-      JSON.stringify(this.#condition.attributes.map(property => property.query))
-    )}${
-      ConditionBuilder.userIds?.length > 0
-        ? `&inputIds=${encodeURIComponent(
-            JSON.stringify(ConditionBuilder.userIds)
-          )}`
-        : ''
-    }`;
-  };
+  // #getQueryIdsFetch = () => {
+  //   return {
+  //     togoKey: this.#condition.togoKey,
+  //     properties: this.#condition.attributes.map(property => property.query),
+  //     inputIds: ConditionBuilder.userIds
+  //         ? ConditionBuilder.userIds
+  //         : []
+  //   };
+  // };
 
   getQueryIds() {
     // reset
@@ -416,12 +439,18 @@ export default class TableData {
     //     console.log(error);
     //   });
 
-    axios
-      .post(this.#getQueryIdsFetch(), {
-        cancelToken: this.#source.token
-      })
+    const payload = {
+      togoKey: this.#condition.togoKey,
+      properties: this.#condition.attributes.map(property => property.query),
+      inputIds: ConditionBuilder.userIds ? ConditionBuilder.userIds : [],
+    };
+    axios({
+      method: 'post',
+      url: App.aggregatePrimaryKeys,
+      data: payload,
+      cancelToken: this.#source.token,
+    })
       .then(response => {
-        console.log(response);
         this.#queryIds = response.data;
         // display
         this.#ROOT.dataset.status = 'load rows';
@@ -431,14 +460,7 @@ export default class TableData {
         this.#getProperties();
       })
       .catch(error => {
-        if (
-          axios.isCancel &&
-          error.message === 'Operation canceled by the user.'
-        ) {
-          return;
-        }
-        console.log(error);
-        this.#displayError(error);
+        this.#handleError(error);
       })
       .then(() => {
         this.#ROOT.classList.remove('-fetching');
@@ -464,7 +486,7 @@ export default class TableData {
     this.#ROOT.classList.add('-fetching');
     this.#STATUS.textContent = 'Getting Data';
     axios
-      .get(this.#getPropertiesFetch(), {cancelToken: this.#source.token})
+      .get('this.#getPropertiesFetch()', {cancelToken: this.#source.token})
       .then(response => {
         this.#rows.push(...response.data);
         this.#isCompleted = this.offset >= this.#queryIds.length;
@@ -497,11 +519,8 @@ export default class TableData {
         }
       })
       .catch(error => {
-        if (axios.isCancel) {
-          return;
-        }
+        this.#handleError(error);
         this.#ROOT.classList.remove('-fetching');
-        this.#displayError(error);
       });
   }
 
