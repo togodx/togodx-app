@@ -3396,28 +3396,22 @@
     console.log(keys, values); // generate permalink
 
     var params = new URL(location).searchParams;
-    params.set('togoKey', _classPrivateFieldGet(this, _togoKey));
-    params.set('userIds', this.userIds ? this.userIds : '');
+    params.set('togoKey', _classPrivateFieldGet(this, _togoKey)); // params.set('userIds', this.userIds ? this.userIds : '');
+
     params.set('keys', JSON.stringify(keys));
     params.set('values', JSON.stringify(values));
     if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
   }
 
   function _createSearchConditionFromURLParameters2() {
-    var _params$get, _JSON$parse, _JSON$parse2;
+    var _JSON$parse, _JSON$parse2;
 
     var isFirst = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     // get conditions with ancestors
     var params = new URL(location).searchParams;
-    console.log(params);
-    console.log(params.get('userIds'));
-    console.log(params.get('keys'));
-    console.log(JSON.parse(params.get('keys')));
     var condition = {
       togoKey: params.get('togoKey'),
-      userIds: ((_params$get = params.get('userIds')) !== null && _params$get !== void 0 ? _params$get : '').split(',').filter(function (id) {
-        return id !== '';
-      }),
+      // userIds: (params.get('userIds') ?? '').split(',').filter(id => id !== ''),
       keys: (_JSON$parse = JSON.parse(params.get('keys'))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
       values: (_JSON$parse2 = JSON.parse(params.get('values'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
     };
@@ -3502,9 +3496,8 @@
     _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true); // restore conditions
 
 
-    _classPrivateFieldSet(this, _togoKey, togoKey);
+    _classPrivateFieldSet(this, _togoKey, togoKey); // this.#userIds = userIds;
 
-    _classPrivateFieldSet(this, _userIds, userIds);
 
     var _classPrivateMethodGe3 = _classPrivateMethodGet(this, _getCondtionsFromHierarchicConditions, _getCondtionsFromHierarchicConditions2).call(this, keys, values),
         _classPrivateMethodGe4 = _slicedToArray(_classPrivateMethodGe3, 2),
@@ -3528,7 +3521,6 @@
     var customEvent = new CustomEvent(restoreParameters, {
       detail: {
         togoKey: togoKey,
-        userIds: userIds,
         keys: keys,
         values: values
       }
@@ -4139,10 +4131,18 @@
 
   var _update$2 = new WeakSet();
 
+  var _setUserValues = new WeakSet();
+
+  var _clearUserValues = new WeakSet();
+
   var ColumnSelectorView = function ColumnSelectorView(elm, subject, property, _items2, sparqlist) {
     var _this = this;
 
     _classCallCheck(this, ColumnSelectorView);
+
+    _clearUserValues.add(this);
+
+    _setUserValues.add(this);
 
     _update$2.add(this);
 
@@ -4260,6 +4260,12 @@
     DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
       return _classPrivateMethodGet(_this, _update$2, _update2$2).call(_this, e.detail.log10);
     });
+    DefaultEventEmitter$1.addEventListener(setUserValues, function (e) {
+      return _classPrivateMethodGet(_this, _setUserValues, _setUserValues2).call(_this, e.detail);
+    });
+    DefaultEventEmitter$1.addEventListener(clearUserValues, function (e) {
+      return _classPrivateMethodGet(_this, _clearUserValues, _clearUserValues2).call(_this);
+    });
     var _depth = 0;
 
     _classPrivateMethodGet(this, _setItems, _setItems2).call(this, _items2, _depth); // make root column
@@ -4355,7 +4361,7 @@
     }), "\"\n      data-depth=\"").concat(depth, "\">\n      <input type=\"checkbox\" value=\"").concat(ALL_PROPERTIES, "\" \n      ").concat(selectedParentCategoryId === parentCategoryId ? ' checked' : '', "/>\n      <span class=\"label\">Map following attributes</span>\n    </li>") + items.map(function (item) {
       max = Math.max(max, item.count);
       var checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
-      return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");
+      return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n        <span class=\"pin\">\n          <span class=\"material-icons\">location_on</span>\n          <span class=\"value\"></span>\n        </span>\n      </li>");
     }).join('');
     var listItems = ul.querySelectorAll(':scope > .item:not(.-all)');
     listItems.forEach(function (li) {
@@ -4399,9 +4405,9 @@
 
         _classPrivateMethodGet(_this4, _setSubColumn, _setSubColumn2).call(_this4, li.dataset.id, depth + 1);
       });
-    }); // select/deselect a item (attribute)
-
+    });
     listItems.forEach(function (li) {
+      // select/deselect a item (attribute)
       var checkbox = li.querySelector(':scope > input[type="checkbox"]');
       checkbox.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -4469,6 +4475,39 @@
         }).join(','), ")");
       });
     });
+  }
+
+  function _setUserValues2(_ref2) {
+    var propertyId = _ref2.propertyId,
+        values = _ref2.values;
+
+    if (_classPrivateFieldGet(this, _property$3).propertyId === propertyId) {
+      var _iterator3 = _createForOfIteratorHelper(values),
+          _step3;
+
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var value = _step3.value;
+
+          var item = _classPrivateFieldGet(this, _items$1)[value.categoryId];
+
+          if (item) {
+            item.elm.classList.add('-pinsticking');
+            item.elm.querySelector(':scope > .pin > .value').innerHTML = "".concat(value.count).concat(value.pValue ? ",  <small>P-value:</small> ".concat(value.pValue === 1 ? value.pValue : value.pValue.toExponential(3)) : '');
+          }
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+    }
+  }
+
+  function _clearUserValues2() {
+    for (var item in _classPrivateFieldGet(this, _items$1)) {
+      _classPrivateFieldGet(this, _items$1)[item].elm.classList.remove('-pinsticking');
+    }
   }
 
   /**
@@ -4841,52 +4880,43 @@
       value.width = value.count / _sum * 100;
       value.baseColor = colorTintByHue(subject.color, 360 * index / values.length);
       var selectedClass = selectedCategoryIds.indexOf(value.categoryId) !== -1 ? ' -selected' : '';
-      return "\n        <li class=\"track-value-view _subject-background-color".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\"></div>\n        </li>");
+      return "\n        <li class=\"track-value-view _subject-background-color".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\">\n            <span class=\"material-icons\">location_on</span>\n          </div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .track-value-view').forEach(function (elm, index) {
       // reference
       var value = _classPrivateFieldGet(_this, _values)[index];
 
       value.elm = elm;
-      var pin = elm.querySelector(':scope > .pin');
-      value.pin = pin; // attach event: show tooltip
+      value.pin = elm.querySelector(':scope > .pin');
+      value.icon = value.pin.querySelector(':scope > .material-icons'); // attach event: show tooltip
 
       var label = "<span class=\"_subject-color\" data-subject-id=\"".concat(_classPrivateFieldGet(_this, _subject$1).subjectId, "\">").concat(value.label, "</span>");
       elm.addEventListener('mouseenter', function () {
-        var customEvent = new CustomEvent(enterPropertyValueItemView, {
-          detail: {
-            label: label,
-            values: [{
-              key: 'Count',
-              value: value.count.toLocaleString()
-            }],
-            elm: elm
-          }
-        });
-        DefaultEventEmitter$1.dispatchEvent(customEvent);
-      });
-      elm.addEventListener('mouseleave', function () {
-        var customEvent = new CustomEvent(leavePropertyValueItemView);
-        DefaultEventEmitter$1.dispatchEvent(customEvent);
-      }); // attach event: show tooltip of pin
+        var _classPrivateFieldGet2;
 
-      pin.addEventListener('mouseenter', function (e) {
-        e.stopPropagation();
-        var values = [{
-          key: 'Count',
-          value: "".concat(value.userValueCount.toLocaleString(), " / ").concat(value.count.toLocaleString())
-        }];
-
-        var userValue = _classPrivateFieldGet(_this, _userValues).find(function (userValue) {
+        var values = [];
+        var userValue = (_classPrivateFieldGet2 = _classPrivateFieldGet(_this, _userValues)) === null || _classPrivateFieldGet2 === void 0 ? void 0 : _classPrivateFieldGet2.find(function (userValue) {
           return userValue.categoryId === value.categoryId;
         });
 
-        console.log(userValue);
-
-        if (userValue !== null && userValue !== void 0 && userValue.pValue) {
+        if (userValue) {
+          // does not have user value
           values.push({
-            key: 'P-value',
-            value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(3)
+            key: 'Count',
+            value: "".concat(value.userValueCount.toLocaleString(), " / ").concat(value.count.toLocaleString())
+          });
+
+          if (userValue !== null && userValue !== void 0 && userValue.pValue) {
+            values.push({
+              key: 'P-value',
+              value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(3)
+            });
+          }
+        } else {
+          // has user value
+          values.push({
+            key: 'Count',
+            value: value.count.toLocaleString()
           });
         }
 
@@ -4894,12 +4924,12 @@
           detail: {
             label: label,
             values: values,
-            elm: pin
+            elm: elm
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       });
-      pin.addEventListener('mouseleave', function () {
+      elm.addEventListener('mouseleave', function () {
         var customEvent = new CustomEvent(leavePropertyValueItemView);
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }); // attach event: select/deselect a value
@@ -4978,8 +5008,6 @@
   }
 
   function _plotUserIdValues2(detail) {
-    console.log(detail);
-
     if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
       _classPrivateFieldGet(this, _ROOT$5).classList.add('-pinsticking');
 
@@ -5041,6 +5069,7 @@
           var size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
+          value.icon.style.fontSize = size + 'px';
           value.userValueCount = userValue.count;
           value.elm.dataset.pValueGreaterThan = pValueGreaterThan;
         } else {
@@ -5054,6 +5083,8 @@
     _classPrivateFieldGet(this, _values).forEach(function (value) {
       return value.elm.classList.remove('-pinsticking');
     });
+
+    _classPrivateFieldSet(this, _userValues, undefined);
   }
 
   var _subject = new WeakMap();
@@ -6977,8 +7008,6 @@
 
   var _USER_IDS = new WeakMap();
 
-  var _restoreParameters = new WeakSet();
-
   var _fetch = new WeakSet();
 
   var _clear = new WeakSet();
@@ -6992,8 +7021,6 @@
       _clear.add(this);
 
       _fetch.add(this);
-
-      _restoreParameters.add(this);
 
       _path.set(this, {
         writable: true,
@@ -7036,9 +7063,9 @@
       }); // this.#USER_IDS.addEventListener('keyup', e => {
       //   if (e.keyCode === 13) this.#fetch();
       // });
+      // DefaultEventEmitter.addEventListener(event.restoreParameters, this.#restoreParameters.bind(this));
 
 
-      DefaultEventEmitter$1.addEventListener(restoreParameters, _classPrivateMethodGet(this, _restoreParameters, _restoreParameters2).bind(this));
       DefaultEventEmitter$1.addEventListener(clearCondition, _classPrivateMethodGet(this, _clear, _clear2).bind(this));
     } // public methods
 
@@ -7048,16 +7075,14 @@
       value: function definePath(path) {
         _classPrivateFieldSet(this, _path, path);
       } // private methods
+      // #restoreParameters({detail}) {
+      //   this.#USER_IDS.value = detail.userIds;
+      // }
 
     }]);
 
     return UploadUserIDsView;
   }();
-
-  function _restoreParameters2(_ref) {
-    var detail = _ref.detail;
-    _classPrivateFieldGet(this, _USER_IDS).value = detail.userIds;
-  }
 
   function _fetch2() {
     var _this2 = this;

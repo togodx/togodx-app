@@ -251,7 +251,7 @@ class ConditionBuilder {
     // generate permalink
     const params = new URL(location).searchParams;
     params.set('togoKey', this.#togoKey);
-    params.set('userIds', this.userIds ? this.userIds : '');
+    // params.set('userIds', this.userIds ? this.userIds : '');
     params.set('keys', JSON.stringify(keys));
     params.set('values', JSON.stringify(values));
     if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
@@ -262,13 +262,9 @@ class ConditionBuilder {
 
     // get conditions with ancestors
     const params = new URL(location).searchParams;
-    console.log(params)
-    console.log(params.get('userIds'))
-    console.log(params.get('keys'))
-    console.log(JSON.parse(params.get('keys')))
     const condition = {
       togoKey: params.get('togoKey'),
-      userIds: (params.get('userIds') ?? '').split(',').filter(id => id !== ''),
+      // userIds: (params.get('userIds') ?? '').split(',').filter(id => id !== ''),
       keys: JSON.parse(params.get('keys')) ?? [],
       values: JSON.parse(params.get('values')) ?? []
     }
@@ -333,7 +329,7 @@ class ConditionBuilder {
 
     // restore conditions
     this.#togoKey = togoKey;
-    this.#userIds = userIds;
+    // this.#userIds = userIds;
     const [properties, attributes] = this.#getCondtionsFromHierarchicConditions(keys, values);
     console.log(properties, attributes)
     this.setProperties(properties, false);
@@ -346,7 +342,7 @@ class ConditionBuilder {
     this.finish(false);
 
     // dispatch event
-    const customEvent = new CustomEvent(event.restoreParameters, {detail: {togoKey, userIds, keys, values}});
+    const customEvent = new CustomEvent(event.restoreParameters, {detail: {togoKey, keys, values}});
     DefaultEventEmitter.dispatchEvent(customEvent);
 
   }

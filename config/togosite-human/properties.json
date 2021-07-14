@@ -338,7 +338,7 @@
       {
         "propertyId": "chebi_chemical_role",
         "label": "Chemical role",
-        "description": "Chemical roles in ChEBI",
+        "description": "Classification based on the chemical roles, such as antioxidant or environmental contaminant from ChEBI",
         "data": "http://integbio.jp/togosite/sparqlist/api/compound_chemical_role_chebi",
         "primaryKey": "chebi",
         "keyLabel": "ChEBI compound"
@@ -346,7 +346,7 @@
       {
         "propertyId": "chebi_application_type",
         "label": "Application type",
-        "description": "Application types in ChEBI",
+        "description": "Classification based on the application types, such as pharmaceutical or pesticide from ChEBI",
         "data": "http://integbio.jp/togosite/sparqlist/api/compound_application_type_chebi",
         "primaryKey": "chebi",
         "keyLabel": "ChEBI compound"
@@ -362,7 +362,7 @@
       {
         "propertyId": "chebi_biological_role",
         "label": "Biological role",
-        "description": "Biological roles in ChEBI",
+        "description": "Classification based on the biological roles, such as inhibitor or antimicrobial agent from ChEBI",
         "data": "http://integbio.jp/togosite/sparqlist/api/compound_biological_role_chebi",
         "primaryKey": "chebi",
         "keyLabel": "ChEBI compound"
