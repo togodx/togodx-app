@@ -1504,6 +1504,13 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   font-size: 1rem;
   line-height: 3rem;
 }
+.track-view > .row.-lower {
+  content-visibility: hidden;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
 .track-view > .row.-lower > .left > .description {
   margin-bottom: 0.4rem;
   padding: 0 0.8rem;
@@ -1527,6 +1534,13 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   border: solid 0.1rem black;
   box-shadow: 0 0 0 0.1rem rgba(255, 255, 255, 0.5) inset;
   pointer-events: none;
+}
+.track-view.-spread > .row.-lower {
+  content-visibility: visible;
+  -webkit-user-select: auto;
+     -moz-user-select: auto;
+      -ms-user-select: auto;
+          user-select: auto;
 }
 
 #App {

@@ -68,6 +68,8 @@
             font-size: 1rem
             line-height: 3rem
     &.-lower
+      content-visibility: hidden
+      user-select: none
       > .left
         > .description
           margin-bottom: .4rem
@@ -96,4 +98,8 @@
       border: solid .1rem black
       box-shadow: 0 0 0 .1rem rgba(white, .5) inset
       pointer-events: none
+  &.-spread
+    > .row.-lower
+      content-visibility: visible
+      user-select: auto
       
