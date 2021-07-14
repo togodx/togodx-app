@@ -7,6 +7,7 @@ import axiosRetry from 'axios-retry';
 
 const LIMIT = 100;
 const downloadUrls = new Map();
+const timeOutError = 'ECONNABORTED';
 
 /**
  * @typedef {Object} Mode
@@ -84,12 +85,19 @@ export default class TableData {
   #BUTTON_RIGHT;
 
   constructor(condition, elm) {
+    // axios settings
     axios.defaults.timeout = 60000;
+    // axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+    // axios.defaults.headers['Access-Control-Allow-Methods'] =
+    //   'GET,PUT,POST,DELETE';
+    // axios.defaults.headers['Access-Control-Allow-Headers'] = 'Content-Type';
     axiosRetry(axios, {
-      retries: 2,
+      retries: 5,
       shouldResetTimeout: true,
       retryDelay: axiosRetry.exponentialDelay,
-      retryCondition: _error => true,
+      retryCondition: error => {
+        return (error.code === timeOutError) | error.response;
+      },
     });
 
     const CancelToken = axios.CancelToken;
@@ -152,7 +160,6 @@ export default class TableData {
       </div>
     </div>
     <div class="controller">
-
     </div>
     `;
 
@@ -196,7 +203,7 @@ export default class TableData {
     ConditionBuilder.finish();
     this.select();
     this.#ROOT.classList.add('-fetching');
-    this.getQueryIds();
+    this.#getQueryIds();
   }
 
   /* private methods */
@@ -316,7 +323,8 @@ export default class TableData {
         break;
 
       case 'retry':
-        getQueryIds();
+        this.#queryIds.length > 0 ? this.#getProperties() : this.#getQueryIds();
+        break;
 
       default:
         break;
@@ -345,7 +353,6 @@ export default class TableData {
     downloadUrls.set('json', URL.createObjectURL(jsonBlob));
   }
 
-  // TODO: look at possible improvements looping
   #setTsvUrl() {
     const temporaryArray = [];
     this.#rows.forEach(row => {
@@ -386,19 +393,24 @@ export default class TableData {
   }
   // *** Properties & Loading ***
   /**
-   * @param { Error } error - first check userCancel, then server error, timeout err part of else
+   * @param { Error } err - first check userCancel, then server error, timeout err part of else
    */
-  #handleError(error) {
+  #handleError(err) {
     let message, errCode;
-    if (axios.isCancel && error.message === 'Operation canceled by the user.') {
+    if (axios.isCancel && err.message === 'Operation canceled by the user.') {
       return;
-    } else if (error.response) {
-      message = error.response.statusText;
-      errCode = error.response.status;
+    } else if (err.response) {
+      message = err.response.statusText;
+      errCode = err.response.status;
     } else {
-      message = error.message;
+      message = err.message;
+      errCode = err.code;
     }
     this.#displayError(message, errCode);
+
+    if (err.reponse | (err.code === timeOutError)) {
+      this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('retry'));
+    }
   }
   /**
    * @param { string } message - errorMessage
@@ -411,45 +423,51 @@ export default class TableData {
       detail: this,
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
-    // if (err.status === 505) {
-    //   this.#STATUS.textContent = 'Retrying';
-    //   this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes('retry'));
-    // }
     return;
   }
 
-  // #getQueryIdsFetch = () => {
-  //   return {
-  //     togoKey: this.#condition.togoKey,
-  //     properties: this.#condition.attributes.map(property => property.query),
-  //     inputIds: ConditionBuilder.userIds
-  //         ? ConditionBuilder.userIds
-  //         : []
-  //   };
-  // };
-
-  getQueryIds() {
-    // reset
-    // axios
-    //   .get('https://bac2021.men.gov.ma/undifined-endpoint')
-    //   .then(response => {
-    //     console.log(response);
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //   });
-
+  #getQueryIds() {
     const payload = {
       togoKey: this.#condition.togoKey,
       properties: this.#condition.attributes.map(property => property.query),
-      inputIds: ConditionBuilder.userIds ? ConditionBuilder.userIds : [],
+      inputIds: ConditionBuilder.userIds ? ConditionBuilder.userIds : '',
     };
-    axios({
-      method: 'post',
-      url: App.aggregatePrimaryKeys,
-      data: payload,
-      cancelToken: this.#source.token,
-    })
+    axios
+    // .get(
+    //   `${App.aggregatePrimaryKeys}?togoKey=${
+    //     this.#condition.togoKey
+    //   }&properties=${encodeURIComponent(
+    //     JSON.stringify(
+    //       this.#condition.attributes.map(property => property.query)
+    //     )
+    //   )}${
+    //     ConditionBuilder.userIds?.length > 0
+    //       ? `&inputIds=${encodeURIComponent(
+    //           JSON.stringify(ConditionBuilder.userIds)
+    //         )}`
+    //       : ''
+    //   }`,
+    //   {
+    //     cancelToken: this.#source.token,
+    //   }
+    // )
+    // axios({
+    //   method: 'post',
+    //   url: App.aggregatePrimaryKeys,
+    //   data: payload,
+    //   cancelToken: this.#source.token,
+    //   withCredentials: true,
+    // })
+    // axios
+      .post(App.aggregatePrimaryKeys, payload, {
+        cancelToken: this.#source.token,
+        withCredentials: true,
+        // responseType: 'text',
+        // headers: {
+        //   'Access-Control-Allow-Origin': '*',
+        //   'Content-type': 'application/json',
+        // },
+      })
       .then(response => {
         this.#queryIds = response.data;
         // display
@@ -486,7 +504,7 @@ export default class TableData {
     this.#ROOT.classList.add('-fetching');
     this.#STATUS.textContent = 'Getting Data';
     axios
-      .get('this.#getPropertiesFetch()', {cancelToken: this.#source.token})
+      .get(this.#getPropertiesFetch(), {cancelToken: this.#source.token})
       .then(response => {
         this.#rows.push(...response.data);
         this.#isCompleted = this.offset >= this.#queryIds.length;
