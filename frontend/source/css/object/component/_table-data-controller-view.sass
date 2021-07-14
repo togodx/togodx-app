@@ -48,6 +48,8 @@
       &.-error
         color: red
         opacity: 1
+      &.-flickering
+        animation: var(--transition-fetching) infinite alternate fetching
     > .material-icons-outlined
       display: none
 
@@ -109,9 +111,6 @@
       display: block
     > .controller
       display: flex
-  &.-fetching, &[data-status="load rows"]
-    > .status
-      animation: var(--transition-fetching) infinite alternate fetching
   &.-fetching
     > .status
       > .material-icons-outlined
