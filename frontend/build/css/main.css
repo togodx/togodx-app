@@ -1439,6 +1439,7 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   height: var(--height-track);
 }
 .track-view > .row > .left {
+  padding-bottom: 0.8rem;
   border-right: solid 0.1rem var(--color-gray);
   -webkit-flex-basis: var(--width-track-column-property);
           flex-basis: var(--width-track-column-property);
@@ -1503,6 +1504,13 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   font-size: 1rem;
   line-height: 3rem;
 }
+.track-view > .row.-lower {
+  content-visibility: hidden;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
 .track-view > .row.-lower > .left > .description {
   margin-bottom: 0.4rem;
   padding: 0 0.8rem;
@@ -1526,6 +1534,13 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   border: solid 0.1rem black;
   box-shadow: 0 0 0 0.1rem rgba(255, 255, 255, 0.5) inset;
   pointer-events: none;
+}
+.track-view.-spread > .row.-lower {
+  content-visibility: visible;
+  -webkit-user-select: auto;
+     -moz-user-select: auto;
+      -ms-user-select: auto;
+          user-select: auto;
 }
 
 #App {
@@ -1758,9 +1773,13 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   display: inline-block;
 }
 #Properties > .header > .title > .properties {
-  -webkit-padding-start: calc(var(--width-track-column-subject) - var(--padding-track-inline-start));
-          padding-inline-start: calc(var(--width-track-column-subject) - var(--padding-track-inline-start));
+  padding-left: calc(var(--width-track-column-subject) - var(--padding-track-inline-start) + 1.4rem);
   width: calc(var(--width-track-column-subject) + var(--width-track-column-property) - var(--padding-track-inline-start));
+}
+#Properties > .header > .title > .collapsebutton::before {
+  left: 1.4rem;
+  top: 2px;
+  border-color: white;
 }
 #Properties > .header > nav {
   -webkit-flex-grow: 1;

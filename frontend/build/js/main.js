@@ -2946,6 +2946,7 @@
 
   var enterPropertyValueItemView = 'enterPropertyValueItemView';
   var leavePropertyValueItemView = 'leavePropertyValueItemView';
+  var allTracksCollapse = 'allTracksCollapse';
 
   var _propertyConditions = new WeakMap();
 
@@ -5102,6 +5103,8 @@
 
   var _CHECKBOX_ALL_PROPERTIES = new WeakMap();
 
+  var _COLLAPSE_BUTTON = new WeakMap();
+
   var _makeValues = new WeakSet();
 
   var TrackView = function TrackView(subject, property, container, positionRate) {
@@ -5151,6 +5154,11 @@
       value: void 0
     });
 
+    _COLLAPSE_BUTTON.set(this, {
+      writable: true,
+      value: void 0
+    });
+
     // console.log(subject, property, container)
     var isSelected = ConditionBuilder$1.isSelectedProperty(property.propertyId);
     var elm = document.createElement('div');
@@ -5178,7 +5186,9 @@
 
     _classPrivateFieldSet(this, _LOADING_VIEW$1, valuesContainer.querySelector(':scope > .overview > .loading-view'));
 
-    _classPrivateFieldSet(this, _SELECT_CONTAINER, elm.querySelector(':scope > .row.-lower > .selector')); // collapse
+    _classPrivateFieldSet(this, _SELECT_CONTAINER, elm.querySelector(':scope > .row.-lower > .selector'));
+
+    _classPrivateFieldSet(this, _COLLAPSE_BUTTON, elm.querySelector(':scope > .row.-upper > .left > .collapsebutton')); // collapse
 
 
     collapseView(elm); // select/deselect a property
@@ -5223,6 +5233,17 @@
           }
 
           break;
+      }
+    });
+    DefaultEventEmitter$1.addEventListener(allTracksCollapse, function (e) {
+      if (e.detail) {
+        if (!_classPrivateFieldGet(_this, _ROOT$4).classList.contains('-spread')) {
+          _classPrivateFieldGet(_this, _COLLAPSE_BUTTON).dispatchEvent(new MouseEvent('click'));
+        }
+      } else {
+        if (_classPrivateFieldGet(_this, _ROOT$4).classList.contains('-spread')) {
+          _classPrivateFieldGet(_this, _COLLAPSE_BUTTON).dispatchEvent(new MouseEvent('click'));
+        }
       }
     }); // get property data
 
@@ -7115,9 +7136,13 @@
 
   var _makeConceptViews = new WeakSet();
 
+  var _defineAllTracksCollapseButton = new WeakSet();
+
   var App = /*#__PURE__*/function () {
     function App() {
       _classCallCheck(this, App);
+
+      _defineAllTracksCollapseButton.add(this);
 
       _makeConceptViews.add(this);
 
@@ -7235,6 +7260,8 @@
           _classPrivateFieldSet(_this, _aggregate, Object.freeze(aggregate));
 
           _classPrivateMethodGet(_this, _makeConceptViews, _makeConceptViews2).call(_this);
+
+          _classPrivateMethodGet(_this, _defineAllTracksCollapseButton, _defineAllTracksCollapseButton2).call(_this);
         });
       } // private methods
 
@@ -7296,6 +7323,27 @@
       var elm = document.createElement('section');
       new ConceptView(subject, elm);
       conceptsContainer.insertAdjacentElement('beforeend', elm);
+    });
+  }
+
+  function _defineAllTracksCollapseButton2() {
+    var collapsebutton = document.querySelector('#Properties > header > .title > h2.collapsebutton');
+    collapsebutton.addEventListener('click', function (e) {
+      var customEvent = new CustomEvent(allTracksCollapse);
+
+      if (collapsebutton.classList.contains('-spread')) {
+        collapsebutton.classList.remove('-spread');
+        customEvent = new CustomEvent(allTracksCollapse, {
+          detail: false
+        });
+      } else {
+        collapsebutton.classList.add('-spread');
+        customEvent = new CustomEvent(allTracksCollapse, {
+          detail: true
+        });
+      }
+
+      DefaultEventEmitter$1.dispatchEvent(customEvent);
     });
   }
 

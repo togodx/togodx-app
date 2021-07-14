@@ -88,6 +88,7 @@ class App {
         this.#aggregate = Object.freeze(aggregate);
 
         this.#makeConceptViews();
+        this.#defineAllTracksCollapseButton();
       });
   }
 
@@ -99,6 +100,21 @@ class App {
       const elm = document.createElement('section');
       new ConceptView(subject, elm);
       conceptsContainer.insertAdjacentElement('beforeend', elm);
+    });
+  }
+
+  #defineAllTracksCollapseButton() {
+    const collapsebutton = document.querySelector('#Properties > header > .title > h2.collapsebutton');
+    collapsebutton.addEventListener('click', e => {
+      let customEvent = new CustomEvent(event.allTracksCollapse);
+      if (collapsebutton.classList.contains('-spread')) {
+        collapsebutton.classList.remove('-spread');
+        customEvent = new CustomEvent(event.allTracksCollapse, {detail: false});
+      } else {
+        collapsebutton.classList.add('-spread');
+        customEvent = new CustomEvent(event.allTracksCollapse, {detail: true});
+      }
+      DefaultEventEmitter.dispatchEvent(customEvent);
     });
   }
 
