@@ -107,7 +107,7 @@
         "propertyId": "gene_not_expressed_in_tissue_gtex",
         "label": "Not expressed in tissues",
         "description": "Tissues in which expression of a gene is not detected in 48 tissues of GTEx",
-        "data": "https://integbio.jp/togosite/sparqlist/api/gene_not_expressed_in_tissue_gtex",
+        "data": "https://integbio.jp/togosite/sparqlist/api/gene_not_expressed_in_tissues_gtex",
         "dataSource": "",
         "dataSourceUrl": "",
         "dataSourceVersion": "",
