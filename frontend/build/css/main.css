@@ -1740,9 +1740,13 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   display: inline-block;
 }
 #Properties > .header > .title > .properties {
-  -webkit-padding-start: calc(var(--width-track-column-subject) - var(--padding-track-inline-start));
-          padding-inline-start: calc(var(--width-track-column-subject) - var(--padding-track-inline-start));
+  padding-left: calc(var(--width-track-column-subject) - var(--padding-track-inline-start) + 1.4rem);
   width: calc(var(--width-track-column-subject) + var(--width-track-column-property) - var(--padding-track-inline-start));
+}
+#Properties > .header > .title > .collapsebutton::before {
+  left: 1.4rem;
+  top: 2px;
+  border-color: white;
 }
 #Properties > .header > nav {
   -webkit-flex-grow: 1;

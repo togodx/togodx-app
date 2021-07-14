@@ -21,8 +21,13 @@
         margin-bottom: 0
         display: inline-block
       > .properties
-        padding-inline-start: calc(var(--width-track-column-subject) - var(--padding-track-inline-start))
+        padding-left: calc(var(--width-track-column-subject) - var(--padding-track-inline-start) + 1.4rem)
         width: calc(var(--width-track-column-subject) + var(--width-track-column-property) - var(--padding-track-inline-start))
+      > .collapsebutton
+        &::before
+          left: 1.4rem
+          top: 2px
+          border-color: white
     > nav
       flex-grow: 1
       text-align: right
