@@ -9,7 +9,6 @@ const NUM_OF_GRID = 4;
 export default class HistogramRangeSelectorView {
 
   #items;
-  #subject;
   #property;
   #selectedBarsStart;
   #selectedBarsEnd;
@@ -21,7 +20,6 @@ export default class HistogramRangeSelectorView {
   constructor(elm, subject, property, items, sparqlist, overview) {
     // console.log(elm, subject, property, items, sparqlist)
 
-    this.#subject = subject;
     this._sparqlist = sparqlist;
     this.#property = property;
     this.#OVERVIEW_CONTAINER = overview;
@@ -50,7 +48,12 @@ export default class HistogramRangeSelectorView {
     // make graph
     const max = Math.max(...this.#items.map(item => item.count));
     const width = 100 / this.#items.length;
-    selector.querySelector(':scope > .overview').innerHTML = this.#items.map(item => `<div class="bar _subject-background-color" data-category-id="${item.categoryId}" data-count="${item.count}" style="width: ${width}%; height: ${(item.count / max) * 100}%;"></div>`).join('');
+    selector.querySelector(':scope > .overview').innerHTML = this.#items.map(item => `<div
+      class="bar _subject-background-color"
+      data-category-id="${item.categoryId}"
+      data-subject-id="${subject.subjectId}"
+      data-count="${item.count}"
+      style="width: ${width}%; height: ${(item.count / max) * 100}%;"></div>`).join('');
     const graph = histogram.querySelector(':scope > .graph');
     graph.innerHTML = this.#items.map((item, index) => `<div class="bar" data-category-id="${item.categoryId}" data-count="${item.count}">
       <div class="actual" style="background-color: rgb(${util.colorTintByHue(subject.color, 360 * index / this.#items.length).coords.map(cood => cood * 256).join(',')});"></div>
@@ -103,23 +106,20 @@ export default class HistogramRangeSelectorView {
         });
         this.#update();
         // set condition
-        const selectedItems = this.#selectedItems;
-        ConditionBuilder.setPropertyValues({
-          subject: this.#subject,
-          property: this.#property,
-          values: selectedItems.map(item => {
-            return {
-              categoryId: item.categoryId,
-              label: item.label,
-              ancestors: []
-            }
-          })
-        });
+        ConditionBuilder.setPropertyValues(
+          this.#property.propertyId,
+          this.#selectedItems.map(item => item.categoryId),
+          false
+        );
       }
     });
     selectorController.addEventListener('mouseup', e => {
       if (isMouseDown) {
         isMouseDown = false;
+        ConditionBuilder.setPropertyValues(
+          this.#property.propertyId,
+          this.#selectedItems.map(item => item.categoryId)
+        );
       }
     });
   }

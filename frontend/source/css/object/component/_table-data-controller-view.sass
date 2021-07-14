@@ -14,6 +14,9 @@
   cursor: pointer
   transition: opacity var(--transition-instant)
   position: relative
+  .material-icons-outlined
+    font-size: 1.4rem
+    width: 1.6rem
   > .close-button-view
     position: absolute
     top: .4rem
@@ -29,8 +32,6 @@
       &:first-child
         color: white
         background-color: var(--color-lamp-black)
-      &._subject-background-color
-        color: white
       > p
         margin-bottom: 0
         text-overflow: ellipsis
@@ -41,6 +42,9 @@
   > .status
     padding: .3rem 0
     border-bottom: solid .1rem var(--color-separator)
+    display: flex
+    align-items: center
+    justify-content: center
     > p
       margin-bottom: 0
       opacity: .25
@@ -48,6 +52,9 @@
       &.-error
         color: red
         opacity: 1
+    > .material-icons-outlined
+      display: none
+
   > .indicator
     padding: .4rem .4rem
     border-bottom: solid .1rem var(--color-separator)
@@ -72,16 +79,14 @@
   > .controller
     display: flex
     color: white
-    > [data-button="download-json"]
-      display: none
+    > [data-button="download-csv"], > [data-button="download-tsv"]
+      display: block
       > a
         color: white
         text-decoration: none
         display: block
         > span
           vertical-align: middle
-        > .material-icons-outlined
-          font-size: 1.4rem
     > .button
       padding: .2rem 0
       flex-grow: 1
@@ -90,20 +95,18 @@
       cursor: pointer
       &:hover
         background-color: var(--color-lamp-black)
-      &[data-button="restore"]
-        [data-display="results"] &
-          +button-disabled
-      &.none
-        display: none
-      > .material-icons-outlined
+      // &[data-button="restore"]
+      //   [data-display="results"] &
+      //     +button-disabled
+      .material-icons-outlined
         position: relative
         top: -.1rem
         font-size: 1.4rem
         vertical-align: middle
         left: -.2rem
-      &.-rotating
-        > .material-icons-outlined
-          animation: rotation 3s linear infinite
+      // &.-rotating
+      //   > .material-icons-outlined
+      //     animation: rotation 3s linear infinite
   &.-current, &:hover
     opacity: 1
   &.-current
@@ -113,6 +116,11 @@
       animation: var(--transition-fetching) infinite alternate fetching
       > p
         opacity: 1
+      > .material-icons-outlined
+        display: block
+        &.-rotating
+          animation: rotation 3s linear infinite
+
     > .indicator
       > .progress
         > .bar
@@ -120,12 +128,12 @@
   &.-autoload
     > .controller
       > .button
-        &[data-button="prepare-data"]
+        &[data-button="edit"]
           +button-disabled
   &[data-status="load ids"]
     > .controller
       > .button
-        &[data-button="prepare-data"]
+        &[data-button="edit"]
           +button-disabled
   &[data-status="load rows"]
     > .indicator
@@ -140,17 +148,15 @@
       display: block
     > .controller
       display: flex
-      > [data-button="prepare-data"]
-        display: none
-      > [data-button="download-json"]
+      > [data-button="download-json"], > [data-button="download-tsv"]
         display: block
     > .controller
       > .button
-        &[data-button="prepare-data"]
+        &[data-button="edit"]
           +button-disabled
 
 @keyframes rotation
-  0%  
+  0%
     transform: rotate(0)
-  100%  
+  100%
     transform: rotate(360deg)

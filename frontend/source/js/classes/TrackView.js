@@ -21,29 +21,31 @@ export default class TrackView {
   constructor(subject, property, container, positionRate) {
     // console.log(subject, property, container)
 
+    const isSelected = ConditionBuilder.isSelectedProperty(property.propertyId);
     const elm = document.createElement('div');
     container.insertAdjacentElement('beforeend', elm);
     this.#ROOT = elm;
     this.#subject = subject;
     this.#property = property;
     this.#sparqlist = property.data;
-    elm.classList.add('track-view');
-    elm.classList.add('-preparing');
-    elm.classList.add('collapse-view');
+    elm.classList.add('track-view', '-preparing', 'collapse-view');
+    if (isSelected) elm.classList.add('-allselected');
+    elm.dataset.subjectId = subject.subjectId;
     elm.dataset.propertyId = property.propertyId;
     elm.dataset.collapse = property.propertyId;
 
     // make html
+    const checked = isSelected ? ' checked' : '';
     elm.innerHTML = `
     <div class="row -upper">
       <div class="left definition">
         <div class="collapsebutton" data-collapse="${property.propertyId}">
-          <h2 class="title">${property.label}</h2>
-          <input type="checkbox" class="mapping">
+          <h2 class="title _subject-color">${property.label}</h2>
+          <input type="checkbox" class="mapping"${checked}>
         </div>
       </div>
       <div class="right values">
-        <div class="overview" style="background-color: ${subject.colorCSSValue};">
+        <div class="overview _subject-background-color">
           <ul class="inner"></ul>
           <div class="loading-view -shown"></div>
         </div>
@@ -53,6 +55,7 @@ export default class TrackView {
       <div class="left">
         <p class="description">${property.description}</p>
         <!--<label><input type="checkbox">All properties</label>-->
+        <a class="external-link-button-view" href="${this.#sparqlist}" target="_blank">API</a>
       </div>
       <div class="right selector"></div>
     </div>`;
@@ -69,10 +72,7 @@ export default class TrackView {
     this.#CHECKBOX_ALL_PROPERTIES.addEventListener('click', e => {
       e.stopPropagation();
       if (this.#CHECKBOX_ALL_PROPERTIES.checked) { // add
-        ConditionBuilder.addProperty({
-          subject: this.#subject,
-          property: this.#property
-        });
+        ConditionBuilder.addProperty(this.#property.propertyId);
         this.#ROOT.classList.add('-allselected');
       } else { // remove
         ConditionBuilder.removeProperty(this.#property.propertyId);
@@ -81,11 +81,10 @@ export default class TrackView {
     });
     // event listener
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, e => {
-      if (e.detail.condition?.subCategory !== undefined || e.detail.parentCategoryId !== undefined) return;
+      if (e.detail.parentCategoryId !== undefined) return;
       switch (e.detail.action) {
         case 'add':
-          if (e.detail.condition.property.propertyId === this.#property.propertyId) {
-            console.log(e.detail.condition)
+          if (e.detail.propertyId === this.#property.propertyId) {
             this.#CHECKBOX_ALL_PROPERTIES.checked = true;
             this.#ROOT.classList.add('-allselected');
           }
@@ -100,12 +99,11 @@ export default class TrackView {
     });
 
     // get property data
-    fetch(property.data)
-      .then(responce => responce.json())
-      .then(json => this.#makeValues(json))
+    Records.fetchPropertyValues(this.#property.propertyId)
+      .then(values => this.#makeValues(values))
       .catch(error => {
         console.error(error)
-        this.#OVERVIEW_CONTAINER.insertAdjacentHTML('afterend',`<div class="error">${error} - <a href="${property.data}" target="_blank">${property.data}</a></div>`);
+        this.#OVERVIEW_CONTAINER.insertAdjacentHTML('afterend', `<div class="error">${error} - <a href="${this.#property.data}" target="_blank">${this.#property.data}</a></div>`);
         this.#LOADING_VIEW.classList.remove('-shown');
       });
   }
@@ -116,7 +114,6 @@ export default class TrackView {
 
     this.#ROOT.classList.remove('-preparing');
     this.#LOADING_VIEW.classList.remove('-shown');
-    Records.setValues(this.#property.propertyId, values);
 
     // make overview
     new TrackOverviewCategorical(this.#OVERVIEW_CONTAINER, this.#subject, this.#property, values);

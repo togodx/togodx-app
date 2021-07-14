@@ -145,6 +145,20 @@
       "pg" : 0,
       "sct" : 0
     },
+    "\/source\/css\/object\/component\/_external-link-button-view.sass" : {
+      "aP" : 1,
+      "bl" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 2,
+      "ma" : 1,
+      "oA" : 1,
+      "oAP" : "\/build\/css\/object\/component\/_external-link-button-view.css",
+      "oF" : 0,
+      "oS" : 1,
+      "pg" : 0,
+      "sct" : 0
+    },
     "\/source\/css\/object\/component\/_histogram-range-selector-view.sass" : {
       "aP" : 1,
       "bl" : 0,
@@ -168,20 +182,6 @@
       "ma" : 1,
       "oA" : 1,
       "oAP" : "\/build\/css\/object\/component\/_loading-view.css",
-      "oF" : 0,
-      "oS" : 1,
-      "pg" : 0,
-      "sct" : 0
-    },
-    "\/source\/css\/object\/component\/_report-page-button-view.sass" : {
-      "aP" : 1,
-      "bl" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 2,
-      "ma" : 1,
-      "oA" : 1,
-      "oAP" : "\/build\/css\/object\/component\/_report-page-button-view.css",
       "oF" : 0,
       "oS" : 1,
       "pg" : 0,
@@ -397,20 +397,6 @@
       "pg" : 0,
       "sct" : 0
     },
-    "\/source\/css\/object\/project\/_Reports.sass" : {
-      "aP" : 1,
-      "bl" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 2,
-      "ma" : 1,
-      "oA" : 1,
-      "oAP" : "\/build\/css\/object\/project\/_Reports.css",
-      "oF" : 0,
-      "oS" : 1,
-      "pg" : 0,
-      "sct" : 0
-    },
     "\/source\/css\/object\/project\/_ReportsPageView.sass" : {
       "aP" : 1,
       "bl" : 0,
@@ -499,17 +485,6 @@
       "oO" : 0,
       "oS" : 1
     },
-    "\/source\/js\/api.js" : {
-      "bF" : 4,
-      "ft" : 64,
-      "ma" : 1,
-      "mi" : 0,
-      "oA" : 1,
-      "oAP" : "\/build\/js\/api.js",
-      "oF" : 0,
-      "sC" : 3,
-      "tS" : 1
-    },
     "\/source\/js\/classes\/App.js" : {
       "bF" : 4,
       "ft" : 64,
@@ -517,7 +492,7 @@
       "mi" : 0,
       "oA" : 1,
       "oAP" : "\/build\/js\/classes\/App.js",
-      "oF" : 1,
+      "oF" : 0,
       "sC" : 3,
       "tS" : 1
     },
@@ -550,7 +525,7 @@
       "mi" : 0,
       "oA" : 1,
       "oAP" : "\/build\/js\/classes\/ColumnSelectorView.js",
-      "oF" : 1,
+      "oF" : 0,
       "sC" : 3,
       "tS" : 1
     },
@@ -638,17 +613,6 @@
       "mi" : 0,
       "oA" : 1,
       "oAP" : "\/build\/js\/classes\/ReportApp.js",
-      "oF" : 0,
-      "sC" : 3,
-      "tS" : 1
-    },
-    "\/source\/js\/classes\/ReportsView.js" : {
-      "bF" : 4,
-      "ft" : 64,
-      "ma" : 1,
-      "mi" : 0,
-      "oA" : 1,
-      "oAP" : "\/build\/js\/classes\/ReportsView.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 1
@@ -770,6 +734,17 @@
       "mi" : 0,
       "oA" : 1,
       "oAP" : "\/build\/js\/functions\/collapseView.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
+    "\/source\/js\/functions\/dragView.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/functions\/dragView.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 1

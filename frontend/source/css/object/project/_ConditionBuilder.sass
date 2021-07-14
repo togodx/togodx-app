@@ -1,21 +1,24 @@
 #ConditionBuilder
   --radius: .4rem
+  --background-color: #FFFFFFCC
+  --background-color-inactive: #FFFFFF66
   > .conditions
     flex-grow: 1
+    padding-bottom: 1rem
     > .condition
       padding: .7rem .6rem
-      background-color: rgba(white, .8)
+      background-color: var(--background-color)
       border-radius: var(--radius)
       + .condition
         margin-top: .4rem
       > .inner
         > .title
-          margin: -.5rem 0 -.2rem
+          margin: -.2rem 0
           line-height: 1
           font-size: 1.2rem
           display: flex
           align-items: baseline
-          > .material-icons-outlined
+          > .material-icons, > .material-icons-outlined
             font-size: 1.4rem
             vertical-align: middle
             margin-inline-end: .3rem
@@ -38,19 +41,22 @@
               display: none
     > #ConditionKeys, > #ConditionValues
       transition: opacity var(--transition-instant)
-      opacity: var(--opacity-disabled)
+      opacity: .8
+      background-color: var(--background-color-inactive)
       cursor: pointer
       &:hover
-        opacity: 1
+        background-color: var(--background-color)
     > #ConditionKeys
       border-radius: var(--radius) var(--radius) 0 0
       [data-condition="keys"] &
         opacity: 1
+        background-color: var(--background-color)
     > #ConditionValues
       border-radius: 0 0 var(--radius) var(--radius)
       margin-top: .1rem
       [data-condition="values"] &
         opacity: 1
+        background-color: var(--background-color)
     > #ConditionTogoKey
       > .inner
         > select

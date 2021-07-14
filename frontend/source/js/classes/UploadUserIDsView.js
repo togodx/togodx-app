@@ -9,9 +9,8 @@ export default class UploadUserIDsView {
   #BODY;
   #USER_IDS;
 
-  constructor(elm, path) {
+  constructor(elm) {
 
-    this.#path = path;
     this.#BODY = document.querySelector('body');
     this.#USER_IDS = elm.querySelector(':scope > textarea');
 
@@ -35,10 +34,24 @@ export default class UploadUserIDsView {
     // this.#USER_IDS.addEventListener('keyup', e => {
     //   if (e.keyCode === 13) this.#fetch();
     // });
+    // DefaultEventEmitter.addEventListener(event.restoreParameters, this.#restoreParameters.bind(this));
+    DefaultEventEmitter.addEventListener(event.clearCondition, this.#clear.bind(this));
 
   }
 
+
+  // public methods
+  
+  definePath(path) {
+    this.#path = path;
+  }
+
+
   // private methods
+
+  // #restoreParameters({detail}) {
+  //   this.#USER_IDS.value = detail.userIds;
+  // }
 
   #fetch() {
     if (this.#USER_IDS.value === '') return;
@@ -67,6 +80,7 @@ export default class UploadUserIDsView {
 
   #clear() {
     this.#BODY.classList.remove('-showuserids');
+    this.#USER_IDS.value = '';
     const customEvent = new CustomEvent(event.clearUserValues);
     DefaultEventEmitter.dispatchEvent(customEvent);
   }

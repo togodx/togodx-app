@@ -1,4 +1,6 @@
+@charset "UTF-8";
 @import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700,900");
+@import url("https://fonts.googleapis.com/css2?family=Material+Icons");
 @import url("https://fonts.googleapis.com/css2?family=Material+Icons+Outlined");
 /*!
  * Bootstrap Reboot v4.6.0 (https://getbootstrap.com/)
@@ -366,6 +368,7 @@ template {
   --z-track-balloon: 9;
   --z-modal-window-backdrop: 10;
   --z-modal-window: 11;
+  --z-app-loading-view: 12;
   --shadow-shallow: 0 .1rem .1rem rgba(0,0,0,.3);
   --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3);
   --opacity-disabled: .4;
@@ -449,8 +452,8 @@ main {
   -webkit-filter: drop-shadow(var(--shadow-normal));
           filter: drop-shadow(var(--shadow-normal));
   z-index: var(--z-track-balloon);
-  -webkit-transform: translate(-50%, calc(-100% + -5px));
-          transform: translate(-50%, calc(-100% + -5px));
+  -webkit-transform: translate(-50%, calc(-100% + -.5rem));
+          transform: translate(-50%, calc(-100% + -.5rem));
   pointer-events: none;
   border-radius: 0.2rem;
 }
@@ -469,8 +472,8 @@ main {
   height: 0;
 }
 .balloon-view.-below {
-  -webkit-transform: translate(-50%, calc(100% - 14px));
-          transform: translate(-50%, calc(100% - 14px));
+  -webkit-transform: translate(-50%, 0.7rem);
+          transform: translate(-50%, 0.7rem);
 }
 .balloon-view.-below::before {
   top: -1.4rem;
@@ -494,6 +497,7 @@ main {
 .balloon-view > .container > dl > dt {
   -webkit-flex-grow: 1;
           flex-grow: 1;
+  font-weight: lighter;
 }
 .balloon-view > .container > dl > dd {
   margin: 0;
@@ -676,6 +680,29 @@ main {
           flex-grow: 1;
   text-align: right;
 }
+.column-selector-view > .columns > .inner > .column > .item > .pin {
+  padding-left: 1rem;
+  display: none;
+}
+.column-selector-view > .columns > .inner > .column > .item > .pin > .material-icons {
+  font-size: 1.2rem;
+  vertical-align: middle;
+  position: relative;
+  top: -0.1rem;
+}
+.column-selector-view > .columns > .inner > .column > .item > .pin > .value > small {
+  font-size: 1rem;
+  font-weight: lighter;
+}
+body.-showuserids .column-selector-view > .columns > .inner > .column > .item {
+  opacity: 0.25;
+}
+body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-pinsticking {
+  opacity: 1;
+}
+body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-pinsticking > .pin {
+  display: inline;
+}
 .column-selector-view > .loading-view {
   background-color: rgba(204, 204, 204, 0.5);
 }
@@ -806,6 +833,7 @@ main {
   height: 100%;
   top: 0;
   left: 0;
+  background-color: transparent;
   opacity: 0;
   pointer-events: none;
   transition: background var(--transition-wipe), opacity var(--transition-wipe);
@@ -826,6 +854,7 @@ main {
   top: calc(50% - .8rem);
 }
 .loading-view.-shown {
+  background-color: var(--color-translucent-lamp-black3);
   opacity: 1;
   pointer-events: auto;
 }
@@ -855,7 +884,7 @@ main {
             transform: rotate(360deg);
   }
 }
-.report-page-button-view {
+.external-link-button-view {
   display: inline-block;
   background-color: var(--color-lamp-black);
   color: white;
@@ -866,16 +895,18 @@ main {
   cursor: pointer;
   white-space: nowrap;
 }
-.report-page-button-view::before {
-  content: "Report";
+.external-link-button-view:hover {
+  color: white;
 }
-.report-page-button-view > .material-icons-outlined {
-  font-size: 1rem;
+.external-link-button-view::after {
+  content: "";
+  font-family: "Material Icons Outlined";
+  font-size: 1em;
   vertical-align: middle;
-  margin-left: 0.3rem;
+  margin-left: 0.3em;
   position: relative;
-  top: -0.1rem;
-  margin-right: -0.1rem;
+  top: -0.1em;
+  margin-right: -0.1em;
 }
 
 .rounded-button-view {
@@ -891,7 +922,8 @@ main {
   cursor: pointer;
 }
 .rounded-button-view:hover {
-  top: 0.1rem;
+  -webkit-transform: translateY(0.1rem);
+          transform: translateY(0.1rem);
 }
 .rounded-button-view.-black {
   background-color: var(--color-lamp-black);
@@ -919,7 +951,7 @@ main {
 .rounded-button-view:disabled:hover {
   top: auto;
 }
-.rounded-button-view > .material-icons-outlined {
+.rounded-button-view > .material-icons, .rounded-button-view > .material-icons-outlined {
   font-size: 1.4rem;
   vertical-align: middle;
   position: relative;
@@ -948,7 +980,6 @@ main {
   padding: 0.6rem 1.4rem 0 0;
   list-style: none;
   font-size: 1rem;
-  font-weight: bold;
   line-height: 1;
   color: var(--color-gray);
 }
@@ -968,6 +999,24 @@ main {
   line-height: 1;
   font-size: 1.4rem;
   font-weight: bold;
+}
+.stacking-condition-view > .labels {
+  margin: 0.2rem 0 0;
+  padding: 0 0 0.1rem;
+  list-style: none;
+}
+.stacking-condition-view > .labels > .label {
+  margin-right: 0.1rem;
+  margin-bottom: 0.1rem;
+  padding: 0 1.4rem 0 0.4rem;
+  display: inline-block;
+  position: relative;
+  white-space: nowrap;
+}
+.stacking-condition-view > .labels > .label > .close-button-view {
+  position: absolute;
+  top: 0.1rem;
+  right: 0.1rem;
 }
 .stacking-condition-view._subject-background-color > .path {
   color: rgba(0, 0, 0, 0.5);
@@ -1059,6 +1108,10 @@ main {
   transition: opacity var(--transition-instant);
   position: relative;
 }
+.table-data-controller-view .material-icons-outlined {
+  font-size: 1.4rem;
+  width: 1.6rem;
+}
 .table-data-controller-view > .close-button-view {
   position: absolute;
   top: 0.4rem;
@@ -1080,9 +1133,6 @@ main {
   color: white;
   background-color: var(--color-lamp-black);
 }
-.table-data-controller-view > .conditions > .condiiton._subject-background-color {
-  color: white;
-}
 .table-data-controller-view > .conditions > .condiiton > p {
   margin-bottom: 0;
   text-overflow: ellipsis;
@@ -1095,6 +1145,12 @@ main {
 .table-data-controller-view > .status {
   padding: 0.3rem 0;
   border-bottom: solid 0.1rem var(--color-separator);
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+          align-items: center;
+  -webkit-justify-content: center;
+          justify-content: center;
 }
 .table-data-controller-view > .status > p {
   margin-bottom: 0;
@@ -1104,6 +1160,9 @@ main {
 .table-data-controller-view > .status > p.-error {
   color: red;
   opacity: 1;
+}
+.table-data-controller-view > .status > .material-icons-outlined {
+  display: none;
 }
 .table-data-controller-view > .indicator {
   padding: 0.4rem 0.4rem;
@@ -1137,19 +1196,16 @@ main {
   display: flex;
   color: white;
 }
-.table-data-controller-view > .controller > [data-button=download-json] {
-  display: none;
+.table-data-controller-view > .controller > [data-button=download-csv], .table-data-controller-view > .controller > [data-button=download-tsv] {
+  display: block;
 }
-.table-data-controller-view > .controller > [data-button=download-json] > a {
+.table-data-controller-view > .controller > [data-button=download-csv] > a, .table-data-controller-view > .controller > [data-button=download-tsv] > a {
   color: white;
   text-decoration: none;
   display: block;
 }
-.table-data-controller-view > .controller > [data-button=download-json] > a > span {
+.table-data-controller-view > .controller > [data-button=download-csv] > a > span, .table-data-controller-view > .controller > [data-button=download-tsv] > a > span {
   vertical-align: middle;
-}
-.table-data-controller-view > .controller > [data-button=download-json] > a > .material-icons-outlined {
-  font-size: 1.4rem;
 }
 .table-data-controller-view > .controller > .button {
   padding: 0.2rem 0;
@@ -1162,23 +1218,12 @@ main {
 .table-data-controller-view > .controller > .button:hover {
   background-color: var(--color-lamp-black);
 }
-[data-display=results] .table-data-controller-view > .controller > .button[data-button=restore] {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-.table-data-controller-view > .controller > .button.none {
-  display: none;
-}
-.table-data-controller-view > .controller > .button > .material-icons-outlined {
+.table-data-controller-view > .controller > .button .material-icons-outlined {
   position: relative;
   top: -0.1rem;
   font-size: 1.4rem;
   vertical-align: middle;
   left: -0.2rem;
-}
-.table-data-controller-view > .controller > .button.-rotating > .material-icons-outlined {
-  -webkit-animation: rotation 3s linear infinite;
-          animation: rotation 3s linear infinite;
 }
 .table-data-controller-view.-current, .table-data-controller-view:hover {
   opacity: 1;
@@ -1193,15 +1238,22 @@ main {
 .table-data-controller-view.-fetching > .status > p {
   opacity: 1;
 }
+.table-data-controller-view.-fetching > .status > .material-icons-outlined {
+  display: block;
+}
+.table-data-controller-view.-fetching > .status > .material-icons-outlined.-rotating {
+  -webkit-animation: rotation 3s linear infinite;
+          animation: rotation 3s linear infinite;
+}
 .table-data-controller-view.-fetching > .indicator > .progress > .bar {
   -webkit-animation: var(--transition-fetching) infinite alternate fetching;
           animation: var(--transition-fetching) infinite alternate fetching;
 }
-.table-data-controller-view.-autoload > .controller > .button[data-button=prepare-data] {
+.table-data-controller-view.-autoload > .controller > .button[data-button=edit] {
   cursor: not-allowed;
   opacity: 0.5;
 }
-.table-data-controller-view[data-status="load ids"] > .controller > .button[data-button=prepare-data] {
+.table-data-controller-view[data-status="load ids"] > .controller > .button[data-button=edit] {
   cursor: not-allowed;
   opacity: 0.5;
 }
@@ -1222,13 +1274,10 @@ main {
   display: -webkit-flex;
   display: flex;
 }
-.table-data-controller-view[data-status=complete] > .controller > [data-button=prepare-data] {
-  display: none;
-}
-.table-data-controller-view[data-status=complete] > .controller > [data-button=download-json] {
+.table-data-controller-view[data-status=complete] > .controller > [data-button=download-json], .table-data-controller-view[data-status=complete] > .controller > [data-button=download-tsv] {
   display: block;
 }
-.table-data-controller-view[data-status=complete] > .controller > .button[data-button=prepare-data] {
+.table-data-controller-view[data-status=complete] > .controller > .button[data-button=edit] {
   cursor: not-allowed;
   opacity: 0.5;
 }
@@ -1310,19 +1359,34 @@ main {
 .track-value-view > .pin {
   position: absolute;
   bottom: 100%;
-  border: solid 1px rgba(255, 255, 255, 0.5);
-  background-color: var(--color-lamp-black);
-  -webkit-transform: translate(-50%, calc(-20% + .4rem)) rotate(45deg) skew(5deg, 5deg);
-          transform: translate(-50%, calc(-20% + .4rem)) rotate(45deg) skew(5deg, 5deg);
-  border-top-left-radius: 50%;
-  border-bottom-left-radius: 50%;
-  border-top-right-radius: 50%;
+  -webkit-transform: translate(-50%, calc(-20% + .4rem));
+          transform: translate(-50%, calc(-20% + .4rem));
   z-index: var(--z-track-pin);
   display: none;
 }
-.track-value-view > .pin:hover {
-  border-color: white;
-  z-index: var(--z-track-pin-hover);
+.track-value-view > .pin > .material-icons {
+  text-shadow: -0.1rem 0 white, 0 0.1rem white, 0.1rem 0 white, 0 -0.1rem white;
+}
+.track-value-view[data-p-value-greater-than="1"] > .pin {
+  opacity: 0.4;
+}
+.track-value-view[data-p-value-greater-than="<1"] > .pin {
+  opacity: 0.5;
+}
+.track-value-view[data-p-value-greater-than="<0.1"] > .pin {
+  opacity: 0.6;
+}
+.track-value-view[data-p-value-greater-than="<0.05"] > .pin {
+  opacity: 0.7;
+}
+.track-value-view[data-p-value-greater-than="<0.01"] > .pin {
+  opacity: 0.8;
+}
+.track-value-view[data-p-value-greater-than="<0.005"] > .pin {
+  opacity: 0.9;
+}
+.track-value-view[data-p-value-greater-than="<0.001"] > .pin {
+  opacity: 1;
 }
 .track-value-view:hover, .track-value-view.-selected {
   background-color: transparent !important;
@@ -1342,12 +1406,14 @@ main {
   z-index: var(--z-track-item-selected-hover);
 }
 .track-value-view:hover > .pin {
+  opacity: 1;
+  border-color: white;
   z-index: var(--z-track-pin-hover);
 }
 .-showuserids .track-value-view:not(.-pinsticking) {
   background-color: var(--color-gray) !important;
 }
-.-showuserids .track-value-view:not(.-pinsticking) > p {
+.-showuserids .track-value-view:not(.-pinsticking) > .labels {
   opacity: 0.25;
 }
 .-showuserids .track-value-view.-pinsticking > .pin {
@@ -1407,6 +1473,7 @@ main {
   left: 0.2rem;
 }
 .track-view > .row.-upper > .left > .collapsebutton > .title {
+  margin: 0;
   width: calc(var(--width-track-column-property) - 1.6rem);
   font-size: 1.4rem;
   font-weight: bold;
@@ -1420,7 +1487,6 @@ main {
 }
 .track-view > .row.-upper > .right > .overview {
   height: var(--height-track);
-  background-color: #EEE;
   list-style: none;
   white-space: nowrap;
   font-size: 0;
@@ -1438,17 +1504,13 @@ main {
   line-height: 3rem;
 }
 .track-view > .row.-lower > .left > .description {
+  margin-bottom: 0.4rem;
   padding: 0 0.8rem;
   line-height: 1.2;
 }
-.track-view > .row.-lower > .left > label {
-  padding-left: 1.6rem;
-  font-weight: bold;
-}
-.track-view > .row.-lower > .left > label > input {
-  vertical-align: middle;
-  -webkit-margin-end: 0.4rem;
-          margin-inline-end: 0.4rem;
+.track-view > .row.-lower > .left > .external-link-button-view {
+  font-size: 1rem;
+  margin-left: 0.8rem;
 }
 .track-view > .row > .selector {
   height: 100%;
@@ -1483,24 +1545,33 @@ body[data-display=results] #App > .inner {
   -webkit-transform: translateX(calc(-100vw + var(--width-condition)));
           transform: translateX(calc(-100vw + var(--width-condition)));
 }
+#App > .loading-view {
+  position: fixed;
+  top: var(--height-header);
+  height: calc(100% - var(--height-header));
+  z-index: var(--z-app-loading-view);
+}
 
 #ConditionBuilder {
   --radius: .4rem;
+  --background-color: #FFFFFFCC;
+  --background-color-inactive: #FFFFFF66;
 }
 #ConditionBuilder > .conditions {
   -webkit-flex-grow: 1;
           flex-grow: 1;
+  padding-bottom: 1rem;
 }
 #ConditionBuilder > .conditions > .condition {
   padding: 0.7rem 0.6rem;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--background-color);
   border-radius: var(--radius);
 }
 #ConditionBuilder > .conditions > .condition + .condition {
   margin-top: 0.4rem;
 }
 #ConditionBuilder > .conditions > .condition > .inner > .title {
-  margin: -0.5rem 0 -0.2rem;
+  margin: -0.2rem 0;
   line-height: 1;
   font-size: 1.2rem;
   display: -webkit-flex;
@@ -1508,7 +1579,7 @@ body[data-display=results] #App > .inner {
   -webkit-align-items: baseline;
           align-items: baseline;
 }
-#ConditionBuilder > .conditions > .condition > .inner > .title > .material-icons-outlined {
+#ConditionBuilder > .conditions > .condition > .inner > .title > .material-icons, #ConditionBuilder > .conditions > .condition > .inner > .title > .material-icons-outlined {
   font-size: 1.4rem;
   vertical-align: middle;
   -webkit-margin-end: 0.3rem;
@@ -1534,17 +1605,19 @@ body[data-display=results] #ConditionBuilder > .conditions > .condition > .condi
 }
 #ConditionBuilder > .conditions > #ConditionKeys, #ConditionBuilder > .conditions > #ConditionValues {
   transition: opacity var(--transition-instant);
-  opacity: var(--opacity-disabled);
+  opacity: 0.8;
+  background-color: var(--background-color-inactive);
   cursor: pointer;
 }
 #ConditionBuilder > .conditions > #ConditionKeys:hover, #ConditionBuilder > .conditions > #ConditionValues:hover {
-  opacity: 1;
+  background-color: var(--background-color);
 }
 #ConditionBuilder > .conditions > #ConditionKeys {
   border-radius: var(--radius) var(--radius) 0 0;
 }
 [data-condition=keys] #ConditionBuilder > .conditions > #ConditionKeys {
   opacity: 1;
+  background-color: var(--background-color);
 }
 #ConditionBuilder > .conditions > #ConditionValues {
   border-radius: 0 0 var(--radius) var(--radius);
@@ -1552,6 +1625,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .condition > .condi
 }
 [data-condition=values] #ConditionBuilder > .conditions > #ConditionValues {
   opacity: 1;
+  background-color: var(--background-color);
 }
 #ConditionBuilder > .conditions > #ConditionTogoKey > .inner > select {
   width: 100%;
@@ -1607,14 +1681,16 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   line-height: 1;
   font-weight: bold;
   color: white;
+  position: relative;
 }
 #FixedArea > div > section > header > .title {
   margin: 0;
   font-size: var(--font-size-title);
 }
-#FixedArea > div > section > footer {
-  -webkit-padding-before: 1rem;
-          padding-block-start: 1rem;
+#FixedArea > div > section > header > .rounded-button-view {
+  position: absolute;
+  top: -0.2rem;
+  right: 0;
 }
 #FixedArea > .upper {
   border-bottom: solid 0.1rem rgba(0, 0, 0, 0.2);
@@ -1715,11 +1791,6 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   display: none;
 }
 
-#Reports > .stanzas {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
-}
-
 #ReportsPageView {
   width: 102.4rem;
   margin: auto;
@@ -1754,6 +1825,9 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   transition: height var(--transition-instant);
 }
 
+#ResultsTable {
+  --thheight: 0.8rem;
+}
 #ResultsTable > .body > table {
   width: 100%;
   height: 100%;
@@ -1779,12 +1853,6 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #ResultsTable > .body > table > thead > tr > th > .inner, #ResultsTable > .body > table > thead > tr td > .inner {
   height: 100%;
 }
-#ResultsTable > .body > table > thead > tr > th > .inner._subject-background-color, #ResultsTable > .body > table > thead > tr td > .inner._subject-background-color {
-  color: white;
-}
-#ResultsTable > .body > table > thead > tr > th > .inner._subject-color, #ResultsTable > .body > table > thead > tr td > .inner._subject-color {
-  background-color: white;
-}
 #ResultsTable > .body > table > thead > tr.header, #ResultsTable > .body > table > thead > tr.subheader {
   font-weight: bold;
   white-space: nowrap;
@@ -1792,7 +1860,6 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #ResultsTable > .body > table > thead > tr.header > th, #ResultsTable > .body > table > thead > tr.subheader > th {
   position: -webkit-sticky;
   position: sticky;
-  top: 0;
   z-index: var(--z-results-header);
   line-height: 1.5rem;
 }
@@ -1802,14 +1869,27 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #ResultsTable > .body > table > thead > tr.header > th > .inner.-noborder, #ResultsTable > .body > table > thead > tr.subheader > th > .inner.-noborder {
   border: none;
 }
-#ResultsTable > .body > table > thead > tr.header > th:first-child > .inner, #ResultsTable > .body > table > thead > tr.subheader > th:first-child > .inner {
+#ResultsTable > .body > table > thead > tr.header.header > th, #ResultsTable > .body > table > thead > tr.subheader.header > th {
+  top: 0;
+}
+#ResultsTable > .body > table > thead > tr.header.header > th:first-child > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:first-child > .inner {
   background-color: var(--color-light-gray);
 }
-#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.subheader > th:nth-child(2) > .inner {
+#ResultsTable > .body > table > thead > tr.header.header > th:nth-child(1) > .inner, #ResultsTable > .body > table > thead > tr.header.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(1) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(2) > .inner {
+  height: calc(var(--thheight) * 4);
+  padding-top: calc(var(--thheight) * 0.5 + var(--padding-track-block-start));
+}
+#ResultsTable > .body > table > thead > tr.header.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.header.header > th:nth-child(3) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(3) > .inner {
   background-color: var(--color-lamp-black);
 }
-#ResultsTable > .body > table > thead > tr.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader > th:nth-child(2) > .inner > .togo-key-view {
+#ResultsTable > .body > table > thead > tr.header.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.header.header > th:nth-child(3) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(3) > .inner > .togo-key-view {
   background-color: var(--color-dark-gray);
+}
+#ResultsTable > .body > table > thead > tr.header.subheader > th, #ResultsTable > .body > table > thead > tr.subheader.subheader > th {
+  top: var(--thheight);
+}
+#ResultsTable > .body > table > thead > tr.header.subheader > th > .inner._subject-color, #ResultsTable > .body > table > thead > tr.subheader.subheader > th > .inner._subject-color {
+  background-color: white;
 }
 #ResultsTable > .body > table > thead > tr.statistics > td > .inner {
   background-color: white;
@@ -1903,6 +1983,7 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   border-radius: 0.4rem;
 }
 #ResultDetailModal.backdrop > .popup > header {
+  cursor: pointer;
   display: -webkit-flex;
   display: flex;
   -webkit-justify-content: space-between;
@@ -1948,7 +2029,6 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   display: -webkit-flex;
   display: flex;
   overflow: hidden;
-  cursor: pointer;
   position: relative;
 }
 #ResultDetailModal.backdrop > .popup > .container > .arrow {
@@ -2032,6 +2112,18 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 
 #UploadUserIDsView > textarea {
   width: 100%;
+}
+#UploadUserIDsView > textarea::-webkit-input-placeholder {
+  color: gray;
+}
+#UploadUserIDsView > textarea::-moz-placeholder {
+  color: gray;
+}
+#UploadUserIDsView > textarea:-ms-input-placeholder {
+  color: gray;
+}
+#UploadUserIDsView > textarea::placeholder {
+  color: gray;
 }
 #UploadUserIDsView > .buttons {
   margin-top: -0.2rem;

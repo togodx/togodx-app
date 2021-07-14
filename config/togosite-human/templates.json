@@ -1,7 +1,8 @@
 {
   "stanzas": [
     "https://togostanza.github.io/metastanza/hash-table.js",
-    "https://togostanza.github.io/metastanza/barchart.js"
+    "https://togostanza.github.io/metastanza/barchart.js",
+    "https://togostanza.github.io/metastanza/pagination-table.js"
   ],
   "templates": {
     "variant": "https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates/variant.hbs",

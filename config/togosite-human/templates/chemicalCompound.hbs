@@ -1,11 +1,9 @@
-<div id="metastanza-chemicalCompound">
-  <h1>Chemical compound: {{type}}: {{id}}</h1>
-</div>
+<div id="metastanza-chemicalCompound"></div>
 <script>
   (() => {
     // togoid endpoint
     const togoidAPIURL = 'https://api.togoid.dbcls.jp.il3c.com';
-    const dataUrlEndpoint = 'https://integbio.jp/togosite/sparqlist/api/test_chemical_details5';
+    const dataUrlEndpoint = 'https://integbio.jp/togosite/sparqlist/api/metastanza_compound';
     const idTypes = ['pubchem_compound', 'chembl_compound', 'chebi'];
 
     // embed the id and id type via handlebars variable
@@ -66,11 +64,25 @@
       'chebi': 'ChEBI'
     };
 
-    const addHeader = (id, type) => {
+    const addHeader = async (id, type, selected = false) => {
       const header = document.createElement('h2');
-      const headerText = document.createTextNode(titleDict[type] + ': ' + id);
+
+      const code = document.createElement('code');
+      const codeLabel = document.createTextNode(titleDict[type] + ': ' + id);
+      code.appendChild(codeLabel);
+
+      const headerText = (() => {
+        if (selected) {
+          return document.createTextNode('Selected Key ');
+        } else {
+          return '';
+        }
+      })();
+
       header.appendChild(headerText);
-      metastanzaDiv.appendChild(header);
+      header.appendChild(code);
+
+      return header;
     }
 
     const generateColumnSetting = async (id, type) => {
@@ -99,12 +111,20 @@
       console.log(hashTable);
     }
 
+    const addMainHeader = () => {
+      const header = document.createElement('h1');
+      const headerText = document.createTextNode('Chemical Compound');
+      header.appendChild(headerText);
+      metastanzaDiv.appendChild(header);
+    }
+
     const addMainSubject = () => {
-      addHeader(subjectId, subjectIdType);
+      addHeader(subjectId, subjectIdType, true);
       addHashTable(subjectId, subjectIdType);
     }
 
     const createMetastanza = async () => {
+      addMainHeader();
       addMainSubject();
 
       const array = await convertId(subjectId, subjectIdType);

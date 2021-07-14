@@ -210,26 +210,23 @@ block main
 
       .upper
 
-        section#ConditionBuilder(data-hidden-by="results")
+        section#ConditionBuilder
 
-          header
-            //- nav.tabmenu(data-hidden-by="results")
-            //-   .item.-current Condition
-            //-   .item Relations
-            //- h2.title(data-hidden-by="properties") Results
+          header(data-hidden-by="results")
             h2.title Condition builder
-          .conditions
+            button.rounded-button-view.-verysmall.-outline(type="button") Clear
+          .conditions(data-hidden-by="results")
             #ConditionTogoKey.condition
               .inner
                 h2.title
-                  span.material-icons-outlined layers
+                  span.material-icons layers
                   | Select target category
                 select(disabled)
                   //- option(val="gene") Gene
               hr
               #UploadUserIDsView.inner
                 h2.title
-                  span.material-icons-outlined file_upload
+                  span.material-icons location_on
                   | Map your IDs
                   small optional
                 textarea(type="text" placeholder="Enter IDs")
@@ -240,7 +237,7 @@ block main
             #ConditionKeys.condition
               .inner
                 h2.title
-                  span.material-icons-outlined filter_alt
+                  span.material-icons filter_alt
                   | Add filters
                 .conditions.-empty
                 //-
@@ -254,7 +251,7 @@ block main
             #ConditionValues.condition
               .inner
                 h2.title
-                  span.material-icons-outlined insights
+                  span.material-icons insights
                   | Map attributes
                 .conditions.-empty
                 //-
@@ -265,19 +262,11 @@ block main
                     .label Testis
               
           footer
-            button.exec.rounded-button-view.-black.-spread(disabled)
-              span.material-icons-outlined table_view
+            button.exec.rounded-button-view.-black.-spread(data-hidden-by="results" disabled)
+              span.material-icons table_view
               | View results
-
-        section#Reports(data-hidden-by="properties")
-          header
-            h2.title Reports
-
-          .stanzas
-
-          footer
-            button.return.rounded-button-view.-black.-spread
-              span.material-icons-outlined keyboard_return
+            button.return.rounded-button-view.-black.-spread(data-hidden-by="properties")
+              span.material-icons keyboard_return
               | Return
 
       .lower
@@ -286,3 +275,5 @@ block main
           header
             h2.title Saved Conditions
           .conditions
+
+    .loading-view.-shown

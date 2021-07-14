@@ -68,6 +68,7 @@ export default class ResultDetailModal {
   }
   // HTML elements
   #popup(detail) {
+    this.#ROOT.dataset.subjectId = detail.keys.subjectId;
     const popup = document.createElement('div');
     popup.className = 'popup';
     popup.style.left = this.#popup_left;
@@ -99,11 +100,11 @@ export default class ResultDetailModal {
         ${path}
       </div>
       <div>
-        <a class='report-page-button-view' href='${
+        <a class='external-link-button-view' href='${
           props.reportLink
-        }' target='_blank'><span class='material-icons-outlined'>open_in_new</span></a>
+        }' target='_blank'>Report</a>
     `;
-    header.style.backgroundColor = subject.colorCSSValue;
+    header.classList.add('_subject-background-color');
     header.lastChild.appendChild(this.#exit_button);
     header.addEventListener('mousedown', e => {
       const customEvent = new CustomEvent(event.dragElement, {
@@ -137,7 +138,11 @@ export default class ResultDetailModal {
     const stanzas = document.createElement('div');
     stanzas.className = 'stanzas';
     stanzas.innerHTML += StanzaManager.draw(subjectId, uniqueEntryId, dataKey);
-
+    stanzas.querySelectorAll('script').forEach(scriptElement => {
+      const _script = document.createElement('script');
+      _script.textContent = scriptElement.textContent;
+      scriptElement.replaceWith(_script);
+    });
     return stanzas;
   }
 
@@ -214,7 +219,7 @@ export default class ResultDetailModal {
       const targetEntry = this.#getTargetEntry(movement);
       const targetTr = targetEntry.closest('tr');
       const reportLink = targetTr.querySelector(
-        ':scope > th > .inner > .report-page-button-view'
+        ':scope > th > .inner > .external-link-button-view'
       ).href;
 
       targetEntry.scrollIntoView({block: 'center'});

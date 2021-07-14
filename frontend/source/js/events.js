@@ -13,6 +13,8 @@ export const mutatePropertyCondition = 'mutatePropertyCondition';
 export const mutatePropertyValueCondition = 'mutatePropertyValueCondition';
 export const mutateEstablishConditions = 'mutateEstablishConditions';
 export const completeQueryParameter = 'completeQueryParameter';
+export const restoreParameters = 'restoreParameters';
+export const clearCondition = 'clearCondition';
 
 // Stanza
 export const hideStanza = 'hideStanza';
