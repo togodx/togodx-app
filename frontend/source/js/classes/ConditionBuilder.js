@@ -41,7 +41,7 @@ class ConditionBuilder {
 
   setUserIds(ids) {
     console.log('setUserIds', ids)
-    this.#userIds = ids;
+    this.#userIds = ids.replace(/,/g," ").split(/\s+/).join(',');
     // post processing (permalink, evaluate)
     this.#postProcessing();
   }
@@ -251,9 +251,9 @@ class ConditionBuilder {
     // generate permalink
     const params = new URL(location).searchParams;
     params.set('togoKey', this.#togoKey);
-    params.set('userIds', this.userIds ? this.userIds : '');
-    params.set('keys', encodeURIComponent(JSON.stringify(keys)));
-    params.set('values', encodeURIComponent(JSON.stringify(values)));
+    // params.set('userIds', this.userIds ? this.userIds : '');
+    params.set('keys', JSON.stringify(keys));
+    params.set('values', JSON.stringify(values));
     if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
 
   }
@@ -264,10 +264,11 @@ class ConditionBuilder {
     const params = new URL(location).searchParams;
     const condition = {
       togoKey: params.get('togoKey'),
-      userIds: params.get('userIds'),
-      keys: JSON.parse(decodeURIComponent(params.get('keys'))) ?? [],
-      values: JSON.parse(decodeURIComponent(params.get('values'))) ?? []
+      // userIds: (params.get('userIds') ?? '').split(',').filter(id => id !== ''),
+      keys: JSON.parse(params.get('keys')) ?? [],
+      values: JSON.parse(params.get('values')) ?? []
     }
+    console.log(condition)
 
     if (isFirst) {
       // get child category ids
@@ -328,6 +329,7 @@ class ConditionBuilder {
 
     // restore conditions
     this.#togoKey = togoKey;
+    // this.#userIds = userIds;
     const [properties, attributes] = this.#getCondtionsFromHierarchicConditions(keys, values);
     console.log(properties, attributes)
     this.setProperties(properties, false);
@@ -340,7 +342,7 @@ class ConditionBuilder {
     this.finish(false);
 
     // dispatch event
-    const customEvent = new CustomEvent(event.restoreParameters, {detail: {togoKey, userIds, keys, values}});
+    const customEvent = new CustomEvent(event.restoreParameters, {detail: {togoKey, keys, values}});
     DefaultEventEmitter.dispatchEvent(customEvent);
 
   }

@@ -4,7 +4,7 @@
   background-color: white
   filter: drop-shadow(var(--shadow-normal))
   z-index: var(--z-track-balloon)
-  transform: translate(-50%, calc(-100% + -5px))
+  transform: translate(-50%, calc(-100% + -.5rem))
   pointer-events: none
   border-radius: .2rem
   &.-showing
@@ -20,7 +20,7 @@
     width: 0
     height: 0
   &.-below
-    transform: translate(-50%, calc(100% - 14px))
+    transform: translate(-50%, .7rem)
     &::before
       top: -1.4rem
       border-top-color: transparent

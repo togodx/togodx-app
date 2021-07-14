@@ -5,7 +5,7 @@ import * as event from '../events';
 import * as util from '../functions/util';
 
 const MIN_PIN_SIZE = 12;
-const MAX_PIN_SIZE = 36;
+const MAX_PIN_SIZE = 24;
 const RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
 
 export default class TrackOverviewCategorical {
@@ -41,7 +41,9 @@ export default class TrackOverviewCategorical {
               <span class="count">${value.count.toLocaleString()}</span>
             </p>
           </div>
-          <div class="pin"></div>
+          <div class="pin">
+            <span class="material-icons">location_on</span>
+          </div>
         </li>`;
     }).join('');
 
@@ -50,53 +52,37 @@ export default class TrackOverviewCategorical {
       // reference
       const value = this.#values[index];
       value.elm = elm;
-      const pin = elm.querySelector(':scope > .pin');
-      value.pin = pin;
+      value.pin = elm.querySelector(':scope > .pin');
+      value.icon = value.pin.querySelector(':scope > .material-icons');
 
       // attach event: show tooltip
       const label = `<span class="_subject-color" data-subject-id="${this.#subject.subjectId}">${value.label}</span>`;
       elm.addEventListener('mouseenter', () => {
-        const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {
-          label,
-          values: [
-            {
-              key: 'Count',
-              value: value.count.toLocaleString()
-            }
-          ],
-          elm
-        }});
+        const values = [];
+        const userValue = this.#userValues?.find(userValue => userValue.categoryId === value.categoryId);
+        if (userValue) {
+          // does not have user value
+          values.push({
+            key: 'Count',
+            value: `${value.userValueCount.toLocaleString()} / ${value.count.toLocaleString()}`
+          });
+          if (userValue?.pValue) {
+            values.push({
+              key: 'P-value',
+              value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(3)
+            });
+          }
+        } else {
+          // has user value
+          values.push({
+            key: 'Count',
+            value: value.count.toLocaleString()
+          });
+        }
+        const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {label, values, elm}});
         DefaultEventEmitter.dispatchEvent(customEvent);
       });
       elm.addEventListener('mouseleave', () => {
-        const customEvent = new CustomEvent(event.leavePropertyValueItemView);
-        DefaultEventEmitter.dispatchEvent(customEvent);
-      });
-
-      // attach event: show tooltip of pin
-      pin.addEventListener('mouseenter', e => {
-        e.stopPropagation();
-        const values = [
-          {
-            key: 'Count',
-            value: `${value.userValueCount.toLocaleString()} / ${value.count.toLocaleString()}`
-          }
-        ];
-        const userValue = this.#userValues.find(userValue => userValue.categoryId === value.categoryId);
-        if (userValue) {
-          values.push({
-            key: 'P-value',
-            value: userValue.pValue.toExponential()
-          });
-        }
-        const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {
-          label,
-          values,
-          elm: pin
-        }});
-        DefaultEventEmitter.dispatchEvent(customEvent);
-      });
-      pin.addEventListener('mouseleave', () => {
         const customEvent = new CustomEvent(event.leavePropertyValueItemView);
         DefaultEventEmitter.dispatchEvent(customEvent);
       });
@@ -117,11 +103,11 @@ export default class TrackOverviewCategorical {
     });
 
     // event listener
-    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, e => {
-      if (this.#property.propertyId === e.detail.propertyId) {
+    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail: {action, propertyId, categoryId}}) => {
+      if (this.#property.propertyId === propertyId) {
         this.#values.forEach(value => {
-          if (value.categoryId === e.detail.categoryId) {
-            switch (e.detail.action) {
+          if (value.categoryId === categoryId) {
+            switch (action) {
               case 'add':
                 value.elm.classList.add('-selected');
                 break;
@@ -166,11 +152,11 @@ export default class TrackOverviewCategorical {
       this.#userValues = detail.values;
 
       // calculate min value
-      let maxPValue;
-      if (detail.values[0]?.pValue) {
-        const minPValue = Math.min(...detail.values.map(value => value.pValue));
-        maxPValue = 1 - Math.log10(minPValue);
-      }
+      // let maxPValue;
+      // if (detail.values[0]?.pValue) {
+      //   const minPValue = Math.min(...detail.values.map(value => value.pValue));
+      //   maxPValue = 1 - Math.log10(minPValue);
+      // }
 
       // mapping
       this.#values.forEach(value => {
@@ -178,18 +164,42 @@ export default class TrackOverviewCategorical {
         if (userValue) {
           value.elm.classList.add('-pinsticking');
           // pin
-          let ratio;
+          let ratio, pValueGreaterThan = 1;
+          ratio = userValue.count / value.count;
+          ratio = ratio > 1 ? 1 : ratio;
           if (userValue.pValue) {
-            ratio = (1 - Math.log10(userValue.pValue)) / maxPValue;
-            // value.pValue = userValue.pValue;
+            // ratio = (1 - Math.log10(userValue.pValue)) / maxPValue;
+            switch (true) {
+              case userValue.pValue < 0.001:
+                pValueGreaterThan = '<0.001';
+                break;
+              case userValue.pValue < 0.005:
+                pValueGreaterThan = '<0.005';
+                break;
+              case userValue.pValue < 0.01:
+                pValueGreaterThan = '<0.01';
+                break;
+              case userValue.pValue < 0.05:
+                pValueGreaterThan = '<0.05';
+                break;
+              case userValue.pValue < 0.1:
+                pValueGreaterThan = '<0.1';
+                break;
+              case userValue.pValue < 1:
+                pValueGreaterThan = '<1';
+                break;
+            }
           } else {
-            ratio = userValue.count / value.count;
-            ratio = ratio > 1 ? 1 : ratio;
+            // ratio = userValue.count / value.count;
+            // ratio = ratio > 1 ? 1 : ratio;
+            pValueGreaterThan = 1;
           }
           const size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
+          value.icon.style.fontSize = size + 'px';
           value.userValueCount =  userValue.count;
+          value.elm.dataset.pValueGreaterThan = pValueGreaterThan;
         } else {
           value.elm.classList.remove('-pinsticking');
         }
@@ -199,6 +209,7 @@ export default class TrackOverviewCategorical {
 
   #clearUserIdValues() {
     this.#values.forEach(value => value.elm.classList.remove('-pinsticking'));
+    this.#userValues = undefined;
   }
 
 }

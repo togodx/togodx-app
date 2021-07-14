@@ -72,5 +72,24 @@
             padding-left: 1.2rem
             flex-grow: 1
             text-align: right
+          > .pin
+            padding-left: 1rem
+            display: none
+            > .material-icons
+              font-size: 1.2rem
+              vertical-align: middle
+              position: relative
+              top: -.1rem
+            > .value
+              > small
+                font-size: 1rem
+                font-weight: lighter
+          body.-showuserids &
+            opacity: .25
+            &.-pinsticking
+              opacity: 1
+              > .pin
+                display: inline
   > .loading-view
     background-color: rgba(#CCC, .5)
+
