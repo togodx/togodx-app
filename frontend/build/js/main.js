@@ -6175,6 +6175,35 @@
   };
 
   var LIMIT = 100;
+  var downloadUrls = new Map();
+  /**
+   * @typedef {Object} Mode
+   * @property {string} label
+   * @property {string} icon
+   * @property {string} dataButton
+   */
+
+  var dataButtonModes = new Map([['edit', {
+    label: 'Edit',
+    icon: 'edit',
+    dataButton: 'edit'
+  }], ['resume', {
+    label: 'Resume',
+    icon: 'play_arrow',
+    dataButton: 'resume'
+  }], ['pause', {
+    label: 'Pause',
+    icon: 'pause',
+    dataButton: 'pause'
+  }], ['tsv', {
+    label: 'TSV',
+    icon: 'download',
+    dataButton: 'download-tsv'
+  }], ['csv', {
+    label: 'CSV',
+    icon: 'download',
+    dataButton: 'download-csv'
+  }]]);
 
   var _condition = new WeakMap();
 
@@ -6202,25 +6231,37 @@
 
   var _INDICATOR_BAR = new WeakMap();
 
-  var _BUTTON_PREPARE_DATA = new WeakMap();
+  var _CONTROLLER = new WeakMap();
 
-  var _BUTTON_DOWNLOAD_JSON = new WeakMap();
+  var _BUTTON_LEFT = new WeakMap();
 
-  var _BUTTON_DOWNLOAD_TSV = new WeakMap();
+  var _BUTTON_RIGHT = new WeakMap();
+
+  var _deleteCondition = new WeakSet();
 
   var _getQueryIds = new WeakSet();
+
+  var _makeDataButton = new WeakSet();
+
+  var _updateDataButton = new WeakSet();
+
+  var _dataButtonPauseOrResume = new WeakSet();
+
+  var _dataButtonEdit = new WeakSet();
+
+  var _dataButtonEvent = new WeakSet();
+
+  var _setDownloadButtons = new WeakSet();
+
+  var _setCsvUrl = new WeakSet();
+
+  var _setTsvUrl = new WeakSet();
 
   var _getProperties = new WeakSet();
 
   var _updateRemainingTime = new WeakSet();
 
-  var _autoLoad = new WeakSet();
-
   var _complete = new WeakSet();
-
-  var _setJsonUrl = new WeakSet();
-
-  var _setTsvUrl = new WeakSet();
 
   var TableData = /*#__PURE__*/function () {
     function TableData(condition, elm) {
@@ -6228,19 +6269,31 @@
 
       _classCallCheck(this, TableData);
 
-      _setTsvUrl.add(this);
-
-      _setJsonUrl.add(this);
-
       _complete.add(this);
-
-      _autoLoad.add(this);
 
       _updateRemainingTime.add(this);
 
       _getProperties.add(this);
 
+      _setTsvUrl.add(this);
+
+      _setCsvUrl.add(this);
+
+      _setDownloadButtons.add(this);
+
+      _dataButtonEvent.add(this);
+
+      _dataButtonEdit.add(this);
+
+      _dataButtonPauseOrResume.add(this);
+
+      _updateDataButton.add(this);
+
+      _makeDataButton.add(this);
+
       _getQueryIds.add(this);
+
+      _deleteCondition.add(this);
 
       _condition.set(this, {
         writable: true,
@@ -6307,23 +6360,22 @@
         value: void 0
       });
 
-      _BUTTON_PREPARE_DATA.set(this, {
+      _CONTROLLER.set(this, {
         writable: true,
         value: void 0
       });
 
-      _BUTTON_DOWNLOAD_JSON.set(this, {
+      _BUTTON_LEFT.set(this, {
         writable: true,
         value: void 0
       });
 
-      _BUTTON_DOWNLOAD_TSV.set(this, {
+      _BUTTON_RIGHT.set(this, {
         writable: true,
         value: void 0
       });
 
-      console.log(condition);
-
+      // console.log(condition);
       _classPrivateFieldSet(this, _isAutoLoad, false);
 
       _classPrivateFieldSet(this, _isCompleted, false);
@@ -6348,7 +6400,7 @@
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         var label = property.parentCategoryId ? Records$1.getValue(property.query.propertyId, property.parentCategoryId).label : property.property.label;
         return "<div class=\"condiiton _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n          <p title=\"").concat(label, "\">").concat(label, "</p>\n        </div>");
-      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button none\" data-button=\"download-json\">\n        <a class=\"json\">\n          <span class=\"material-icons-outlined\">download json</span>\n          <span class=\"label\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button none\" data-button=\"download-tsv\">\n        <a class=\"tsv\">\n          <span class=\"material-icons-outlined\">download tsv</span>\n          <span class=\"label\">TSV</span>\n        </a>\n      </div>\n      <div class=\"button -rotating\" data-button=\"prepare-data\">\n        <span class=\"material-icons-outlined\">autorenew</span>\n        <span class=\"label\">Pause</span>\n      </div>\n      <div class=\"button\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">edit</span>\n        <span class=\"label\">Edit</span>\n      </div>\n    </div>\n    "); // reference　
+      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting ID list</p>\n      <span class=\"material-icons-outlined -rotating\">autorenew</span>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n\n    </div>\n    "); // reference
 
       _classPrivateFieldSet(this, _ROOT, elm);
 
@@ -6362,87 +6414,27 @@
 
       _classPrivateFieldSet(this, _INDICATOR_BAR, INDICATOR.querySelector(':scope > .progress > .bar'));
 
-      var BUTTONS = _toConsumableArray(elm.querySelectorAll(':scope > .controller > .button'));
+      _classPrivateFieldSet(this, _CONTROLLER, elm.querySelector(':scope > .controller'));
 
-      _classPrivateFieldSet(this, _BUTTON_PREPARE_DATA, BUTTONS.find(function (button) {
-        return button.dataset.button === 'prepare-data';
-      }));
+      _classPrivateFieldGet(this, _CONTROLLER).appendChild(_classPrivateMethodGet(this, _makeDataButton, _makeDataButton2).call(this, 'left'));
 
-      _classPrivateFieldSet(this, _BUTTON_DOWNLOAD_JSON, BUTTONS.find(function (button) {
-        return button.dataset.button === 'download-json';
-      }));
+      _classPrivateFieldGet(this, _CONTROLLER).appendChild(_classPrivateMethodGet(this, _makeDataButton, _makeDataButton2).call(this, 'right', dataButtonModes.get('edit')));
 
-      _classPrivateFieldSet(this, _BUTTON_DOWNLOAD_TSV, BUTTONS.find(function (button) {
-        return button.dataset.button === 'download-tsv';
-      })); // events
+      _classPrivateFieldSet(this, _BUTTON_LEFT, elm.querySelector(':scope > .controller > .button.left'));
+
+      _classPrivateFieldSet(this, _BUTTON_RIGHT, elm.querySelector(':scope > .controller > .button.right')); // events
 
 
       elm.addEventListener('click', function () {
         if (elm.classList.contains('-current')) return;
 
         _this.select();
-      });
-
-      _classPrivateFieldGet(this, _BUTTON_PREPARE_DATA).addEventListener('click', function (e) {
-        e.stopPropagation();
-
-        if (_classPrivateFieldGet(_this, _isAutoLoad) === false) {
-          _classPrivateMethodGet(_this, _autoLoad, _autoLoad2).call(_this);
-
-          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DATA).classList.add('-rotating');
-
-          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DATA).querySelector(':scope > .label').innerHTML = 'Pause';
-        } else {
-          _classPrivateFieldSet(_this, _isAutoLoad, false);
-
-          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DATA).classList.remove('-rotating');
-
-          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DATA).querySelector(':scope > .label').innerHTML = 'Resume';
-        }
       }); // delete
 
-
       _classPrivateFieldGet(this, _ROOT).querySelector(':scope > .close-button-view').addEventListener('click', function (e) {
-        e.stopPropagation();
-        var customEvent = new CustomEvent(deleteTableData, {
-          detail: _this
-        });
-        DefaultEventEmitter$1.dispatchEvent(customEvent); // abort fetch
-
-        _classPrivateFieldGet(_this, _abortController).abort(); // delete element
-
-
-        _classPrivateFieldGet(_this, _ROOT).parentNode.removeChild(_classPrivateFieldGet(_this, _ROOT)); // transition
-
-
-        document.querySelector('body').dataset.display = 'properties';
-      }); // restore
-
-
-      BUTTONS.find(function (button) {
-        return button.dataset.button === 'restore';
-      }).addEventListener('click', function (e) {
-        e.stopPropagation(); // property (attribute)
-
-        ConditionBuilder$1.setProperties(_classPrivateFieldGet(_this, _condition).properties.map(function (property) {
-          return {
-            propertyId: property.query.propertyId,
-            parentCategoryId: property.parentCategoryId
-          };
-        }), false); // attribute (classification/distribution)
-
-        Records$1.properties.forEach(function (_ref) {
-          var propertyId = _ref.propertyId;
-
-          var attribute = _classPrivateFieldGet(_this, _condition).attributes.find(function (attribute) {
-            return attribute.property.propertyId === propertyId;
-          });
-
-          var categoryIds = [];
-          if (attribute) categoryIds.push.apply(categoryIds, _toConsumableArray(attribute.query.categoryIds));
-          ConditionBuilder$1.setPropertyValues(propertyId, categoryIds, false);
-        });
+        _classPrivateMethodGet(_this, _deleteCondition, _deleteCondition2).call(_this, e);
       });
+
       ConditionBuilder$1.finish();
       this.select();
 
@@ -6481,13 +6473,6 @@
       key: "deselect",
       value: function deselect() {
         _classPrivateFieldGet(this, _ROOT).classList.remove('-current');
-      }
-    }, {
-      key: "next",
-      value: function next() {
-        if (_classPrivateFieldGet(this, _isAutoLoad)) return;
-
-        _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
       }
       /* public accessors */
 
@@ -6531,8 +6516,25 @@
     return TableData;
   }();
 
+  function _deleteCondition2(e) {
+    e.stopPropagation();
+    var customEvent = new CustomEvent(deleteTableData, {
+      detail: this
+    });
+    DefaultEventEmitter$1.dispatchEvent(customEvent); // abort fetch
+
+    _classPrivateFieldGet(this, _abortController).abort(); // delete element
+
+
+    _classPrivateFieldGet(this, _ROOT).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT)); // transition
+
+
+    document.querySelector('body').dataset.display = 'properties';
+  }
+
   function _getQueryIds2() {
-    var _this2 = this;
+    var _ConditionBuilder$use,
+        _this2 = this;
 
     // reset
     _classPrivateFieldSet(this, _abortController, new AbortController());
@@ -6541,7 +6543,7 @@
 
     fetch("".concat(App$1.aggregatePrimaryKeys, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
       return property.query;
-    })))).concat(ConditionBuilder$1.userIds ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : ''), {
+    })))).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds))) : ''), {
       signal: _classPrivateFieldGet(this, _abortController).signal
     }).catch(function (error) {
       throw Error(error);
@@ -6557,8 +6559,7 @@
     }).then(function (responce) {
       return responce.json();
     }).then(function (queryIds) {
-      console.log(queryIds);
-
+      // console.log(queryIds);
       _classPrivateFieldSet(_this2, _queryIds, queryIds); // display
 
 
@@ -6581,14 +6582,159 @@
     });
   }
 
-  function _getProperties2() {
+  function _makeDataButton2(className) {
     var _this3 = this;
+
+    var mode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
+    var button = document.createElement('div');
+    button.innerHTML = "\n      <a>\n        <span class=\"material-icons-outlined\"></span>\n        <span class=\"label\"></span>\n      </a>";
+    button.classList.add('button', className);
+    if (mode) _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, button, mode);
+    button.addEventListener('click', function (e) {
+      _classPrivateMethodGet(_this3, _dataButtonEvent, _dataButtonEvent2).call(_this3, e);
+    });
+    return button;
+  }
+
+  function _updateDataButton2(target, mode, urlType) {
+    target.dataset.button = mode.dataButton;
+    var anchor = target.querySelector(':scope > a');
+    anchor.querySelector(':scope > .material-icons-outlined').innerText = mode.icon;
+    anchor.querySelector(':scope > .label').innerText = mode.label;
+
+    if (urlType) {
+      var url = downloadUrls.get(urlType);
+      anchor.setAttribute('href', url);
+      anchor.setAttribute('download', "sample.".concat(urlType));
+    }
+  }
+
+  function _dataButtonPauseOrResume2(e) {
+    e.stopPropagation();
+
+    var span = _classPrivateFieldGet(this, _ROOT).querySelector(':scope > .status > .material-icons-outlined');
+
+    span.classList.toggle('-rotating');
+    var modeToChangeTo = _classPrivateFieldGet(this, _isAutoLoad) ? 'resume' : 'pause';
+
+    _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, e.currentTarget, dataButtonModes.get(modeToChangeTo));
+
+    _classPrivateFieldSet(this, _isAutoLoad, !_classPrivateFieldGet(this, _isAutoLoad));
+
+    if (_classPrivateFieldGet(this, _isAutoLoad)) _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
+  }
+
+  function _dataButtonEdit2(e) {
+    var _this4 = this;
+
+    e.stopPropagation(); // property (attribute)
+
+    ConditionBuilder$1.setProperties(_classPrivateFieldGet(this, _condition).properties.map(function (property) {
+      return {
+        propertyId: property.query.propertyId,
+        parentCategoryId: property.parentCategoryId
+      };
+    }), false); // attribute (classification/distribution)
+
+    Records$1.properties.forEach(function (_ref) {
+      var propertyId = _ref.propertyId;
+
+      var attribute = _classPrivateFieldGet(_this4, _condition).attributes.find(function (attribute) {
+        return attribute.property.propertyId === propertyId;
+      });
+
+      var categoryIds = [];
+      if (attribute) categoryIds.push.apply(categoryIds, _toConsumableArray(attribute.query.categoryIds));
+      ConditionBuilder$1.setPropertyValues(propertyId, categoryIds, false);
+    });
+  }
+
+  function _dataButtonEvent2(e) {
+    var button = e.currentTarget;
+    var mode = button.dataset.button;
+
+    switch (mode) {
+      case 'edit':
+        _classPrivateMethodGet(this, _dataButtonEdit, _dataButtonEdit2).call(this, e);
+
+        break;
+
+      case 'resume':
+      case 'pause':
+        _classPrivateMethodGet(this, _dataButtonPauseOrResume, _dataButtonPauseOrResume2).call(this, e);
+
+        break;
+    }
+  }
+
+  function _setDownloadButtons2() {
+    _classPrivateMethodGet(this, _setTsvUrl, _setTsvUrl2).call(this);
+
+    _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, _classPrivateFieldGet(this, _BUTTON_LEFT), dataButtonModes.get('tsv'), 'tsv');
+
+    _classPrivateMethodGet(this, _setCsvUrl, _setCsvUrl2).call(this);
+
+    var middleButton = _classPrivateMethodGet(this, _makeDataButton, _makeDataButton2).call(this, 'middle', 'csv');
+
+    _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, middleButton, dataButtonModes.get('csv'), 'csv');
+
+    _classPrivateFieldGet(this, _CONTROLLER).insertBefore(middleButton, _classPrivateFieldGet(this, _BUTTON_RIGHT));
+  }
+
+  function _setCsvUrl2() {
+    var jsonBlob = new Blob([JSON.stringify(_classPrivateFieldGet(this, _rows), null, 2)], {
+      type: 'application/json'
+    });
+    var csvUrl = URL.createObjectURL(jsonBlob);
+    downloadUrls.set('csv', csvUrl);
+  }
+
+  function _setTsvUrl2() {
+    var _this5 = this;
+
+    var temporaryArray = [];
+
+    _classPrivateFieldGet(this, _rows).forEach(function (row) {
+      row.properties.forEach(function (property) {
+        property.attributes.forEach(function (attribute) {
+          var singleItem = [_classPrivateFieldGet(_this5, _condition).togoKey, // togoKey
+          row.id, // togoKeyId
+          row.label, // togoKeyLabel
+          property.propertyId, // attribute
+          property.propertyKey, // attributeKey
+          attribute.id, // attributeKeyId
+          attribute.attribute.label // attributeValue
+          ];
+          temporaryArray.push(singleItem);
+        });
+      });
+    });
+
+    var tsvArray = temporaryArray.map(function (item) {
+      return item.join('\t');
+    });
+
+    if (tsvArray.length !== 0) {
+      var tsvHeader = ['togoKey', 'togoKeyId', 'togoKeyLabel', 'attribute', 'attributeKey', 'attributeKeyId', 'attributeValue'];
+      tsvArray.unshift(tsvHeader.join('\t'));
+    }
+
+    var bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+    var tsvBlob = new Blob([bom, tsvArray.join('\n')], {
+      type: 'text/plain'
+    });
+    var tsvUrl = URL.createObjectURL(tsvBlob);
+    downloadUrls.set('tsv', tsvUrl);
+  }
+
+  function _getProperties2() {
+    var _this6 = this;
 
     _classPrivateFieldSet(this, _isAutoLoad, true);
 
     _classPrivateFieldGet(this, _ROOT).classList.add('-fetching');
 
-    _classPrivateFieldGet(this, _STATUS).textContent = 'Getting data';
+    _classPrivateFieldGet(this, _STATUS).textContent = 'Getting Data';
     fetch("".concat(App$1.aggregateRows, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
       return property.query;
     }).concat(_classPrivateFieldGet(this, _condition).properties.map(function (property) {
@@ -6600,38 +6746,38 @@
     }).then(function (rows) {
       var _classPrivateFieldGet2;
 
-      console.log(rows);
+      (_classPrivateFieldGet2 = _classPrivateFieldGet(_this6, _rows)).push.apply(_classPrivateFieldGet2, _toConsumableArray(rows));
 
-      (_classPrivateFieldGet2 = _classPrivateFieldGet(_this3, _rows)).push.apply(_classPrivateFieldGet2, _toConsumableArray(rows));
-
-      _classPrivateFieldSet(_this3, _isCompleted, _this3.offset >= _classPrivateFieldGet(_this3, _queryIds).length); // display
+      _classPrivateFieldSet(_this6, _isCompleted, _this6.offset >= _classPrivateFieldGet(_this6, _queryIds).length); // display
 
 
-      _classPrivateFieldGet(_this3, _ROOT).classList.remove('-fetching');
+      _classPrivateFieldGet(_this6, _ROOT).classList.remove('-fetching');
 
-      _classPrivateFieldGet(_this3, _STATUS).textContent = 'Awaiting';
-      _classPrivateFieldGet(_this3, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this3.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this3, _queryIds).length.toLocaleString());
-      _classPrivateFieldGet(_this3, _INDICATOR_BAR).style.width = "".concat(_this3.offset / _classPrivateFieldGet(_this3, _queryIds).length * 100, "%");
+      _classPrivateFieldGet(_this6, _STATUS).textContent = 'Awaiting';
+      _classPrivateFieldGet(_this6, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this6.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this6, _queryIds).length.toLocaleString());
+      _classPrivateFieldGet(_this6, _INDICATOR_BAR).style.width = "".concat(_this6.offset / _classPrivateFieldGet(_this6, _queryIds).length * 100, "%");
 
-      _classPrivateMethodGet(_this3, _updateRemainingTime, _updateRemainingTime2).call(_this3); // dispatch event
+      _classPrivateMethodGet(_this6, _updateRemainingTime, _updateRemainingTime2).call(_this6); // dispatch event
 
 
       var customEvent = new CustomEvent(addNextRows, {
         detail: {
-          tableData: _this3,
+          tableData: _this6,
           rows: rows,
-          done: _classPrivateFieldGet(_this3, _isCompleted)
+          done: _classPrivateFieldGet(_this6, _isCompleted)
         }
       });
       DefaultEventEmitter$1.dispatchEvent(customEvent); // turn off after finished
 
-      if (_classPrivateFieldGet(_this3, _isCompleted)) {
-        _classPrivateMethodGet(_this3, _complete, _complete2).call(_this3);
-      } else if (_classPrivateFieldGet(_this3, _isAutoLoad)) {
-        _classPrivateMethodGet(_this3, _getProperties, _getProperties2).call(_this3);
+      if (_classPrivateFieldGet(_this6, _isCompleted)) {
+        _classPrivateMethodGet(_this6, _complete, _complete2).call(_this6);
+      } else if (_classPrivateFieldGet(_this6, _isAutoLoad)) {
+        _classPrivateMethodGet(_this6, _updateDataButton, _updateDataButton2).call(_this6, _classPrivateFieldGet(_this6, _BUTTON_LEFT), dataButtonModes.get('pause'));
+
+        _classPrivateMethodGet(_this6, _getProperties, _getProperties2).call(_this6);
       }
     }).catch(function (error) {
-      _classPrivateFieldGet(_this3, _ROOT).classList.remove('-fetching');
+      _classPrivateFieldGet(_this6, _ROOT).classList.remove('-fetching');
 
       console.error(error); // TODO:
     });
@@ -6660,77 +6806,11 @@
     }
   }
 
-  function _autoLoad2() {
-    if (_classPrivateFieldGet(this, _isCompleted)) return;
-
-    _classPrivateFieldSet(this, _isAutoLoad, true);
-
-    _classPrivateFieldGet(this, _ROOT).classList.add('-autoload');
-
-    _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
-  }
-
   function _complete2() {
     _classPrivateFieldGet(this, _ROOT).dataset.status = 'complete';
     _classPrivateFieldGet(this, _STATUS).textContent = 'Complete';
 
-    _classPrivateMethodGet(this, _setJsonUrl, _setJsonUrl2).call(this);
-
-    _classPrivateMethodGet(this, _setTsvUrl, _setTsvUrl2).call(this);
-  }
-
-  function _setJsonUrl2() {
-    var jsonBlob = new Blob([JSON.stringify(_classPrivateFieldGet(this, _rows), null, 2)], {
-      type: 'application/json'
-    });
-    var jsonUrl = URL.createObjectURL(jsonBlob);
-
-    var anchor = _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_JSON).querySelector(':scope > .json');
-
-    anchor.setAttribute('href', jsonUrl);
-    anchor.setAttribute('download', 'sample.json');
-  }
-
-  function _setTsvUrl2() {
-    var _this4 = this;
-
-    var temporaryArray = [];
-
-    _classPrivateFieldGet(this, _rows).forEach(function (row) {
-      row.properties.forEach(function (property) {
-        property.attributes.forEach(function (attribute) {
-          var singleItem = [_classPrivateFieldGet(_this4, _condition).togoKey, // togoKey
-          row.id, // togoKeyId
-          row.label, // togoKeyLabel
-          property.propertyId, // attribute
-          property.propertyKey, // attributeKey
-          attribute.id, // attributeKeyId
-          attribute.attribute.label // attributeValue
-          ];
-          temporaryArray.push(singleItem);
-        });
-      });
-    });
-
-    var tsvArray = temporaryArray.map(function (item) {
-      return item.join('\t');
-    });
-
-    if (tsvArray.length !== 0) {
-      var tsvHeader = ["togoKey", "togoKeyId", "togoKeyLabel", "attribute", "attributeKey", "attributeKeyId", "attributeValue"];
-      tsvArray.unshift(tsvHeader.join('\t'));
-    }
-
-    var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
-    var tsvBlob = new Blob([bom, tsvArray.join('\n')], {
-      type: 'text/plain'
-    });
-    var tsvUrl = URL.createObjectURL(tsvBlob);
-
-    var anchor = _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_TSV).querySelector(':scope > .tsv');
-
-    anchor.setAttribute('href', tsvUrl);
-    anchor.setAttribute('download', 'sample.tsv');
+    _classPrivateMethodGet(this, _setDownloadButtons, _setDownloadButtons2).call(this);
   }
 
   var _tableData = new WeakMap();
