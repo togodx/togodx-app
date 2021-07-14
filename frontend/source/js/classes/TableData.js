@@ -62,7 +62,6 @@ export default class TableData {
   #serializedHeader;
   #queryIds;
   #rows;
-  #CancelToken;
   #source;
   #isAutoLoad;
   #isCompleted;
@@ -77,9 +76,16 @@ export default class TableData {
   #BUTTON_RIGHT;
 
   constructor(condition, elm) {
-    axiosRetry(axios, {retries: 5, retryDelay: axiosRetry.exponentialDelay});
-    this.#CancelToken = axios.CancelToken;
-    this.#source = this.#CancelToken.source();
+    axios.defaults.timeout = 60000;
+    axiosRetry(axios, {
+      retries: 5,
+      shouldResetTimeout: true,
+      retryDelay: axiosRetry.exponentialDelay,
+      retryCondition: _error => true,
+    });
+
+    const CancelToken = axios.CancelToken;
+    this.#source = CancelToken.source();
 
     this.#isAutoLoad = false;
     this.#isCompleted = false;
@@ -194,7 +200,7 @@ export default class TableData {
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
     // abort fetch
-    this.#source.cancel();
+    this.#source.cancel('Operation canceled by the user.');
     // delete element
     this.#ROOT.parentNode.removeChild(this.#ROOT);
     // transition
@@ -374,7 +380,7 @@ export default class TableData {
    */
   #displayError(err) {
     this.#STATUS.classList.add('-error');
-    this.#STATUS.textContent = `${err.request.status} (${err.request.statusText})`;
+    this.#STATUS.textContent = `${err.message} (${err.request.statusText})`;
     const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
       detail: this,
     });
@@ -401,7 +407,6 @@ export default class TableData {
 
   getQueryIds() {
     // reset
-
     // axios
     //   .get('https://bac2021.men.gov.ma/undifined-endpoint')
     //   .then(response => {
@@ -412,11 +417,9 @@ export default class TableData {
     //   });
 
     axios
-      .get(
-        this.#getQueryIdsFetch(),
-        {cancelToken: this.#source.token},
-        {timeout: 20}
-      )
+      .post(this.#getQueryIdsFetch(), {
+        cancelToken: this.#source.token
+      })
       .then(response => {
         console.log(response);
         this.#queryIds = response.data;
@@ -428,7 +431,10 @@ export default class TableData {
         this.#getProperties();
       })
       .catch(error => {
-        if (axios.isCancel) {
+        if (
+          axios.isCancel &&
+          error.message === 'Operation canceled by the user.'
+        ) {
           return;
         }
         console.log(error);
