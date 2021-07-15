@@ -651,10 +651,10 @@
     "subjectId": "variant",
     "properties": [
       {
-        "propertyId": "variant_consequence_togovar",
-        "label": "Consequence",
-        "description": "Classification of variants based on the consequence from TogoVar, such as amino acid substitution or frameshift. Predicted by the Variant Effect Predictor (VEP)",
-        "data": "https://integbio.jp/togosite/sparqlist/api/variant_consequence_togovar",
+        "propertyId": "variant_gwas_togovar",
+        "label": "GWAS",
+        "description": "Classification of statistically significant variants in genome-wide association studies (GWAS) based on associated traits. Obtained from GWAS catalog via TogoVar.",
+        "data": "https://integbio.jp/togosite/sparqlist/api/variant_gwas_togovar",
         "dataSource": "",
         "dataSourceUrl": "",
         "dataSourceVersion": "",
