@@ -26,15 +26,18 @@
           &.-selected
             opacity: 1
             position: relative
-            &::before
-              content: ""
-              position: absolute
-              bottom: -.2rem
-              width: 100%
-              height: calc(var(--height-selector) + .4rem)
-              background-color: var(--color-selected)
-    > .controller
-      cursor: col-resize
+            // &::before
+            //   content: ""
+            //   position: absolute
+            //   bottom: -.2rem
+            //   width: 100%
+            //   height: calc(var(--height-selector) + .4rem)
+            //   background-color: var(--color-selected)
+      > .selectingarea
+        border: solid .1rem var(--color-selected-deep)
+        background-color: var(--color-selected)
+      > .controller
+        cursor: col-resize
   > .histogram
     width: calc(100% - var(--padding-horizontal) * 2)
     height: 18rem

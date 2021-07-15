@@ -1,6 +1,6 @@
 import App from "./App";
-import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import HistogramRangeSelectorController from "./HistogramRangeSelectorController";
 import * as event from '../events';
 import * as util from '../functions/util';
 
@@ -10,22 +10,19 @@ export default class HistogramRangeSelectorView {
 
   #items;
   #property;
-  #selectedBarsStart;
-  #selectedBarsEnd;
+  #selectorController;
   #OVERVIEW_CONTAINER;
   #ROOT;
   #SELECTOR_BARS;
   #GRIDS;
 
-  constructor(elm, subject, property, items, sparqlist, overview) {
+  constructor(elm, subject, property, items, sparqlist, overviewContainer) {
     // console.log(elm, subject, property, items, sparqlist)
 
     this._sparqlist = sparqlist;
     this.#property = property;
-    this.#OVERVIEW_CONTAINER = overview;
+    this.#OVERVIEW_CONTAINER = overviewContainer;
     this.#items = items.map(item => Object.assign({}, item));
-    this.#selectedBarsStart = undefined;
-    this.#selectedBarsEnd = undefined;
 
     // make container
     elm.innerHTML = `
@@ -33,6 +30,7 @@ export default class HistogramRangeSelectorView {
       <div class="selector">
         <div class="inner">
           <div class="overview"></div>
+          <div class="selectingarea"></div>
           <div class="controller"></div>
         </div>
       </div>
@@ -45,7 +43,7 @@ export default class HistogramRangeSelectorView {
       </div>`;
     this.#ROOT = elm.querySelector(':scope > .histogram-range-selector-view');
     const histogram = this.#ROOT.querySelector(':scope > .histogram');
-    const selector = this.#ROOT.querySelector(':scope > .selector > .inner >');
+    const selector = this.#ROOT.querySelector(':scope > .selector > .inner');
     const overview = selector.querySelector(':scope > .overview');
 
     // make graph
@@ -69,67 +67,26 @@ export default class HistogramRangeSelectorView {
     this.#SELECTOR_BARS = Array.from(overview.querySelectorAll(':scope > .bar'));
 
     // event
-    DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update());
+    DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.update());
     
-    this.#setupRangeSelector();
-    this.#update();
+    // this.#setupRangeSelector();
+    this.#selectorController = new HistogramRangeSelectorController(this, this.#ROOT.querySelector(':scope > .selector'));
+    this.update();
   }
 
 
   // private methods
 
-  #setupRangeSelector() {
-    const selectorController = this.#ROOT.querySelector(':scope > .selector > .controller')
+  #indicateValue() {
 
-    let isMouseDown = false, startX, width, unit;
-    selectorController.addEventListener('mousedown', e => {
-      width = e.target.getBoundingClientRect().width;
-      unit = width / this.#items.length;
-      isMouseDown = true;
-      startX = e.layerX;
-    });
-    selectorController.addEventListener('mousemove', e => {
-      if (isMouseDown) {
-        // selection range
-        const selectedWidth = e.layerX - startX;
-        if (selectedWidth > 0) {
-          this.#selectedBarsStart = Math.floor(startX / unit);
-          this.#selectedBarsEnd = Math.floor(e.layerX / unit)
-        } else {
-          this.#selectedBarsStart = Math.floor(e.layerX / unit);
-          this.#selectedBarsEnd = Math.floor(startX / unit)
-        }
-        // select overview by range
-        this.#ROOT.querySelectorAll(':scope > .selector > .overview > .bar').forEach((bar, index) => {
-          if (this.#selectedBarsStart <= index && index <= this.#selectedBarsEnd) {
-            bar.classList.add('-selected');
-          } else {
-            bar.classList.remove('-selected');
-          }
-        });
-        this.#update();
-        // set condition
-        ConditionBuilder.setPropertyValues(
-          this.#property.propertyId,
-          this.#selectedItems.map(item => item.categoryId),
-          false
-        );
-      }
-    });
-    selectorController.addEventListener('mouseup', e => {
-      if (isMouseDown) {
-        isMouseDown = false;
-        ConditionBuilder.setPropertyValues(
-          this.#property.propertyId,
-          this.#selectedItems.map(item => item.categoryId)
-        );
-      }
-    });
   }
 
-  #update() {
 
-    const selectedItems = this.#selectedBarsStart ? this.#selectedItems : this.#items;
+  // public methods
+
+  update() {
+
+    const selectedItems = this.#selectorController.start ? this.#selectorController.selectedItems : this.#items;
 
     const max = Math.max(...selectedItems.map(item => item.count));
     const isLog10 = App.viewModes.log10;
@@ -158,25 +115,15 @@ export default class HistogramRangeSelectorView {
     });
   }
 
-  #indicateValue() {
 
+  // public accessor
+
+  get items() {
+    return this.#items;
   }
 
-  // private accessor
-  get #selectedItems() {
-    let items;
-    if (this.#selectedBarsStart) {
-      items = this.#items.filter((item_, index) => {
-        if (this.#selectedBarsStart <= index && index <= this.#selectedBarsEnd) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-    } else {
-      items = [];
-    }
-    return items;
+  get propertyId() {
+    return this.#property.propertyId;
   }
 
 }
