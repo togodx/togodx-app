@@ -95,7 +95,7 @@ export default class TableData {
     // axios settings
     axios.defaults.timeout = 600000;
     axiosRetry(axios, {
-      retries: 2,
+      retries: 5,
       shouldResetTimeout: true,
       retryDelay: axiosRetry.exponentialDelay,
       retryCondition: error => {
@@ -151,7 +151,7 @@ export default class TableData {
     </div>
     <div class="status">
       <p>Getting ID list</p>
-      <span class="material-icons-outlined">autorenew</span>
+      <span class="material-icons-outlined -rotating">autorenew</span>
     </div>
     <div class="indicator">
       <div class="text">
@@ -205,12 +205,11 @@ export default class TableData {
 
     ConditionBuilder.finish();
     this.select();
-    this.#toggleInProgressDisplay()
+    this.#ROOT.classList.toggle('-fetching');
     this.#getQueryIds();
   }
 
   /* private methods */
-
   #deleteCondition(e) {
     e.stopPropagation();
     const customEvent = new CustomEvent(event.deleteTableData, {
@@ -224,11 +223,10 @@ export default class TableData {
     // transition
     document.querySelector('body').dataset.display = 'properties';
   }
-
   // *** Responsive Buttons based on dataButtonModes ***
   /**
-   * @param {string} className
-   * @param {Mode} mode
+   * @param { string } className
+   * @param { Mode } mode
    */
   #makeDataButton(className, mode = undefined) {
     const button = document.createElement('div');
@@ -240,18 +238,16 @@ export default class TableData {
     button.classList.add('button', className);
 
     if (mode) this.#updateDataButton(button, mode);
-
     button.addEventListener('click', e => {
       this.#dataButtonEvent(e);
     });
 
     return button;
   }
-
   /**
-   * @param {HTMLElement} target
-   * @param {Mode} mode
-   * @param {string} urlType
+   * @param { HTMLElement} target
+   * @param { Mode} mode
+   * @param { string} urlType
    */
   #updateDataButton(target, mode, urlType) {
     target.dataset.button = mode.dataButton;
@@ -267,11 +263,11 @@ export default class TableData {
   }
 
   /**
-   * @param {MouseEvent} e
+   * @param { MouseEvent} e
    */
   #dataButtonPauseOrResume(e) {
     e.stopPropagation();
-    this.#toggleInProgressDisplay();
+    this.#ROOT.classList.toggle('-fetching');
     this.#STATUS.classList.toggle('-flickering');
 
     const modeToChangeTo = this.#isLoading ? 'resume' : 'pause';
@@ -285,15 +281,8 @@ export default class TableData {
     if (this.#isLoading) this.#getProperties();
   }
 
-  #toggleInProgressDisplay() {
-    const iconSpan = this.#ROOT.querySelector(
-      ':scope > .status > .material-icons-outlined'
-    );
-    this.#ROOT.classList.toggle('-fetching');
-    iconSpan.classList.toggle('-rotating');
-  }
   /**
-   * @param {MouseEvent} e
+   * @param { MouseEvent } e
    */
   #dataButtonEdit(e) {
     e.stopPropagation();
@@ -319,8 +308,8 @@ export default class TableData {
   }
 
   #dataButtonRetry() {
-    this.#toggleInProgressDisplay();
     this.#STATUS.classList.remove('-error');
+    this.#ROOT.classList.toggle('-fetching');
     this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('empty'));
 
     if (this.#queryIds.length > 0) {
@@ -332,7 +321,7 @@ export default class TableData {
     this.#getQueryIds();
   }
   /**
-   * @param { mouseEvent } e
+   * @param { MouseEvent } e
    */
   #dataButtonEvent(e) {
     const button = e.currentTarget;
@@ -366,7 +355,7 @@ export default class TableData {
     this.#updateDataButton(middleButton, dataButtonModes.get('json'), 'json');
     this.#CONTROLLER.insertBefore(middleButton, this.#BUTTON_RIGHT);
   }
-  // Setters for downloadUrls
+
   #setJsonUrl() {
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {
       type: 'application/json',
@@ -425,7 +414,7 @@ export default class TableData {
     } else {
       this.#BUTTON_LEFT.remove();
     }
-    errCode = err.response ? err.response.status : err.code;
+    errCode = err.response ? err.response.status : false;
     message = err.response
       ? err.response.statusText
       : err.code === timeOutError
@@ -440,7 +429,7 @@ export default class TableData {
   #displayError(message, code) {
     this.#STATUS.classList.add('-error');
     this.#STATUS.textContent = code ? `${message} (${code})` : message;
-    this.#toggleInProgressDisplay();
+    this.#ROOT.classList.toggle('-fetching');
 
     const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
       detail: this,
@@ -522,6 +511,7 @@ export default class TableData {
         // turn off after finished
         if (this.#isCompleted) {
           this.#complete();
+          return;
         } else if (this.#isLoading) {
           this.#getProperties();
         }
@@ -566,7 +556,7 @@ export default class TableData {
   #complete(withData = true) {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = withData ? 'Complete' : 'No Data found';
-    this.#toggleInProgressDisplay();
+    this.#ROOT.classList.toggle('-fetching');
 
     if (withData) this.#setDownloadButtons();
   }
