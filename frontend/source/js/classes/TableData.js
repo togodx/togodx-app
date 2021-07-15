@@ -8,7 +8,6 @@ import axiosRetry from 'axios-retry';
 const LIMIT = 100;
 const downloadUrls = new Map();
 const timeOutError = 'ECONNABORTED';
-
 /**
  * @typedef {Object} Mode
  * @property {string} label
@@ -64,6 +63,14 @@ const dataButtonModes = new Map([
       dataButton: 'retry',
     },
   ],
+  [
+    'empty',
+    {
+      label: '',
+      icon: '',
+      dataBurron: '',
+    }
+  ]
 ]);
 
 export default class TableData {
@@ -86,17 +93,13 @@ export default class TableData {
 
   constructor(condition, elm) {
     // axios settings
-    axios.defaults.timeout = 60000;
-    // axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-    // axios.defaults.headers['Access-Control-Allow-Methods'] =
-    //   'GET,PUT,POST,DELETE';
-    // axios.defaults.headers['Access-Control-Allow-Headers'] = 'Content-Type';
+    axios.defaults.timeout = 600000;
     axiosRetry(axios, {
       retries: 5,
       shouldResetTimeout: true,
       retryDelay: axiosRetry.exponentialDelay,
       retryCondition: error => {
-        return (error.code === timeOutError) | error.response;
+        return (error.code === timeOutError) | (error.response?.status === 500);
       },
     });
 
@@ -215,7 +218,7 @@ export default class TableData {
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
     // abort fetch
-    this.#source.cancel('Operation canceled by the user.');
+    this.#source.cancel('user cancel');
     // delete element
     this.#ROOT.parentNode.removeChild(this.#ROOT);
     // transition
@@ -274,16 +277,16 @@ export default class TableData {
     this.#ROOT.classList.toggle('-fetching');
     this.#STATUS.classList.toggle('-flickering');
     iconSpan.classList.toggle('-rotating');
+
     const modeToChangeTo = this.#isLoading ? 'resume' : 'pause';
-    if (modeToChangeTo === 'resume') {
-      this.#STATUS.textContent = 'Awaiting';
-    }
     this.#updateDataButton(
       e.currentTarget,
       dataButtonModes.get(modeToChangeTo)
     );
     this.#isLoading = !this.#isLoading;
+
     if (this.#isLoading) this.#getProperties();
+    else this.#STATUS.textContent = 'Awaiting';
   }
   /**
    * @param {MouseEvent} e
@@ -311,6 +314,21 @@ export default class TableData {
     });
   }
 
+  #dataButtonRetry() {
+    this.#ROOT.classList.add('-fetching');
+    this.#STATUS.classList.remove('-error');
+
+    if(this.#queryIds.length > 0){
+        this.#getProperties();
+        this.#STATUS.textContent = 'Getting Data';
+        return
+    } 
+    this.#STATUS.textContent = 'Getting ID list';
+    this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('empty'));
+    this.#getQueryIds();
+    
+  }
+
   /**
    * @param { mouseEvent } e
    */
@@ -328,10 +346,7 @@ export default class TableData {
         break;
 
       case 'retry':
-        this.#queryIds.length > 0 ? this.#getProperties() : this.#getQueryIds();
-        break;
-
-      default:
+        this.#dataButtonRetry();
         break;
     }
   }
@@ -402,21 +417,20 @@ export default class TableData {
    */
   #handleError(err) {
     let message, errCode;
-    if (axios.isCancel && err.message === 'Operation canceled by the user.') {
+    if (axios.isCancel && err.message === 'user cancel') {
       return;
-    } else if (err.response) {
-      message = err.response.statusText;
-      errCode = err.response.status;
-    } else {
-      message = err.message;
-      errCode = err.code;
-    }
-    this.#displayError(message, errCode);
-
-    if (err.reponse | (err.code === timeOutError)) {
+    } else if ((err.response?.status === 500) | (err.code === timeOutError)) {
       this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('retry'));
+    } else {
+      this.#BUTTON_LEFT.remove();
     }
-    
+    errCode = err.response ? err.response.status : err.code;
+    message = err.response
+      ? err.response.statusText
+      : err.code === timeOutError
+      ? 'Timeout'
+      : err.message;
+    this.#displayError(message, errCode);
   }
   /**
    * @param { string } message - errorMessage
@@ -426,25 +440,18 @@ export default class TableData {
     this.#STATUS.classList.add('-error');
     this.#STATUS.textContent = code ? `${message} (${code})` : message;
     this.#ROOT.classList.remove('-fetching');
-    
+
     const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
       detail: this,
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
-
   }
 
   #getQueryIds() {
-    const payload = {
-      togoKey: this.#condition.togoKey,
-      properties: this.#condition.attributes.map(property => property.query),
-      inputIds: ConditionBuilder.userIds ? ConditionBuilder.userIds : '',
-    };
     axios
-      .get(
-        `${App.aggregatePrimaryKeys}?togoKey=${
-          this.#condition.togoKey
-        }&properties=${encodeURIComponent(
+      .post(
+        App.aggregatePrimaryKeys,
+        `?togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(
           JSON.stringify(
             this.#condition.attributes.map(property => property.query)
           )
@@ -459,23 +466,6 @@ export default class TableData {
           cancelToken: this.#source.token,
         }
       )
-      // axios({
-      //   method: 'post',
-      //   url: App.aggregatePrimaryKeys,
-      //   data: payload,
-      //   cancelToken: this.#source.token,
-      //   withCredentials: true,
-      // })
-      // axios
-      // .post(App.aggregatePrimaryKeys, payload, {
-      //   cancelToken: this.#source.token,
-      //   withCredentials: true,
-      // responseType: 'text',
-      // headers: {
-      //   'Access-Control-Allow-Origin': '*',
-      //   'Content-type': 'application/json',
-      // },
-      // })
       .then(response => {
         this.#queryIds = response.data;
         // display
@@ -483,6 +473,7 @@ export default class TableData {
         this.#STATUS.textContent = '';
         this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
         this.#startTime = Date.now();
+        this.#STATUS.textContent = 'Getting Data';
         this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
         this.#getProperties();
       })
@@ -507,7 +498,6 @@ export default class TableData {
 
   #getProperties() {
     this.#isLoading = true;
-    this.#STATUS.textContent = 'Getting Data';
     axios
       .get(this.#getPropertiesFetch(), {cancelToken: this.#source.token})
       .then(response => {
