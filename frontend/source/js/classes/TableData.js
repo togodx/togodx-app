@@ -3,9 +3,11 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
+import axiosRetry from 'axios-retry';
 
 const LIMIT = 100;
 const downloadUrls = new Map();
+const timeOutError = 'ECONNABORTED';
 /**
  * @typedef {Object} Mode
  * @property {string} label
@@ -46,11 +48,27 @@ const dataButtonModes = new Map([
     },
   ],
   [
-    'csv',
+    'json',
     {
-      label: 'CSV',
+      label: 'JSON',
       icon: 'download',
-      dataButton: 'download-csv',
+      dataButton: 'download-json',
+    },
+  ],
+  [
+    'retry',
+    {
+      label: 'Retry',
+      icon: 'refresh',
+      dataButton: 'retry',
+    },
+  ],
+  [
+    'empty',
+    {
+      label: '',
+      icon: '',
+      dataButton: '',
     },
   ],
 ]);
@@ -60,8 +78,8 @@ export default class TableData {
   #serializedHeader;
   #queryIds;
   #rows;
-  #abortController;
-  #isAutoLoad;
+  #source;
+  #isLoading;
   #isCompleted;
   #startTime;
   #ROOT;
@@ -74,9 +92,21 @@ export default class TableData {
   #BUTTON_RIGHT;
 
   constructor(condition, elm) {
-    // console.log(condition);
+    // axios settings
+    axios.defaults.timeout = 600000;
+    axiosRetry(axios, {
+      retries: 5,
+      shouldResetTimeout: true,
+      retryDelay: axiosRetry.exponentialDelay,
+      retryCondition: error => {
+        return (error.code === timeOutError) | (error.response?.status === 500);
+      },
+    });
 
-    this.#isAutoLoad = false;
+    const CancelToken = axios.CancelToken;
+    this.#source = CancelToken.source();
+
+    this.#isLoading = false;
     this.#isCompleted = false;
     this.#condition = condition;
     this.#serializedHeader = [
@@ -93,14 +123,14 @@ export default class TableData {
     elm.innerHTML = `
     <div class="close-button-view"></div>
     <div class="conditions">
-      <div class="condiiton">
+      <div class="condition">
         <p title="${condition.togoKey}">${Records.getLabelFromTogoKey(
       condition.togoKey
     )}</p>
       </div>
       ${condition.attributes
         .map(
-          property => `<div class="condiiton _subject-background-color" data-subject-id="${property.subject.subjectId}">
+          property => `<div class="condition _subject-background-color" data-subject-id="${property.subject.subjectId}">
         <p title="${property.property.label}">${property.property.label}</p>
       </div>`
         )
@@ -113,7 +143,7 @@ export default class TableData {
                 property.parentCategoryId
               ).label
             : property.property.label;
-          return `<div class="condiiton _subject-color" data-subject-id="${property.subject.subjectId}">
+          return `<div class="condition _subject-color" data-subject-id="${property.subject.subjectId}">
           <p title="${label}">${label}</p>
         </div>`;
         })
@@ -133,7 +163,6 @@ export default class TableData {
       </div>
     </div>
     <div class="controller">
-
     </div>
     `;
 
@@ -176,11 +205,11 @@ export default class TableData {
 
     ConditionBuilder.finish();
     this.select();
+    this.#ROOT.classList.toggle('-fetching');
     this.#getQueryIds();
   }
 
   /* private methods */
-
   #deleteCondition(e) {
     e.stopPropagation();
     const customEvent = new CustomEvent(event.deleteTableData, {
@@ -188,73 +217,16 @@ export default class TableData {
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
     // abort fetch
-    this.#abortController.abort();
+    this.#source.cancel('user cancel');
     // delete element
     this.#ROOT.parentNode.removeChild(this.#ROOT);
     // transition
     document.querySelector('body').dataset.display = 'properties';
   }
-
-  #getQueryIds() {
-    // reset
-    this.#abortController = new AbortController();
-    this.#ROOT.classList.add('-fetching');
-    fetch(
-      `${App.aggregatePrimaryKeys}?togoKey=${
-        this.#condition.togoKey
-      }&properties=${encodeURIComponent(
-        JSON.stringify(
-          this.#condition.attributes.map(property => property.query)
-        )
-      )}${
-        ConditionBuilder.userIds?.length > 0
-          ? `&inputIds=${encodeURIComponent(
-              JSON.stringify(ConditionBuilder.userIds)
-            )}`
-          : ''
-      }`,
-      {
-        signal: this.#abortController.signal,
-      }
-    )
-      .catch(error => {
-        throw Error(error);
-      })
-      .then(responce => {
-        if (responce.ok) {
-          return responce;
-        }
-        this.#STATUS.classList.add('-error');
-        this.#STATUS.textContent = `${responce.status} (${responce.statusText})`;
-        throw Error(responce);
-      })
-      .then(responce => responce.json())
-      .then(queryIds => {
-        // console.log(queryIds);
-        this.#queryIds = queryIds;
-        // display
-        this.#ROOT.dataset.status = 'load rows';
-        this.#STATUS.textContent = '';
-        this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
-        this.#startTime = Date.now();
-        this.#getProperties();
-      })
-      .catch(error => {
-        // TODO:
-        console.error(error);
-        const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
-          detail: this,
-        });
-        DefaultEventEmitter.dispatchEvent(customEvent);
-      })
-      .finally(() => {
-        this.#ROOT.classList.remove('-fetching');
-      });
-  }
   // *** Responsive Buttons based on dataButtonModes ***
   /**
-   * @param {string} className
-   * @param {Mode} mode
+   * @param { string } className
+   * @param { Mode } mode
    */
   #makeDataButton(className, mode = undefined) {
     const button = document.createElement('div');
@@ -266,18 +238,16 @@ export default class TableData {
     button.classList.add('button', className);
 
     if (mode) this.#updateDataButton(button, mode);
-
     button.addEventListener('click', e => {
       this.#dataButtonEvent(e);
     });
 
     return button;
   }
-
   /**
-   * @param {HTMLElement} target
-   * @param {Mode} mode
-   * @param {string} urlType
+   * @param { HTMLElement} target
+   * @param { Mode} mode
+   * @param { string} urlType
    */
   #updateDataButton(target, mode, urlType) {
     target.dataset.button = mode.dataButton;
@@ -293,24 +263,26 @@ export default class TableData {
   }
 
   /**
-   * @param {MouseEvent} e
+   * @param { MouseEvent} e
    */
   #dataButtonPauseOrResume(e) {
     e.stopPropagation();
-    const span = this.#ROOT.querySelector(
-      ':scope > .status > .material-icons-outlined'
-    );
-    span.classList.toggle('-rotating');
-    const modeToChangeTo = this.#isAutoLoad ? 'resume' : 'pause';
+    this.#ROOT.classList.toggle('-fetching');
+    this.#STATUS.classList.toggle('-flickering');
+
+    const modeToChangeTo = this.#isLoading ? 'resume' : 'pause';
     this.#updateDataButton(
       e.currentTarget,
       dataButtonModes.get(modeToChangeTo)
     );
-    this.#isAutoLoad = !this.#isAutoLoad;
-    if (this.#isAutoLoad) this.#getProperties();
+    this.#isLoading = !this.#isLoading;
+    this.#STATUS.textContent = this.#isLoading ? 'Getting Data' : 'Awaiting';
+
+    if (this.#isLoading) this.#getProperties();
   }
+
   /**
-   * @param {MouseEvent} e
+   * @param { MouseEvent } e
    */
   #dataButtonEdit(e) {
     e.stopPropagation();
@@ -335,8 +307,21 @@ export default class TableData {
     });
   }
 
+  #dataButtonRetry() {
+    this.#STATUS.classList.remove('-error');
+    this.#ROOT.classList.toggle('-fetching');
+    this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('empty'));
+
+    if (this.#queryIds.length > 0) {
+      this.#getProperties();
+      this.#STATUS.textContent = 'Getting Data';
+      return;
+    }
+    this.#STATUS.textContent = 'Getting ID list';
+    this.#getQueryIds();
+  }
   /**
-   * @param { mouseEvent } e
+   * @param { MouseEvent } e
    */
   #dataButtonEvent(e) {
     const button = e.currentTarget;
@@ -351,8 +336,8 @@ export default class TableData {
         this.#dataButtonPauseOrResume(e);
         break;
 
-      case 'download-tsv':
-      case 'download-csv':
+      case 'retry':
+        this.#dataButtonRetry();
         break;
     }
   }
@@ -365,22 +350,19 @@ export default class TableData {
       'tsv'
     );
 
-    this.#setCsvUrl();
-    const middleButton = this.#makeDataButton('middle', 'csv');
-    this.#updateDataButton(middleButton, dataButtonModes.get('csv'), 'csv');
+    this.#setJsonUrl();
+    const middleButton = this.#makeDataButton('middle', 'json');
+    this.#updateDataButton(middleButton, dataButtonModes.get('json'), 'json');
     this.#CONTROLLER.insertBefore(middleButton, this.#BUTTON_RIGHT);
   }
 
-  // Setters for downloadUrls
-  #setCsvUrl() {
+  #setJsonUrl() {
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {
       type: 'application/json',
     });
-    const csvUrl = URL.createObjectURL(jsonBlob);
-    downloadUrls.set('csv', csvUrl);
+    downloadUrls.set('json', URL.createObjectURL(jsonBlob));
   }
 
-  // TODO: look at possible improvements looping
   #setTsvUrl() {
     const temporaryArray = [];
     this.#rows.forEach(row => {
@@ -420,33 +402,98 @@ export default class TableData {
     downloadUrls.set('tsv', tsvUrl);
   }
   // *** Properties & Loading ***
+  /**
+   * @param { Error } err - first check userCancel, then server error, timeout err part of else
+   */
+  #handleError(err) {
+    let message, errCode;
+    if (axios.isCancel && err.message === 'user cancel') {
+      return;
+    } else if ((err.response?.status === 500) | (err.code === timeOutError)) {
+      this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('retry'));
+    } else {
+      this.#BUTTON_LEFT.remove();
+    }
+    errCode = err.response ? err.response.status : false;
+    message = err.response
+      ? err.response.statusText
+      : err.code === timeOutError
+      ? 'Timeout'
+      : err.message;
+    this.#displayError(message, errCode);
+  }
+  /**
+   * @param { string } message - errorMessage
+   * @param { number } code - errorCode na in case of timeout or other
+   */
+  #displayError(message, code) {
+    this.#STATUS.classList.add('-error');
+    this.#STATUS.textContent = code ? `${message} (${code})` : message;
+    this.#ROOT.classList.toggle('-fetching');
+
+    const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
+      detail: this,
+    });
+    DefaultEventEmitter.dispatchEvent(customEvent);
+  }
+
+  #getQueryIdsPayload() {
+    return `?togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(
+      JSON.stringify(this.#condition.attributes.map(property => property.query))
+    )}${
+      ConditionBuilder.userIds?.length > 0
+        ? `&inputIds=${encodeURIComponent(
+            JSON.stringify(ConditionBuilder.userIds)
+          )}`
+        : ''
+    }`;
+  }
+
+  #getQueryIds() {
+    axios
+      .post(App.aggregatePrimaryKeys, this.#getQueryIdsPayload(), {
+        cancelToken: this.#source.token,
+      })
+      .then(response => {
+        this.#queryIds = response.data;
+
+        if (this.#queryIds.length <= 0) {
+          this.#complete(false);
+          return;
+        }
+        this.#ROOT.dataset.status = 'load rows';
+        this.#STATUS.textContent = 'Getting Data';
+        this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
+        this.#startTime = Date.now();
+        this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
+        this.#getProperties();
+      })
+      .catch(error => {
+        this.#handleError(error);
+      });
+  }
+
+  #getPropertiesFetch() {
+    return `${App.aggregateRows}?togoKey=${
+      this.#condition.togoKey
+    }&properties=${encodeURIComponent(
+      JSON.stringify(
+        this.#condition.attributes
+          .map(property => property.query)
+          .concat(this.#condition.properties.map(property => property.query))
+      )
+    )}&queryIds=${encodeURIComponent(
+      JSON.stringify(this.#queryIds.slice(this.offset, this.offset + LIMIT))
+    )}`;
+  }
+
   #getProperties() {
-    this.#isAutoLoad = true;
-    this.#ROOT.classList.add('-fetching');
-    this.#STATUS.textContent = 'Getting Data';
-    fetch(
-      `${App.aggregateRows}?togoKey=${
-        this.#condition.togoKey
-      }&properties=${encodeURIComponent(
-        JSON.stringify(
-          this.#condition.attributes
-            .map(property => property.query)
-            .concat(this.#condition.properties.map(property => property.query))
-        )
-      )}&queryIds=${encodeURIComponent(
-        JSON.stringify(this.#queryIds.slice(this.offset, this.offset + LIMIT))
-      )}`,
-      {
-        signal: this.#abortController.signal,
-      }
-    )
-      .then(responce => responce.json())
-      .then(rows => {
-        this.#rows.push(...rows);
+    this.#isLoading = true;
+    axios
+      .get(this.#getPropertiesFetch(), {cancelToken: this.#source.token})
+      .then(response => {
+        this.#rows.push(...response.data);
         this.#isCompleted = this.offset >= this.#queryIds.length;
-        // display
-        this.#ROOT.classList.remove('-fetching');
-        this.#STATUS.textContent = 'Awaiting';
         this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
         this.#INDICATOR_BAR.style.width = `${
           (this.offset / this.#queryIds.length) * 100
@@ -456,7 +503,7 @@ export default class TableData {
         const customEvent = new CustomEvent(event.addNextRows, {
           detail: {
             tableData: this,
-            rows,
+            rows: response.data,
             done: this.#isCompleted,
           },
         });
@@ -464,17 +511,13 @@ export default class TableData {
         // turn off after finished
         if (this.#isCompleted) {
           this.#complete();
-        } else if (this.#isAutoLoad) {
-          this.#updateDataButton(
-            this.#BUTTON_LEFT,
-            dataButtonModes.get('pause')
-          );
+          return;
+        } else if (this.#isLoading) {
           this.#getProperties();
         }
       })
       .catch(error => {
-        this.#ROOT.classList.remove('-fetching');
-        console.error(error); // TODO:
+        this.#handleError(error);
       });
   }
 
@@ -507,15 +550,18 @@ export default class TableData {
       this.#INDICATOR_TEXT_TIME.innerHTML = ``;
     }
   }
-
-  #complete() {
+  /**
+   * @param { boolean } withData
+   */
+  #complete(withData = true) {
     this.#ROOT.dataset.status = 'complete';
-    this.#STATUS.textContent = 'Complete';
-    this.#setDownloadButtons();
+    this.#STATUS.textContent = withData ? 'Complete' : 'No Data found';
+    this.#ROOT.classList.toggle('-fetching');
+
+    if (withData) this.#setDownloadButtons();
   }
 
   /* public methods */
-
   select() {
     this.#ROOT.classList.add('-current');
     // dispatch event
