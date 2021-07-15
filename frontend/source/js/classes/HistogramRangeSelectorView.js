@@ -31,8 +31,10 @@ export default class HistogramRangeSelectorView {
     elm.innerHTML = `
     <div class="histogram-range-selector-view" data-subject-id="${subject.subjectId}">
       <div class="selector">
-        <div class="overview"></div>
-        <div class="controller"></div>
+        <div class="inner">
+          <div class="overview"></div>
+          <div class="controller"></div>
+        </div>
       </div>
       <div class="histogram">
         <div class="graph"></div>
@@ -43,12 +45,13 @@ export default class HistogramRangeSelectorView {
       </div>`;
     this.#ROOT = elm.querySelector(':scope > .histogram-range-selector-view');
     const histogram = this.#ROOT.querySelector(':scope > .histogram');
-    const selector = this.#ROOT.querySelector(':scope > .selector');
+    const selector = this.#ROOT.querySelector(':scope > .selector > .inner >');
+    const overview = selector.querySelector(':scope > .overview');
 
     // make graph
     const max = Math.max(...this.#items.map(item => item.count));
     const width = 100 / this.#items.length;
-    selector.querySelector(':scope > .overview').innerHTML = this.#items.map(item => `<div
+    overview.innerHTML = this.#items.map(item => `<div
       class="bar _subject-background-color"
       data-category-id="${item.categoryId}"
       data-subject-id="${subject.subjectId}"
@@ -63,7 +66,7 @@ export default class HistogramRangeSelectorView {
     // reference
     histogram.querySelectorAll(':scope > .graph > .bar').forEach((item, index) => this.#items[index].elm = item);
     this.#GRIDS = histogram.querySelectorAll(':scope > .gridcontainer > .grid');
-    this.#SELECTOR_BARS = Array.from(selector.querySelectorAll(':scope > .overview > .bar'));
+    this.#SELECTOR_BARS = Array.from(overview.querySelectorAll(':scope > .bar'));
 
     // event
     DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update());

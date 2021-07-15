@@ -711,36 +711,39 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   --padding-horizontal: 1rem;
   --padding-vertical: 0;
   --height-selector: 3rem;
-  padding: 1rem 0 5rem;
+  padding: 0 0 5rem;
   background-color: white;
 }
 .histogram-range-selector-view > .selector {
-  margin: 0 var(--padding-horizontal);
-  width: calc(100% - var(--padding-horizontal) * 2);
-  height: var(--height-selector);
-  position: relative;
+  margin-bottom: 0.4rem;
+  padding: 0.6rem var(--padding-horizontal) 0.4rem;
+  border-bottom: solid 0.1rem var(--color-separator);
 }
-.histogram-range-selector-view > .selector > * {
+.histogram-range-selector-view > .selector > .inner {
+  position: relative;
+  height: var(--height-selector);
+}
+.histogram-range-selector-view > .selector > .inner > * {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
 }
-.histogram-range-selector-view > .selector > .overview {
+.histogram-range-selector-view > .selector > .inner > .overview {
   display: -webkit-flex;
   display: flex;
   -webkit-align-items: flex-end;
           align-items: flex-end;
 }
-.histogram-range-selector-view > .selector > .overview > .bar {
+.histogram-range-selector-view > .selector > .inner > .overview > .bar {
   opacity: 0.2;
 }
-.histogram-range-selector-view > .selector > .overview > .bar.-selected {
+.histogram-range-selector-view > .selector > .inner > .overview > .bar.-selected {
   opacity: 1;
   position: relative;
 }
-.histogram-range-selector-view > .selector > .overview > .bar.-selected::before {
+.histogram-range-selector-view > .selector > .inner > .overview > .bar.-selected::before {
   content: "";
   position: absolute;
   bottom: -0.2rem;

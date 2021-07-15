@@ -4647,7 +4647,7 @@
     _classPrivateFieldSet(this, _selectedBarsEnd, undefined); // make container
 
 
-    elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\" data-subject-id=\"".concat(subject.subjectId, "\">\n      <div class=\"selector\">\n        <div class=\"overview\"></div>\n        <div class=\"controller\"></div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ").concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>");
+    elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\" data-subject-id=\"".concat(subject.subjectId, "\">\n      <div class=\"selector\">\n        <div class=\"inner\">\n          <div class=\"overview\"></div>\n          <div class=\"controller\"></div>\n        </div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ").concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>");
 
     _classPrivateFieldSet(this, _ROOT$6, elm.querySelector(':scope > .histogram-range-selector-view'));
 
@@ -4662,7 +4662,7 @@
 
     var _width = 100 / _classPrivateFieldGet(this, _items).length;
 
-    selector.querySelector(':scope > .overview').innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
+    selector.querySelector(':scope > .inner > .overview').innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
       return "<div\n      class=\"bar _subject-background-color\"\n      data-category-id=\"".concat(item.categoryId, "\"\n      data-subject-id=\"").concat(subject.subjectId, "\"\n      data-count=\"").concat(item.count, "\"\n      style=\"width: ").concat(_width, "%; height: ").concat(item.count / _max * 100, "%;\"></div>");
     }).join('');
     var graph = histogram.querySelector(':scope > .graph');
@@ -4678,7 +4678,7 @@
 
     _classPrivateFieldSet(this, _GRIDS, histogram.querySelectorAll(':scope > .gridcontainer > .grid'));
 
-    _classPrivateFieldSet(this, _SELECTOR_BARS, Array.from(selector.querySelectorAll(':scope > .overview > .bar'))); // event
+    _classPrivateFieldSet(this, _SELECTOR_BARS, Array.from(selector.querySelectorAll(':scope > .inner > .overview > .bar'))); // event
 
 
     DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
@@ -4694,7 +4694,7 @@
   function _setupRangeSelector2() {
     var _this2 = this;
 
-    var selectorController = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .selector > .controller');
+    var selectorController = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .selector > .inner > .controller');
 
     var isMouseDown = false,
         startX,
@@ -4722,7 +4722,7 @@
         } // select overview by range
 
 
-        _classPrivateFieldGet(_this2, _ROOT$6).querySelectorAll(':scope > .selector > .overview > .bar').forEach(function (bar, index) {
+        _classPrivateFieldGet(_this2, _ROOT$6).querySelectorAll(':scope > .selector > .inner > .overview > .bar').forEach(function (bar, index) {
           if (_classPrivateFieldGet(_this2, _selectedBarsStart) <= index && index <= _classPrivateFieldGet(_this2, _selectedBarsEnd)) {
             bar.classList.add('-selected');
           } else {
