@@ -68,9 +68,9 @@ const dataButtonModes = new Map([
     {
       label: '',
       icon: '',
-      dataBurron: '',
-    }
-  ]
+      dataButton: '',
+    },
+  ],
 ]);
 
 export default class TableData {
@@ -95,7 +95,7 @@ export default class TableData {
     // axios settings
     axios.defaults.timeout = 600000;
     axiosRetry(axios, {
-      retries: 5,
+      retries: 2,
       shouldResetTimeout: true,
       retryDelay: axiosRetry.exponentialDelay,
       retryCondition: error => {
@@ -151,7 +151,7 @@ export default class TableData {
     </div>
     <div class="status">
       <p>Getting ID list</p>
-      <span class="material-icons-outlined -rotating">autorenew</span>
+      <span class="material-icons-outlined">autorenew</span>
     </div>
     <div class="indicator">
       <div class="text">
@@ -205,7 +205,7 @@ export default class TableData {
 
     ConditionBuilder.finish();
     this.select();
-    this.#ROOT.classList.add('-fetching');
+    this.#toggleInProgressDisplay()
     this.#getQueryIds();
   }
 
@@ -271,12 +271,8 @@ export default class TableData {
    */
   #dataButtonPauseOrResume(e) {
     e.stopPropagation();
-    const iconSpan = this.#ROOT.querySelector(
-      ':scope > .status > .material-icons-outlined'
-    );
-    this.#ROOT.classList.toggle('-fetching');
+    this.#toggleInProgressDisplay();
     this.#STATUS.classList.toggle('-flickering');
-    iconSpan.classList.toggle('-rotating');
 
     const modeToChangeTo = this.#isLoading ? 'resume' : 'pause';
     this.#updateDataButton(
@@ -284,9 +280,17 @@ export default class TableData {
       dataButtonModes.get(modeToChangeTo)
     );
     this.#isLoading = !this.#isLoading;
+    this.#STATUS.textContent = this.#isLoading ? 'Getting Data' : 'Awaiting';
 
     if (this.#isLoading) this.#getProperties();
-    else this.#STATUS.textContent = 'Awaiting';
+  }
+
+  #toggleInProgressDisplay() {
+    const iconSpan = this.#ROOT.querySelector(
+      ':scope > .status > .material-icons-outlined'
+    );
+    this.#ROOT.classList.toggle('-fetching');
+    iconSpan.classList.toggle('-rotating');
   }
   /**
    * @param {MouseEvent} e
@@ -315,20 +319,18 @@ export default class TableData {
   }
 
   #dataButtonRetry() {
-    this.#ROOT.classList.add('-fetching');
+    this.#toggleInProgressDisplay();
     this.#STATUS.classList.remove('-error');
-
-    if(this.#queryIds.length > 0){
-        this.#getProperties();
-        this.#STATUS.textContent = 'Getting Data';
-        return
-    } 
-    this.#STATUS.textContent = 'Getting ID list';
     this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('empty'));
-    this.#getQueryIds();
-    
-  }
 
+    if (this.#queryIds.length > 0) {
+      this.#getProperties();
+      this.#STATUS.textContent = 'Getting Data';
+      return;
+    }
+    this.#STATUS.textContent = 'Getting ID list';
+    this.#getQueryIds();
+  }
   /**
    * @param { mouseEvent } e
    */
@@ -364,7 +366,6 @@ export default class TableData {
     this.#updateDataButton(middleButton, dataButtonModes.get('json'), 'json');
     this.#CONTROLLER.insertBefore(middleButton, this.#BUTTON_RIGHT);
   }
-
   // Setters for downloadUrls
   #setJsonUrl() {
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {
@@ -434,12 +435,12 @@ export default class TableData {
   }
   /**
    * @param { string } message - errorMessage
-   * @param { number } code - errorCode na in case of timeout or cancellation,
+   * @param { number } code - errorCode na in case of timeout or other
    */
   #displayError(message, code) {
     this.#STATUS.classList.add('-error');
     this.#STATUS.textContent = code ? `${message} (${code})` : message;
-    this.#ROOT.classList.remove('-fetching');
+    this.#toggleInProgressDisplay();
 
     const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
       detail: this,
@@ -447,33 +448,34 @@ export default class TableData {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
+  #getQueryIdsPayload() {
+    return `?togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(
+      JSON.stringify(this.#condition.attributes.map(property => property.query))
+    )}${
+      ConditionBuilder.userIds?.length > 0
+        ? `&inputIds=${encodeURIComponent(
+            JSON.stringify(ConditionBuilder.userIds)
+          )}`
+        : ''
+    }`;
+  }
+
   #getQueryIds() {
     axios
-      .post(
-        App.aggregatePrimaryKeys,
-        `?togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(
-          JSON.stringify(
-            this.#condition.attributes.map(property => property.query)
-          )
-        )}${
-          ConditionBuilder.userIds?.length > 0
-            ? `&inputIds=${encodeURIComponent(
-                JSON.stringify(ConditionBuilder.userIds)
-              )}`
-            : ''
-        }`,
-        {
-          cancelToken: this.#source.token,
-        }
-      )
+      .post(App.aggregatePrimaryKeys, this.#getQueryIdsPayload(), {
+        cancelToken: this.#source.token,
+      })
       .then(response => {
         this.#queryIds = response.data;
-        // display
+
+        if (this.#queryIds.length <= 0) {
+          this.#complete(false);
+          return;
+        }
         this.#ROOT.dataset.status = 'load rows';
-        this.#STATUS.textContent = '';
+        this.#STATUS.textContent = 'Getting Data';
         this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
         this.#startTime = Date.now();
-        this.#STATUS.textContent = 'Getting Data';
         this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
         this.#getProperties();
       })
@@ -520,7 +522,6 @@ export default class TableData {
         // turn off after finished
         if (this.#isCompleted) {
           this.#complete();
-          return;
         } else if (this.#isLoading) {
           this.#getProperties();
         }
@@ -559,16 +560,18 @@ export default class TableData {
       this.#INDICATOR_TEXT_TIME.innerHTML = ``;
     }
   }
-
-  #complete() {
+  /**
+   * @param { boolean } withData
+   */
+  #complete(withData = true) {
     this.#ROOT.dataset.status = 'complete';
-    this.#STATUS.textContent = 'Complete';
-    this.#ROOT.classList.remove('-fetching');
-    this.#setDownloadButtons();
+    this.#STATUS.textContent = withData ? 'Complete' : 'No Data found';
+    this.#toggleInProgressDisplay();
+
+    if (withData) this.#setDownloadButtons();
   }
 
   /* public methods */
-
   select() {
     this.#ROOT.classList.add('-current');
     // dispatch event
