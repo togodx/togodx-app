@@ -150,23 +150,23 @@ decompress_files() {
 
 decompress_zipfiles() {
   local db_dir="${1}"
-  cd ${db_dir} && find . -type f -name "*.zip" | xargs -I{} -L 1024 unzip {}
+  cd ${db_dir} && find . -type f -name "*.zip" | xargs -L 1024 unzip 2>/dev/null
 }
 
 decompress_tarfiles() {
   local db_dir="${1}"
-  cd ${db_dir} && find . -type f -name "*.tar*" | xargs -I{} -L 1024 tar xf {}
-  cd ${db_dir} && find . -type f -name "*.tar*" | xargs -I{} -L 1024 rm -f {}
+  cd ${db_dir} && find . -type f -name "*.tar*" | xargs -L 1024 tar xf 2>/dev/null
+  cd ${db_dir} && find . -type f -name "*.tar*" | xargs -L 1024 rm -f
 }
 
 decompress_gz() {
   local db_dir="${1}"
-  cd ${db_dir} && find . -type f -name "*.gz" | xargs -I{} -L 256 gunzip --force {}
+  cd ${db_dir} && find . -type f -name "*.gz" | xargs -L 1024 gunzip --force 2>/dev/null
 }
 
 decompress_xz() {
   local db_dir="${1}"
-  cd ${db_dir} && find . -type f -name "*.xz" | xargs -I{} -L 256 unxz {}
+  cd ${db_dir} && find . -type f -name "*.xz" | xargs -L 1024 unxz 2>/dev/null
 }
 
 update_file_list() {
