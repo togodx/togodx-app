@@ -653,7 +653,7 @@
       {
         "propertyId": "variant_gwas_togovar",
         "label": "GWAS",
-        "description": "Classification of statistically significant variants in genome-wide association studies (GWAS) based on associated traits. Obtained from GWAS catalog via TogoVar.",
+        "description": "Classification of statistically significant variants in genome-wide association studies (GWAS) based on associated traits. Obtained from GWAS catalog via TogoVar",
         "data": "https://integbio.jp/togosite/sparqlist/api/variant_gwas_togovar",
         "dataSource": "",
         "dataSourceUrl": "",
