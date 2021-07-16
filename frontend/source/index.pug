@@ -13,9 +13,9 @@ block main
   main#App
     .inner
       section#Properties
-        header.header
+        header.header.collapse-view
           .title
-            h2.properties Attribute keys
+            h2.properties.collapsebutton Attribute keys
             h2.attributes Attribute values
           nav
             ul
@@ -220,14 +220,14 @@ block main
             #ConditionTogoKey.condition
               .inner
                 h2.title
-                  span.material-icons-outlined layers
+                  span.material-icons layers
                   | Select target category
                 select(disabled)
                   //- option(val="gene") Gene
               hr
               #UploadUserIDsView.inner
                 h2.title
-                  span.material-icons-outlined file_upload
+                  span.material-icons location_on
                   | Map your IDs
                   small optional
                 textarea(type="text" placeholder="Enter IDs")
@@ -238,7 +238,7 @@ block main
             #ConditionKeys.condition
               .inner
                 h2.title
-                  span.material-icons-outlined filter_alt
+                  span.material-icons filter_alt
                   | Add filters
                 .conditions.-empty
                 //-
@@ -252,7 +252,7 @@ block main
             #ConditionValues.condition
               .inner
                 h2.title
-                  span.material-icons-outlined insights
+                  span.material-icons insights
                   | Map attributes
                 .conditions.-empty
                 //-
@@ -264,10 +264,10 @@ block main
               
           footer
             button.exec.rounded-button-view.-black.-spread(data-hidden-by="results" disabled)
-              span.material-icons-outlined table_view
+              span.material-icons table_view
               | View results
             button.return.rounded-button-view.-black.-spread(data-hidden-by="properties")
-              span.material-icons-outlined keyboard_return
+              span.material-icons keyboard_return
               | Return
 
       .lower

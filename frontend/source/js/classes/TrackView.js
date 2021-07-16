@@ -17,6 +17,7 @@ export default class TrackView {
   #SELECT_CONTAINER;
   #OVERVIEW_CONTAINER;
   #CHECKBOX_ALL_PROPERTIES;
+  #COLLAPSE_BUTTON;
 
   constructor(subject, property, container, positionRate) {
     // console.log(subject, property, container)
@@ -63,6 +64,7 @@ export default class TrackView {
     this.#OVERVIEW_CONTAINER = valuesContainer.querySelector(':scope > .overview > .inner');
     this.#LOADING_VIEW = valuesContainer.querySelector(':scope > .overview > .loading-view');
     this.#SELECT_CONTAINER = elm.querySelector(':scope > .row.-lower > .selector');
+    this.#COLLAPSE_BUTTON = elm.querySelector(':scope > .row.-upper > .left > .collapsebutton');
 
     // collapse
     collapseView(elm);
@@ -95,6 +97,17 @@ export default class TrackView {
             this.#ROOT.classList.remove('-allselected');
           }
           break;
+      }
+    });
+    DefaultEventEmitter.addEventListener(event.allTracksCollapse, (e) => {
+      if (e.detail) {
+        if (!this.#ROOT.classList.contains('-spread')) {
+          this.#COLLAPSE_BUTTON.dispatchEvent(new MouseEvent('click'));
+        }
+      } else {
+        if (this.#ROOT.classList.contains('-spread')) {
+          this.#COLLAPSE_BUTTON.dispatchEvent(new MouseEvent('click'));
+        }
       }
     });
 

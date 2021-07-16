@@ -41,7 +41,9 @@ export default class TrackOverviewCategorical {
               <span class="count">${value.count.toLocaleString()}</span>
             </p>
           </div>
-          <div class="pin"></div>
+          <div class="pin">
+            <span class="material-icons">location_on</span>
+          </div>
         </li>`;
     }).join('');
 
@@ -50,54 +52,37 @@ export default class TrackOverviewCategorical {
       // reference
       const value = this.#values[index];
       value.elm = elm;
-      const pin = elm.querySelector(':scope > .pin');
-      value.pin = pin;
+      value.pin = elm.querySelector(':scope > .pin');
+      value.icon = value.pin.querySelector(':scope > .material-icons');
 
       // attach event: show tooltip
       const label = `<span class="_subject-color" data-subject-id="${this.#subject.subjectId}">${value.label}</span>`;
       elm.addEventListener('mouseenter', () => {
-        const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {
-          label,
-          values: [
-            {
-              key: 'Count',
-              value: value.count.toLocaleString()
-            }
-          ],
-          elm
-        }});
+        const values = [];
+        const userValue = this.#userValues?.find(userValue => userValue.categoryId === value.categoryId);
+        if (userValue) {
+          // does not have user value
+          values.push({
+            key: 'Count',
+            value: `${value.userValueCount.toLocaleString()} / ${value.count.toLocaleString()}`
+          });
+          if (userValue?.pValue) {
+            values.push({
+              key: 'P-value',
+              value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(3)
+            });
+          }
+        } else {
+          // has user value
+          values.push({
+            key: 'Count',
+            value: value.count.toLocaleString()
+          });
+        }
+        const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {label, values, elm}});
         DefaultEventEmitter.dispatchEvent(customEvent);
       });
       elm.addEventListener('mouseleave', () => {
-        const customEvent = new CustomEvent(event.leavePropertyValueItemView);
-        DefaultEventEmitter.dispatchEvent(customEvent);
-      });
-
-      // attach event: show tooltip of pin
-      pin.addEventListener('mouseenter', e => {
-        e.stopPropagation();
-        const values = [
-          {
-            key: 'Count',
-            value: `${value.userValueCount.toLocaleString()} / ${value.count.toLocaleString()}`
-          }
-        ];
-        const userValue = this.#userValues.find(userValue => userValue.categoryId === value.categoryId);
-        console.log(userValue)
-        if (userValue?.pValue) {
-          values.push({
-            key: 'P-value',
-            value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(3)
-          });
-        }
-        const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {
-          label,
-          values,
-          elm: pin
-        }});
-        DefaultEventEmitter.dispatchEvent(customEvent);
-      });
-      pin.addEventListener('mouseleave', () => {
         const customEvent = new CustomEvent(event.leavePropertyValueItemView);
         DefaultEventEmitter.dispatchEvent(customEvent);
       });
@@ -161,7 +146,6 @@ export default class TrackOverviewCategorical {
   }
 
   #plotUserIdValues(detail) {
-    console.log(detail)
     if (this.#property.propertyId === detail.propertyId) {
 
       this.#ROOT.classList.add('-pinsticking');
@@ -213,6 +197,7 @@ export default class TrackOverviewCategorical {
           const size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
+          value.icon.style.fontSize = size + 'px';
           value.userValueCount =  userValue.count;
           value.elm.dataset.pValueGreaterThan = pValueGreaterThan;
         } else {
@@ -224,6 +209,7 @@ export default class TrackOverviewCategorical {
 
   #clearUserIdValues() {
     this.#values.forEach(value => value.elm.classList.remove('-pinsticking'));
+    this.#userValues = undefined;
   }
 
 }

@@ -72,6 +72,8 @@ export default class ColumnSelectorView {
       }
     });
     DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
+    DefaultEventEmitter.addEventListener(event.setUserValues, e => this.#setUserValues(e.detail));
+    DefaultEventEmitter.addEventListener(event.clearUserValues, e => this.#clearUserValues());
 
     const depth = 0;
     this.#setItems(items, depth);
@@ -167,6 +169,10 @@ export default class ColumnSelectorView {
         <input type="checkbox" value="${item.categoryId}"${checked}/>
         <span class="label">${item.label}</span>
         <span class="count">${item.count.toLocaleString()}</span>
+        <span class="pin">
+          <span class="material-icons">location_on</span>
+          <span class="value"></span>
+        </span>
       </li>`;
     }).join('');
     const listItems = ul.querySelectorAll(':scope > .item:not(.-all)');
@@ -194,8 +200,8 @@ export default class ColumnSelectorView {
       });
     });
 
-    // select/deselect a item (attribute)
     listItems.forEach(li => {
+      // select/deselect a item (attribute)
       const checkbox = li.querySelector(':scope > input[type="checkbox"]');
       checkbox.addEventListener('click', e => {
         e.stopPropagation();
@@ -248,6 +254,24 @@ export default class ColumnSelectorView {
         li.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
       });
     });
+  }
+
+  #setUserValues({propertyId, values}) {
+    if (this.#property.propertyId === propertyId) {
+      for (const value of values) {
+        const item = this.#items[value.categoryId];
+        if (item) {
+          item.elm.classList.add('-pinsticking');
+          item.elm.querySelector(':scope > .pin > .value').innerHTML = `${value.count}${value.pValue ? `,  <small>P-value:</small> ${value.pValue === 1 ? value.pValue : value.pValue.toExponential(3)}` : ''}`;
+        }
+      }
+    }
+  }
+
+  #clearUserValues() {
+    for (const item in this.#items) {
+      this.#items[item].elm.classList.remove('-pinsticking');
+    }
   }
 
 }

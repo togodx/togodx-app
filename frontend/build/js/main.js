@@ -2946,6 +2946,7 @@
 
   var enterPropertyValueItemView = 'enterPropertyValueItemView';
   var leavePropertyValueItemView = 'leavePropertyValueItemView';
+  var allTracksCollapse = 'allTracksCollapse';
 
   var _propertyConditions = new WeakMap();
 
@@ -3395,28 +3396,22 @@
     console.log(keys, values); // generate permalink
 
     var params = new URL(location).searchParams;
-    params.set('togoKey', _classPrivateFieldGet(this, _togoKey));
-    params.set('userIds', this.userIds ? this.userIds : '');
+    params.set('togoKey', _classPrivateFieldGet(this, _togoKey)); // params.set('userIds', this.userIds ? this.userIds : '');
+
     params.set('keys', JSON.stringify(keys));
     params.set('values', JSON.stringify(values));
     if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
   }
 
   function _createSearchConditionFromURLParameters2() {
-    var _params$get, _JSON$parse, _JSON$parse2;
+    var _JSON$parse, _JSON$parse2;
 
     var isFirst = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     // get conditions with ancestors
     var params = new URL(location).searchParams;
-    console.log(params);
-    console.log(params.get('userIds'));
-    console.log(params.get('keys'));
-    console.log(JSON.parse(params.get('keys')));
     var condition = {
       togoKey: params.get('togoKey'),
-      userIds: ((_params$get = params.get('userIds')) !== null && _params$get !== void 0 ? _params$get : '').split(',').filter(function (id) {
-        return id !== '';
-      }),
+      // userIds: (params.get('userIds') ?? '').split(',').filter(id => id !== ''),
       keys: (_JSON$parse = JSON.parse(params.get('keys'))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
       values: (_JSON$parse2 = JSON.parse(params.get('values'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
     };
@@ -3501,9 +3496,8 @@
     _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true); // restore conditions
 
 
-    _classPrivateFieldSet(this, _togoKey, togoKey);
+    _classPrivateFieldSet(this, _togoKey, togoKey); // this.#userIds = userIds;
 
-    _classPrivateFieldSet(this, _userIds, userIds);
 
     var _classPrivateMethodGe3 = _classPrivateMethodGet(this, _getCondtionsFromHierarchicConditions, _getCondtionsFromHierarchicConditions2).call(this, keys, values),
         _classPrivateMethodGe4 = _slicedToArray(_classPrivateMethodGe3, 2),
@@ -3527,7 +3521,6 @@
     var customEvent = new CustomEvent(restoreParameters, {
       detail: {
         togoKey: togoKey,
-        userIds: userIds,
         keys: keys,
         values: values
       }
@@ -4138,10 +4131,18 @@
 
   var _update$2 = new WeakSet();
 
+  var _setUserValues = new WeakSet();
+
+  var _clearUserValues = new WeakSet();
+
   var ColumnSelectorView = function ColumnSelectorView(elm, subject, property, _items2, sparqlist) {
     var _this = this;
 
     _classCallCheck(this, ColumnSelectorView);
+
+    _clearUserValues.add(this);
+
+    _setUserValues.add(this);
 
     _update$2.add(this);
 
@@ -4259,6 +4260,12 @@
     DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
       return _classPrivateMethodGet(_this, _update$2, _update2$2).call(_this, e.detail.log10);
     });
+    DefaultEventEmitter$1.addEventListener(setUserValues, function (e) {
+      return _classPrivateMethodGet(_this, _setUserValues, _setUserValues2).call(_this, e.detail);
+    });
+    DefaultEventEmitter$1.addEventListener(clearUserValues, function (e) {
+      return _classPrivateMethodGet(_this, _clearUserValues, _clearUserValues2).call(_this);
+    });
     var _depth = 0;
 
     _classPrivateMethodGet(this, _setItems, _setItems2).call(this, _items2, _depth); // make root column
@@ -4354,7 +4361,7 @@
     }), "\"\n      data-depth=\"").concat(depth, "\">\n      <input type=\"checkbox\" value=\"").concat(ALL_PROPERTIES, "\" \n      ").concat(selectedParentCategoryId === parentCategoryId ? ' checked' : '', "/>\n      <span class=\"label\">Map following attributes</span>\n    </li>") + items.map(function (item) {
       max = Math.max(max, item.count);
       var checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
-      return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n      </li>");
+      return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n        <span class=\"pin\">\n          <span class=\"material-icons\">location_on</span>\n          <span class=\"value\"></span>\n        </span>\n      </li>");
     }).join('');
     var listItems = ul.querySelectorAll(':scope > .item:not(.-all)');
     listItems.forEach(function (li) {
@@ -4398,9 +4405,9 @@
 
         _classPrivateMethodGet(_this4, _setSubColumn, _setSubColumn2).call(_this4, li.dataset.id, depth + 1);
       });
-    }); // select/deselect a item (attribute)
-
+    });
     listItems.forEach(function (li) {
+      // select/deselect a item (attribute)
       var checkbox = li.querySelector(':scope > input[type="checkbox"]');
       checkbox.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -4468,6 +4475,39 @@
         }).join(','), ")");
       });
     });
+  }
+
+  function _setUserValues2(_ref2) {
+    var propertyId = _ref2.propertyId,
+        values = _ref2.values;
+
+    if (_classPrivateFieldGet(this, _property$3).propertyId === propertyId) {
+      var _iterator3 = _createForOfIteratorHelper(values),
+          _step3;
+
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var value = _step3.value;
+
+          var item = _classPrivateFieldGet(this, _items$1)[value.categoryId];
+
+          if (item) {
+            item.elm.classList.add('-pinsticking');
+            item.elm.querySelector(':scope > .pin > .value').innerHTML = "".concat(value.count).concat(value.pValue ? ",  <small>P-value:</small> ".concat(value.pValue === 1 ? value.pValue : value.pValue.toExponential(3)) : '');
+          }
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+    }
+  }
+
+  function _clearUserValues2() {
+    for (var item in _classPrivateFieldGet(this, _items$1)) {
+      _classPrivateFieldGet(this, _items$1)[item].elm.classList.remove('-pinsticking');
+    }
   }
 
   /**
@@ -4840,52 +4880,43 @@
       value.width = value.count / _sum * 100;
       value.baseColor = colorTintByHue(subject.color, 360 * index / values.length);
       var selectedClass = selectedCategoryIds.indexOf(value.categoryId) !== -1 ? ' -selected' : '';
-      return "\n        <li class=\"track-value-view _subject-background-color".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\"></div>\n        </li>");
+      return "\n        <li class=\"track-value-view _subject-background-color".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\">\n            <span class=\"material-icons\">location_on</span>\n          </div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .track-value-view').forEach(function (elm, index) {
       // reference
       var value = _classPrivateFieldGet(_this, _values)[index];
 
       value.elm = elm;
-      var pin = elm.querySelector(':scope > .pin');
-      value.pin = pin; // attach event: show tooltip
+      value.pin = elm.querySelector(':scope > .pin');
+      value.icon = value.pin.querySelector(':scope > .material-icons'); // attach event: show tooltip
 
       var label = "<span class=\"_subject-color\" data-subject-id=\"".concat(_classPrivateFieldGet(_this, _subject$1).subjectId, "\">").concat(value.label, "</span>");
       elm.addEventListener('mouseenter', function () {
-        var customEvent = new CustomEvent(enterPropertyValueItemView, {
-          detail: {
-            label: label,
-            values: [{
-              key: 'Count',
-              value: value.count.toLocaleString()
-            }],
-            elm: elm
-          }
-        });
-        DefaultEventEmitter$1.dispatchEvent(customEvent);
-      });
-      elm.addEventListener('mouseleave', function () {
-        var customEvent = new CustomEvent(leavePropertyValueItemView);
-        DefaultEventEmitter$1.dispatchEvent(customEvent);
-      }); // attach event: show tooltip of pin
+        var _classPrivateFieldGet2;
 
-      pin.addEventListener('mouseenter', function (e) {
-        e.stopPropagation();
-        var values = [{
-          key: 'Count',
-          value: "".concat(value.userValueCount.toLocaleString(), " / ").concat(value.count.toLocaleString())
-        }];
-
-        var userValue = _classPrivateFieldGet(_this, _userValues).find(function (userValue) {
+        var values = [];
+        var userValue = (_classPrivateFieldGet2 = _classPrivateFieldGet(_this, _userValues)) === null || _classPrivateFieldGet2 === void 0 ? void 0 : _classPrivateFieldGet2.find(function (userValue) {
           return userValue.categoryId === value.categoryId;
         });
 
-        console.log(userValue);
-
-        if (userValue !== null && userValue !== void 0 && userValue.pValue) {
+        if (userValue) {
+          // does not have user value
           values.push({
-            key: 'P-value',
-            value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(3)
+            key: 'Count',
+            value: "".concat(value.userValueCount.toLocaleString(), " / ").concat(value.count.toLocaleString())
+          });
+
+          if (userValue !== null && userValue !== void 0 && userValue.pValue) {
+            values.push({
+              key: 'P-value',
+              value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(3)
+            });
+          }
+        } else {
+          // has user value
+          values.push({
+            key: 'Count',
+            value: value.count.toLocaleString()
           });
         }
 
@@ -4893,12 +4924,12 @@
           detail: {
             label: label,
             values: values,
-            elm: pin
+            elm: elm
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       });
-      pin.addEventListener('mouseleave', function () {
+      elm.addEventListener('mouseleave', function () {
         var customEvent = new CustomEvent(leavePropertyValueItemView);
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }); // attach event: select/deselect a value
@@ -4977,8 +5008,6 @@
   }
 
   function _plotUserIdValues2(detail) {
-    console.log(detail);
-
     if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
       _classPrivateFieldGet(this, _ROOT$5).classList.add('-pinsticking');
 
@@ -5040,6 +5069,7 @@
           var size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
+          value.icon.style.fontSize = size + 'px';
           value.userValueCount = userValue.count;
           value.elm.dataset.pValueGreaterThan = pValueGreaterThan;
         } else {
@@ -5053,6 +5083,8 @@
     _classPrivateFieldGet(this, _values).forEach(function (value) {
       return value.elm.classList.remove('-pinsticking');
     });
+
+    _classPrivateFieldSet(this, _userValues, undefined);
   }
 
   var _subject = new WeakMap();
@@ -5070,6 +5102,8 @@
   var _OVERVIEW_CONTAINER = new WeakMap();
 
   var _CHECKBOX_ALL_PROPERTIES = new WeakMap();
+
+  var _COLLAPSE_BUTTON = new WeakMap();
 
   var _makeValues = new WeakSet();
 
@@ -5120,6 +5154,11 @@
       value: void 0
     });
 
+    _COLLAPSE_BUTTON.set(this, {
+      writable: true,
+      value: void 0
+    });
+
     // console.log(subject, property, container)
     var isSelected = ConditionBuilder$1.isSelectedProperty(property.propertyId);
     var elm = document.createElement('div');
@@ -5147,7 +5186,9 @@
 
     _classPrivateFieldSet(this, _LOADING_VIEW$1, valuesContainer.querySelector(':scope > .overview > .loading-view'));
 
-    _classPrivateFieldSet(this, _SELECT_CONTAINER, elm.querySelector(':scope > .row.-lower > .selector')); // collapse
+    _classPrivateFieldSet(this, _SELECT_CONTAINER, elm.querySelector(':scope > .row.-lower > .selector'));
+
+    _classPrivateFieldSet(this, _COLLAPSE_BUTTON, elm.querySelector(':scope > .row.-upper > .left > .collapsebutton')); // collapse
 
 
     collapseView(elm); // select/deselect a property
@@ -5192,6 +5233,17 @@
           }
 
           break;
+      }
+    });
+    DefaultEventEmitter$1.addEventListener(allTracksCollapse, function (e) {
+      if (e.detail) {
+        if (!_classPrivateFieldGet(_this, _ROOT$4).classList.contains('-spread')) {
+          _classPrivateFieldGet(_this, _COLLAPSE_BUTTON).dispatchEvent(new MouseEvent('click'));
+        }
+      } else {
+        if (_classPrivateFieldGet(_this, _ROOT$4).classList.contains('-spread')) {
+          _classPrivateFieldGet(_this, _COLLAPSE_BUTTON).dispatchEvent(new MouseEvent('click'));
+        }
       }
     }); // get property data
 
@@ -6174,7 +6226,365 @@
     });
   };
 
+  var WHITELIST = [
+  	'ETIMEDOUT',
+  	'ECONNRESET',
+  	'EADDRINUSE',
+  	'ESOCKETTIMEDOUT',
+  	'ECONNREFUSED',
+  	'EPIPE',
+  	'EHOSTUNREACH',
+  	'EAI_AGAIN'
+  ];
+
+  var BLACKLIST = [
+  	'ENOTFOUND',
+  	'ENETUNREACH',
+
+  	// SSL errors from https://github.com/nodejs/node/blob/ed3d8b13ee9a705d89f9e0397d9e96519e7e47ac/src/node_crypto.cc#L1950
+  	'UNABLE_TO_GET_ISSUER_CERT',
+  	'UNABLE_TO_GET_CRL',
+  	'UNABLE_TO_DECRYPT_CERT_SIGNATURE',
+  	'UNABLE_TO_DECRYPT_CRL_SIGNATURE',
+  	'UNABLE_TO_DECODE_ISSUER_PUBLIC_KEY',
+  	'CERT_SIGNATURE_FAILURE',
+  	'CRL_SIGNATURE_FAILURE',
+  	'CERT_NOT_YET_VALID',
+  	'CERT_HAS_EXPIRED',
+  	'CRL_NOT_YET_VALID',
+  	'CRL_HAS_EXPIRED',
+  	'ERROR_IN_CERT_NOT_BEFORE_FIELD',
+  	'ERROR_IN_CERT_NOT_AFTER_FIELD',
+  	'ERROR_IN_CRL_LAST_UPDATE_FIELD',
+  	'ERROR_IN_CRL_NEXT_UPDATE_FIELD',
+  	'OUT_OF_MEM',
+  	'DEPTH_ZERO_SELF_SIGNED_CERT',
+  	'SELF_SIGNED_CERT_IN_CHAIN',
+  	'UNABLE_TO_GET_ISSUER_CERT_LOCALLY',
+  	'UNABLE_TO_VERIFY_LEAF_SIGNATURE',
+  	'CERT_CHAIN_TOO_LONG',
+  	'CERT_REVOKED',
+  	'INVALID_CA',
+  	'PATH_LENGTH_EXCEEDED',
+  	'INVALID_PURPOSE',
+  	'CERT_UNTRUSTED',
+  	'CERT_REJECTED'
+  ];
+
+  var isRetryAllowed = function (err) {
+  	if (!err || !err.code) {
+  		return true;
+  	}
+
+  	if (WHITELIST.indexOf(err.code) !== -1) {
+  		return true;
+  	}
+
+  	if (BLACKLIST.indexOf(err.code) !== -1) {
+  		return false;
+  	}
+
+  	return true;
+  };
+
+  var isNetworkError_1 = isNetworkError;
+  var isRetryableError_1 = isRetryableError;
+  var isSafeRequestError_1 = isSafeRequestError;
+  var isIdempotentRequestError_1 = isIdempotentRequestError;
+  var isNetworkOrIdempotentRequestError_1 = isNetworkOrIdempotentRequestError;
+  var exponentialDelay_1 = exponentialDelay;
+  var _default = axiosRetry$1;
+
+
+
+  var _isRetryAllowed2 = _interopRequireDefault(isRetryAllowed);
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  var namespace = 'axios-retry';
+
+  /**
+   * @param  {Error}  error
+   * @return {boolean}
+   */
+  function isNetworkError(error) {
+    return !error.response && Boolean(error.code) && // Prevents retrying cancelled requests
+    error.code !== 'ECONNABORTED' && // Prevents retrying timed out requests
+    (0, _isRetryAllowed2.default)(error); // Prevents retrying unsafe errors
+  }
+
+  var SAFE_HTTP_METHODS = ['get', 'head', 'options'];
+  var IDEMPOTENT_HTTP_METHODS = SAFE_HTTP_METHODS.concat(['put', 'delete']);
+
+  /**
+   * @param  {Error}  error
+   * @return {boolean}
+   */
+  function isRetryableError(error) {
+    return error.code !== 'ECONNABORTED' && (!error.response || error.response.status >= 500 && error.response.status <= 599);
+  }
+
+  /**
+   * @param  {Error}  error
+   * @return {boolean}
+   */
+  function isSafeRequestError(error) {
+    if (!error.config) {
+      // Cannot determine if the request can be retried
+      return false;
+    }
+
+    return isRetryableError(error) && SAFE_HTTP_METHODS.indexOf(error.config.method) !== -1;
+  }
+
+  /**
+   * @param  {Error}  error
+   * @return {boolean}
+   */
+  function isIdempotentRequestError(error) {
+    if (!error.config) {
+      // Cannot determine if the request can be retried
+      return false;
+    }
+
+    return isRetryableError(error) && IDEMPOTENT_HTTP_METHODS.indexOf(error.config.method) !== -1;
+  }
+
+  /**
+   * @param  {Error}  error
+   * @return {boolean}
+   */
+  function isNetworkOrIdempotentRequestError(error) {
+    return isNetworkError(error) || isIdempotentRequestError(error);
+  }
+
+  /**
+   * @return {number} - delay in milliseconds, always 0
+   */
+  function noDelay() {
+    return 0;
+  }
+
+  /**
+   * @param  {number} [retryNumber=0]
+   * @return {number} - delay in milliseconds
+   */
+  function exponentialDelay() {
+    var retryNumber = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+    var delay = Math.pow(2, retryNumber) * 100;
+    var randomSum = delay * 0.2 * Math.random(); // 0-20% of the delay
+    return delay + randomSum;
+  }
+
+  /**
+   * Initializes and returns the retry state for the given request/config
+   * @param  {AxiosRequestConfig} config
+   * @return {Object}
+   */
+  function getCurrentState(config) {
+    var currentState = config[namespace] || {};
+    currentState.retryCount = currentState.retryCount || 0;
+    config[namespace] = currentState;
+    return currentState;
+  }
+
+  /**
+   * Returns the axios-retry options for the current request
+   * @param  {AxiosRequestConfig} config
+   * @param  {AxiosRetryConfig} defaultOptions
+   * @return {AxiosRetryConfig}
+   */
+  function getRequestOptions(config, defaultOptions) {
+    return Object.assign({}, defaultOptions, config[namespace]);
+  }
+
+  /**
+   * @param  {Axios} axios
+   * @param  {AxiosRequestConfig} config
+   */
+  function fixConfig(axios, config) {
+    if (axios.defaults.agent === config.agent) {
+      delete config.agent;
+    }
+    if (axios.defaults.httpAgent === config.httpAgent) {
+      delete config.httpAgent;
+    }
+    if (axios.defaults.httpsAgent === config.httpsAgent) {
+      delete config.httpsAgent;
+    }
+  }
+
+  /**
+   * Adds response interceptors to an axios instance to retry requests failed due to network issues
+   *
+   * @example
+   *
+   * import axios from 'axios';
+   *
+   * axiosRetry(axios, { retries: 3 });
+   *
+   * axios.get('http://example.com/test') // The first request fails and the second returns 'ok'
+   *   .then(result => {
+   *     result.data; // 'ok'
+   *   });
+   *
+   * // Exponential back-off retry delay between requests
+   * axiosRetry(axios, { retryDelay : axiosRetry.exponentialDelay});
+   *
+   * // Custom retry delay
+   * axiosRetry(axios, { retryDelay : (retryCount) => {
+   *   return retryCount * 1000;
+   * }});
+   *
+   * // Also works with custom axios instances
+   * const client = axios.create({ baseURL: 'http://example.com' });
+   * axiosRetry(client, { retries: 3 });
+   *
+   * client.get('/test') // The first request fails and the second returns 'ok'
+   *   .then(result => {
+   *     result.data; // 'ok'
+   *   });
+   *
+   * // Allows request-specific configuration
+   * client
+   *   .get('/test', {
+   *     'axios-retry': {
+   *       retries: 0
+   *     }
+   *   })
+   *   .catch(error => { // The first request fails
+   *     error !== undefined
+   *   });
+   *
+   * @param {Axios} axios An axios instance (the axios object or one created from axios.create)
+   * @param {Object} [defaultOptions]
+   * @param {number} [defaultOptions.retries=3] Number of retries
+   * @param {boolean} [defaultOptions.shouldResetTimeout=false]
+   *        Defines if the timeout should be reset between retries
+   * @param {Function} [defaultOptions.retryCondition=isNetworkOrIdempotentRequestError]
+   *        A function to determine if the error can be retried
+   * @param {Function} [defaultOptions.retryDelay=noDelay]
+   *        A function to determine the delay between retry requests
+   */
+  function axiosRetry$1(axios, defaultOptions) {
+    axios.interceptors.request.use(function (config) {
+      var currentState = getCurrentState(config);
+      currentState.lastRequestTime = Date.now();
+      return config;
+    });
+
+    axios.interceptors.response.use(null, function (error) {
+      var config = error.config;
+
+      // If we have no information to retry the request
+      if (!config) {
+        return Promise.reject(error);
+      }
+
+      var _getRequestOptions = getRequestOptions(config, defaultOptions),
+          _getRequestOptions$re = _getRequestOptions.retries,
+          retries = _getRequestOptions$re === undefined ? 3 : _getRequestOptions$re,
+          _getRequestOptions$re2 = _getRequestOptions.retryCondition,
+          retryCondition = _getRequestOptions$re2 === undefined ? isNetworkOrIdempotentRequestError : _getRequestOptions$re2,
+          _getRequestOptions$re3 = _getRequestOptions.retryDelay,
+          retryDelay = _getRequestOptions$re3 === undefined ? noDelay : _getRequestOptions$re3,
+          _getRequestOptions$sh = _getRequestOptions.shouldResetTimeout,
+          shouldResetTimeout = _getRequestOptions$sh === undefined ? false : _getRequestOptions$sh;
+
+      var currentState = getCurrentState(config);
+
+      var shouldRetry = retryCondition(error) && currentState.retryCount < retries;
+
+      if (shouldRetry) {
+        currentState.retryCount += 1;
+        var delay = retryDelay(currentState.retryCount, error);
+
+        // Axios fails merging this configuration to the default configuration because it has an issue
+        // with circular structures: https://github.com/mzabriskie/axios/issues/370
+        fixConfig(axios, config);
+
+        if (!shouldResetTimeout && config.timeout && currentState.lastRequestTime) {
+          var lastRequestDuration = Date.now() - currentState.lastRequestTime;
+          // Minimum 1ms timeout (passing 0 or less to XHR means no timeout)
+          config.timeout = Math.max(config.timeout - lastRequestDuration - delay, 1);
+        }
+
+        config.transformRequest = [function (data) {
+          return data;
+        }];
+
+        return new Promise(function (resolve) {
+          return setTimeout(function () {
+            return resolve(axios(config));
+          }, delay);
+        });
+      }
+
+      return Promise.reject(error);
+    });
+  }
+
+  // Compatibility with CommonJS
+  axiosRetry$1.isNetworkError = isNetworkError;
+  axiosRetry$1.isSafeRequestError = isSafeRequestError;
+  axiosRetry$1.isIdempotentRequestError = isIdempotentRequestError;
+  axiosRetry$1.isNetworkOrIdempotentRequestError = isNetworkOrIdempotentRequestError;
+  axiosRetry$1.exponentialDelay = exponentialDelay;
+  axiosRetry$1.isRetryableError = isRetryableError;
+
+
+  var lib = /*#__PURE__*/Object.defineProperty({
+  	isNetworkError: isNetworkError_1,
+  	isRetryableError: isRetryableError_1,
+  	isSafeRequestError: isSafeRequestError_1,
+  	isIdempotentRequestError: isIdempotentRequestError_1,
+  	isNetworkOrIdempotentRequestError: isNetworkOrIdempotentRequestError_1,
+  	exponentialDelay: exponentialDelay_1,
+  	default: _default
+  }, '__esModule', {value: true});
+
+  var axiosRetry = lib.default;
+
   var LIMIT = 100;
+  var downloadUrls = new Map();
+  var timeOutError = 'ECONNABORTED';
+  /**
+   * @typedef {Object} Mode
+   * @property {string} label
+   * @property {string} icon
+   * @property {string} dataButton
+   */
+
+  var dataButtonModes = new Map([['edit', {
+    label: 'Edit',
+    icon: 'edit',
+    dataButton: 'edit'
+  }], ['resume', {
+    label: 'Resume',
+    icon: 'play_arrow',
+    dataButton: 'resume'
+  }], ['pause', {
+    label: 'Pause',
+    icon: 'pause',
+    dataButton: 'pause'
+  }], ['tsv', {
+    label: 'TSV',
+    icon: 'download',
+    dataButton: 'download-tsv'
+  }], ['json', {
+    label: 'JSON',
+    icon: 'download',
+    dataButton: 'download-json'
+  }], ['retry', {
+    label: 'Retry',
+    icon: 'refresh',
+    dataButton: 'retry'
+  }], ['empty', {
+    label: '',
+    icon: '',
+    dataButton: ''
+  }]]);
 
   var _condition = new WeakMap();
 
@@ -6184,9 +6594,9 @@
 
   var _rows = new WeakMap();
 
-  var _abortController = new WeakMap();
+  var _source = new WeakMap();
 
-  var _isAutoLoad = new WeakMap();
+  var _isLoading = new WeakMap();
 
   var _isCompleted = new WeakMap();
 
@@ -6202,25 +6612,47 @@
 
   var _INDICATOR_BAR = new WeakMap();
 
-  var _BUTTON_PREPARE_DATA = new WeakMap();
+  var _CONTROLLER = new WeakMap();
 
-  var _BUTTON_DOWNLOAD_JSON = new WeakMap();
+  var _BUTTON_LEFT = new WeakMap();
 
-  var _BUTTON_DOWNLOAD_TSV = new WeakMap();
+  var _BUTTON_RIGHT = new WeakMap();
+
+  var _deleteCondition = new WeakSet();
+
+  var _makeDataButton = new WeakSet();
+
+  var _updateDataButton = new WeakSet();
+
+  var _dataButtonPauseOrResume = new WeakSet();
+
+  var _dataButtonEdit = new WeakSet();
+
+  var _dataButtonRetry = new WeakSet();
+
+  var _dataButtonEvent = new WeakSet();
+
+  var _setDownloadButtons = new WeakSet();
+
+  var _setJsonUrl = new WeakSet();
+
+  var _setTsvUrl = new WeakSet();
+
+  var _handleError = new WeakSet();
+
+  var _displayError = new WeakSet();
+
+  var _getQueryIdsPayload = new WeakSet();
 
   var _getQueryIds = new WeakSet();
+
+  var _getPropertiesFetch = new WeakSet();
 
   var _getProperties = new WeakSet();
 
   var _updateRemainingTime = new WeakSet();
 
-  var _autoLoad = new WeakSet();
-
   var _complete = new WeakSet();
-
-  var _setJsonUrl = new WeakSet();
-
-  var _setTsvUrl = new WeakSet();
 
   var TableData = /*#__PURE__*/function () {
     function TableData(condition, elm) {
@@ -6228,19 +6660,41 @@
 
       _classCallCheck(this, TableData);
 
-      _setTsvUrl.add(this);
-
-      _setJsonUrl.add(this);
-
       _complete.add(this);
-
-      _autoLoad.add(this);
 
       _updateRemainingTime.add(this);
 
       _getProperties.add(this);
 
+      _getPropertiesFetch.add(this);
+
       _getQueryIds.add(this);
+
+      _getQueryIdsPayload.add(this);
+
+      _displayError.add(this);
+
+      _handleError.add(this);
+
+      _setTsvUrl.add(this);
+
+      _setJsonUrl.add(this);
+
+      _setDownloadButtons.add(this);
+
+      _dataButtonEvent.add(this);
+
+      _dataButtonRetry.add(this);
+
+      _dataButtonEdit.add(this);
+
+      _dataButtonPauseOrResume.add(this);
+
+      _updateDataButton.add(this);
+
+      _makeDataButton.add(this);
+
+      _deleteCondition.add(this);
 
       _condition.set(this, {
         writable: true,
@@ -6262,12 +6716,12 @@
         value: void 0
       });
 
-      _abortController.set(this, {
+      _source.set(this, {
         writable: true,
         value: void 0
       });
 
-      _isAutoLoad.set(this, {
+      _isLoading.set(this, {
         writable: true,
         value: void 0
       });
@@ -6307,24 +6761,38 @@
         value: void 0
       });
 
-      _BUTTON_PREPARE_DATA.set(this, {
+      _CONTROLLER.set(this, {
         writable: true,
         value: void 0
       });
 
-      _BUTTON_DOWNLOAD_JSON.set(this, {
+      _BUTTON_LEFT.set(this, {
         writable: true,
         value: void 0
       });
 
-      _BUTTON_DOWNLOAD_TSV.set(this, {
+      _BUTTON_RIGHT.set(this, {
         writable: true,
         value: void 0
       });
 
-      console.log(condition);
+      // axios settings
+      axios.defaults.timeout = 600000;
+      axiosRetry(axios, {
+        retries: 5,
+        shouldResetTimeout: true,
+        retryDelay: axiosRetry.exponentialDelay,
+        retryCondition: function retryCondition(error) {
+          var _error$response;
 
-      _classPrivateFieldSet(this, _isAutoLoad, false);
+          return error.code === timeOutError | ((_error$response = error.response) === null || _error$response === void 0 ? void 0 : _error$response.status) === 500;
+        }
+      });
+      var CancelToken = axios.CancelToken;
+
+      _classPrivateFieldSet(this, _source, CancelToken.source());
+
+      _classPrivateFieldSet(this, _isLoading, false);
 
       _classPrivateFieldSet(this, _isCompleted, false);
 
@@ -6343,12 +6811,12 @@
 
       elm.classList.add('table-data-controller-view');
       elm.dataset.status = 'load ids';
-      elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condiiton\">\n        <p title=\"".concat(condition.togoKey, "\">").concat(Records$1.getLabelFromTogoKey(condition.togoKey), "</p>\n      </div>\n      ").concat(condition.attributes.map(function (property) {
-        return "<div class=\"condiiton _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
+      elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condition\">\n        <p title=\"".concat(condition.togoKey, "\">").concat(Records$1.getLabelFromTogoKey(condition.togoKey), "</p>\n      </div>\n      ").concat(condition.attributes.map(function (property) {
+        return "<div class=\"condition _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         var label = property.parentCategoryId ? Records$1.getValue(property.query.propertyId, property.parentCategoryId).label : property.property.label;
-        return "<div class=\"condiiton _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n          <p title=\"").concat(label, "\">").concat(label, "</p>\n        </div>");
-      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting id list</p>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n      <div class=\"button none\" data-button=\"download-json\">\n        <a class=\"json\">\n          <span class=\"material-icons-outlined\">download json</span>\n          <span class=\"label\">JSON</span>\n        </a>\n      </div>\n      <div class=\"button none\" data-button=\"download-tsv\">\n        <a class=\"tsv\">\n          <span class=\"material-icons-outlined\">download tsv</span>\n          <span class=\"label\">TSV</span>\n        </a>\n      </div>\n      <div class=\"button -rotating\" data-button=\"prepare-data\">\n        <span class=\"material-icons-outlined\">autorenew</span>\n        <span class=\"label\">Pause</span>\n      </div>\n      <div class=\"button\" data-button=\"restore\">\n        <span class=\"material-icons-outlined\">edit</span>\n        <span class=\"label\">Edit</span>\n      </div>\n    </div>\n    "); // reference　
+        return "<div class=\"condition _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n          <p title=\"").concat(label, "\">").concat(label, "</p>\n        </div>");
+      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting ID list</p>\n      <span class=\"material-icons-outlined -rotating\">autorenew</span>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n    </div>\n    "); // reference
 
       _classPrivateFieldSet(this, _ROOT, elm);
 
@@ -6362,89 +6830,31 @@
 
       _classPrivateFieldSet(this, _INDICATOR_BAR, INDICATOR.querySelector(':scope > .progress > .bar'));
 
-      var BUTTONS = _toConsumableArray(elm.querySelectorAll(':scope > .controller > .button'));
+      _classPrivateFieldSet(this, _CONTROLLER, elm.querySelector(':scope > .controller'));
 
-      _classPrivateFieldSet(this, _BUTTON_PREPARE_DATA, BUTTONS.find(function (button) {
-        return button.dataset.button === 'prepare-data';
-      }));
+      _classPrivateFieldGet(this, _CONTROLLER).appendChild(_classPrivateMethodGet(this, _makeDataButton, _makeDataButton2).call(this, 'left'));
 
-      _classPrivateFieldSet(this, _BUTTON_DOWNLOAD_JSON, BUTTONS.find(function (button) {
-        return button.dataset.button === 'download-json';
-      }));
+      _classPrivateFieldGet(this, _CONTROLLER).appendChild(_classPrivateMethodGet(this, _makeDataButton, _makeDataButton2).call(this, 'right', dataButtonModes.get('edit')));
 
-      _classPrivateFieldSet(this, _BUTTON_DOWNLOAD_TSV, BUTTONS.find(function (button) {
-        return button.dataset.button === 'download-tsv';
-      })); // events
+      _classPrivateFieldSet(this, _BUTTON_LEFT, elm.querySelector(':scope > .controller > .button.left'));
+
+      _classPrivateFieldSet(this, _BUTTON_RIGHT, elm.querySelector(':scope > .controller > .button.right')); // events
 
 
       elm.addEventListener('click', function () {
         if (elm.classList.contains('-current')) return;
 
         _this.select();
-      });
-
-      _classPrivateFieldGet(this, _BUTTON_PREPARE_DATA).addEventListener('click', function (e) {
-        e.stopPropagation();
-
-        if (_classPrivateFieldGet(_this, _isAutoLoad) === false) {
-          _classPrivateMethodGet(_this, _autoLoad, _autoLoad2).call(_this);
-
-          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DATA).classList.add('-rotating');
-
-          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DATA).querySelector(':scope > .label').innerHTML = 'Pause';
-        } else {
-          _classPrivateFieldSet(_this, _isAutoLoad, false);
-
-          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DATA).classList.remove('-rotating');
-
-          _classPrivateFieldGet(_this, _BUTTON_PREPARE_DATA).querySelector(':scope > .label').innerHTML = 'Resume';
-        }
       }); // delete
 
-
       _classPrivateFieldGet(this, _ROOT).querySelector(':scope > .close-button-view').addEventListener('click', function (e) {
-        e.stopPropagation();
-        var customEvent = new CustomEvent(deleteTableData, {
-          detail: _this
-        });
-        DefaultEventEmitter$1.dispatchEvent(customEvent); // abort fetch
-
-        _classPrivateFieldGet(_this, _abortController).abort(); // delete element
-
-
-        _classPrivateFieldGet(_this, _ROOT).parentNode.removeChild(_classPrivateFieldGet(_this, _ROOT)); // transition
-
-
-        document.querySelector('body').dataset.display = 'properties';
-      }); // restore
-
-
-      BUTTONS.find(function (button) {
-        return button.dataset.button === 'restore';
-      }).addEventListener('click', function (e) {
-        e.stopPropagation(); // property (attribute)
-
-        ConditionBuilder$1.setProperties(_classPrivateFieldGet(_this, _condition).properties.map(function (property) {
-          return {
-            propertyId: property.query.propertyId,
-            parentCategoryId: property.parentCategoryId
-          };
-        }), false); // attribute (classification/distribution)
-
-        Records$1.properties.forEach(function (_ref) {
-          var propertyId = _ref.propertyId;
-
-          var attribute = _classPrivateFieldGet(_this, _condition).attributes.find(function (attribute) {
-            return attribute.property.propertyId === propertyId;
-          });
-
-          var categoryIds = [];
-          if (attribute) categoryIds.push.apply(categoryIds, _toConsumableArray(attribute.query.categoryIds));
-          ConditionBuilder$1.setPropertyValues(propertyId, categoryIds, false);
-        });
+        _classPrivateMethodGet(_this, _deleteCondition, _deleteCondition2).call(_this, e);
       });
+
       ConditionBuilder$1.finish();
       this.select();
+
+      _classPrivateFieldGet(this, _ROOT).classList.toggle('-fetching');
 
       _classPrivateMethodGet(this, _getQueryIds, _getQueryIds2).call(this);
     }
@@ -6481,13 +6891,6 @@
       key: "deselect",
       value: function deselect() {
         _classPrivateFieldGet(this, _ROOT).classList.remove('-current');
-      }
-    }, {
-      key: "next",
-      value: function next() {
-        if (_classPrivateFieldGet(this, _isAutoLoad)) return;
-
-        _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
       }
       /* public accessors */
 
@@ -6531,164 +6934,152 @@
     return TableData;
   }();
 
-  function _getQueryIds2() {
+  function _deleteCondition2(e) {
+    e.stopPropagation();
+    var customEvent = new CustomEvent(deleteTableData, {
+      detail: this
+    });
+    DefaultEventEmitter$1.dispatchEvent(customEvent); // abort fetch
+
+    _classPrivateFieldGet(this, _source).cancel('user cancel'); // delete element
+
+
+    _classPrivateFieldGet(this, _ROOT).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT)); // transition
+
+
+    document.querySelector('body').dataset.display = 'properties';
+  }
+
+  function _makeDataButton2(className) {
     var _this2 = this;
 
-    // reset
-    _classPrivateFieldSet(this, _abortController, new AbortController());
-
-    _classPrivateFieldGet(this, _ROOT).classList.add('-fetching');
-
-    fetch("".concat(App$1.aggregatePrimaryKeys, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
-      return property.query;
-    })))).concat(ConditionBuilder$1.userIds ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : ''), {
-      signal: _classPrivateFieldGet(this, _abortController).signal
-    }).catch(function (error) {
-      throw Error(error);
-    }).then(function (responce) {
-      if (responce.ok) {
-        return responce;
-      }
-
-      _classPrivateFieldGet(_this2, _STATUS).classList.add('-error');
-
-      _classPrivateFieldGet(_this2, _STATUS).textContent = "".concat(responce.status, " (").concat(responce.statusText, ")");
-      throw Error(responce);
-    }).then(function (responce) {
-      return responce.json();
-    }).then(function (queryIds) {
-      console.log(queryIds);
-
-      _classPrivateFieldSet(_this2, _queryIds, queryIds); // display
-
-
-      _classPrivateFieldGet(_this2, _ROOT).dataset.status = 'load rows';
-      _classPrivateFieldGet(_this2, _STATUS).textContent = '';
-      _classPrivateFieldGet(_this2, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this2.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this2, _queryIds).length.toLocaleString());
-
-      _classPrivateFieldSet(_this2, _startTime, Date.now());
-
-      _classPrivateMethodGet(_this2, _getProperties, _getProperties2).call(_this2);
-    }).catch(function (error) {
-      // TODO:
-      console.error(error);
-      var customEvent = new CustomEvent(failedFetchTableDataIds, {
-        detail: _this2
-      });
-      DefaultEventEmitter$1.dispatchEvent(customEvent);
-    }).finally(function () {
-      _classPrivateFieldGet(_this2, _ROOT).classList.remove('-fetching');
+    var mode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
+    var button = document.createElement('div');
+    button.innerHTML = "\n      <a>\n        <span class=\"material-icons-outlined\"></span>\n        <span class=\"label\"></span>\n      </a>";
+    button.classList.add('button', className);
+    if (mode) _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, button, mode);
+    button.addEventListener('click', function (e) {
+      _classPrivateMethodGet(_this2, _dataButtonEvent, _dataButtonEvent2).call(_this2, e);
     });
+    return button;
   }
 
-  function _getProperties2() {
+  function _updateDataButton2(target, mode, urlType) {
+    target.dataset.button = mode.dataButton;
+    var anchor = target.querySelector(':scope > a');
+    anchor.querySelector(':scope > .material-icons-outlined').innerText = mode.icon;
+    anchor.querySelector(':scope > .label').innerText = mode.label;
+
+    if (urlType) {
+      var url = downloadUrls.get(urlType);
+      anchor.setAttribute('href', url);
+      anchor.setAttribute('download', "sample.".concat(urlType));
+    }
+  }
+
+  function _dataButtonPauseOrResume2(e) {
+    e.stopPropagation();
+
+    _classPrivateFieldGet(this, _ROOT).classList.toggle('-fetching');
+
+    _classPrivateFieldGet(this, _STATUS).classList.toggle('-flickering');
+
+    var modeToChangeTo = _classPrivateFieldGet(this, _isLoading) ? 'resume' : 'pause';
+
+    _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, e.currentTarget, dataButtonModes.get(modeToChangeTo));
+
+    _classPrivateFieldSet(this, _isLoading, !_classPrivateFieldGet(this, _isLoading));
+
+    _classPrivateFieldGet(this, _STATUS).textContent = _classPrivateFieldGet(this, _isLoading) ? 'Getting Data' : 'Awaiting';
+    if (_classPrivateFieldGet(this, _isLoading)) _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
+  }
+
+  function _dataButtonEdit2(e) {
     var _this3 = this;
 
-    _classPrivateFieldSet(this, _isAutoLoad, true);
+    e.stopPropagation(); // property (attribute)
 
-    _classPrivateFieldGet(this, _ROOT).classList.add('-fetching');
+    ConditionBuilder$1.setProperties(_classPrivateFieldGet(this, _condition).properties.map(function (property) {
+      return {
+        propertyId: property.query.propertyId,
+        parentCategoryId: property.parentCategoryId
+      };
+    }), false); // attribute (classification/distribution)
 
-    _classPrivateFieldGet(this, _STATUS).textContent = 'Getting data';
-    fetch("".concat(App$1.aggregateRows, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
-      return property.query;
-    }).concat(_classPrivateFieldGet(this, _condition).properties.map(function (property) {
-      return property.query;
-    })))), "&queryIds=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _queryIds).slice(this.offset, this.offset + LIMIT)))), {
-      signal: _classPrivateFieldGet(this, _abortController).signal
-    }).then(function (responce) {
-      return responce.json();
-    }).then(function (rows) {
-      var _classPrivateFieldGet2;
+    Records$1.properties.forEach(function (_ref) {
+      var propertyId = _ref.propertyId;
 
-      console.log(rows);
-
-      (_classPrivateFieldGet2 = _classPrivateFieldGet(_this3, _rows)).push.apply(_classPrivateFieldGet2, _toConsumableArray(rows));
-
-      _classPrivateFieldSet(_this3, _isCompleted, _this3.offset >= _classPrivateFieldGet(_this3, _queryIds).length); // display
-
-
-      _classPrivateFieldGet(_this3, _ROOT).classList.remove('-fetching');
-
-      _classPrivateFieldGet(_this3, _STATUS).textContent = 'Awaiting';
-      _classPrivateFieldGet(_this3, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this3.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this3, _queryIds).length.toLocaleString());
-      _classPrivateFieldGet(_this3, _INDICATOR_BAR).style.width = "".concat(_this3.offset / _classPrivateFieldGet(_this3, _queryIds).length * 100, "%");
-
-      _classPrivateMethodGet(_this3, _updateRemainingTime, _updateRemainingTime2).call(_this3); // dispatch event
-
-
-      var customEvent = new CustomEvent(addNextRows, {
-        detail: {
-          tableData: _this3,
-          rows: rows,
-          done: _classPrivateFieldGet(_this3, _isCompleted)
-        }
+      var attribute = _classPrivateFieldGet(_this3, _condition).attributes.find(function (attribute) {
+        return attribute.property.propertyId === propertyId;
       });
-      DefaultEventEmitter$1.dispatchEvent(customEvent); // turn off after finished
 
-      if (_classPrivateFieldGet(_this3, _isCompleted)) {
-        _classPrivateMethodGet(_this3, _complete, _complete2).call(_this3);
-      } else if (_classPrivateFieldGet(_this3, _isAutoLoad)) {
-        _classPrivateMethodGet(_this3, _getProperties, _getProperties2).call(_this3);
-      }
-    }).catch(function (error) {
-      _classPrivateFieldGet(_this3, _ROOT).classList.remove('-fetching');
-
-      console.error(error); // TODO:
+      var categoryIds = [];
+      if (attribute) categoryIds.push.apply(categoryIds, _toConsumableArray(attribute.query.categoryIds));
+      ConditionBuilder$1.setPropertyValues(propertyId, categoryIds, false);
     });
   }
 
-  function _updateRemainingTime2() {
-    var singleTime = (Date.now() - _classPrivateFieldGet(this, _startTime)) / this.offset;
-    var remainingTime;
+  function _dataButtonRetry2() {
+    _classPrivateFieldGet(this, _STATUS).classList.remove('-error');
 
-    if (this.offset == 0) {
-      remainingTime = '';
-    } else if (this.offset >= _classPrivateFieldGet(this, _queryIds).length) {
-      remainingTime = 0;
-    } else {
-      remainingTime = singleTime * _classPrivateFieldGet(this, _queryIds).length * (_classPrivateFieldGet(this, _queryIds).length - this.offset) / _classPrivateFieldGet(this, _queryIds).length / 1000;
+    _classPrivateFieldGet(this, _ROOT).classList.toggle('-fetching');
+
+    _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, _classPrivateFieldGet(this, _BUTTON_LEFT), dataButtonModes.get('empty'));
+
+    if (_classPrivateFieldGet(this, _queryIds).length > 0) {
+      _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
+
+      _classPrivateFieldGet(this, _STATUS).textContent = 'Getting Data';
+      return;
     }
 
-    if (remainingTime >= 3600) {
-      _classPrivateFieldGet(this, _INDICATOR_TEXT_TIME).innerHTML = "".concat(Math.round(remainingTime / 3600), " hr.");
-    } else if (remainingTime >= 60) {
-      _classPrivateFieldGet(this, _INDICATOR_TEXT_TIME).innerHTML = "".concat(Math.round(remainingTime / 60), " min.");
-    } else if (remainingTime >= 0) {
-      _classPrivateFieldGet(this, _INDICATOR_TEXT_TIME).innerHTML = "".concat(Math.floor(remainingTime), " sec.");
-    } else {
-      _classPrivateFieldGet(this, _INDICATOR_TEXT_TIME).innerHTML = "";
+    _classPrivateFieldGet(this, _STATUS).textContent = 'Getting ID list';
+
+    _classPrivateMethodGet(this, _getQueryIds, _getQueryIds2).call(this);
+  }
+
+  function _dataButtonEvent2(e) {
+    var button = e.currentTarget;
+    var mode = button.dataset.button;
+
+    switch (mode) {
+      case 'edit':
+        _classPrivateMethodGet(this, _dataButtonEdit, _dataButtonEdit2).call(this, e);
+
+        break;
+
+      case 'resume':
+      case 'pause':
+        _classPrivateMethodGet(this, _dataButtonPauseOrResume, _dataButtonPauseOrResume2).call(this, e);
+
+        break;
+
+      case 'retry':
+        _classPrivateMethodGet(this, _dataButtonRetry, _dataButtonRetry2).call(this);
+
+        break;
     }
   }
 
-  function _autoLoad2() {
-    if (_classPrivateFieldGet(this, _isCompleted)) return;
+  function _setDownloadButtons2() {
+    _classPrivateMethodGet(this, _setTsvUrl, _setTsvUrl2).call(this);
 
-    _classPrivateFieldSet(this, _isAutoLoad, true);
-
-    _classPrivateFieldGet(this, _ROOT).classList.add('-autoload');
-
-    _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
-  }
-
-  function _complete2() {
-    _classPrivateFieldGet(this, _ROOT).dataset.status = 'complete';
-    _classPrivateFieldGet(this, _STATUS).textContent = 'Complete';
+    _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, _classPrivateFieldGet(this, _BUTTON_LEFT), dataButtonModes.get('tsv'), 'tsv');
 
     _classPrivateMethodGet(this, _setJsonUrl, _setJsonUrl2).call(this);
 
-    _classPrivateMethodGet(this, _setTsvUrl, _setTsvUrl2).call(this);
+    var middleButton = _classPrivateMethodGet(this, _makeDataButton, _makeDataButton2).call(this, 'middle', 'json');
+
+    _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, middleButton, dataButtonModes.get('json'), 'json');
+
+    _classPrivateFieldGet(this, _CONTROLLER).insertBefore(middleButton, _classPrivateFieldGet(this, _BUTTON_RIGHT));
   }
 
   function _setJsonUrl2() {
     var jsonBlob = new Blob([JSON.stringify(_classPrivateFieldGet(this, _rows), null, 2)], {
       type: 'application/json'
     });
-    var jsonUrl = URL.createObjectURL(jsonBlob);
-
-    var anchor = _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_JSON).querySelector(':scope > .json');
-
-    anchor.setAttribute('href', jsonUrl);
-    anchor.setAttribute('download', 'sample.json');
+    downloadUrls.set('json', URL.createObjectURL(jsonBlob));
   }
 
   function _setTsvUrl2() {
@@ -6717,20 +7108,167 @@
     });
 
     if (tsvArray.length !== 0) {
-      var tsvHeader = ["togoKey", "togoKeyId", "togoKeyLabel", "attribute", "attributeKey", "attributeKeyId", "attributeValue"];
+      var tsvHeader = ['togoKey', 'togoKeyId', 'togoKeyLabel', 'attribute', 'attributeKey', 'attributeKeyId', 'attributeValue'];
       tsvArray.unshift(tsvHeader.join('\t'));
     }
 
-    var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+    var bom = new Uint8Array([0xef, 0xbb, 0xbf]);
     var tsvBlob = new Blob([bom, tsvArray.join('\n')], {
       type: 'text/plain'
     });
     var tsvUrl = URL.createObjectURL(tsvBlob);
+    downloadUrls.set('tsv', tsvUrl);
+  }
 
-    var anchor = _classPrivateFieldGet(this, _BUTTON_DOWNLOAD_TSV).querySelector(':scope > .tsv');
+  function _handleError2(err) {
+    var _err$response;
 
-    anchor.setAttribute('href', tsvUrl);
-    anchor.setAttribute('download', 'sample.tsv');
+    var message, errCode;
+
+    if (axios.isCancel && err.message === 'user cancel') {
+      return;
+    } else if (((_err$response = err.response) === null || _err$response === void 0 ? void 0 : _err$response.status) === 500 | err.code === timeOutError) {
+      _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, _classPrivateFieldGet(this, _BUTTON_LEFT), dataButtonModes.get('retry'));
+    } else {
+      _classPrivateFieldGet(this, _BUTTON_LEFT).remove();
+    }
+
+    errCode = err.response ? err.response.status : false;
+    message = err.response ? err.response.statusText : err.code === timeOutError ? 'Timeout' : err.message;
+
+    _classPrivateMethodGet(this, _displayError, _displayError2).call(this, message, errCode);
+  }
+
+  function _displayError2(message, code) {
+    _classPrivateFieldGet(this, _STATUS).classList.add('-error');
+
+    _classPrivateFieldGet(this, _STATUS).textContent = code ? "".concat(message, " (").concat(code, ")") : message;
+
+    _classPrivateFieldGet(this, _ROOT).classList.toggle('-fetching');
+
+    var customEvent = new CustomEvent(failedFetchTableDataIds, {
+      detail: this
+    });
+    DefaultEventEmitter$1.dispatchEvent(customEvent);
+  }
+
+  function _getQueryIdsPayload2() {
+    var _ConditionBuilder$use;
+
+    console.log(ConditionBuilder$1.userIds);
+    return "?togoKey=".concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
+      return property.query;
+    })))).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : '');
+  }
+
+  function _getQueryIds2() {
+    var _this5 = this;
+
+    axios.post(App$1.aggregatePrimaryKeys, _classPrivateMethodGet(this, _getQueryIdsPayload, _getQueryIdsPayload2).call(this), {
+      cancelToken: _classPrivateFieldGet(this, _source).token
+    }).then(function (response) {
+      _classPrivateFieldSet(_this5, _queryIds, response.data);
+
+      if (_classPrivateFieldGet(_this5, _queryIds).length <= 0) {
+        _classPrivateMethodGet(_this5, _complete, _complete2).call(_this5, false);
+
+        return;
+      }
+
+      _classPrivateFieldGet(_this5, _ROOT).dataset.status = 'load rows';
+      _classPrivateFieldGet(_this5, _STATUS).textContent = 'Getting Data';
+      _classPrivateFieldGet(_this5, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this5.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this5, _queryIds).length.toLocaleString());
+
+      _classPrivateFieldSet(_this5, _startTime, Date.now());
+
+      _classPrivateMethodGet(_this5, _updateDataButton, _updateDataButton2).call(_this5, _classPrivateFieldGet(_this5, _BUTTON_LEFT), dataButtonModes.get('pause'));
+
+      _classPrivateMethodGet(_this5, _getProperties, _getProperties2).call(_this5);
+    }).catch(function (error) {
+      _classPrivateMethodGet(_this5, _handleError, _handleError2).call(_this5, error);
+    });
+  }
+
+  function _getPropertiesFetch2() {
+    return "".concat(App$1.aggregateRows, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
+      return property.query;
+    }).concat(_classPrivateFieldGet(this, _condition).properties.map(function (property) {
+      return property.query;
+    })))), "&queryIds=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _queryIds).slice(this.offset, this.offset + LIMIT))));
+  }
+
+  function _getProperties2() {
+    var _this6 = this;
+
+    _classPrivateFieldSet(this, _isLoading, true);
+
+    axios.get(_classPrivateMethodGet(this, _getPropertiesFetch, _getPropertiesFetch2).call(this), {
+      cancelToken: _classPrivateFieldGet(this, _source).token
+    }).then(function (response) {
+      var _classPrivateFieldGet2;
+
+      (_classPrivateFieldGet2 = _classPrivateFieldGet(_this6, _rows)).push.apply(_classPrivateFieldGet2, _toConsumableArray(response.data));
+
+      _classPrivateFieldSet(_this6, _isCompleted, _this6.offset >= _classPrivateFieldGet(_this6, _queryIds).length);
+
+      _classPrivateFieldGet(_this6, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this6.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this6, _queryIds).length.toLocaleString());
+      _classPrivateFieldGet(_this6, _INDICATOR_BAR).style.width = "".concat(_this6.offset / _classPrivateFieldGet(_this6, _queryIds).length * 100, "%");
+
+      _classPrivateMethodGet(_this6, _updateRemainingTime, _updateRemainingTime2).call(_this6); // dispatch event
+
+
+      var customEvent = new CustomEvent(addNextRows, {
+        detail: {
+          tableData: _this6,
+          rows: response.data,
+          done: _classPrivateFieldGet(_this6, _isCompleted)
+        }
+      });
+      DefaultEventEmitter$1.dispatchEvent(customEvent); // turn off after finished
+
+      if (_classPrivateFieldGet(_this6, _isCompleted)) {
+        _classPrivateMethodGet(_this6, _complete, _complete2).call(_this6);
+
+        return;
+      } else if (_classPrivateFieldGet(_this6, _isLoading)) {
+        _classPrivateMethodGet(_this6, _getProperties, _getProperties2).call(_this6);
+      }
+    }).catch(function (error) {
+      _classPrivateMethodGet(_this6, _handleError, _handleError2).call(_this6, error);
+    });
+  }
+
+  function _updateRemainingTime2() {
+    var singleTime = (Date.now() - _classPrivateFieldGet(this, _startTime)) / this.offset;
+    var remainingTime;
+
+    if (this.offset == 0) {
+      remainingTime = '';
+    } else if (this.offset >= _classPrivateFieldGet(this, _queryIds).length) {
+      remainingTime = 0;
+    } else {
+      remainingTime = singleTime * _classPrivateFieldGet(this, _queryIds).length * (_classPrivateFieldGet(this, _queryIds).length - this.offset) / _classPrivateFieldGet(this, _queryIds).length / 1000;
+    }
+
+    if (remainingTime >= 3600) {
+      _classPrivateFieldGet(this, _INDICATOR_TEXT_TIME).innerHTML = "".concat(Math.round(remainingTime / 3600), " hr.");
+    } else if (remainingTime >= 60) {
+      _classPrivateFieldGet(this, _INDICATOR_TEXT_TIME).innerHTML = "".concat(Math.round(remainingTime / 60), " min.");
+    } else if (remainingTime >= 0) {
+      _classPrivateFieldGet(this, _INDICATOR_TEXT_TIME).innerHTML = "".concat(Math.floor(remainingTime), " sec.");
+    } else {
+      _classPrivateFieldGet(this, _INDICATOR_TEXT_TIME).innerHTML = "";
+    }
+  }
+
+  function _complete2() {
+    var withData = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+    _classPrivateFieldGet(this, _ROOT).dataset.status = 'complete';
+    _classPrivateFieldGet(this, _STATUS).textContent = withData ? 'Complete' : 'No Data found';
+
+    _classPrivateFieldGet(this, _ROOT).classList.toggle('-fetching');
+
+    if (withData) _classPrivateMethodGet(this, _setDownloadButtons, _setDownloadButtons2).call(this);
   }
 
   var _tableData = new WeakMap();
@@ -6876,8 +7414,6 @@
 
   var _USER_IDS = new WeakMap();
 
-  var _restoreParameters = new WeakSet();
-
   var _fetch = new WeakSet();
 
   var _clear = new WeakSet();
@@ -6891,8 +7427,6 @@
       _clear.add(this);
 
       _fetch.add(this);
-
-      _restoreParameters.add(this);
 
       _path.set(this, {
         writable: true,
@@ -6935,9 +7469,9 @@
       }); // this.#USER_IDS.addEventListener('keyup', e => {
       //   if (e.keyCode === 13) this.#fetch();
       // });
+      // DefaultEventEmitter.addEventListener(event.restoreParameters, this.#restoreParameters.bind(this));
 
 
-      DefaultEventEmitter$1.addEventListener(restoreParameters, _classPrivateMethodGet(this, _restoreParameters, _restoreParameters2).bind(this));
       DefaultEventEmitter$1.addEventListener(clearCondition, _classPrivateMethodGet(this, _clear, _clear2).bind(this));
     } // public methods
 
@@ -6947,16 +7481,14 @@
       value: function definePath(path) {
         _classPrivateFieldSet(this, _path, path);
       } // private methods
+      // #restoreParameters({detail}) {
+      //   this.#USER_IDS.value = detail.userIds;
+      // }
 
     }]);
 
     return UploadUserIDsView;
   }();
-
-  function _restoreParameters2(_ref) {
-    var detail = _ref.detail;
-    _classPrivateFieldGet(this, _USER_IDS).value = detail.userIds;
-  }
 
   function _fetch2() {
     var _this2 = this;
@@ -7010,9 +7542,13 @@
 
   var _makeConceptViews = new WeakSet();
 
+  var _defineAllTracksCollapseButton = new WeakSet();
+
   var App = /*#__PURE__*/function () {
     function App() {
       _classCallCheck(this, App);
+
+      _defineAllTracksCollapseButton.add(this);
 
       _makeConceptViews.add(this);
 
@@ -7130,6 +7666,8 @@
           _classPrivateFieldSet(_this, _aggregate, Object.freeze(aggregate));
 
           _classPrivateMethodGet(_this, _makeConceptViews, _makeConceptViews2).call(_this);
+
+          _classPrivateMethodGet(_this, _defineAllTracksCollapseButton, _defineAllTracksCollapseButton2).call(_this);
         });
       } // private methods
 
@@ -7191,6 +7729,27 @@
       var elm = document.createElement('section');
       new ConceptView(subject, elm);
       conceptsContainer.insertAdjacentElement('beforeend', elm);
+    });
+  }
+
+  function _defineAllTracksCollapseButton2() {
+    var collapsebutton = document.querySelector('#Properties > header > .title > h2.collapsebutton');
+    collapsebutton.addEventListener('click', function (e) {
+      var customEvent = new CustomEvent(allTracksCollapse);
+
+      if (collapsebutton.classList.contains('-spread')) {
+        collapsebutton.classList.remove('-spread');
+        customEvent = new CustomEvent(allTracksCollapse, {
+          detail: false
+        });
+      } else {
+        collapsebutton.classList.add('-spread');
+        customEvent = new CustomEvent(allTracksCollapse, {
+          detail: true
+        });
+      }
+
+      DefaultEventEmitter$1.dispatchEvent(customEvent);
     });
   }
 
