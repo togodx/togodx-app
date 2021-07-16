@@ -32,12 +32,12 @@ export default class HistogramRangeSelectorController {
       }
     });
 
-
-    // set up
-
+    // reference
     const selectingArea = selector.querySelector(':scope > .inner > .selectingarea');
     const selectorController = selector.querySelector(':scope > .inner > .controller');
+    const selectorBars = selector.querySelectorAll(':scope > .inner > .overview > .bar');
 
+    // make selecting area
     let isMouseDown = false, startX, width, unit;
     selectorController.addEventListener('mousedown', e => {
       width = e.target.getBoundingClientRect().width;
@@ -47,7 +47,7 @@ export default class HistogramRangeSelectorController {
     });
     selectorController.addEventListener('mousemove', e => {
       if (isMouseDown) {
-        // selection range
+        // calculate selection range
         const selectedWidth = e.layerX - startX;
         if (selectedWidth > 0) {
           this.#selection.start = Math.floor(startX / unit);
@@ -56,13 +56,13 @@ export default class HistogramRangeSelectorController {
           this.#selection.start = Math.floor(e.layerX / unit);
           this.#selection.end = Math.floor(startX / unit)
         }
-        // select overview by range
-        selector.querySelectorAll(':scope > .inner > .overview > .bar').forEach((bar, index) => {
-          if (this.#selection.start <= index && index <= this.#selection.end) {
-            bar.classList.add('-selected');
-          } else {
-            bar.classList.remove('-selected');
-          }
+        // selecting area
+        selectingArea.style.left = (this.start * unit) + 'px';
+        selectingArea.style.width = ((this.end - this.start) * unit) + 'px';
+        // overview
+        selectorBars.forEach((bar, index) => {
+          if (this.#selection.start <= index && index <= this.#selection.end) bar.classList.add('-selected');
+          else bar.classList.remove('-selected');
         });
         target.update();
         // set condition
@@ -82,6 +82,10 @@ export default class HistogramRangeSelectorController {
         );
       }
     });
+
+    // drag selecting area
+
+    // resize selecting area
   }
 
 

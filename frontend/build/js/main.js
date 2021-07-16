@@ -4555,10 +4555,12 @@
             selectionEnd = value;
           }
         }
-      }); // set up
+      }); // reference
 
-      selector.querySelector(':scope > .inner > .selectingarea');
+      var selectingArea = selector.querySelector(':scope > .inner > .selectingarea');
       var selectorController = selector.querySelector(':scope > .inner > .controller');
+      var selectorBars = selector.querySelectorAll(':scope > .inner > .overview > .bar'); // make selecting area
+
       var isMouseDown = false,
           startX,
           width,
@@ -4571,7 +4573,7 @@
       });
       selectorController.addEventListener('mousemove', function (e) {
         if (isMouseDown) {
-          // selection range
+          // calculate selection range
           var selectedWidth = e.layerX - startX;
 
           if (selectedWidth > 0) {
@@ -4580,15 +4582,14 @@
           } else {
             _classPrivateFieldGet(_this, _selection).start = Math.floor(e.layerX / unit);
             _classPrivateFieldGet(_this, _selection).end = Math.floor(startX / unit);
-          } // select overview by range
+          } // selecting area
 
 
-          selector.querySelectorAll(':scope > .inner > .overview > .bar').forEach(function (bar, index) {
-            if (_classPrivateFieldGet(_this, _selection).start <= index && index <= _classPrivateFieldGet(_this, _selection).end) {
-              bar.classList.add('-selected');
-            } else {
-              bar.classList.remove('-selected');
-            }
+          selectingArea.style.left = _this.start * unit + 'px';
+          selectingArea.style.width = (_this.end - _this.start) * unit + 'px'; // overview
+
+          selectorBars.forEach(function (bar, index) {
+            if (_classPrivateFieldGet(_this, _selection).start <= index && index <= _classPrivateFieldGet(_this, _selection).end) bar.classList.add('-selected');else bar.classList.remove('-selected');
           });
           target.update(); // set condition
 
@@ -4604,7 +4605,8 @@
             return item.categoryId;
           }));
         }
-      });
+      }); // drag selecting area
+      // resize selecting area
     } // accessor
 
 
@@ -4690,8 +4692,6 @@
 
   var _ROOT$6 = new WeakMap();
 
-  var _SELECTOR_BARS = new WeakMap();
-
   var _GRIDS = new WeakMap();
 
   var _indicateValue = new WeakSet();
@@ -4725,11 +4725,6 @@
       });
 
       _ROOT$6.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _SELECTOR_BARS.set(this, {
         writable: true,
         value: void 0
       });
@@ -4781,9 +4776,7 @@
         return _classPrivateFieldGet(_this, _items)[index].elm = item;
       });
 
-      _classPrivateFieldSet(this, _GRIDS, histogram.querySelectorAll(':scope > .gridcontainer > .grid'));
-
-      _classPrivateFieldSet(this, _SELECTOR_BARS, Array.from(overview.querySelectorAll(':scope > .bar'))); // event
+      _classPrivateFieldSet(this, _GRIDS, histogram.querySelectorAll(':scope > .gridcontainer > .grid')); // event
 
 
       DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {

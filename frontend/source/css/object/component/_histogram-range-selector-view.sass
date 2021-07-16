@@ -8,7 +8,6 @@
     margin-bottom: .4rem
     padding: .6rem var(--padding-horizontal) .4rem
     border-bottom: solid .1rem var(--color-separator)
-    // width: calc(100% - var(--padding-horizontal) * 2)
     > .inner
       position: relative
       height: var(--height-selector)
@@ -26,14 +25,8 @@
           &.-selected
             opacity: 1
             position: relative
-            // &::before
-            //   content: ""
-            //   position: absolute
-            //   bottom: -.2rem
-            //   width: 100%
-            //   height: calc(var(--height-selector) + .4rem)
-            //   background-color: var(--color-selected)
       > .selectingarea
+        width: 0
         border: solid .1rem var(--color-selected-deep)
         background-color: var(--color-selected)
       > .controller

@@ -13,7 +13,6 @@ export default class HistogramRangeSelectorView {
   #selectorController;
   #OVERVIEW_CONTAINER;
   #ROOT;
-  #SELECTOR_BARS;
   #GRIDS;
 
   constructor(elm, subject, property, items, sparqlist, overviewContainer) {
@@ -64,7 +63,6 @@ export default class HistogramRangeSelectorView {
     // reference
     histogram.querySelectorAll(':scope > .graph > .bar').forEach((item, index) => this.#items[index].elm = item);
     this.#GRIDS = histogram.querySelectorAll(':scope > .gridcontainer > .grid');
-    this.#SELECTOR_BARS = Array.from(overview.querySelectorAll(':scope > .bar'));
 
     // event
     DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.update());
