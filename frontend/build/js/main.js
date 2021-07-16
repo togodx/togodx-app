@@ -258,6 +258,10 @@
     };
   }
 
+  function _readOnlyError(name) {
+    throw new TypeError("\"" + name + "\" is read-only");
+  }
+
   function _slicedToArray(arr, i) {
     return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
   }
@@ -4568,7 +4572,11 @@
             return selectionStart;
           },
           set: function set(value) {
-            selectionStart = value;
+            if (selectionStart !== value) {
+              selectionStart = value;
+
+              _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
+            }
           }
         },
         end: {
@@ -4576,7 +4584,11 @@
             return selectionEnd;
           },
           set: function set(value) {
-            selectionEnd = value;
+            if (selectionEnd !== value) {
+              selectionEnd = value;
+
+              _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
+            }
           }
         },
         range: {
@@ -4588,10 +4600,12 @@
                 start = _ref2[0],
                 end = _ref2[1];
 
-            selectionStart = start;
-            selectionEnd = end;
+            if (selectionStart !== start || selectionEnd !== end) {
+              selectionStart = start;
+              selectionEnd = end;
 
-            _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
+              _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
+            }
           }
         }
       }); // reference
@@ -4599,61 +4613,97 @@
       _classPrivateFieldSet(this, _SELECTING_AREA, selector.querySelector(':scope > .inner > .selectingarea'));
 
       var handlesArray = Array.from(_classPrivateFieldGet(this, _SELECTING_AREA).querySelectorAll(':scope > .handle'));
-      console.log(handlesArray);
-      var handles = {
+      ({
         left: handlesArray.filter(function (handle) {
           return handle.dataset.direction === 'left';
         }),
         right: handlesArray.filter(function (handle) {
           return handle.dataset.direction === 'right';
         })
-      };
-      console.log(handles);
+      });
       var selectorController = selector.querySelector(':scope > .inner > .controller');
 
-      _classPrivateFieldSet(this, _SELECTOR_BARS, selector.querySelectorAll(':scope > .inner > .overview > .bar')); // make selecting area
+      _classPrivateFieldSet(this, _SELECTOR_BARS, selector.querySelectorAll(':scope > .inner > .overview > .bar')); // interaction
 
 
       var isMouseDown = false,
           startX,
-          width;
+          startStart,
+          totalWidth;
+
+      _classPrivateFieldSet(this, _unit, 100 / target.items.length); // make selecting area
+
+
       selectorController.addEventListener('mousedown', function (e) {
         selector.classList.add('-makingarea');
-        width = e.target.getBoundingClientRect().width;
-
-        _classPrivateFieldSet(_this, _unit, 100 / target.items.length);
-
+        totalWidth = e.target.getBoundingClientRect().width;
         isMouseDown = true;
-        startX = e.layerX / width * 100;
+        startX = e.layerX / totalWidth * 100;
       });
       selectorController.addEventListener('mousemove', function (e) {
         if (isMouseDown) {
           // calculate selection range
-          var x = e.layerX / width * 100;
+          var x = e.layerX / totalWidth * 100;
           var selectedWidth = x - startX;
+          var start, end;
 
           if (selectedWidth > 0) {
-            _classPrivateFieldGet(_this, _selection).range = [Math.floor(startX / _classPrivateFieldGet(_this, _unit)), Math.floor(x / _classPrivateFieldGet(_this, _unit))]; // this.#selection.start = Math.floor(startX / this.#unit);
-            // this.#selection.end = Math.floor(x / this.#unit)
+            start = startX;
+            end = x;
           } else {
-            _classPrivateFieldGet(_this, _selection).range = [Math.floor(x / _classPrivateFieldGet(_this, _unit)), Math.floor(startX / _classPrivateFieldGet(_this, _unit))]; // this.#selection.start = Math.floor(x / unit);
-            // this.#selection.end = Math.floor(startX / unit)
-          } // selecting area
-          // this.#SELECTING_AREA.style.left = (this.start * unit) + '%';
-          // this.#SELECTING_AREA.style.width = ((this.end - this.start) * unit) + '%';
+            start = x;
+            end = startX;
+          }
 
+          _classPrivateFieldGet(_this, _selection).range = [Math.floor(start / _classPrivateFieldGet(_this, _unit)), Math.floor(end / _classPrivateFieldGet(_this, _unit))];
         }
       });
-      selectorController.addEventListener('mouseup', function (e) {
+      selectorController.addEventListener('mouseup', function () {
         if (isMouseDown) {
           selector.classList.remove('-makingarea');
           isMouseDown = false;
-          ConditionBuilder$1.setPropertyValues(target.propertyId, _this.selectedItems.map(function (item) {
-            return item.categoryId;
-          }));
+
+          _classPrivateMethodGet(_this, _update$1, _update2$1).call(_this);
         }
       }); // drag selecting area
-      // resize selecting area
+
+      _classPrivateFieldGet(this, _SELECTING_AREA).addEventListener('mousedown', function (e) {
+        selector.classList.add('-draggingarea');
+        totalWidth = e.target.getBoundingClientRect().width;
+        isMouseDown = true;
+        startX = e.layerX / totalWidth * 100;
+        startStart = _this.start;
+      });
+
+      _classPrivateFieldGet(this, _SELECTING_AREA).addEventListener('mousemove', function (e) {
+        var x = e.layerX / totalWidth * 100;
+        var shift = Math.floor((x - startX) / _classPrivateFieldGet(_this, _unit));
+        console.log(_this.width);
+        console.log(startStart, x, shift);
+
+        switch (true) {
+          case startStart + shift < 0:
+            shift -= (_readOnlyError("shift"), startStart + shift);
+            break;
+
+          case startStart + shift + _this.width > target.items.length:
+            shift -= (_readOnlyError("shift"), startStart + shift + _this.width);
+            break;
+        }
+
+        console.log(startStart, x, shift);
+        _classPrivateFieldGet(_this, _selection).range = [startStart + shift, startStart + shift + _this.width];
+      });
+
+      _classPrivateFieldGet(this, _SELECTING_AREA).addEventListener('mouseup', function () {
+        if (isMouseDown) {
+          selector.classList.remove('-draggingarea');
+          isMouseDown = false;
+
+          _classPrivateMethodGet(_this, _update$1, _update2$1).call(_this);
+        }
+      }); // resize selecting area
+
     } // private methods
 
 
@@ -4667,6 +4717,11 @@
       key: "end",
       get: function get() {
         return _classPrivateFieldGet(this, _selection).end;
+      }
+    }, {
+      key: "width",
+      get: function get() {
+        return this.end - this.start;
       }
     }, {
       key: "selectedItems",
