@@ -180,12 +180,25 @@ update_file_list() {
 
 inspect_filetype() {
   local file="${1}"
-  docker run \
-    -it \
-    --rm \
-    -v "${file}":/data \
-    "ghcr.io/inutano/raptor2:cc010ed" \
-    rapper --guess /data 2>/dev/null | head | awk '/Guessed/ { print $NF }' | tr -d "'"
+  case ${file} in
+    *.ttl )
+      echo "turtle"
+      ;;
+    *.rdf | *.owl )
+      echo "rdfxml"
+      ;;
+    *.nq | *.nt )
+      echo "nquads"
+      ;;
+    * )
+      type=$(docker run -it --rm -v "${file}":/data "ghcr.io/inutano/raptor2:cc010ed" rapper --guess /data 2>/dev/null | head | awk '/Guessed/ { print $NF }' | tr -d "'")
+      if [[ -z ${type} ]]; then
+        echo "unknown"
+      else
+        echo "${type}"
+      fi
+      ;;
+  esac
 }
 
 create_date_triple() {
