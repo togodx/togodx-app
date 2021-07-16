@@ -6226,8 +6226,329 @@
     });
   };
 
+  var WHITELIST = [
+  	'ETIMEDOUT',
+  	'ECONNRESET',
+  	'EADDRINUSE',
+  	'ESOCKETTIMEDOUT',
+  	'ECONNREFUSED',
+  	'EPIPE',
+  	'EHOSTUNREACH',
+  	'EAI_AGAIN'
+  ];
+
+  var BLACKLIST = [
+  	'ENOTFOUND',
+  	'ENETUNREACH',
+
+  	// SSL errors from https://github.com/nodejs/node/blob/ed3d8b13ee9a705d89f9e0397d9e96519e7e47ac/src/node_crypto.cc#L1950
+  	'UNABLE_TO_GET_ISSUER_CERT',
+  	'UNABLE_TO_GET_CRL',
+  	'UNABLE_TO_DECRYPT_CERT_SIGNATURE',
+  	'UNABLE_TO_DECRYPT_CRL_SIGNATURE',
+  	'UNABLE_TO_DECODE_ISSUER_PUBLIC_KEY',
+  	'CERT_SIGNATURE_FAILURE',
+  	'CRL_SIGNATURE_FAILURE',
+  	'CERT_NOT_YET_VALID',
+  	'CERT_HAS_EXPIRED',
+  	'CRL_NOT_YET_VALID',
+  	'CRL_HAS_EXPIRED',
+  	'ERROR_IN_CERT_NOT_BEFORE_FIELD',
+  	'ERROR_IN_CERT_NOT_AFTER_FIELD',
+  	'ERROR_IN_CRL_LAST_UPDATE_FIELD',
+  	'ERROR_IN_CRL_NEXT_UPDATE_FIELD',
+  	'OUT_OF_MEM',
+  	'DEPTH_ZERO_SELF_SIGNED_CERT',
+  	'SELF_SIGNED_CERT_IN_CHAIN',
+  	'UNABLE_TO_GET_ISSUER_CERT_LOCALLY',
+  	'UNABLE_TO_VERIFY_LEAF_SIGNATURE',
+  	'CERT_CHAIN_TOO_LONG',
+  	'CERT_REVOKED',
+  	'INVALID_CA',
+  	'PATH_LENGTH_EXCEEDED',
+  	'INVALID_PURPOSE',
+  	'CERT_UNTRUSTED',
+  	'CERT_REJECTED'
+  ];
+
+  var isRetryAllowed = function (err) {
+  	if (!err || !err.code) {
+  		return true;
+  	}
+
+  	if (WHITELIST.indexOf(err.code) !== -1) {
+  		return true;
+  	}
+
+  	if (BLACKLIST.indexOf(err.code) !== -1) {
+  		return false;
+  	}
+
+  	return true;
+  };
+
+  var isNetworkError_1 = isNetworkError;
+  var isRetryableError_1 = isRetryableError;
+  var isSafeRequestError_1 = isSafeRequestError;
+  var isIdempotentRequestError_1 = isIdempotentRequestError;
+  var isNetworkOrIdempotentRequestError_1 = isNetworkOrIdempotentRequestError;
+  var exponentialDelay_1 = exponentialDelay;
+  var _default = axiosRetry$1;
+
+
+
+  var _isRetryAllowed2 = _interopRequireDefault(isRetryAllowed);
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  var namespace = 'axios-retry';
+
+  /**
+   * @param  {Error}  error
+   * @return {boolean}
+   */
+  function isNetworkError(error) {
+    return !error.response && Boolean(error.code) && // Prevents retrying cancelled requests
+    error.code !== 'ECONNABORTED' && // Prevents retrying timed out requests
+    (0, _isRetryAllowed2.default)(error); // Prevents retrying unsafe errors
+  }
+
+  var SAFE_HTTP_METHODS = ['get', 'head', 'options'];
+  var IDEMPOTENT_HTTP_METHODS = SAFE_HTTP_METHODS.concat(['put', 'delete']);
+
+  /**
+   * @param  {Error}  error
+   * @return {boolean}
+   */
+  function isRetryableError(error) {
+    return error.code !== 'ECONNABORTED' && (!error.response || error.response.status >= 500 && error.response.status <= 599);
+  }
+
+  /**
+   * @param  {Error}  error
+   * @return {boolean}
+   */
+  function isSafeRequestError(error) {
+    if (!error.config) {
+      // Cannot determine if the request can be retried
+      return false;
+    }
+
+    return isRetryableError(error) && SAFE_HTTP_METHODS.indexOf(error.config.method) !== -1;
+  }
+
+  /**
+   * @param  {Error}  error
+   * @return {boolean}
+   */
+  function isIdempotentRequestError(error) {
+    if (!error.config) {
+      // Cannot determine if the request can be retried
+      return false;
+    }
+
+    return isRetryableError(error) && IDEMPOTENT_HTTP_METHODS.indexOf(error.config.method) !== -1;
+  }
+
+  /**
+   * @param  {Error}  error
+   * @return {boolean}
+   */
+  function isNetworkOrIdempotentRequestError(error) {
+    return isNetworkError(error) || isIdempotentRequestError(error);
+  }
+
+  /**
+   * @return {number} - delay in milliseconds, always 0
+   */
+  function noDelay() {
+    return 0;
+  }
+
+  /**
+   * @param  {number} [retryNumber=0]
+   * @return {number} - delay in milliseconds
+   */
+  function exponentialDelay() {
+    var retryNumber = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+    var delay = Math.pow(2, retryNumber) * 100;
+    var randomSum = delay * 0.2 * Math.random(); // 0-20% of the delay
+    return delay + randomSum;
+  }
+
+  /**
+   * Initializes and returns the retry state for the given request/config
+   * @param  {AxiosRequestConfig} config
+   * @return {Object}
+   */
+  function getCurrentState(config) {
+    var currentState = config[namespace] || {};
+    currentState.retryCount = currentState.retryCount || 0;
+    config[namespace] = currentState;
+    return currentState;
+  }
+
+  /**
+   * Returns the axios-retry options for the current request
+   * @param  {AxiosRequestConfig} config
+   * @param  {AxiosRetryConfig} defaultOptions
+   * @return {AxiosRetryConfig}
+   */
+  function getRequestOptions(config, defaultOptions) {
+    return Object.assign({}, defaultOptions, config[namespace]);
+  }
+
+  /**
+   * @param  {Axios} axios
+   * @param  {AxiosRequestConfig} config
+   */
+  function fixConfig(axios, config) {
+    if (axios.defaults.agent === config.agent) {
+      delete config.agent;
+    }
+    if (axios.defaults.httpAgent === config.httpAgent) {
+      delete config.httpAgent;
+    }
+    if (axios.defaults.httpsAgent === config.httpsAgent) {
+      delete config.httpsAgent;
+    }
+  }
+
+  /**
+   * Adds response interceptors to an axios instance to retry requests failed due to network issues
+   *
+   * @example
+   *
+   * import axios from 'axios';
+   *
+   * axiosRetry(axios, { retries: 3 });
+   *
+   * axios.get('http://example.com/test') // The first request fails and the second returns 'ok'
+   *   .then(result => {
+   *     result.data; // 'ok'
+   *   });
+   *
+   * // Exponential back-off retry delay between requests
+   * axiosRetry(axios, { retryDelay : axiosRetry.exponentialDelay});
+   *
+   * // Custom retry delay
+   * axiosRetry(axios, { retryDelay : (retryCount) => {
+   *   return retryCount * 1000;
+   * }});
+   *
+   * // Also works with custom axios instances
+   * const client = axios.create({ baseURL: 'http://example.com' });
+   * axiosRetry(client, { retries: 3 });
+   *
+   * client.get('/test') // The first request fails and the second returns 'ok'
+   *   .then(result => {
+   *     result.data; // 'ok'
+   *   });
+   *
+   * // Allows request-specific configuration
+   * client
+   *   .get('/test', {
+   *     'axios-retry': {
+   *       retries: 0
+   *     }
+   *   })
+   *   .catch(error => { // The first request fails
+   *     error !== undefined
+   *   });
+   *
+   * @param {Axios} axios An axios instance (the axios object or one created from axios.create)
+   * @param {Object} [defaultOptions]
+   * @param {number} [defaultOptions.retries=3] Number of retries
+   * @param {boolean} [defaultOptions.shouldResetTimeout=false]
+   *        Defines if the timeout should be reset between retries
+   * @param {Function} [defaultOptions.retryCondition=isNetworkOrIdempotentRequestError]
+   *        A function to determine if the error can be retried
+   * @param {Function} [defaultOptions.retryDelay=noDelay]
+   *        A function to determine the delay between retry requests
+   */
+  function axiosRetry$1(axios, defaultOptions) {
+    axios.interceptors.request.use(function (config) {
+      var currentState = getCurrentState(config);
+      currentState.lastRequestTime = Date.now();
+      return config;
+    });
+
+    axios.interceptors.response.use(null, function (error) {
+      var config = error.config;
+
+      // If we have no information to retry the request
+      if (!config) {
+        return Promise.reject(error);
+      }
+
+      var _getRequestOptions = getRequestOptions(config, defaultOptions),
+          _getRequestOptions$re = _getRequestOptions.retries,
+          retries = _getRequestOptions$re === undefined ? 3 : _getRequestOptions$re,
+          _getRequestOptions$re2 = _getRequestOptions.retryCondition,
+          retryCondition = _getRequestOptions$re2 === undefined ? isNetworkOrIdempotentRequestError : _getRequestOptions$re2,
+          _getRequestOptions$re3 = _getRequestOptions.retryDelay,
+          retryDelay = _getRequestOptions$re3 === undefined ? noDelay : _getRequestOptions$re3,
+          _getRequestOptions$sh = _getRequestOptions.shouldResetTimeout,
+          shouldResetTimeout = _getRequestOptions$sh === undefined ? false : _getRequestOptions$sh;
+
+      var currentState = getCurrentState(config);
+
+      var shouldRetry = retryCondition(error) && currentState.retryCount < retries;
+
+      if (shouldRetry) {
+        currentState.retryCount += 1;
+        var delay = retryDelay(currentState.retryCount, error);
+
+        // Axios fails merging this configuration to the default configuration because it has an issue
+        // with circular structures: https://github.com/mzabriskie/axios/issues/370
+        fixConfig(axios, config);
+
+        if (!shouldResetTimeout && config.timeout && currentState.lastRequestTime) {
+          var lastRequestDuration = Date.now() - currentState.lastRequestTime;
+          // Minimum 1ms timeout (passing 0 or less to XHR means no timeout)
+          config.timeout = Math.max(config.timeout - lastRequestDuration - delay, 1);
+        }
+
+        config.transformRequest = [function (data) {
+          return data;
+        }];
+
+        return new Promise(function (resolve) {
+          return setTimeout(function () {
+            return resolve(axios(config));
+          }, delay);
+        });
+      }
+
+      return Promise.reject(error);
+    });
+  }
+
+  // Compatibility with CommonJS
+  axiosRetry$1.isNetworkError = isNetworkError;
+  axiosRetry$1.isSafeRequestError = isSafeRequestError;
+  axiosRetry$1.isIdempotentRequestError = isIdempotentRequestError;
+  axiosRetry$1.isNetworkOrIdempotentRequestError = isNetworkOrIdempotentRequestError;
+  axiosRetry$1.exponentialDelay = exponentialDelay;
+  axiosRetry$1.isRetryableError = isRetryableError;
+
+
+  var lib = /*#__PURE__*/Object.defineProperty({
+  	isNetworkError: isNetworkError_1,
+  	isRetryableError: isRetryableError_1,
+  	isSafeRequestError: isSafeRequestError_1,
+  	isIdempotentRequestError: isIdempotentRequestError_1,
+  	isNetworkOrIdempotentRequestError: isNetworkOrIdempotentRequestError_1,
+  	exponentialDelay: exponentialDelay_1,
+  	default: _default
+  }, '__esModule', {value: true});
+
+  var axiosRetry = lib.default;
+
   var LIMIT = 100;
   var downloadUrls = new Map();
+  var timeOutError = 'ECONNABORTED';
   /**
    * @typedef {Object} Mode
    * @property {string} label
@@ -6251,10 +6572,18 @@
     label: 'TSV',
     icon: 'download',
     dataButton: 'download-tsv'
-  }], ['csv', {
-    label: 'CSV',
+  }], ['json', {
+    label: 'JSON',
     icon: 'download',
-    dataButton: 'download-csv'
+    dataButton: 'download-json'
+  }], ['retry', {
+    label: 'Retry',
+    icon: 'refresh',
+    dataButton: 'retry'
+  }], ['empty', {
+    label: '',
+    icon: '',
+    dataButton: ''
   }]]);
 
   var _condition = new WeakMap();
@@ -6265,9 +6594,9 @@
 
   var _rows = new WeakMap();
 
-  var _abortController = new WeakMap();
+  var _source = new WeakMap();
 
-  var _isAutoLoad = new WeakMap();
+  var _isLoading = new WeakMap();
 
   var _isCompleted = new WeakMap();
 
@@ -6291,8 +6620,6 @@
 
   var _deleteCondition = new WeakSet();
 
-  var _getQueryIds = new WeakSet();
-
   var _makeDataButton = new WeakSet();
 
   var _updateDataButton = new WeakSet();
@@ -6301,13 +6628,25 @@
 
   var _dataButtonEdit = new WeakSet();
 
+  var _dataButtonRetry = new WeakSet();
+
   var _dataButtonEvent = new WeakSet();
 
   var _setDownloadButtons = new WeakSet();
 
-  var _setCsvUrl = new WeakSet();
+  var _setJsonUrl = new WeakSet();
 
   var _setTsvUrl = new WeakSet();
+
+  var _handleError = new WeakSet();
+
+  var _displayError = new WeakSet();
+
+  var _getQueryIdsPayload = new WeakSet();
+
+  var _getQueryIds = new WeakSet();
+
+  var _getPropertiesFetch = new WeakSet();
 
   var _getProperties = new WeakSet();
 
@@ -6327,13 +6666,25 @@
 
       _getProperties.add(this);
 
+      _getPropertiesFetch.add(this);
+
+      _getQueryIds.add(this);
+
+      _getQueryIdsPayload.add(this);
+
+      _displayError.add(this);
+
+      _handleError.add(this);
+
       _setTsvUrl.add(this);
 
-      _setCsvUrl.add(this);
+      _setJsonUrl.add(this);
 
       _setDownloadButtons.add(this);
 
       _dataButtonEvent.add(this);
+
+      _dataButtonRetry.add(this);
 
       _dataButtonEdit.add(this);
 
@@ -6342,8 +6693,6 @@
       _updateDataButton.add(this);
 
       _makeDataButton.add(this);
-
-      _getQueryIds.add(this);
 
       _deleteCondition.add(this);
 
@@ -6367,12 +6716,12 @@
         value: void 0
       });
 
-      _abortController.set(this, {
+      _source.set(this, {
         writable: true,
         value: void 0
       });
 
-      _isAutoLoad.set(this, {
+      _isLoading.set(this, {
         writable: true,
         value: void 0
       });
@@ -6427,8 +6776,23 @@
         value: void 0
       });
 
-      // console.log(condition);
-      _classPrivateFieldSet(this, _isAutoLoad, false);
+      // axios settings
+      axios.defaults.timeout = 600000;
+      axiosRetry(axios, {
+        retries: 5,
+        shouldResetTimeout: true,
+        retryDelay: axiosRetry.exponentialDelay,
+        retryCondition: function retryCondition(error) {
+          var _error$response;
+
+          return error.code === timeOutError | ((_error$response = error.response) === null || _error$response === void 0 ? void 0 : _error$response.status) === 500;
+        }
+      });
+      var CancelToken = axios.CancelToken;
+
+      _classPrivateFieldSet(this, _source, CancelToken.source());
+
+      _classPrivateFieldSet(this, _isLoading, false);
 
       _classPrivateFieldSet(this, _isCompleted, false);
 
@@ -6447,12 +6811,12 @@
 
       elm.classList.add('table-data-controller-view');
       elm.dataset.status = 'load ids';
-      elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condiiton\">\n        <p title=\"".concat(condition.togoKey, "\">").concat(Records$1.getLabelFromTogoKey(condition.togoKey), "</p>\n      </div>\n      ").concat(condition.attributes.map(function (property) {
-        return "<div class=\"condiiton _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
+      elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condition\">\n        <p title=\"".concat(condition.togoKey, "\">").concat(Records$1.getLabelFromTogoKey(condition.togoKey), "</p>\n      </div>\n      ").concat(condition.attributes.map(function (property) {
+        return "<div class=\"condition _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         var label = property.parentCategoryId ? Records$1.getValue(property.query.propertyId, property.parentCategoryId).label : property.property.label;
-        return "<div class=\"condiiton _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n          <p title=\"").concat(label, "\">").concat(label, "</p>\n        </div>");
-      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting ID list</p>\n      <span class=\"material-icons-outlined -rotating\">autorenew</span>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n\n    </div>\n    "); // reference
+        return "<div class=\"condition _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n          <p title=\"").concat(label, "\">").concat(label, "</p>\n        </div>");
+      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting ID list</p>\n      <span class=\"material-icons-outlined -rotating\">autorenew</span>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n    </div>\n    "); // reference
 
       _classPrivateFieldSet(this, _ROOT, elm);
 
@@ -6489,6 +6853,8 @@
 
       ConditionBuilder$1.finish();
       this.select();
+
+      _classPrivateFieldGet(this, _ROOT).classList.toggle('-fetching');
 
       _classPrivateMethodGet(this, _getQueryIds, _getQueryIds2).call(this);
     }
@@ -6575,7 +6941,7 @@
     });
     DefaultEventEmitter$1.dispatchEvent(customEvent); // abort fetch
 
-    _classPrivateFieldGet(this, _abortController).abort(); // delete element
+    _classPrivateFieldGet(this, _source).cancel('user cancel'); // delete element
 
 
     _classPrivateFieldGet(this, _ROOT).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT)); // transition
@@ -6584,58 +6950,8 @@
     document.querySelector('body').dataset.display = 'properties';
   }
 
-  function _getQueryIds2() {
-    var _ConditionBuilder$use,
-        _this2 = this;
-
-    // reset
-    _classPrivateFieldSet(this, _abortController, new AbortController());
-
-    _classPrivateFieldGet(this, _ROOT).classList.add('-fetching');
-
-    fetch("".concat(App$1.aggregatePrimaryKeys, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
-      return property.query;
-    })))).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds))) : ''), {
-      signal: _classPrivateFieldGet(this, _abortController).signal
-    }).catch(function (error) {
-      throw Error(error);
-    }).then(function (responce) {
-      if (responce.ok) {
-        return responce;
-      }
-
-      _classPrivateFieldGet(_this2, _STATUS).classList.add('-error');
-
-      _classPrivateFieldGet(_this2, _STATUS).textContent = "".concat(responce.status, " (").concat(responce.statusText, ")");
-      throw Error(responce);
-    }).then(function (responce) {
-      return responce.json();
-    }).then(function (queryIds) {
-      // console.log(queryIds);
-      _classPrivateFieldSet(_this2, _queryIds, queryIds); // display
-
-
-      _classPrivateFieldGet(_this2, _ROOT).dataset.status = 'load rows';
-      _classPrivateFieldGet(_this2, _STATUS).textContent = '';
-      _classPrivateFieldGet(_this2, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this2.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this2, _queryIds).length.toLocaleString());
-
-      _classPrivateFieldSet(_this2, _startTime, Date.now());
-
-      _classPrivateMethodGet(_this2, _getProperties, _getProperties2).call(_this2);
-    }).catch(function (error) {
-      // TODO:
-      console.error(error);
-      var customEvent = new CustomEvent(failedFetchTableDataIds, {
-        detail: _this2
-      });
-      DefaultEventEmitter$1.dispatchEvent(customEvent);
-    }).finally(function () {
-      _classPrivateFieldGet(_this2, _ROOT).classList.remove('-fetching');
-    });
-  }
-
   function _makeDataButton2(className) {
-    var _this3 = this;
+    var _this2 = this;
 
     var mode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
     var button = document.createElement('div');
@@ -6643,7 +6959,7 @@
     button.classList.add('button', className);
     if (mode) _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, button, mode);
     button.addEventListener('click', function (e) {
-      _classPrivateMethodGet(_this3, _dataButtonEvent, _dataButtonEvent2).call(_this3, e);
+      _classPrivateMethodGet(_this2, _dataButtonEvent, _dataButtonEvent2).call(_this2, e);
     });
     return button;
   }
@@ -6664,20 +6980,22 @@
   function _dataButtonPauseOrResume2(e) {
     e.stopPropagation();
 
-    var span = _classPrivateFieldGet(this, _ROOT).querySelector(':scope > .status > .material-icons-outlined');
+    _classPrivateFieldGet(this, _ROOT).classList.toggle('-fetching');
 
-    span.classList.toggle('-rotating');
-    var modeToChangeTo = _classPrivateFieldGet(this, _isAutoLoad) ? 'resume' : 'pause';
+    _classPrivateFieldGet(this, _STATUS).classList.toggle('-flickering');
+
+    var modeToChangeTo = _classPrivateFieldGet(this, _isLoading) ? 'resume' : 'pause';
 
     _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, e.currentTarget, dataButtonModes.get(modeToChangeTo));
 
-    _classPrivateFieldSet(this, _isAutoLoad, !_classPrivateFieldGet(this, _isAutoLoad));
+    _classPrivateFieldSet(this, _isLoading, !_classPrivateFieldGet(this, _isLoading));
 
-    if (_classPrivateFieldGet(this, _isAutoLoad)) _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
+    _classPrivateFieldGet(this, _STATUS).textContent = _classPrivateFieldGet(this, _isLoading) ? 'Getting Data' : 'Awaiting';
+    if (_classPrivateFieldGet(this, _isLoading)) _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
   }
 
   function _dataButtonEdit2(e) {
-    var _this4 = this;
+    var _this3 = this;
 
     e.stopPropagation(); // property (attribute)
 
@@ -6691,7 +7009,7 @@
     Records$1.properties.forEach(function (_ref) {
       var propertyId = _ref.propertyId;
 
-      var attribute = _classPrivateFieldGet(_this4, _condition).attributes.find(function (attribute) {
+      var attribute = _classPrivateFieldGet(_this3, _condition).attributes.find(function (attribute) {
         return attribute.property.propertyId === propertyId;
       });
 
@@ -6699,6 +7017,25 @@
       if (attribute) categoryIds.push.apply(categoryIds, _toConsumableArray(attribute.query.categoryIds));
       ConditionBuilder$1.setPropertyValues(propertyId, categoryIds, false);
     });
+  }
+
+  function _dataButtonRetry2() {
+    _classPrivateFieldGet(this, _STATUS).classList.remove('-error');
+
+    _classPrivateFieldGet(this, _ROOT).classList.toggle('-fetching');
+
+    _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, _classPrivateFieldGet(this, _BUTTON_LEFT), dataButtonModes.get('empty'));
+
+    if (_classPrivateFieldGet(this, _queryIds).length > 0) {
+      _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
+
+      _classPrivateFieldGet(this, _STATUS).textContent = 'Getting Data';
+      return;
+    }
+
+    _classPrivateFieldGet(this, _STATUS).textContent = 'Getting ID list';
+
+    _classPrivateMethodGet(this, _getQueryIds, _getQueryIds2).call(this);
   }
 
   function _dataButtonEvent2(e) {
@@ -6716,6 +7053,11 @@
         _classPrivateMethodGet(this, _dataButtonPauseOrResume, _dataButtonPauseOrResume2).call(this, e);
 
         break;
+
+      case 'retry':
+        _classPrivateMethodGet(this, _dataButtonRetry, _dataButtonRetry2).call(this);
+
+        break;
     }
   }
 
@@ -6724,32 +7066,31 @@
 
     _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, _classPrivateFieldGet(this, _BUTTON_LEFT), dataButtonModes.get('tsv'), 'tsv');
 
-    _classPrivateMethodGet(this, _setCsvUrl, _setCsvUrl2).call(this);
+    _classPrivateMethodGet(this, _setJsonUrl, _setJsonUrl2).call(this);
 
-    var middleButton = _classPrivateMethodGet(this, _makeDataButton, _makeDataButton2).call(this, 'middle', 'csv');
+    var middleButton = _classPrivateMethodGet(this, _makeDataButton, _makeDataButton2).call(this, 'middle', 'json');
 
-    _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, middleButton, dataButtonModes.get('csv'), 'csv');
+    _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, middleButton, dataButtonModes.get('json'), 'json');
 
     _classPrivateFieldGet(this, _CONTROLLER).insertBefore(middleButton, _classPrivateFieldGet(this, _BUTTON_RIGHT));
   }
 
-  function _setCsvUrl2() {
+  function _setJsonUrl2() {
     var jsonBlob = new Blob([JSON.stringify(_classPrivateFieldGet(this, _rows), null, 2)], {
       type: 'application/json'
     });
-    var csvUrl = URL.createObjectURL(jsonBlob);
-    downloadUrls.set('csv', csvUrl);
+    downloadUrls.set('json', URL.createObjectURL(jsonBlob));
   }
 
   function _setTsvUrl2() {
-    var _this5 = this;
+    var _this4 = this;
 
     var temporaryArray = [];
 
     _classPrivateFieldGet(this, _rows).forEach(function (row) {
       row.properties.forEach(function (property) {
         property.attributes.forEach(function (attribute) {
-          var singleItem = [_classPrivateFieldGet(_this5, _condition).togoKey, // togoKey
+          var singleItem = [_classPrivateFieldGet(_this4, _condition).togoKey, // togoKey
           row.id, // togoKeyId
           row.label, // togoKeyLabel
           property.propertyId, // attribute
@@ -6779,33 +7120,97 @@
     downloadUrls.set('tsv', tsvUrl);
   }
 
-  function _getProperties2() {
-    var _this6 = this;
+  function _handleError2(err) {
+    var _err$response;
 
-    _classPrivateFieldSet(this, _isAutoLoad, true);
+    var message, errCode;
 
-    _classPrivateFieldGet(this, _ROOT).classList.add('-fetching');
+    if (axios.isCancel && err.message === 'user cancel') {
+      return;
+    } else if (((_err$response = err.response) === null || _err$response === void 0 ? void 0 : _err$response.status) === 500 | err.code === timeOutError) {
+      _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, _classPrivateFieldGet(this, _BUTTON_LEFT), dataButtonModes.get('retry'));
+    } else {
+      _classPrivateFieldGet(this, _BUTTON_LEFT).remove();
+    }
 
-    _classPrivateFieldGet(this, _STATUS).textContent = 'Getting Data';
-    fetch("".concat(App$1.aggregateRows, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
+    errCode = err.response ? err.response.status : false;
+    message = err.response ? err.response.statusText : err.code === timeOutError ? 'Timeout' : err.message;
+
+    _classPrivateMethodGet(this, _displayError, _displayError2).call(this, message, errCode);
+  }
+
+  function _displayError2(message, code) {
+    _classPrivateFieldGet(this, _STATUS).classList.add('-error');
+
+    _classPrivateFieldGet(this, _STATUS).textContent = code ? "".concat(message, " (").concat(code, ")") : message;
+
+    _classPrivateFieldGet(this, _ROOT).classList.toggle('-fetching');
+
+    var customEvent = new CustomEvent(failedFetchTableDataIds, {
+      detail: this
+    });
+    DefaultEventEmitter$1.dispatchEvent(customEvent);
+  }
+
+  function _getQueryIdsPayload2() {
+    var _ConditionBuilder$use;
+
+    console.log(ConditionBuilder$1.userIds);
+    return "?togoKey=".concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
+      return property.query;
+    })))).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : '');
+  }
+
+  function _getQueryIds2() {
+    var _this5 = this;
+
+    axios.post(App$1.aggregatePrimaryKeys, _classPrivateMethodGet(this, _getQueryIdsPayload, _getQueryIdsPayload2).call(this), {
+      cancelToken: _classPrivateFieldGet(this, _source).token
+    }).then(function (response) {
+      _classPrivateFieldSet(_this5, _queryIds, response.data);
+
+      if (_classPrivateFieldGet(_this5, _queryIds).length <= 0) {
+        _classPrivateMethodGet(_this5, _complete, _complete2).call(_this5, false);
+
+        return;
+      }
+
+      _classPrivateFieldGet(_this5, _ROOT).dataset.status = 'load rows';
+      _classPrivateFieldGet(_this5, _STATUS).textContent = 'Getting Data';
+      _classPrivateFieldGet(_this5, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this5.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this5, _queryIds).length.toLocaleString());
+
+      _classPrivateFieldSet(_this5, _startTime, Date.now());
+
+      _classPrivateMethodGet(_this5, _updateDataButton, _updateDataButton2).call(_this5, _classPrivateFieldGet(_this5, _BUTTON_LEFT), dataButtonModes.get('pause'));
+
+      _classPrivateMethodGet(_this5, _getProperties, _getProperties2).call(_this5);
+    }).catch(function (error) {
+      _classPrivateMethodGet(_this5, _handleError, _handleError2).call(_this5, error);
+    });
+  }
+
+  function _getPropertiesFetch2() {
+    return "".concat(App$1.aggregateRows, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
       return property.query;
     }).concat(_classPrivateFieldGet(this, _condition).properties.map(function (property) {
       return property.query;
-    })))), "&queryIds=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _queryIds).slice(this.offset, this.offset + LIMIT)))), {
-      signal: _classPrivateFieldGet(this, _abortController).signal
-    }).then(function (responce) {
-      return responce.json();
-    }).then(function (rows) {
+    })))), "&queryIds=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _queryIds).slice(this.offset, this.offset + LIMIT))));
+  }
+
+  function _getProperties2() {
+    var _this6 = this;
+
+    _classPrivateFieldSet(this, _isLoading, true);
+
+    axios.get(_classPrivateMethodGet(this, _getPropertiesFetch, _getPropertiesFetch2).call(this), {
+      cancelToken: _classPrivateFieldGet(this, _source).token
+    }).then(function (response) {
       var _classPrivateFieldGet2;
 
-      (_classPrivateFieldGet2 = _classPrivateFieldGet(_this6, _rows)).push.apply(_classPrivateFieldGet2, _toConsumableArray(rows));
+      (_classPrivateFieldGet2 = _classPrivateFieldGet(_this6, _rows)).push.apply(_classPrivateFieldGet2, _toConsumableArray(response.data));
 
-      _classPrivateFieldSet(_this6, _isCompleted, _this6.offset >= _classPrivateFieldGet(_this6, _queryIds).length); // display
+      _classPrivateFieldSet(_this6, _isCompleted, _this6.offset >= _classPrivateFieldGet(_this6, _queryIds).length);
 
-
-      _classPrivateFieldGet(_this6, _ROOT).classList.remove('-fetching');
-
-      _classPrivateFieldGet(_this6, _STATUS).textContent = 'Awaiting';
       _classPrivateFieldGet(_this6, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this6.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this6, _queryIds).length.toLocaleString());
       _classPrivateFieldGet(_this6, _INDICATOR_BAR).style.width = "".concat(_this6.offset / _classPrivateFieldGet(_this6, _queryIds).length * 100, "%");
 
@@ -6815,7 +7220,7 @@
       var customEvent = new CustomEvent(addNextRows, {
         detail: {
           tableData: _this6,
-          rows: rows,
+          rows: response.data,
           done: _classPrivateFieldGet(_this6, _isCompleted)
         }
       });
@@ -6823,15 +7228,13 @@
 
       if (_classPrivateFieldGet(_this6, _isCompleted)) {
         _classPrivateMethodGet(_this6, _complete, _complete2).call(_this6);
-      } else if (_classPrivateFieldGet(_this6, _isAutoLoad)) {
-        _classPrivateMethodGet(_this6, _updateDataButton, _updateDataButton2).call(_this6, _classPrivateFieldGet(_this6, _BUTTON_LEFT), dataButtonModes.get('pause'));
 
+        return;
+      } else if (_classPrivateFieldGet(_this6, _isLoading)) {
         _classPrivateMethodGet(_this6, _getProperties, _getProperties2).call(_this6);
       }
     }).catch(function (error) {
-      _classPrivateFieldGet(_this6, _ROOT).classList.remove('-fetching');
-
-      console.error(error); // TODO:
+      _classPrivateMethodGet(_this6, _handleError, _handleError2).call(_this6, error);
     });
   }
 
@@ -6859,10 +7262,13 @@
   }
 
   function _complete2() {
+    var withData = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
     _classPrivateFieldGet(this, _ROOT).dataset.status = 'complete';
-    _classPrivateFieldGet(this, _STATUS).textContent = 'Complete';
+    _classPrivateFieldGet(this, _STATUS).textContent = withData ? 'Complete' : 'No Data found';
 
-    _classPrivateMethodGet(this, _setDownloadButtons, _setDownloadButtons2).call(this);
+    _classPrivateFieldGet(this, _ROOT).classList.toggle('-fetching');
+
+    if (withData) _classPrivateMethodGet(this, _setDownloadButtons, _setDownloadButtons2).call(this);
   }
 
   var _tableData = new WeakMap();
