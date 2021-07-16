@@ -1,7 +1,7 @@
 Database name	Graph name	URL
 ChEBI	http://rdf.integbio.jp/dataset/togosite/chebi	ftp://ftp.ebi.ac.uk/pub/databases/chebi/ontology/nightly/chebi.owl.gz
 ChEMBL	http://rdf.integbio.jp/dataset/togosite/chembl	ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/latest/
-Reactome	http://rdf.integbio.jp/dataset/togosite/reactome	ftp://ftp.ebi.ac.uk/pub/databases/RDF/reactome/r71/
+Reactome	http://rdf.integbio.jp/dataset/togosite/reactome	ftp://ftp.ebi.ac.uk/pub/databases/RDF/reactome/r71/reactome-biopax.tar.bz2
 Rhea	http://rdf.integbio.jp/dataset/togosite/rhea	ftp://ftp.ebi.ac.uk/pub/databases/rhea/rdf/rhea.rdf.gz
 Ensembl	http://rdf.integbio.jp/dataset/togosite/ensembl	ftp://ftp.ensembl.org/pub/release-102/rdf/homo_sapiens/
 neXtProt	http://rdf.integbio.jp/dataset/togosite/nextprot	ftp://ftp.nextprot.org/pub/current_release/rdf/ttl
