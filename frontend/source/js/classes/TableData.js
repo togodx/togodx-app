@@ -439,7 +439,7 @@ export default class TableData {
 
   #getQueryIdsPayload() {
     console.log(ConditionBuilder.userIds)
-    return `?togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(
+    return `togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(
       JSON.stringify(this.#condition.attributes.map(property => property.query))
     )}${
       ConditionBuilder.userIds?.length > 0
