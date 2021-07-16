@@ -748,6 +748,8 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   width: 0;
   border: solid 0.1rem var(--color-selected-deep);
   background-color: var(--color-selected);
+  cursor: -webkit-grab;
+  cursor: grab;
 }
 .histogram-range-selector-view > .selector > .inner > .selectingarea > .handle {
   position: absolute;
@@ -767,7 +769,9 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   border-bottom-width: 0.6rem;
 }
 .histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=left] {
-  right: 0;
+  left: 0;
+  -webkit-transform: translateX(-1rem);
+          transform: translateX(-1rem);
   cursor: w-resize;
 }
 .histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=left]::before {
@@ -776,7 +780,9 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   border-right-color: var(--color-selected-deep);
 }
 .histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=right] {
-  left: 0;
+  right: 0;
+  -webkit-transform: translateX(1rem);
+          transform: translateX(1rem);
   cursor: e-resize;
 }
 .histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=right]::before {
@@ -786,6 +792,9 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
 }
 .histogram-range-selector-view > .selector > .inner > .controller {
   cursor: col-resize;
+}
+.histogram-range-selector-view > .selector.-makingarea > .inner > .selectingarea {
+  pointer-events: none;
 }
 .histogram-range-selector-view > .histogram {
   width: calc(100% - var(--padding-horizontal) * 2);

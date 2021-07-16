@@ -4128,7 +4128,7 @@
 
   var _appendSubColumn = new WeakSet();
 
-  var _update$1 = new WeakSet();
+  var _update$2 = new WeakSet();
 
   var _setUserValues = new WeakSet();
 
@@ -4143,7 +4143,7 @@
 
     _setUserValues.add(this);
 
-    _update$1.add(this);
+    _update$2.add(this);
 
     _appendSubColumn.add(this);
 
@@ -4257,7 +4257,7 @@
       }
     });
     DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
-      return _classPrivateMethodGet(_this, _update$1, _update2$1).call(_this, e.detail.log10);
+      return _classPrivateMethodGet(_this, _update$2, _update2$1).call(_this, e.detail.log10);
     });
     DefaultEventEmitter$1.addEventListener(setUserValues, function (e) {
       return _classPrivateMethodGet(_this, _setUserValues, _setUserValues2).call(_this, e.detail);
@@ -4439,7 +4439,7 @@
       max: max
     });
 
-    _classPrivateMethodGet(this, _update$1, _update2$1).call(this, App$1.viewModes.log10);
+    _classPrivateMethodGet(this, _update$2, _update2$1).call(this, App$1.viewModes.log10);
 
     return ul;
   }
@@ -4513,11 +4513,15 @@
 
   var _selection = new WeakMap();
 
+  var _update$1 = new WeakSet();
+
   var HistogramRangeSelectorController = /*#__PURE__*/function () {
     function HistogramRangeSelectorController(target, selector) {
       var _this = this;
 
       _classCallCheck(this, HistogramRangeSelectorController);
+
+      _update$1.add(this);
 
       _target.set(this, {
         writable: true,
@@ -4542,7 +4546,6 @@
             return selectionStart;
           },
           set: function set(value) {
-            console.log(value);
             selectionStart = value;
           }
         },
@@ -4551,13 +4554,32 @@
             return selectionEnd;
           },
           set: function set(value) {
-            console.log(value);
             selectionEnd = value;
+          }
+        },
+        range: {
+          get: function get() {
+            return [selectionStart, selectionEnd];
+          },
+          set: function set(start, end) {
+            selectionStart = start;
+            selectionEnd = end;
           }
         }
       }); // reference
 
       var selectingArea = selector.querySelector(':scope > .inner > .selectingarea');
+      var handlesArray = Array.from(selectingArea.querySelectorAll(':scope > .handle'));
+      console.log(handlesArray);
+      var handles = {
+        left: handlesArray.filter(function (handle) {
+          return handle.dataset.direction === 'left';
+        }),
+        right: handlesArray.filter(function (handle) {
+          return handle.dataset.direction === 'right';
+        })
+      };
+      console.log(handles);
       var selectorController = selector.querySelector(':scope > .inner > .controller');
       var selectorBars = selector.querySelectorAll(':scope > .inner > .overview > .bar'); // make selecting area
 
@@ -4566,27 +4588,30 @@
           width,
           unit;
       selectorController.addEventListener('mousedown', function (e) {
+        selector.classList.add('-makingarea');
         width = e.target.getBoundingClientRect().width;
-        unit = width / target.items.length;
+        unit = 100 / target.items.length;
         isMouseDown = true;
-        startX = e.layerX;
+        startX = e.layerX / width * 100;
       });
       selectorController.addEventListener('mousemove', function (e) {
         if (isMouseDown) {
           // calculate selection range
-          var selectedWidth = e.layerX - startX;
+          var x = e.layerX / width * 100;
+          var selectedWidth = x - startX;
 
           if (selectedWidth > 0) {
             _classPrivateFieldGet(_this, _selection).start = Math.floor(startX / unit);
-            _classPrivateFieldGet(_this, _selection).end = Math.floor(e.layerX / unit);
+            _classPrivateFieldGet(_this, _selection).end = Math.floor(x / unit);
           } else {
-            _classPrivateFieldGet(_this, _selection).start = Math.floor(e.layerX / unit);
+            _classPrivateFieldGet(_this, _selection).start = Math.floor(x / unit);
             _classPrivateFieldGet(_this, _selection).end = Math.floor(startX / unit);
-          } // selecting area
+          }
 
+          console.log(_this.start, _this.end); // selecting area
 
-          selectingArea.style.left = _this.start * unit + 'px';
-          selectingArea.style.width = (_this.end - _this.start) * unit + 'px'; // overview
+          selectingArea.style.left = _this.start * unit + '%';
+          selectingArea.style.width = (_this.end - _this.start) * unit + '%'; // overview
 
           selectorBars.forEach(function (bar, index) {
             if (_classPrivateFieldGet(_this, _selection).start <= index && index <= _classPrivateFieldGet(_this, _selection).end) bar.classList.add('-selected');else bar.classList.remove('-selected');
@@ -4600,6 +4625,7 @@
       });
       selectorController.addEventListener('mouseup', function (e) {
         if (isMouseDown) {
+          selector.classList.remove('-makingarea');
           isMouseDown = false;
           ConditionBuilder$1.setPropertyValues(target.propertyId, _this.selectedItems.map(function (item) {
             return item.categoryId;
@@ -4607,12 +4633,13 @@
         }
       }); // drag selecting area
       // resize selecting area
-    } // accessor
+    } // private methods
 
 
     _createClass(HistogramRangeSelectorController, [{
       key: "start",
-      get: function get() {
+      get: // accessor
+      function get() {
         return _classPrivateFieldGet(this, _selection).start;
       }
     }, {

@@ -29,6 +29,7 @@
         width: 0
         border: solid .1rem var(--color-selected-deep)
         background-color: var(--color-selected)
+        cursor: grab
         > .handle
           position: absolute
           width: 1rem
@@ -45,14 +46,16 @@
             border-top-width: .6rem
             border-bottom-width: .6rem
           &[data-direction="left"]
-            right: 0
+            left: 0
+            transform: translateX(-1rem)
             cursor: w-resize
             &::before
               right: .2rem
               border-right-width: .4rem
               border-right-color: var(--color-selected-deep)
           &[data-direction="right"]
-            left: 0
+            right: 0
+            transform: translateX(1rem)
             cursor: e-resize
             &::before
               left: .2rem
@@ -60,6 +63,10 @@
               border-left-color: var(--color-selected-deep)
       > .controller
         cursor: col-resize
+    &.-makingarea
+      > .inner
+        > .selectingarea
+          pointer-events: none
   > .histogram
     width: calc(100% - var(--padding-horizontal) * 2)
     height: 18rem

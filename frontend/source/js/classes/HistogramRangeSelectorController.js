@@ -17,7 +17,6 @@ export default class HistogramRangeSelectorController {
           return selectionStart;
         },
         set(value) {
-          console.log(value)
           selectionStart = value;
         }
       },
@@ -26,39 +25,57 @@ export default class HistogramRangeSelectorController {
           return selectionEnd;
         },
         set(value) {
-          console.log(value)
           selectionEnd = value;
+        }
+      },
+      range: {
+        get() {
+          return [selectionStart, selectionEnd];
+        },
+        set(start, end) {
+          selectionStart = start;
+          selectionEnd = end;
         }
       }
     });
 
     // reference
     const selectingArea = selector.querySelector(':scope > .inner > .selectingarea');
+    const handlesArray = Array.from(selectingArea.querySelectorAll(':scope > .handle'));
+    console.log(handlesArray)
+    const handles = {
+      left: handlesArray.filter(handle => handle.dataset.direction === 'left'),
+      right: handlesArray.filter(handle => handle.dataset.direction === 'right')
+    }
+    console.log(handles)
     const selectorController = selector.querySelector(':scope > .inner > .controller');
     const selectorBars = selector.querySelectorAll(':scope > .inner > .overview > .bar');
 
     // make selecting area
     let isMouseDown = false, startX, width, unit;
     selectorController.addEventListener('mousedown', e => {
+      selector.classList.add('-makingarea');
       width = e.target.getBoundingClientRect().width;
-      unit = width / target.items.length;
+      unit = 100 / target.items.length;
       isMouseDown = true;
-      startX = e.layerX;
+      startX = (e.layerX / width) * 100;
     });
     selectorController.addEventListener('mousemove', e => {
       if (isMouseDown) {
         // calculate selection range
-        const selectedWidth = e.layerX - startX;
+        const x = (e.layerX / width) * 100;
+        const selectedWidth = x - startX;
         if (selectedWidth > 0) {
           this.#selection.start = Math.floor(startX / unit);
-          this.#selection.end = Math.floor(e.layerX / unit)
+          this.#selection.end = Math.floor(x / unit)
         } else {
-          this.#selection.start = Math.floor(e.layerX / unit);
+          this.#selection.start = Math.floor(x / unit);
           this.#selection.end = Math.floor(startX / unit)
         }
+        console.log(this.start, this.end)
         // selecting area
-        selectingArea.style.left = (this.start * unit) + 'px';
-        selectingArea.style.width = ((this.end - this.start) * unit) + 'px';
+        selectingArea.style.left = (this.start * unit) + '%';
+        selectingArea.style.width = ((this.end - this.start) * unit) + '%';
         // overview
         selectorBars.forEach((bar, index) => {
           if (this.#selection.start <= index && index <= this.#selection.end) bar.classList.add('-selected');
@@ -75,6 +92,7 @@ export default class HistogramRangeSelectorController {
     });
     selectorController.addEventListener('mouseup', e => {
       if (isMouseDown) {
+        selector.classList.remove('-makingarea');
         isMouseDown = false;
         ConditionBuilder.setPropertyValues(
           target.propertyId,
@@ -86,6 +104,13 @@ export default class HistogramRangeSelectorController {
     // drag selecting area
 
     // resize selecting area
+  }
+
+
+  // private methods
+
+  #update() {
+
   }
 
 
