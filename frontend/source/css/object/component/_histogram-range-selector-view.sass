@@ -29,6 +29,35 @@
         width: 0
         border: solid .1rem var(--color-selected-deep)
         background-color: var(--color-selected)
+        > .handle
+          position: absolute
+          width: 1rem
+          height: 100%
+          &::before
+            content: ""
+            position: absolute
+            top: calc(50% - .6rem)
+            display: block
+            width: 0
+            height: 0
+            border-style: solid
+            border-color: transparent
+            border-top-width: .6rem
+            border-bottom-width: .6rem
+          &[data-direction="left"]
+            right: 0
+            cursor: w-resize
+            &::before
+              right: .2rem
+              border-right-width: .4rem
+              border-right-color: var(--color-selected-deep)
+          &[data-direction="right"]
+            left: 0
+            cursor: e-resize
+            &::before
+              left: .2rem
+              border-left-width: .4rem
+              border-left-color: var(--color-selected-deep)
       > .controller
         cursor: col-resize
   > .histogram

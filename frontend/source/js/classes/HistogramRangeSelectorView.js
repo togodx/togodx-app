@@ -29,8 +29,11 @@ export default class HistogramRangeSelectorView {
       <div class="selector">
         <div class="inner">
           <div class="overview"></div>
-          <div class="selectingarea"></div>
           <div class="controller"></div>
+          <div class="selectingarea">
+            <div class="handle" data-direction="left"></div>
+            <div class="handle" data-direction="right"></div>
+          </div>
         </div>
       </div>
       <div class="histogram">
