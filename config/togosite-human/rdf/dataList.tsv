@@ -42,6 +42,7 @@ UniProt	http://rdf.integbio.jp/dataset/togosite/uniprot	https://www.uniprot.org/
 PubChem	http://rdf.integbio.jp/dataset/togosite/pubchem
 UniProt keywords	http://rdf.integbio.jp/dataset/togosite/uniprot/keywords	ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/rdf/keywords.rdf.xz
 UniProt tissues	http://rdf.integbio.jp/dataset/togosite/uniprot/tissues	ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/rdf/tissues.rdf.xz
+GWAS Catalog  http://rdf.integbio.jp/dataset/togosite/gwas-catalog  https://togovar.biosciencedbc.jp/public/virtuoso/mount_on_isql/gwas_catalog_v1.0.2-associations_e100_r2021-03-25_add_dbsnp_url.ttl.gz
 TogoID_chembl_compound-chebi	http://rdf.integbio.jp/dataset/togosite/togoid/chembl_compound-chebi	http://ep6.dbcls.jp/togoid/link/togosite/chembl_compound-chebi.ttl
 TogoID_chembl_compound-chembl_target	http://rdf.integbio.jp/dataset/togosite/togoid/chembl_compound-chembl_target	http://ep6.dbcls.jp/togoid/link/togosite/chembl_compound-chembl_target.ttl
 TogoID_chembl_compound-pubchem_compound	http://rdf.integbio.jp/dataset/togosite/togoid/chembl_compound-pubchem_compound	http://ep6.dbcls.jp/togoid/link/togosite/chembl_compound-pubchem_compound.ttl
