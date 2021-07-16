@@ -4257,7 +4257,7 @@
       }
     });
     DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
-      return _classPrivateMethodGet(_this, _update$2, _update2$1).call(_this, e.detail.log10);
+      return _classPrivateMethodGet(_this, _update$2, _update2$2).call(_this, e.detail.log10);
     });
     DefaultEventEmitter$1.addEventListener(setUserValues, function (e) {
       return _classPrivateMethodGet(_this, _setUserValues, _setUserValues2).call(_this, e.detail);
@@ -4439,7 +4439,7 @@
       max: max
     });
 
-    _classPrivateMethodGet(this, _update$2, _update2$1).call(this, App$1.viewModes.log10);
+    _classPrivateMethodGet(this, _update$2, _update2$2).call(this, App$1.viewModes.log10);
 
     return ul;
   }
@@ -4461,7 +4461,7 @@
     }
   }
 
-  function _update2$1(isLog10) {
+  function _update2$2(isLog10) {
     var _this5 = this;
 
     _classPrivateFieldGet(this, _columns).forEach(function (column) {
@@ -4513,6 +4513,12 @@
 
   var _selection = new WeakMap();
 
+  var _unit = new WeakMap();
+
+  var _SELECTING_AREA = new WeakMap();
+
+  var _SELECTOR_BARS = new WeakMap();
+
   var _update$1 = new WeakSet();
 
   var HistogramRangeSelectorController = /*#__PURE__*/function () {
@@ -4533,10 +4539,26 @@
         value: void 0
       });
 
+      _unit.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _SELECTING_AREA.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _SELECTOR_BARS.set(this, {
+        writable: true,
+        value: void 0
+      });
+
       // definition
       _classPrivateFieldSet(this, _target, target);
 
       var selectionStart, selectionEnd;
+      var self = this;
 
       _classPrivateFieldSet(this, _selection, {});
 
@@ -4561,15 +4583,22 @@
           get: function get() {
             return [selectionStart, selectionEnd];
           },
-          set: function set(start, end) {
+          set: function set(_ref) {
+            var _ref2 = _slicedToArray(_ref, 2),
+                start = _ref2[0],
+                end = _ref2[1];
+
             selectionStart = start;
             selectionEnd = end;
+
+            _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
           }
         }
       }); // reference
 
-      var selectingArea = selector.querySelector(':scope > .inner > .selectingarea');
-      var handlesArray = Array.from(selectingArea.querySelectorAll(':scope > .handle'));
+      _classPrivateFieldSet(this, _SELECTING_AREA, selector.querySelector(':scope > .inner > .selectingarea'));
+
+      var handlesArray = Array.from(_classPrivateFieldGet(this, _SELECTING_AREA).querySelectorAll(':scope > .handle'));
       console.log(handlesArray);
       var handles = {
         left: handlesArray.filter(function (handle) {
@@ -4581,16 +4610,19 @@
       };
       console.log(handles);
       var selectorController = selector.querySelector(':scope > .inner > .controller');
-      var selectorBars = selector.querySelectorAll(':scope > .inner > .overview > .bar'); // make selecting area
+
+      _classPrivateFieldSet(this, _SELECTOR_BARS, selector.querySelectorAll(':scope > .inner > .overview > .bar')); // make selecting area
+
 
       var isMouseDown = false,
           startX,
-          width,
-          unit;
+          width;
       selectorController.addEventListener('mousedown', function (e) {
         selector.classList.add('-makingarea');
         width = e.target.getBoundingClientRect().width;
-        unit = 100 / target.items.length;
+
+        _classPrivateFieldSet(_this, _unit, 100 / target.items.length);
+
         isMouseDown = true;
         startX = e.layerX / width * 100;
       });
@@ -4601,26 +4633,15 @@
           var selectedWidth = x - startX;
 
           if (selectedWidth > 0) {
-            _classPrivateFieldGet(_this, _selection).start = Math.floor(startX / unit);
-            _classPrivateFieldGet(_this, _selection).end = Math.floor(x / unit);
+            _classPrivateFieldGet(_this, _selection).range = [Math.floor(startX / _classPrivateFieldGet(_this, _unit)), Math.floor(x / _classPrivateFieldGet(_this, _unit))]; // this.#selection.start = Math.floor(startX / this.#unit);
+            // this.#selection.end = Math.floor(x / this.#unit)
           } else {
-            _classPrivateFieldGet(_this, _selection).start = Math.floor(x / unit);
-            _classPrivateFieldGet(_this, _selection).end = Math.floor(startX / unit);
-          }
+            _classPrivateFieldGet(_this, _selection).range = [Math.floor(x / _classPrivateFieldGet(_this, _unit)), Math.floor(startX / _classPrivateFieldGet(_this, _unit))]; // this.#selection.start = Math.floor(x / unit);
+            // this.#selection.end = Math.floor(startX / unit)
+          } // selecting area
+          // this.#SELECTING_AREA.style.left = (this.start * unit) + '%';
+          // this.#SELECTING_AREA.style.width = ((this.end - this.start) * unit) + '%';
 
-          console.log(_this.start, _this.end); // selecting area
-
-          selectingArea.style.left = _this.start * unit + '%';
-          selectingArea.style.width = (_this.end - _this.start) * unit + '%'; // overview
-
-          selectorBars.forEach(function (bar, index) {
-            if (_classPrivateFieldGet(_this, _selection).start <= index && index <= _classPrivateFieldGet(_this, _selection).end) bar.classList.add('-selected');else bar.classList.remove('-selected');
-          });
-          target.update(); // set condition
-
-          ConditionBuilder$1.setPropertyValues(target.propertyId, _this.selectedItems.map(function (item) {
-            return item.categoryId;
-          }), false);
         }
       });
       selectorController.addEventListener('mouseup', function (e) {
@@ -4666,6 +4687,25 @@
 
     return HistogramRangeSelectorController;
   }();
+
+  function _update2$1() {
+    var _this3 = this;
+
+    // selecting area
+    _classPrivateFieldGet(this, _SELECTING_AREA).style.left = this.start * _classPrivateFieldGet(this, _unit) + '%';
+    _classPrivateFieldGet(this, _SELECTING_AREA).style.width = (this.end - this.start + 1) * _classPrivateFieldGet(this, _unit) + '%'; // overview
+
+    _classPrivateFieldGet(this, _SELECTOR_BARS).forEach(function (bar, index) {
+      if (_classPrivateFieldGet(_this3, _selection).start <= index && index <= _classPrivateFieldGet(_this3, _selection).end) bar.classList.add('-selected');else bar.classList.remove('-selected');
+    });
+
+    _classPrivateFieldGet(this, _target).update(); // set condition
+
+
+    ConditionBuilder$1.setPropertyValues(_classPrivateFieldGet(this, _target).propertyId, this.selectedItems.map(function (item) {
+      return item.categoryId;
+    }), false);
+  }
 
   /**
    *

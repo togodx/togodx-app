@@ -4,12 +4,16 @@ export default class HistogramRangeSelectorController {
 
   #target;
   #selection;
+  #unit;
+  #SELECTING_AREA;
+  #SELECTOR_BARS;
 
   constructor(target, selector) {
 
     // definition
     this.#target = target;
     let selectionStart, selectionEnd;
+    const self = this;
     this.#selection = {};
     Object.defineProperties(this.#selection, {
       start: {
@@ -32,16 +36,17 @@ export default class HistogramRangeSelectorController {
         get() {
           return [selectionStart, selectionEnd];
         },
-        set(start, end) {
+        set([start, end]) {
           selectionStart = start;
           selectionEnd = end;
+          self.#update();
         }
       }
     });
 
     // reference
-    const selectingArea = selector.querySelector(':scope > .inner > .selectingarea');
-    const handlesArray = Array.from(selectingArea.querySelectorAll(':scope > .handle'));
+    this.#SELECTING_AREA = selector.querySelector(':scope > .inner > .selectingarea');
+    const handlesArray = Array.from(this.#SELECTING_AREA.querySelectorAll(':scope > .handle'));
     console.log(handlesArray)
     const handles = {
       left: handlesArray.filter(handle => handle.dataset.direction === 'left'),
@@ -49,14 +54,14 @@ export default class HistogramRangeSelectorController {
     }
     console.log(handles)
     const selectorController = selector.querySelector(':scope > .inner > .controller');
-    const selectorBars = selector.querySelectorAll(':scope > .inner > .overview > .bar');
+    this.#SELECTOR_BARS = selector.querySelectorAll(':scope > .inner > .overview > .bar');
 
     // make selecting area
     let isMouseDown = false, startX, width, unit;
     selectorController.addEventListener('mousedown', e => {
       selector.classList.add('-makingarea');
       width = e.target.getBoundingClientRect().width;
-      unit = 100 / target.items.length;
+      this.#unit = 100 / target.items.length;
       isMouseDown = true;
       startX = (e.layerX / width) * 100;
     });
@@ -66,28 +71,23 @@ export default class HistogramRangeSelectorController {
         const x = (e.layerX / width) * 100;
         const selectedWidth = x - startX;
         if (selectedWidth > 0) {
-          this.#selection.start = Math.floor(startX / unit);
-          this.#selection.end = Math.floor(x / unit)
+          this.#selection.range = [
+            Math.floor(startX / this.#unit),
+            Math.floor(x / this.#unit)
+          ];
+          // this.#selection.start = Math.floor(startX / this.#unit);
+          // this.#selection.end = Math.floor(x / this.#unit)
         } else {
-          this.#selection.start = Math.floor(x / unit);
-          this.#selection.end = Math.floor(startX / unit)
+          this.#selection.range = [
+            Math.floor(x / this.#unit),
+            Math.floor(startX / this.#unit)
+          ];
+          // this.#selection.start = Math.floor(x / unit);
+          // this.#selection.end = Math.floor(startX / unit)
         }
-        console.log(this.start, this.end)
         // selecting area
-        selectingArea.style.left = (this.start * unit) + '%';
-        selectingArea.style.width = ((this.end - this.start) * unit) + '%';
-        // overview
-        selectorBars.forEach((bar, index) => {
-          if (this.#selection.start <= index && index <= this.#selection.end) bar.classList.add('-selected');
-          else bar.classList.remove('-selected');
-        });
-        target.update();
-        // set condition
-        ConditionBuilder.setPropertyValues(
-          target.propertyId,
-          this.selectedItems.map(item => item.categoryId),
-          false
-        );
+        // this.#SELECTING_AREA.style.left = (this.start * unit) + '%';
+        // this.#SELECTING_AREA.style.width = ((this.end - this.start) * unit) + '%';
       }
     });
     selectorController.addEventListener('mouseup', e => {
@@ -110,7 +110,21 @@ export default class HistogramRangeSelectorController {
   // private methods
 
   #update() {
-
+    // selecting area
+    this.#SELECTING_AREA.style.left = (this.start * this.#unit) + '%';
+    this.#SELECTING_AREA.style.width = ((this.end - this.start + 1) * this.#unit) + '%';
+    // overview
+    this.#SELECTOR_BARS.forEach((bar, index) => {
+      if (this.#selection.start <= index && index <= this.#selection.end) bar.classList.add('-selected');
+      else bar.classList.remove('-selected');
+    });
+    this.#target.update();
+    // set condition
+    ConditionBuilder.setPropertyValues(
+      this.#target.propertyId,
+      this.selectedItems.map(item => item.categoryId),
+      false
+    );
   }
 
 
