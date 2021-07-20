@@ -4,15 +4,17 @@ import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
 import axiosRetry from 'axios-retry';
+import ProgressIndicator from './ProgressIndicator';
 
 const LIMIT = 100;
 const downloadUrls = new Map();
 const timeOutError = 'ECONNABORTED';
+
 /**
- * @typedef {Object} Mode
- * @property {string} label
- * @property {string} icon
- * @property {string} dataButton
+ * @typedef { Object } Mode
+ * @property { string } label
+ * @property { string } icon
+ * @property { string } dataButton
  */
 const dataButtonModes = new Map([
   [
@@ -81,12 +83,9 @@ export default class TableData {
   #source;
   #isLoading;
   #isCompleted;
-  #startTime;
   #ROOT;
   #STATUS;
-  #INDICATOR_TEXT_AMOUNT;
-  #INDICATOR_TEXT_TIME;
-  #INDICATOR_BAR;
+  #progressIndicator;
   #CONTROLLER;
   #BUTTON_LEFT;
   #BUTTON_RIGHT;
@@ -153,14 +152,7 @@ export default class TableData {
       <p>Getting ID list</p>
       <span class="material-icons-outlined -rotating">autorenew</span>
     </div>
-    <div class="indicator">
-      <div class="text">
-        <div class="amount-of-data"></div>
-        <div class="remaining-time"></div>
-      </div>
-      <div class="progress">
-        <div class="bar"></div>
-      </div>
+    <div>
     </div>
     <div class="controller">
     </div>
@@ -169,14 +161,10 @@ export default class TableData {
     // reference
     this.#ROOT = elm;
     this.#STATUS = elm.querySelector(':scope > .status > p');
-    const INDICATOR = elm.querySelector(':scope > .indicator');
-    this.#INDICATOR_TEXT_AMOUNT = INDICATOR.querySelector(
-      ':scope > .text > .amount-of-data'
+
+    this.#progressIndicator = new ProgressIndicator(
+      elm.querySelector(':scope > .status + div')
     );
-    this.#INDICATOR_TEXT_TIME = INDICATOR.querySelector(
-      ':scope > .text > .remaining-time'
-    );
-    this.#INDICATOR_BAR = INDICATOR.querySelector(':scope > .progress > .bar');
 
     this.#CONTROLLER = elm.querySelector(':scope > .controller');
     this.#CONTROLLER.appendChild(this.#makeDataButton('left'));
@@ -223,6 +211,7 @@ export default class TableData {
     // transition
     document.querySelector('body').dataset.display = 'properties';
   }
+
   // *** Responsive Buttons based on dataButtonModes ***
   /**
    * @param { string } className
@@ -244,10 +233,11 @@ export default class TableData {
 
     return button;
   }
+
   /**
-   * @param { HTMLElement} target
-   * @param { Mode} mode
-   * @param { string} urlType
+   * @param { HTMLElement } target
+   * @param { Mode } mode
+   * @param { string } urlType
    */
   #updateDataButton(target, mode, urlType) {
     target.dataset.button = mode.dataButton;
@@ -263,7 +253,7 @@ export default class TableData {
   }
 
   /**
-   * @param { MouseEvent} e
+   * @param { MouseEvent } e
    */
   #dataButtonPauseOrResume(e) {
     e.stopPropagation();
@@ -312,14 +302,17 @@ export default class TableData {
     this.#ROOT.classList.toggle('-fetching');
     this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('empty'));
 
-    if (this.#queryIds.length > 0) {
+    const partiallyLoaded = this.#queryIds.length > 0;
+    const message = partiallyLoaded ? 'Getting Data' : 'Getting ID list';
+    this.#STATUS.textContent = message;
+
+    if (partiallyLoaded) {
       this.#getProperties();
-      this.#STATUS.textContent = 'Getting Data';
-      return;
+    } else {
+      this.#getQueryIds();
     }
-    this.#STATUS.textContent = 'Getting ID list';
-    this.#getQueryIds();
   }
+
   /**
    * @param { MouseEvent } e
    */
@@ -401,27 +394,25 @@ export default class TableData {
     const tsvUrl = URL.createObjectURL(tsvBlob);
     downloadUrls.set('tsv', tsvUrl);
   }
+
   // *** Properties & Loading ***
   /**
    * @param { Error } err - first check userCancel, then server error, timeout err part of else
    */
   #handleError(err) {
-    let message, errCode;
-    if (axios.isCancel && err.message === 'user cancel') {
-      return;
-    } else if ((err.response?.status === 500) | (err.code === timeOutError)) {
+    if (axios.isCancel && err.message === 'user cancel') return;
+
+    const code = err.response?.status;
+    const message = err.response?.statusText || err.message;
+    this.#displayError(message, code);
+
+    if ((err.response?.status === 500) | (err.code === timeOutError)) {
       this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('retry'));
-    } else {
-      this.#BUTTON_LEFT.remove();
+      return;
     }
-    errCode = err.response ? err.response.status : false;
-    message = err.response
-      ? err.response.statusText
-      : err.code === timeOutError
-      ? 'Timeout'
-      : err.message;
-    this.#displayError(message, errCode);
+    this.#BUTTON_LEFT.remove();
   }
+
   /**
    * @param { string } message - errorMessage
    * @param { number } code - errorCode na in case of timeout or other
@@ -438,7 +429,6 @@ export default class TableData {
   }
 
   #getQueryIdsPayload() {
-    console.log(ConditionBuilder.userIds)
     return `togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(
       JSON.stringify(this.#condition.attributes.map(property => property.query))
     )}${
@@ -464,8 +454,7 @@ export default class TableData {
         }
         this.#ROOT.dataset.status = 'load rows';
         this.#STATUS.textContent = 'Getting Data';
-        this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
-        this.#startTime = Date.now();
+        this.#progressIndicator.setTotal(this.#queryIds.length);
         this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
         this.#getProperties();
       })
@@ -490,73 +479,44 @@ export default class TableData {
 
   #getProperties() {
     this.#isLoading = true;
+    const startTime = Date.now();
     axios
       .get(this.#getPropertiesFetch(), {cancelToken: this.#source.token})
       .then(response => {
         this.#rows.push(...response.data);
         this.#isCompleted = this.offset >= this.#queryIds.length;
-        this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
-        this.#INDICATOR_BAR.style.width = `${
-          (this.offset / this.#queryIds.length) * 100
-        }%`;
-        this.#updateRemainingTime();
+        this.#progressIndicator.updateProgressBar({
+          offset: this.offset,
+          startTime,
+        });
+
         // dispatch event
-        const customEvent = new CustomEvent(event.addNextRows, {
+        const customEvent2 = new CustomEvent(event.addNextRows, {
           detail: {
             tableData: this,
             rows: response.data,
             done: this.#isCompleted,
           },
         });
-        DefaultEventEmitter.dispatchEvent(customEvent);
+        DefaultEventEmitter.dispatchEvent(customEvent2);
         // turn off after finished
         if (this.#isCompleted) {
           this.#complete();
           return;
-        } else if (this.#isLoading) {
-          this.#getProperties();
         }
+        if (this.#isLoading) this.#getProperties();
       })
       .catch(error => {
         this.#handleError(error);
       });
   }
 
-  #updateRemainingTime() {
-    let singleTime = (Date.now() - this.#startTime) / this.offset;
-    let remainingTime;
-    if (this.offset == 0) {
-      remainingTime = '';
-    } else if (this.offset >= this.#queryIds.length) {
-      remainingTime = 0;
-    } else {
-      remainingTime =
-        (singleTime *
-          this.#queryIds.length *
-          (this.#queryIds.length - this.offset)) /
-        this.#queryIds.length /
-        1000;
-    }
-    if (remainingTime >= 3600) {
-      this.#INDICATOR_TEXT_TIME.innerHTML = `${Math.round(
-        remainingTime / 3600
-      )} hr.`;
-    } else if (remainingTime >= 60) {
-      this.#INDICATOR_TEXT_TIME.innerHTML = `${Math.round(
-        remainingTime / 60
-      )} min.`;
-    } else if (remainingTime >= 0) {
-      this.#INDICATOR_TEXT_TIME.innerHTML = `${Math.floor(remainingTime)} sec.`;
-    } else {
-      this.#INDICATOR_TEXT_TIME.innerHTML = ``;
-    }
-  }
   /**
    * @param { boolean } withData
    */
   #complete(withData = true) {
     this.#ROOT.dataset.status = 'complete';
-    this.#STATUS.textContent = withData ? 'Complete' : 'No Data found';
+    this.#STATUS.textContent = withData ? 'Complete' : 'No Data Found';
     this.#ROOT.classList.toggle('-fetching');
 
     if (withData) this.#setDownloadButtons();
@@ -586,8 +546,12 @@ export default class TableData {
     this.#ROOT.classList.remove('-current');
   }
 
-  /* public accessors */
+  next() {
+    if (this.#isLoading) return;
+    this.#getProperties();
+  }
 
+  /* public accessors */
   get offset() {
     return this.#rows.length;
   }
