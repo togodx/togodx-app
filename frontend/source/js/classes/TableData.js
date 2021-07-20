@@ -481,7 +481,7 @@ export default class TableData {
     this.#isLoading = true;
     const startTime = Date.now();
     axios
-      .get('this.#getPropertiesFetch()', {cancelToken: this.#source.token})
+      .get(this.#getPropertiesFetch(), {cancelToken: this.#source.token})
       .then(response => {
         this.#rows.push(...response.data);
         this.#isCompleted = this.offset >= this.#queryIds.length;
