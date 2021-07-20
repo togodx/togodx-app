@@ -53,27 +53,6 @@
     > .material-icons-outlined
       display: none
 
-  > .indicator
-    padding: .4rem .4rem
-    border-bottom: solid .1rem var(--color-separator)
-    display: none
-    > .text
-      line-height: 1
-      display: flex
-      justify-content: space-between
-    > .progress
-      margin: .4rem 0
-      position: relative
-      height: .4rem
-      width: 100%
-      background-color: rgba(0, 0, 0, .1)
-      > .bar
-        background-color: var(--color-lamp-black)
-        position: absolute
-        height: .4rem
-        top: 0
-        left: 0
-        transition: width var(--transition-wipe)
   > .controller
     display: flex
     color: white
@@ -107,8 +86,6 @@
     > .status
       > p
         opacity: 1
-    > .indicator
-      display: block
     > .controller
       display: flex
   &.-fetching
@@ -117,15 +94,6 @@
         display: block
         &.-rotating
           animation: rotation 3s linear infinite
-    > .indicator
-      > .progress
-        > .bar
-          animation: var(--transition-fetching) infinite alternate fetching
-  &[data-status="complete"]
-    > .indicator
-      > .text
-        > .remaining-time
-          display: none
 
 @keyframes rotation
   0%

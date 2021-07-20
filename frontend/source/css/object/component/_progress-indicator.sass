@@ -1,0 +1,37 @@
+.progress-indicator
+    padding: .4rem .4rem
+    border-bottom: solid .1rem var(--color-separator)
+    display: none
+    > .text
+        line-height: 1
+        display: flex
+        justify-content: space-between
+        > .amount-of-data
+            display: none
+    > .progress
+        margin: .4rem 0
+        position: relative
+        height: .4rem
+        width: 100%
+        background-color: rgba(0, 0, 0, .1)
+        > .bar
+            background-color: var(--color-lamp-black)
+            position: absolute
+            height: .4rem
+            top: 0
+            left: 0
+            transition: width var(--transition-wipe)
+    .table-data-controller-view.-fetching &, .table-data-controller-view[data-status="load rows"] &, .table-data-controller-view[data-status="complete"] &
+        display: block
+    .table-data-controller-view[data-status="load rows"] &, .table-data-controller-view[data-status="complete"] &
+        > .text
+            > .amount-of-data
+                display: block
+    .table-data-controller-view.-fetching &
+        > .text
+            > .bar
+                animation: var(--transition-fetching) infinite alternate fetching
+    .table-data-controller-view[data-status="complete"] &
+        > .text
+            > .remaining-time
+                display: none
