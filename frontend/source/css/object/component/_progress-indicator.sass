@@ -21,17 +21,19 @@
             top: 0
             left: 0
             transition: width var(--transition-wipe)
-    .table-data-controller-view.-fetching &, .table-data-controller-view[data-status="load rows"] &, .table-data-controller-view[data-status="complete"] &
+    div.-fetching &, div[data-status="load rows"] &, div[data-status="complete"] &
         display: block
-    .table-data-controller-view[data-status="load rows"] &, .table-data-controller-view[data-status="complete"] &
+    div[data-status="load rows"] &, div[data-status="complete"] &
         > .text
             > .amount-of-data
                 display: block
-    .table-data-controller-view.-fetching &
+    div.-fetching &
         > .text
             > .bar
                 animation: var(--transition-fetching) infinite alternate fetching
-    .table-data-controller-view[data-status="complete"] &
+    div[data-status="complete"] &
         > .text
             > .remaining-time
                 display: none
+    #UploadUserIDsView[data-status="complete"] &
+        display: none

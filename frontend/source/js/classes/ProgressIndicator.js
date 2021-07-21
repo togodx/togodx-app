@@ -66,7 +66,7 @@ export default class ProgressIndicator {
   
   /**
    * @param { number } offset
-   * @param { number } startTime - start time of 1 getProperties
+   * @param { number } startTime - start time of 1 instance
    */
   #updateTime(offset, startTime) {
     this.#totalDuration += Date.now() - startTime;
@@ -80,7 +80,7 @@ export default class ProgressIndicator {
   /* public accessors */
   updateProgressBar({offset, startTime}) {
     this.#updateAmount(offset);
-    this.#updateTime(offset, startTime);
+    if (startTime) this.#updateTime(offset, startTime);
   }
 
   setTotal(total) {
