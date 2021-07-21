@@ -3070,7 +3070,8 @@
       }
     }, {
       key: "setUserIds",
-      value: function setUserIds(ids) {
+      value: function setUserIds() {
+        var ids = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
         console.log('setUserIds', ids);
 
         _classPrivateFieldSet(this, _userIds, ids.replace(/,/g, " ").split(/\s+/).join(',')); // post processing (permalink, evaluate)
@@ -3628,7 +3629,7 @@
 
   var _condition$1 = new WeakMap();
 
-  var _ROOT$8 = new WeakMap();
+  var _ROOT$9 = new WeakMap();
 
   var _LABELS = new WeakMap();
 
@@ -3658,7 +3659,7 @@
         value: void 0
       });
 
-      _ROOT$8.set(this, {
+      _ROOT$9.set(this, {
         writable: true,
         value: void 0
       });
@@ -3674,14 +3675,14 @@
       var property = Records$1.getProperty(condition.propertyId); // this.#isRange = isRange;
       // attributes
 
-      _classPrivateFieldSet(this, _ROOT$8, document.createElement('div'));
+      _classPrivateFieldSet(this, _ROOT$9, document.createElement('div'));
 
-      _classPrivateFieldGet(this, _ROOT$8).classList.add('stacking-condition-view');
+      _classPrivateFieldGet(this, _ROOT$9).classList.add('stacking-condition-view');
 
-      _classPrivateFieldGet(this, _ROOT$8).dataset.subjectId = subject.subjectId;
-      _classPrivateFieldGet(this, _ROOT$8).dataset.propertyId = condition.propertyId;
-      if (condition.value) _classPrivateFieldGet(this, _ROOT$8).dataset.categoryId = condition.value.categoryId;
-      if (condition.parentCategoryId) _classPrivateFieldGet(this, _ROOT$8).dataset.parentCategoryId = condition.parentCategoryId; // make view
+      _classPrivateFieldGet(this, _ROOT$9).dataset.subjectId = subject.subjectId;
+      _classPrivateFieldGet(this, _ROOT$9).dataset.propertyId = condition.propertyId;
+      if (condition.value) _classPrivateFieldGet(this, _ROOT$9).dataset.categoryId = condition.value.categoryId;
+      if (condition.parentCategoryId) _classPrivateFieldGet(this, _ROOT$9).dataset.parentCategoryId = condition.parentCategoryId; // make view
 
       var _label,
           _ancestorLabels = [subject.subject];
@@ -3756,7 +3757,7 @@
       key: "removeProperty",
       value: function removeProperty(propertyId, parentCategoryId) {
         var isMatch = propertyId === _classPrivateFieldGet(this, _condition$1).propertyId && (parentCategoryId ? parentCategoryId === _classPrivateFieldGet(this, _condition$1).parentCategoryId : true);
-        if (isMatch) _classPrivateFieldGet(this, _ROOT$8).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$8));
+        if (isMatch) _classPrivateFieldGet(this, _ROOT$9).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$9));
         return isMatch;
       }
     }, {
@@ -3766,7 +3767,7 @@
           _classPrivateFieldGet(this, _LABELS).removeChild(_classPrivateFieldGet(this, _LABELS).querySelector(":scope > [data-category-id=\"".concat(categoryId, "\"")));
 
           if (_classPrivateFieldGet(this, _LABELS).childNodes.length === 0) {
-            _classPrivateFieldGet(this, _ROOT$8).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$8));
+            _classPrivateFieldGet(this, _ROOT$9).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$9));
 
             return true;
           } else {
@@ -3790,19 +3791,19 @@
     var _this3 = this;
 
     console.log(container, type, ancestorLabels, label);
-    _classPrivateFieldGet(this, _ROOT$8).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      ".concat(ancestorLabels.map(function (ancestor) {
+    _classPrivateFieldGet(this, _ROOT$9).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      ".concat(ancestorLabels.map(function (ancestor) {
       return "<li>".concat(ancestor, "</li>");
     }).join(''), "\n    </ul>\n    ").concat(label);
-    container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$8)); // reference
+    container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$9)); // reference
 
     if (type === 'value') {
-      _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .labels'));
+      _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$9).querySelector(':scope > .labels'));
 
       this.addValue(_classPrivateFieldGet(this, _condition$1).categoryId);
     } // event
 
 
-    _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .close-button-view').addEventListener('click', function () {
+    _classPrivateFieldGet(this, _ROOT$9).querySelector(':scope > .close-button-view').addEventListener('click', function () {
       switch (type) {
         case 'property':
           // notify
@@ -4113,7 +4114,7 @@
 
   var _currentColumns = new WeakMap();
 
-  var _ROOT$7 = new WeakMap();
+  var _ROOT$8 = new WeakMap();
 
   var _CONTAINER$1 = new WeakMap();
 
@@ -4186,7 +4187,7 @@
       value: void 0
     });
 
-    _ROOT$7.set(this, {
+    _ROOT$8.set(this, {
       writable: true,
       value: void 0
     });
@@ -4216,11 +4217,11 @@
 
     elm.innerHTML = "\n    <div class=\"column-selector-view\">\n      <div class=\"columns\">\n        <div class=\"inner\"></div>\n      </div>\n      <div class=\"loading-view\"></div>\n    </div>";
 
-    _classPrivateFieldSet(this, _ROOT$7, elm.querySelector(':scope > .column-selector-view'));
+    _classPrivateFieldSet(this, _ROOT$8, elm.querySelector(':scope > .column-selector-view'));
 
-    _classPrivateFieldSet(this, _CONTAINER$1, _classPrivateFieldGet(this, _ROOT$7).querySelector(':scope > .columns > .inner'));
+    _classPrivateFieldSet(this, _CONTAINER$1, _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .columns > .inner'));
 
-    _classPrivateFieldSet(this, _LOADING_VIEW$2, _classPrivateFieldGet(this, _ROOT$7).querySelector(':scope > .loading-view')); // even listener
+    _classPrivateFieldSet(this, _LOADING_VIEW$2, _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .loading-view')); // even listener
 
 
     DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
@@ -4562,7 +4563,7 @@
 
   var _OVERVIEW_CONTAINER$1 = new WeakMap();
 
-  var _ROOT$6 = new WeakMap();
+  var _ROOT$7 = new WeakMap();
 
   var _SELECTOR_BARS = new WeakMap();
 
@@ -4617,7 +4618,7 @@
       value: void 0
     });
 
-    _ROOT$6.set(this, {
+    _ROOT$7.set(this, {
       writable: true,
       value: void 0
     });
@@ -4650,11 +4651,11 @@
 
     elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"selector\">\n        <div class=\"overview\"></div>\n        <div class=\"controller\"></div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ".concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>\n      <!--\n      <div class=\"controller\">\n        <div class=\"selector\">\n          <div class=\"slider -min\"></div>\n          <div class=\"slider -max\"></div>\n        </div>\n        <div class=\"form\">\n          <input type=\"number\" data-range=\"min\">\n          ~\n          <input type=\"number\" data-range=\"max\">\n        </div>\n      </div>\n      -->");
 
-    _classPrivateFieldSet(this, _ROOT$6, elm.querySelector(':scope > .histogram-range-selector-view'));
+    _classPrivateFieldSet(this, _ROOT$7, elm.querySelector(':scope > .histogram-range-selector-view'));
 
-    var histogram = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .histogram');
+    var histogram = _classPrivateFieldGet(this, _ROOT$7).querySelector(':scope > .histogram');
 
-    var selector = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .selector'); // make graph
+    var selector = _classPrivateFieldGet(this, _ROOT$7).querySelector(':scope > .selector'); // make graph
 
 
     var _max = Math.max.apply(Math, _toConsumableArray(_classPrivateFieldGet(this, _items).map(function (item) {
@@ -4695,7 +4696,7 @@
   function _setupRangeSelector2() {
     var _this2 = this;
 
-    var selectorController = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .selector > .controller');
+    var selectorController = _classPrivateFieldGet(this, _ROOT$7).querySelector(':scope > .selector > .controller');
 
     var isMouseDown = false,
         startX,
@@ -4723,7 +4724,7 @@
         } // select overview by range
 
 
-        _classPrivateFieldGet(_this2, _ROOT$6).querySelectorAll(':scope > .selector > .overview > .bar').forEach(function (bar, index) {
+        _classPrivateFieldGet(_this2, _ROOT$7).querySelectorAll(':scope > .selector > .overview > .bar').forEach(function (bar, index) {
           if (_classPrivateFieldGet(_this2, _selectedBarsStart) <= index && index <= _classPrivateFieldGet(_this2, _selectedBarsEnd)) {
             bar.classList.add('-selected');
           } else {
@@ -4812,7 +4813,7 @@
 
   var _userValues = new WeakMap();
 
-  var _ROOT$5 = new WeakMap();
+  var _ROOT$6 = new WeakMap();
 
   var _update = new WeakSet();
 
@@ -4851,12 +4852,12 @@
       value: void 0
     });
 
-    _ROOT$5.set(this, {
+    _ROOT$6.set(this, {
       writable: true,
       value: void 0
     });
 
-    _classPrivateFieldSet(this, _ROOT$5, elm);
+    _classPrivateFieldSet(this, _ROOT$6, elm);
 
     _classPrivateFieldSet(this, _subject$1, subject);
 
@@ -5009,7 +5010,7 @@
 
   function _plotUserIdValues2(detail) {
     if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
-      _classPrivateFieldGet(this, _ROOT$5).classList.add('-pinsticking');
+      _classPrivateFieldGet(this, _ROOT$6).classList.add('-pinsticking');
 
       _classPrivateFieldSet(this, _userValues, detail.values); // calculate min value
       // let maxPValue;
@@ -5093,7 +5094,7 @@
 
   var _sparqlist = new WeakMap();
 
-  var _ROOT$4 = new WeakMap();
+  var _ROOT$5 = new WeakMap();
 
   var _LOADING_VIEW$1 = new WeakMap();
 
@@ -5129,7 +5130,7 @@
       value: void 0
     });
 
-    _ROOT$4.set(this, {
+    _ROOT$5.set(this, {
       writable: true,
       value: void 0
     });
@@ -5164,7 +5165,7 @@
     var elm = document.createElement('div');
     container.insertAdjacentElement('beforeend', elm);
 
-    _classPrivateFieldSet(this, _ROOT$4, elm);
+    _classPrivateFieldSet(this, _ROOT$5, elm);
 
     _classPrivateFieldSet(this, _subject, subject);
 
@@ -5202,12 +5203,12 @@
         // add
         ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this, _property).propertyId);
 
-        _classPrivateFieldGet(_this, _ROOT$4).classList.add('-allselected');
+        _classPrivateFieldGet(_this, _ROOT$5).classList.add('-allselected');
       } else {
         // remove
         ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this, _property).propertyId);
 
-        _classPrivateFieldGet(_this, _ROOT$4).classList.remove('-allselected');
+        _classPrivateFieldGet(_this, _ROOT$5).classList.remove('-allselected');
       }
     }); // event listener
 
@@ -5220,7 +5221,7 @@
           if (e.detail.propertyId === _classPrivateFieldGet(_this, _property).propertyId) {
             _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = true;
 
-            _classPrivateFieldGet(_this, _ROOT$4).classList.add('-allselected');
+            _classPrivateFieldGet(_this, _ROOT$5).classList.add('-allselected');
           }
 
           break;
@@ -5229,7 +5230,7 @@
           if (e.detail.propertyId === _classPrivateFieldGet(_this, _property).propertyId) {
             _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = false;
 
-            _classPrivateFieldGet(_this, _ROOT$4).classList.remove('-allselected');
+            _classPrivateFieldGet(_this, _ROOT$5).classList.remove('-allselected');
           }
 
           break;
@@ -5237,11 +5238,11 @@
     });
     DefaultEventEmitter$1.addEventListener(allTracksCollapse, function (e) {
       if (e.detail) {
-        if (!_classPrivateFieldGet(_this, _ROOT$4).classList.contains('-spread')) {
+        if (!_classPrivateFieldGet(_this, _ROOT$5).classList.contains('-spread')) {
           _classPrivateFieldGet(_this, _COLLAPSE_BUTTON).dispatchEvent(new MouseEvent('click'));
         }
       } else {
-        if (_classPrivateFieldGet(_this, _ROOT$4).classList.contains('-spread')) {
+        if (_classPrivateFieldGet(_this, _ROOT$5).classList.contains('-spread')) {
           _classPrivateFieldGet(_this, _COLLAPSE_BUTTON).dispatchEvent(new MouseEvent('click'));
         }
       }
@@ -5260,7 +5261,7 @@
   ;
 
   function _makeValues2(values) {
-    _classPrivateFieldGet(this, _ROOT$4).classList.remove('-preparing');
+    _classPrivateFieldGet(this, _ROOT$5).classList.remove('-preparing');
 
     _classPrivateFieldGet(this, _LOADING_VIEW$1).classList.remove('-shown'); // make overview
 
@@ -5419,7 +5420,7 @@
 
   var _header$1 = new WeakMap();
 
-  var _ROOT$3 = new WeakMap();
+  var _ROOT$4 = new WeakMap();
 
   var _THEAD = new WeakMap();
 
@@ -5473,7 +5474,7 @@
       value: void 0
     });
 
-    _ROOT$3.set(this, {
+    _ROOT$4.set(this, {
       writable: true,
       value: void 0
     });
@@ -5509,7 +5510,7 @@
     });
 
     // references
-    _classPrivateFieldSet(this, _ROOT$3, _elm);
+    _classPrivateFieldSet(this, _ROOT$4, _elm);
 
     var TABLE = _elm.querySelector(':scope > .body > table');
 
@@ -5599,7 +5600,7 @@
       };
     }));
 
-    _classPrivateFieldGet(this, _ROOT$3).classList.remove('-complete');
+    _classPrivateFieldGet(this, _ROOT$4).classList.remove('-complete');
 
     _classPrivateFieldGet(this, _THEAD).innerHTML = '';
     _classPrivateFieldGet(this, _TBODY).innerHTML = '';
@@ -5660,11 +5661,11 @@
 
 
     if (detail.done) {
-      _classPrivateFieldGet(this, _ROOT$3).classList.add('-complete');
+      _classPrivateFieldGet(this, _ROOT$4).classList.add('-complete');
 
       _classPrivateFieldGet(this, _LOADING_VIEW).classList.remove('-shown');
     } else {
-      _classPrivateFieldGet(this, _ROOT$3).classList.remove('-complete');
+      _classPrivateFieldGet(this, _ROOT$4).classList.remove('-complete');
 
       _classPrivateFieldGet(this, _LOADING_VIEW).classList.add('-shown');
 
@@ -5710,7 +5711,7 @@
   function _failed2(tableData) {
     console.log(tableData);
 
-    _classPrivateFieldGet(this, _ROOT$3).classList.add('-complete');
+    _classPrivateFieldGet(this, _ROOT$4).classList.add('-complete');
 
     _classPrivateFieldGet(this, _LOADING_VIEW).classList.remove('-shown');
   }
@@ -5833,7 +5834,7 @@
     }
   }
 
-  var _ROOT$2 = new WeakMap();
+  var _ROOT$3 = new WeakMap();
 
   var _RESULTS_TABLE = new WeakMap();
 
@@ -5898,7 +5899,7 @@
 
     _showPopup.add(this);
 
-    _ROOT$2.set(this, {
+    _ROOT$3.set(this, {
       writable: true,
       value: void 0
     });
@@ -5956,10 +5957,10 @@
       }]])
     });
 
-    _classPrivateFieldSet(this, _ROOT$2, document.createElement('section'));
+    _classPrivateFieldSet(this, _ROOT$3, document.createElement('section'));
 
-    _classPrivateFieldGet(this, _ROOT$2).id = 'ResultDetailModal';
-    document.querySelector('body').insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$2)); // references
+    _classPrivateFieldGet(this, _ROOT$3).id = 'ResultDetailModal';
+    document.querySelector('body').insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$3)); // references
 
     _classPrivateFieldSet(this, _RESULTS_TABLE, document.querySelector('#ResultsTable'));
 
@@ -6008,7 +6009,7 @@
   }
 
   function _popup2(detail) {
-    _classPrivateFieldGet(this, _ROOT$2).dataset.subjectId = detail.keys.subjectId;
+    _classPrivateFieldGet(this, _ROOT$3).dataset.subjectId = detail.keys.subjectId;
     var popup = document.createElement('div');
     popup.className = 'popup';
     popup.style.left = _classPrivateFieldGet(this, _popup_left);
@@ -6167,7 +6168,7 @@
     document.removeEventListener('keydown', _classPrivateFieldGet(this, _handleKeydown));
   }
 
-  var _ROOT$1 = new WeakMap();
+  var _ROOT$2 = new WeakMap();
 
   var _CONTAINER = new WeakMap();
 
@@ -6176,7 +6177,7 @@
 
     _classCallCheck(this, BalloonView);
 
-    _ROOT$1.set(this, {
+    _ROOT$2.set(this, {
       writable: true,
       value: void 0
     });
@@ -6187,13 +6188,13 @@
     });
 
     // make element
-    _classPrivateFieldSet(this, _ROOT$1, document.createElement('div'));
+    _classPrivateFieldSet(this, _ROOT$2, document.createElement('div'));
 
-    _classPrivateFieldGet(this, _ROOT$1).className = 'balloon-view';
-    document.querySelector('body').insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$1));
-    _classPrivateFieldGet(this, _ROOT$1).innerHTML = '<div class="container"></div>';
+    _classPrivateFieldGet(this, _ROOT$2).className = 'balloon-view';
+    document.querySelector('body').insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$2));
+    _classPrivateFieldGet(this, _ROOT$2).innerHTML = '<div class="container"></div>';
 
-    _classPrivateFieldSet(this, _CONTAINER, _classPrivateFieldGet(this, _ROOT$1).querySelector(':scope > .container')); // event listener
+    _classPrivateFieldSet(this, _CONTAINER, _classPrivateFieldGet(this, _ROOT$2).querySelector(':scope > .container')); // event listener
 
 
     DefaultEventEmitter$1.addEventListener(enterPropertyValueItemView, function (_ref) {
@@ -6207,22 +6208,22 @@
 
       var rect = elm.getBoundingClientRect();
       var isBelow = window.innerHeight * .3 > rect.top;
-      _classPrivateFieldGet(_this, _ROOT$1).style.left = rect.left + rect.width * .5 + 'px';
+      _classPrivateFieldGet(_this, _ROOT$2).style.left = rect.left + rect.width * .5 + 'px';
 
       if (isBelow) {
-        _classPrivateFieldGet(_this, _ROOT$1).classList.add('-below');
+        _classPrivateFieldGet(_this, _ROOT$2).classList.add('-below');
 
-        _classPrivateFieldGet(_this, _ROOT$1).style.top = rect.bottom + 'px';
+        _classPrivateFieldGet(_this, _ROOT$2).style.top = rect.bottom + 'px';
       } else {
-        _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-below');
+        _classPrivateFieldGet(_this, _ROOT$2).classList.remove('-below');
 
-        _classPrivateFieldGet(_this, _ROOT$1).style.top = rect.top + 'px';
+        _classPrivateFieldGet(_this, _ROOT$2).style.top = rect.top + 'px';
       }
 
-      _classPrivateFieldGet(_this, _ROOT$1).classList.add('-showing');
+      _classPrivateFieldGet(_this, _ROOT$2).classList.add('-showing');
     });
     DefaultEventEmitter$1.addEventListener(leavePropertyValueItemView, function () {
-      _classPrivateFieldGet(_this, _ROOT$1).classList.remove('-showing');
+      _classPrivateFieldGet(_this, _ROOT$2).classList.remove('-showing');
     });
   };
 
@@ -6550,7 +6551,7 @@
 
   var _TEXT_TOTAL = new WeakMap();
 
-  var _TEXT_TIME = new WeakMap();
+  var _TEXT_STATUS = new WeakMap();
 
   var _BAR = new WeakMap();
 
@@ -6558,7 +6559,11 @@
 
   var _total = new WeakMap();
 
+  var _simpleMode = new WeakMap();
+
   var _updateAmount = new WeakSet();
+
+  var _updateBarWidth = new WeakSet();
 
   var _remainingTimeInSec = new WeakSet();
 
@@ -6567,7 +6572,13 @@
   var _updateTime = new WeakSet();
 
   var ProgressIndicator = /*#__PURE__*/function () {
+    /**
+     * @param { HTMLElement } elm
+     * @param { boolean } simpleMode - Default is mode with time bar and amount tracker
+     */
     function ProgressIndicator(elm) {
+      var simpleMode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
       _classCallCheck(this, ProgressIndicator);
 
       _updateTime.add(this);
@@ -6575,6 +6586,8 @@
       _timeString.add(this);
 
       _remainingTimeInSec.add(this);
+
+      _updateBarWidth.add(this);
 
       _updateAmount.add(this);
 
@@ -6588,7 +6601,7 @@
         value: void 0
       });
 
-      _TEXT_TIME.set(this, {
+      _TEXT_STATUS.set(this, {
         writable: true,
         value: void 0
       });
@@ -6608,20 +6621,33 @@
         value: void 0
       });
 
-      elm.classList.add('progress-indicator');
-      elm.innerHTML = "\n      <div class=\"text\">\n        <div class=\"amount-of-data\">\n          <span class=\"offset\">0</span>\n            / \n          <span class=\"total\"></span> \n        </div>\n        <div class=\"remaining-time\">\n        </div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n      ";
+      _simpleMode.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-      _classPrivateFieldSet(this, _TEXT_TIME, elm.querySelector(':scope > .text > .remaining-time'));
+      _classPrivateFieldSet(this, _simpleMode, simpleMode);
+
+      elm.classList.add('progress-indicator');
+      var counter = simpleMode ? '' : "<div class=\"amount-of-data\">\n          <span class=\"offset\">0</span>\n          <span class=\"total\"></span>\n      </div>";
+      elm.innerHTML = " \n      <div class=\"text\">\n        ".concat(counter, "\n        <div class=\"status\">\n        </div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>");
+
+      _classPrivateFieldSet(this, _BAR, elm.querySelector(':scope > .progress > .bar'));
+
+      _classPrivateFieldSet(this, _TEXT_STATUS, elm.querySelector(':scope > .text > .status'));
+
+      _classPrivateFieldSet(this, _total, 0);
+
+      if (simpleMode) {
+        elm.classList.add('-simple');
+        return;
+      }
 
       _classPrivateFieldSet(this, _TEXT_OFFSET, elm.querySelector(':scope > .text > .amount-of-data > .offset'));
 
       _classPrivateFieldSet(this, _TEXT_TOTAL, elm.querySelector(':scope > .text > .amount-of-data > .total'));
 
-      _classPrivateFieldSet(this, _BAR, elm.querySelector(':scope > .progress > .bar'));
-
       _classPrivateFieldSet(this, _totalDuration, 0);
-
-      _classPrivateFieldSet(this, _total, 0);
     }
     /* private methods */
 
@@ -6635,19 +6661,34 @@
       value:
       /* public accessors */
       function updateProgressBar(_ref) {
-        var offset = _ref.offset,
+        var _ref$offset = _ref.offset,
+            offset = _ref$offset === void 0 ? 0 : _ref$offset,
             startTime = _ref.startTime;
+
+        _classPrivateMethodGet(this, _updateBarWidth, _updateBarWidth2).call(this, offset);
+
+        if (_classPrivateFieldGet(this, _simpleMode)) return;
 
         _classPrivateMethodGet(this, _updateAmount, _updateAmount2).call(this, offset);
 
         _classPrivateMethodGet(this, _updateTime, _updateTime2).call(this, offset, startTime);
       }
     }, {
-      key: "setTotal",
-      value: function setTotal(total) {
+      key: "setIndicator",
+      value: function setIndicator() {
+        var total = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+        var message = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
         _classPrivateFieldSet(this, _total, total);
 
-        _classPrivateFieldGet(this, _TEXT_TOTAL).textContent = _classPrivateFieldGet(this, _total).toString();
+        if (_classPrivateFieldGet(this, _simpleMode)) _classPrivateFieldGet(this, _TEXT_STATUS).innerHTML = "".concat(message, "<span class=\"material-icons-outlined -rotating\">autorenew</span>");else _classPrivateFieldGet(this, _TEXT_TOTAL).textContent = "/ ".concat(_classPrivateFieldGet(this, _total).toString());
+      }
+    }, {
+      key: "reset",
+      value: function reset() {
+        this.setIndicator();
+
+        _classPrivateMethodGet(this, _updateBarWidth, _updateBarWidth2).call(this);
       }
     }]);
 
@@ -6656,7 +6697,11 @@
 
   function _updateAmount2(offset) {
     _classPrivateFieldGet(this, _TEXT_OFFSET).textContent = "".concat(offset.toString());
-    _classPrivateFieldGet(this, _BAR).style.width = "".concat(offset / _classPrivateFieldGet(this, _total) * 100, "%");
+  }
+
+  function _updateBarWidth2() {
+    var offset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    _classPrivateFieldGet(this, _BAR).style.width = offset / _classPrivateFieldGet(this, _total) ? "".concat(offset / _classPrivateFieldGet(this, _total) * 100, "%") : '0%';
   }
 
   function _remainingTimeInSec2(durationPerItem, itemsLeft) {
@@ -6677,12 +6722,12 @@
 
     var remainingTime = _classPrivateMethodGet(this, _remainingTimeInSec, _remainingTimeInSec2).call(this, _classPrivateFieldGet(this, _totalDuration) / offset, _classPrivateFieldGet(this, _total) - offset);
 
-    _classPrivateFieldGet(this, _TEXT_TIME).innerHTML = _classPrivateMethodGet(this, _timeString, _timeString2).call(this, remainingTime);
+    _classPrivateFieldGet(this, _TEXT_STATUS).innerHTML = _classPrivateMethodGet(this, _timeString, _timeString2).call(this, remainingTime);
   }
 
   var LIMIT = 100;
   var downloadUrls = new Map();
-  var timeOutError = 'ECONNABORTED';
+  var timeOutError$1 = 'ECONNABORTED';
   /**
    * @typedef { Object } Mode
    * @property { string } label
@@ -6728,17 +6773,17 @@
 
   var _rows = new WeakMap();
 
-  var _source = new WeakMap();
+  var _source$1 = new WeakMap();
 
   var _isLoading = new WeakMap();
 
   var _isCompleted = new WeakMap();
 
-  var _ROOT = new WeakMap();
+  var _ROOT$1 = new WeakMap();
 
   var _STATUS = new WeakMap();
 
-  var _progressIndicator = new WeakMap();
+  var _progressIndicator$1 = new WeakMap();
 
   var _CONTROLLER = new WeakMap();
 
@@ -6758,7 +6803,7 @@
 
   var _dataButtonRetry = new WeakSet();
 
-  var _dataButtonEvent = new WeakSet();
+  var _dataButtonEvent = new WeakMap();
 
   var _setDownloadButtons = new WeakSet();
 
@@ -6778,7 +6823,7 @@
 
   var _getProperties = new WeakSet();
 
-  var _complete = new WeakSet();
+  var _complete$1 = new WeakSet();
 
   var TableData = /*#__PURE__*/function () {
     function TableData(condition, elm) {
@@ -6786,7 +6831,7 @@
 
       _classCallCheck(this, TableData);
 
-      _complete.add(this);
+      _complete$1.add(this);
 
       _getProperties.add(this);
 
@@ -6805,8 +6850,6 @@
       _setJsonUrl.add(this);
 
       _setDownloadButtons.add(this);
-
-      _dataButtonEvent.add(this);
 
       _dataButtonRetry.add(this);
 
@@ -6840,7 +6883,7 @@
         value: void 0
       });
 
-      _source.set(this, {
+      _source$1.set(this, {
         writable: true,
         value: void 0
       });
@@ -6855,7 +6898,7 @@
         value: void 0
       });
 
-      _ROOT.set(this, {
+      _ROOT$1.set(this, {
         writable: true,
         value: void 0
       });
@@ -6865,7 +6908,7 @@
         value: void 0
       });
 
-      _progressIndicator.set(this, {
+      _progressIndicator$1.set(this, {
         writable: true,
         value: void 0
       });
@@ -6885,8 +6928,23 @@
         value: void 0
       });
 
+      _dataButtonEvent.set(this, {
+        writable: true,
+        value: {
+          edit: function edit(e) {
+            return _classPrivateMethodGet(_this, _dataButtonEdit, _dataButtonEdit2).call(_this, e);
+          },
+          retry: function retry() {
+            return _classPrivateMethodGet(_this, _dataButtonRetry, _dataButtonRetry2).call(_this);
+          },
+          pauseOrResume: function pauseOrResume(e) {
+            return _classPrivateMethodGet(_this, _dataButtonPauseOrResume, _dataButtonPauseOrResume2).call(_this, e);
+          }
+        }
+      });
+
       // axios settings
-      axios.defaults.timeout = 600000;
+      axios.defaults.timeout = 180000;
       axiosRetry(axios, {
         retries: 5,
         shouldResetTimeout: true,
@@ -6894,12 +6952,12 @@
         retryCondition: function retryCondition(error) {
           var _error$response;
 
-          return error.code === timeOutError | ((_error$response = error.response) === null || _error$response === void 0 ? void 0 : _error$response.status) === 500;
+          return error.code === timeOutError$1 | ((_error$response = error.response) === null || _error$response === void 0 ? void 0 : _error$response.status) === 500;
         }
       });
       var CancelToken = axios.CancelToken;
 
-      _classPrivateFieldSet(this, _source, CancelToken.source());
+      _classPrivateFieldSet(this, _source$1, CancelToken.source());
 
       _classPrivateFieldSet(this, _isLoading, false);
 
@@ -6925,13 +6983,13 @@
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         var label = property.parentCategoryId ? Records$1.getValue(property.query.propertyId, property.parentCategoryId).label : property.property.label;
         return "<div class=\"condition _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n          <p title=\"").concat(label, "\">").concat(label, "</p>\n        </div>");
-      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting ID list</p>\n      <span class=\"material-icons-outlined -rotating\">autorenew</span>\n    </div>\n    <div>\n    </div>\n    <div class=\"controller\">\n    </div>\n    "); // reference
+      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting ID list</p>\n      <span class=\"material-icons-outlined -rotating\">autorenew</span>\n    </div>\n    <div class=\"-border\">\n    </div>\n    <div class=\"controller\">\n    </div>\n    "); // reference
 
-      _classPrivateFieldSet(this, _ROOT, elm);
+      _classPrivateFieldSet(this, _ROOT$1, elm);
 
       _classPrivateFieldSet(this, _STATUS, elm.querySelector(':scope > .status > p'));
 
-      _classPrivateFieldSet(this, _progressIndicator, new ProgressIndicator(elm.querySelector(':scope > .status + div')));
+      _classPrivateFieldSet(this, _progressIndicator$1, new ProgressIndicator(elm.querySelector(':scope > .status + div')));
 
       _classPrivateFieldSet(this, _CONTROLLER, elm.querySelector(':scope > .controller'));
 
@@ -6950,14 +7008,14 @@
         _this.select();
       }); // delete
 
-      _classPrivateFieldGet(this, _ROOT).querySelector(':scope > .close-button-view').addEventListener('click', function (e) {
+      _classPrivateFieldGet(this, _ROOT$1).querySelector(':scope > .close-button-view').addEventListener('click', function (e) {
         _classPrivateMethodGet(_this, _deleteCondition, _deleteCondition2).call(_this, e);
       });
 
       ConditionBuilder$1.finish();
       this.select();
 
-      _classPrivateFieldGet(this, _ROOT).classList.toggle('-fetching');
+      _classPrivateFieldGet(this, _ROOT$1).classList.toggle('-fetching');
 
       _classPrivateMethodGet(this, _getQueryIds, _getQueryIds2).call(this);
     }
@@ -6969,7 +7027,7 @@
       value:
       /* public methods */
       function select() {
-        _classPrivateFieldGet(this, _ROOT).classList.add('-current'); // dispatch event
+        _classPrivateFieldGet(this, _ROOT$1).classList.add('-current'); // dispatch event
 
 
         var customEvent1 = new CustomEvent(selectTableData, {
@@ -6977,7 +7035,7 @@
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent1); // send rows
 
-        if (_classPrivateFieldGet(this, _ROOT).dataset.status !== 'load ids') {
+        if (_classPrivateFieldGet(this, _ROOT$1).dataset.status !== 'load ids') {
           var done = this.offset >= _classPrivateFieldGet(this, _queryIds).length;
 
           var customEvent2 = new CustomEvent(addNextRows, {
@@ -6993,7 +7051,7 @@
     }, {
       key: "deselect",
       value: function deselect() {
-        _classPrivateFieldGet(this, _ROOT).classList.remove('-current');
+        _classPrivateFieldGet(this, _ROOT$1).classList.remove('-current');
       }
     }, {
       key: "next",
@@ -7051,10 +7109,10 @@
     });
     DefaultEventEmitter$1.dispatchEvent(customEvent); // abort fetch
 
-    _classPrivateFieldGet(this, _source).cancel('user cancel'); // delete element
+    _classPrivateFieldGet(this, _source$1).cancel('user cancel'); // delete element
 
 
-    _classPrivateFieldGet(this, _ROOT).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT)); // transition
+    _classPrivateFieldGet(this, _ROOT$1).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$1)); // transition
 
 
     document.querySelector('body').dataset.display = 'properties';
@@ -7069,7 +7127,11 @@
     button.classList.add('button', className);
     if (mode) _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, button, mode);
     button.addEventListener('click', function (e) {
-      _classPrivateMethodGet(_this2, _dataButtonEvent, _dataButtonEvent2).call(_this2, e);
+      var buttonMode = e.currentTarget.dataset.button;
+
+      var event = _classPrivateFieldGet(_this2, _dataButtonEvent)[buttonMode] || _classPrivateFieldGet(_this2, _dataButtonEvent)['pauseOrResume'];
+
+      event(e);
     });
     return button;
   }
@@ -7090,7 +7152,7 @@
   function _dataButtonPauseOrResume2(e) {
     e.stopPropagation();
 
-    _classPrivateFieldGet(this, _ROOT).classList.toggle('-fetching');
+    _classPrivateFieldGet(this, _ROOT$1).classList.toggle('-fetching');
 
     _classPrivateFieldGet(this, _STATUS).classList.toggle('-flickering');
 
@@ -7132,42 +7194,14 @@
   function _dataButtonRetry2() {
     _classPrivateFieldGet(this, _STATUS).classList.remove('-error');
 
-    _classPrivateFieldGet(this, _ROOT).classList.toggle('-fetching');
+    _classPrivateFieldGet(this, _ROOT$1).classList.toggle('-fetching');
 
     _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, _classPrivateFieldGet(this, _BUTTON_LEFT), dataButtonModes.get('empty'));
 
     var partiallyLoaded = _classPrivateFieldGet(this, _queryIds).length > 0;
     var message = partiallyLoaded ? 'Getting Data' : 'Getting ID list';
     _classPrivateFieldGet(this, _STATUS).textContent = message;
-
-    if (partiallyLoaded) {
-      _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
-    } else {
-      _classPrivateMethodGet(this, _getQueryIds, _getQueryIds2).call(this);
-    }
-  }
-
-  function _dataButtonEvent2(e) {
-    var button = e.currentTarget;
-    var mode = button.dataset.button;
-
-    switch (mode) {
-      case 'edit':
-        _classPrivateMethodGet(this, _dataButtonEdit, _dataButtonEdit2).call(this, e);
-
-        break;
-
-      case 'resume':
-      case 'pause':
-        _classPrivateMethodGet(this, _dataButtonPauseOrResume, _dataButtonPauseOrResume2).call(this, e);
-
-        break;
-
-      case 'retry':
-        _classPrivateMethodGet(this, _dataButtonRetry, _dataButtonRetry2).call(this);
-
-        break;
-    }
+    if (partiallyLoaded) _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);else _classPrivateMethodGet(this, _getQueryIds, _getQueryIds2).call(this);
   }
 
   function _setDownloadButtons2() {
@@ -7238,7 +7272,7 @@
 
     _classPrivateMethodGet(this, _displayError, _displayError2).call(this, message, code);
 
-    if (((_err$response3 = err.response) === null || _err$response3 === void 0 ? void 0 : _err$response3.status) === 500 | err.code === timeOutError) {
+    if (((_err$response3 = err.response) === null || _err$response3 === void 0 ? void 0 : _err$response3.status) === 500 | err.code === timeOutError$1) {
       _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, _classPrivateFieldGet(this, _BUTTON_LEFT), dataButtonModes.get('retry'));
 
       return;
@@ -7252,7 +7286,7 @@
 
     _classPrivateFieldGet(this, _STATUS).textContent = code ? "".concat(message, " (").concat(code, ")") : message;
 
-    _classPrivateFieldGet(this, _ROOT).classList.toggle('-fetching');
+    _classPrivateFieldGet(this, _ROOT$1).classList.toggle('-fetching');
 
     var customEvent = new CustomEvent(failedFetchTableDataIds, {
       detail: this
@@ -7272,20 +7306,20 @@
     var _this5 = this;
 
     axios.post(App$1.aggregatePrimaryKeys, _classPrivateMethodGet(this, _getQueryIdsPayload, _getQueryIdsPayload2).call(this), {
-      cancelToken: _classPrivateFieldGet(this, _source).token
+      cancelToken: _classPrivateFieldGet(this, _source$1).token
     }).then(function (response) {
       _classPrivateFieldSet(_this5, _queryIds, response.data);
 
       if (_classPrivateFieldGet(_this5, _queryIds).length <= 0) {
-        _classPrivateMethodGet(_this5, _complete, _complete2).call(_this5, false);
+        _classPrivateMethodGet(_this5, _complete$1, _complete2$1).call(_this5, false);
 
         return;
       }
 
-      _classPrivateFieldGet(_this5, _ROOT).dataset.status = 'load rows';
+      _classPrivateFieldGet(_this5, _ROOT$1).dataset.status = 'load rows';
       _classPrivateFieldGet(_this5, _STATUS).textContent = 'Getting Data';
 
-      _classPrivateFieldGet(_this5, _progressIndicator).setTotal(_classPrivateFieldGet(_this5, _queryIds).length);
+      _classPrivateFieldGet(_this5, _progressIndicator$1).setIndicator(_classPrivateFieldGet(_this5, _queryIds).length);
 
       _classPrivateMethodGet(_this5, _updateDataButton, _updateDataButton2).call(_this5, _classPrivateFieldGet(_this5, _BUTTON_LEFT), dataButtonModes.get('pause'));
 
@@ -7310,7 +7344,7 @@
 
     var startTime = Date.now();
     axios.get(_classPrivateMethodGet(this, _getPropertiesFetch, _getPropertiesFetch2).call(this), {
-      cancelToken: _classPrivateFieldGet(this, _source).token
+      cancelToken: _classPrivateFieldGet(this, _source$1).token
     }).then(function (response) {
       var _classPrivateFieldGet2;
 
@@ -7318,7 +7352,7 @@
 
       _classPrivateFieldSet(_this6, _isCompleted, _this6.offset >= _classPrivateFieldGet(_this6, _queryIds).length);
 
-      _classPrivateFieldGet(_this6, _progressIndicator).updateProgressBar({
+      _classPrivateFieldGet(_this6, _progressIndicator$1).updateProgressBar({
         offset: _this6.offset,
         startTime: startTime
       }); // dispatch event
@@ -7334,7 +7368,7 @@
       DefaultEventEmitter$1.dispatchEvent(customEvent2); // turn off after finished
 
       if (_classPrivateFieldGet(_this6, _isCompleted)) {
-        _classPrivateMethodGet(_this6, _complete, _complete2).call(_this6);
+        _classPrivateMethodGet(_this6, _complete$1, _complete2$1).call(_this6);
 
         return;
       }
@@ -7345,12 +7379,12 @@
     });
   }
 
-  function _complete2() {
+  function _complete2$1() {
     var withData = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-    _classPrivateFieldGet(this, _ROOT).dataset.status = 'complete';
+    _classPrivateFieldGet(this, _ROOT$1).dataset.status = 'complete';
     _classPrivateFieldGet(this, _STATUS).textContent = withData ? 'Complete' : 'No Data Found';
 
-    _classPrivateFieldGet(this, _ROOT).classList.toggle('-fetching');
+    _classPrivateFieldGet(this, _ROOT$1).classList.toggle('-fetching');
 
     if (withData) _classPrivateMethodGet(this, _setDownloadButtons, _setDownloadButtons2).call(this);
   }
@@ -7492,13 +7526,31 @@
     _classPrivateFieldGet(this, _tableData).splice(index, 1);
   }
 
+  var timeOutError = 'ECONNABORTED';
+
   var _path = new WeakMap();
+
+  var _ROOT = new WeakMap();
 
   var _BODY = new WeakMap();
 
   var _USER_IDS = new WeakMap();
 
+  var _progressIndicator = new WeakMap();
+
+  var _source = new WeakMap();
+
+  var _offset = new WeakMap();
+
   var _fetch = new WeakSet();
+
+  var _prepareProgressIndicator = new WeakSet();
+
+  var _queryTemplate = new WeakSet();
+
+  var _getProperty = new WeakSet();
+
+  var _complete = new WeakSet();
 
   var _clear = new WeakSet();
 
@@ -7510,9 +7562,22 @@
 
       _clear.add(this);
 
+      _complete.add(this);
+
+      _getProperty.add(this);
+
+      _queryTemplate.add(this);
+
+      _prepareProgressIndicator.add(this);
+
       _fetch.add(this);
 
       _path.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _ROOT.set(this, {
         writable: true,
         value: void 0
       });
@@ -7527,9 +7592,44 @@
         value: void 0
       });
 
+      _progressIndicator.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _source.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _offset.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      axios.defaults.timeout = 180000;
+      axiosRetry(axios, {
+        retries: 5,
+        shouldResetTimeout: true,
+        retryDelay: axiosRetry.exponentialDelay,
+        retryCondition: function retryCondition(error) {
+          var _error$response;
+
+          return error.code === timeOutError | ((_error$response = error.response) === null || _error$response === void 0 ? void 0 : _error$response.status) === 500;
+        }
+      });
+
+      _classPrivateFieldSet(this, _ROOT, elm);
+
+      _classPrivateFieldSet(this, _offset, 0);
+
       _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
 
-      _classPrivateFieldSet(this, _USER_IDS, elm.querySelector(':scope > textarea')); // atache events
+      _classPrivateFieldSet(this, _USER_IDS, elm.querySelector(':scope > textarea'));
+
+      elm.appendChild(document.createElement('div'));
+
+      _classPrivateFieldSet(this, _progressIndicator, new ProgressIndicator(elm.lastChild, true)); // attach events
 
 
       var buttons = elm.querySelector(':scope > .buttons');
@@ -7578,34 +7678,82 @@
     var _this2 = this;
 
     if (_classPrivateFieldGet(this, _USER_IDS).value === '') return;
-    var queryTemplate = "".concat(_classPrivateFieldGet(this, _path).url, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value.replace(/,/g, " ").split(/\s+/).join(',')));
+
+    _classPrivateMethodGet(this, _prepareProgressIndicator, _prepareProgressIndicator2).call(this);
+
     Records$1.properties.forEach(function (property) {
-      var propertyId = property.propertyId;
-      fetch(queryTemplate.replace('@@sparqlet@@', encodeURIComponent(property.data)).replace('@@primaryKey@@', encodeURIComponent(property.primaryKey))).then(function (responce) {
-        return responce.json();
-      }).then(function (values) {
-        console.log(values);
-
-        _classPrivateFieldGet(_this2, _BODY).classList.add('-showuserids'); // dispatch event
-
-
-        var customEvent = new CustomEvent(setUserValues, {
-          detail: {
-            propertyId: propertyId,
-            values: values
-          }
-        });
-        DefaultEventEmitter$1.dispatchEvent(customEvent);
-      });
+      _classPrivateMethodGet(_this2, _getProperty, _getProperty2).call(_this2, property);
     });
   }
 
+  function _prepareProgressIndicator2() {
+    // reset axios cancellation
+    var CancelToken = axios.CancelToken;
+
+    _classPrivateFieldSet(this, _source, CancelToken.source());
+
+    _classPrivateFieldGet(this, _ROOT).classList.add('-fetching');
+
+    _classPrivateFieldGet(this, _ROOT).dataset.status = '';
+
+    _classPrivateFieldGet(this, _progressIndicator).setIndicator(Records$1.properties.length, 'Mapping your IDs');
+  }
+
+  function _queryTemplate2() {
+    return "".concat(_classPrivateFieldGet(this, _path).url, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value.replace(/,/g, ' ').split(/\s+/).join(',')));
+  }
+
+  function _getProperty2(_ref) {
+    var _this3 = this;
+
+    var propertyId = _ref.propertyId,
+        data = _ref.data,
+        primaryKey = _ref.primaryKey;
+    axios.get(_classPrivateMethodGet(this, _queryTemplate, _queryTemplate2).call(this).replace('@@sparqlet@@', encodeURIComponent(data)).replace('@@primaryKey@@', encodeURIComponent(primaryKey)), {
+      cancelToken: _classPrivateFieldGet(this, _source).token
+    }).then(function (response) {
+      _classPrivateFieldGet(_this3, _BODY).classList.add('-showuserids');
+
+      _classPrivateFieldSet(_this3, _offset, _classPrivateFieldGet(_this3, _offset) + 1);
+
+      _classPrivateFieldGet(_this3, _progressIndicator).updateProgressBar({
+        offset: _classPrivateFieldGet(_this3, _offset)
+      }); // dispatch event
+
+
+      var customEvent = new CustomEvent(setUserValues, {
+        detail: {
+          propertyId: propertyId,
+          values: response.data
+        }
+      });
+      DefaultEventEmitter$1.dispatchEvent(customEvent);
+      if (_classPrivateFieldGet(_this3, _offset) >= Records$1.properties.length) _classPrivateMethodGet(_this3, _complete, _complete2).call(_this3);
+    }).catch(function (error) {
+      // TODO: error evaluation
+      console.log(error);
+    });
+  }
+
+  function _complete2() {
+    _classPrivateFieldGet(this, _ROOT).dataset.status = 'complete';
+
+    _classPrivateFieldSet(this, _offset, 0);
+  }
+
   function _clear2() {
+    _classPrivateFieldGet(this, _source).cancel('user cancel');
+
+    _classPrivateFieldGet(this, _progressIndicator).reset();
+
+    _classPrivateMethodGet(this, _complete, _complete2).call(this);
+
     _classPrivateFieldGet(this, _BODY).classList.remove('-showuserids');
 
     _classPrivateFieldGet(this, _USER_IDS).value = '';
     var customEvent = new CustomEvent(clearUserValues);
     DefaultEventEmitter$1.dispatchEvent(customEvent);
+    ConditionBuilder$1.setUserIds();
   }
 
   var _viewModes = new WeakMap();

@@ -228,7 +228,11 @@ export default class TableData {
 
     if (mode) this.#updateDataButton(button, mode);
     button.addEventListener('click', e => {
-      this.#dataButtonEvent(e);
+      const buttonMode = e.currentTarget.dataset.button;
+      const event =
+        this.#dataButtonEvent[buttonMode] ||
+        this.#dataButtonEvent['pauseOrResume'];
+      event(e);
     });
 
     return button;
@@ -306,34 +310,15 @@ export default class TableData {
     const message = partiallyLoaded ? 'Getting Data' : 'Getting ID list';
     this.#STATUS.textContent = message;
 
-    if (partiallyLoaded) {
-      this.#getProperties();
-    } else {
-      this.#getQueryIds();
-    }
+    if (partiallyLoaded) this.#getProperties();
+    else this.#getQueryIds();
   }
 
-  /**
-   * @param { MouseEvent } e
-   */
-  #dataButtonEvent(e) {
-    const button = e.currentTarget;
-    const mode = button.dataset.button;
-    switch (mode) {
-      case 'edit':
-        this.#dataButtonEdit(e);
-        break;
-
-      case 'resume':
-      case 'pause':
-        this.#dataButtonPauseOrResume(e);
-        break;
-
-      case 'retry':
-        this.#dataButtonRetry();
-        break;
-    }
-  }
+  #dataButtonEvent = {
+    edit: e => this.#dataButtonEdit(e),
+    retry: () => this.#dataButtonRetry(),
+    pauseOrResume: e => this.#dataButtonPauseOrResume(e),
+  };
 
   #setDownloadButtons() {
     this.#setTsvUrl();

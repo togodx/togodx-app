@@ -20,10 +20,9 @@ export default class ProgressIndicator {
           <span class="offset">0</span>
           <span class="total"></span>
       </div>`;
-
     elm.innerHTML = ` 
-    <div class="text">
-      ${counter}
+      <div class="text">
+        ${counter}
         <div class="status">
         </div>
       </div>
