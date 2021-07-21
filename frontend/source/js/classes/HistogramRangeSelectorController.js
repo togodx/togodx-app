@@ -25,6 +25,7 @@ export default class HistogramRangeSelectorController {
     }
     this.#SELECTOR_BARS = selector.querySelectorAll(':scope > .inner > .overview > .bar');
 
+    // interaction
     this.#defineInteraction(selector);
   }
 
@@ -99,7 +100,6 @@ export default class HistogramRangeSelectorController {
       initialStart = this.start;
       initialWidth = this.width;
       init(e);
-      console.log(`totalWidth: ${totalWidth}, initialStart: ${initialStart}, this.width: ${this.width}`)
     });
 
     // resize selecting area
@@ -115,7 +115,7 @@ export default class HistogramRangeSelectorController {
             const selectedWidth = x - startX;
             let start, end;
             if (selectedWidth > 0) [start, end] = [startX, x];
-            else [start, end] = [x, startX];
+            else                   [start, end] = [x, startX];
             range = [
               Math.floor(start / this.#unit),
               Math.ceil(end / this.#unit)
@@ -123,13 +123,15 @@ export default class HistogramRangeSelectorController {
           }
           break;
           case 'drag': {
-            let translate = (x - startX) / this.#unit;
-            if (translate < -.5) translate = Math.floor(translate + .5);
-            else if (.5 < translate) translate = Math.ceil(translate - .5);
-            else translate = 0;
+            let translation = (x - startX) / this.#unit;
+            if      (translation < -.5) translation = Math.floor(translation + .5);
+            else if (.5 < translation)  translation = Math.ceil(translation - .5);
+            else                        translation = 0;
+            translation -= initialStart + translation < 0 ? initialStart + translation : 0;
+            translation -= initialStart + translation + initialWidth > this.#target.items.length ? initialStart + translation + initialWidth - this.#target.items.length : 0;
             range = [
-              initialStart + translate,
-              initialStart + translate + initialWidth
+              initialStart + translation,
+              initialStart + translation + initialWidth
             ];
           }
           break;
@@ -144,6 +146,7 @@ export default class HistogramRangeSelectorController {
       if (isMouseDown) {
         selector.classList.remove('-makingarea');
         selector.classList.remove('-draggingarea');
+        selector.classList.remove('-resizingarea');
         isMouseDown = false;
         this.#update();
       }

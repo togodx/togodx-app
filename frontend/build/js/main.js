@@ -4582,7 +4582,8 @@
         })
       });
 
-      _classPrivateFieldSet(this, _SELECTOR_BARS, _selector.querySelectorAll(':scope > .inner > .overview > .bar'));
+      _classPrivateFieldSet(this, _SELECTOR_BARS, _selector.querySelectorAll(':scope > .inner > .overview > .bar')); // interaction
+
 
       _classPrivateMethodGet(this, _defineInteraction, _defineInteraction2).call(this, _selector);
     } // private methods
@@ -4704,7 +4705,6 @@
       initialStart = _this2.start;
       initialWidth = _this2.width;
       init(e);
-      console.log("totalWidth: ".concat(totalWidth, ", initialStart: ").concat(initialStart, ", this.width: ").concat(_this2.width));
     }); // resize selecting area
     // dragging behavior
 
@@ -4735,10 +4735,12 @@
 
           case 'drag':
             {
-              var translate = (x - startX) / _classPrivateFieldGet(_this2, _unit);
+              var translation = (x - startX) / _classPrivateFieldGet(_this2, _unit);
 
-              if (translate < -.5) translate = Math.floor(translate + .5);else if (.5 < translate) translate = Math.ceil(translate - .5);else translate = 0;
-              range = [initialStart + translate, initialStart + translate + initialWidth];
+              if (translation < -.5) translation = Math.floor(translation + .5);else if (.5 < translation) translation = Math.ceil(translation - .5);else translation = 0;
+              translation -= initialStart + translation < 0 ? initialStart + translation : 0;
+              translation -= initialStart + translation + initialWidth > _classPrivateFieldGet(_this2, _target).items.length ? initialStart + translation + initialWidth - _classPrivateFieldGet(_this2, _target).items.length : 0;
+              range = [initialStart + translation, initialStart + translation + initialWidth];
             }
             break;
         }
@@ -4750,6 +4752,7 @@
       if (isMouseDown) {
         selector.classList.remove('-makingarea');
         selector.classList.remove('-draggingarea');
+        selector.classList.remove('-resizingarea');
         isMouseDown = false;
 
         _classPrivateMethodGet(_this2, _update$1, _update2$1).call(_this2);
