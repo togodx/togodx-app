@@ -4519,19 +4519,21 @@
 
   var _SELECTOR_BARS = new WeakMap();
 
+  var _defineSelection = new WeakSet();
+
   var _defineInteraction = new WeakSet();
 
   var _update$1 = new WeakSet();
 
   var HistogramRangeSelectorController = /*#__PURE__*/function () {
-    function HistogramRangeSelectorController(target, selector) {
-      var _this = this;
-
+    function HistogramRangeSelectorController(target, _selector) {
       _classCallCheck(this, HistogramRangeSelectorController);
 
       _update$1.add(this);
 
       _defineInteraction.add(this);
+
+      _defineSelection.add(this);
 
       _target.set(this, {
         writable: true,
@@ -4561,56 +4563,14 @@
       // definition
       _classPrivateFieldSet(this, _target, target);
 
-      var selectionStart, selectionEnd;
-      var self = this;
+      _classPrivateFieldSet(this, _unit, 100 / target.items.length);
 
       _classPrivateFieldSet(this, _selection, {});
 
-      Object.defineProperties(_classPrivateFieldGet(this, _selection), {
-        start: {
-          get: function get() {
-            return selectionStart;
-          },
-          set: function set(value) {
-            if (selectionStart !== value) {
-              selectionStart = value;
+      _classPrivateMethodGet(this, _defineSelection, _defineSelection2).call(this); // reference
 
-              _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
-            }
-          }
-        },
-        end: {
-          get: function get() {
-            return selectionEnd;
-          },
-          set: function set(value) {
-            if (selectionEnd !== value) {
-              selectionEnd = value;
 
-              _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
-            }
-          }
-        },
-        range: {
-          get: function get() {
-            return [selectionStart, selectionEnd];
-          },
-          set: function set(_ref) {
-            var _ref2 = _slicedToArray(_ref, 2),
-                start = _ref2[0],
-                end = _ref2[1];
-
-            if (selectionStart !== start || selectionEnd !== end) {
-              selectionStart = start;
-              selectionEnd = end;
-
-              _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
-            }
-          }
-        }
-      }); // reference
-
-      _classPrivateFieldSet(this, _SELECTING_AREA, selector.querySelector(':scope > .inner > .selectingarea'));
+      _classPrivateFieldSet(this, _SELECTING_AREA, _selector.querySelector(':scope > .inner > .selectingarea'));
 
       var handlesArray = Array.from(_classPrivateFieldGet(this, _SELECTING_AREA).querySelectorAll(':scope > .handle'));
       ({
@@ -4621,129 +4581,10 @@
           return handle.dataset.direction === 'right';
         })
       });
-      var selectorController = selector.querySelector(':scope > .inner > .controller');
 
-      _classPrivateFieldSet(this, _SELECTOR_BARS, selector.querySelectorAll(':scope > .inner > .overview > .bar')); // interaction
+      _classPrivateFieldSet(this, _SELECTOR_BARS, _selector.querySelectorAll(':scope > .inner > .overview > .bar'));
 
-
-      var isMouseDown = false,
-          startX,
-          initialStart,
-          initialWidth,
-          totalWidth,
-          interactionType;
-
-      _classPrivateFieldSet(this, _unit, 100 / target.items.length); // make selecting area
-
-
-      selectorController.addEventListener('mousedown', function (e) {
-        console.log(e);
-        e.stopImmediatePropagation();
-        interactionType = 'make';
-        selector.classList.add('-makingarea');
-        totalWidth = selectorController.getBoundingClientRect().width;
-        isMouseDown = true;
-        var x = e.x - selectorController.getBoundingClientRect().x;
-        startX = x / totalWidth * 100;
-      });
-      selectorController.addEventListener('mousemove', function (e) {
-        if (isMouseDown) {
-          var range;
-          var x = e.layerX / totalWidth * 100;
-
-          switch (interactionType) {
-            case 'make':
-              {
-                // calculate selection range
-                var selectedWidth = x - startX;
-                var start, end;
-
-                if (selectedWidth > 0) {
-                  start = startX;
-                  end = x;
-                } else {
-                  start = x;
-                  end = startX;
-                }
-
-                range = [Math.floor(start / _classPrivateFieldGet(_this, _unit)), Math.ceil(end / _classPrivateFieldGet(_this, _unit))];
-              }
-              break;
-
-            case 'drag':
-              {
-                var shift = (x - startX) / _classPrivateFieldGet(_this, _unit);
-
-                if (shift < -.5) shift = Math.floor(shift + .5);else if (.5 < shift) shift = Math.ceil(shift - .5);else shift = 0;
-                range = [initialStart + shift, initialStart + shift + initialWidth];
-              }
-              break;
-          }
-
-          _classPrivateFieldGet(_this, _selection).range = range;
-        }
-      });
-      selectorController.addEventListener('mouseup', function () {
-        if (isMouseDown) {
-          selector.classList.remove('-makingarea');
-          selector.classList.remove('-draggingarea');
-          isMouseDown = false;
-
-          _classPrivateMethodGet(_this, _update$1, _update2$1).call(_this);
-        }
-      }); // drag selecting area
-
-      _classPrivateFieldGet(this, _SELECTING_AREA).addEventListener('mousedown', function (e) {
-        console.log(e);
-        e.stopImmediatePropagation();
-        interactionType = 'drag';
-        selector.classList.add('-draggingarea');
-        totalWidth = selectorController.getBoundingClientRect().width;
-        isMouseDown = true;
-        var x = e.x - selectorController.getBoundingClientRect().x;
-        startX = x / totalWidth * 100;
-        initialStart = _this.start;
-        initialWidth = _this.width;
-        console.log("totalWidth: ".concat(totalWidth, ", initialStart: ").concat(initialStart, ", this.width: ").concat(_this.width));
-      });
-
-      _classPrivateFieldGet(this, _SELECTING_AREA).addEventListener('mousemove', function (e) {
-        if (isMouseDown) {
-          var x = e.layerX / totalWidth * 100;
-          var shift = Math.floor((x - startX) / _classPrivateFieldGet(_this, _unit));
-          console.log("e.layerX: ".concat(e.layerX, ", x: ").concat(x, ", shift: ").concat(shift));
-          console.log('layerX:', e.layerX, ' offsetX:', e.offsetX, ' screenX:', e.screenX, ' left:', e.target.getBoundingClientRect().left);
-          console.log(e); // console.log(e.target.getBoundingClientRect())
-          // console.log(this.width)
-          // console.log(startStart, x, shift)
-          // switch (true) {
-          //   case (startStart + shift) < 0:
-          //     shift -= startStart + shift;
-          //     break;
-          //   case (startStart + shift + this.width) > target.items.length:
-          //     shift -= startStart + shift + this.width;
-          //     break;
-          // }
-          // console.log(startStart, x, shift)
-          // this.#selection.range = [
-          //   startStart + shift,
-          //   startStart + shift + this.width
-          // ];
-
-          _classPrivateFieldGet(_this, _selection).range = [initialStart + shift, initialStart + shift + initialWidth];
-          console.log("this.start: ".concat(_this.start, ", this.end: ").concat(_this.end));
-        }
-      });
-
-      _classPrivateFieldGet(this, _SELECTING_AREA).addEventListener('mouseup', function () {
-        if (isMouseDown) {
-          selector.classList.remove('-draggingarea');
-          isMouseDown = false;
-
-          _classPrivateMethodGet(_this, _update$1, _update2$1).call(_this);
-        }
-      }); // resize selecting area
-
+      _classPrivateMethodGet(this, _defineInteraction, _defineInteraction2).call(this, _selector);
     } // private methods
 
 
@@ -4766,13 +4607,13 @@
     }, {
       key: "selectedItems",
       get: function get() {
-        var _this2 = this;
+        var _this = this;
 
         var items = [];
 
         if (this.start !== 0 && this.end !== 0) {
           items.push.apply(items, _toConsumableArray(_classPrivateFieldGet(this, _target).items.filter(function (item_, index) {
-            if (_this2.start <= index && index <= _this2.end) return true;else return false;
+            if (_this.start <= index && index <= _this.end) return true;else return false;
           })));
         }
 
@@ -4782,6 +4623,140 @@
 
     return HistogramRangeSelectorController;
   }();
+
+  function _defineSelection2() {
+    var selectionStart, selectionEnd;
+    var self = this;
+    Object.defineProperties(_classPrivateFieldGet(this, _selection), {
+      start: {
+        get: function get() {
+          return selectionStart;
+        },
+        set: function set(value) {
+          if (selectionStart !== value) {
+            selectionStart = value;
+
+            _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
+          }
+        }
+      },
+      end: {
+        get: function get() {
+          return selectionEnd;
+        },
+        set: function set(value) {
+          if (selectionEnd !== value) {
+            selectionEnd = value;
+
+            _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
+          }
+        }
+      },
+      range: {
+        get: function get() {
+          return [selectionStart, selectionEnd];
+        },
+        set: function set(_ref) {
+          var _ref2 = _slicedToArray(_ref, 2),
+              start = _ref2[0],
+              end = _ref2[1];
+
+          if (selectionStart !== start || selectionEnd !== end) {
+            selectionStart = start;
+            selectionEnd = end;
+
+            _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
+          }
+        }
+      }
+    });
+  }
+
+  function _defineInteraction2(selector) {
+    var _this2 = this;
+
+    var selectorController = selector.querySelector(':scope > .inner > .controller');
+    var isMouseDown = false,
+        startX,
+        initialStart,
+        initialWidth,
+        totalWidth,
+        interactionType; // make selecting area
+
+    selectorController.addEventListener('mousedown', function (e) {
+      console.log(e);
+      e.stopImmediatePropagation();
+      interactionType = 'make';
+      selector.classList.add('-makingarea');
+      totalWidth = selectorController.getBoundingClientRect().width;
+      isMouseDown = true;
+      var x = e.x - selectorController.getBoundingClientRect().x;
+      startX = x / totalWidth * 100;
+    }); // drag selecting area
+
+    _classPrivateFieldGet(this, _SELECTING_AREA).addEventListener('mousedown', function (e) {
+      console.log(e);
+      e.stopImmediatePropagation();
+      interactionType = 'drag';
+      selector.classList.add('-draggingarea');
+      totalWidth = selectorController.getBoundingClientRect().width;
+      isMouseDown = true;
+      var x = e.x - selectorController.getBoundingClientRect().x;
+      startX = x / totalWidth * 100;
+      initialStart = _this2.start;
+      initialWidth = _this2.width;
+      console.log("totalWidth: ".concat(totalWidth, ", initialStart: ").concat(initialStart, ", this.width: ").concat(_this2.width));
+    }); // resize selecting area
+    // dragging behavior
+
+
+    selectorController.addEventListener('mousemove', function (e) {
+      if (isMouseDown) {
+        var range;
+        var x = e.layerX / totalWidth * 100;
+
+        switch (interactionType) {
+          case 'make':
+            {
+              // calculate selection range
+              var selectedWidth = x - startX;
+              var start, end;
+
+              if (selectedWidth > 0) {
+                start = startX;
+                end = x;
+              } else {
+                start = x;
+                end = startX;
+              }
+
+              range = [Math.floor(start / _classPrivateFieldGet(_this2, _unit)), Math.ceil(end / _classPrivateFieldGet(_this2, _unit))];
+            }
+            break;
+
+          case 'drag':
+            {
+              var shift = (x - startX) / _classPrivateFieldGet(_this2, _unit);
+
+              if (shift < -.5) shift = Math.floor(shift + .5);else if (.5 < shift) shift = Math.ceil(shift - .5);else shift = 0;
+              range = [initialStart + shift, initialStart + shift + initialWidth];
+            }
+            break;
+        }
+
+        _classPrivateFieldGet(_this2, _selection).range = range;
+      }
+    });
+    selectorController.addEventListener('mouseup', function () {
+      if (isMouseDown) {
+        selector.classList.remove('-makingarea');
+        selector.classList.remove('-draggingarea');
+        isMouseDown = false;
+
+        _classPrivateMethodGet(_this2, _update$1, _update2$1).call(_this2);
+      }
+    });
+  }
 
   function _update2$1() {
     var _this3 = this;
