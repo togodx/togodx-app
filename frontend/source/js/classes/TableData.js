@@ -92,7 +92,7 @@ export default class TableData {
 
   constructor(condition, elm) {
     // axios settings
-    axios.defaults.timeout = 600000;
+    axios.defaults.timeout = 180000;
     axiosRetry(axios, {
       retries: 5,
       shouldResetTimeout: true,
@@ -152,7 +152,7 @@ export default class TableData {
       <p>Getting ID list</p>
       <span class="material-icons-outlined -rotating">autorenew</span>
     </div>
-    <div>
+    <div class="-border">
     </div>
     <div class="controller">
     </div>
@@ -454,7 +454,7 @@ export default class TableData {
         }
         this.#ROOT.dataset.status = 'load rows';
         this.#STATUS.textContent = 'Getting Data';
-        this.#progressIndicator.setTotal(this.#queryIds.length);
+        this.#progressIndicator.setIndicator(this.#queryIds.length);
         this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
         this.#getProperties();
       })
