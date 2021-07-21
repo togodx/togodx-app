@@ -6546,14 +6546,148 @@
 
   var axiosRetry = lib.default;
 
+  var _TEXT_OFFSET = new WeakMap();
+
+  var _TEXT_TOTAL = new WeakMap();
+
+  var _TEXT_TIME = new WeakMap();
+
+  var _BAR = new WeakMap();
+
+  var _totalDuration = new WeakMap();
+
+  var _total = new WeakMap();
+
+  var _updateAmount = new WeakSet();
+
+  var _remainingTimeInSec = new WeakSet();
+
+  var _timeString = new WeakSet();
+
+  var _updateTime = new WeakSet();
+
+  var ProgressIndicator = /*#__PURE__*/function () {
+    function ProgressIndicator(elm) {
+      _classCallCheck(this, ProgressIndicator);
+
+      _updateTime.add(this);
+
+      _timeString.add(this);
+
+      _remainingTimeInSec.add(this);
+
+      _updateAmount.add(this);
+
+      _TEXT_OFFSET.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _TEXT_TOTAL.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _TEXT_TIME.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _BAR.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _totalDuration.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _total.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      elm.classList.add('progress-indicator');
+      elm.innerHTML = "\n      <div class=\"text\">\n        <div class=\"amount-of-data\">\n          <span class=\"offset\">0</span>\n            / \n          <span class=\"total\"></span> \n        </div>\n        <div class=\"remaining-time\">\n        </div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n      ";
+
+      _classPrivateFieldSet(this, _TEXT_TIME, elm.querySelector(':scope > .text > .remaining-time'));
+
+      _classPrivateFieldSet(this, _TEXT_OFFSET, elm.querySelector(':scope > .text > .amount-of-data > .offset'));
+
+      _classPrivateFieldSet(this, _TEXT_TOTAL, elm.querySelector(':scope > .text > .amount-of-data > .total'));
+
+      _classPrivateFieldSet(this, _BAR, elm.querySelector(':scope > .progress > .bar'));
+
+      _classPrivateFieldSet(this, _totalDuration, 0);
+
+      _classPrivateFieldSet(this, _total, 0);
+    }
+    /* private methods */
+
+    /**
+     * @param { number } offset
+     */
+
+
+    _createClass(ProgressIndicator, [{
+      key: "updateProgressBar",
+      value:
+      /* public accessors */
+      function updateProgressBar(_ref) {
+        var offset = _ref.offset,
+            startTime = _ref.startTime;
+
+        _classPrivateMethodGet(this, _updateAmount, _updateAmount2).call(this, offset);
+
+        _classPrivateMethodGet(this, _updateTime, _updateTime2).call(this, offset, startTime);
+      }
+    }, {
+      key: "setTotal",
+      value: function setTotal(total) {
+        _classPrivateFieldSet(this, _total, total);
+
+        _classPrivateFieldGet(this, _TEXT_TOTAL).textContent = _classPrivateFieldGet(this, _total).toString();
+      }
+    }]);
+
+    return ProgressIndicator;
+  }();
+
+  function _updateAmount2(offset) {
+    _classPrivateFieldGet(this, _TEXT_OFFSET).textContent = "".concat(offset.toString());
+    _classPrivateFieldGet(this, _BAR).style.width = "".concat(offset / _classPrivateFieldGet(this, _total) * 100, "%");
+  }
+
+  function _remainingTimeInSec2(durationPerItem, itemsLeft) {
+    return durationPerItem * itemsLeft / 1000 || 0;
+  }
+
+  function _timeString2(time) {
+    if (time <= 0) return '0 sec.';
+    var h, m, s;
+    h = Math.floor(time / 3600);
+    m = Math.floor(time % 3600 / 60);
+    s = Math.floor(time % 3600 % 60);
+    return h > 0 ? "".concat(h, " hr.") : m > 0 ? "".concat(m, " min.") : "".concat(s, " sec.");
+  }
+
+  function _updateTime2(offset, startTime) {
+    _classPrivateFieldSet(this, _totalDuration, _classPrivateFieldGet(this, _totalDuration) + (Date.now() - startTime));
+
+    var remainingTime = _classPrivateMethodGet(this, _remainingTimeInSec, _remainingTimeInSec2).call(this, _classPrivateFieldGet(this, _totalDuration) / offset, _classPrivateFieldGet(this, _total) - offset);
+
+    _classPrivateFieldGet(this, _TEXT_TIME).innerHTML = _classPrivateMethodGet(this, _timeString, _timeString2).call(this, remainingTime);
+  }
+
   var LIMIT = 100;
   var downloadUrls = new Map();
   var timeOutError = 'ECONNABORTED';
   /**
-   * @typedef {Object} Mode
-   * @property {string} label
-   * @property {string} icon
-   * @property {string} dataButton
+   * @typedef { Object } Mode
+   * @property { string } label
+   * @property { string } icon
+   * @property { string } dataButton
    */
 
   var dataButtonModes = new Map([['edit', {
@@ -6600,17 +6734,11 @@
 
   var _isCompleted = new WeakMap();
 
-  var _startTime = new WeakMap();
-
   var _ROOT = new WeakMap();
 
   var _STATUS = new WeakMap();
 
-  var _INDICATOR_TEXT_AMOUNT = new WeakMap();
-
-  var _INDICATOR_TEXT_TIME = new WeakMap();
-
-  var _INDICATOR_BAR = new WeakMap();
+  var _progressIndicator = new WeakMap();
 
   var _CONTROLLER = new WeakMap();
 
@@ -6650,8 +6778,6 @@
 
   var _getProperties = new WeakSet();
 
-  var _updateRemainingTime = new WeakSet();
-
   var _complete = new WeakSet();
 
   var TableData = /*#__PURE__*/function () {
@@ -6661,8 +6787,6 @@
       _classCallCheck(this, TableData);
 
       _complete.add(this);
-
-      _updateRemainingTime.add(this);
 
       _getProperties.add(this);
 
@@ -6731,11 +6855,6 @@
         value: void 0
       });
 
-      _startTime.set(this, {
-        writable: true,
-        value: void 0
-      });
-
       _ROOT.set(this, {
         writable: true,
         value: void 0
@@ -6746,17 +6865,7 @@
         value: void 0
       });
 
-      _INDICATOR_TEXT_AMOUNT.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _INDICATOR_TEXT_TIME.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _INDICATOR_BAR.set(this, {
+      _progressIndicator.set(this, {
         writable: true,
         value: void 0
       });
@@ -6816,19 +6925,13 @@
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         var label = property.parentCategoryId ? Records$1.getValue(property.query.propertyId, property.parentCategoryId).label : property.property.label;
         return "<div class=\"condition _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n          <p title=\"").concat(label, "\">").concat(label, "</p>\n        </div>");
-      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting ID list</p>\n      <span class=\"material-icons-outlined -rotating\">autorenew</span>\n    </div>\n    <div class=\"indicator\">\n      <div class=\"text\">\n        <div class=\"amount-of-data\"></div>\n        <div class=\"remaining-time\"></div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>\n    </div>\n    <div class=\"controller\">\n    </div>\n    "); // reference
+      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting ID list</p>\n      <span class=\"material-icons-outlined -rotating\">autorenew</span>\n    </div>\n    <div>\n    </div>\n    <div class=\"controller\">\n    </div>\n    "); // reference
 
       _classPrivateFieldSet(this, _ROOT, elm);
 
       _classPrivateFieldSet(this, _STATUS, elm.querySelector(':scope > .status > p'));
 
-      var INDICATOR = elm.querySelector(':scope > .indicator');
-
-      _classPrivateFieldSet(this, _INDICATOR_TEXT_AMOUNT, INDICATOR.querySelector(':scope > .text > .amount-of-data'));
-
-      _classPrivateFieldSet(this, _INDICATOR_TEXT_TIME, INDICATOR.querySelector(':scope > .text > .remaining-time'));
-
-      _classPrivateFieldSet(this, _INDICATOR_BAR, INDICATOR.querySelector(':scope > .progress > .bar'));
+      _classPrivateFieldSet(this, _progressIndicator, new ProgressIndicator(elm.querySelector(':scope > .status + div')));
 
       _classPrivateFieldSet(this, _CONTROLLER, elm.querySelector(':scope > .controller'));
 
@@ -6891,6 +6994,13 @@
       key: "deselect",
       value: function deselect() {
         _classPrivateFieldGet(this, _ROOT).classList.remove('-current');
+      }
+    }, {
+      key: "next",
+      value: function next() {
+        if (_classPrivateFieldGet(this, _isLoading)) return;
+
+        _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
       }
       /* public accessors */
 
@@ -7026,16 +7136,15 @@
 
     _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, _classPrivateFieldGet(this, _BUTTON_LEFT), dataButtonModes.get('empty'));
 
-    if (_classPrivateFieldGet(this, _queryIds).length > 0) {
+    var partiallyLoaded = _classPrivateFieldGet(this, _queryIds).length > 0;
+    var message = partiallyLoaded ? 'Getting Data' : 'Getting ID list';
+    _classPrivateFieldGet(this, _STATUS).textContent = message;
+
+    if (partiallyLoaded) {
       _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
-
-      _classPrivateFieldGet(this, _STATUS).textContent = 'Getting Data';
-      return;
+    } else {
+      _classPrivateMethodGet(this, _getQueryIds, _getQueryIds2).call(this);
     }
-
-    _classPrivateFieldGet(this, _STATUS).textContent = 'Getting ID list';
-
-    _classPrivateMethodGet(this, _getQueryIds, _getQueryIds2).call(this);
   }
 
   function _dataButtonEvent2(e) {
@@ -7121,22 +7230,21 @@
   }
 
   function _handleError2(err) {
-    var _err$response;
+    var _err$response, _err$response2, _err$response3;
 
-    var message, errCode;
+    if (axios.isCancel && err.message === 'user cancel') return;
+    var code = (_err$response = err.response) === null || _err$response === void 0 ? void 0 : _err$response.status;
+    var message = ((_err$response2 = err.response) === null || _err$response2 === void 0 ? void 0 : _err$response2.statusText) || err.message;
 
-    if (axios.isCancel && err.message === 'user cancel') {
-      return;
-    } else if (((_err$response = err.response) === null || _err$response === void 0 ? void 0 : _err$response.status) === 500 | err.code === timeOutError) {
+    _classPrivateMethodGet(this, _displayError, _displayError2).call(this, message, code);
+
+    if (((_err$response3 = err.response) === null || _err$response3 === void 0 ? void 0 : _err$response3.status) === 500 | err.code === timeOutError) {
       _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, _classPrivateFieldGet(this, _BUTTON_LEFT), dataButtonModes.get('retry'));
-    } else {
-      _classPrivateFieldGet(this, _BUTTON_LEFT).remove();
+
+      return;
     }
 
-    errCode = err.response ? err.response.status : false;
-    message = err.response ? err.response.statusText : err.code === timeOutError ? 'Timeout' : err.message;
-
-    _classPrivateMethodGet(this, _displayError, _displayError2).call(this, message, errCode);
+    _classPrivateFieldGet(this, _BUTTON_LEFT).remove();
   }
 
   function _displayError2(message, code) {
@@ -7155,7 +7263,6 @@
   function _getQueryIdsPayload2() {
     var _ConditionBuilder$use;
 
-    console.log(ConditionBuilder$1.userIds);
     return "togoKey=".concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
       return property.query;
     })))).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : '');
@@ -7177,9 +7284,8 @@
 
       _classPrivateFieldGet(_this5, _ROOT).dataset.status = 'load rows';
       _classPrivateFieldGet(_this5, _STATUS).textContent = 'Getting Data';
-      _classPrivateFieldGet(_this5, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this5.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this5, _queryIds).length.toLocaleString());
 
-      _classPrivateFieldSet(_this5, _startTime, Date.now());
+      _classPrivateFieldGet(_this5, _progressIndicator).setTotal(_classPrivateFieldGet(_this5, _queryIds).length);
 
       _classPrivateMethodGet(_this5, _updateDataButton, _updateDataButton2).call(_this5, _classPrivateFieldGet(_this5, _BUTTON_LEFT), dataButtonModes.get('pause'));
 
@@ -7202,6 +7308,7 @@
 
     _classPrivateFieldSet(this, _isLoading, true);
 
+    var startTime = Date.now();
     axios.get(_classPrivateMethodGet(this, _getPropertiesFetch, _getPropertiesFetch2).call(this), {
       cancelToken: _classPrivateFieldGet(this, _source).token
     }).then(function (response) {
@@ -7211,60 +7318,37 @@
 
       _classPrivateFieldSet(_this6, _isCompleted, _this6.offset >= _classPrivateFieldGet(_this6, _queryIds).length);
 
-      _classPrivateFieldGet(_this6, _INDICATOR_TEXT_AMOUNT).innerHTML = "".concat(_this6.offset.toLocaleString(), " / ").concat(_classPrivateFieldGet(_this6, _queryIds).length.toLocaleString());
-      _classPrivateFieldGet(_this6, _INDICATOR_BAR).style.width = "".concat(_this6.offset / _classPrivateFieldGet(_this6, _queryIds).length * 100, "%");
+      _classPrivateFieldGet(_this6, _progressIndicator).updateProgressBar({
+        offset: _this6.offset,
+        startTime: startTime
+      }); // dispatch event
 
-      _classPrivateMethodGet(_this6, _updateRemainingTime, _updateRemainingTime2).call(_this6); // dispatch event
 
-
-      var customEvent = new CustomEvent(addNextRows, {
+      var customEvent2 = new CustomEvent(addNextRows, {
         detail: {
           tableData: _this6,
           rows: response.data,
           done: _classPrivateFieldGet(_this6, _isCompleted)
         }
       });
-      DefaultEventEmitter$1.dispatchEvent(customEvent); // turn off after finished
+      DefaultEventEmitter$1.dispatchEvent(customEvent2); // turn off after finished
 
       if (_classPrivateFieldGet(_this6, _isCompleted)) {
         _classPrivateMethodGet(_this6, _complete, _complete2).call(_this6);
 
         return;
-      } else if (_classPrivateFieldGet(_this6, _isLoading)) {
-        _classPrivateMethodGet(_this6, _getProperties, _getProperties2).call(_this6);
       }
+
+      if (_classPrivateFieldGet(_this6, _isLoading)) _classPrivateMethodGet(_this6, _getProperties, _getProperties2).call(_this6);
     }).catch(function (error) {
       _classPrivateMethodGet(_this6, _handleError, _handleError2).call(_this6, error);
     });
   }
 
-  function _updateRemainingTime2() {
-    var singleTime = (Date.now() - _classPrivateFieldGet(this, _startTime)) / this.offset;
-    var remainingTime;
-
-    if (this.offset == 0) {
-      remainingTime = '';
-    } else if (this.offset >= _classPrivateFieldGet(this, _queryIds).length) {
-      remainingTime = 0;
-    } else {
-      remainingTime = singleTime * _classPrivateFieldGet(this, _queryIds).length * (_classPrivateFieldGet(this, _queryIds).length - this.offset) / _classPrivateFieldGet(this, _queryIds).length / 1000;
-    }
-
-    if (remainingTime >= 3600) {
-      _classPrivateFieldGet(this, _INDICATOR_TEXT_TIME).innerHTML = "".concat(Math.round(remainingTime / 3600), " hr.");
-    } else if (remainingTime >= 60) {
-      _classPrivateFieldGet(this, _INDICATOR_TEXT_TIME).innerHTML = "".concat(Math.round(remainingTime / 60), " min.");
-    } else if (remainingTime >= 0) {
-      _classPrivateFieldGet(this, _INDICATOR_TEXT_TIME).innerHTML = "".concat(Math.floor(remainingTime), " sec.");
-    } else {
-      _classPrivateFieldGet(this, _INDICATOR_TEXT_TIME).innerHTML = "";
-    }
-  }
-
   function _complete2() {
     var withData = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
     _classPrivateFieldGet(this, _ROOT).dataset.status = 'complete';
-    _classPrivateFieldGet(this, _STATUS).textContent = withData ? 'Complete' : 'No Data found';
+    _classPrivateFieldGet(this, _STATUS).textContent = withData ? 'Complete' : 'No Data Found';
 
     _classPrivateFieldGet(this, _ROOT).classList.toggle('-fetching');
 
