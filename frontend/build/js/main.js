@@ -7060,6 +7060,13 @@
 
         _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
       }
+    }, {
+      key: "next",
+      value: function next() {
+        if (_classPrivateFieldGet(this, _isLoading)) return;
+
+        _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
+      }
       /* public accessors */
 
     }, {
