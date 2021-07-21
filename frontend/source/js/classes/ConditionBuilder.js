@@ -39,7 +39,7 @@ class ConditionBuilder {
     this.#postProcessing();
   }
 
-  setUserIds(ids) {
+  setUserIds(ids = '') {
     console.log('setUserIds', ids)
     this.#userIds = ids.replace(/,/g," ").split(/\s+/).join(',');
     // post processing (permalink, evaluate)
