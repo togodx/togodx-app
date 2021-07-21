@@ -77,30 +77,28 @@ export default class HistogramRangeSelectorController {
     const selectorController = selector.querySelector(':scope > .inner > .controller');
     let isMouseDown = false, startX, initialStart, initialWidth, totalWidth, interactionType;
 
-    // make selecting area
-    selectorController.addEventListener('mousedown', e => {
-      console.log(e)
+    const init = (e) => {
       e.stopImmediatePropagation();
-      interactionType = 'make';
-      selector.classList.add('-makingarea');
       totalWidth = selectorController.getBoundingClientRect().width;
       isMouseDown = true;
       const x = e.x - selectorController.getBoundingClientRect().x;
       startX = (x / totalWidth) * 100;
+    }
+
+    // make selecting area
+    selectorController.addEventListener('mousedown', e => {
+      interactionType = 'make';
+      selector.classList.add('-makingarea');
+      init(e);
     });
 
     // drag selecting area
     this.#SELECTING_AREA.addEventListener('mousedown', e => {
-      console.log(e)
-      e.stopImmediatePropagation();
       interactionType = 'drag';
       selector.classList.add('-draggingarea');
-      totalWidth = selectorController.getBoundingClientRect().width;
-      isMouseDown = true;
-      const x = e.x - selectorController.getBoundingClientRect().x;
-      startX = (x / totalWidth) * 100;
       initialStart = this.start;
       initialWidth = this.width;
+      init(e);
       console.log(`totalWidth: ${totalWidth}, initialStart: ${initialStart}, this.width: ${this.width}`)
     });
 
@@ -125,13 +123,13 @@ export default class HistogramRangeSelectorController {
           }
           break;
           case 'drag': {
-            let shift = (x - startX) / this.#unit;
-            if (shift < -.5) shift = Math.floor(shift + .5);
-            else if (.5 < shift) shift = Math.ceil(shift - .5);
-            else shift = 0;
+            let translate = (x - startX) / this.#unit;
+            if (translate < -.5) translate = Math.floor(translate + .5);
+            else if (.5 < translate) translate = Math.ceil(translate - .5);
+            else translate = 0;
             range = [
-              initialStart + shift,
-              initialStart + shift + initialWidth
+              initialStart + translate,
+              initialStart + translate + initialWidth
             ];
           }
           break;
@@ -158,7 +156,7 @@ export default class HistogramRangeSelectorController {
     this.#SELECTING_AREA.style.width = ((this.end - this.start) * this.#unit) + '%';
     // overview
     this.#SELECTOR_BARS.forEach((bar, index) => {
-      if (this.#selection.start <= index && index < (this.#selection.end - 1)) bar.classList.add('-selected');
+      if (this.start <= index && index < this.end) bar.classList.add('-selected');
       else bar.classList.remove('-selected');
     });
     this.#target.update();
@@ -189,7 +187,7 @@ export default class HistogramRangeSelectorController {
     const items = [];
     if (this.start !== 0 && this.end !== 0) {
       items.push(...this.#target.items.filter((item_, index) => {
-        if (this.start <= index && index <= this.end) return true;
+        if (this.start <= index && index < this.end) return true;
         else return false;
       }));
     }

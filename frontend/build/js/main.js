@@ -4613,7 +4613,7 @@
 
         if (this.start !== 0 && this.end !== 0) {
           items.push.apply(items, _toConsumableArray(_classPrivateFieldGet(this, _target).items.filter(function (item_, index) {
-            if (_this.start <= index && index <= _this.end) return true;else return false;
+            if (_this.start <= index && index < _this.end) return true;else return false;
           })));
         }
 
@@ -4681,30 +4681,29 @@
         initialStart,
         initialWidth,
         totalWidth,
-        interactionType; // make selecting area
+        interactionType;
 
-    selectorController.addEventListener('mousedown', function (e) {
-      console.log(e);
+    var init = function init(e) {
       e.stopImmediatePropagation();
-      interactionType = 'make';
-      selector.classList.add('-makingarea');
       totalWidth = selectorController.getBoundingClientRect().width;
       isMouseDown = true;
       var x = e.x - selectorController.getBoundingClientRect().x;
       startX = x / totalWidth * 100;
+    }; // make selecting area
+
+
+    selectorController.addEventListener('mousedown', function (e) {
+      interactionType = 'make';
+      selector.classList.add('-makingarea');
+      init(e);
     }); // drag selecting area
 
     _classPrivateFieldGet(this, _SELECTING_AREA).addEventListener('mousedown', function (e) {
-      console.log(e);
-      e.stopImmediatePropagation();
       interactionType = 'drag';
       selector.classList.add('-draggingarea');
-      totalWidth = selectorController.getBoundingClientRect().width;
-      isMouseDown = true;
-      var x = e.x - selectorController.getBoundingClientRect().x;
-      startX = x / totalWidth * 100;
       initialStart = _this2.start;
       initialWidth = _this2.width;
+      init(e);
       console.log("totalWidth: ".concat(totalWidth, ", initialStart: ").concat(initialStart, ", this.width: ").concat(_this2.width));
     }); // resize selecting area
     // dragging behavior
@@ -4736,10 +4735,10 @@
 
           case 'drag':
             {
-              var shift = (x - startX) / _classPrivateFieldGet(_this2, _unit);
+              var translate = (x - startX) / _classPrivateFieldGet(_this2, _unit);
 
-              if (shift < -.5) shift = Math.floor(shift + .5);else if (.5 < shift) shift = Math.ceil(shift - .5);else shift = 0;
-              range = [initialStart + shift, initialStart + shift + initialWidth];
+              if (translate < -.5) translate = Math.floor(translate + .5);else if (.5 < translate) translate = Math.ceil(translate - .5);else translate = 0;
+              range = [initialStart + translate, initialStart + translate + initialWidth];
             }
             break;
         }
@@ -4766,7 +4765,7 @@
     _classPrivateFieldGet(this, _SELECTING_AREA).style.width = (this.end - this.start) * _classPrivateFieldGet(this, _unit) + '%'; // overview
 
     _classPrivateFieldGet(this, _SELECTOR_BARS).forEach(function (bar, index) {
-      if (_classPrivateFieldGet(_this3, _selection).start <= index && index < _classPrivateFieldGet(_this3, _selection).end - 1) bar.classList.add('-selected');else bar.classList.remove('-selected');
+      if (_this3.start <= index && index < _this3.end) bar.classList.add('-selected');else bar.classList.remove('-selected');
     });
 
     _classPrivateFieldGet(this, _target).update(); // set condition
