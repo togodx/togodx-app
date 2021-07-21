@@ -796,6 +796,13 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
 .histogram-range-selector-view > .selector.-makingarea > .inner > .selectingarea {
   pointer-events: none;
 }
+.histogram-range-selector-view > .selector.-draggingarea > .inner > .selectingarea {
+  pointer-events: none;
+}
+.histogram-range-selector-view > .selector.-draggingarea > .inner > .controller {
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
 .histogram-range-selector-view > .histogram {
   width: calc(100% - var(--padding-horizontal) * 2);
   height: 18rem;

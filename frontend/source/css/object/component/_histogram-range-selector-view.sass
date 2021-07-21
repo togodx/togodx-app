@@ -67,6 +67,14 @@
       > .inner
         > .selectingarea
           pointer-events: none
+    &.-draggingarea
+      > .inner
+        > .selectingarea
+          pointer-events: none
+          // > .handle
+          //   pointer-events: none
+        > .controller
+          cursor: grabbing
   > .histogram
     width: calc(100% - var(--padding-horizontal) * 2)
     height: 18rem
