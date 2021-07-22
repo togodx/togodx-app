@@ -6,15 +6,16 @@ block var
 block script
   script(src="js/vendor/rawdeflate.js")
   script(src="js/main.js")
+  script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
 
 block main
 
   main#App
     .inner
       section#Properties
-        header.header
+        header.header.collapse-view
           .title
-            h2.properties Attribute keys
+            h2.properties.collapsebutton Attribute keys
             h2.attributes Attribute values
           nav
             ul

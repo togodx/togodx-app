@@ -3,14 +3,18 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
+import axiosRetry from 'axios-retry';
+import ProgressIndicator from './ProgressIndicator';
 
 const LIMIT = 100;
 const downloadUrls = new Map();
+const timeOutError = 'ECONNABORTED';
+
 /**
- * @typedef {Object} Mode
- * @property {string} label
- * @property {string} icon
- * @property {string} dataButton
+ * @typedef { Object } Mode
+ * @property { string } label
+ * @property { string } icon
+ * @property { string } dataButton
  */
 const dataButtonModes = new Map([
   [
@@ -46,11 +50,27 @@ const dataButtonModes = new Map([
     },
   ],
   [
-    'csv',
+    'json',
     {
-      label: 'CSV',
+      label: 'JSON',
       icon: 'download',
-      dataButton: 'download-csv',
+      dataButton: 'download-json',
+    },
+  ],
+  [
+    'retry',
+    {
+      label: 'Retry',
+      icon: 'refresh',
+      dataButton: 'retry',
+    },
+  ],
+  [
+    'empty',
+    {
+      label: '',
+      icon: '',
+      dataButton: '',
     },
   ],
 ]);
@@ -60,23 +80,32 @@ export default class TableData {
   #serializedHeader;
   #queryIds;
   #rows;
-  #abortController;
-  #isAutoLoad;
+  #source;
+  #isLoading;
   #isCompleted;
-  #startTime;
   #ROOT;
   #STATUS;
-  #INDICATOR_TEXT_AMOUNT;
-  #INDICATOR_TEXT_TIME;
-  #INDICATOR_BAR;
+  #progressIndicator;
   #CONTROLLER;
   #BUTTON_LEFT;
   #BUTTON_RIGHT;
 
   constructor(condition, elm) {
-    // console.log(condition);
+    // axios settings
+    axios.defaults.timeout = 600000;
+    axiosRetry(axios, {
+      retries: 5,
+      shouldResetTimeout: true,
+      retryDelay: axiosRetry.exponentialDelay,
+      retryCondition: error => {
+        return (error.code === timeOutError) | (error.response?.status === 500);
+      },
+    });
 
-    this.#isAutoLoad = false;
+    const CancelToken = axios.CancelToken;
+    this.#source = CancelToken.source();
+
+    this.#isLoading = false;
     this.#isCompleted = false;
     this.#condition = condition;
     this.#serializedHeader = [
@@ -93,14 +122,14 @@ export default class TableData {
     elm.innerHTML = `
     <div class="close-button-view"></div>
     <div class="conditions">
-      <div class="condiiton">
+      <div class="condition">
         <p title="${condition.togoKey}">${Records.getLabelFromTogoKey(
       condition.togoKey
     )}</p>
       </div>
       ${condition.attributes
         .map(
-          property => `<div class="condiiton _subject-background-color" data-subject-id="${property.subject.subjectId}">
+          property => `<div class="condition _subject-background-color" data-subject-id="${property.subject.subjectId}">
         <p title="${property.property.label}">${property.property.label}</p>
       </div>`
         )
@@ -113,7 +142,7 @@ export default class TableData {
                 property.parentCategoryId
               ).label
             : property.property.label;
-          return `<div class="condiiton _subject-color" data-subject-id="${property.subject.subjectId}">
+          return `<div class="condition _subject-color" data-subject-id="${property.subject.subjectId}">
           <p title="${label}">${label}</p>
         </div>`;
         })
@@ -123,31 +152,19 @@ export default class TableData {
       <p>Getting ID list</p>
       <span class="material-icons-outlined -rotating">autorenew</span>
     </div>
-    <div class="indicator">
-      <div class="text">
-        <div class="amount-of-data"></div>
-        <div class="remaining-time"></div>
-      </div>
-      <div class="progress">
-        <div class="bar"></div>
-      </div>
+    <div>
     </div>
     <div class="controller">
-
     </div>
     `;
 
     // reference
     this.#ROOT = elm;
     this.#STATUS = elm.querySelector(':scope > .status > p');
-    const INDICATOR = elm.querySelector(':scope > .indicator');
-    this.#INDICATOR_TEXT_AMOUNT = INDICATOR.querySelector(
-      ':scope > .text > .amount-of-data'
+
+    this.#progressIndicator = new ProgressIndicator(
+      elm.querySelector(':scope > .status + div')
     );
-    this.#INDICATOR_TEXT_TIME = INDICATOR.querySelector(
-      ':scope > .text > .remaining-time'
-    );
-    this.#INDICATOR_BAR = INDICATOR.querySelector(':scope > .progress > .bar');
 
     this.#CONTROLLER = elm.querySelector(':scope > .controller');
     this.#CONTROLLER.appendChild(this.#makeDataButton('left'));
@@ -176,11 +193,11 @@ export default class TableData {
 
     ConditionBuilder.finish();
     this.select();
+    this.#ROOT.classList.toggle('-fetching');
     this.#getQueryIds();
   }
 
   /* private methods */
-
   #deleteCondition(e) {
     e.stopPropagation();
     const customEvent = new CustomEvent(event.deleteTableData, {
@@ -188,73 +205,17 @@ export default class TableData {
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
     // abort fetch
-    this.#abortController.abort();
+    this.#source.cancel('user cancel');
     // delete element
     this.#ROOT.parentNode.removeChild(this.#ROOT);
     // transition
     document.querySelector('body').dataset.display = 'properties';
   }
 
-  #getQueryIds() {
-    // reset
-    this.#abortController = new AbortController();
-    this.#ROOT.classList.add('-fetching');
-    fetch(
-      `${App.aggregatePrimaryKeys}?togoKey=${
-        this.#condition.togoKey
-      }&properties=${encodeURIComponent(
-        JSON.stringify(
-          this.#condition.attributes.map(property => property.query)
-        )
-      )}${
-        ConditionBuilder.userIds?.length > 0
-          ? `&inputIds=${encodeURIComponent(
-              JSON.stringify(ConditionBuilder.userIds)
-            )}`
-          : ''
-      }`,
-      {
-        signal: this.#abortController.signal,
-      }
-    )
-      .catch(error => {
-        throw Error(error);
-      })
-      .then(responce => {
-        if (responce.ok) {
-          return responce;
-        }
-        this.#STATUS.classList.add('-error');
-        this.#STATUS.textContent = `${responce.status} (${responce.statusText})`;
-        throw Error(responce);
-      })
-      .then(responce => responce.json())
-      .then(queryIds => {
-        // console.log(queryIds);
-        this.#queryIds = queryIds;
-        // display
-        this.#ROOT.dataset.status = 'load rows';
-        this.#STATUS.textContent = '';
-        this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
-        this.#startTime = Date.now();
-        this.#getProperties();
-      })
-      .catch(error => {
-        // TODO:
-        console.error(error);
-        const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
-          detail: this,
-        });
-        DefaultEventEmitter.dispatchEvent(customEvent);
-      })
-      .finally(() => {
-        this.#ROOT.classList.remove('-fetching');
-      });
-  }
   // *** Responsive Buttons based on dataButtonModes ***
   /**
-   * @param {string} className
-   * @param {Mode} mode
+   * @param { string } className
+   * @param { Mode } mode
    */
   #makeDataButton(className, mode = undefined) {
     const button = document.createElement('div');
@@ -266,7 +227,6 @@ export default class TableData {
     button.classList.add('button', className);
 
     if (mode) this.#updateDataButton(button, mode);
-
     button.addEventListener('click', e => {
       this.#dataButtonEvent(e);
     });
@@ -275,9 +235,9 @@ export default class TableData {
   }
 
   /**
-   * @param {HTMLElement} target
-   * @param {Mode} mode
-   * @param {string} urlType
+   * @param { HTMLElement } target
+   * @param { Mode } mode
+   * @param { string } urlType
    */
   #updateDataButton(target, mode, urlType) {
     target.dataset.button = mode.dataButton;
@@ -293,24 +253,26 @@ export default class TableData {
   }
 
   /**
-   * @param {MouseEvent} e
+   * @param { MouseEvent } e
    */
   #dataButtonPauseOrResume(e) {
     e.stopPropagation();
-    const span = this.#ROOT.querySelector(
-      ':scope > .status > .material-icons-outlined'
-    );
-    span.classList.toggle('-rotating');
-    const modeToChangeTo = this.#isAutoLoad ? 'resume' : 'pause';
+    this.#ROOT.classList.toggle('-fetching');
+    this.#STATUS.classList.toggle('-flickering');
+
+    const modeToChangeTo = this.#isLoading ? 'resume' : 'pause';
     this.#updateDataButton(
       e.currentTarget,
       dataButtonModes.get(modeToChangeTo)
     );
-    this.#isAutoLoad = !this.#isAutoLoad;
-    if (this.#isAutoLoad) this.#getProperties();
+    this.#isLoading = !this.#isLoading;
+    this.#STATUS.textContent = this.#isLoading ? 'Getting Data' : 'Awaiting';
+
+    if (this.#isLoading) this.#getProperties();
   }
+
   /**
-   * @param {MouseEvent} e
+   * @param { MouseEvent } e
    */
   #dataButtonEdit(e) {
     e.stopPropagation();
@@ -335,8 +297,24 @@ export default class TableData {
     });
   }
 
+  #dataButtonRetry() {
+    this.#STATUS.classList.remove('-error');
+    this.#ROOT.classList.toggle('-fetching');
+    this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('empty'));
+
+    const partiallyLoaded = this.#queryIds.length > 0;
+    const message = partiallyLoaded ? 'Getting Data' : 'Getting ID list';
+    this.#STATUS.textContent = message;
+
+    if (partiallyLoaded) {
+      this.#getProperties();
+    } else {
+      this.#getQueryIds();
+    }
+  }
+
   /**
-   * @param { mouseEvent } e
+   * @param { MouseEvent } e
    */
   #dataButtonEvent(e) {
     const button = e.currentTarget;
@@ -351,8 +329,8 @@ export default class TableData {
         this.#dataButtonPauseOrResume(e);
         break;
 
-      case 'download-tsv':
-      case 'download-csv':
+      case 'retry':
+        this.#dataButtonRetry();
         break;
     }
   }
@@ -365,22 +343,19 @@ export default class TableData {
       'tsv'
     );
 
-    this.#setCsvUrl();
-    const middleButton = this.#makeDataButton('middle', 'csv');
-    this.#updateDataButton(middleButton, dataButtonModes.get('csv'), 'csv');
+    this.#setJsonUrl();
+    const middleButton = this.#makeDataButton('middle', 'json');
+    this.#updateDataButton(middleButton, dataButtonModes.get('json'), 'json');
     this.#CONTROLLER.insertBefore(middleButton, this.#BUTTON_RIGHT);
   }
 
-  // Setters for downloadUrls
-  #setCsvUrl() {
+  #setJsonUrl() {
     const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {
       type: 'application/json',
     });
-    const csvUrl = URL.createObjectURL(jsonBlob);
-    downloadUrls.set('csv', csvUrl);
+    downloadUrls.set('json', URL.createObjectURL(jsonBlob));
   }
 
-  // TODO: look at possible improvements looping
   #setTsvUrl() {
     const temporaryArray = [];
     this.#rows.forEach(row => {
@@ -419,103 +394,135 @@ export default class TableData {
     const tsvUrl = URL.createObjectURL(tsvBlob);
     downloadUrls.set('tsv', tsvUrl);
   }
+
   // *** Properties & Loading ***
-  #getProperties() {
-    this.#isAutoLoad = true;
-    this.#ROOT.classList.add('-fetching');
-    this.#STATUS.textContent = 'Getting Data';
-    fetch(
-      `${App.aggregateRows}?togoKey=${
-        this.#condition.togoKey
-      }&properties=${encodeURIComponent(
-        JSON.stringify(
-          this.#condition.attributes
-            .map(property => property.query)
-            .concat(this.#condition.properties.map(property => property.query))
-        )
-      )}&queryIds=${encodeURIComponent(
-        JSON.stringify(this.#queryIds.slice(this.offset, this.offset + LIMIT))
-      )}`,
-      {
-        signal: this.#abortController.signal,
-      }
-    )
-      .then(responce => responce.json())
-      .then(rows => {
-        this.#rows.push(...rows);
-        this.#isCompleted = this.offset >= this.#queryIds.length;
-        // display
-        this.#ROOT.classList.remove('-fetching');
-        this.#STATUS.textContent = 'Awaiting';
-        this.#INDICATOR_TEXT_AMOUNT.innerHTML = `${this.offset.toLocaleString()} / ${this.#queryIds.length.toLocaleString()}`;
-        this.#INDICATOR_BAR.style.width = `${
-          (this.offset / this.#queryIds.length) * 100
-        }%`;
-        this.#updateRemainingTime();
-        // dispatch event
-        const customEvent = new CustomEvent(event.addNextRows, {
-          detail: {
-            tableData: this,
-            rows,
-            done: this.#isCompleted,
-          },
-        });
-        DefaultEventEmitter.dispatchEvent(customEvent);
-        // turn off after finished
-        if (this.#isCompleted) {
-          this.#complete();
-        } else if (this.#isAutoLoad) {
-          this.#updateDataButton(
-            this.#BUTTON_LEFT,
-            dataButtonModes.get('pause')
-          );
-          this.#getProperties();
+  /**
+   * @param { Error } err - first check userCancel, then server error, timeout err part of else
+   */
+  #handleError(err) {
+    if (axios.isCancel && err.message === 'user cancel') return;
+
+    const code = err.response?.status;
+    const message = err.response?.statusText || err.message;
+    this.#displayError(message, code);
+
+    if ((err.response?.status === 500) | (err.code === timeOutError)) {
+      this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('retry'));
+      return;
+    }
+    this.#BUTTON_LEFT.remove();
+  }
+
+  /**
+   * @param { string } message - errorMessage
+   * @param { number } code - errorCode na in case of timeout or other
+   */
+  #displayError(message, code) {
+    this.#STATUS.classList.add('-error');
+    this.#STATUS.textContent = code ? `${message} (${code})` : message;
+    this.#ROOT.classList.toggle('-fetching');
+
+    const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
+      detail: this,
+    });
+    DefaultEventEmitter.dispatchEvent(customEvent);
+  }
+
+  #getQueryIdsPayload() {
+    return `togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(
+      JSON.stringify(this.#condition.attributes.map(property => property.query))
+    )}${
+      ConditionBuilder.userIds?.length > 0
+        ? `&inputIds=${encodeURIComponent(
+            JSON.stringify(ConditionBuilder.userIds.split(','))
+          )}`
+        : ''
+    }`;
+  }
+
+  #getQueryIds() {
+    axios
+      .post(App.aggregatePrimaryKeys, this.#getQueryIdsPayload(), {
+        cancelToken: this.#source.token,
+      })
+      .then(response => {
+        this.#queryIds = response.data;
+
+        if (this.#queryIds.length <= 0) {
+          this.#complete(false);
+          return;
         }
+        this.#ROOT.dataset.status = 'load rows';
+        this.#STATUS.textContent = 'Getting Data';
+        this.#progressIndicator.setTotal(this.#queryIds.length);
+        this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
+        this.#getProperties();
       })
       .catch(error => {
-        this.#ROOT.classList.remove('-fetching');
-        console.error(error); // TODO:
+        this.#handleError(error);
       });
   }
 
-  #updateRemainingTime() {
-    let singleTime = (Date.now() - this.#startTime) / this.offset;
-    let remainingTime;
-    if (this.offset == 0) {
-      remainingTime = '';
-    } else if (this.offset >= this.#queryIds.length) {
-      remainingTime = 0;
-    } else {
-      remainingTime =
-        (singleTime *
-          this.#queryIds.length *
-          (this.#queryIds.length - this.offset)) /
-        this.#queryIds.length /
-        1000;
-    }
-    if (remainingTime >= 3600) {
-      this.#INDICATOR_TEXT_TIME.innerHTML = `${Math.round(
-        remainingTime / 3600
-      )} hr.`;
-    } else if (remainingTime >= 60) {
-      this.#INDICATOR_TEXT_TIME.innerHTML = `${Math.round(
-        remainingTime / 60
-      )} min.`;
-    } else if (remainingTime >= 0) {
-      this.#INDICATOR_TEXT_TIME.innerHTML = `${Math.floor(remainingTime)} sec.`;
-    } else {
-      this.#INDICATOR_TEXT_TIME.innerHTML = ``;
-    }
+  #getPropertiesFetch() {
+    return `${App.aggregateRows}?togoKey=${
+      this.#condition.togoKey
+    }&properties=${encodeURIComponent(
+      JSON.stringify(
+        this.#condition.attributes
+          .map(property => property.query)
+          .concat(this.#condition.properties.map(property => property.query))
+      )
+    )}&queryIds=${encodeURIComponent(
+      JSON.stringify(this.#queryIds.slice(this.offset, this.offset + LIMIT))
+    )}`;
   }
 
-  #complete() {
+  #getProperties() {
+    this.#isLoading = true;
+    const startTime = Date.now();
+    axios
+      .get(this.#getPropertiesFetch(), {cancelToken: this.#source.token})
+      .then(response => {
+        this.#rows.push(...response.data);
+        this.#isCompleted = this.offset >= this.#queryIds.length;
+        this.#progressIndicator.updateProgressBar({
+          offset: this.offset,
+          startTime,
+        });
+
+        // dispatch event
+        const customEvent2 = new CustomEvent(event.addNextRows, {
+          detail: {
+            tableData: this,
+            rows: response.data,
+            done: this.#isCompleted,
+          },
+        });
+        DefaultEventEmitter.dispatchEvent(customEvent2);
+        // turn off after finished
+        if (this.#isCompleted) {
+          this.#complete();
+          return;
+        }
+        if (this.#isLoading) this.#getProperties();
+      })
+      .catch(error => {
+        this.#handleError(error);
+      });
+  }
+
+  /**
+   * @param { boolean } withData
+   */
+  #complete(withData = true) {
     this.#ROOT.dataset.status = 'complete';
-    this.#STATUS.textContent = 'Complete';
-    this.#setDownloadButtons();
+    this.#STATUS.textContent = withData ? 'Complete' : 'No Data Found';
+    this.#ROOT.classList.toggle('-fetching');
+
+    if (withData) this.#setDownloadButtons();
   }
 
   /* public methods */
-
   select() {
     this.#ROOT.classList.add('-current');
     // dispatch event
@@ -539,8 +546,12 @@ export default class TableData {
     this.#ROOT.classList.remove('-current');
   }
 
-  /* public accessors */
+  next() {
+    if (this.#isLoading) return;
+    this.#getProperties();
+  }
 
+  /* public accessors */
   get offset() {
     return this.#rows.length;
   }

@@ -1175,23 +1175,23 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   font-weight: bold;
   border-bottom: solid 0.1rem var(--color-separator);
 }
-.table-data-controller-view > .conditions > .condiiton {
+.table-data-controller-view > .conditions > .condition {
   padding: 0.2rem 0.4rem;
   overflow: hidden;
   -webkit-flex-grow: 1;
           flex-grow: 1;
 }
-.table-data-controller-view > .conditions > .condiiton:first-child {
+.table-data-controller-view > .conditions > .condition:first-child {
   color: white;
   background-color: var(--color-lamp-black);
 }
-.table-data-controller-view > .conditions > .condiiton > p {
+.table-data-controller-view > .conditions > .condition > p {
   margin-bottom: 0;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }
-.table-data-controller-view > .conditions > .condiiton:last-child {
+.table-data-controller-view > .conditions > .condition:last-child {
   padding-right: 1.8rem;
 }
 .table-data-controller-view > .status {
@@ -1213,51 +1213,17 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   color: red;
   opacity: 1;
 }
+.table-data-controller-view > .status > p.-flickering {
+  -webkit-animation: var(--transition-fetching) infinite alternate fetching;
+          animation: var(--transition-fetching) infinite alternate fetching;
+}
 .table-data-controller-view > .status > .material-icons-outlined {
   display: none;
-}
-.table-data-controller-view > .indicator {
-  padding: 0.4rem 0.4rem;
-  border-bottom: solid 0.1rem var(--color-separator);
-  display: none;
-}
-.table-data-controller-view > .indicator > .text {
-  line-height: 1;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-justify-content: space-between;
-          justify-content: space-between;
-}
-.table-data-controller-view > .indicator > .progress {
-  margin: 0.4rem 0;
-  position: relative;
-  height: 0.4rem;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.1);
-}
-.table-data-controller-view > .indicator > .progress > .bar {
-  background-color: var(--color-lamp-black);
-  position: absolute;
-  height: 0.4rem;
-  top: 0;
-  left: 0;
-  transition: width var(--transition-wipe);
 }
 .table-data-controller-view > .controller {
   display: -webkit-flex;
   display: flex;
   color: white;
-}
-.table-data-controller-view > .controller > [data-button=download-csv], .table-data-controller-view > .controller > [data-button=download-tsv] {
-  display: block;
-}
-.table-data-controller-view > .controller > [data-button=download-csv] > a, .table-data-controller-view > .controller > [data-button=download-tsv] > a {
-  color: white;
-  text-decoration: none;
-  display: block;
-}
-.table-data-controller-view > .controller > [data-button=download-csv] > a > span, .table-data-controller-view > .controller > [data-button=download-tsv] > a > span {
-  vertical-align: middle;
 }
 .table-data-controller-view > .controller > .button {
   padding: 0.2rem 0;
@@ -1266,16 +1232,24 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   background-color: var(--color-translucent-lamp-black2);
   transition: background-color var(--transition-instant);
   cursor: pointer;
+  display: block;
 }
 .table-data-controller-view > .controller > .button:hover {
   background-color: var(--color-lamp-black);
 }
-.table-data-controller-view > .controller > .button .material-icons-outlined {
-  position: relative;
-  top: -0.1rem;
-  font-size: 1.4rem;
+.table-data-controller-view > .controller > .button > a {
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+.table-data-controller-view > .controller > .button > a > span {
   vertical-align: middle;
-  left: -0.2rem;
+}
+.table-data-controller-view > .controller > .button.none {
+  display: none;
+}
+body[data-display=results] .table-data-controller-view > .controller > .button[data-button=edit] {
+  display: none;
 }
 .table-data-controller-view.-current, .table-data-controller-view:hover {
   opacity: 1;
@@ -1283,12 +1257,12 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
 .table-data-controller-view.-current {
   cursor: initial;
 }
-.table-data-controller-view.-fetching > .status {
-  -webkit-animation: var(--transition-fetching) infinite alternate fetching;
-          animation: var(--transition-fetching) infinite alternate fetching;
-}
-.table-data-controller-view.-fetching > .status > p {
+.table-data-controller-view.-fetching > .status > p, .table-data-controller-view[data-status="load rows"] > .status > p, .table-data-controller-view[data-status=complete] > .status > p {
   opacity: 1;
+}
+.table-data-controller-view.-fetching > .controller, .table-data-controller-view[data-status="load rows"] > .controller, .table-data-controller-view[data-status=complete] > .controller {
+  display: -webkit-flex;
+  display: flex;
 }
 .table-data-controller-view.-fetching > .status > .material-icons-outlined {
   display: block;
@@ -1296,42 +1270,6 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
 .table-data-controller-view.-fetching > .status > .material-icons-outlined.-rotating {
   -webkit-animation: rotation 3s linear infinite;
           animation: rotation 3s linear infinite;
-}
-.table-data-controller-view.-fetching > .indicator > .progress > .bar {
-  -webkit-animation: var(--transition-fetching) infinite alternate fetching;
-          animation: var(--transition-fetching) infinite alternate fetching;
-}
-.table-data-controller-view.-autoload > .controller > .button[data-button=edit] {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-.table-data-controller-view[data-status="load ids"] > .controller > .button[data-button=edit] {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-.table-data-controller-view[data-status="load rows"] > .indicator {
-  display: block;
-}
-.table-data-controller-view[data-status="load rows"] > .controller {
-  display: -webkit-flex;
-  display: flex;
-}
-.table-data-controller-view[data-status=complete] > .status > p {
-  opacity: 1;
-}
-.table-data-controller-view[data-status=complete] > .indicator {
-  display: block;
-}
-.table-data-controller-view[data-status=complete] > .controller {
-  display: -webkit-flex;
-  display: flex;
-}
-.table-data-controller-view[data-status=complete] > .controller > [data-button=download-json], .table-data-controller-view[data-status=complete] > .controller > [data-button=download-tsv] {
-  display: block;
-}
-.table-data-controller-view[data-status=complete] > .controller > .button[data-button=edit] {
-  cursor: not-allowed;
-  opacity: 0.5;
 }
 
 @-webkit-keyframes rotation {
@@ -1355,6 +1293,50 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
             transform: rotate(360deg);
   }
 }
+.progress-indicator {
+  padding: 0.4rem 0.4rem;
+  border-bottom: solid 0.1rem var(--color-separator);
+  display: none;
+}
+.progress-indicator > .text {
+  line-height: 1;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: space-between;
+          justify-content: space-between;
+}
+.progress-indicator > .text > .amount-of-data {
+  display: none;
+}
+.progress-indicator > .progress {
+  margin: 0.4rem 0;
+  position: relative;
+  height: 0.4rem;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.progress-indicator > .progress > .bar {
+  background-color: var(--color-lamp-black);
+  position: absolute;
+  height: 0.4rem;
+  top: 0;
+  left: 0;
+  transition: width var(--transition-wipe);
+}
+.table-data-controller-view.-fetching .progress-indicator, .table-data-controller-view[data-status="load rows"] .progress-indicator, .table-data-controller-view[data-status=complete] .progress-indicator {
+  display: block;
+}
+.table-data-controller-view[data-status="load rows"] .progress-indicator > .text > .amount-of-data, .table-data-controller-view[data-status=complete] .progress-indicator > .text > .amount-of-data {
+  display: block;
+}
+.table-data-controller-view.-fetching .progress-indicator > .text > .bar {
+  -webkit-animation: var(--transition-fetching) infinite alternate fetching;
+          animation: var(--transition-fetching) infinite alternate fetching;
+}
+.table-data-controller-view[data-status=complete] .progress-indicator > .text > .remaining-time {
+  display: none;
+}
+
 .togo-key-view {
   color: white;
   background-color: var(--color-translucent-lamp-black2);
@@ -1491,6 +1473,7 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   height: var(--height-track);
 }
 .track-view > .row > .left {
+  padding-bottom: 0.8rem;
   border-right: solid 0.1rem var(--color-gray);
   -webkit-flex-basis: var(--width-track-column-property);
           flex-basis: var(--width-track-column-property);
@@ -1555,6 +1538,13 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   font-size: 1rem;
   line-height: 3rem;
 }
+.track-view > .row.-lower {
+  content-visibility: hidden;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
 .track-view > .row.-lower > .left > .description {
   margin-bottom: 0.4rem;
   padding: 0 0.8rem;
@@ -1578,6 +1568,13 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   border: solid 0.1rem black;
   box-shadow: 0 0 0 0.1rem rgba(255, 255, 255, 0.5) inset;
   pointer-events: none;
+}
+.track-view.-spread > .row.-lower {
+  content-visibility: visible;
+  -webkit-user-select: auto;
+     -moz-user-select: auto;
+      -ms-user-select: auto;
+          user-select: auto;
 }
 
 #App {
@@ -1810,9 +1807,13 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   display: inline-block;
 }
 #Properties > .header > .title > .properties {
-  -webkit-padding-start: calc(var(--width-track-column-subject) - var(--padding-track-inline-start));
-          padding-inline-start: calc(var(--width-track-column-subject) - var(--padding-track-inline-start));
+  padding-left: calc(var(--width-track-column-subject) - var(--padding-track-inline-start) + 1.4rem);
   width: calc(var(--width-track-column-subject) + var(--width-track-column-property) - var(--padding-track-inline-start));
+}
+#Properties > .header > .title > .collapsebutton::before {
+  left: 1.4rem;
+  top: 2px;
+  border-color: white;
 }
 #Properties > .header > nav {
   -webkit-flex-grow: 1;

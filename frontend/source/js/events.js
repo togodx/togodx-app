@@ -40,3 +40,4 @@ export const highlightCol = 'highlightCol';
 // Track
 export const enterPropertyValueItemView = 'enterPropertyValueItemView';
 export const leavePropertyValueItemView = 'leavePropertyValueItemView';
+export const allTracksCollapse = 'allTracksCollapse';
