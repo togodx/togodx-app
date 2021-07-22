@@ -4510,6 +4510,324 @@
     }
   }
 
+  var _target = new WeakMap();
+
+  var _selection = new WeakMap();
+
+  var _unit = new WeakMap();
+
+  var _SELECTING_AREA = new WeakMap();
+
+  var _SELECTOR_BARS = new WeakMap();
+
+  var _defineSelection = new WeakSet();
+
+  var _defineInteraction = new WeakSet();
+
+  var _update$1 = new WeakSet();
+
+  var HistogramRangeSelectorController = /*#__PURE__*/function () {
+    function HistogramRangeSelectorController(target, _selector) {
+      _classCallCheck(this, HistogramRangeSelectorController);
+
+      _update$1.add(this);
+
+      _defineInteraction.add(this);
+
+      _defineSelection.add(this);
+
+      _target.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _selection.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _unit.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _SELECTING_AREA.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _SELECTOR_BARS.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      // definition
+      _classPrivateFieldSet(this, _target, target);
+
+      _classPrivateFieldSet(this, _unit, 100 / target.items.length);
+
+      _classPrivateFieldSet(this, _selection, {});
+
+      _classPrivateMethodGet(this, _defineSelection, _defineSelection2).call(this); // reference
+
+
+      _classPrivateFieldSet(this, _SELECTING_AREA, _selector.querySelector(':scope > .inner > .selectingarea'));
+
+      _classPrivateFieldSet(this, _SELECTOR_BARS, _selector.querySelectorAll(':scope > .inner > .overview > .bar')); // interaction
+
+
+      _classPrivateMethodGet(this, _defineInteraction, _defineInteraction2).call(this, _selector);
+    } // private methods
+
+
+    _createClass(HistogramRangeSelectorController, [{
+      key: "start",
+      get: // accessor
+      function get() {
+        return _classPrivateFieldGet(this, _selection).start;
+      }
+    }, {
+      key: "end",
+      get: function get() {
+        return _classPrivateFieldGet(this, _selection).end;
+      }
+    }, {
+      key: "width",
+      get: function get() {
+        return this.end - this.start;
+      }
+    }, {
+      key: "selectedItems",
+      get: function get() {
+        var _this = this;
+
+        var items = [];
+
+        if (this.width !== 0) {
+          items.push.apply(items, _toConsumableArray(_classPrivateFieldGet(this, _target).items.filter(function (item_, index) {
+            if (_this.start <= index && index < _this.end) return true;else return false;
+          })));
+        }
+
+        return items;
+      }
+    }]);
+
+    return HistogramRangeSelectorController;
+  }();
+
+  function _defineSelection2() {
+    var selectionStart = 0,
+        selectionEnd = 0;
+    var self = this;
+    Object.defineProperties(_classPrivateFieldGet(this, _selection), {
+      start: {
+        get: function get() {
+          return selectionStart;
+        },
+        set: function set(value) {
+          if (selectionStart !== value) {
+            selectionStart = value;
+
+            _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
+          }
+        }
+      },
+      end: {
+        get: function get() {
+          return selectionEnd;
+        },
+        set: function set(value) {
+          if (selectionEnd !== value) {
+            selectionEnd = value;
+
+            _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
+          }
+        }
+      },
+      range: {
+        get: function get() {
+          return [selectionStart, selectionEnd];
+        },
+        set: function set(_ref) {
+          var _ref2 = _slicedToArray(_ref, 2),
+              start = _ref2[0],
+              end = _ref2[1];
+
+          if (selectionStart !== start || selectionEnd !== end) {
+            selectionStart = start;
+            selectionEnd = end;
+
+            _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
+          }
+        }
+      }
+    });
+  }
+
+  function _defineInteraction2(selector) {
+    var _this2 = this;
+
+    var isMouseDown = false,
+        startX,
+        initialStart,
+        initialEnd,
+        initialWidth,
+        totalWidth,
+        interactionType,
+        direction; // references
+
+    var selectorController = selector.querySelector(':scope > .inner > .controller');
+    var handlesArray = Array.from(_classPrivateFieldGet(this, _SELECTING_AREA).querySelectorAll(':scope > .handle'));
+    ({
+      left: handlesArray.filter(function (handle) {
+        return handle.dataset.direction === 'start';
+      }),
+      right: handlesArray.filter(function (handle) {
+        return handle.dataset.direction === 'end';
+      })
+    });
+
+    var init = function init(e) {
+      e.stopImmediatePropagation();
+      totalWidth = selectorController.getBoundingClientRect().width;
+      isMouseDown = true;
+      var x = e.x - selectorController.getBoundingClientRect().x;
+      startX = x / totalWidth * 100;
+    }; // make selecting area
+
+
+    selectorController.addEventListener('mousedown', function (e) {
+      interactionType = 'make';
+      selector.classList.add('-makingarea');
+      init(e);
+    }); // drag selecting area
+
+    _classPrivateFieldGet(this, _SELECTING_AREA).addEventListener('mousedown', function (e) {
+      interactionType = 'drag';
+      selector.classList.add('-draggingarea');
+      initialStart = _this2.start;
+      initialWidth = _this2.width;
+      init(e);
+    }); // resize selecting area
+
+
+    handlesArray.forEach(function (handle) {
+      return handle.addEventListener('mousedown', function (e) {
+        interactionType = 'resize';
+        direction = e.target.dataset.direction;
+        selector.classList.add('-resizingarea');
+        initialStart = _this2.start;
+        initialEnd = _this2.end;
+        init(e);
+      });
+    }); // dragging behavior
+
+    selectorController.addEventListener('mousemove', function (e) {
+      if (isMouseDown) {
+        var range;
+        var x = e.layerX / totalWidth * 100;
+
+        switch (interactionType) {
+          case 'make':
+            {
+              // calculate selection range
+              var selectedWidth = x - startX;
+              var start, end;
+
+              if (selectedWidth > 0) {
+                start = startX;
+                end = x;
+              } else {
+                start = x;
+                end = startX;
+              }
+
+              range = [Math.floor(start / _classPrivateFieldGet(_this2, _unit)), Math.ceil(end / _classPrivateFieldGet(_this2, _unit))];
+            }
+            break;
+
+          case 'drag':
+            {
+              var translation = (x - startX) / _classPrivateFieldGet(_this2, _unit);
+
+              if (translation < -.5) translation = Math.floor(translation + .5);else if (.5 < translation) translation = Math.ceil(translation - .5);else translation = 0;
+              translation -= initialStart + translation < 0 ? initialStart + translation : 0;
+              translation -= initialStart + translation + initialWidth > _classPrivateFieldGet(_this2, _target).items.length ? initialStart + translation + initialWidth - _classPrivateFieldGet(_this2, _target).items.length : 0;
+              range = [initialStart + translation, initialStart + translation + initialWidth];
+            }
+            break;
+
+          case 'resize':
+            {
+              var _start = initialStart,
+                  _end = initialEnd;
+
+              switch (direction) {
+                case 'start':
+                  _start += Math.floor((x - startX) / _classPrivateFieldGet(_this2, _unit) + .5);
+
+                  if (_end < _start) {
+                    var _ref3 = [_end, _start];
+                    _start = _ref3[0];
+                    _end = _ref3[1];
+                  }
+
+                  break;
+
+                case 'end':
+                  _end += Math.ceil((x - startX) / _classPrivateFieldGet(_this2, _unit) - .5);
+
+                  if (_end < _start) {
+                    var _ref4 = [_end, _start];
+                    _start = _ref4[0];
+                    _end = _ref4[1];
+                  }
+
+                  break;
+              }
+
+              if (_start < 0) _start = 0;
+              if (_classPrivateFieldGet(_this2, _target).items.length < _end) _end = _classPrivateFieldGet(_this2, _target).items.length;
+              range = [_start, _end];
+            }
+            break;
+        }
+
+        _classPrivateFieldGet(_this2, _selection).range = range;
+      }
+    });
+    selectorController.addEventListener('mouseup', function () {
+      if (isMouseDown) {
+        selector.classList.remove('-makingarea');
+        selector.classList.remove('-draggingarea');
+        selector.classList.remove('-resizingarea');
+        isMouseDown = false;
+
+        _classPrivateMethodGet(_this2, _update$1, _update2$1).call(_this2);
+      }
+    });
+  }
+
+  function _update2$1() {
+    var _this3 = this;
+
+    // selecting area
+    _classPrivateFieldGet(this, _SELECTING_AREA).style.left = this.start * _classPrivateFieldGet(this, _unit) + '%';
+    _classPrivateFieldGet(this, _SELECTING_AREA).style.width = (this.end - this.start) * _classPrivateFieldGet(this, _unit) + '%'; // overview
+
+    _classPrivateFieldGet(this, _SELECTOR_BARS).forEach(function (bar, index) {
+      if (_this3.start <= index && index < _this3.end) bar.classList.add('-selected');else bar.classList.remove('-selected');
+    });
+
+    _classPrivateFieldGet(this, _target).update(); // set condition
+
+
+    ConditionBuilder$1.setPropertyValues(_classPrivateFieldGet(this, _target).propertyId, this.selectedItems.map(function (item) {
+      return item.categoryId;
+    }), false);
+  }
+
   /**
    *
    * @param {Color} baseColor
@@ -4556,249 +4874,157 @@
 
   var _property$2 = new WeakMap();
 
-  var _selectedBarsStart = new WeakMap();
-
-  var _selectedBarsEnd = new WeakMap();
+  var _selectorController = new WeakMap();
 
   var _OVERVIEW_CONTAINER$1 = new WeakMap();
 
   var _ROOT$6 = new WeakMap();
 
-  var _SELECTOR_BARS = new WeakMap();
-
   var _GRIDS = new WeakMap();
-
-  var _setupRangeSelector = new WeakSet();
-
-  var _update$1 = new WeakSet();
 
   var _indicateValue = new WeakSet();
 
-  var _selectedItems = new WeakMap();
+  var HistogramRangeSelectorView = /*#__PURE__*/function () {
+    function HistogramRangeSelectorView(elm, subject, property, items, sparqlist, overviewContainer) {
+      var _this = this;
 
-  var HistogramRangeSelectorView = function HistogramRangeSelectorView(elm, subject, property, _items2, sparqlist, overview) {
-    var _this = this;
+      _classCallCheck(this, HistogramRangeSelectorView);
 
-    _classCallCheck(this, HistogramRangeSelectorView);
+      _indicateValue.add(this);
 
-    _selectedItems.set(this, {
-      get: _get_selectedItems,
-      set: void 0
-    });
+      _items.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _indicateValue.add(this);
+      _property$2.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _update$1.add(this);
+      _selectorController.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _setupRangeSelector.add(this);
+      _OVERVIEW_CONTAINER$1.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _items.set(this, {
-      writable: true,
-      value: void 0
-    });
+      _ROOT$6.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _property$2.set(this, {
-      writable: true,
-      value: void 0
-    });
+      _GRIDS.set(this, {
+        writable: true,
+        value: void 0
+      });
 
-    _selectedBarsStart.set(this, {
-      writable: true,
-      value: void 0
-    });
+      // console.log(elm, subject, property, items, sparqlist)
+      this._sparqlist = sparqlist;
 
-    _selectedBarsEnd.set(this, {
-      writable: true,
-      value: void 0
-    });
+      _classPrivateFieldSet(this, _property$2, property);
 
-    _OVERVIEW_CONTAINER$1.set(this, {
-      writable: true,
-      value: void 0
-    });
+      _classPrivateFieldSet(this, _OVERVIEW_CONTAINER$1, overviewContainer);
 
-    _ROOT$6.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _SELECTOR_BARS.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _GRIDS.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    // console.log(elm, subject, property, items, sparqlist)
-    this._sparqlist = sparqlist;
-
-    _classPrivateFieldSet(this, _property$2, property);
-
-    _classPrivateFieldSet(this, _OVERVIEW_CONTAINER$1, overview);
-
-    _classPrivateFieldSet(this, _items, _items2.map(function (item) {
-      return Object.assign({}, item);
-    }));
-
-    _classPrivateFieldSet(this, _selectedBarsStart, undefined);
-
-    _classPrivateFieldSet(this, _selectedBarsEnd, undefined); // make container
+      _classPrivateFieldSet(this, _items, items.map(function (item) {
+        return Object.assign({}, item);
+      })); // make container
 
 
-    elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"selector\">\n        <div class=\"overview\"></div>\n        <div class=\"controller\"></div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ".concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>\n      <!--\n      <div class=\"controller\">\n        <div class=\"selector\">\n          <div class=\"slider -min\"></div>\n          <div class=\"slider -max\"></div>\n        </div>\n        <div class=\"form\">\n          <input type=\"number\" data-range=\"min\">\n          ~\n          <input type=\"number\" data-range=\"max\">\n        </div>\n      </div>\n      -->");
+      elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\" data-subject-id=\"".concat(subject.subjectId, "\">\n      <div class=\"selector\">\n        <div class=\"inner\">\n          <div class=\"overview\"></div>\n          <div class=\"controller\"></div>\n          <div class=\"selectingarea\">\n            <div class=\"handle\" data-direction=\"start\"></div>\n            <div class=\"handle\" data-direction=\"end\"></div>\n          </div>\n        </div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ").concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>");
 
-    _classPrivateFieldSet(this, _ROOT$6, elm.querySelector(':scope > .histogram-range-selector-view'));
+      _classPrivateFieldSet(this, _ROOT$6, elm.querySelector(':scope > .histogram-range-selector-view'));
 
-    var histogram = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .histogram');
+      var histogram = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .histogram');
 
-    var selector = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .selector'); // make graph
+      var selector = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .selector > .inner');
 
+      var overview = selector.querySelector(':scope > .overview'); // make graph
 
-    var _max = Math.max.apply(Math, _toConsumableArray(_classPrivateFieldGet(this, _items).map(function (item) {
-      return item.count;
-    })));
+      var max = Math.max.apply(Math, _toConsumableArray(_classPrivateFieldGet(this, _items).map(function (item) {
+        return item.count;
+      })));
 
-    var _width = 100 / _classPrivateFieldGet(this, _items).length;
+      var width = 100 / _classPrivateFieldGet(this, _items).length;
 
-    selector.querySelector(':scope > .overview').innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
-      return "<div\n      class=\"bar _subject-background-color\"\n      data-category-id=\"".concat(item.categoryId, "\"\n      data-subject-id=\"").concat(subject.subjectId, "\"\n      data-count=\"").concat(item.count, "\"\n      style=\"width: ").concat(_width, "%; height: ").concat(item.count / _max * 100, "%;\"></div>");
-    }).join('');
-    var graph = histogram.querySelector(':scope > .graph');
-    graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
-      return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\">\n      <div class=\"actual\" style=\"background-color: rgb(").concat(colorTintByHue(subject.color, 360 * index / _classPrivateFieldGet(_this, _items).length).coords.map(function (cood) {
-        return cood * 256;
-      }).join(','), ");\"></div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
-    }).join(''); // reference
+      overview.innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
+        return "<div\n      class=\"bar _subject-background-color\"\n      data-category-id=\"".concat(item.categoryId, "\"\n      data-subject-id=\"").concat(subject.subjectId, "\"\n      data-count=\"").concat(item.count, "\"\n      style=\"width: ").concat(width, "%; height: ").concat(item.count / max * 100, "%;\"></div>");
+      }).join('');
+      var graph = histogram.querySelector(':scope > .graph');
+      graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
+        return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\">\n      <div class=\"actual\" style=\"background-color: rgb(").concat(colorTintByHue(subject.color, 360 * index / _classPrivateFieldGet(_this, _items).length).coords.map(function (cood) {
+          return cood * 256;
+        }).join(','), ");\"></div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
+      }).join(''); // reference
 
-    histogram.querySelectorAll(':scope > .graph > .bar').forEach(function (item, index) {
-      return _classPrivateFieldGet(_this, _items)[index].elm = item;
-    });
+      histogram.querySelectorAll(':scope > .graph > .bar').forEach(function (item, index) {
+        return _classPrivateFieldGet(_this, _items)[index].elm = item;
+      });
 
-    _classPrivateFieldSet(this, _GRIDS, histogram.querySelectorAll(':scope > .gridcontainer > .grid'));
-
-    _classPrivateFieldSet(this, _SELECTOR_BARS, Array.from(selector.querySelectorAll(':scope > .overview > .bar'))); // event
-
-
-    DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
-      return _classPrivateMethodGet(_this, _update$1, _update2$1).call(_this);
-    });
-
-    _classPrivateMethodGet(this, _setupRangeSelector, _setupRangeSelector2).call(this);
-
-    _classPrivateMethodGet(this, _update$1, _update2$1).call(this);
-  } // private methods
-  ;
-
-  function _setupRangeSelector2() {
-    var _this2 = this;
-
-    var selectorController = _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .selector > .controller');
-
-    var isMouseDown = false,
-        startX,
-        width,
-        unit;
-    selectorController.addEventListener('mousedown', function (e) {
-      width = e.target.getBoundingClientRect().width;
-      unit = width / _classPrivateFieldGet(_this2, _items).length;
-      isMouseDown = true;
-      startX = e.layerX;
-    });
-    selectorController.addEventListener('mousemove', function (e) {
-      if (isMouseDown) {
-        // selection range
-        var selectedWidth = e.layerX - startX;
-
-        if (selectedWidth > 0) {
-          _classPrivateFieldSet(_this2, _selectedBarsStart, Math.floor(startX / unit));
-
-          _classPrivateFieldSet(_this2, _selectedBarsEnd, Math.floor(e.layerX / unit));
-        } else {
-          _classPrivateFieldSet(_this2, _selectedBarsStart, Math.floor(e.layerX / unit));
-
-          _classPrivateFieldSet(_this2, _selectedBarsEnd, Math.floor(startX / unit));
-        } // select overview by range
+      _classPrivateFieldSet(this, _GRIDS, histogram.querySelectorAll(':scope > .gridcontainer > .grid')); // event
 
 
-        _classPrivateFieldGet(_this2, _ROOT$6).querySelectorAll(':scope > .selector > .overview > .bar').forEach(function (bar, index) {
-          if (_classPrivateFieldGet(_this2, _selectedBarsStart) <= index && index <= _classPrivateFieldGet(_this2, _selectedBarsEnd)) {
-            bar.classList.add('-selected');
+      DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
+        return _this.update();
+      }); // this.#setupRangeSelector();
+
+      _classPrivateFieldSet(this, _selectorController, new HistogramRangeSelectorController(this, _classPrivateFieldGet(this, _ROOT$6).querySelector(':scope > .selector')));
+
+      this.update();
+    } // private methods
+
+
+    _createClass(HistogramRangeSelectorView, [{
+      key: "update",
+      value: // public methods
+      function update() {
+        var selectedItems = _classPrivateFieldGet(this, _selectorController).width === 0 ? _classPrivateFieldGet(this, _items) : _classPrivateFieldGet(this, _selectorController).selectedItems;
+        var max = Math.max.apply(Math, _toConsumableArray(selectedItems.map(function (item) {
+          return item.count;
+        })));
+        var isLog10 = App$1.viewModes.log10;
+        var processedMax = isLog10 ? Math.log10(max) : max;
+        var width = 100 / selectedItems.length; // grid
+
+        var digits = String(Math.ceil(max)).length;
+        var unit = Number(String(max).charAt(0).padEnd(digits, '0')) / NUM_OF_GRID;
+
+        _classPrivateFieldGet(this, _GRIDS).forEach(function (grid, index) {
+          var scale = unit * index;
+          grid.style.bottom = "".concat((isLog10 ? Math.log10(scale) : scale) / processedMax * 100, "%");
+          grid.querySelector(':scope > .label').textContent = scale.toLocaleString();
+        }); // graph
+
+
+        _classPrivateFieldGet(this, _items).forEach(function (item) {
+          if (selectedItems.indexOf(item) === -1) {
+            item.elm.classList.add('-filtered');
           } else {
-            bar.classList.remove('-selected');
+            item.elm.classList.remove('-filtered');
+            var height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100;
+            item.elm.style.width = "".concat(width, "%");
+            item.elm.querySelector(':scope > .actual').style.height = "".concat(height, "%");
           }
         });
+      } // public accessor
 
-        _classPrivateMethodGet(_this2, _update$1, _update2$1).call(_this2); // set condition
-
-
-        ConditionBuilder$1.setPropertyValues(_classPrivateFieldGet(_this2, _property$2).propertyId, _classPrivateFieldGet(_this2, _selectedItems).map(function (item) {
-          return item.categoryId;
-        }), false);
+    }, {
+      key: "items",
+      get: function get() {
+        return _classPrivateFieldGet(this, _items);
       }
-    });
-    selectorController.addEventListener('mouseup', function (e) {
-      if (isMouseDown) {
-        isMouseDown = false;
-        ConditionBuilder$1.setPropertyValues(_classPrivateFieldGet(_this2, _property$2).propertyId, _classPrivateFieldGet(_this2, _selectedItems).map(function (item) {
-          return item.categoryId;
-        }));
+    }, {
+      key: "propertyId",
+      get: function get() {
+        return _classPrivateFieldGet(this, _property$2).propertyId;
       }
-    });
-  }
+    }]);
 
-  function _update2$1() {
-    var selectedItems = _classPrivateFieldGet(this, _selectedBarsStart) ? _classPrivateFieldGet(this, _selectedItems) : _classPrivateFieldGet(this, _items);
-    var max = Math.max.apply(Math, _toConsumableArray(selectedItems.map(function (item) {
-      return item.count;
-    })));
-    var isLog10 = App$1.viewModes.log10;
-    var processedMax = isLog10 ? Math.log10(max) : max;
-    var width = 100 / selectedItems.length; // grid
-
-    var digits = String(Math.ceil(max)).length;
-    var unit = Number(String(max).charAt(0).padEnd(digits, '0')) / NUM_OF_GRID;
-
-    _classPrivateFieldGet(this, _GRIDS).forEach(function (grid, index) {
-      var scale = unit * index;
-      grid.style.bottom = "".concat((isLog10 ? Math.log10(scale) : scale) / processedMax * 100, "%");
-      grid.querySelector(':scope > .label').textContent = scale.toLocaleString();
-    }); // graph
-
-
-    _classPrivateFieldGet(this, _items).forEach(function (item) {
-      if (selectedItems.indexOf(item) === -1) {
-        item.elm.classList.add('-filtered');
-      } else {
-        item.elm.classList.remove('-filtered');
-        var height = (isLog10 ? Math.log10(item.count) : item.count) / processedMax * 100;
-        item.elm.style.width = "".concat(width, "%");
-        item.elm.querySelector(':scope > .actual').style.height = "".concat(height, "%");
-      }
-    });
-  }
-
-  function _get_selectedItems() {
-    var _this3 = this;
-
-    var items;
-
-    if (_classPrivateFieldGet(this, _selectedBarsStart)) {
-      items = _classPrivateFieldGet(this, _items).filter(function (item_, index) {
-        if (_classPrivateFieldGet(_this3, _selectedBarsStart) <= index && index <= _classPrivateFieldGet(_this3, _selectedBarsEnd)) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-    } else {
-      items = [];
-    }
-
-    return items;
-  }
+    return HistogramRangeSelectorView;
+  }();
 
   var MIN_PIN_SIZE = 12;
   var MAX_PIN_SIZE = 24;
