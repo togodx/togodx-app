@@ -28,7 +28,7 @@ export default class HistogramRangeSelectorController {
   // private methods
 
   #defineSelection() {
-    let selectionStart, selectionEnd;
+    let selectionStart = 0, selectionEnd = 0;
     const self = this;
     Object.defineProperties(this.#selection, {
       start: {
@@ -212,8 +212,8 @@ export default class HistogramRangeSelectorController {
 
   get selectedItems() {
     const items = [];
-    if (this.start !== 0 && this.end !== 0) {
-      items.push(...this.#target.items.filter((item_, index) => {
+    if (this.width !== 0) {
+        items.push(...this.#target.items.filter((item_, index) => {
         if (this.start <= index && index < this.end) return true;
         else return false;
       }));

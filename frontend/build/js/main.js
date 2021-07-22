@@ -4602,7 +4602,7 @@
 
         var items = [];
 
-        if (this.start !== 0 && this.end !== 0) {
+        if (this.width !== 0) {
           items.push.apply(items, _toConsumableArray(_classPrivateFieldGet(this, _target).items.filter(function (item_, index) {
             if (_this.start <= index && index < _this.end) return true;else return false;
           })));
@@ -4616,7 +4616,8 @@
   }();
 
   function _defineSelection2() {
-    var selectionStart, selectionEnd;
+    var selectionStart = 0,
+        selectionEnd = 0;
     var self = this;
     Object.defineProperties(_classPrivateFieldGet(this, _selection), {
       start: {
@@ -4979,7 +4980,7 @@
       key: "update",
       value: // public methods
       function update() {
-        var selectedItems = _classPrivateFieldGet(this, _selectorController).start ? _classPrivateFieldGet(this, _selectorController).selectedItems : _classPrivateFieldGet(this, _items);
+        var selectedItems = _classPrivateFieldGet(this, _selectorController).width === 0 ? _classPrivateFieldGet(this, _items) : _classPrivateFieldGet(this, _selectorController).selectedItems;
         var max = Math.max.apply(Math, _toConsumableArray(selectedItems.map(function (item) {
           return item.count;
         })));

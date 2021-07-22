@@ -87,7 +87,7 @@ export default class HistogramRangeSelectorView {
 
   update() {
 
-    const selectedItems = this.#selectorController.start ? this.#selectorController.selectedItems : this.#items;
+    const selectedItems = this.#selectorController.width === 0 ? this.#items : this.#selectorController.selectedItems;
 
     const max = Math.max(...selectedItems.map(item => item.count));
     const isLog10 = App.viewModes.log10;
