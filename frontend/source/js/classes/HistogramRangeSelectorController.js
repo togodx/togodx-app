@@ -18,11 +18,6 @@ export default class HistogramRangeSelectorController {
 
     // reference
     this.#SELECTING_AREA = selector.querySelector(':scope > .inner > .selectingarea');
-    const handlesArray = Array.from(this.#SELECTING_AREA.querySelectorAll(':scope > .handle'));
-    const handles = {
-      left: handlesArray.filter(handle => handle.dataset.direction === 'left'),
-      right: handlesArray.filter(handle => handle.dataset.direction === 'right')
-    }
     this.#SELECTOR_BARS = selector.querySelectorAll(':scope > .inner > .overview > .bar');
 
     // interaction
@@ -75,8 +70,15 @@ export default class HistogramRangeSelectorController {
 
   #defineInteraction(selector) {
 
+    let isMouseDown = false, startX, initialStart, initialEnd, initialWidth, totalWidth, interactionType, direction;
+
+    // references
     const selectorController = selector.querySelector(':scope > .inner > .controller');
-    let isMouseDown = false, startX, initialStart, initialWidth, totalWidth, interactionType;
+    const handlesArray = Array.from(this.#SELECTING_AREA.querySelectorAll(':scope > .handle'));
+    const handles = {
+      left: handlesArray.filter(handle => handle.dataset.direction === 'start'),
+      right: handlesArray.filter(handle => handle.dataset.direction === 'end')
+    };
 
     const init = (e) => {
       e.stopImmediatePropagation();
@@ -103,6 +105,14 @@ export default class HistogramRangeSelectorController {
     });
 
     // resize selecting area
+    handlesArray.forEach(handle => handle.addEventListener('mousedown', e => {
+      interactionType = 'resize';
+      direction = e.target.dataset.direction;
+      selector.classList.add('-resizingarea');
+      initialStart = this.start;
+      initialEnd = this.end;
+      init(e);
+    }));
 
     // dragging behavior
     selectorController.addEventListener('mousemove', e => {
@@ -136,6 +146,20 @@ export default class HistogramRangeSelectorController {
           }
           break;
           case 'resize': {
+            let [start, end] = [initialStart, initialEnd];
+            switch (direction) {
+              case 'start':
+                start += Math.floor((x - startX) / this.#unit + .5);
+                if (end < start) [start, end] = [end, start];
+                break;
+              case 'end':
+                end += Math.ceil((x - startX) / this.#unit - .5)
+                if (end < start) [start, end] = [end, start];
+                break;
+            }
+            if (start < 0)                       start = 0;
+            if (this.#target.items.length < end) end = this.#target.items.length;
+            range = [start, end];
           }
           break;
         }
@@ -196,5 +220,6 @@ export default class HistogramRangeSelectorController {
     }
     return items;
   }
+  
 
 }

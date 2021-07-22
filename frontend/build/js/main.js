@@ -4572,16 +4572,6 @@
 
       _classPrivateFieldSet(this, _SELECTING_AREA, _selector.querySelector(':scope > .inner > .selectingarea'));
 
-      var handlesArray = Array.from(_classPrivateFieldGet(this, _SELECTING_AREA).querySelectorAll(':scope > .handle'));
-      ({
-        left: handlesArray.filter(function (handle) {
-          return handle.dataset.direction === 'left';
-        }),
-        right: handlesArray.filter(function (handle) {
-          return handle.dataset.direction === 'right';
-        })
-      });
-
       _classPrivateFieldSet(this, _SELECTOR_BARS, _selector.querySelectorAll(':scope > .inner > .overview > .bar')); // interaction
 
 
@@ -4676,13 +4666,25 @@
   function _defineInteraction2(selector) {
     var _this2 = this;
 
-    var selectorController = selector.querySelector(':scope > .inner > .controller');
     var isMouseDown = false,
         startX,
         initialStart,
+        initialEnd,
         initialWidth,
         totalWidth,
-        interactionType;
+        interactionType,
+        direction; // references
+
+    var selectorController = selector.querySelector(':scope > .inner > .controller');
+    var handlesArray = Array.from(_classPrivateFieldGet(this, _SELECTING_AREA).querySelectorAll(':scope > .handle'));
+    ({
+      left: handlesArray.filter(function (handle) {
+        return handle.dataset.direction === 'start';
+      }),
+      right: handlesArray.filter(function (handle) {
+        return handle.dataset.direction === 'end';
+      })
+    });
 
     var init = function init(e) {
       e.stopImmediatePropagation();
@@ -4706,8 +4708,18 @@
       initialWidth = _this2.width;
       init(e);
     }); // resize selecting area
-    // dragging behavior
 
+
+    handlesArray.forEach(function (handle) {
+      return handle.addEventListener('mousedown', function (e) {
+        interactionType = 'resize';
+        direction = e.target.dataset.direction;
+        selector.classList.add('-resizingarea');
+        initialStart = _this2.start;
+        initialEnd = _this2.end;
+        init(e);
+      });
+    }); // dragging behavior
 
     selectorController.addEventListener('mousemove', function (e) {
       if (isMouseDown) {
@@ -4741,6 +4753,41 @@
               translation -= initialStart + translation < 0 ? initialStart + translation : 0;
               translation -= initialStart + translation + initialWidth > _classPrivateFieldGet(_this2, _target).items.length ? initialStart + translation + initialWidth - _classPrivateFieldGet(_this2, _target).items.length : 0;
               range = [initialStart + translation, initialStart + translation + initialWidth];
+            }
+            break;
+
+          case 'resize':
+            {
+              var _start = initialStart,
+                  _end = initialEnd;
+
+              switch (direction) {
+                case 'start':
+                  _start += Math.floor((x - startX) / _classPrivateFieldGet(_this2, _unit) + .5);
+
+                  if (_end < _start) {
+                    var _ref3 = [_end, _start];
+                    _start = _ref3[0];
+                    _end = _ref3[1];
+                  }
+
+                  break;
+
+                case 'end':
+                  _end += Math.ceil((x - startX) / _classPrivateFieldGet(_this2, _unit) - .5);
+
+                  if (_end < _start) {
+                    var _ref4 = [_end, _start];
+                    _start = _ref4[0];
+                    _end = _ref4[1];
+                  }
+
+                  break;
+              }
+
+              if (_start < 0) _start = 0;
+              if (_classPrivateFieldGet(_this2, _target).items.length < _end) _end = _classPrivateFieldGet(_this2, _target).items.length;
+              range = [_start, _end];
             }
             break;
         }
@@ -4885,7 +4932,7 @@
       })); // make container
 
 
-      elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\" data-subject-id=\"".concat(subject.subjectId, "\">\n      <div class=\"selector\">\n        <div class=\"inner\">\n          <div class=\"overview\"></div>\n          <div class=\"controller\"></div>\n          <div class=\"selectingarea\">\n            <div class=\"handle\" data-direction=\"left\"></div>\n            <div class=\"handle\" data-direction=\"right\"></div>\n          </div>\n        </div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ").concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>");
+      elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\" data-subject-id=\"".concat(subject.subjectId, "\">\n      <div class=\"selector\">\n        <div class=\"inner\">\n          <div class=\"overview\"></div>\n          <div class=\"controller\"></div>\n          <div class=\"selectingarea\">\n            <div class=\"handle\" data-direction=\"start\"></div>\n            <div class=\"handle\" data-direction=\"end\"></div>\n          </div>\n        </div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ").concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>");
 
       _classPrivateFieldSet(this, _ROOT$6, elm.querySelector(':scope > .histogram-range-selector-view'));
 

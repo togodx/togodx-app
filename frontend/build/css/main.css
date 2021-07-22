@@ -768,24 +768,24 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   border-top-width: 0.6rem;
   border-bottom-width: 0.6rem;
 }
-.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=left] {
+.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=start] {
   left: 0;
   -webkit-transform: translateX(-1rem);
           transform: translateX(-1rem);
   cursor: w-resize;
 }
-.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=left]::before {
+.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=start]::before {
   right: 0.2rem;
   border-right-width: 0.4rem;
   border-right-color: var(--color-selected-deep);
 }
-.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=right] {
+.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=end] {
   right: 0;
   -webkit-transform: translateX(1rem);
           transform: translateX(1rem);
   cursor: e-resize;
 }
-.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=right]::before {
+.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=end]::before {
   left: 0.2rem;
   border-left-width: 0.4rem;
   border-left-color: var(--color-selected-deep);
@@ -793,7 +793,7 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
 .histogram-range-selector-view > .selector > .inner > .controller {
   cursor: col-resize;
 }
-.histogram-range-selector-view > .selector.-makingarea > .inner > .selectingarea {
+.histogram-range-selector-view > .selector.-makingarea > .inner > .selectingarea, .histogram-range-selector-view > .selector.-resizingarea > .inner > .selectingarea {
   pointer-events: none;
 }
 .histogram-range-selector-view > .selector.-draggingarea > .inner > .selectingarea {

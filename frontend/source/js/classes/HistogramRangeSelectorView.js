@@ -31,8 +31,8 @@ export default class HistogramRangeSelectorView {
           <div class="overview"></div>
           <div class="controller"></div>
           <div class="selectingarea">
-            <div class="handle" data-direction="left"></div>
-            <div class="handle" data-direction="right"></div>
+            <div class="handle" data-direction="start"></div>
+            <div class="handle" data-direction="end"></div>
           </div>
         </div>
       </div>

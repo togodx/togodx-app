@@ -45,7 +45,7 @@
             border-color: transparent
             border-top-width: .6rem
             border-bottom-width: .6rem
-          &[data-direction="left"]
+          &[data-direction="start"]
             left: 0
             transform: translateX(-1rem)
             cursor: w-resize
@@ -53,7 +53,7 @@
               right: .2rem
               border-right-width: .4rem
               border-right-color: var(--color-selected-deep)
-          &[data-direction="right"]
+          &[data-direction="end"]
             right: 0
             transform: translateX(1rem)
             cursor: e-resize
@@ -63,7 +63,7 @@
               border-left-color: var(--color-selected-deep)
       > .controller
         cursor: col-resize
-    &.-makingarea
+    &.-makingarea, &.-resizingarea
       > .inner
         > .selectingarea
           pointer-events: none
