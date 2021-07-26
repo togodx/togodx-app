@@ -1,13 +1,27 @@
 .progress-indicator
     padding: .4rem .4rem
-    border-bottom: solid .1rem var(--color-separator)
     display: none
+    font-size: 1rem
+    &.-border
+        border-bottom: solid .1rem var(--color-separator)
+    &.-simple
+        >.text
+            padding-top: 1rem
     > .text
         line-height: 1
         display: flex
         justify-content: space-between
         > .amount-of-data
             display: none
+        > .status
+            display: flex
+            align-items: center
+            text-align: center
+            >.material-icons-outlined
+                font-size: 1.4rem
+                width: 1.6rem
+                &.-rotating
+                    animation: rotation 3s linear infinite
     > .progress
         margin: .4rem 0
         position: relative
@@ -21,17 +35,23 @@
             top: 0
             left: 0
             transition: width var(--transition-wipe)
-    .table-data-controller-view.-fetching &, .table-data-controller-view[data-status="load rows"] &, .table-data-controller-view[data-status="complete"] &
+    .-fetching &, [data-status="load rows"] &, [data-status="complete"] &
         display: block
-    .table-data-controller-view[data-status="load rows"] &, .table-data-controller-view[data-status="complete"] &
+    [data-status="load rows"] &, [data-status="complete"] &
         > .text
             > .amount-of-data
                 display: block
-    .table-data-controller-view.-fetching &
+    .-fetching &
         > .text
             > .bar
                 animation: var(--transition-fetching) infinite alternate fetching
-    .table-data-controller-view[data-status="complete"] &
+    [data-status="complete"] & 
+        &.-simple
+            display: none
+
+    [data-status="complete"] & 
         > .text
-            > .remaining-time
+            > .status
                 display: none
+
+

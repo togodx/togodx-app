@@ -1295,8 +1295,14 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
 }
 .progress-indicator {
   padding: 0.4rem 0.4rem;
-  border-bottom: solid 0.1rem var(--color-separator);
   display: none;
+  font-size: 1rem;
+}
+.progress-indicator.-border {
+  border-bottom: solid 0.1rem var(--color-separator);
+}
+.progress-indicator.-simple > .text {
+  padding-top: 1rem;
 }
 .progress-indicator > .text {
   line-height: 1;
@@ -1307,6 +1313,21 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
 }
 .progress-indicator > .text > .amount-of-data {
   display: none;
+}
+.progress-indicator > .text > .status {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+          align-items: center;
+  text-align: center;
+}
+.progress-indicator > .text > .status > .material-icons-outlined {
+  font-size: 1.4rem;
+  width: 1.6rem;
+}
+.progress-indicator > .text > .status > .material-icons-outlined.-rotating {
+  -webkit-animation: rotation 3s linear infinite;
+          animation: rotation 3s linear infinite;
 }
 .progress-indicator > .progress {
   margin: 0.4rem 0;
@@ -1323,17 +1344,20 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   left: 0;
   transition: width var(--transition-wipe);
 }
-.table-data-controller-view.-fetching .progress-indicator, .table-data-controller-view[data-status="load rows"] .progress-indicator, .table-data-controller-view[data-status=complete] .progress-indicator {
+.-fetching .progress-indicator, [data-status="load rows"] .progress-indicator, [data-status=complete] .progress-indicator {
   display: block;
 }
-.table-data-controller-view[data-status="load rows"] .progress-indicator > .text > .amount-of-data, .table-data-controller-view[data-status=complete] .progress-indicator > .text > .amount-of-data {
+[data-status="load rows"] .progress-indicator > .text > .amount-of-data, [data-status=complete] .progress-indicator > .text > .amount-of-data {
   display: block;
 }
-.table-data-controller-view.-fetching .progress-indicator > .text > .bar {
+.-fetching .progress-indicator > .text > .bar {
   -webkit-animation: var(--transition-fetching) infinite alternate fetching;
           animation: var(--transition-fetching) infinite alternate fetching;
 }
-.table-data-controller-view[data-status=complete] .progress-indicator > .text > .remaining-time {
+[data-status=complete] .progress-indicator.-simple {
+  display: none;
+}
+[data-status=complete] .progress-indicator > .text > .status {
   display: none;
 }
 

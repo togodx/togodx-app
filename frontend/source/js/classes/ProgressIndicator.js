@@ -1,46 +1,67 @@
 export default class ProgressIndicator {
   #TEXT_OFFSET;
   #TEXT_TOTAL;
-  #TEXT_TIME;
+  #TEXT_STATUS;
   #BAR;
   #totalDuration;
   #total;
+  #simpleMode;
 
-  constructor(elm) {
+  /**
+   * @param { HTMLElement } elm
+   * @param { boolean } simpleMode - Default is mode with time bar and amount tracker
+   */
+  constructor(elm, simpleMode = false) {
+    this.#simpleMode = simpleMode;
     elm.classList.add('progress-indicator');
-    elm.innerHTML = `
-      <div class="text">
-        <div class="amount-of-data">
+    const counter = simpleMode
+      ? ''
+      : `<div class="amount-of-data">
           <span class="offset">0</span>
-            / 
-          <span class="total"></span> 
-        </div>
-        <div class="remaining-time">
+          <span class="total"></span>
+      </div>`;
+    elm.innerHTML = ` 
+      <div class="text">
+        ${counter}
+        <div class="status">
         </div>
       </div>
       <div class="progress">
         <div class="bar"></div>
-      </div>
-      `;
+      </div>`;
 
-    this.#TEXT_TIME = elm.querySelector(':scope > .text > .remaining-time');
+    this.#BAR = elm.querySelector(':scope > .progress > .bar');
+    this.#TEXT_STATUS = elm.querySelector(':scope > .text > .status');
+    this.#total = 0;
+
+    if (simpleMode) {
+      elm.classList.add('-simple');
+      return;
+    }
+
     this.#TEXT_OFFSET = elm.querySelector(
       ':scope > .text > .amount-of-data > .offset'
     );
     this.#TEXT_TOTAL = elm.querySelector(
       ':scope > .text > .amount-of-data > .total'
     );
-    this.#BAR = elm.querySelector(':scope > .progress > .bar');
     this.#totalDuration = 0;
-    this.#total = 0;
   }
+
   /* private methods */
   /**
    * @param { number } offset
    */
   #updateAmount(offset) {
     this.#TEXT_OFFSET.textContent = `${offset.toString()}`;
-    this.#BAR.style.width = `${(offset / this.#total) * 100}%`;
+  }
+
+  /**
+   * @param { number } offset
+   */
+  #updateBarWidth(offset = 0) {
+    this.#BAR.style.width =
+      offset / this.#total ? `${(offset / this.#total) * 100}%` : '0%';
   }
 
   /**
@@ -63,10 +84,10 @@ export default class ProgressIndicator {
     s = Math.floor((time % 3600) % 60);
     return h > 0 ? `${h} hr.` : m > 0 ? `${m} min.` : `${s} sec.`;
   }
-  
+
   /**
    * @param { number } offset
-   * @param { number } startTime - start time of 1 getProperties
+   * @param { number } startTime - start time of 1 instance
    */
   #updateTime(offset, startTime) {
     this.#totalDuration += Date.now() - startTime;
@@ -74,17 +95,27 @@ export default class ProgressIndicator {
       this.#totalDuration / offset,
       this.#total - offset
     );
-    this.#TEXT_TIME.innerHTML = this.#timeString(remainingTime);
+    this.#TEXT_STATUS.innerHTML = this.#timeString(remainingTime);
   }
 
   /* public accessors */
-  updateProgressBar({offset, startTime}) {
+  updateProgressBar({offset = 0, startTime}) {
+    this.#updateBarWidth(offset);
+    if (this.#simpleMode) return;
+
     this.#updateAmount(offset);
     this.#updateTime(offset, startTime);
   }
 
-  setTotal(total) {
+  setIndicator(total = 0, message = '') {
     this.#total = total;
-    this.#TEXT_TOTAL.textContent = this.#total.toString();
+    if (this.#simpleMode)
+      this.#TEXT_STATUS.innerHTML = `${message}<span class="material-icons-outlined -rotating">autorenew</span>`;
+    else this.#TEXT_TOTAL.textContent = `/ ${this.#total.toString()}`;
+  }
+
+  reset() {
+    this.setIndicator();
+    this.#updateBarWidth();
   }
 }
