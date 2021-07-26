@@ -1,6 +1,6 @@
 import App from "./App";
-import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import HistogramRangeSelectorController from "./HistogramRangeSelectorController";
 import * as event from '../events';
 import * as util from '../functions/util';
 
@@ -10,29 +10,31 @@ export default class HistogramRangeSelectorView {
 
   #items;
   #property;
-  #selectedBarsStart;
-  #selectedBarsEnd;
+  #selectorController;
   #OVERVIEW_CONTAINER;
   #ROOT;
-  #SELECTOR_BARS;
   #GRIDS;
 
-  constructor(elm, subject, property, items, sparqlist, overview) {
+  constructor(elm, subject, property, items, sparqlist, overviewContainer) {
     // console.log(elm, subject, property, items, sparqlist)
 
     this._sparqlist = sparqlist;
     this.#property = property;
-    this.#OVERVIEW_CONTAINER = overview;
+    this.#OVERVIEW_CONTAINER = overviewContainer;
     this.#items = items.map(item => Object.assign({}, item));
-    this.#selectedBarsStart = undefined;
-    this.#selectedBarsEnd = undefined;
 
     // make container
     elm.innerHTML = `
-    <div class="histogram-range-selector-view">
+    <div class="histogram-range-selector-view" data-subject-id="${subject.subjectId}">
       <div class="selector">
-        <div class="overview"></div>
-        <div class="controller"></div>
+        <div class="inner">
+          <div class="overview"></div>
+          <div class="controller"></div>
+          <div class="selectingarea">
+            <div class="handle" data-direction="start"></div>
+            <div class="handle" data-direction="end"></div>
+          </div>
+        </div>
       </div>
       <div class="histogram">
         <div class="graph"></div>
@@ -40,28 +42,16 @@ export default class HistogramRangeSelectorView {
           ${'<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID)}
         </div>
         <svg class="additionalline"></svg>
-      </div>
-      <!--
-      <div class="controller">
-        <div class="selector">
-          <div class="slider -min"></div>
-          <div class="slider -max"></div>
-        </div>
-        <div class="form">
-          <input type="number" data-range="min">
-          ~
-          <input type="number" data-range="max">
-        </div>
-      </div>
-      -->`;
+      </div>`;
     this.#ROOT = elm.querySelector(':scope > .histogram-range-selector-view');
     const histogram = this.#ROOT.querySelector(':scope > .histogram');
-    const selector = this.#ROOT.querySelector(':scope > .selector');
+    const selector = this.#ROOT.querySelector(':scope > .selector > .inner');
+    const overview = selector.querySelector(':scope > .overview');
 
     // make graph
     const max = Math.max(...this.#items.map(item => item.count));
     const width = 100 / this.#items.length;
-    selector.querySelector(':scope > .overview').innerHTML = this.#items.map(item => `<div
+    overview.innerHTML = this.#items.map(item => `<div
       class="bar _subject-background-color"
       data-category-id="${item.categoryId}"
       data-subject-id="${subject.subjectId}"
@@ -76,70 +66,28 @@ export default class HistogramRangeSelectorView {
     // reference
     histogram.querySelectorAll(':scope > .graph > .bar').forEach((item, index) => this.#items[index].elm = item);
     this.#GRIDS = histogram.querySelectorAll(':scope > .gridcontainer > .grid');
-    this.#SELECTOR_BARS = Array.from(selector.querySelectorAll(':scope > .overview > .bar'));
 
     // event
-    DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update());
+    DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.update());
     
-    this.#setupRangeSelector();
-    this.#update();
+    // this.#setupRangeSelector();
+    this.#selectorController = new HistogramRangeSelectorController(this, this.#ROOT.querySelector(':scope > .selector'));
+    this.update();
   }
 
 
   // private methods
 
-  #setupRangeSelector() {
-    const selectorController = this.#ROOT.querySelector(':scope > .selector > .controller')
+  #indicateValue() {
 
-    let isMouseDown = false, startX, width, unit;
-    selectorController.addEventListener('mousedown', e => {
-      width = e.target.getBoundingClientRect().width;
-      unit = width / this.#items.length;
-      isMouseDown = true;
-      startX = e.layerX;
-    });
-    selectorController.addEventListener('mousemove', e => {
-      if (isMouseDown) {
-        // selection range
-        const selectedWidth = e.layerX - startX;
-        if (selectedWidth > 0) {
-          this.#selectedBarsStart = Math.floor(startX / unit);
-          this.#selectedBarsEnd = Math.floor(e.layerX / unit)
-        } else {
-          this.#selectedBarsStart = Math.floor(e.layerX / unit);
-          this.#selectedBarsEnd = Math.floor(startX / unit)
-        }
-        // select overview by range
-        this.#ROOT.querySelectorAll(':scope > .selector > .overview > .bar').forEach((bar, index) => {
-          if (this.#selectedBarsStart <= index && index <= this.#selectedBarsEnd) {
-            bar.classList.add('-selected');
-          } else {
-            bar.classList.remove('-selected');
-          }
-        });
-        this.#update();
-        // set condition
-        ConditionBuilder.setPropertyValues(
-          this.#property.propertyId,
-          this.#selectedItems.map(item => item.categoryId),
-          false
-        );
-      }
-    });
-    selectorController.addEventListener('mouseup', e => {
-      if (isMouseDown) {
-        isMouseDown = false;
-        ConditionBuilder.setPropertyValues(
-          this.#property.propertyId,
-          this.#selectedItems.map(item => item.categoryId)
-        );
-      }
-    });
   }
 
-  #update() {
 
-    const selectedItems = this.#selectedBarsStart ? this.#selectedItems : this.#items;
+  // public methods
+
+  update() {
+
+    const selectedItems = this.#selectorController.width === 0 ? this.#items : this.#selectorController.selectedItems;
 
     const max = Math.max(...selectedItems.map(item => item.count));
     const isLog10 = App.viewModes.log10;
@@ -168,25 +116,15 @@ export default class HistogramRangeSelectorView {
     });
   }
 
-  #indicateValue() {
 
+  // public accessor
+
+  get items() {
+    return this.#items;
   }
 
-  // private accessor
-  get #selectedItems() {
-    let items;
-    if (this.#selectedBarsStart) {
-      items = this.#items.filter((item_, index) => {
-        if (this.#selectedBarsStart <= index && index <= this.#selectedBarsEnd) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-    } else {
-      items = [];
-    }
-    return items;
+  get propertyId() {
+    return this.#property.propertyId;
   }
 
 }

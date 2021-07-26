@@ -341,6 +341,7 @@ template {
   --color-hover: rgba(0,0,0,.05);
   --color-active: rgba(0,0,0,.1);
   --color-selected: #ffee0048;
+  --color-selected-deep: #ffdd00;
   --padding-track-block-start: .4rem;
   --padding-track-inline-start: .8rem;
   --width-track-column-subject: 2rem;
@@ -711,45 +712,96 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   --padding-horizontal: 1rem;
   --padding-vertical: 0;
   --height-selector: 3rem;
-  padding: 1rem 0 5rem;
+  padding: 0 0 5rem;
   background-color: white;
 }
 .histogram-range-selector-view > .selector {
-  margin: 0 var(--padding-horizontal);
-  width: calc(100% - var(--padding-horizontal) * 2);
-  height: var(--height-selector);
-  position: relative;
+  margin-bottom: 0.4rem;
+  padding: 0.6rem var(--padding-horizontal) 0.4rem;
+  border-bottom: solid 0.1rem var(--color-separator);
 }
-.histogram-range-selector-view > .selector > * {
+.histogram-range-selector-view > .selector > .inner {
+  position: relative;
+  height: var(--height-selector);
+}
+.histogram-range-selector-view > .selector > .inner > * {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
 }
-.histogram-range-selector-view > .selector > .overview {
+.histogram-range-selector-view > .selector > .inner > .overview {
   display: -webkit-flex;
   display: flex;
   -webkit-align-items: flex-end;
           align-items: flex-end;
 }
-.histogram-range-selector-view > .selector > .overview > .bar {
+.histogram-range-selector-view > .selector > .inner > .overview > .bar {
   opacity: 0.2;
 }
-.histogram-range-selector-view > .selector > .overview > .bar.-selected {
+.histogram-range-selector-view > .selector > .inner > .overview > .bar.-selected {
   opacity: 1;
   position: relative;
 }
-.histogram-range-selector-view > .selector > .overview > .bar.-selected::before {
+.histogram-range-selector-view > .selector > .inner > .selectingarea {
+  width: 0;
+  border: solid 0.1rem var(--color-selected-deep);
+  background-color: var(--color-selected);
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle {
+  position: absolute;
+  width: 1rem;
+  height: 100%;
+}
+.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle::before {
   content: "";
   position: absolute;
-  bottom: -0.2rem;
-  width: 100%;
-  height: calc(var(--height-selector) + .4rem);
-  background-color: var(--color-selected);
+  top: calc(50% - .6rem);
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent;
+  border-top-width: 0.6rem;
+  border-bottom-width: 0.6rem;
 }
-.histogram-range-selector-view > .selector > .controller {
+.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=start] {
+  left: 0;
+  -webkit-transform: translateX(-1rem);
+          transform: translateX(-1rem);
+  cursor: w-resize;
+}
+.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=start]::before {
+  right: 0.2rem;
+  border-right-width: 0.4rem;
+  border-right-color: var(--color-selected-deep);
+}
+.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=end] {
+  right: 0;
+  -webkit-transform: translateX(1rem);
+          transform: translateX(1rem);
+  cursor: e-resize;
+}
+.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=end]::before {
+  left: 0.2rem;
+  border-left-width: 0.4rem;
+  border-left-color: var(--color-selected-deep);
+}
+.histogram-range-selector-view > .selector > .inner > .controller {
   cursor: col-resize;
+}
+.histogram-range-selector-view > .selector.-makingarea > .inner > .selectingarea, .histogram-range-selector-view > .selector.-resizingarea > .inner > .selectingarea {
+  pointer-events: none;
+}
+.histogram-range-selector-view > .selector.-draggingarea > .inner > .selectingarea {
+  pointer-events: none;
+}
+.histogram-range-selector-view > .selector.-draggingarea > .inner > .controller {
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
 }
 .histogram-range-selector-view > .histogram {
   width: calc(100% - var(--padding-horizontal) * 2);
