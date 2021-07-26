@@ -1292,20 +1292,20 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   left: 0;
   transition: width var(--transition-wipe);
 }
-div.-fetching .progress-indicator, div[data-status="load rows"] .progress-indicator, div[data-status=complete] .progress-indicator {
+.-fetching .progress-indicator, [data-status="load rows"] .progress-indicator, [data-status=complete] .progress-indicator {
   display: block;
 }
-div[data-status="load rows"] .progress-indicator > .text > .amount-of-data, div[data-status=complete] .progress-indicator > .text > .amount-of-data {
+[data-status="load rows"] .progress-indicator > .text > .amount-of-data, [data-status=complete] .progress-indicator > .text > .amount-of-data {
   display: block;
 }
-div.-fetching .progress-indicator > .text > .bar {
+.-fetching .progress-indicator > .text > .bar {
   -webkit-animation: var(--transition-fetching) infinite alternate fetching;
           animation: var(--transition-fetching) infinite alternate fetching;
 }
-div[data-status=complete] .progress-indicator.-simple {
+[data-status=complete] .progress-indicator.-simple {
   display: none;
 }
-div[data-status=complete] .progress-indicator > .text > .status {
+[data-status=complete] .progress-indicator > .text > .status {
   display: none;
 }
 

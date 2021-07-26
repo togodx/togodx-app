@@ -35,21 +35,21 @@
             top: 0
             left: 0
             transition: width var(--transition-wipe)
-    div.-fetching &, div[data-status="load rows"] &, div[data-status="complete"] &
+    .-fetching &, [data-status="load rows"] &, [data-status="complete"] &
         display: block
-    div[data-status="load rows"] &, div[data-status="complete"] &
+    [data-status="load rows"] &, [data-status="complete"] &
         > .text
             > .amount-of-data
                 display: block
-    div.-fetching &
+    .-fetching &
         > .text
             > .bar
                 animation: var(--transition-fetching) infinite alternate fetching
-    div[data-status="complete"] & 
+    [data-status="complete"] & 
         &.-simple
             display: none
 
-    div[data-status="complete"] & 
+    [data-status="complete"] & 
         > .text
             > .status
                 display: none

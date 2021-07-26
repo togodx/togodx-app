@@ -17,6 +17,7 @@ export default class UploadUserIDsView {
   #offset;
 
   constructor(elm) {
+    // TODO: set axios settings in common file
     axios.defaults.timeout = 180000;
     axiosRetry(axios, {
       retries: 5,
