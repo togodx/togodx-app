@@ -21,33 +21,6 @@
       "oAP" : "\/build\/node_modules",
       "oF" : 0
     },
-    "\/node_modules\/axios-retry\/index.js" : {
-      "bF" : 4,
-      "ft" : 64,
-      "ma" : 1,
-      "mi" : 0,
-      "oA" : 1,
-      "oAP" : "\/build\/node_modules\/axios-retry\/index.js",
-      "oF" : 0,
-      "sC" : 3,
-      "tS" : 1
-    },
-    "\/package-lock.json" : {
-      "ft" : 524288,
-      "oA" : 1,
-      "oAP" : "\/build\/package-lock-min.json",
-      "oF" : 0,
-      "oO" : 0,
-      "oS" : 1
-    },
-    "\/package.json" : {
-      "ft" : 524288,
-      "oA" : 1,
-      "oAP" : "\/build\/package-min.json",
-      "oF" : 0,
-      "oO" : 0,
-      "oS" : 1
-    },
     "\/source\/_include\/_layout.pug" : {
       "cB" : 0,
       "cOD" : 1,
@@ -627,6 +600,17 @@
       "mi" : 0,
       "oA" : 1,
       "oAP" : "\/build\/js\/classes\/DefaultEventEmitter.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
+    "\/source\/js\/classes\/HistogramRangeSelectorController.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/classes\/HistogramRangeSelectorController.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 1
