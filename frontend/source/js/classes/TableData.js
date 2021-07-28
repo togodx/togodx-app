@@ -230,11 +230,7 @@ export default class TableData {
 
     if (mode) this.#updateDataButton(button, mode);
     button.addEventListener('click', e => {
-      const buttonMode = e.currentTarget.dataset.button;
-      const event =
-        this.#dataButtonEvent[buttonMode] ||
-        this.#dataButtonEvent['pauseOrResume'];
-      event(e);
+      this.#dataButtonEvent(e);
     });
 
     return button;
@@ -316,11 +312,27 @@ export default class TableData {
     else this.#getQueryIds();
   }
 
-  #dataButtonEvent = {
-    edit: e => this.#dataButtonEdit(e),
-    retry: () => this.#dataButtonRetry(),
-    pauseOrResume: e => this.#dataButtonPauseOrResume(e),
-  };
+  /**
+   * @param { MouseEvent } e
+   */
+  #dataButtonEvent(e) {
+    const button = e.currentTarget;
+    const mode = button.dataset.button;
+    switch (mode) {
+      case 'edit':
+        this.#dataButtonEdit(e);
+        break;
+
+      case 'resume':
+      case 'pause':
+        this.#dataButtonPauseOrResume(e);
+        break;
+
+      case 'retry':
+        this.#dataButtonRetry();
+        break;
+    }
+  }
 
   #setDownloadButtons() {
     this.#setTsvUrl();
@@ -442,7 +454,7 @@ export default class TableData {
         }
         this.#ROOT.dataset.status = 'load rows';
         this.#STATUS.textContent = 'Getting Data';
-        this.#progressIndicator.setIndicator(this.#queryIds.length);
+        this.#progressIndicator.setIndicator(undefined, this.#queryIds.length);
         this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
         this.#getProperties();
       })
