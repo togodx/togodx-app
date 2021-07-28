@@ -3,12 +3,10 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
-import axiosRetry from 'axios-retry';
 import ProgressIndicator from './ProgressIndicator';
 
 const LIMIT = 100;
 const downloadUrls = new Map();
-const timeOutError = 'ECONNABORTED';
 
 /**
  * @typedef { Object } Mode
@@ -91,19 +89,6 @@ export default class TableData {
   #BUTTON_RIGHT;
 
   constructor(condition, elm) {
-    // TODO: set axios settings in common file
-    axios.defaults.timeout = 120000;
-    axiosRetry(axios, {
-      retries: 5,
-      shouldResetTimeout: true,
-      retryDelay: retryCount => {
-        return Math.pow(2, retryCount - 1) * 5000;
-      },
-      retryCondition: error => {
-        return (error.code === timeOutError) | (error.response?.status === 500);
-      },
-    });
-
     const CancelToken = axios.CancelToken;
     this.#source = CancelToken.source();
 

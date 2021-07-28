@@ -3,6 +3,9 @@ import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
 import ProgressIndicator from './ProgressIndicator';
+import axiosRetry from 'axios-retry';
+
+const timeOutError = 'ECONNABORTED';
 
 export default class UploadUserIDsView {
   #path;
@@ -15,6 +18,19 @@ export default class UploadUserIDsView {
   #errorCount;
 
   constructor(elm) {
+    // TODO: set axios settings in common file
+    axios.defaults.timeout = 120000;
+    axiosRetry(axios, {
+      retries: 5,
+      shouldResetTimeout: true,
+      retryDelay: retryCount => {
+        return Math.pow(2, retryCount - 1) * 5000;
+      },
+      retryCondition: error => {
+        return (error.code === timeOutError) | (error.response?.status === 500);
+      },
+    });
+
     this.#ROOT = elm;
     this.#offset = 0;
     this.#errorCount = 0;
