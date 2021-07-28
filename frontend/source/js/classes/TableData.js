@@ -91,12 +91,14 @@ export default class TableData {
   #BUTTON_RIGHT;
 
   constructor(condition, elm) {
-    // axios settings
-    axios.defaults.timeout = 180000;
+    // TODO: set axios settings in common file
+    axios.defaults.timeout = 120000;
     axiosRetry(axios, {
       retries: 5,
       shouldResetTimeout: true,
-      retryDelay: axiosRetry.exponentialDelay,
+      retryDelay: retryCount => {
+        return Math.pow(2, retryCount - 1) * 5000;
+      },
       retryCondition: error => {
         return (error.code === timeOutError) | (error.response?.status === 500);
       },
@@ -405,6 +407,7 @@ export default class TableData {
   #displayError(message, code) {
     this.#STATUS.classList.add('-error');
     this.#STATUS.textContent = code ? `${message} (${code})` : message;
+    if (message === 'Retrying...') return;
     this.#ROOT.classList.toggle('-fetching');
 
     const customEvent = new CustomEvent(event.failedFetchTableDataIds, {

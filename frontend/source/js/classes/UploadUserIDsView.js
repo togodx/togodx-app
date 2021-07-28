@@ -3,9 +3,6 @@ import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
 import ProgressIndicator from './ProgressIndicator';
-import axiosRetry from 'axios-retry';
-
-const timeOutError = 'ECONNABORTED';
 
 export default class UploadUserIDsView {
   #path;
@@ -17,17 +14,6 @@ export default class UploadUserIDsView {
   #offset;
 
   constructor(elm) {
-    // TODO: set axios settings in common file
-    axios.defaults.timeout = 180000;
-    axiosRetry(axios, {
-      retries: 5,
-      shouldResetTimeout: true,
-      retryDelay: axiosRetry.exponentialDelay,
-      retryCondition: error => {
-        return (error.code === timeOutError) | (error.response?.status === 500);
-      },
-    });
-
     this.#ROOT = elm;
     this.#offset = 0;
 
@@ -88,7 +74,7 @@ export default class UploadUserIDsView {
     });
   }
 
-  #prepareProgressIndicator() {    
+  #prepareProgressIndicator() {
     // reset axios cancellation
     const CancelToken = axios.CancelToken;
     this.#source = CancelToken.source();
@@ -108,7 +94,7 @@ export default class UploadUserIDsView {
       ConditionBuilder.currentTogoKey
     }&userIds=${encodeURIComponent(
       this.#USER_IDS.value.replace(/,/g, ' ').split(/\s+/).join(',')
-    )}`
+    )}`;
   }
 
   #getProperty({propertyId, data, primaryKey}) {
@@ -136,8 +122,13 @@ export default class UploadUserIDsView {
         if (this.#offset >= Records.properties.length) this.#complete();
       })
       .catch(error => {
-        // TODO: error evaluation
-        console.log(error);
+        const customEvent = new CustomEvent(event.showErrorUserValues, {
+          detail: {
+            propertyId,
+            message: 'Failed to map this ID',
+          },
+        });
+        DefaultEventEmitter.dispatchEvent(customEvent);
       });
   }
 
@@ -150,11 +141,11 @@ export default class UploadUserIDsView {
     this.#source.cancel('user cancel');
     this.#progressIndicator.reset();
     this.#complete();
-    
+
     this.#BODY.classList.remove('-showuserids');
     this.#USER_IDS.value = '';
     const customEvent = new CustomEvent(event.clearUserValues);
     DefaultEventEmitter.dispatchEvent(customEvent);
-    ConditionBuilder.setUserIds()
+    ConditionBuilder.setUserIds();
   }
 }
