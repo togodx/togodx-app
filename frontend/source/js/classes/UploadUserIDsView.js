@@ -12,10 +12,12 @@ export default class UploadUserIDsView {
   #progressIndicator;
   #source;
   #offset;
+  #errorCount;
 
   constructor(elm) {
     this.#ROOT = elm;
     this.#offset = 0;
+    this.#errorCount = 0;
 
     this.#BODY = document.querySelector('body');
     this.#USER_IDS = elm.querySelector(':scope > textarea');
@@ -107,10 +109,7 @@ export default class UploadUserIDsView {
       )
       .then(response => {
         this.#BODY.classList.add('-showuserids');
-        this.#offset += 1;
-        this.#progressIndicator.updateProgressBar({
-          offset: this.#offset,
-        });
+
         // dispatch event
         const customEvent = new CustomEvent(event.setUserValues, {
           detail: {
@@ -119,9 +118,8 @@ export default class UploadUserIDsView {
           },
         });
         DefaultEventEmitter.dispatchEvent(customEvent);
-        if (this.#offset >= Records.properties.length) this.#complete();
       })
-      .catch(error => {
+      .catch(() => {
         const customEvent = new CustomEvent(event.toggleErrorUserValues, {
           detail: {
             mode: 'show',
@@ -130,14 +128,29 @@ export default class UploadUserIDsView {
           },
         });
         DefaultEventEmitter.dispatchEvent(customEvent);
-        this.#progressIndicator.setIndicator('Failed to map IDs for some properties', undefined, true);
-
+        this.#errorCount++;
+      })
+      .then(() => {
+        this.#offset += 1;
+        this.#progressIndicator.updateProgressBar({
+          offset: this.#offset,
+        });
+        if (this.#offset >= Records.properties.length) {
+          this.#complete(this.#errorCount > 0);
+        }
       });
   }
 
-  #complete() {
+  #complete(withError = false) {
     this.#ROOT.dataset.status = 'complete';
     this.#offset = 0;
+    if (withError) {
+      this.#progressIndicator.setIndicator(
+        `Failed to map IDs for ${this.#errorCount} propert${this.#errorCount === 1 ? 'y' : 'ies'}`,
+        undefined,
+        true
+      );
+    }
   }
 
   #clear() {

@@ -128,10 +128,9 @@ export default class TrackView {
 
     DefaultEventEmitter.addEventListener(event.toggleErrorUserValues, e => {
       if (e.detail.mode === 'show') {
-        if(e.detail.propertyId !== this.#property.propertyId ) return
+        if (e.detail.propertyId !== this.#property.propertyId) return;
         this.#showError(e.detail.message, true);
-      }
-      else if (e.detail.mode === 'hide') this.#clearError();
+      } else if (e.detail.mode === 'hide') this.#clearError();
     });
 
     // get property data
@@ -184,16 +183,26 @@ export default class TrackView {
   }
 
   #showError(error, inUserIDs = false) {
+    if (
+      inUserIDs &&
+      this.#OVERVIEW_CONTAINER.nextElementSibling?.classList.contains('error')
+    )
+      return;
     const prop = this.#property.data;
+
     this.#OVERVIEW_CONTAINER.insertAdjacentHTML(
       'afterEnd',
-      `<div class="error">${error} - <a href="${prop}" target="_blank">${prop}</a></div>`
+      `<div class="${
+        inUserIDs ? 'map-ids ' : ''
+      }error">${error} - <a href="${prop}" target="_blank">${prop}</a></div>`
     );
     if (inUserIDs) this.#OVERVIEW_CONTAINER.classList.add('-hidden');
   }
 
   #clearError() {
     this.#OVERVIEW_CONTAINER.classList.remove('-hidden');
-    this.#OVERVIEW_CONTAINER.previousSibling.remove();
+    this.#OVERVIEW_CONTAINER.parentNode
+      .querySelector(':scope > .map-ids.error')
+      ?.remove();
   }
 }

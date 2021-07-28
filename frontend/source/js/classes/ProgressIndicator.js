@@ -1,4 +1,5 @@
 export default class ProgressIndicator {
+  #ROOT;
   #TEXT_OFFSET;
   #TEXT_TOTAL;
   #TEXT_STATUS;
@@ -30,6 +31,7 @@ export default class ProgressIndicator {
         <div class="bar"></div>
       </div>`;
 
+    this.#ROOT = elm;
     this.#BAR = elm.querySelector(':scope > .progress > .bar');
     this.#TEXT_STATUS = elm.querySelector(':scope > .text > .status');
     this.#total = 0;
@@ -98,6 +100,17 @@ export default class ProgressIndicator {
     this.#TEXT_STATUS.innerHTML = this.#timeString(remainingTime);
   }
 
+  /**
+   * @param { string } message
+   * @param { boolean } isError
+   */
+  #setMessage(message, isError) {
+    if(isError) this.#ROOT.classList.add('error');
+    else this.#ROOT.classList.remove('error');
+
+    this.#TEXT_STATUS.innerHTML = `${message}<span class="material-icons-outlined -rotating">autorenew</span>`;
+  }
+
   /* public accessors */
   updateProgressBar({offset = 0, startTime}) {
     this.#updateBarWidth(offset);
@@ -107,10 +120,9 @@ export default class ProgressIndicator {
     this.#updateTime(offset, startTime);
   }
 
-  setIndicator(total = 0, message = '') {
+  setIndicator(message = '', total = 0, isError = false) {
     this.#total = total;
-    if (this.#simpleMode)
-      this.#TEXT_STATUS.innerHTML = `${message}<span class="material-icons-outlined -rotating">autorenew</span>`;
+    if (this.#simpleMode) this.#setMessage(message, isError);
     else this.#TEXT_TOTAL.textContent = `/ ${this.#total.toString()}`;
   }
 

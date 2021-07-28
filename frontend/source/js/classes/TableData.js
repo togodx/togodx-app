@@ -517,7 +517,8 @@ export default class TableData {
   #complete(withData = true) {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = withData ? 'Complete' : 'No Data Found';
-    this.#ROOT.classList.toggle('-fetching');
+    this.#ROOT.classList.remove('-fetching');
+    this.#STATUS.classList.remove('-flickering');
 
     if (withData) this.#setDownloadButtons();
   }
