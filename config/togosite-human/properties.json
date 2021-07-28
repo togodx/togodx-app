@@ -116,6 +116,78 @@
         "keyLabel": "Ensembl gene"
       },
       {
+        "propertyId": "gene_high_level_expression_in_tissues_hpa",
+        "label": "Highly expressed in tissues (HPA)",
+        "description": "Tissues in which expression level of a gene is evaluated as \"High\" by HPA",
+        "data": "https://integbio.jp/togosite_dev/sparqlist/api/gene_high_level_expression_in_tissues_hpa",
+        "dataSource": "HPA RDF",
+        "dataSourceUrl": "https://www.proteinatlas.org/about/download",
+        "dataSourceVersion": "N/A",
+        "updatedAt": "28 Jul, 2021",
+        "primaryKey": "ensembl_gene",
+        "keyLabel": "Ensembl gene"
+      },
+      {
+        "propertyId": "gene_medium_level_expression_in_tissues_hpa",
+        "label": "Intermediately expressed in tissues (HPA)",
+        "description": "Tissues in which expression level of a gene is evaluated as \"Medium\" by HPA",
+        "data": "https://integbio.jp/togosite_dev/sparqlist/api/gene_medium_level_expression_in_tissues_hpa",
+        "dataSource": "HPA RDF",
+        "dataSourceUrl": "https://www.proteinatlas.org/about/download",
+        "dataSourceVersion": "N/A",
+        "updatedAt": "28 Jul, 2021",
+        "primaryKey": "ensembl_gene",
+        "keyLabel": "Ensembl gene"
+      },
+      {
+        "propertyId": "gene_low_level_expression_in_tissues_hpa",
+        "label": "Lowly expressed in tissues (HPA)",
+        "description": "Tissues in which expression level of a gene is evaluated as \"Low\" by HPA",
+        "data": "https://integbio.jp/togosite_dev/sparqlist/api/gene_low_level_expression_in_tissues_hpa",
+        "dataSource": "HPA RDF",
+        "dataSourceUrl": "https://www.proteinatlas.org/about/download",
+        "dataSourceVersion": "N/A",
+        "updatedAt": "28 Jul, 2021",
+        "primaryKey": "ensembl_gene",
+        "keyLabel": "Ensembl gene"
+      },
+      {
+        "propertyId": "gene_no_expression_in_tissues_hpa",
+        "label": "Not expressed in tissues (HPA)",
+        "description": "Tissues in which expression level of a gene is evaluated as \"Not_detected\" by HPA",
+        "data": "https://integbio.jp/togosite_dev/sparqlist/api/gene_no_expression_in_tissues_hpa",
+        "dataSource": "HPA RDF",
+        "dataSourceUrl": "https://www.proteinatlas.org/about/download",
+        "dataSourceVersion": "N/A",
+        "updatedAt": "28 Jul, 2021",
+        "primaryKey": "ensembl_gene",
+        "keyLabel": "Ensembl gene"
+      },
+      {
+        "propertyId": "gene_specific_expression_in_tissues_hpa",
+        "label": "Specifically expressed in tissues (HPA)",
+        "description": "Tissues in which expression specificity of a gene is evaluated as \"Tissue enriched\", \"Tissue enhanced\", or\"Group enriched\" by HPA",
+        "data": "https://integbio.jp/togosite_dev/sparqlist/api/gene_specific_expression_in_tissues_hpa",
+        "dataSource": "HPA TSV",
+        "dataSourceUrl": "https://www.proteinatlas.org/about/download",
+        "dataSourceVersion": "N/A",
+        "updatedAt": "28 Jul, 2021",
+        "primaryKey": "ensembl_gene",
+        "keyLabel": "Ensembl gene"
+      },
+      {
+        "propertyId": "gene_specific_expression_in_cells_hpa",
+        "label": "Specifically expressed in cell types (HPA)",
+        "description": "Cell types in which expression specificity of a gene is evaluated as \"Cell type enriched\", \"Cell type enhanced\", or\"Group enriched\" by HPA",
+        "data": "https://integbio.jp/togosite_dev/sparqlist/api/gene_specific_expression_in_cells_hpa",
+        "dataSource": "HPA TSV",
+        "dataSourceUrl": "https://www.proteinatlas.org/about/download",
+        "dataSourceVersion": "N/A",
+        "updatedAt": "28 Jul, 2021",
+        "primaryKey": "ensembl_gene",
+        "keyLabel": "Ensembl gene"
+      },
+      {
         "propertyId": "gene_transcription_factors_chip_atlas",
         "label": "Transcription factors",
         "description": "Transcription factors with predicted target genes in ChIP-Atlas",
