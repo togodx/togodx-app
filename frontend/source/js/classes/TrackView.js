@@ -1,6 +1,6 @@
-import DefaultEventEmitter from "./DefaultEventEmitter";
-import Records from "./Records";
-import ConditionBuilder from "./ConditionBuilder";
+import DefaultEventEmitter from './DefaultEventEmitter';
+import Records from './Records';
+import ConditionBuilder from './ConditionBuilder';
 import collapseView from '../functions/collapseView';
 import ColumnSelectorView from './ColumnSelectorView';
 import HistogramRangeSelectorView from './HistogramRangeSelectorView';
@@ -8,7 +8,6 @@ import TrackOverviewCategorical from './TrackOverviewCategorical';
 import * as event from '../events';
 
 export default class TrackView {
-
   #subject;
   #property;
   #sparqlist;
@@ -52,31 +51,47 @@ export default class TrackView {
         </div>
       </div>
     </div>
-    <div class="row -lower collapsingcontent" data-collapse="${property.propertyId}">
+    <div class="row -lower collapsingcontent" data-collapse="${
+      property.propertyId
+    }">
       <div class="left">
         <p class="description">${property.description}</p>
         <!--<label><input type="checkbox">All properties</label>-->
-        <a class="external-link-button-view" href="${this.#sparqlist}" target="_blank">API</a>
+        <a class="external-link-button-view" href="${
+          this.#sparqlist
+        }" target="_blank">API</a>
       </div>
       <div class="right selector"></div>
     </div>`;
     const valuesContainer = elm.querySelector(':scope > .row.-upper > .values');
-    this.#OVERVIEW_CONTAINER = valuesContainer.querySelector(':scope > .overview > .inner');
-    this.#LOADING_VIEW = valuesContainer.querySelector(':scope > .overview > .loading-view');
-    this.#SELECT_CONTAINER = elm.querySelector(':scope > .row.-lower > .selector');
-    this.#COLLAPSE_BUTTON = elm.querySelector(':scope > .row.-upper > .left > .collapsebutton');
+    this.#OVERVIEW_CONTAINER = valuesContainer.querySelector(
+      ':scope > .overview > .inner'
+    );
+    this.#LOADING_VIEW = valuesContainer.querySelector(
+      ':scope > .overview > .loading-view'
+    );
+    this.#SELECT_CONTAINER = elm.querySelector(
+      ':scope > .row.-lower > .selector'
+    );
+    this.#COLLAPSE_BUTTON = elm.querySelector(
+      ':scope > .row.-upper > .left > .collapsebutton'
+    );
 
     // collapse
     collapseView(elm);
 
     // select/deselect a property
-    this.#CHECKBOX_ALL_PROPERTIES = elm.querySelector(':scope > .row.-upper > .left > .collapsebutton > input.mapping');
+    this.#CHECKBOX_ALL_PROPERTIES = elm.querySelector(
+      ':scope > .row.-upper > .left > .collapsebutton > input.mapping'
+    );
     this.#CHECKBOX_ALL_PROPERTIES.addEventListener('click', e => {
       e.stopPropagation();
-      if (this.#CHECKBOX_ALL_PROPERTIES.checked) { // add
+      if (this.#CHECKBOX_ALL_PROPERTIES.checked) {
+        // add
         ConditionBuilder.addProperty(this.#property.propertyId);
         this.#ROOT.classList.add('-allselected');
-      } else { // remove
+      } else {
+        // remove
         ConditionBuilder.removeProperty(this.#property.propertyId);
         this.#ROOT.classList.remove('-allselected');
       }
@@ -90,7 +105,7 @@ export default class TrackView {
             this.#CHECKBOX_ALL_PROPERTIES.checked = true;
             this.#ROOT.classList.add('-allselected');
           }
-        break;
+          break;
         case 'remove':
           if (e.detail.propertyId === this.#property.propertyId) {
             this.#CHECKBOX_ALL_PROPERTIES.checked = false;
@@ -99,7 +114,7 @@ export default class TrackView {
           break;
       }
     });
-    DefaultEventEmitter.addEventListener(event.allTracksCollapse, (e) => {
+    DefaultEventEmitter.addEventListener(event.allTracksCollapse, e => {
       if (e.detail) {
         if (!this.#ROOT.classList.contains('-spread')) {
           this.#COLLAPSE_BUTTON.dispatchEvent(new MouseEvent('click'));
@@ -111,12 +126,22 @@ export default class TrackView {
       }
     });
 
+    DefaultEventEmitter.addEventListener(event.toggleErrorUserValues, e => {
+      if (e.detail.mode === 'show') {
+        if(e.detail.propertyId !== this.#property.propertyId ) return
+        this.#showError(e.detail.message, true);
+      }
+      else if (e.detail.mode === 'hide') this.#clearError();
+    });
+
     // get property data
     Records.fetchPropertyValues(this.#property.propertyId)
       .then(values => this.#makeValues(values))
       .catch(error => {
-        console.error(error)
-        this.#OVERVIEW_CONTAINER.insertAdjacentHTML('afterend', `<div class="error">${error} - <a href="${this.#property.data}" target="_blank">${this.#property.data}</a></div>`);
+        console.error(error);
+        this.#showError(error);
+      })
+      .finally(() => {
         this.#LOADING_VIEW.classList.remove('-shown');
       });
   }
@@ -124,15 +149,21 @@ export default class TrackView {
   // private methods
 
   #makeValues(values) {
-
     this.#ROOT.classList.remove('-preparing');
-    this.#LOADING_VIEW.classList.remove('-shown');
 
     // make overview
-    new TrackOverviewCategorical(this.#OVERVIEW_CONTAINER, this.#subject, this.#property, values);
+    new TrackOverviewCategorical(
+      this.#OVERVIEW_CONTAINER,
+      this.#subject,
+      this.#property,
+      values
+    );
 
     // make selector view
-    if (this.#property.viewMethod && this.#property.viewMethod === 'histogram') {
+    if (
+      this.#property.viewMethod &&
+      this.#property.viewMethod === 'histogram'
+    ) {
       new HistogramRangeSelectorView(
         this.#SELECT_CONTAINER,
         this.#subject,
@@ -152,4 +183,17 @@ export default class TrackView {
     }
   }
 
+  #showError(error, inUserIDs = false) {
+    const prop = this.#property.data;
+    this.#OVERVIEW_CONTAINER.insertAdjacentHTML(
+      'afterEnd',
+      `<div class="error">${error} - <a href="${prop}" target="_blank">${prop}</a></div>`
+    );
+    if (inUserIDs) this.#OVERVIEW_CONTAINER.classList.add('-hidden');
+  }
+
+  #clearError() {
+    this.#OVERVIEW_CONTAINER.classList.remove('-hidden');
+    this.#OVERVIEW_CONTAINER.previousSibling.remove();
+  }
 }

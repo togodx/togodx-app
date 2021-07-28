@@ -82,8 +82,8 @@ export default class UploadUserIDsView {
     this.#ROOT.classList.add('-fetching');
     this.#ROOT.dataset.status = '';
     this.#progressIndicator.setIndicator(
-      Records.properties.length,
-      'Mapping your IDs'
+      'Mapping your IDs',
+      Records.properties.length
     );
   }
 
@@ -122,13 +122,16 @@ export default class UploadUserIDsView {
         if (this.#offset >= Records.properties.length) this.#complete();
       })
       .catch(error => {
-        const customEvent = new CustomEvent(event.showErrorUserValues, {
+        const customEvent = new CustomEvent(event.toggleErrorUserValues, {
           detail: {
+            mode: 'show',
             propertyId,
             message: 'Failed to map this ID',
           },
         });
         DefaultEventEmitter.dispatchEvent(customEvent);
+        this.#progressIndicator.setIndicator('Failed to map IDs for some properties', undefined, true);
+
       });
   }
 
@@ -146,6 +149,13 @@ export default class UploadUserIDsView {
     this.#USER_IDS.value = '';
     const customEvent = new CustomEvent(event.clearUserValues);
     DefaultEventEmitter.dispatchEvent(customEvent);
+
+    const customEvent2 = new CustomEvent(event.toggleErrorUserValues, {
+      detail: {
+        mode: 'hide',
+      },
+    });
+    DefaultEventEmitter.dispatchEvent(customEvent2);
     ConditionBuilder.setUserIds();
   }
 }

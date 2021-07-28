@@ -4,6 +4,7 @@ export const defineTogoKey = 'defineTogoKey';
 // User IDs
 export const setUserValues = 'setUserValues';
 export const clearUserValues = 'clearUserValues';
+export const toggleErrorUserValues = 'toggleErrorUserValues';
 
 // View mode
 export const changeViewModes = 'changeViewModes';
