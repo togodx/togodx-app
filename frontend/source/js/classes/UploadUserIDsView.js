@@ -39,7 +39,7 @@ export default class UploadUserIDsView {
     this.#USER_IDS = elm.querySelector(':scope > textarea');
 
     elm.appendChild(document.createElement('div'));
-    this.#progressIndicator = new ProgressIndicator(elm.lastChild, true);
+    this.#progressIndicator = new ProgressIndicator(elm.lastChild, 'simple');
 
     // attach events
     const buttons = elm.querySelector(':scope > .buttons');
@@ -96,6 +96,7 @@ export default class UploadUserIDsView {
     // reset axios cancellation
     const CancelToken = axios.CancelToken;
     this.#source = CancelToken.source();
+    this.#progressIndicator.reset();
 
     this.#ROOT.classList.add('-fetching');
     this.#ROOT.dataset.status = '';
@@ -164,14 +165,15 @@ export default class UploadUserIDsView {
       this.#progressIndicator.setIndicator(
         `Failed to map IDs for ${this.#errorCount} propert${this.#errorCount === 1 ? 'y' : 'ies'}`,
         undefined,
-        true
+        withError
       );
     }
   }
 
-  #clear() {
-    this.#source.cancel('user cancel');
+  #clear(isSubmit) {
     this.#progressIndicator.reset();
+    
+    this.#source.cancel('user cancel');
     this.#complete();
 
     this.#BODY.classList.remove('-showuserids');
