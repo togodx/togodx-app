@@ -405,7 +405,6 @@ export default class TableData {
   #displayError(message, code) {
     this.#STATUS.classList.add('-error');
     this.#STATUS.textContent = code ? `${message} (${code})` : message;
-    if (message === 'Retrying...') return;
     this.#ROOT.classList.toggle('-fetching');
 
     const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
