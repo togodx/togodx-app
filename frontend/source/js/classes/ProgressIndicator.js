@@ -117,8 +117,7 @@ export default class ProgressIndicator {
    */
   #setMessage(message, isError) {
     this.#TEXT_STATUS.childNodes[0].nodeValue = message;
-    if (isError)
-      this.#ROOT.classList.add('error') || this.#ROOT.classList.remove('error');
+    isError ? this.#ROOT.classList.add('error') : this.#ROOT.classList.remove('error');
   }
 
   /* public accessors */
@@ -127,6 +126,8 @@ export default class ProgressIndicator {
    * @param { {offset: number, startTime: number} } progressInfo
    */
   updateProgressBar({offset = 0, startTime}) {
+    console.log(`current offset: ${offset}`);
+    console.log(`current total: ${this.#total}`);
     this.#updateBarWidth(offset);
     if (this.#mode === MODE.SIMPLE || !startTime) return;
 
@@ -142,7 +143,7 @@ export default class ProgressIndicator {
   setIndicator(message = '', total = 0, isError = false) {
     this.#total = total;
     if (this.#mode === MODE.SIMPLE) this.#setMessage(message, isError);
-    if (this.#mode === MODE.DETAILED)
+    else if (this.#mode === MODE.DETAILED)
       this.#TEXT_TOTAL.textContent = `/ ${this.#total.toString()}`;
   }
 

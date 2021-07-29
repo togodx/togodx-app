@@ -19,6 +19,7 @@ export default class UploadUserIDsView {
 
   constructor(elm) {
     // TODO: set axios settings in common file
+    // TODO: set 'user cancel' as a const in axios setting file
     axios.defaults.timeout = 120000;
     axiosRetry(axios, {
       retries: 5,
@@ -47,6 +48,8 @@ export default class UploadUserIDsView {
       .querySelector(':scope > button:nth-child(1)')
       .addEventListener('click', e => {
         e.stopPropagation();
+        // clear after 2nd execution
+        if (this.#source) this.#clear(true);
         this.#fetch();
         return false;
       });
@@ -55,6 +58,7 @@ export default class UploadUserIDsView {
       .addEventListener('click', e => {
         e.stopPropagation();
         this.#clear();
+        this.#complete();
         return false;
       });
 
@@ -96,7 +100,6 @@ export default class UploadUserIDsView {
     // reset axios cancellation
     const CancelToken = axios.CancelToken;
     this.#source = CancelToken.source();
-    this.#progressIndicator.reset();
 
     this.#ROOT.classList.add('-fetching');
     this.#ROOT.dataset.status = '';
@@ -126,6 +129,7 @@ export default class UploadUserIDsView {
       )
       .then(response => {
         this.#BODY.classList.add('-showuserids');
+        this.#handleProp();
 
         // dispatch event
         const customEvent = new CustomEvent(event.setUserValues, {
@@ -136,7 +140,8 @@ export default class UploadUserIDsView {
         });
         DefaultEventEmitter.dispatchEvent(customEvent);
       })
-      .catch(() => {
+      .catch(error => {
+        if (axios.isCancel && error.message === 'user cancel') return;
         const customEvent = new CustomEvent(event.toggleErrorUserValues, {
           detail: {
             mode: 'show',
@@ -145,39 +150,45 @@ export default class UploadUserIDsView {
           },
         });
         DefaultEventEmitter.dispatchEvent(customEvent);
+        this.#handleProp();
         this.#errorCount++;
       })
       .then(() => {
-        this.#offset += 1;
-        this.#progressIndicator.updateProgressBar({
-          offset: this.#offset,
-        });
+        console.log(`error count:${this.#errorCount}`)
         if (this.#offset >= Records.properties.length) {
           this.#complete(this.#errorCount > 0);
         }
       });
   }
 
+  #handleProp() {
+    this.#offset += 1;
+    this.#progressIndicator.updateProgressBar({
+      offset: this.#offset,
+    });
+  }
+  
   #complete(withError = false) {
-    this.#ROOT.dataset.status = 'complete';
-    this.#offset = 0;
     if (withError) {
       this.#progressIndicator.setIndicator(
-        `Failed to map IDs for ${this.#errorCount} propert${this.#errorCount === 1 ? 'y' : 'ies'}`,
+        `Failed to map IDs for ${this.#errorCount} propert${
+          this.#errorCount === 1 ? 'y' : 'ies'
+        }`,
         undefined,
         withError
       );
     }
+    this.#ROOT.dataset.status = 'complete';
   }
 
-  #clear(isSubmit) {
-    this.#progressIndicator.reset();
-    
-    this.#source.cancel('user cancel');
-    this.#complete();
+  #resetCounters() {
+    this.#offset = 0;
+    this.#errorCount = 0;
+  }
 
-    this.#BODY.classList.remove('-showuserids');
-    this.#USER_IDS.value = '';
+  #clear(isPreparing = false) {
+    this.#source.cancel('user cancel');
+    this.#resetCounters();
     const customEvent = new CustomEvent(event.clearUserValues);
     DefaultEventEmitter.dispatchEvent(customEvent);
 
@@ -187,6 +198,11 @@ export default class UploadUserIDsView {
       },
     });
     DefaultEventEmitter.dispatchEvent(customEvent2);
+    this.#progressIndicator.reset();
+    this.#BODY.classList.remove('-showuserids');
+    
+    if (isPreparing) return;
     ConditionBuilder.setUserIds();
+    this.#USER_IDS.value = '';
   }
 }

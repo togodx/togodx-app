@@ -7,6 +7,7 @@ import ProgressIndicator from './ProgressIndicator';
 
 const LIMIT = 100;
 const downloadUrls = new Map();
+const timeOutError = 'ECONNABORTED';
 
 /**
  * @typedef { Object } Mode
