@@ -243,6 +243,11 @@ export default class ColumnSelectorView {
         behavior: 'smooth'
       });
     };
+
+    // user IDs
+    console.log(column.querySelector(':scope > .item.-all'))
+    console.log(column.querySelector(':scope > .item.-all').dataset.categoryIds)
+    console.log(ConditionBuilder.userIds)
   }
 
   #update(isLog10) {

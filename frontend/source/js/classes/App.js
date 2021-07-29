@@ -74,9 +74,6 @@ class App {
         Records.setSubjects(subjects);
         ConditionBuilder.init();
 
-        // setup upload user id
-        uploadUserIDsView.definePath(aggregate.mapping);
-
         // define primary keys
         const customEvent = new CustomEvent(event.defineTogoKey, {detail: {subjects}});
         DefaultEventEmitter.dispatchEvent(customEvent);
@@ -129,6 +126,9 @@ class App {
   }
   get aggregateRows() {
     return this.#aggregate.table.url;
+  }
+  get aggregateMapping() {
+    return this.#aggregate.mapping.url;
   }
   get colorWhite() {
     return this.#colorWhite;

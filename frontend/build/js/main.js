@@ -4461,6 +4461,10 @@
         behavior: 'smooth'
       });
     }
+
+    console.log(column.querySelector(':scope > .item.-all'));
+    console.log(column.querySelector(':scope > .item.-all').dataset.categoryIds);
+    console.log(ConditionBuilder$1.userIds);
   }
 
   function _update2$2(isLog10) {
@@ -7752,9 +7756,14 @@
     _classPrivateFieldGet(this, _tableData).splice(index, 1);
   }
 
-  var timeOutError = 'ECONNABORTED';
+  function dataFromUserIds(sparqlet, primaryKey) {
+    var _ConditionBuilder$use;
 
-  var _path = new WeakMap();
+    var categoryIds = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+    return "".concat(App$1.aggregateMapping, "?sparqlet=").concat(encodeURIComponent(sparqlet), "&primaryKey=").concat(encodeURIComponent(primaryKey), "&categoryIds=").concat(categoryIds, "&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat((_ConditionBuilder$use = ConditionBuilder$1.userIds) !== null && _ConditionBuilder$use !== void 0 ? _ConditionBuilder$use : '');
+  }
+
+  var timeOutError = 'ECONNABORTED';
 
   var _ROOT = new WeakMap();
 
@@ -7772,134 +7781,114 @@
 
   var _prepareProgressIndicator = new WeakSet();
 
-  var _queryTemplate = new WeakSet();
-
   var _getProperty = new WeakSet();
 
   var _complete = new WeakSet();
 
   var _clear = new WeakSet();
 
-  var UploadUserIDsView = /*#__PURE__*/function () {
-    function UploadUserIDsView(elm) {
-      var _this = this;
+  var UploadUserIDsView = function UploadUserIDsView(elm) {
+    var _this = this;
 
-      _classCallCheck(this, UploadUserIDsView);
+    _classCallCheck(this, UploadUserIDsView);
 
-      _clear.add(this);
+    _clear.add(this);
 
-      _complete.add(this);
+    _complete.add(this);
 
-      _getProperty.add(this);
+    _getProperty.add(this);
 
-      _queryTemplate.add(this);
+    _prepareProgressIndicator.add(this);
 
-      _prepareProgressIndicator.add(this);
+    _fetch.add(this);
 
-      _fetch.add(this);
+    _ROOT.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _path.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _BODY.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _ROOT.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _USER_IDS.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _BODY.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _progressIndicator.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _USER_IDS.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _source.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _progressIndicator.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _offset.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _source.set(this, {
-        writable: true,
-        value: void 0
-      });
+    // TODO: set axios settings in common file
+    axios.defaults.timeout = 180000;
+    axiosRetry(axios, {
+      retries: 5,
+      shouldResetTimeout: true,
+      retryDelay: axiosRetry.exponentialDelay,
+      retryCondition: function retryCondition(error) {
+        var _error$response;
 
-      _offset.set(this, {
-        writable: true,
-        value: void 0
-      });
+        return error.code === timeOutError | ((_error$response = error.response) === null || _error$response === void 0 ? void 0 : _error$response.status) === 500;
+      }
+    });
 
-      // TODO: set axios settings in common file
-      axios.defaults.timeout = 180000;
-      axiosRetry(axios, {
-        retries: 5,
-        shouldResetTimeout: true,
-        retryDelay: axiosRetry.exponentialDelay,
-        retryCondition: function retryCondition(error) {
-          var _error$response;
+    _classPrivateFieldSet(this, _ROOT, elm);
 
-          return error.code === timeOutError | ((_error$response = error.response) === null || _error$response === void 0 ? void 0 : _error$response.status) === 500;
-        }
-      });
+    _classPrivateFieldSet(this, _offset, 0);
 
-      _classPrivateFieldSet(this, _ROOT, elm);
+    _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
 
-      _classPrivateFieldSet(this, _offset, 0);
+    _classPrivateFieldSet(this, _USER_IDS, elm.querySelector(':scope > textarea'));
 
-      _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
+    elm.appendChild(document.createElement('div'));
 
-      _classPrivateFieldSet(this, _USER_IDS, elm.querySelector(':scope > textarea'));
-
-      elm.appendChild(document.createElement('div'));
-
-      _classPrivateFieldSet(this, _progressIndicator, new ProgressIndicator(elm.lastChild, true)); // attach events
+    _classPrivateFieldSet(this, _progressIndicator, new ProgressIndicator(elm.lastChild, true)); // attach events
 
 
-      var buttons = elm.querySelector(':scope > .buttons');
-      buttons.querySelector(':scope > button:nth-child(1)').addEventListener('click', function (e) {
-        e.stopPropagation();
+    var buttons = elm.querySelector(':scope > .buttons');
+    buttons.querySelector(':scope > button:nth-child(1)').addEventListener('click', function (e) {
+      e.stopPropagation();
 
-        _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
+      _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
 
-        return false;
-      });
-      buttons.querySelector(':scope > button:nth-child(2)').addEventListener('click', function (e) {
-        e.stopPropagation();
+      return false;
+    });
+    buttons.querySelector(':scope > button:nth-child(2)').addEventListener('click', function (e) {
+      e.stopPropagation();
 
-        _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
+      _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
 
-        return false;
-      }); // event listeners
+      return false;
+    }); // event listeners
 
-      _classPrivateFieldGet(this, _USER_IDS).addEventListener('change', function () {
-        ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value);
-      }); // this.#USER_IDS.addEventListener('keyup', e => {
-      //   if (e.keyCode === 13) this.#fetch();
-      // });
-      // DefaultEventEmitter.addEventListener(event.restoreParameters, this.#restoreParameters.bind(this));
-
-
-      DefaultEventEmitter$1.addEventListener(clearCondition, _classPrivateMethodGet(this, _clear, _clear2).bind(this));
-    } // public methods
+    _classPrivateFieldGet(this, _USER_IDS).addEventListener('change', function () {
+      ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value);
+    }); // this.#USER_IDS.addEventListener('keyup', e => {
+    //   if (e.keyCode === 13) this.#fetch();
+    // });
+    // DefaultEventEmitter.addEventListener(event.restoreParameters, this.#restoreParameters.bind(this));
 
 
-    _createClass(UploadUserIDsView, [{
-      key: "definePath",
-      value: function definePath(path) {
-        _classPrivateFieldSet(this, _path, path);
-      } // private methods
-      // #restoreParameters({detail}) {
-      //   this.#USER_IDS.value = detail.userIds;
-      // }
-
-    }]);
-
-    return UploadUserIDsView;
-  }();
+    DefaultEventEmitter$1.addEventListener(clearCondition, _classPrivateMethodGet(this, _clear, _clear2).bind(this));
+  } // public methods
+  // private methods
+  // #restoreParameters({detail}) {
+  //   this.#USER_IDS.value = detail.userIds;
+  // }
+  ;
 
   function _fetch2() {
     var _this2 = this;
@@ -7926,17 +7915,13 @@
     _classPrivateFieldGet(this, _progressIndicator).setIndicator(Records$1.properties.length, 'Mapping your IDs');
   }
 
-  function _queryTemplate2() {
-    return "".concat(_classPrivateFieldGet(this, _path).url, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value.replace(/,/g, ' ').split(/\s+/).join(',')));
-  }
-
   function _getProperty2(_ref) {
     var _this3 = this;
 
     var propertyId = _ref.propertyId,
         data = _ref.data,
         primaryKey = _ref.primaryKey;
-    axios.get(_classPrivateMethodGet(this, _queryTemplate, _queryTemplate2).call(this).replace('@@sparqlet@@', encodeURIComponent(data)).replace('@@primaryKey@@', encodeURIComponent(primaryKey)), {
+    axios.get(dataFromUserIds(data, primaryKey), {
       cancelToken: _classPrivateFieldGet(this, _source).token
     }).then(function (response) {
       _classPrivateFieldGet(_this3, _BODY).classList.add('-showuserids');
@@ -8096,7 +8081,7 @@
         new ResultsTable(document.querySelector('#ResultsTable'));
         new ResultDetailModal();
         new BalloonView();
-        var uploadUserIDsView = new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
+        new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
 
         Promise.all([fetch(api.PROPERTIES), fetch(api.TEMPLATES), fetch(api.AGGREGATE)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
@@ -8109,9 +8094,7 @@
               aggregate = _ref2[2];
 
           Records$1.setSubjects(subjects);
-          ConditionBuilder$1.init(); // setup upload user id
-
-          uploadUserIDsView.definePath(aggregate.mapping); // define primary keys
+          ConditionBuilder$1.init(); // define primary keys
 
           var customEvent = new CustomEvent(defineTogoKey, {
             detail: {
@@ -8146,6 +8129,11 @@
       key: "aggregateRows",
       get: function get() {
         return _classPrivateFieldGet(this, _aggregate).table.url;
+      }
+    }, {
+      key: "aggregateMapping",
+      get: function get() {
+        return _classPrivateFieldGet(this, _aggregate).mapping.url;
       }
     }, {
       key: "colorWhite",

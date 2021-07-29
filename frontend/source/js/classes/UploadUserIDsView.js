@@ -3,12 +3,12 @@ import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
 import ProgressIndicator from './ProgressIndicator';
+import * as queryTemplates from '../functions/queryTemplates';
 import axiosRetry from 'axios-retry';
 
 const timeOutError = 'ECONNABORTED';
 
 export default class UploadUserIDsView {
-  #path;
   #ROOT;
   #BODY;
   #USER_IDS;
@@ -70,10 +70,6 @@ export default class UploadUserIDsView {
 
   // public methods
 
-  definePath(path) {
-    this.#path = path;
-  }
-
   // private methods
 
   // #restoreParameters({detail}) {
@@ -101,22 +97,10 @@ export default class UploadUserIDsView {
     );
   }
 
-  #queryTemplate() {
-    return `${
-      this.#path.url
-    }?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=${
-      ConditionBuilder.currentTogoKey
-    }&userIds=${encodeURIComponent(
-      this.#USER_IDS.value.replace(/,/g, ' ').split(/\s+/).join(',')
-    )}`
-  }
-
   #getProperty({propertyId, data, primaryKey}) {
     axios
       .get(
-        this.#queryTemplate()
-          .replace('@@sparqlet@@', encodeURIComponent(data))
-          .replace('@@primaryKey@@', encodeURIComponent(primaryKey)),
+        queryTemplates.dataFromUserIds(data, primaryKey),
         {cancelToken: this.#source.token}
       )
       .then(response => {
