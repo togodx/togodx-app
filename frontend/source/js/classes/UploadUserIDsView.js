@@ -49,7 +49,7 @@ export default class UploadUserIDsView {
       .addEventListener('click', e => {
         e.stopPropagation();
         // clear after 2nd execution
-        if (this.#source) this.#clear(true);
+        if (this.#source) this.#reset(true);
         this.#fetch();
         return false;
       });
@@ -58,7 +58,6 @@ export default class UploadUserIDsView {
       .addEventListener('click', e => {
         e.stopPropagation();
         this.#clear();
-        this.#complete();
         return false;
       });
 
@@ -154,7 +153,7 @@ export default class UploadUserIDsView {
         this.#errorCount++;
       })
       .then(() => {
-        console.log(`error count:${this.#errorCount}`)
+        console.log(`error count:${this.#errorCount}`);
         if (this.#offset >= Records.properties.length) {
           this.#complete(this.#errorCount > 0);
         }
@@ -167,7 +166,7 @@ export default class UploadUserIDsView {
       offset: this.#offset,
     });
   }
-  
+
   #complete(withError = false) {
     if (withError) {
       this.#progressIndicator.setIndicator(
@@ -186,8 +185,8 @@ export default class UploadUserIDsView {
     this.#errorCount = 0;
   }
 
-  #clear(isPreparing = false) {
-    this.#source.cancel('user cancel');
+  #reset(isPreparing = false) {
+    this.#source?.cancel('user cancel');
     this.#resetCounters();
     const customEvent = new CustomEvent(event.clearUserValues);
     DefaultEventEmitter.dispatchEvent(customEvent);
@@ -200,9 +199,15 @@ export default class UploadUserIDsView {
     DefaultEventEmitter.dispatchEvent(customEvent2);
     this.#progressIndicator.reset();
     this.#BODY.classList.remove('-showuserids');
-    
+
     if (isPreparing) return;
+
     ConditionBuilder.setUserIds();
     this.#USER_IDS.value = '';
+  }
+
+  #clear() {
+    this.#reset();
+    this.#complete();
   }
 }
