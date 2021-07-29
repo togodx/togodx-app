@@ -4100,6 +4100,13 @@
     });
   }
 
+  function dataFromUserIds(sparqlet, primaryKey) {
+    var _ConditionBuilder$use;
+
+    var categoryIds = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+    return "".concat(App$1.aggregateMapping, "?sparqlet=").concat(encodeURIComponent(sparqlet), "&primaryKey=").concat(encodeURIComponent(primaryKey), "&categoryIds=").concat(categoryIds, "&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat((_ConditionBuilder$use = ConditionBuilder$1.userIds) !== null && _ConditionBuilder$use !== void 0 ? _ConditionBuilder$use : '');
+  }
+
   var ALL_PROPERTIES = 'ALL_PROPERTIES';
 
   var _subject$2 = new WeakMap();
@@ -4462,9 +4469,15 @@
       });
     }
 
-    console.log(column.querySelector(':scope > .item.-all'));
     console.log(column.querySelector(':scope > .item.-all').dataset.categoryIds);
     console.log(ConditionBuilder$1.userIds);
+    console.log(_classPrivateFieldGet(this, _property$3));
+
+    if (ConditionBuilder$1.userIds) {
+      axios.get(dataFromUserIds(_classPrivateFieldGet(this, _property$3).data, _classPrivateFieldGet(this, _property$3).primaryKey, column.querySelector(':scope > .item.-all').dataset.categoryIds)).then(function (response) {
+        console.log(response);
+      });
+    }
   }
 
   function _update2$2(isLog10) {
@@ -7754,13 +7767,6 @@
     var index = _classPrivateFieldGet(this, _tableData).indexOf(tableData);
 
     _classPrivateFieldGet(this, _tableData).splice(index, 1);
-  }
-
-  function dataFromUserIds(sparqlet, primaryKey) {
-    var _ConditionBuilder$use;
-
-    var categoryIds = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
-    return "".concat(App$1.aggregateMapping, "?sparqlet=").concat(encodeURIComponent(sparqlet), "&primaryKey=").concat(encodeURIComponent(primaryKey), "&categoryIds=").concat(categoryIds, "&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat((_ConditionBuilder$use = ConditionBuilder$1.userIds) !== null && _ConditionBuilder$use !== void 0 ? _ConditionBuilder$use : '');
   }
 
   var timeOutError = 'ECONNABORTED';

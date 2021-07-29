@@ -2,8 +2,8 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
-import ProgressIndicator from './ProgressIndicator';
 import * as queryTemplates from '../functions/queryTemplates';
+import ProgressIndicator from './ProgressIndicator';
 import axiosRetry from 'axios-retry';
 
 const timeOutError = 'ECONNABORTED';

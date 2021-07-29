@@ -3,6 +3,7 @@ import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import Records from "./Records";
 import * as event from '../events';
+import * as queryTemplates from '../functions/queryTemplates';
 
 const ALL_PROPERTIES = 'ALL_PROPERTIES';
 
@@ -245,9 +246,19 @@ export default class ColumnSelectorView {
     };
 
     // user IDs
-    console.log(column.querySelector(':scope > .item.-all'))
     console.log(column.querySelector(':scope > .item.-all').dataset.categoryIds)
     console.log(ConditionBuilder.userIds)
+    console.log(this.#property)
+    if (ConditionBuilder.userIds) {
+      axios
+      .get(
+        queryTemplates.dataFromUserIds(this.#property.data, this.#property.primaryKey, column.querySelector(':scope > .item.-all').dataset.categoryIds)
+      )
+      .then(response => {
+        console.log(response)
+      });
+
+    }
   }
 
   #update(isLog10) {
