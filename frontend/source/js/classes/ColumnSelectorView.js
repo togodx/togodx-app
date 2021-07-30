@@ -143,46 +143,106 @@ export default class ColumnSelectorView {
     const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.#property.propertyId);
 
     // make column
-    const ul = document.createElement('ul');
-    ul.classList.add('column');
+    const table = document.createElement('table');
+    table.classList.add('column');
     let max = 0;
-
-    // make items
-    ul.innerHTML = `<li
-      class="item -all"
-      ${parentCategoryId ? `
-        data-parent-category-id="${parentCategoryId}"
-        data-parent-label="${parentItem.label}"` : ''}
-      data-category-ids="${items.map(item => item.categoryId)}"
-      data-depth="${depth}">
-      <input type="checkbox" value="${ALL_PROPERTIES}" 
-      ${selectedParentCategoryId === parentCategoryId ? ' checked' : ''}/>
-      <span class="label">Map following attributes</span>
-    </li>`
-    + items.map(item => {
+    table.innerHTML = `
+    <thead>
+      <tr class="header">
+        <th class="label">Values</th>
+        <th class="count">Count</th>
+        <th class="amount">Amount</th>
+        <th class="pvalue">p-value</th>
+        <th class="drilldown"></th>
+      </tr>
+      <tr
+        class="item -all"
+        ${
+          parentCategoryId
+            ? `
+              data-parent-category-id="${parentCategoryId}"
+              data-parent-label="${parentItem.label}"`
+            : ''
+        }
+        data-category-ids="${items.map(item => item.categoryId)}"
+        data-depth="${depth}">
+        <td class="label" colspan="5">
+          <input
+            type="checkbox"
+            value="${ALL_PROPERTIES}" 
+            ${selectedParentCategoryId === parentCategoryId ? ' checked' : ''}/>
+          <span class="label">Map following attributes</span>
+        </td>
+      </tr>
+    </thead>
+    <tbody>${items.map(item => {
       max = Math.max(max, item.count);
-      const checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
-      return `<li
+      const checked = selectedCategoryIds.indexOf(item.categoryId) !== -1
+        ? ' checked'
+        : '';
+      return `
+      <tr
         class="item${item.hasChild ? ' -haschild' : ''}"
         data-id="${item.categoryId}"
         data-category-id="${item.categoryId}"
         data-count="${item.count}">
-        <input type="checkbox" value="${item.categoryId}"${checked}/>
-        <span class="label">${item.label}</span>
-        <span class="count">${item.count.toLocaleString()}</span>
-        <span class="pin">
-          <span class="material-icons">location_on</span>
-          <span class="value"></span>
-        </span>
-      </li>`;
-    }).join('');
-    const listItems = ul.querySelectorAll(':scope > .item:not(.-all)');
-    listItems.forEach(li => this.#items[li.dataset.categoryId].elm = li);
+        <td class="label">
+          <input type="checkbox" value="${item.categoryId}"${checked}/>
+          <span class="label">${item.label}</span>
+          <span class="pin">
+            <span class="material-icons">location_on</span>
+            <span class="value"></span>
+          </span>
+        </td>
+        <td class="count"></td>
+        <td class="amount">${item.count.toLocaleString()}</td>
+        <td class="pvalue"></td>
+        <td class="drilldown"></td>
+      </tr>`;
+    }).join('')}</tbody>
+    `;
+
+    // const ul = document.createElement('ul');
+    // ul.classList.add('column');
+    // let max = 0;
+
+    // // make items
+    // ul.innerHTML = `<li
+    //   class="item -all"
+    //   ${parentCategoryId ? `
+    //     data-parent-category-id="${parentCategoryId}"
+    //     data-parent-label="${parentItem.label}"` : ''}
+    //   data-category-ids="${items.map(item => item.categoryId)}"
+    //   data-depth="${depth}">
+    //   <input type="checkbox" value="${ALL_PROPERTIES}" 
+    //   ${selectedParentCategoryId === parentCategoryId ? ' checked' : ''}/>
+    //   <span class="label">Map following attributes</span>
+    // </li>`
+    // + items.map(item => {
+    //   max = Math.max(max, item.count);
+    //   const checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
+    //   return `<li
+    //     class="item${item.hasChild ? ' -haschild' : ''}"
+    //     data-id="${item.categoryId}"
+    //     data-category-id="${item.categoryId}"
+    //     data-count="${item.count}">
+    //     <input type="checkbox" value="${item.categoryId}"${checked}/>
+    //     <span class="label">${item.label}</span>
+    //     <span class="count">${item.count.toLocaleString()}</span>
+    //     <span class="pin">
+    //       <span class="material-icons">location_on</span>
+    //       <span class="value"></span>
+    //     </span>
+    //   </li>`;
+    // }).join('');
+    const tbody = table.querySelector(':scope > tbody');
+    const listItems = tbody.querySelectorAll(':scope > .item');
+    listItems.forEach(tr => this.#items[tr.dataset.categoryId].elm = tr);
 
     // drill down event
-    ul.querySelectorAll(':scope > .item.-haschild').forEach(li => {
-      li.addEventListener('click', () => {
-        li.classList.add('-selected');
+    tbody.querySelectorAll(':scope > .item.-haschild').forEach(tr => {
+      tr.addEventListener('click', () => {
+        tr.classList.add('-selected');
         // delete an existing lower columns
         if (this.#currentColumns.length > depth + 1) {
           for (let i = depth + 1; i < this.#currentColumns.length; i++) {
@@ -196,14 +256,14 @@ export default class ColumnSelectorView {
           this.#currentColumns[depth].querySelector(`[data-id="${key}"]`)?.classList.remove('-selected');
         }
         // get lower column
-        this.#items[li.dataset.id].selected = true;
-        this.#setSubColumn(li.dataset.id, depth + 1);
+        this.#items[tr.dataset.id].selected = true;
+        this.#setSubColumn(tr.dataset.id, depth + 1);
       });
     });
 
-    listItems.forEach(li => {
+    listItems.forEach(tr => {
       // select/deselect a item (attribute)
-      const checkbox = li.querySelector(':scope > input[type="checkbox"]');
+      const checkbox = tr.querySelector(':scope > .label > input[type="checkbox"]');
       checkbox.addEventListener('click', e => {
         e.stopPropagation();
         if (checkbox.checked) { // add
@@ -218,7 +278,7 @@ export default class ColumnSelectorView {
     });
 
     // Map attributes event
-    ul.querySelector(':scope > .item.-all').addEventListener('change', e => {
+    table.querySelector(':scope > thead > .item.-all').addEventListener('change', e => {
       const dataset = e.target.parentNode.dataset;
       if (e.target.checked) { // add
         ConditionBuilder.addProperty(this.#property.propertyId, dataset.parentCategoryId);
@@ -227,9 +287,9 @@ export default class ColumnSelectorView {
       }
     });
 
-    this.#columns.push({ul, parentCategoryId, max});
+    this.#columns.push({table, parentCategoryId, max});
     this.#update(App.viewModes.log10);
-    return ul;
+    return table;
   }
 
   #appendSubColumn(column, depth) {
@@ -246,13 +306,14 @@ export default class ColumnSelectorView {
     };
 
     // user IDs
-    console.log(column.querySelector(':scope > .item.-all').dataset.categoryIds)
+    console.log(column)
+    console.log(column.querySelector(':scope > thead > .item.-all').dataset.categoryIds)
     console.log(ConditionBuilder.userIds)
     console.log(this.#property)
     if (ConditionBuilder.userIds) {
       axios
       .get(
-        queryTemplates.dataFromUserIds(this.#property.data, this.#property.primaryKey, column.querySelector(':scope > .item.-all').dataset.categoryIds)
+        queryTemplates.dataFromUserIds(this.#property.data, this.#property.primaryKey, column.querySelector(':scope > thead > .item.-all').dataset.categoryIds)
       )
       .then(response => {
         console.log(response)
@@ -265,9 +326,9 @@ export default class ColumnSelectorView {
     this.#columns.forEach(column => {
       let max = column.max;
       max = isLog10 && max > 1 ? Math.log10(max) : max;
-      column.ul.querySelectorAll(':scope > li:not(.-all)').forEach(li => {
-        const count = Number(li.dataset.count);
-        li.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
+      column.table.querySelectorAll(':scope > tbody > .item').forEach(tr => {
+        const count = Number(tr.dataset.count);
+        tr.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
       });
     });
   }

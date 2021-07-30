@@ -10,7 +10,7 @@
       height: 100%
       overflow-x: auto
       > .column
-        display: inline-block
+        display: inline-table
         margin: 0 .1rem 0 0
         padding: 0
         list-style: none
@@ -18,6 +18,36 @@
         height: 100%
         overflow-y: auto
         vertical-align: top
+        > thead, > tbody
+          > tr
+            > th, > td
+              padding: .2rem .4rem
+              vertical-align: middle
+              > input
+                vertical-align: middle
+        > thead
+          color: white
+          > .header
+            background-color: var(--color-lamp-black)
+          > .item
+            background-color: var(--color-dark-gray)
+        > tbody
+          > tr
+            > .label
+              display: relative
+              > .pin
+                padding-left: 1rem
+                // display: none
+                > .material-icons
+                  font-size: 1.2rem
+                  vertical-align: middle
+                  position: relative
+                  top: -.1rem
+                > .value
+                  > small
+                    font-size: 1rem
+                    font-weight: lighter
+
         > .item
           margin: 0
           padding: .2rem 1.2rem .2rem .4rem

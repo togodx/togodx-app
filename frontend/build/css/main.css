@@ -603,7 +603,7 @@ main {
   overflow-x: auto;
 }
 .column-selector-view > .columns > .inner > .column {
-  display: inline-block;
+  display: inline-table;
   margin: 0 0.1rem 0 0;
   padding: 0;
   list-style: none;
@@ -611,6 +611,38 @@ main {
   height: 100%;
   overflow-y: auto;
   vertical-align: top;
+}
+.column-selector-view > .columns > .inner > .column > thead > tr > th, .column-selector-view > .columns > .inner > .column > thead > tr > td, .column-selector-view > .columns > .inner > .column > tbody > tr > th, .column-selector-view > .columns > .inner > .column > tbody > tr > td {
+  padding: 0.2rem 0.4rem;
+  vertical-align: middle;
+}
+.column-selector-view > .columns > .inner > .column > thead > tr > th > input, .column-selector-view > .columns > .inner > .column > thead > tr > td > input, .column-selector-view > .columns > .inner > .column > tbody > tr > th > input, .column-selector-view > .columns > .inner > .column > tbody > tr > td > input {
+  vertical-align: middle;
+}
+.column-selector-view > .columns > .inner > .column > thead {
+  color: white;
+}
+.column-selector-view > .columns > .inner > .column > thead > .header {
+  background-color: var(--color-lamp-black);
+}
+.column-selector-view > .columns > .inner > .column > thead > .item {
+  background-color: var(--color-dark-gray);
+}
+.column-selector-view > .columns > .inner > .column > tbody > tr > .label {
+  display: relative;
+}
+.column-selector-view > .columns > .inner > .column > tbody > tr > .label > .pin {
+  padding-left: 1rem;
+}
+.column-selector-view > .columns > .inner > .column > tbody > tr > .label > .pin > .material-icons {
+  font-size: 1.2rem;
+  vertical-align: middle;
+  position: relative;
+  top: -0.1rem;
+}
+.column-selector-view > .columns > .inner > .column > tbody > tr > .label > .pin > .value > small {
+  font-size: 1rem;
+  font-weight: lighter;
 }
 .column-selector-view > .columns > .inner > .column > .item {
   margin: 0;
