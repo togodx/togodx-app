@@ -47,6 +47,34 @@
                   > small
                     font-size: 1rem
                     font-weight: lighter
+            > .count, > .amount, > .pvalue
+              text-align: right
+            &.-haschild
+              > .drilldown
+                position: relative
+                cursor: pointer
+                &::before, &::after
+                  content: ""
+                  position: absolute
+                  display: block
+                &::before
+                  width: 1rem
+                  height: 1rem
+                  top: .4rem
+                  right: .1rem
+                  border-radius: 100%
+                &::after
+                  border-style: solid
+                  border-width: .3rem 0 .3rem .4rem
+                  border-color: transparent transparent transparent var(--color-lamp-black)
+                  top: .6rem
+                  right: .3rem
+                &:hover, &.-selected
+                  &::before
+                    background-color: var(--color-lamp-black)
+                  &::after
+                    border-color: transparent transparent transparent white
+
 
         > .item
           margin: 0
@@ -66,27 +94,27 @@
               > input
                 display: inherit
           &.-haschild
-            &::before, &::after
-              content: ""
-              position: absolute
-              display: block
-            &::before
-              width: 1rem
-              height: 1rem
-              top: .4rem
-              right: .1rem
-              border-radius: 100%
-            &::after
-              border-style: solid
-              border-width: .3rem 0 .3rem .4rem
-              border-color: transparent transparent transparent var(--color-lamp-black)
-              top: .6rem
-              right: .3rem
-            &:hover, &.-selected
-              &::before
-                background-color: var(--color-lamp-black)
-              &::after
-                border-color: transparent transparent transparent white
+            // &::before, &::after
+            //   content: ""
+            //   position: absolute
+            //   display: block
+            // &::before
+            //   width: 1rem
+            //   height: 1rem
+            //   top: .4rem
+            //   right: .1rem
+            //   border-radius: 100%
+            // &::after
+            //   border-style: solid
+            //   border-width: .3rem 0 .3rem .4rem
+            //   border-color: transparent transparent transparent var(--color-lamp-black)
+            //   top: .6rem
+            //   right: .3rem
+            // &:hover, &.-selected
+            //   &::before
+            //     background-color: var(--color-lamp-black)
+            //   &::after
+            //     border-color: transparent transparent transparent white
           > label, > .count
             padding-top: .1rem
             padding-bottom: .1rem
@@ -102,18 +130,18 @@
             padding-left: 1.2rem
             flex-grow: 1
             text-align: right
-          > .pin
-            padding-left: 1rem
-            display: none
-            > .material-icons
-              font-size: 1.2rem
-              vertical-align: middle
-              position: relative
-              top: -.1rem
-            > .value
-              > small
-                font-size: 1rem
-                font-weight: lighter
+          // > .pin
+          //   padding-left: 1rem
+          //   display: none
+          //   > .material-icons
+          //     font-size: 1.2rem
+          //     vertical-align: middle
+          //     position: relative
+          //     top: -.1rem
+          //   > .value
+          //     > small
+          //       font-size: 1rem
+          //       font-weight: lighter
           body.-showuserids &
             opacity: .25
             &.-pinsticking
