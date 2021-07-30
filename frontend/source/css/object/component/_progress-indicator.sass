@@ -45,13 +45,19 @@
         > .text
             > .bar
                 animation: var(--transition-fetching) infinite alternate fetching
-    [data-status="complete"] & 
-        &.-simple
-            display: none
-
-    [data-status="complete"] & 
+    [data-status="complete"] &
         > .text
             > .status
                 display: none
-
-
+        &.-simple
+            display: none
+        &.error
+            display: block
+            > .progress
+                display: none
+            > .text
+                > .status
+                    color: var(--color-error)
+                    display: block
+                    >.material-icons-outlined
+                        display: none
