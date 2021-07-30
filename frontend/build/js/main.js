@@ -4246,21 +4246,21 @@
       var detail = _ref.detail;
 
       if (_classPrivateFieldGet(_this, _property$3).propertyId === detail.propertyId) {
-        _classPrivateFieldGet(_this, _currentColumns).forEach(function (ul) {
+        _classPrivateFieldGet(_this, _currentColumns).forEach(function (table) {
           var isAllChecked = true;
-          ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
-            var checkbox = li.querySelector(':scope > input[type="checkbox"]');
+          table.querySelectorAll(':scope > tbody > .item').forEach(function (tr) {
+            var checkbox = tr.querySelector(':scope > .label > input[type="checkbox"]');
             if (!checkbox.checked) isAllChecked = false;
 
-            if (li.dataset.id === detail.categoryId) {
+            if (tr.dataset.id === detail.categoryId) {
               // change checkbox status
               var isChecked = detail.action === 'add';
               checkbox.checked = isChecked;
-              _classPrivateFieldGet(_this, _items$1)[li.dataset.id].checked = isChecked;
+              _classPrivateFieldGet(_this, _items$1)[tr.dataset.id].checked = isChecked;
             }
           }); // update Map attributes
 
-          ul.querySelector(':scope > .item.-all > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
+          table.querySelector(':scope > thead > .item.-all > .label > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
           // TODO:
         });
       }
@@ -4271,7 +4271,7 @@
     DefaultEventEmitter$1.addEventListener(setUserValues, function (e) {
       return _classPrivateMethodGet(_this, _setUserValues, _setUserValues2).call(_this, e.detail);
     });
-    DefaultEventEmitter$1.addEventListener(clearUserValues, function (e) {
+    DefaultEventEmitter$1.addEventListener(clearUserValues, function () {
       return _classPrivateMethodGet(_this, _clearUserValues, _clearUserValues2).call(_this);
     });
     var _depth = 0;
@@ -4369,39 +4369,7 @@
       max = Math.max(max, item.count);
       var checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
       return "\n      <tr\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <td class=\"label\">\n          <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n          <span class=\"label\">").concat(item.label, "</span>\n        </td>\n        <td class=\"count\"></td>\n        <td class=\"amount\">").concat(item.count.toLocaleString(), "</td>\n        <td class=\"pvalue\"></td>\n        <td class=\"drilldown\"></td>\n      </tr>");
-    }).join(''), "</tbody>\n    "); // const ul = document.createElement('ul');
-    // ul.classList.add('column');
-    // let max = 0;
-    // // make items
-    // ul.innerHTML = `<li
-    //   class="item -all"
-    //   ${parentCategoryId ? `
-    //     data-parent-category-id="${parentCategoryId}"
-    //     data-parent-label="${parentItem.label}"` : ''}
-    //   data-category-ids="${items.map(item => item.categoryId)}"
-    //   data-depth="${depth}">
-    //   <input type="checkbox" value="${ALL_PROPERTIES}" 
-    //   ${selectedParentCategoryId === parentCategoryId ? ' checked' : ''}/>
-    //   <span class="label">Map following attributes</span>
-    // </li>`
-    // + items.map(item => {
-    //   max = Math.max(max, item.count);
-    //   const checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
-    //   return `<li
-    //     class="item${item.hasChild ? ' -haschild' : ''}"
-    //     data-id="${item.categoryId}"
-    //     data-category-id="${item.categoryId}"
-    //     data-count="${item.count}">
-    //     <input type="checkbox" value="${item.categoryId}"${checked}/>
-    //     <span class="label">${item.label}</span>
-    //     <span class="count">${item.count.toLocaleString()}</span>
-    //     <span class="pin">
-    //       <span class="material-icons">location_on</span>
-    //       <span class="value"></span>
-    //     </span>
-    //   </li>`;
-    // }).join('');
-
+    }).join(''), "</tbody>\n    ");
     var tbody = table.querySelector(':scope > tbody');
     var listItems = tbody.querySelectorAll(':scope > .item');
     listItems.forEach(function (tr) {

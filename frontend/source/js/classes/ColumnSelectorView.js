@@ -53,20 +53,20 @@ export default class ColumnSelectorView {
     })
     DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail}) => {
       if (this.#property.propertyId === detail.propertyId) {
-        this.#currentColumns.forEach(ul => {
+        this.#currentColumns.forEach(table => {
           let isAllChecked = true;
-          ul.querySelectorAll(':scope > li:not(.-all)').forEach(li => {
-            const checkbox = li.querySelector(':scope > input[type="checkbox"]');
+          table.querySelectorAll(':scope > tbody > .item').forEach(tr => {
+            const checkbox = tr.querySelector(':scope > .label > input[type="checkbox"]');
             if (!checkbox.checked) isAllChecked = false;
-            if (li.dataset.id === detail.categoryId) {
+            if (tr.dataset.id === detail.categoryId) {
               // change checkbox status
               const isChecked = detail.action === 'add';
               checkbox.checked = isChecked;
-              this.#items[li.dataset.id].checked = isChecked;
+              this.#items[tr.dataset.id].checked = isChecked;
             }
           })
           // update Map attributes
-          ul.querySelector(':scope > .item.-all > input[type="checkbox"]').checked = isAllChecked;
+          table.querySelector(':scope > thead > .item.-all > .label > input[type="checkbox"]').checked = isAllChecked;
           // change ancestor status
           // TODO:
         });
@@ -74,7 +74,7 @@ export default class ColumnSelectorView {
     });
     DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
     DefaultEventEmitter.addEventListener(event.setUserValues, e => this.#setUserValues(e.detail));
-    DefaultEventEmitter.addEventListener(event.clearUserValues, e => this.#clearUserValues());
+    DefaultEventEmitter.addEventListener(event.clearUserValues, () => this.#clearUserValues());
 
     const depth = 0;
     this.#setItems(items, depth);
@@ -197,40 +197,6 @@ export default class ColumnSelectorView {
       </tr>`;
     }).join('')}</tbody>
     `;
-
-    // const ul = document.createElement('ul');
-    // ul.classList.add('column');
-    // let max = 0;
-
-    // // make items
-    // ul.innerHTML = `<li
-    //   class="item -all"
-    //   ${parentCategoryId ? `
-    //     data-parent-category-id="${parentCategoryId}"
-    //     data-parent-label="${parentItem.label}"` : ''}
-    //   data-category-ids="${items.map(item => item.categoryId)}"
-    //   data-depth="${depth}">
-    //   <input type="checkbox" value="${ALL_PROPERTIES}" 
-    //   ${selectedParentCategoryId === parentCategoryId ? ' checked' : ''}/>
-    //   <span class="label">Map following attributes</span>
-    // </li>`
-    // + items.map(item => {
-    //   max = Math.max(max, item.count);
-    //   const checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
-    //   return `<li
-    //     class="item${item.hasChild ? ' -haschild' : ''}"
-    //     data-id="${item.categoryId}"
-    //     data-category-id="${item.categoryId}"
-    //     data-count="${item.count}">
-    //     <input type="checkbox" value="${item.categoryId}"${checked}/>
-    //     <span class="label">${item.label}</span>
-    //     <span class="count">${item.count.toLocaleString()}</span>
-    //     <span class="pin">
-    //       <span class="material-icons">location_on</span>
-    //       <span class="value"></span>
-    //     </span>
-    //   </li>`;
-    // }).join('');
     const tbody = table.querySelector(':scope > tbody');
     const listItems = tbody.querySelectorAll(':scope > .item');
     listItems.forEach(tr => this.#items[tr.dataset.categoryId].elm = tr);
