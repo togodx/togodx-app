@@ -35,24 +35,25 @@
           > tr
             > .label
               display: relative
-              > .pin
-                padding-left: 1rem
-                // display: none
-                > .material-icons
-                  font-size: 1.2rem
-                  vertical-align: middle
-                  position: relative
-                  top: -.1rem
-                > .value
-                  > small
-                    font-size: 1rem
-                    font-weight: lighter
+              // > .pin
+              //   padding-left: 1rem
+              //   // display: none
+              //   > .material-icons
+              //     font-size: 1.2rem
+              //     vertical-align: middle
+              //     position: relative
+              //     top: -.1rem
+              //   > .value
+              //     > small
+              //       font-size: 1rem
+              //       font-weight: lighter
             > .count, > .amount, > .pvalue
               text-align: right
             &.-haschild
               > .drilldown
                 position: relative
                 cursor: pointer
+                width: 1.6rem
                 &::before, &::after
                   content: ""
                   position: absolute
@@ -61,15 +62,21 @@
                   width: 1rem
                   height: 1rem
                   top: .4rem
-                  right: .1rem
+                  right: .3rem
                   border-radius: 100%
                 &::after
                   border-style: solid
                   border-width: .3rem 0 .3rem .4rem
                   border-color: transparent transparent transparent var(--color-lamp-black)
                   top: .6rem
-                  right: .3rem
-                &:hover, &.-selected
+                  right: .5rem
+                &:hover
+                  &::before
+                    background-color: var(--color-lamp-black)
+                  &::after
+                    border-color: transparent transparent transparent white
+              &.-selected
+                > .drilldown
                   &::before
                     background-color: var(--color-lamp-black)
                   &::after

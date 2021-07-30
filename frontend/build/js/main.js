@@ -4368,7 +4368,7 @@
     }), "\"\n        data-depth=\"").concat(depth, "\">\n        <td class=\"label\" colspan=\"5\">\n          <input\n            type=\"checkbox\"\n            value=\"").concat(ALL_PROPERTIES, "\" \n            ").concat(selectedParentCategoryId === parentCategoryId ? ' checked' : '', "/>\n          <span class=\"label\">Map following attributes</span>\n        </td>\n      </tr>\n    </thead>\n    <tbody>").concat(items.map(function (item) {
       max = Math.max(max, item.count);
       var checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
-      return "\n      <tr\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <td class=\"label\">\n          <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n          <span class=\"label\">").concat(item.label, "</span>\n          <span class=\"pin\">\n            <span class=\"material-icons\">location_on</span>\n            <span class=\"value\"></span>\n          </span>\n        </td>\n        <td class=\"count\"></td>\n        <td class=\"amount\">").concat(item.count.toLocaleString(), "</td>\n        <td class=\"pvalue\"></td>\n        <td class=\"drilldown\"></td>\n      </tr>");
+      return "\n      <tr\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <td class=\"label\">\n          <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n          <span class=\"label\">").concat(item.label, "</span>\n        </td>\n        <td class=\"count\"></td>\n        <td class=\"amount\">").concat(item.count.toLocaleString(), "</td>\n        <td class=\"pvalue\"></td>\n        <td class=\"drilldown\"></td>\n      </tr>");
     }).join(''), "</tbody>\n    "); // const ul = document.createElement('ul');
     // ul.classList.add('column');
     // let max = 0;
@@ -4408,8 +4408,10 @@
       return _classPrivateFieldGet(_this4, _items$1)[tr.dataset.categoryId].elm = tr;
     }); // drill down event
 
-    tbody.querySelectorAll(':scope > .item.-haschild').forEach(function (tr) {
-      tr.addEventListener('click', function () {
+    tbody.querySelectorAll(':scope > .item.-haschild > .drilldown').forEach(function (drilldown) {
+      drilldown.addEventListener('click', function () {
+        var tr = drilldown.closest('tr');
+        console.log(tr);
         tr.classList.add('-selected'); // delete an existing lower columns
 
         if (_classPrivateFieldGet(_this4, _currentColumns).length > depth + 1) {
@@ -4542,9 +4544,13 @@
 
           var item = _classPrivateFieldGet(this, _items$1)[value.categoryId];
 
+          console.log(item);
+
           if (item) {
+            console.log(values);
             item.elm.classList.add('-pinsticking');
-            item.elm.querySelector(':scope > .pin > .value').innerHTML = "".concat(value.count).concat(value.pValue ? ",  <small>P-value:</small> ".concat(value.pValue === 1 ? value.pValue : value.pValue.toExponential(3)) : '');
+            item.elm.querySelector(':scope > .count').textContent = value.count;
+            item.elm.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(3) : ''; // item.elm.querySelector(':scope > .pin > .value').innerHTML = `${value.count}${value.pValue ? `,  <small>P-value:</small> ${value.pValue === 1 ? value.pValue : value.pValue.toExponential(3)}` : ''}`;
           }
         }
       } catch (err) {

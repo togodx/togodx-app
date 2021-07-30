@@ -631,25 +631,13 @@ main {
 .column-selector-view > .columns > .inner > .column > tbody > tr > .label {
   display: relative;
 }
-.column-selector-view > .columns > .inner > .column > tbody > tr > .label > .pin {
-  padding-left: 1rem;
-}
-.column-selector-view > .columns > .inner > .column > tbody > tr > .label > .pin > .material-icons {
-  font-size: 1.2rem;
-  vertical-align: middle;
-  position: relative;
-  top: -0.1rem;
-}
-.column-selector-view > .columns > .inner > .column > tbody > tr > .label > .pin > .value > small {
-  font-size: 1rem;
-  font-weight: lighter;
-}
 .column-selector-view > .columns > .inner > .column > tbody > tr > .count, .column-selector-view > .columns > .inner > .column > tbody > tr > .amount, .column-selector-view > .columns > .inner > .column > tbody > tr > .pvalue {
   text-align: right;
 }
 .column-selector-view > .columns > .inner > .column > tbody > tr.-haschild > .drilldown {
   position: relative;
   cursor: pointer;
+  width: 1.6rem;
 }
 .column-selector-view > .columns > .inner > .column > tbody > tr.-haschild > .drilldown::before, .column-selector-view > .columns > .inner > .column > tbody > tr.-haschild > .drilldown::after {
   content: "";
@@ -660,7 +648,7 @@ main {
   width: 1rem;
   height: 1rem;
   top: 0.4rem;
-  right: 0.1rem;
+  right: 0.3rem;
   border-radius: 100%;
 }
 .column-selector-view > .columns > .inner > .column > tbody > tr.-haschild > .drilldown::after {
@@ -668,12 +656,18 @@ main {
   border-width: 0.3rem 0 0.3rem 0.4rem;
   border-color: transparent transparent transparent var(--color-lamp-black);
   top: 0.6rem;
-  right: 0.3rem;
+  right: 0.5rem;
 }
-.column-selector-view > .columns > .inner > .column > tbody > tr.-haschild > .drilldown:hover::before, .column-selector-view > .columns > .inner > .column > tbody > tr.-haschild > .drilldown.-selected::before {
+.column-selector-view > .columns > .inner > .column > tbody > tr.-haschild > .drilldown:hover::before {
   background-color: var(--color-lamp-black);
 }
-.column-selector-view > .columns > .inner > .column > tbody > tr.-haschild > .drilldown:hover::after, .column-selector-view > .columns > .inner > .column > tbody > tr.-haschild > .drilldown.-selected::after {
+.column-selector-view > .columns > .inner > .column > tbody > tr.-haschild > .drilldown:hover::after {
+  border-color: transparent transparent transparent white;
+}
+.column-selector-view > .columns > .inner > .column > tbody > tr.-haschild.-selected > .drilldown::before {
+  background-color: var(--color-lamp-black);
+}
+.column-selector-view > .columns > .inner > .column > tbody > tr.-haschild.-selected > .drilldown::after {
   border-color: transparent transparent transparent white;
 }
 .column-selector-view > .columns > .inner > .column > .item {

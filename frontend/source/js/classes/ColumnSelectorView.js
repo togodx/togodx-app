@@ -189,10 +189,6 @@ export default class ColumnSelectorView {
         <td class="label">
           <input type="checkbox" value="${item.categoryId}"${checked}/>
           <span class="label">${item.label}</span>
-          <span class="pin">
-            <span class="material-icons">location_on</span>
-            <span class="value"></span>
-          </span>
         </td>
         <td class="count"></td>
         <td class="amount">${item.count.toLocaleString()}</td>
@@ -240,8 +236,10 @@ export default class ColumnSelectorView {
     listItems.forEach(tr => this.#items[tr.dataset.categoryId].elm = tr);
 
     // drill down event
-    tbody.querySelectorAll(':scope > .item.-haschild').forEach(tr => {
-      tr.addEventListener('click', () => {
+    tbody.querySelectorAll(':scope > .item.-haschild > .drilldown').forEach(drilldown => {
+      drilldown.addEventListener('click', () => {
+        const tr = drilldown.closest('tr');
+        console.log(tr);
         tr.classList.add('-selected');
         // delete an existing lower columns
         if (this.#currentColumns.length > depth + 1) {
@@ -335,11 +333,17 @@ export default class ColumnSelectorView {
 
   #setUserValues({propertyId, values}) {
     if (this.#property.propertyId === propertyId) {
+      
       for (const value of values) {
         const item = this.#items[value.categoryId];
+        console.log(item)
         if (item) {
+          console.log(values)
           item.elm.classList.add('-pinsticking');
-          item.elm.querySelector(':scope > .pin > .value').innerHTML = `${value.count}${value.pValue ? `,  <small>P-value:</small> ${value.pValue === 1 ? value.pValue : value.pValue.toExponential(3)}` : ''}`;
+          item.elm.querySelector(':scope > .count').textContent = value.count;
+          item.elm.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(3) : '';
+
+          // item.elm.querySelector(':scope > .pin > .value').innerHTML = `${value.count}${value.pValue ? `,  <small>P-value:</small> ${value.pValue === 1 ? value.pValue : value.pValue.toExponential(3)}` : ''}`;
         }
       }
     }
