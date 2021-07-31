@@ -647,7 +647,7 @@ main {
 .column-selector-view > .columns > .inner > .column > tbody > tr.-haschild > .drilldown::before {
   width: 1rem;
   height: 1rem;
-  top: 0.4rem;
+  top: 0.5rem;
   right: 0.3rem;
   border-radius: 100%;
 }
@@ -655,7 +655,7 @@ main {
   border-style: solid;
   border-width: 0.3rem 0 0.3rem 0.4rem;
   border-color: transparent transparent transparent var(--color-lamp-black);
-  top: 0.6rem;
+  top: 0.7rem;
   right: 0.5rem;
 }
 .column-selector-view > .columns > .inner > .column > tbody > tr.-haschild > .drilldown:hover::before {
@@ -691,28 +691,6 @@ main {
 }
 [data-condition=values] .column-selector-view > .columns > .inner > .column > .item.-all > input {
   display: inherit;
-}
-.column-selector-view > .columns > .inner > .column > .item > label, .column-selector-view > .columns > .inner > .column > .item > .count {
-  padding-top: 0.1rem;
-  padding-bottom: 0.1rem;
-}
-.column-selector-view > .columns > .inner > .column > .item > input {
-  -webkit-margin-end: 0.4rem;
-          margin-inline-end: 0.4rem;
-  vertical-align: bottom;
-}
-[data-condition=values] .column-selector-view > .columns > .inner > .column > .item > input {
-  display: none;
-}
-.column-selector-view > .columns > .inner > .column > .item > .label {
-  padding-right: 0.4rem;
-}
-.column-selector-view > .columns > .inner > .column > .item > .count {
-  font-weight: lighter;
-  padding-left: 1.2rem;
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
-  text-align: right;
 }
 body.-showuserids .column-selector-view > .columns > .inner > .column > .item {
   opacity: 0.25;

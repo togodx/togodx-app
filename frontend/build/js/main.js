@@ -4433,15 +4433,8 @@
     }); // Map attributes event
 
     table.querySelector(':scope > thead > .item.-all').addEventListener('change', function (e) {
-      var dataset = e.target.parentNode.dataset;
-
-      if (e.target.checked) {
-        // add
-        ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this4, _property$3).propertyId, dataset.parentCategoryId);
-      } else {
-        // remove
-        ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this4, _property$3).propertyId, dataset.parentCategoryId);
-      }
+      var parentCategoryId = e.target.closest('.item.-all').dataset.parentCategoryId;
+      if (e.target.checked) ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this4, _property$3).propertyId, parentCategoryId);else ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this4, _property$3).propertyId, parentCategoryId);
     });
 
     _classPrivateFieldGet(this, _columns).push({

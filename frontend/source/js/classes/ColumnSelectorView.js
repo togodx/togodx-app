@@ -243,14 +243,10 @@ export default class ColumnSelectorView {
 
     // Map attributes event
     table.querySelector(':scope > thead > .item.-all').addEventListener('change', e => {
-      const dataset = e.target.parentNode.dataset;
-      if (e.target.checked) { // add
-        ConditionBuilder.addProperty(this.#property.propertyId, dataset.parentCategoryId);
-      } else { // remove
-        ConditionBuilder.removeProperty(this.#property.propertyId, dataset.parentCategoryId);
-      }
+      const parentCategoryId = e.target.closest('.item.-all').dataset.parentCategoryId;
+      if (e.target.checked) ConditionBuilder.addProperty(this.#property.propertyId, parentCategoryId);
+      else                  ConditionBuilder.removeProperty(this.#property.propertyId, parentCategoryId);
     });
-
     this.#columns.push({table, parentCategoryId, max});
     this.#update(App.viewModes.log10);
     return table;
