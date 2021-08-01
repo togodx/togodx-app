@@ -4246,9 +4246,9 @@
       var detail = _ref.detail;
 
       if (_classPrivateFieldGet(_this, _property$3).propertyId === detail.propertyId) {
-        _classPrivateFieldGet(_this, _currentColumns).forEach(function (table) {
+        _classPrivateFieldGet(_this, _currentColumns).forEach(function (column) {
           var isAllChecked = true;
-          table.querySelectorAll(':scope > tbody > .item').forEach(function (tr) {
+          column.querySelectorAll(':scope > table > tbody > .item').forEach(function (tr) {
             var checkbox = tr.querySelector(':scope > .label > input[type="checkbox"]');
             if (!checkbox.checked) isAllChecked = false;
 
@@ -4260,7 +4260,7 @@
             }
           }); // update Map attributes
 
-          table.querySelector(':scope > thead > .item.-all > .label > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
+          column.querySelector(':scope > table > thead > .item.-all > .label > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
           // TODO:
         });
       }
@@ -4316,6 +4316,8 @@
     _classPrivateFieldGet(this, _LOADING_VIEW$2).classList.add('-shown');
 
     _classPrivateMethodGet(this, _getColumn, _getColumn2).call(this, categoryId, depth).then(function (column) {
+      console.log(column);
+
       _classPrivateMethodGet(_this2, _appendSubColumn, _appendSubColumn2).call(_this2, column, depth);
 
       _classPrivateFieldGet(_this2, _LOADING_VIEW$2).classList.remove('-shown');
@@ -4339,6 +4341,8 @@
         resolve(column.ul);
       } else {
         Records$1.fetchPropertyValues(_classPrivateFieldGet(_this3, _property$3).propertyId, categoryId).then(function (values) {
+          console.log(values);
+
           _classPrivateMethodGet(_this3, _setItems, _setItems2).call(_this3, values, depth, categoryId);
 
           var column = _classPrivateMethodGet(_this3, _makeColumn, _makeColumn2).call(_this3, values, depth, categoryId);
@@ -4360,17 +4364,17 @@
     var selectedParentCategoryId = ConditionBuilder$1.getSelectedParentCategoryId(_classPrivateFieldGet(this, _property$3).propertyId);
     var selectedCategoryIds = ConditionBuilder$1.getSelectedCategoryIds(_classPrivateFieldGet(this, _property$3).propertyId); // make column
 
-    var table = document.createElement('table');
-    table.classList.add('column');
+    var column = document.createElement('div');
+    column.classList.add('column');
     var max = 0;
-    table.innerHTML = "\n    <thead>\n      <tr class=\"header\">\n        <th class=\"label\">Values</th>\n        <th class=\"count\">Count</th>\n        <th class=\"amount\">Amount</th>\n        <th class=\"pvalue\">p-value</th>\n        <th class=\"drilldown\"></th>\n      </tr>\n      <tr\n        class=\"item -all\"\n        ".concat(parentCategoryId ? "\n              data-parent-category-id=\"".concat(parentCategoryId, "\"\n              data-parent-label=\"").concat(parentItem.label, "\"") : '', "\n        data-category-ids=\"").concat(items.map(function (item) {
+    column.innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label\">Values</th>\n          <th class=\"count\">Mapping</th>\n          <th class=\"amount\">Amount</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n        <tr\n          class=\"item -all\"\n          ".concat(parentCategoryId ? "\n                data-parent-category-id=\"".concat(parentCategoryId, "\"\n                data-parent-label=\"").concat(parentItem.label, "\"") : '', "\n          data-category-ids=\"").concat(items.map(function (item) {
       return item.categoryId;
-    }), "\"\n        data-depth=\"").concat(depth, "\">\n        <td class=\"label\" colspan=\"5\">\n          <input\n            type=\"checkbox\"\n            value=\"").concat(ALL_PROPERTIES, "\" \n            ").concat(selectedParentCategoryId === parentCategoryId ? ' checked' : '', "/>\n          <span class=\"label\">Map following attributes</span>\n        </td>\n      </tr>\n    </thead>\n    <tbody>").concat(items.map(function (item) {
+    }), "\"\n          data-depth=\"").concat(depth, "\">\n          <td class=\"label\" colspan=\"5\">\n            <input\n              type=\"checkbox\"\n              value=\"").concat(ALL_PROPERTIES, "\" \n              ").concat(selectedParentCategoryId === parentCategoryId ? ' checked' : '', "/>\n            <span class=\"label\">Map following attributes</span>\n          </td>\n        </tr>\n      </thead>\n      <tbody>").concat(items.map(function (item) {
       max = Math.max(max, item.count);
       var checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
-      return "\n      <tr\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <td class=\"label\">\n          <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n          <span class=\"label\">").concat(item.label, "</span>\n        </td>\n        <td class=\"count\"></td>\n        <td class=\"amount\">").concat(item.count.toLocaleString(), "</td>\n        <td class=\"pvalue\"></td>\n        <td class=\"drilldown\"></td>\n      </tr>");
-    }).join(''), "</tbody>\n    ");
-    var tbody = table.querySelector(':scope > tbody');
+      return "\n        <tr\n          class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n          data-id=\"").concat(item.categoryId, "\"\n          data-category-id=\"").concat(item.categoryId, "\"\n          data-count=\"").concat(item.count, "\">\n          <td class=\"label\">\n            <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n            <span class=\"label\">").concat(item.label, "</span>\n          </td>\n          <td class=\"count\"></td>\n          <td class=\"amount\">").concat(item.count.toLocaleString(), "</td>\n          <td class=\"pvalue\"></td>\n          <td class=\"drilldown\"></td>\n        </tr>");
+    }).join(''), "</tbody>\n    </table>\n    ");
+    var tbody = column.querySelector(':scope > table > tbody');
     var listItems = tbody.querySelectorAll(':scope > .item');
     listItems.forEach(function (tr) {
       return _classPrivateFieldGet(_this4, _items$1)[tr.dataset.categoryId].elm = tr;
@@ -4379,7 +4383,6 @@
     tbody.querySelectorAll(':scope > .item.-haschild > .drilldown').forEach(function (drilldown) {
       drilldown.addEventListener('click', function () {
         var tr = drilldown.closest('tr');
-        console.log(tr);
         tr.classList.add('-selected'); // delete an existing lower columns
 
         if (_classPrivateFieldGet(_this4, _currentColumns).length > depth + 1) {
@@ -4432,26 +4435,28 @@
       });
     }); // Map attributes event
 
-    table.querySelector(':scope > thead > .item.-all').addEventListener('change', function (e) {
+    column.querySelector(':scope > table > thead > .item.-all').addEventListener('change', function (e) {
       var parentCategoryId = e.target.closest('.item.-all').dataset.parentCategoryId;
       if (e.target.checked) ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this4, _property$3).propertyId, parentCategoryId);else ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this4, _property$3).propertyId, parentCategoryId);
     });
 
     _classPrivateFieldGet(this, _columns).push({
-      table: table,
+      column: column,
       parentCategoryId: parentCategoryId,
       max: max
     });
 
     _classPrivateMethodGet(this, _update$2, _update2$2).call(this, App$1.viewModes.log10);
 
-    return table;
+    return column;
   }
 
   function _appendSubColumn2(column, depth) {
+    var _this5 = this;
+
     _classPrivateFieldGet(this, _currentColumns)[depth] = column;
 
-    _classPrivateFieldGet(this, _CONTAINER$1).insertAdjacentElement('beforeend', column); // scroll
+    _classPrivateFieldGet(this, _CONTAINER$1).append(column); // scroll
 
 
     var left = _classPrivateFieldGet(this, _CONTAINER$1).scrollWidth - _classPrivateFieldGet(this, _CONTAINER$1).clientWidth;
@@ -4464,27 +4469,25 @@
       });
     }
 
-    console.log(column);
-    console.log(column.querySelector(':scope > thead > .item.-all').dataset.categoryIds);
-    console.log(ConditionBuilder$1.userIds);
-    console.log(_classPrivateFieldGet(this, _property$3));
-
-    if (ConditionBuilder$1.userIds) {
-      axios.get(dataFromUserIds(_classPrivateFieldGet(this, _property$3).data, _classPrivateFieldGet(this, _property$3).primaryKey, column.querySelector(':scope > thead > .item.-all').dataset.categoryIds)).then(function (response) {
-        console.log(response);
+    if (document.body.classList.contains('-showuserids') && ConditionBuilder$1.userIds) {
+      axios.get(dataFromUserIds(_classPrivateFieldGet(this, _property$3).data, _classPrivateFieldGet(this, _property$3).primaryKey, column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId)).then(function (response) {
+        _classPrivateMethodGet(_this5, _setUserValues, _setUserValues2).call(_this5, {
+          propertyId: _classPrivateFieldGet(_this5, _property$3).propertyId,
+          values: response.data
+        });
       });
     }
   }
 
   function _update2$2(isLog10) {
-    var _this5 = this;
+    var _this6 = this;
 
     _classPrivateFieldGet(this, _columns).forEach(function (column) {
       var max = column.max;
       max = isLog10 && max > 1 ? Math.log10(max) : max;
-      column.table.querySelectorAll(':scope > tbody > .item').forEach(function (tr) {
+      column.column.querySelectorAll(':scope > table > tbody > .item').forEach(function (tr) {
         var count = Number(tr.dataset.count);
-        tr.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this5, _subject$2).color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
+        tr.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this6, _subject$2).color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
           return cood * 256;
         }).join(','), ")");
       });
@@ -4505,13 +4508,11 @@
 
           var item = _classPrivateFieldGet(this, _items$1)[value.categoryId];
 
-          console.log(item);
-
           if (item) {
-            console.log(values);
             item.elm.classList.add('-pinsticking');
-            item.elm.querySelector(':scope > .count').textContent = value.count;
-            item.elm.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(3) : ''; // item.elm.querySelector(':scope > .pin > .value').innerHTML = `${value.count}${value.pValue ? `,  <small>P-value:</small> ${value.pValue === 1 ? value.pValue : value.pValue.toExponential(3)}` : ''}`;
+            item.elm.querySelector(':scope > .count').textContent = value.hit_count.toLocaleString();
+            item.elm.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(3) : '';
+            if (value.hit_count === 0) item.elm.classList.remove('-pinsticking');else item.elm.classList.add('-pinsticking');
           }
         }
       } catch (err) {
@@ -5143,7 +5144,7 @@
           return userValue.categoryId === value.categoryId;
         });
 
-        if (userValue) {
+        if (userValue !== null && userValue !== void 0 && userValue.hit_count) {
           // does not have user value
           values.push({
             key: 'Count',
@@ -5269,12 +5270,12 @@
           return userValue.categoryId === value.categoryId;
         });
 
-        if (userValue) {
+        if (userValue !== null && userValue !== void 0 && userValue.hit_count) {
           value.elm.classList.add('-pinsticking'); // pin
 
           var ratio,
               pValueGreaterThan = 1;
-          ratio = userValue.count / value.count;
+          ratio = userValue.hit_count / value.count;
           ratio = ratio > 1 ? 1 : ratio;
 
           if (userValue.pValue) {
@@ -5314,7 +5315,7 @@
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
           value.icon.style.fontSize = size + 'px';
-          value.userValueCount = userValue.count;
+          value.userValueCount = userValue.hit_count;
           value.elm.dataset.pValueGreaterThan = pValueGreaterThan;
         } else {
           value.elm.classList.remove('-pinsticking');
