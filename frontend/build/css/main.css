@@ -613,97 +613,69 @@ main {
   overflow-y: auto;
   vertical-align: top;
 }
-.column-selector-view > .columns > .inner > .column > .item {
-  margin: 0;
-  padding: 0.2rem 1.2rem 0.2rem 0.4rem;
+.column-selector-view > .columns > .inner > .column > table > thead > tr > th, .column-selector-view > .columns > .inner > .column > table > thead > tr > td, .column-selector-view > .columns > .inner > .column > table > tbody > tr > th, .column-selector-view > .columns > .inner > .column > table > tbody > tr > td {
+  padding: 0.2rem 0.4rem;
+  vertical-align: middle;
+}
+.column-selector-view > .columns > .inner > .column > table > thead > tr > th > input, .column-selector-view > .columns > .inner > .column > table > thead > tr > td > input, .column-selector-view > .columns > .inner > .column > table > tbody > tr > th > input, .column-selector-view > .columns > .inner > .column > table > tbody > tr > td > input {
+  vertical-align: middle;
+}
+.column-selector-view > .columns > .inner > .column > table > thead {
+  color: white;
+}
+.column-selector-view > .columns > .inner > .column > table > thead > .header {
+  background-color: var(--color-lamp-black);
+}
+.column-selector-view > .columns > .inner > .column > table > thead > .item {
+  background-color: var(--color-dark-gray);
+}
+.column-selector-view > .columns > .inner > .column > table > tbody > tr > .label {
+  display: relative;
+}
+.column-selector-view > .columns > .inner > .column > table > tbody > tr > .count, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .amount, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .pvalue {
+  text-align: right;
+}
+.column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild > .drilldown {
   position: relative;
-  width: 100%;
-  line-height: 1;
   cursor: pointer;
-  transition: background var(--transition-instant);
-  display: -webkit-flex;
-  display: flex;
+  width: 1.6rem;
 }
-.column-selector-view > .columns > .inner > .column > .item.-all {
-  background-color: var(--color-warm-gray);
-  border-bottom: solid 0.1rem var(--color-gray);
-  display: none;
-}
-[data-condition=values] .column-selector-view > .columns > .inner > .column > .item.-all {
-  display: inherit;
-}
-[data-condition=values] .column-selector-view > .columns > .inner > .column > .item.-all > input {
-  display: inherit;
-}
-.column-selector-view > .columns > .inner > .column > .item.-haschild::before, .column-selector-view > .columns > .inner > .column > .item.-haschild::after {
+.column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild > .drilldown::before, .column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild > .drilldown::after {
   content: "";
   position: absolute;
   display: block;
 }
-.column-selector-view > .columns > .inner > .column > .item.-haschild::before {
+.column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild > .drilldown::before {
   width: 1rem;
   height: 1rem;
-  top: 0.4rem;
-  right: 0.1rem;
+  top: 0.5rem;
+  right: 0.3rem;
   border-radius: 100%;
 }
-.column-selector-view > .columns > .inner > .column > .item.-haschild::after {
+.column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild > .drilldown::after {
   border-style: solid;
   border-width: 0.3rem 0 0.3rem 0.4rem;
   border-color: transparent transparent transparent var(--color-lamp-black);
-  top: 0.6rem;
-  right: 0.3rem;
+  top: 0.7rem;
+  right: 0.5rem;
 }
-.column-selector-view > .columns > .inner > .column > .item.-haschild:hover::before, .column-selector-view > .columns > .inner > .column > .item.-haschild.-selected::before {
+.column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild > .drilldown:hover::before {
   background-color: var(--color-lamp-black);
 }
-.column-selector-view > .columns > .inner > .column > .item.-haschild:hover::after, .column-selector-view > .columns > .inner > .column > .item.-haschild.-selected::after {
+.column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild > .drilldown:hover::after {
   border-color: transparent transparent transparent white;
 }
-.column-selector-view > .columns > .inner > .column > .item > label, .column-selector-view > .columns > .inner > .column > .item > .count {
-  padding-top: 0.1rem;
-  padding-bottom: 0.1rem;
+.column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild.-selected > .drilldown::before {
+  background-color: var(--color-lamp-black);
 }
-.column-selector-view > .columns > .inner > .column > .item > input {
-  -webkit-margin-end: 0.4rem;
-          margin-inline-end: 0.4rem;
-  vertical-align: bottom;
+.column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild.-selected > .drilldown::after {
+  border-color: transparent transparent transparent white;
 }
-[data-condition=values] .column-selector-view > .columns > .inner > .column > .item > input {
-  display: none;
-}
-.column-selector-view > .columns > .inner > .column > .item > .label {
-  padding-right: 0.4rem;
-}
-.column-selector-view > .columns > .inner > .column > .item > .count {
-  font-weight: lighter;
-  padding-left: 1.2rem;
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
-  text-align: right;
-}
-.column-selector-view > .columns > .inner > .column > .item > .pin {
-  padding-left: 1rem;
-  display: none;
-}
-.column-selector-view > .columns > .inner > .column > .item > .pin > .material-icons {
-  font-size: 1.2rem;
-  vertical-align: middle;
-  position: relative;
-  top: -0.1rem;
-}
-.column-selector-view > .columns > .inner > .column > .item > .pin > .value > small {
-  font-size: 1rem;
-  font-weight: lighter;
-}
-body.-showuserids .column-selector-view > .columns > .inner > .column > .item {
+body.-showuserids .column-selector-view > .columns > .inner > .column > table > tbody > tr {
   opacity: 0.25;
 }
-body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-pinsticking {
+body.-showuserids .column-selector-view > .columns > .inner > .column > table > tbody > tr.-pinsticking {
   opacity: 1;
-}
-body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-pinsticking > .pin {
-  display: inline;
 }
 .column-selector-view > .loading-view {
   background-color: rgba(204, 204, 204, 0.5);
@@ -1594,9 +1566,6 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
 .track-view > .row.-lower > .left > .external-link-button-view {
   font-size: 1rem;
   margin-left: 0.8rem;
-}
-.track-view > .row > .selector {
-  height: 100%;
 }
 .track-view.-allselected::after {
   content: "";

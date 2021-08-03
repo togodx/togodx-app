@@ -4101,6 +4101,13 @@
     });
   }
 
+  function dataFromUserIds(sparqlet, primaryKey) {
+    var _ConditionBuilder$use;
+
+    var categoryIds = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+    return "".concat(App$1.aggregateMapping, "?sparqlet=").concat(encodeURIComponent(sparqlet), "&primaryKey=").concat(encodeURIComponent(primaryKey), "&categoryIds=").concat(categoryIds, "&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat((_ConditionBuilder$use = ConditionBuilder$1.userIds) !== null && _ConditionBuilder$use !== void 0 ? _ConditionBuilder$use : '');
+  }
+
   var ALL_PROPERTIES = 'ALL_PROPERTIES';
 
   var _subject$2 = new WeakMap();
@@ -4240,21 +4247,21 @@
       var detail = _ref.detail;
 
       if (_classPrivateFieldGet(_this, _property$3).propertyId === detail.propertyId) {
-        _classPrivateFieldGet(_this, _currentColumns).forEach(function (ul) {
+        _classPrivateFieldGet(_this, _currentColumns).forEach(function (column) {
           var isAllChecked = true;
-          ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
-            var checkbox = li.querySelector(':scope > input[type="checkbox"]');
+          column.querySelectorAll(':scope > table > tbody > .item').forEach(function (tr) {
+            var checkbox = tr.querySelector(':scope > .label > input[type="checkbox"]');
             if (!checkbox.checked) isAllChecked = false;
 
-            if (li.dataset.id === detail.categoryId) {
+            if (tr.dataset.id === detail.categoryId) {
               // change checkbox status
               var isChecked = detail.action === 'add';
               checkbox.checked = isChecked;
-              _classPrivateFieldGet(_this, _items$1)[li.dataset.id].checked = isChecked;
+              _classPrivateFieldGet(_this, _items$1)[tr.dataset.id].checked = isChecked;
             }
           }); // update Map attributes
 
-          ul.querySelector(':scope > .item.-all > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
+          column.querySelector(':scope > table > thead > .item.-all > .label > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
           // TODO:
         });
       }
@@ -4265,7 +4272,7 @@
     DefaultEventEmitter$1.addEventListener(setUserValues, function (e) {
       return _classPrivateMethodGet(_this, _setUserValues, _setUserValues2).call(_this, e.detail);
     });
-    DefaultEventEmitter$1.addEventListener(clearUserValues, function (e) {
+    DefaultEventEmitter$1.addEventListener(clearUserValues, function () {
       return _classPrivateMethodGet(_this, _clearUserValues, _clearUserValues2).call(_this);
     });
     var _depth = 0;
@@ -4310,6 +4317,8 @@
     _classPrivateFieldGet(this, _LOADING_VIEW$2).classList.add('-shown');
 
     _classPrivateMethodGet(this, _getColumn, _getColumn2).call(this, categoryId, depth).then(function (column) {
+      console.log(column);
+
       _classPrivateMethodGet(_this2, _appendSubColumn, _appendSubColumn2).call(_this2, column, depth);
 
       _classPrivateFieldGet(_this2, _LOADING_VIEW$2).classList.remove('-shown');
@@ -4333,6 +4342,8 @@
         resolve(column.ul);
       } else {
         Records$1.fetchPropertyValues(_classPrivateFieldGet(_this3, _property$3).propertyId, categoryId).then(function (values) {
+          console.log(values);
+
           _classPrivateMethodGet(_this3, _setItems, _setItems2).call(_this3, values, depth, categoryId);
 
           var column = _classPrivateMethodGet(_this3, _makeColumn, _makeColumn2).call(_this3, values, depth, categoryId);
@@ -4354,25 +4365,26 @@
     var selectedParentCategoryId = ConditionBuilder$1.getSelectedParentCategoryId(_classPrivateFieldGet(this, _property$3).propertyId);
     var selectedCategoryIds = ConditionBuilder$1.getSelectedCategoryIds(_classPrivateFieldGet(this, _property$3).propertyId); // make column
 
-    var ul = document.createElement('ul');
-    ul.classList.add('column');
-    var max = 0; // make items
-
-    ul.innerHTML = "<li\n      class=\"item -all\"\n      ".concat(parentCategoryId ? "\n        data-parent-category-id=\"".concat(parentCategoryId, "\"\n        data-parent-label=\"").concat(parentItem.label, "\"") : '', "\n      data-category-ids=\"").concat(items.map(function (item) {
+    var column = document.createElement('div');
+    column.classList.add('column');
+    var max = 0;
+    column.innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label\">Values</th>\n          <th class=\"mapping\">Mapping</th>\n          <th class=\"count\">Count</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n        <tr\n          class=\"item -all\"\n          ".concat(parentCategoryId ? "\n                data-parent-category-id=\"".concat(parentCategoryId, "\"\n                data-parent-label=\"").concat(parentItem.label, "\"") : '', "\n          data-category-ids=\"").concat(items.map(function (item) {
       return item.categoryId;
-    }), "\"\n      data-depth=\"").concat(depth, "\">\n      <input type=\"checkbox\" value=\"").concat(ALL_PROPERTIES, "\" \n      ").concat(selectedParentCategoryId === parentCategoryId ? ' checked' : '', "/>\n      <span class=\"label\">Map following attributes</span>\n    </li>") + items.map(function (item) {
+    }), "\"\n          data-depth=\"").concat(depth, "\">\n          <td class=\"label\" colspan=\"5\">\n            <input\n              type=\"checkbox\"\n              value=\"").concat(ALL_PROPERTIES, "\" \n              ").concat(selectedParentCategoryId === parentCategoryId ? ' checked' : '', "/>\n            <span class=\"label\">Map following attributes</span>\n          </td>\n        </tr>\n      </thead>\n      <tbody>").concat(items.map(function (item) {
       max = Math.max(max, item.count);
       var checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
-      return "<li\n        class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n        data-id=\"").concat(item.categoryId, "\"\n        data-category-id=\"").concat(item.categoryId, "\"\n        data-count=\"").concat(item.count, "\">\n        <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n        <span class=\"label\">").concat(item.label, "</span>\n        <span class=\"count\">").concat(item.count.toLocaleString(), "</span>\n        <span class=\"pin\">\n          <span class=\"material-icons\">location_on</span>\n          <span class=\"value\"></span>\n        </span>\n      </li>");
-    }).join('');
-    var listItems = ul.querySelectorAll(':scope > .item:not(.-all)');
-    listItems.forEach(function (li) {
-      return _classPrivateFieldGet(_this4, _items$1)[li.dataset.categoryId].elm = li;
+      return "\n        <tr\n          class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n          data-id=\"").concat(item.categoryId, "\"\n          data-category-id=\"").concat(item.categoryId, "\"\n          data-count=\"").concat(item.count, "\">\n          <td class=\"label\">\n            <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n            <span class=\"label\">").concat(item.label, "</span>\n          </td>\n          <td class=\"mapping\"></td>\n          <td class=\"count\">").concat(item.count.toLocaleString(), "</td>\n          <td class=\"pvalue\"></td>\n          <td class=\"drilldown\"></td>\n        </tr>");
+    }).join(''), "</tbody>\n    </table>\n    ");
+    var tbody = column.querySelector(':scope > table > tbody');
+    var listItems = tbody.querySelectorAll(':scope > .item');
+    listItems.forEach(function (tr) {
+      return _classPrivateFieldGet(_this4, _items$1)[tr.dataset.categoryId].elm = tr;
     }); // drill down event
 
-    ul.querySelectorAll(':scope > .item.-haschild').forEach(function (li) {
-      li.addEventListener('click', function () {
-        li.classList.add('-selected'); // delete an existing lower columns
+    tbody.querySelectorAll(':scope > .item.-haschild > .drilldown').forEach(function (drilldown) {
+      drilldown.addEventListener('click', function () {
+        var tr = drilldown.closest('tr');
+        tr.classList.add('-selected'); // delete an existing lower columns
 
         if (_classPrivateFieldGet(_this4, _currentColumns).length > depth + 1) {
           for (var i = depth + 1; i < _classPrivateFieldGet(_this4, _currentColumns).length; i++) {
@@ -4403,14 +4415,14 @@
           _iterator2.f();
         }
 
-        _classPrivateFieldGet(_this4, _items$1)[li.dataset.id].selected = true;
+        _classPrivateFieldGet(_this4, _items$1)[tr.dataset.id].selected = true;
 
-        _classPrivateMethodGet(_this4, _setSubColumn, _setSubColumn2).call(_this4, li.dataset.id, depth + 1);
+        _classPrivateMethodGet(_this4, _setSubColumn, _setSubColumn2).call(_this4, tr.dataset.id, depth + 1);
       });
     });
-    listItems.forEach(function (li) {
+    listItems.forEach(function (tr) {
       // select/deselect a item (attribute)
-      var checkbox = li.querySelector(':scope > input[type="checkbox"]');
+      var checkbox = tr.querySelector(':scope > .label > input[type="checkbox"]');
       checkbox.addEventListener('click', function (e) {
         e.stopPropagation();
 
@@ -4424,33 +4436,28 @@
       });
     }); // Map attributes event
 
-    ul.querySelector(':scope > .item.-all').addEventListener('change', function (e) {
-      var dataset = e.target.parentNode.dataset;
-
-      if (e.target.checked) {
-        // add
-        ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this4, _property$3).propertyId, dataset.parentCategoryId);
-      } else {
-        // remove
-        ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this4, _property$3).propertyId, dataset.parentCategoryId);
-      }
+    column.querySelector(':scope > table > thead > .item.-all').addEventListener('change', function (e) {
+      var parentCategoryId = e.target.closest('.item.-all').dataset.parentCategoryId;
+      if (e.target.checked) ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this4, _property$3).propertyId, parentCategoryId);else ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this4, _property$3).propertyId, parentCategoryId);
     });
 
     _classPrivateFieldGet(this, _columns).push({
-      ul: ul,
+      column: column,
       parentCategoryId: parentCategoryId,
       max: max
     });
 
     _classPrivateMethodGet(this, _update$2, _update2$2).call(this, App$1.viewModes.log10);
 
-    return ul;
+    return column;
   }
 
   function _appendSubColumn2(column, depth) {
+    var _this5 = this;
+
     _classPrivateFieldGet(this, _currentColumns)[depth] = column;
 
-    _classPrivateFieldGet(this, _CONTAINER$1).insertAdjacentElement('beforeend', column); // scroll
+    _classPrivateFieldGet(this, _CONTAINER$1).append(column); // scroll
 
 
     var left = _classPrivateFieldGet(this, _CONTAINER$1).scrollWidth - _classPrivateFieldGet(this, _CONTAINER$1).clientWidth;
@@ -4462,17 +4469,26 @@
         behavior: 'smooth'
       });
     }
+
+    if (document.body.classList.contains('-showuserids') && ConditionBuilder$1.userIds) {
+      axios.get(dataFromUserIds(_classPrivateFieldGet(this, _property$3).data, _classPrivateFieldGet(this, _property$3).primaryKey, column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId)).then(function (response) {
+        _classPrivateMethodGet(_this5, _setUserValues, _setUserValues2).call(_this5, {
+          propertyId: _classPrivateFieldGet(_this5, _property$3).propertyId,
+          values: response.data
+        });
+      });
+    }
   }
 
   function _update2$2(isLog10) {
-    var _this5 = this;
+    var _this6 = this;
 
     _classPrivateFieldGet(this, _columns).forEach(function (column) {
       var max = column.max;
       max = isLog10 && max > 1 ? Math.log10(max) : max;
-      column.ul.querySelectorAll(':scope > li:not(.-all)').forEach(function (li) {
-        var count = Number(li.dataset.count);
-        li.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this5, _subject$2).color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
+      column.column.querySelectorAll(':scope > table > tbody > .item').forEach(function (tr) {
+        var count = Number(tr.dataset.count);
+        tr.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this6, _subject$2).color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
           return cood * 256;
         }).join(','), ")");
       });
@@ -4494,8 +4510,12 @@
           var item = _classPrivateFieldGet(this, _items$1)[value.categoryId];
 
           if (item) {
+            console.log(item.elm.querySelector(':scope > .mapping'));
+            console.log(value);
             item.elm.classList.add('-pinsticking');
-            item.elm.querySelector(':scope > .pin > .value').innerHTML = "".concat(value.count).concat(value.pValue ? ",  <small>P-value:</small> ".concat(value.pValue === 1 ? value.pValue : value.pValue.toExponential(3)) : '');
+            item.elm.querySelector(':scope > .mapping').textContent = value.hit_count ? value.hit_count.toLocaleString() : '';
+            item.elm.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(3) : '';
+            if (value.hit_count === 0) item.elm.classList.remove('-pinsticking');else item.elm.classList.add('-pinsticking');
           }
         }
       } catch (err) {
@@ -5127,7 +5147,7 @@
           return userValue.categoryId === value.categoryId;
         });
 
-        if (userValue) {
+        if (userValue !== null && userValue !== void 0 && userValue.hit_count) {
           // does not have user value
           values.push({
             key: 'Count',
@@ -5253,12 +5273,12 @@
           return userValue.categoryId === value.categoryId;
         });
 
-        if (userValue) {
+        if (userValue !== null && userValue !== void 0 && userValue.hit_count) {
           value.elm.classList.add('-pinsticking'); // pin
 
           var ratio,
               pValueGreaterThan = 1;
-          ratio = userValue.count / value.count;
+          ratio = userValue.hit_count / value.count;
           ratio = ratio > 1 ? 1 : ratio;
 
           if (userValue.pValue) {
@@ -5298,7 +5318,7 @@
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
           value.icon.style.fontSize = size + 'px';
-          value.userValueCount = userValue.count;
+          value.userValueCount = userValue.hit_count;
           value.elm.dataset.pValueGreaterThan = pValueGreaterThan;
         } else {
           value.elm.classList.remove('-pinsticking');
@@ -7822,8 +7842,6 @@
 
   var timeOutError = 'ECONNABORTED';
 
-  var _path = new WeakMap();
-
   var _ROOT = new WeakMap();
 
   var _BODY = new WeakMap();
@@ -7842,8 +7860,6 @@
 
   var _prepareProgressIndicator = new WeakSet();
 
-  var _queryTemplate = new WeakSet();
-
   var _getProperty = new WeakSet();
 
   var _handleProp = new WeakSet();
@@ -7856,144 +7872,126 @@
 
   var _clear = new WeakSet();
 
-  var UploadUserIDsView = /*#__PURE__*/function () {
-    function UploadUserIDsView(elm) {
-      var _this = this;
+  var UploadUserIDsView = function UploadUserIDsView(elm) {
+    var _this = this;
 
-      _classCallCheck(this, UploadUserIDsView);
+    _classCallCheck(this, UploadUserIDsView);
 
-      _clear.add(this);
+    _clear.add(this);
 
-      _reset.add(this);
+    _reset.add(this);
 
-      _resetCounters.add(this);
+    _resetCounters.add(this);
 
-      _complete.add(this);
+    _complete.add(this);
 
-      _handleProp.add(this);
+    _handleProp.add(this);
 
-      _getProperty.add(this);
+    _getProperty.add(this);
 
-      _queryTemplate.add(this);
+    _prepareProgressIndicator.add(this);
 
-      _prepareProgressIndicator.add(this);
+    _fetch.add(this);
 
-      _fetch.add(this);
+    _ROOT.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _path.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _BODY.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _ROOT.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _USER_IDS.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _BODY.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _progressIndicator.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _USER_IDS.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _source.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _progressIndicator.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _offset.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _source.set(this, {
-        writable: true,
-        value: void 0
-      });
+    _errorCount.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-      _offset.set(this, {
-        writable: true,
-        value: void 0
-      });
+    // TODO: set axios settings in common file
+    // TODO: set 'user cancel' as a const in axios setting file
+    axios.defaults.timeout = 120000;
+    axiosRetry(axios, {
+      retries: 5,
+      shouldResetTimeout: true,
+      retryDelay: function retryDelay(retryCount) {
+        return Math.pow(2, retryCount - 1) * 5000;
+      },
+      retryCondition: function retryCondition(error) {
+        var _error$response;
 
-      _errorCount.set(this, {
-        writable: true,
-        value: void 0
-      });
+        return error.code === timeOutError | ((_error$response = error.response) === null || _error$response === void 0 ? void 0 : _error$response.status) === 500;
+      }
+    });
 
-      // TODO: set axios settings in common file
-      // TODO: set 'user cancel' as a const in axios setting file
-      axios.defaults.timeout = 120000;
-      axiosRetry(axios, {
-        retries: 5,
-        shouldResetTimeout: true,
-        retryDelay: function retryDelay(retryCount) {
-          return Math.pow(2, retryCount - 1) * 5000;
-        },
-        retryCondition: function retryCondition(error) {
-          var _error$response;
+    _classPrivateFieldSet(this, _ROOT, elm);
 
-          return error.code === timeOutError | ((_error$response = error.response) === null || _error$response === void 0 ? void 0 : _error$response.status) === 500;
-        }
-      });
+    _classPrivateFieldSet(this, _offset, 0);
 
-      _classPrivateFieldSet(this, _ROOT, elm);
+    _classPrivateFieldSet(this, _errorCount, 0);
 
-      _classPrivateFieldSet(this, _offset, 0);
+    _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
 
-      _classPrivateFieldSet(this, _errorCount, 0);
+    _classPrivateFieldSet(this, _USER_IDS, elm.querySelector(':scope > textarea'));
 
-      _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
+    elm.appendChild(document.createElement('div'));
 
-      _classPrivateFieldSet(this, _USER_IDS, elm.querySelector(':scope > textarea'));
-
-      elm.appendChild(document.createElement('div'));
-
-      _classPrivateFieldSet(this, _progressIndicator, new ProgressIndicator(elm.lastChild, 'simple')); // attach events
+    _classPrivateFieldSet(this, _progressIndicator, new ProgressIndicator(elm.lastChild, 'simple')); // attach events
 
 
-      var buttons = elm.querySelector(':scope > .buttons');
-      buttons.querySelector(':scope > button:nth-child(1)').addEventListener('click', function (e) {
-        e.stopPropagation(); // clear after 2nd execution
+    var buttons = elm.querySelector(':scope > .buttons');
+    buttons.querySelector(':scope > button:nth-child(1)').addEventListener('click', function (e) {
+      e.stopPropagation(); // clear after 2nd execution
 
-        if (_classPrivateFieldGet(_this, _source)) _classPrivateMethodGet(_this, _reset, _reset2).call(_this, true);
+      if (_classPrivateFieldGet(_this, _source)) _classPrivateMethodGet(_this, _reset, _reset2).call(_this, true);
 
-        _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
+      _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
 
-        return false;
-      });
-      buttons.querySelector(':scope > button:nth-child(2)').addEventListener('click', function (e) {
-        e.stopPropagation();
+      return false;
+    });
+    buttons.querySelector(':scope > button:nth-child(2)').addEventListener('click', function (e) {
+      e.stopPropagation();
 
-        _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
+      _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
 
-        return false;
-      }); // event listeners
+      return false;
+    }); // event listeners
 
-      _classPrivateFieldGet(this, _USER_IDS).addEventListener('change', function () {
-        ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value);
-      }); // this.#USER_IDS.addEventListener('keyup', e => {
-      //   if (e.keyCode === 13) this.#fetch();
-      // });
-      // DefaultEventEmitter.addEventListener(event.restoreParameters, this.#restoreParameters.bind(this));
-
-
-      DefaultEventEmitter$1.addEventListener(clearCondition, _classPrivateMethodGet(this, _clear, _clear2).bind(this));
-    } // public methods
+    _classPrivateFieldGet(this, _USER_IDS).addEventListener('change', function () {
+      ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value);
+    }); // this.#USER_IDS.addEventListener('keyup', e => {
+    //   if (e.keyCode === 13) this.#fetch();
+    // });
+    // DefaultEventEmitter.addEventListener(event.restoreParameters, this.#restoreParameters.bind(this));
 
 
-    _createClass(UploadUserIDsView, [{
-      key: "definePath",
-      value: function definePath(path) {
-        _classPrivateFieldSet(this, _path, path);
-      } // private methods
-      // #restoreParameters({detail}) {
-      //   this.#USER_IDS.value = detail.userIds;
-      // }
-
-    }]);
-
-    return UploadUserIDsView;
-  }();
+    DefaultEventEmitter$1.addEventListener(clearCondition, _classPrivateMethodGet(this, _clear, _clear2).bind(this));
+  } // public methods
+  // private methods
+  // #restoreParameters({detail}) {
+  //   this.#USER_IDS.value = detail.userIds;
+  // }
+  ;
 
   function _fetch2() {
     var _this2 = this;
@@ -8020,17 +8018,13 @@
     _classPrivateFieldGet(this, _progressIndicator).setIndicator('Mapping your IDs', Records$1.properties.length);
   }
 
-  function _queryTemplate2() {
-    return "".concat(_classPrivateFieldGet(this, _path).url, "?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat(encodeURIComponent(_classPrivateFieldGet(this, _USER_IDS).value.replace(/,/g, ' ').split(/\s+/).join(',')));
-  }
-
   function _getProperty2(_ref) {
     var _this3 = this;
 
     var propertyId = _ref.propertyId,
         data = _ref.data,
         primaryKey = _ref.primaryKey;
-    axios.get(_classPrivateMethodGet(this, _queryTemplate, _queryTemplate2).call(this).replace('@@sparqlet@@', encodeURIComponent(data)).replace('@@primaryKey@@', encodeURIComponent(primaryKey)), {
+    axios.get(dataFromUserIds(data, primaryKey), {
       cancelToken: _classPrivateFieldGet(this, _source).token
     }).then(function (response) {
       _classPrivateFieldGet(_this3, _BODY).classList.add('-showuserids');
@@ -8239,7 +8233,7 @@
         new ResultsTable(document.querySelector('#ResultsTable'));
         new ResultDetailModal();
         new BalloonView();
-        var uploadUserIDsView = new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
+        new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
 
         Promise.all([fetch(api.PROPERTIES), fetch(api.TEMPLATES), fetch(api.AGGREGATE)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
@@ -8252,9 +8246,7 @@
               aggregate = _ref2[2];
 
           Records$1.setSubjects(subjects);
-          ConditionBuilder$1.init(); // setup upload user id
-
-          uploadUserIDsView.definePath(aggregate.mapping); // define primary keys
+          ConditionBuilder$1.init(); // define primary keys
 
           var customEvent = new CustomEvent(defineTogoKey, {
             detail: {
@@ -8289,6 +8281,11 @@
       key: "aggregateRows",
       get: function get() {
         return _classPrivateFieldGet(this, _aggregate).table.url;
+      }
+    }, {
+      key: "aggregateMapping",
+      get: function get() {
+        return _classPrivateFieldGet(this, _aggregate).mapping.url;
       }
     }, {
       key: "colorWhite",

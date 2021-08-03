@@ -60,7 +60,7 @@ export default class TrackOverviewCategorical {
       elm.addEventListener('mouseenter', () => {
         const values = [];
         const userValue = this.#userValues?.find(userValue => userValue.categoryId === value.categoryId);
-        if (userValue) {
+        if (userValue?.hit_count) {
           // does not have user value
           values.push({
             key: 'Count',
@@ -161,11 +161,11 @@ export default class TrackOverviewCategorical {
       // mapping
       this.#values.forEach(value => {
         const userValue = detail.values.find(userValue => userValue.categoryId === value.categoryId);
-        if (userValue) {
+        if (userValue?.hit_count) {
           value.elm.classList.add('-pinsticking');
           // pin
           let ratio, pValueGreaterThan = 1;
-          ratio = userValue.count / value.count;
+          ratio = userValue.hit_count / value.count;
           ratio = ratio > 1 ? 1 : ratio;
           if (userValue.pValue) {
             // ratio = (1 - Math.log10(userValue.pValue)) / maxPValue;
@@ -198,7 +198,7 @@ export default class TrackOverviewCategorical {
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
           value.icon.style.fontSize = size + 'px';
-          value.userValueCount =  userValue.count;
+          value.userValueCount = userValue.hit_count;
           value.elm.dataset.pValueGreaterThan = pValueGreaterThan;
         } else {
           value.elm.classList.remove('-pinsticking');
