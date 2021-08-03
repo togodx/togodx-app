@@ -1558,14 +1558,16 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
       -ms-user-select: none;
           user-select: none;
 }
-.track-view > .row.-lower > .left > .description {
-  margin-bottom: 0.4rem;
-  padding: 0 0.8rem;
-  line-height: 1.2;
+.track-view > .row.-lower > .left > .specification {
+  padding: 0 1.2rem 1.2rem;
 }
-.track-view > .row.-lower > .left > .external-link-button-view {
+.track-view > .row.-lower > .left > .specification > dt {
   font-size: 1rem;
-  margin-left: 0.8rem;
+}
+.track-view > .row.-lower > .left > .specification > dd {
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+  word-break: break-all;
 }
 .track-view.-allselected::after {
   content: "";
