@@ -3,7 +3,6 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
-import axiosRetry from 'axios-retry';
 import ProgressIndicator from './ProgressIndicator';
 
 const LIMIT = 100;
@@ -91,17 +90,6 @@ export default class TableData {
   #BUTTON_RIGHT;
 
   constructor(condition, elm) {
-    // axios settings
-    axios.defaults.timeout = 180000;
-    axiosRetry(axios, {
-      retries: 5,
-      shouldResetTimeout: true,
-      retryDelay: axiosRetry.exponentialDelay,
-      retryCondition: error => {
-        return (error.code === timeOutError) | (error.response?.status === 500);
-      },
-    });
-
     const CancelToken = axios.CancelToken;
     this.#source = CancelToken.source();
 
@@ -228,11 +216,7 @@ export default class TableData {
 
     if (mode) this.#updateDataButton(button, mode);
     button.addEventListener('click', e => {
-      const buttonMode = e.currentTarget.dataset.button;
-      const event =
-        this.#dataButtonEvent[buttonMode] ||
-        this.#dataButtonEvent['pauseOrResume'];
-      event(e);
+      this.#dataButtonEvent(e);
     });
 
     return button;
@@ -314,11 +298,27 @@ export default class TableData {
     else this.#getQueryIds();
   }
 
-  #dataButtonEvent = {
-    edit: e => this.#dataButtonEdit(e),
-    retry: () => this.#dataButtonRetry(),
-    pauseOrResume: e => this.#dataButtonPauseOrResume(e),
-  };
+  /**
+   * @param { MouseEvent } e
+   */
+  #dataButtonEvent(e) {
+    const button = e.currentTarget;
+    const mode = button.dataset.button;
+    switch (mode) {
+      case 'edit':
+        this.#dataButtonEdit(e);
+        break;
+
+      case 'resume':
+      case 'pause':
+        this.#dataButtonPauseOrResume(e);
+        break;
+
+      case 'retry':
+        this.#dataButtonRetry();
+        break;
+    }
+  }
 
   #setDownloadButtons() {
     this.#setTsvUrl();
@@ -439,7 +439,7 @@ export default class TableData {
         }
         this.#ROOT.dataset.status = 'load rows';
         this.#STATUS.textContent = 'Getting Data';
-        this.#progressIndicator.setIndicator(this.#queryIds.length);
+        this.#progressIndicator.setIndicator(undefined, this.#queryIds.length);
         this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
         this.#getProperties();
       })
@@ -502,7 +502,8 @@ export default class TableData {
   #complete(withData = true) {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = withData ? 'Complete' : 'No Data Found';
-    this.#ROOT.classList.toggle('-fetching');
+    this.#ROOT.classList.remove('-fetching');
+    this.#STATUS.classList.remove('-flickering');
 
     if (withData) this.#setDownloadButtons();
   }

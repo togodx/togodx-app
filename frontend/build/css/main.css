@@ -342,6 +342,7 @@ template {
   --color-active: rgba(0,0,0,.1);
   --color-selected: #ffee0048;
   --color-selected-deep: #ffdd00;
+  --color-error: #be3535;
   --padding-track-block-start: .4rem;
   --padding-track-inline-start: .8rem;
   --width-track-column-subject: 2rem;
@@ -1326,10 +1327,23 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   -webkit-animation: var(--transition-fetching) infinite alternate fetching;
           animation: var(--transition-fetching) infinite alternate fetching;
 }
+[data-status=complete] .progress-indicator > .text > .status {
+  display: none;
+}
 [data-status=complete] .progress-indicator.-simple {
   display: none;
 }
-[data-status=complete] .progress-indicator > .text > .status {
+[data-status=complete] .progress-indicator.error {
+  display: block;
+}
+[data-status=complete] .progress-indicator.error > .progress {
+  display: none;
+}
+[data-status=complete] .progress-indicator.error > .text > .status {
+  color: var(--color-error);
+  display: block;
+}
+[data-status=complete] .progress-indicator.error > .text > .status > .material-icons-outlined {
   display: none;
 }
 
@@ -1527,9 +1541,12 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   margin: 0;
   padding: 0;
 }
+.track-view > .row.-upper > .right > .overview > .inner.-hidden {
+  display: none;
+}
 .track-view > .row.-upper > .right > .overview > .error {
   padding-left: 0.4rem;
-  color: var(--color-lamp-black);
+  color: var(--color-error);
   background-color: rgba(211, 211, 211, 0.8);
   font-size: 1rem;
   line-height: 3rem;
