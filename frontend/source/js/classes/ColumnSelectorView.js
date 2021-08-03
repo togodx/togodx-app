@@ -153,8 +153,8 @@ export default class ColumnSelectorView {
       <thead>
         <tr class="header">
           <th class="label">Values</th>
-          <th class="count">Mapping</th>
-          <th class="amount">Amount</th>
+          <th class="mapping">Mapping</th>
+          <th class="count">Count</th>
           <th class="pvalue">p-value</th>
           <th class="drilldown"></th>
         </tr>
@@ -193,8 +193,8 @@ export default class ColumnSelectorView {
             <input type="checkbox" value="${item.categoryId}"${checked}/>
             <span class="label">${item.label}</span>
           </td>
-          <td class="count"></td>
-          <td class="amount">${item.count.toLocaleString()}</td>
+          <td class="mapping"></td>
+          <td class="count">${item.count.toLocaleString()}</td>
           <td class="pvalue"></td>
           <td class="drilldown"></td>
         </tr>`;
@@ -296,8 +296,10 @@ export default class ColumnSelectorView {
       for (const value of values) {
         const item = this.#items[value.categoryId];
         if (item) {
+          console.log(item.elm.querySelector(':scope > .mapping'))
+          console.log(value)
           item.elm.classList.add('-pinsticking');
-          item.elm.querySelector(':scope > .count').textContent = value.hit_count.toLocaleString();
+          item.elm.querySelector(':scope > .mapping').textContent = value.hit_count ? value.hit_count.toLocaleString() : '';
           item.elm.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(3) : '';
           if (value.hit_count === 0) item.elm.classList.remove('-pinsticking');
           else                       item.elm.classList.add('-pinsticking');
