@@ -4892,7 +4892,7 @@
   var _indicateValue = new WeakSet();
 
   var HistogramRangeSelectorView = /*#__PURE__*/function () {
-    function HistogramRangeSelectorView(elm, subject, property, items, sparqlist, overviewContainer) {
+    function HistogramRangeSelectorView(elm, subject, property, items, overviewContainer) {
       var _this = this;
 
       _classCallCheck(this, HistogramRangeSelectorView);
@@ -4929,9 +4929,7 @@
         value: void 0
       });
 
-      // console.log(elm, subject, property, items, sparqlist)
-      this._sparqlist = sparqlist;
-
+      // console.log(elm, subject, property, items)
       _classPrivateFieldSet(this, _property$2, property);
 
       _classPrivateFieldSet(this, _OVERVIEW_CONTAINER$1, overviewContainer);
@@ -5514,7 +5512,7 @@
     new TrackOverviewCategorical(_classPrivateFieldGet(this, _OVERVIEW_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values); // make selector view
 
     if (_classPrivateFieldGet(this, _property).viewMethod && _classPrivateFieldGet(this, _property).viewMethod === 'histogram') {
-      new HistogramRangeSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values, _classPrivateFieldGet(this, _sparqlist), _classPrivateFieldGet(this, _OVERVIEW_CONTAINER));
+      new HistogramRangeSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values, _classPrivateFieldGet(this, _OVERVIEW_CONTAINER));
     } else {
       new ColumnSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values);
     }
