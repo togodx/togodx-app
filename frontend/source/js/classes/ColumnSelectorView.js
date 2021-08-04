@@ -11,7 +11,6 @@ export default class ColumnSelectorView {
 
   #subject;
   #property;
-  #sparqlist;
   #items;
   #columns;
   #currentColumns;
@@ -19,11 +18,10 @@ export default class ColumnSelectorView {
   #CONTAINER;
   #LOADING_VIEW;
 
-  constructor(elm, subject, property, items, sparqlist) {
+  constructor(elm, subject, property, items) {
 
     this.#subject = subject;
     this.#property = property;
-    this.#sparqlist = sparqlist;
     this.#items = {};
     this.#columns = [];
     this.#currentColumns = [];

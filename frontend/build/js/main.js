@@ -4114,8 +4114,6 @@
 
   var _property$3 = new WeakMap();
 
-  var _sparqlist$1 = new WeakMap();
-
   var _items$1 = new WeakMap();
 
   var _columns = new WeakMap();
@@ -4144,7 +4142,7 @@
 
   var _clearUserValues = new WeakSet();
 
-  var ColumnSelectorView = function ColumnSelectorView(elm, subject, property, _items2, sparqlist) {
+  var ColumnSelectorView = function ColumnSelectorView(elm, subject, property, _items2) {
     var _this = this;
 
     _classCallCheck(this, ColumnSelectorView);
@@ -4171,11 +4169,6 @@
     });
 
     _property$3.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _sparqlist$1.set(this, {
       writable: true,
       value: void 0
     });
@@ -4213,8 +4206,6 @@
     _classPrivateFieldSet(this, _subject$2, subject);
 
     _classPrivateFieldSet(this, _property$3, property);
-
-    _classPrivateFieldSet(this, _sparqlist$1, sparqlist);
 
     _classPrivateFieldSet(this, _items$1, {});
 
@@ -5525,7 +5516,7 @@
     if (_classPrivateFieldGet(this, _property).viewMethod && _classPrivateFieldGet(this, _property).viewMethod === 'histogram') {
       new HistogramRangeSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values, _classPrivateFieldGet(this, _sparqlist), _classPrivateFieldGet(this, _OVERVIEW_CONTAINER));
     } else {
-      new ColumnSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values, _classPrivateFieldGet(this, _sparqlist));
+      new ColumnSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values);
     }
   }
 

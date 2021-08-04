@@ -176,8 +176,7 @@ export default class TrackView {
         this.#SELECT_CONTAINER,
         this.#subject,
         this.#property,
-        values,
-        this.#sparqlist
+        values
       );
     }
   }
