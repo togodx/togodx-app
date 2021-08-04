@@ -1,5 +1,19 @@
-div {
-  border: solid 1px beige;
+:host {
+  border: solid 1px red;
+}
+:host * {
+  border: solid 3px violet;
+}
+
+:root {
+  border: solid 1px blue;
+}
+:root > * {
+  border: solid 1px brown;
+}
+
+:scope {
+  border: solid 1px green;
 }
 
 /*# sourceMappingURL=stanza.css.map */
