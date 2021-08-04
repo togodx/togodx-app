@@ -4368,12 +4368,12 @@
     var column = document.createElement('div');
     column.classList.add('column');
     var max = 0;
-    column.innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label\">Values</th>\n          <th class=\"mapping\">Mapping</th>\n          <th class=\"count\">Count</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n        <tr\n          class=\"item -all\"\n          ".concat(parentCategoryId ? "\n                data-parent-category-id=\"".concat(parentCategoryId, "\"\n                data-parent-label=\"").concat(parentItem.label, "\"") : '', "\n          data-category-ids=\"").concat(items.map(function (item) {
+    column.innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label\">Values</th>\n          <th class=\"total\">Total</th>\n          <th class=\"mapped\">Mapped</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n        <tr\n          class=\"item -all\"\n          ".concat(parentCategoryId ? "\n                data-parent-category-id=\"".concat(parentCategoryId, "\"\n                data-parent-label=\"").concat(parentItem.label, "\"") : '', "\n          data-category-ids=\"").concat(items.map(function (item) {
       return item.categoryId;
     }), "\"\n          data-depth=\"").concat(depth, "\">\n          <td class=\"label\" colspan=\"5\">\n            <input\n              type=\"checkbox\"\n              value=\"").concat(ALL_PROPERTIES, "\" \n              ").concat(selectedParentCategoryId === parentCategoryId ? ' checked' : '', "/>\n            <span class=\"label\">Map following attributes</span>\n          </td>\n        </tr>\n      </thead>\n      <tbody>").concat(items.map(function (item) {
       max = Math.max(max, item.count);
       var checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
-      return "\n        <tr\n          class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n          data-id=\"").concat(item.categoryId, "\"\n          data-category-id=\"").concat(item.categoryId, "\"\n          data-count=\"").concat(item.count, "\">\n          <td class=\"label\">\n            <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n            <span class=\"label\">").concat(item.label, "</span>\n          </td>\n          <td class=\"mapping\"></td>\n          <td class=\"count\">").concat(item.count.toLocaleString(), "</td>\n          <td class=\"pvalue\"></td>\n          <td class=\"drilldown\"></td>\n        </tr>");
+      return "\n        <tr\n          class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n          data-id=\"").concat(item.categoryId, "\"\n          data-category-id=\"").concat(item.categoryId, "\"\n          data-count=\"").concat(item.count, "\">\n          <td class=\"label\">\n            <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n            <span class=\"label\">").concat(item.label, "</span>\n          </td>\n          <td class=\"total\">").concat(item.count.toLocaleString(), "</td>\n          <td class=\"mapped\"></td>\n          <td class=\"pvalue\"></td>\n          <td class=\"drilldown\"></td>\n        </tr>");
     }).join(''), "</tbody>\n    </table>\n    ");
     var tbody = column.querySelector(':scope > table > tbody');
     var listItems = tbody.querySelectorAll(':scope > .item');
@@ -4510,11 +4510,11 @@
           var item = _classPrivateFieldGet(this, _items$1)[value.categoryId];
 
           if (item) {
-            console.log(item.elm.querySelector(':scope > .mapping'));
+            console.log(item.elm.querySelector(':scope > .mapped'));
             console.log(value);
             item.elm.classList.add('-pinsticking');
-            item.elm.querySelector(':scope > .mapping').textContent = value.hit_count ? value.hit_count.toLocaleString() : '';
-            item.elm.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(3) : '';
+            item.elm.querySelector(':scope > .mapped').textContent = value.hit_count ? value.hit_count.toLocaleString() : '';
+            item.elm.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(2) : '';
             if (value.hit_count === 0) item.elm.classList.remove('-pinsticking');else item.elm.classList.add('-pinsticking');
           }
         }

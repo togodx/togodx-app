@@ -620,6 +620,9 @@ main {
 .column-selector-view > .columns > .inner > .column > table > thead > tr > th > input, .column-selector-view > .columns > .inner > .column > table > thead > tr > td > input, .column-selector-view > .columns > .inner > .column > table > tbody > tr > th > input, .column-selector-view > .columns > .inner > .column > table > tbody > tr > td > input {
   vertical-align: middle;
 }
+.column-selector-view > .columns > .inner > .column > table > thead > tr > .mapped, .column-selector-view > .columns > .inner > .column > table > thead > tr > .pvalue, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .mapped, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .pvalue {
+  display: none;
+}
 .column-selector-view > .columns > .inner > .column > table > thead {
   color: white;
 }
@@ -632,7 +635,7 @@ main {
 .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label {
   display: relative;
 }
-.column-selector-view > .columns > .inner > .column > table > tbody > tr > .count, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .amount, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .pvalue {
+.column-selector-view > .columns > .inner > .column > table > tbody > tr > .total, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .mapped, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .pvalue {
   text-align: right;
 }
 .column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild > .drilldown {
@@ -670,6 +673,9 @@ main {
 }
 .column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild.-selected > .drilldown::after {
   border-color: transparent transparent transparent white;
+}
+body.-showuserids .column-selector-view > .columns > .inner > .column > table > thead > tr > .mapped, body.-showuserids .column-selector-view > .columns > .inner > .column > table > thead > tr > .pvalue, body.-showuserids .column-selector-view > .columns > .inner > .column > table > tbody > tr > .mapped, body.-showuserids .column-selector-view > .columns > .inner > .column > table > tbody > tr > .pvalue {
+  display: table-cell;
 }
 body.-showuserids .column-selector-view > .columns > .inner > .column > table > tbody > tr {
   opacity: 0.25;
