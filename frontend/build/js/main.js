@@ -4317,8 +4317,6 @@
     _classPrivateFieldGet(this, _LOADING_VIEW$2).classList.add('-shown');
 
     _classPrivateMethodGet(this, _getColumn, _getColumn2).call(this, categoryId, depth).then(function (column) {
-      console.log(column);
-
       _classPrivateMethodGet(_this2, _appendSubColumn, _appendSubColumn2).call(_this2, column, depth);
 
       _classPrivateFieldGet(_this2, _LOADING_VIEW$2).classList.remove('-shown');
@@ -4339,11 +4337,9 @@
       });
 
       if (column) {
-        resolve(column.ul);
+        resolve(column.column);
       } else {
         Records$1.fetchPropertyValues(_classPrivateFieldGet(_this3, _property$3).propertyId, categoryId).then(function (values) {
-          console.log(values);
-
           _classPrivateMethodGet(_this3, _setItems, _setItems2).call(_this3, values, depth, categoryId);
 
           var column = _classPrivateMethodGet(_this3, _makeColumn, _makeColumn2).call(_this3, values, depth, categoryId);
@@ -4510,8 +4506,6 @@
           var item = _classPrivateFieldGet(this, _items$1)[value.categoryId];
 
           if (item) {
-            console.log(item.elm.querySelector(':scope > .mapped'));
-            console.log(value);
             item.elm.classList.add('-pinsticking');
             item.elm.querySelector(':scope > .mapped').textContent = value.hit_count ? value.hit_count.toLocaleString() : '';
             item.elm.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(2) : '';

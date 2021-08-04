@@ -106,7 +106,6 @@ export default class ColumnSelectorView {
     this.#LOADING_VIEW.classList.add('-shown');
     this.#getColumn(categoryId, depth)
       .then(column => {
-        console.log(column)
         this.#appendSubColumn(column, depth);
         this.#LOADING_VIEW.classList.remove('-shown');
       })
@@ -121,11 +120,10 @@ export default class ColumnSelectorView {
     return new Promise((resolve, reject) => {
       const column = this.#columns.find(column => column.parentCategoryId === categoryId);
       if (column) {
-        resolve(column.ul);
+        resolve(column.column);
       } else {
         Records.fetchPropertyValues(this.#property.propertyId, categoryId)
           .then(values => {
-            console.log(values)
             this.#setItems(values, depth, categoryId);
             const column = this.#makeColumn(values, depth, categoryId);
             resolve(column);
@@ -296,8 +294,6 @@ export default class ColumnSelectorView {
       for (const value of values) {
         const item = this.#items[value.categoryId];
         if (item) {
-          console.log(item.elm.querySelector(':scope > .mapped'))
-          console.log(value)
           item.elm.classList.add('-pinsticking');
           item.elm.querySelector(':scope > .mapped').textContent = value.hit_count ? value.hit_count.toLocaleString() : '';
           item.elm.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(2) : '';
