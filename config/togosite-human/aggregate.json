@@ -6,6 +6,6 @@
     "url": "https://integbio.jp/togosite/sparqlist/api/togokey_table_data"
   },
   "mapping": {
-    "url": "https://integbio.jp/togosite/sparqlist/api/map_ids_to_attribute"
+    "url": "https://integbio.jp/togosite/sparqlist/api/data_from_user_ids"
   }
 }
