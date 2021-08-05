@@ -55,11 +55,18 @@ export default class TrackView {
       property.propertyId
     }">
       <div class="left">
-        <p class="description">${property.description}</p>
-        <!--<label><input type="checkbox">All properties</label>-->
-        <a class="external-link-button-view" href="${
-          this.#sparqlist
-        }" target="_blank">API</a>
+        <dl class="specification">
+          <dt>Description</dt>
+          <dd>${property.description}</dd>
+          <dt>Data</dt>
+          <dd><a href="${property.data}" target="_blank">${property.data}</a></dd>
+          <dt>Data source</dt>
+          <dd><a href="${property.dataSourceUrl}" target="_blank">${property.dataSource}</a></dd>
+          <dt>Data source version</dt>
+          <dd>${property.dataSourceVersion}</dd>
+          <dt>Update at</dt>
+          <dd>${property.updatedAt}</dd>
+        </dl>
       </div>
       <div class="right selector"></div>
     </div>`;

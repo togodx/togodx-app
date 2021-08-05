@@ -35,7 +35,7 @@ jobs:
         run: |
           find ./frontend -name "*" -exec sed -i "s:dbcls/togosite/develop:dbcls/togosite/sparqlist-develop:g" {} \;
 
-      - id: update-configuration
+      - id: update-configuration_hbs
         run: |
           find ./config -name "*.hbs" -exec sed -i "s:togosite/sparqlist:togosite_dev/sparqlist:g" {} \;
 
