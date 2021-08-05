@@ -4475,7 +4475,7 @@
         _classPrivateMethodGet(_this5, _setUserValues, _setUserValues2).call(_this5, {
           propertyId: _classPrivateFieldGet(_this5, _property$3).propertyId,
           values: values
-        });
+        }, true);
       });
     }
   }
@@ -4514,8 +4514,11 @@
   }
 
   function _setUserValues2(_ref2) {
+    var _this8 = this;
+
     var propertyId = _ref2.propertyId,
         values = _ref2.values;
+    var bySubdirectory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     if (_classPrivateFieldGet(this, _property$3).propertyId === propertyId) {
       var _iterator3 = _createForOfIteratorHelper(values),
@@ -4533,11 +4536,25 @@
             item.elm.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(2) : '';
             if (value.hit_count === 0) item.elm.classList.remove('-pinsticking');else item.elm.classList.add('-pinsticking');
           }
-        }
+        } // if it doesnt called by subdirectory, get values of subdirectories
+
       } catch (err) {
         _iterator3.e(err);
       } finally {
         _iterator3.f();
+      }
+
+      if (!bySubdirectory) {
+        _classPrivateFieldGet(this, _currentColumns).forEach(function (column, index) {
+          if (index > 0) {
+            _classPrivateMethodGet(_this8, _getUserValues, _getUserValues2).call(_this8, dataFromUserIds(_classPrivateFieldGet(_this8, _property$3).data, _classPrivateFieldGet(_this8, _property$3).primaryKey, column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId)).then(function (values) {
+              _classPrivateMethodGet(_this8, _setUserValues, _setUserValues2).call(_this8, {
+                propertyId: _classPrivateFieldGet(_this8, _property$3).propertyId,
+                values: values
+              }, true);
+            });
+          }
+        });
       }
     }
   }

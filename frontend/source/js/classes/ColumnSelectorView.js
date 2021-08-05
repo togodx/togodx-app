@@ -279,8 +279,8 @@ export default class ColumnSelectorView {
           this.#setUserValues({
             propertyId: this.#property.propertyId,
             values
-          });
-        })
+          }, true);
+        });
     }
   }
 
@@ -311,7 +311,7 @@ export default class ColumnSelectorView {
     });
   }
 
-  #setUserValues({propertyId, values}) {
+  #setUserValues({propertyId, values}, bySubdirectory = false) {
     if (this.#property.propertyId === propertyId) {
       for (const value of values) {
         const item = this.#items[value.categoryId];
@@ -322,6 +322,26 @@ export default class ColumnSelectorView {
           if (value.hit_count === 0) item.elm.classList.remove('-pinsticking');
           else                       item.elm.classList.add('-pinsticking');
         }
+      }
+      // if it doesnt called by subdirectory, get values of subdirectories
+      if (!bySubdirectory) {
+        this.#currentColumns.forEach((column, index) => {
+          if (index > 0) {
+            this.#getUserValues(
+              queryTemplates.dataFromUserIds(
+                this.#property.data,
+                this.#property.primaryKey,
+                column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId
+                )
+              )
+              .then(values => {
+                this.#setUserValues({
+                  propertyId: this.#property.propertyId,
+                  values
+                }, true);
+              });
+            }
+        });
       }
     }
   }
