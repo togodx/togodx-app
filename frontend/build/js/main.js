@@ -4120,6 +4120,8 @@
 
   var _currentColumns = new WeakMap();
 
+  var _userValues$1 = new WeakMap();
+
   var _ROOT$9 = new WeakMap();
 
   var _CONTAINER$1 = new WeakMap();
@@ -4138,6 +4140,8 @@
 
   var _update$2 = new WeakSet();
 
+  var _getUserValues = new WeakSet();
+
   var _setUserValues = new WeakSet();
 
   var _clearUserValues = new WeakSet();
@@ -4150,6 +4154,8 @@
     _clearUserValues.add(this);
 
     _setUserValues.add(this);
+
+    _getUserValues.add(this);
 
     _update$2.add(this);
 
@@ -4188,6 +4194,11 @@
       value: void 0
     });
 
+    _userValues$1.set(this, {
+      writable: true,
+      value: void 0
+    });
+
     _ROOT$9.set(this, {
       writable: true,
       value: void 0
@@ -4211,7 +4222,9 @@
 
     _classPrivateFieldSet(this, _columns, []);
 
-    _classPrivateFieldSet(this, _currentColumns, []); // make container
+    _classPrivateFieldSet(this, _currentColumns, []);
+
+    _classPrivateFieldSet(this, _userValues$1, new Map()); // make container
 
 
     elm.innerHTML = "\n    <div class=\"column-selector-view\">\n      <div class=\"columns\">\n        <div class=\"inner\"></div>\n      </div>\n      <div class=\"loading-view\"></div>\n    </div>";
@@ -4458,10 +4471,10 @@
     }
 
     if (document.body.classList.contains('-showuserids') && ConditionBuilder$1.userIds) {
-      axios.get(dataFromUserIds(_classPrivateFieldGet(this, _property$3).data, _classPrivateFieldGet(this, _property$3).primaryKey, column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId)).then(function (response) {
+      _classPrivateMethodGet(this, _getUserValues, _getUserValues2).call(this, dataFromUserIds(_classPrivateFieldGet(this, _property$3).data, _classPrivateFieldGet(this, _property$3).primaryKey, column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId)).then(function (values) {
         _classPrivateMethodGet(_this5, _setUserValues, _setUserValues2).call(_this5, {
           propertyId: _classPrivateFieldGet(_this5, _property$3).propertyId,
-          values: response.data
+          values: values
         });
       });
     }
@@ -4479,6 +4492,24 @@
           return cood * 256;
         }).join(','), ")");
       });
+    });
+  }
+
+  function _getUserValues2(query) {
+    var _this7 = this;
+
+    return new Promise(function (resolve, reject) {
+      var values = _classPrivateFieldGet(_this7, _userValues$1).get(query);
+
+      if (values) {
+        resolve(values);
+      } else {
+        axios.get(query).then(function (response) {
+          _classPrivateFieldGet(_this7, _userValues$1).set(query, response.data);
+
+          resolve(response.data);
+        });
+      }
     });
   }
 

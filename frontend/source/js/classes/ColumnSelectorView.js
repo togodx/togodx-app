@@ -14,6 +14,7 @@ export default class ColumnSelectorView {
   #items;
   #columns;
   #currentColumns;
+  #userValues;
   #ROOT;
   #CONTAINER;
   #LOADING_VIEW;
@@ -25,6 +26,7 @@ export default class ColumnSelectorView {
     this.#items = {};
     this.#columns = [];
     this.#currentColumns = [];
+    this.#userValues = new Map();
 
     // make container
     elm.innerHTML = `
@@ -266,13 +268,19 @@ export default class ColumnSelectorView {
 
     // user IDs
     if (document.body.classList.contains('-showuserids') && ConditionBuilder.userIds) {
-      axios
-        .get(
-          queryTemplates.dataFromUserIds(this.#property.data, this.#property.primaryKey, column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId)
+      this.#getUserValues(
+        queryTemplates.dataFromUserIds(
+          this.#property.data,
+          this.#property.primaryKey,
+          column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId
+          )
         )
-        .then(response => {
-          this.#setUserValues({propertyId: this.#property.propertyId, values: response.data});
-        });
+        .then(values => {
+          this.#setUserValues({
+            propertyId: this.#property.propertyId,
+            values
+          });
+        })
     }
   }
 
@@ -284,6 +292,22 @@ export default class ColumnSelectorView {
         const count = Number(tr.dataset.count);
         tr.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
       });
+    });
+  }
+
+  #getUserValues(query) {
+    return new Promise((resolve, reject) => {
+      const values = this.#userValues.get(query);
+      if (values) {
+        resolve(values);
+      } else {
+        axios
+          .get(query)
+          .then(response => {
+            this.#userValues.set(query, response.data);
+            resolve(response.data);
+          });
+      }
     });
   }
 
