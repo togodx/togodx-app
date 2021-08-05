@@ -26,6 +26,10 @@
                 vertical-align: middle
                 > input
                   vertical-align: middle
+          > thead, > tbody
+            > tr
+              > .mapped, > .pvalue
+                display: none
           > thead
             color: white
             > .header
@@ -36,7 +40,7 @@
             > tr
               > .label
                 display: relative
-              > .count, > .amount, > .pvalue
+              > .total, > .mapped, > .pvalue
                 text-align: right
               &.-haschild
                 > .drilldown
@@ -70,7 +74,13 @@
                       background-color: var(--color-lamp-black)
                     &::after
                       border-color: transparent transparent transparent white
-              body.-showuserids &
+          body.-showuserids &
+            > thead, > tbody
+              > tr
+                > .mapped, > .pvalue
+                  display: table-cell
+            > tbody
+              > tr
                 opacity: .25
                 &.-pinsticking
                   opacity: 1
