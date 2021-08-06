@@ -7145,7 +7145,11 @@
     if (urlType) {
       var url = downloadUrls.get(urlType);
       anchor.setAttribute('href', url);
-      anchor.setAttribute('download', "sample.".concat(urlType));
+      var timeStamp = new Date();
+      var _ref = [timeStamp.toISOString().slice(0, 10).replaceAll('-', ''), timeStamp.toLocaleTimeString().replaceAll(':', '')],
+          date = _ref[0],
+          time = _ref[1];
+      anchor.setAttribute('download', "togoDx-".concat(date, "-").concat(time, ".").concat(urlType));
     }
   }
 
@@ -7162,7 +7166,7 @@
 
     _classPrivateFieldSet(this, _isLoading, !_classPrivateFieldGet(this, _isLoading));
 
-    _classPrivateFieldGet(this, _STATUS).textContent = _classPrivateFieldGet(this, _isLoading) ? 'Getting Data' : 'Awaiting';
+    _classPrivateFieldGet(this, _STATUS).textContent = _classPrivateFieldGet(this, _isLoading) ? 'Getting data' : 'Awaiting';
     if (_classPrivateFieldGet(this, _isLoading)) _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
   }
 
@@ -7178,8 +7182,8 @@
       };
     }), false); // attribute (classification/distribution)
 
-    Records$1.properties.forEach(function (_ref) {
-      var propertyId = _ref.propertyId;
+    Records$1.properties.forEach(function (_ref2) {
+      var propertyId = _ref2.propertyId;
 
       var attribute = _classPrivateFieldGet(_this3, _condition).attributes.find(function (attribute) {
         return attribute.property.propertyId === propertyId;
@@ -7199,7 +7203,7 @@
     _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, _classPrivateFieldGet(this, _BUTTON_LEFT), dataButtonModes.get('empty'));
 
     var partiallyLoaded = _classPrivateFieldGet(this, _queryIds).length > 0;
-    var message = partiallyLoaded ? 'Getting Data' : 'Getting ID list';
+    var message = partiallyLoaded ? 'Getting data' : 'Getting ID list';
     _classPrivateFieldGet(this, _STATUS).textContent = message;
     if (partiallyLoaded) _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);else _classPrivateMethodGet(this, _getQueryIds, _getQueryIds2).call(this);
   }
@@ -7340,7 +7344,7 @@
       }
 
       _classPrivateFieldGet(_this5, _ROOT$1).dataset.status = 'load rows';
-      _classPrivateFieldGet(_this5, _STATUS).textContent = 'Getting Data';
+      _classPrivateFieldGet(_this5, _STATUS).textContent = 'Getting data';
 
       _classPrivateFieldGet(_this5, _progressIndicator$1).setIndicator(undefined, _classPrivateFieldGet(_this5, _queryIds).length);
 
@@ -7971,7 +7975,7 @@
       retryCondition: function retryCondition(error) {
         var _error$response;
 
-        return error.code === timeOutError | ((_error$response = error.response) === null || _error$response === void 0 ? void 0 : _error$response.status) === 500;
+        return error.code === timeOutError | [500, 503].includes((_error$response = error.response) === null || _error$response === void 0 ? void 0 : _error$response.status);
       }
     });
 
@@ -8046,7 +8050,7 @@
 
     _classPrivateFieldGet(this, _ROOT).dataset.status = '';
 
-    _classPrivateFieldGet(this, _progressIndicator).setIndicator('Mapping your IDs', Records$1.properties.length);
+    _classPrivateFieldGet(this, _progressIndicator).setIndicator('In progress', Records$1.properties.length);
   }
 
   function _getProperty2(_ref) {
@@ -8105,10 +8109,9 @@
 
   function _complete2() {
     var withError = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var msg = withError ? "Failed to map IDs for ".concat(_classPrivateFieldGet(this, _errorCount), " attribute").concat(_classPrivateFieldGet(this, _errorCount) > 1 ? 's' : '') : 'Mapping completed';
 
-    if (withError) {
-      _classPrivateFieldGet(this, _progressIndicator).setIndicator("Failed to map IDs for ".concat(_classPrivateFieldGet(this, _errorCount), " propert").concat(_classPrivateFieldGet(this, _errorCount) === 1 ? 'y' : 'ies'), undefined, withError);
-    }
+    _classPrivateFieldGet(this, _progressIndicator).setIndicator(msg, undefined, withError);
 
     _classPrivateFieldGet(this, _ROOT).dataset.status = 'complete';
   }

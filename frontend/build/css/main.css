@@ -1336,21 +1336,17 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
 [data-status=complete] .progress-indicator > .text > .status {
   display: none;
 }
-[data-status=complete] .progress-indicator.-simple {
+[data-status=complete] .progress-indicator.-simple > .progress, [data-status=complete] .progress-indicator.error > .progress {
   display: none;
 }
-[data-status=complete] .progress-indicator.error {
+[data-status=complete] .progress-indicator.-simple > .text > .status, [data-status=complete] .progress-indicator.error > .text > .status {
   display: block;
 }
-[data-status=complete] .progress-indicator.error > .progress {
+[data-status=complete] .progress-indicator.-simple > .text > .status > .material-icons-outlined, [data-status=complete] .progress-indicator.error > .text > .status > .material-icons-outlined {
   display: none;
 }
 [data-status=complete] .progress-indicator.error > .text > .status {
   color: var(--color-error);
-  display: block;
-}
-[data-status=complete] .progress-indicator.error > .text > .status > .material-icons-outlined {
-  display: none;
 }
 
 .togo-key-view {

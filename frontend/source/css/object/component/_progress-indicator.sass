@@ -49,15 +49,16 @@
         > .text
             > .status
                 display: none
-        &.-simple
-            display: none
-        &.error
-            display: block
+        &.-simple, &.error
             > .progress
                 display: none
             > .text
                 > .status
-                    color: var(--color-error)
                     display: block
-                    >.material-icons-outlined
+                    > .material-icons-outlined
                         display: none
+        &.error
+            > .text
+                > .status
+                    color: var(--color-error)
+                    
