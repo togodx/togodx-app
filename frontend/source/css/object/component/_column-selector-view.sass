@@ -36,10 +36,15 @@
               background-color: var(--color-lamp-black)
             > .item
               background-color: var(--color-dark-gray)
+              [data-condition="keys"] &
+                display: none
           > tbody
             > tr
               > .label
                 display: relative
+                > input
+                  [data-condition="values"] &
+                    display: none
               > .total, > .mapped, > .pvalue
                 text-align: right
               &.-haschild
@@ -84,7 +89,5 @@
                 opacity: .25
                 &.-pinsticking
                   opacity: 1
-
   > .loading-view
     background-color: rgba(#CCC, .5)
-

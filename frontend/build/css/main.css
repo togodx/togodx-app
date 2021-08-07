@@ -632,8 +632,14 @@ main {
 .column-selector-view > .columns > .inner > .column > table > thead > .item {
   background-color: var(--color-dark-gray);
 }
+[data-condition=keys] .column-selector-view > .columns > .inner > .column > table > thead > .item {
+  display: none;
+}
 .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label {
   display: relative;
+}
+[data-condition=values] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > input {
+  display: none;
 }
 .column-selector-view > .columns > .inner > .column > table > tbody > tr > .total, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .mapped, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .pvalue {
   text-align: right;
