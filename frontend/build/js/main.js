@@ -4254,7 +4254,7 @@
         _classPrivateFieldGet(_this, _currentColumns).forEach(function (column) {
           var isAllChecked = true;
           column.querySelectorAll(':scope > table > tbody > .item').forEach(function (tr) {
-            var checkbox = tr.querySelector(':scope > .label > input[type="checkbox"]');
+            var checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
             if (!checkbox.checked) isAllChecked = false;
 
             if (tr.dataset.id === detail.categoryId) {
@@ -4265,7 +4265,7 @@
             }
           }); // update Map attributes
 
-          column.querySelector(':scope > table > thead > .item.-all > .label > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
+          column.querySelector(':scope > table > thead > .item.-all > .label > label > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
           // TODO:
         });
       }
@@ -4370,10 +4370,10 @@
     var max = 0;
     column.innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label\">Values</th>\n          <th class=\"total\">Total</th>\n          <th class=\"mapped\">Mapped</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n        <tr\n          class=\"item -all\"\n          ".concat(parentCategoryId ? "\n                data-parent-category-id=\"".concat(parentCategoryId, "\"\n                data-parent-label=\"").concat(parentItem.label, "\"") : '', "\n          data-category-ids=\"").concat(items.map(function (item) {
       return item.categoryId;
-    }), "\"\n          data-depth=\"").concat(depth, "\">\n          <td class=\"label\" colspan=\"5\">\n            <input\n              type=\"checkbox\"\n              value=\"").concat(ALL_PROPERTIES, "\" \n              ").concat(selectedParentCategoryId === parentCategoryId ? ' checked' : '', "/>\n            <span class=\"label\">Map following attributes</span>\n          </td>\n        </tr>\n      </thead>\n      <tbody>").concat(items.map(function (item) {
+    }), "\"\n          data-depth=\"").concat(depth, "\">\n          <td class=\"label\" colspan=\"5\">\n            <label>\n              <input\n                type=\"checkbox\"\n                value=\"").concat(ALL_PROPERTIES, "\" \n                ").concat(selectedParentCategoryId === parentCategoryId ? ' checked' : '', "/>\n              Map following attributes\n            </label>\n          </td>\n        </tr>\n      </thead>\n      <tbody>").concat(items.map(function (item) {
       max = Math.max(max, item.count);
       var checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
-      return "\n        <tr\n          class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n          data-id=\"").concat(item.categoryId, "\"\n          data-category-id=\"").concat(item.categoryId, "\"\n          data-count=\"").concat(item.count, "\">\n          <td class=\"label\">\n            <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n            <span class=\"label\">").concat(item.label, "</span>\n          </td>\n          <td class=\"total\">").concat(item.count.toLocaleString(), "</td>\n          <td class=\"mapped\"></td>\n          <td class=\"pvalue\"></td>\n          <td class=\"drilldown\"></td>\n        </tr>");
+      return "\n        <tr\n          class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n          data-id=\"").concat(item.categoryId, "\"\n          data-category-id=\"").concat(item.categoryId, "\"\n          data-count=\"").concat(item.count, "\">\n          <td class=\"label\">\n            <label>\n              <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n              ").concat(item.label, "\n            </label>\n          </td>\n          <td class=\"total\">").concat(item.count.toLocaleString(), "</td>\n          <td class=\"mapped\"></td>\n          <td class=\"pvalue\"></td>\n          <td class=\"drilldown\"></td>\n        </tr>");
     }).join(''), "</tbody>\n    </table>\n    ");
     var tbody = column.querySelector(':scope > table > tbody');
     var listItems = tbody.querySelectorAll(':scope > .item');
@@ -4421,8 +4421,8 @@
       });
     });
     listItems.forEach(function (tr) {
-      // select/deselect a item (attribute)
-      var checkbox = tr.querySelector(':scope > .label > input[type="checkbox"]');
+      // select/deselect a item (attribute) > label
+      var checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
       checkbox.addEventListener('click', function (e) {
         e.stopPropagation();
 

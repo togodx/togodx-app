@@ -56,7 +56,7 @@ export default class ColumnSelectorView {
         this.#currentColumns.forEach(column => {
           let isAllChecked = true;
           column.querySelectorAll(':scope > table > tbody > .item').forEach(tr => {
-            const checkbox = tr.querySelector(':scope > .label > input[type="checkbox"]');
+            const checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
             if (!checkbox.checked) isAllChecked = false;
             if (tr.dataset.id === detail.categoryId) {
               // change checkbox status
@@ -66,7 +66,7 @@ export default class ColumnSelectorView {
             }
           })
           // update Map attributes
-          column.querySelector(':scope > table > thead > .item.-all > .label > input[type="checkbox"]').checked = isAllChecked;
+          column.querySelector(':scope > table > thead > .item.-all > .label > label > input[type="checkbox"]').checked = isAllChecked;
           // change ancestor status
           // TODO:
         });
@@ -168,11 +168,13 @@ export default class ColumnSelectorView {
           data-category-ids="${items.map(item => item.categoryId)}"
           data-depth="${depth}">
           <td class="label" colspan="5">
-            <input
-              type="checkbox"
-              value="${ALL_PROPERTIES}" 
-              ${selectedParentCategoryId === parentCategoryId ? ' checked' : ''}/>
-            <span class="label">Map following attributes</span>
+            <label>
+              <input
+                type="checkbox"
+                value="${ALL_PROPERTIES}" 
+                ${selectedParentCategoryId === parentCategoryId ? ' checked' : ''}/>
+              Map following attributes
+            </label>
           </td>
         </tr>
       </thead>
@@ -188,8 +190,10 @@ export default class ColumnSelectorView {
           data-category-id="${item.categoryId}"
           data-count="${item.count}">
           <td class="label">
-            <input type="checkbox" value="${item.categoryId}"${checked}/>
-            <span class="label">${item.label}</span>
+            <label>
+              <input type="checkbox" value="${item.categoryId}"${checked}/>
+              ${item.label}
+            </label>
           </td>
           <td class="total">${item.count.toLocaleString()}</td>
           <td class="mapped"></td>
@@ -227,8 +231,8 @@ export default class ColumnSelectorView {
     });
 
     listItems.forEach(tr => {
-      // select/deselect a item (attribute)
-      const checkbox = tr.querySelector(':scope > .label > input[type="checkbox"]');
+      // select/deselect a item (attribute) > label
+      const checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
       checkbox.addEventListener('click', e => {
         e.stopPropagation();
         if (checkbox.checked) { // add
