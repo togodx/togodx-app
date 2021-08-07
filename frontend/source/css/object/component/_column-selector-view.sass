@@ -24,8 +24,11 @@
               > th, > td
                 padding: .2rem .4rem
                 vertical-align: middle
-                > input
-                  vertical-align: middle
+                > label
+                  margin: 0
+                  cursor: pointer
+                  > input
+                    vertical-align: middle
           > thead, > tbody
             > tr
               > .mapped, > .pvalue
@@ -42,9 +45,13 @@
             > tr
               > .label
                 display: relative
-                > input
+                > label
                   [data-condition="values"] &
-                    display: none
+                    pointer-events: none
+                    cursor: auto
+                  > input
+                    [data-condition="values"] &
+                      display: none
               > .total, > .mapped, > .pvalue
                 text-align: right
               &.-haschild

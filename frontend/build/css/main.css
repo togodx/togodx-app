@@ -617,7 +617,11 @@ main {
   padding: 0.2rem 0.4rem;
   vertical-align: middle;
 }
-.column-selector-view > .columns > .inner > .column > table > thead > tr > th > input, .column-selector-view > .columns > .inner > .column > table > thead > tr > td > input, .column-selector-view > .columns > .inner > .column > table > tbody > tr > th > input, .column-selector-view > .columns > .inner > .column > table > tbody > tr > td > input {
+.column-selector-view > .columns > .inner > .column > table > thead > tr > th > label, .column-selector-view > .columns > .inner > .column > table > thead > tr > td > label, .column-selector-view > .columns > .inner > .column > table > tbody > tr > th > label, .column-selector-view > .columns > .inner > .column > table > tbody > tr > td > label {
+  margin: 0;
+  cursor: pointer;
+}
+.column-selector-view > .columns > .inner > .column > table > thead > tr > th > label > input, .column-selector-view > .columns > .inner > .column > table > thead > tr > td > label > input, .column-selector-view > .columns > .inner > .column > table > tbody > tr > th > label > input, .column-selector-view > .columns > .inner > .column > table > tbody > tr > td > label > input {
   vertical-align: middle;
 }
 .column-selector-view > .columns > .inner > .column > table > thead > tr > .mapped, .column-selector-view > .columns > .inner > .column > table > thead > tr > .pvalue, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .mapped, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .pvalue {
@@ -638,7 +642,11 @@ main {
 .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label {
   display: relative;
 }
-[data-condition=values] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > input {
+[data-condition=values] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > label {
+  pointer-events: none;
+  cursor: auto;
+}
+[data-condition=values] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > label > input {
   display: none;
 }
 .column-selector-view > .columns > .inner > .column > table > tbody > tr > .total, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .mapped, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .pvalue {
