@@ -1,21 +1,60 @@
 @use "foundation/base"
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700,900')
 
-:root
-  --togostanza-key-font-color: red
+:host
+  main
+    --togostanza-key-font-color: var(--color-lamp-black)
+    --togostanza-font-family: "Roboto Condensed", sans-serif
+    --togostanza-control-border: var(--color-separator)
+    --togostanza-non-active-color: var(--color-translucent-lamp-black2)
 
-[data-stanza-id="hash-table"]
-  --togostanza-key-font-color: var(--color-lamp-black)
+main
   padding-top: 0
-  > .container
-    border: none
-    > dl
-      padding-left: 0
-      padding-right: 0
-      border-bottom: none
-      border-top: solid .1rem var(--color-separator)
-      > dt, > dd
-        padding: 0
-      > dt
-        padding-right: 1em
-        color: var(--togostanza-key-font-color)
-        font-weight: bold
+
+
+// [data-stanza-id="hash-table"]
+:host(togostanza-hash-table)
+  main
+    > .container
+      border: none
+      > dl
+        padding-left: 0
+        padding-right: 0
+        border-bottom: none
+        border-top: solid .1rem var(--color-separator)
+        > dt, > dd
+          padding: 0
+        > dt
+          padding-right: 1em
+          color: var(--togostanza-key-font-color)
+          font-weight: bold
+
+:host(togostanza-pagination-table)
+  main
+    > .wrapper
+      > .tableWrapper
+        > .tableOption
+        > table
+          border: none
+          > thead, > tbody
+            > tr
+              > th, > td
+                padding: .2rem 1rem .2rem 0
+                &:first-child
+                  background-color: transparent
+                  padding-left: 0
+                  padding-right: 1rem
+                &:last-child
+                  padding-right: 0
+          > thead
+            background-color: transparent
+            color: var(--color-key-font-color)
+            border-bottom: solid .2rem var(--color-lamp-black)
+            > tr
+              > th
+                color: var(--color-key-font-color)
+                fotn-weight: bold
+          > tbody
+            > tr
+              > td
+                border-top: solid .1rem var(--color-separator)

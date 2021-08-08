@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700,900");
 @import url("https://fonts.googleapis.com/css2?family=Material+Icons");
 @import url("https://fonts.googleapis.com/css2?family=Material+Icons+Outlined");
+@import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700,900");
 :root {
   --color-warm-gray: #f7f5f4;
   --color-light-gray: #CCC;
@@ -123,30 +124,60 @@ main {
   padding-top: var(--height-header);
 }
 
-:root {
-  --togostanza-key-font-color: red;
+:host main {
+  --togostanza-key-font-color: var(--color-lamp-black);
+  --togostanza-font-family: "Roboto Condensed", sans-serif;
+  --togostanza-control-border: var(--color-separator);
+  --togostanza-non-active-color: var(--color-translucent-lamp-black2);
 }
 
-[data-stanza-id=hash-table] {
-  --togostanza-key-font-color: var(--color-lamp-black);
+main {
   padding-top: 0;
 }
-[data-stanza-id=hash-table] > .container {
+
+:host(togostanza-hash-table) main > .container {
   border: none;
 }
-[data-stanza-id=hash-table] > .container > dl {
+:host(togostanza-hash-table) main > .container > dl {
   padding-left: 0;
   padding-right: 0;
   border-bottom: none;
   border-top: solid 0.1rem var(--color-separator);
 }
-[data-stanza-id=hash-table] > .container > dl > dt, [data-stanza-id=hash-table] > .container > dl > dd {
+:host(togostanza-hash-table) main > .container > dl > dt, :host(togostanza-hash-table) main > .container > dl > dd {
   padding: 0;
 }
-[data-stanza-id=hash-table] > .container > dl > dt {
+:host(togostanza-hash-table) main > .container > dl > dt {
   padding-right: 1em;
   color: var(--togostanza-key-font-color);
   font-weight: bold;
+}
+
+:host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table {
+  border: none;
+}
+:host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > thead > tr > th, :host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > thead > tr > td, :host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > tbody > tr > th, :host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > tbody > tr > td {
+  padding: 0.2rem 1rem 0.2rem 0;
+}
+:host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > thead > tr > th:first-child, :host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > thead > tr > td:first-child, :host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > tbody > tr > th:first-child, :host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > tbody > tr > td:first-child {
+  background-color: transparent;
+  padding-left: 0;
+  padding-right: 1rem;
+}
+:host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > thead > tr > th:last-child, :host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > thead > tr > td:last-child, :host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > tbody > tr > th:last-child, :host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > tbody > tr > td:last-child {
+  padding-right: 0;
+}
+:host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > thead {
+  background-color: transparent;
+  color: var(--color-key-font-color);
+  border-bottom: solid 0.2rem var(--color-lamp-black);
+}
+:host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > thead > tr > th {
+  color: var(--color-key-font-color);
+  fotn-weight: bold;
+}
+:host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > tbody > tr > td {
+  border-top: solid 0.1rem var(--color-separator);
 }
 
 /*# sourceMappingURL=stanza.css.map */
