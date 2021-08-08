@@ -1,11 +1,21 @@
+@use "foundation/base"
+
+:root
+  --togostanza-key-font-color: red
+
 [data-stanza-id="hash-table"]
+  --togostanza-key-font-color: var(--color-lamp-black)
+  padding-top: 0
   > .container
+    border: none
     > dl
       padding-left: 0
       padding-right: 0
+      border-bottom: none
+      border-top: solid .1rem var(--color-separator)
       > dt, > dd
         padding: 0
       > dt
-        > padding-right: 1em
-      > dd
-      
+        padding-right: 1em
+        color: var(--togostanza-key-font-color)
+        font-weight: bold
