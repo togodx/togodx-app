@@ -1,19 +1,5 @@
-:host {
-  border: solid 1px red;
-}
-:host * {
-  border: solid 3px violet;
-}
-
-:root {
-  border: solid 1px blue;
-}
-:root > * {
-  border: solid 1px brown;
-}
-
-:scope {
-  border: solid 1px green;
+[data-stanza-id=hash-table] > .container > dl > dt, [data-stanza-id=hash-table] > .container > dl > dd {
+  padding: 0;
 }
 
 /*# sourceMappingURL=stanza.css.map */
