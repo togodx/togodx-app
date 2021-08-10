@@ -129,12 +129,21 @@ main {
   --togostanza-font-family: "Roboto Condensed", sans-serif;
   --togostanza-control-border: var(--color-separator);
   --togostanza-non-active-color: var(--color-translucent-lamp-black2);
+  --togostanza-tbody-border-bottom: solid .1rem var(--color-separator);
+  --togostanza-control-border: solid .1rem var(--color-separator);
+  --togostanza-thead-background-color: var(--color-lamp-black);
+  --togostanza-pagination-current-background-color: var(--color-lamp-black);
+  --togostanza-pagination-arrow-color: var(--color-lamp-black);
+  --togostanza-pagination-current-border: solid .1rem var(--color-separator);
 }
 
 main {
   padding-top: 0;
 }
 
+:host(togostanza-hash-table) {
+  --row-padding: .2rem;
+}
 :host(togostanza-hash-table) main > .container {
   border: none;
 }
@@ -153,6 +162,19 @@ main {
   font-weight: bold;
 }
 
+:host(togostanza-pagination-table) {
+  --togostanza-control-active-color: var(--color-lamp-black);
+}
+:host(togostanza-pagination-table) main > .wrapper > .paginationWrapper {
+  margin-top: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+:host(togostanza-pagination-table) main > .wrapper > .tableWrapper {
+  min-height: auto;
+}
+:host(togostanza-pagination-table) main > .wrapper > .tableWrapper > .tableOption {
+  margin-bottom: 0.4rem;
+}
 :host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table {
   border: none;
 }
@@ -168,16 +190,22 @@ main {
   padding-right: 0;
 }
 :host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > thead {
+  border-bottom: solid 0.1rem var(--color-lamp-black);
   background-color: transparent;
-  color: var(--color-key-font-color);
-  border-bottom: solid 0.2rem var(--color-lamp-black);
 }
 :host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > thead > tr > th {
-  color: var(--color-key-font-color);
-  fotn-weight: bold;
+  color: var(--color-lamp-black);
+  font-weight: bold;
 }
-:host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > tbody > tr > td {
-  border-top: solid 0.1rem var(--color-separator);
+:host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > thead > tr > th > .textSearchByColumnWrapper > p.title {
+  padding: 0.6rem 1rem;
+}
+:host(togostanza-pagination-table) main > .wrapper > .tableWrapper > table > thead > tr > th > .textSearchByColumnWrapper > input.textSearchInput[name=queryInputByColumn] {
+  margin: 0.6rem 0.8rem 0.8rem;
+}
+
+:host(togostanza-barchart) text {
+  font-family: var(--togostanza-font-family) !important;
 }
 
 /*# sourceMappingURL=stanza.css.map */
