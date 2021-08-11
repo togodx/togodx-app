@@ -1,3 +1,76 @@
+@use "foundation/base"
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700,900')
 
-div
-  border: solid 1px beige
+:host
+  main
+    --togostanza-key-font-color: var(--color-lamp-black)
+    --togostanza-font-family: "Roboto Condensed", sans-serif
+    --togostanza-control-border: var(--color-separator)
+    --togostanza-non-active-color: var(--color-translucent-lamp-black2)
+    --togostanza-tbody-border-bottom: solid .1rem var(--color-separator)
+    --togostanza-control-border: solid .1rem var(--color-separator)
+    --togostanza-thead-background-color: var(--color-lamp-black)
+    --togostanza-pagination-current-background-color: var(--color-lamp-black)
+    --togostanza-pagination-arrow-color: var(--color-lamp-black)
+    --togostanza-pagination-current-border: solid .1rem var(--color-separator)
+
+main
+  padding-top: 0
+
+
+:host(togostanza-hash-table)
+  --row-padding: .2rem
+  main
+    > .container
+      border: none
+      > dl
+        padding-left: 0
+        padding-right: 0
+        border-bottom: none
+        border-top: solid .1rem var(--color-separator)
+        > dt, > dd
+          padding: 0
+        > dt
+          padding-right: 1em
+          color: var(--togostanza-key-font-color)
+          font-weight: bold
+
+:host(togostanza-pagination-table)
+  --togostanza-control-active-color: var(--color-lamp-black)
+  main
+    > .wrapper
+      > .paginationWrapper
+        margin-top: .8rem
+        margin-bottom: .8rem
+      > .tableWrapper
+        min-height: auto
+        > .tableOption
+          margin-bottom: .4rem
+        > table
+          border: none
+          > thead, > tbody
+            > tr
+              > th, > td
+                padding: .2rem 1rem .2rem 0
+                &:first-child
+                  background-color: transparent
+                  padding-left: 0
+                  padding-right: 1rem
+                &:last-child
+                  padding-right: 0
+          > thead
+            border-bottom: solid .1rem var(--color-lamp-black)
+            background-color: transparent
+            > tr
+              > th
+                color: var(--color-lamp-black)
+                font-weight: bold
+                > .textSearchByColumnWrapper
+                  > p.title
+                    padding: .6rem 1rem
+                  > input.textSearchInput[name=queryInputByColumn]
+                    margin: .6rem .8rem .8rem
+
+:host(togostanza-barchart)
+  text
+    font-family: var(--togostanza-font-family) !important
