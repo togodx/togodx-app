@@ -58,13 +58,13 @@ export default class TrackView {
         <dl class="specification">
           <dt>Description</dt>
           <dd>${property.description}</dd>
-          <dt>Data</dt>
+          <dt>API</dt>
           <dd><a href="${property.data}" target="_blank">${property.data}</a></dd>
-          <dt>Data source</dt>
+          <dt>Original data</dt>
           <dd><a href="${property.dataSourceUrl}" target="_blank">${property.dataSource}</a></dd>
-          <dt>Data source version</dt>
+          <dt>Version</dt>
           <dd>${property.dataSourceVersion}</dd>
-          <dt>Update at</dt>
+          <dt>Last updated</dt>
           <dd>${property.updatedAt}</dd>
         </dl>
       </div>
