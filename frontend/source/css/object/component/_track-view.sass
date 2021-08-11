@@ -2,15 +2,6 @@
   margin-bottom: .1rem
   font-size: 1.2rem
   position: relative
-  transition: opacity var(--transition-wipe)
-  &.-preparing
-    pointer-events: none
-    opacity: .2
-    > .row
-      &.-upper
-        > .right
-          > .overview
-            background-color: transparent !important
   > .row
     display: flex
     height: var(--height-track)
@@ -20,7 +11,7 @@
       flex-basis: var(--width-track-column-property)
       min-width: var(--width-track-column-property)
       background-color: white
-      transition: width var(--transition-instant)
+      transition: width var(--transition-instant),  opacity var(--transition-wipe)
     > .right
       flex-basis: calc(100% - var(--width-track-column-property))
       max-width: calc(100% - var(--width-track-column-property))
@@ -84,6 +75,15 @@
     > .selector
       // height: 100%
       // overflow: hidden
+  &.-preparing
+    opacity: 1
+    > .row
+      > .left
+        opacity: .5
+      &.-upper
+        > .right
+          > .overview
+            background-color: transparent !important
   &.-allselected
     &::after
       content: ""
