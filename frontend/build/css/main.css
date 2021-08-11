@@ -1489,14 +1489,6 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   margin-bottom: 0.1rem;
   font-size: 1.2rem;
   position: relative;
-  transition: opacity var(--transition-wipe);
-}
-.track-view.-preparing {
-  pointer-events: none;
-  opacity: 0.2;
-}
-.track-view.-preparing > .row.-upper > .right > .overview {
-  background-color: transparent !important;
 }
 .track-view > .row {
   display: -webkit-flex;
@@ -1510,7 +1502,7 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
           flex-basis: var(--width-track-column-property);
   min-width: var(--width-track-column-property);
   background-color: white;
-  transition: width var(--transition-instant);
+  transition: width var(--transition-instant), opacity var(--transition-wipe);
 }
 .track-view > .row > .right {
   -webkit-flex-basis: calc(100% - var(--width-track-column-property));
@@ -1589,6 +1581,15 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   line-height: 1.2;
   margin-bottom: 0.4rem;
   word-break: break-all;
+}
+.track-view.-preparing {
+  opacity: 1;
+}
+.track-view.-preparing > .row > .left {
+  opacity: 0.5;
+}
+.track-view.-preparing > .row.-upper > .right > .overview {
+  background-color: transparent !important;
 }
 .track-view.-allselected::after {
   content: "";
