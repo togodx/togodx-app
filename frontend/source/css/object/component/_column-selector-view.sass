@@ -24,19 +24,35 @@
               > th, > td
                 padding: .2rem .4rem
                 vertical-align: middle
-                > input
-                  vertical-align: middle
+                > label
+                  margin: 0
+                  cursor: pointer
+                  > input
+                    vertical-align: middle
+          > thead, > tbody
+            > tr
+              > .mapped, > .pvalue
+                display: none
           > thead
             color: white
             > .header
               background-color: var(--color-lamp-black)
             > .item
               background-color: var(--color-dark-gray)
+              [data-condition="keys"] &
+                display: none
           > tbody
             > tr
               > .label
                 display: relative
-              > .count, > .amount, > .pvalue
+                > label
+                  [data-condition="values"] &
+                    pointer-events: none
+                    cursor: auto
+                  > input
+                    [data-condition="values"] &
+                      display: none
+              > .total, > .mapped, > .pvalue
                 text-align: right
               &.-haschild
                 > .drilldown
@@ -70,11 +86,15 @@
                       background-color: var(--color-lamp-black)
                     &::after
                       border-color: transparent transparent transparent white
-              body.-showuserids &
+          body.-showuserids &
+            > thead, > tbody
+              > tr
+                > .mapped, > .pvalue
+                  display: table-cell
+            > tbody
+              > tr
                 opacity: .25
                 &.-pinsticking
                   opacity: 1
-
   > .loading-view
     background-color: rgba(#CCC, .5)
-

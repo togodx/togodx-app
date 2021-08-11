@@ -175,7 +175,6 @@ export default class TrackView {
         this.#subject,
         this.#property,
         values,
-        this.#sparqlist,
         this.#OVERVIEW_CONTAINER
       );
     } else {
@@ -183,8 +182,7 @@ export default class TrackView {
         this.#SELECT_CONTAINER,
         this.#subject,
         this.#property,
-        values,
-        this.#sparqlist
+        values
       );
     }
   }
