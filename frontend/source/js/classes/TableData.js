@@ -236,7 +236,12 @@ export default class TableData {
     if (urlType) {
       const url = downloadUrls.get(urlType);
       anchor.setAttribute('href', url);
-      anchor.setAttribute('download', `sample.${urlType}`);
+      const timeStamp = new Date();
+      const [date, time] = [
+        timeStamp.toISOString().slice(0, 10).replaceAll('-',''),
+        timeStamp.toLocaleTimeString().replaceAll(':', ''),
+      ];
+      anchor.setAttribute('download', `togoDx-${date}-${time}.${urlType}`);
     }
   }
 
@@ -254,7 +259,7 @@ export default class TableData {
       dataButtonModes.get(modeToChangeTo)
     );
     this.#isLoading = !this.#isLoading;
-    this.#STATUS.textContent = this.#isLoading ? 'Getting Data' : 'Awaiting';
+    this.#STATUS.textContent = this.#isLoading ? 'Getting data' : 'Awaiting';
 
     if (this.#isLoading) this.#getProperties();
   }
@@ -291,7 +296,7 @@ export default class TableData {
     this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('empty'));
 
     const partiallyLoaded = this.#queryIds.length > 0;
-    const message = partiallyLoaded ? 'Getting Data' : 'Getting ID list';
+    const message = partiallyLoaded ? 'Getting data' : 'Getting ID list';
     this.#STATUS.textContent = message;
 
     if (partiallyLoaded) this.#getProperties();
@@ -438,7 +443,7 @@ export default class TableData {
           return;
         }
         this.#ROOT.dataset.status = 'load rows';
-        this.#STATUS.textContent = 'Getting Data';
+        this.#STATUS.textContent = 'Getting data';
         this.#progressIndicator.setIndicator(undefined, this.#queryIds.length);
         this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
         this.#getProperties();

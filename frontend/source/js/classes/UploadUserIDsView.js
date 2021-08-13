@@ -28,7 +28,10 @@ export default class UploadUserIDsView {
         return Math.pow(2, retryCount - 1) * 5000;
       },
       retryCondition: error => {
-        return (error.code === timeOutError) | (error.response?.status === 500);
+        return (
+          (error.code === timeOutError) ||
+          [500, 503].includes(error.response?.status)
+        );
       },
     });
 
@@ -99,17 +102,16 @@ export default class UploadUserIDsView {
     this.#ROOT.classList.add('-fetching');
     this.#ROOT.dataset.status = '';
     this.#progressIndicator.setIndicator(
-      'Mapping your IDs',
+      'In progress',
       Records.properties.length
     );
   }
 
   #getProperty({propertyId, data, primaryKey}) {
     axios
-      .get(
-        queryTemplates.dataFromUserIds(data, primaryKey),
-        {cancelToken: this.#source.token}
-      )
+      .get(queryTemplates.dataFromUserIds(data, primaryKey), {
+        cancelToken: this.#source.token,
+      })
       .then(response => {
         this.#BODY.classList.add('-showuserids');
         this.#handleProp();
@@ -137,7 +139,6 @@ export default class UploadUserIDsView {
         this.#errorCount++;
       })
       .then(() => {
-        console.log(`error count:${this.#errorCount}`);
         if (this.#offset >= Records.properties.length) {
           this.#complete(this.#errorCount > 0);
         }
@@ -152,15 +153,12 @@ export default class UploadUserIDsView {
   }
 
   #complete(withError = false) {
-    if (withError) {
-      this.#progressIndicator.setIndicator(
-        `Failed to map IDs for ${this.#errorCount} propert${
-          this.#errorCount === 1 ? 'y' : 'ies'
-        }`,
-        undefined,
-        withError
-      );
-    }
+    let msg = withError
+      ? `Failed to map IDs for ${this.#errorCount} attribute${
+          this.#errorCount > 1 ? 's' : ''
+        }`
+      : 'Mapping completed';
+    this.#progressIndicator.setIndicator(msg, undefined, withError);
     this.#ROOT.dataset.status = 'complete';
   }
 
