@@ -4254,7 +4254,7 @@
         _classPrivateFieldGet(_this, _currentColumns).forEach(function (column) {
           var isAllChecked = true;
           column.querySelectorAll(':scope > table > tbody > .item').forEach(function (tr) {
-            var checkbox = tr.querySelector(':scope > .label > input[type="checkbox"]');
+            var checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
             if (!checkbox.checked) isAllChecked = false;
 
             if (tr.dataset.id === detail.categoryId) {
@@ -4265,7 +4265,7 @@
             }
           }); // update Map attributes
 
-          column.querySelector(':scope > table > thead > .item.-all > .label > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
+          column.querySelector(':scope > table > thead > .item.-all > .label > label > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
           // TODO:
         });
       }
@@ -4370,10 +4370,10 @@
     var max = 0;
     column.innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label\">Values</th>\n          <th class=\"total\">Total</th>\n          <th class=\"mapped\">Mapped</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n        <tr\n          class=\"item -all\"\n          ".concat(parentCategoryId ? "\n                data-parent-category-id=\"".concat(parentCategoryId, "\"\n                data-parent-label=\"").concat(parentItem.label, "\"") : '', "\n          data-category-ids=\"").concat(items.map(function (item) {
       return item.categoryId;
-    }), "\"\n          data-depth=\"").concat(depth, "\">\n          <td class=\"label\" colspan=\"5\">\n            <input\n              type=\"checkbox\"\n              value=\"").concat(ALL_PROPERTIES, "\" \n              ").concat(selectedParentCategoryId === parentCategoryId ? ' checked' : '', "/>\n            <span class=\"label\">Map following attributes</span>\n          </td>\n        </tr>\n      </thead>\n      <tbody>").concat(items.map(function (item) {
+    }), "\"\n          data-depth=\"").concat(depth, "\">\n          <td class=\"label\" colspan=\"5\">\n            <label>\n              <input\n                type=\"checkbox\"\n                value=\"").concat(ALL_PROPERTIES, "\" \n                ").concat(selectedParentCategoryId === parentCategoryId ? ' checked' : '', "/>\n              Map following attributes\n            </label>\n          </td>\n        </tr>\n      </thead>\n      <tbody>").concat(items.map(function (item) {
       max = Math.max(max, item.count);
       var checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
-      return "\n        <tr\n          class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n          data-id=\"").concat(item.categoryId, "\"\n          data-category-id=\"").concat(item.categoryId, "\"\n          data-count=\"").concat(item.count, "\">\n          <td class=\"label\">\n            <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n            <span class=\"label\">").concat(item.label, "</span>\n          </td>\n          <td class=\"total\">").concat(item.count.toLocaleString(), "</td>\n          <td class=\"mapped\"></td>\n          <td class=\"pvalue\"></td>\n          <td class=\"drilldown\"></td>\n        </tr>");
+      return "\n        <tr\n          class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n          data-id=\"").concat(item.categoryId, "\"\n          data-category-id=\"").concat(item.categoryId, "\"\n          data-count=\"").concat(item.count, "\">\n          <td class=\"label\">\n            <label>\n              <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n              ").concat(item.label, "\n            </label>\n          </td>\n          <td class=\"total\">").concat(item.count.toLocaleString(), "</td>\n          <td class=\"mapped\"></td>\n          <td class=\"pvalue\"></td>\n          <td class=\"drilldown\"></td>\n        </tr>");
     }).join(''), "</tbody>\n    </table>\n    ");
     var tbody = column.querySelector(':scope > table > tbody');
     var listItems = tbody.querySelectorAll(':scope > .item');
@@ -4421,8 +4421,8 @@
       });
     });
     listItems.forEach(function (tr) {
-      // select/deselect a item (attribute)
-      var checkbox = tr.querySelector(':scope > .label > input[type="checkbox"]');
+      // select/deselect a item (attribute) > label
+      var checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
       checkbox.addEventListener('click', function (e) {
         e.stopPropagation();
 
@@ -5466,7 +5466,7 @@
     elm.dataset.collapse = property.propertyId; // make html
 
     var checked = isSelected ? ' checked' : '';
-    elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <h2 class=\"title _subject-color\">").concat(property.label, "</h2>\n          <input type=\"checkbox\" class=\"mapping\"").concat(checked, ">\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview _subject-background-color\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <dl class=\"specification\">\n          <dt>Description</dt>\n          <dd>").concat(property.description, "</dd>\n          <dt>Data</dt>\n          <dd><a href=\"").concat(property.data, "\" target=\"_blank\">").concat(property.data, "</a></dd>\n          <dt>Data source</dt>\n          <dd><a href=\"").concat(property.dataSourceUrl, "\" target=\"_blank\">").concat(property.dataSource, "</a></dd>\n          <dt>Data source version</dt>\n          <dd>").concat(property.dataSourceVersion, "</dd>\n          <dt>Update at</dt>\n          <dd>").concat(property.updatedAt, "</dd>\n        </dl>\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
+    elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <h2 class=\"title _subject-color\">").concat(property.label, "</h2>\n          <input type=\"checkbox\" class=\"mapping\"").concat(checked, ">\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview _subject-background-color\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <dl class=\"specification\">\n          <dt>Description</dt>\n          <dd>").concat(property.description, "</dd>\n          <dt>API</dt>\n          <dd><a href=\"").concat(property.data, "\" target=\"_blank\">").concat(property.data, "</a></dd>\n          <dt>Original data</dt>\n          <dd><a href=\"").concat(property.dataSourceUrl, "\" target=\"_blank\">").concat(property.dataSource, "</a></dd>\n          <dt>Version</dt>\n          <dd>").concat(property.dataSourceVersion, "</dd>\n          <dt>Last updated</dt>\n          <dd>").concat(property.updatedAt, "</dd>\n        </dl>\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
     var valuesContainer = elm.querySelector(':scope > .row.-upper > .values');
 
     _classPrivateFieldSet(this, _OVERVIEW_CONTAINER, valuesContainer.querySelector(':scope > .overview > .inner'));
