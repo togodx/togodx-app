@@ -7975,7 +7975,7 @@
       retryCondition: function retryCondition(error) {
         var _error$response;
 
-        return error.code === timeOutError | [500, 503].includes((_error$response = error.response) === null || _error$response === void 0 ? void 0 : _error$response.status);
+        return error.code === timeOutError || [500, 503].includes((_error$response = error.response) === null || _error$response === void 0 ? void 0 : _error$response.status);
       }
     });
 
@@ -8091,8 +8091,6 @@
 
       _classPrivateFieldSet(_this3, _errorCount, (_this$errorCount = +_classPrivateFieldGet(_this3, _errorCount)) + 1), _this$errorCount;
     }).then(function () {
-      console.log("error count:".concat(_classPrivateFieldGet(_this3, _errorCount)));
-
       if (_classPrivateFieldGet(_this3, _offset) >= Records$1.properties.length) {
         _classPrivateMethodGet(_this3, _complete, _complete2).call(_this3, _classPrivateFieldGet(_this3, _errorCount) > 0);
       }

@@ -29,7 +29,7 @@ export default class UploadUserIDsView {
       },
       retryCondition: error => {
         return (
-          (error.code === timeOutError) |
+          (error.code === timeOutError) ||
           [500, 503].includes(error.response?.status)
         );
       },
@@ -139,7 +139,6 @@ export default class UploadUserIDsView {
         this.#errorCount++;
       })
       .then(() => {
-        console.log(`error count:${this.#errorCount}`);
         if (this.#offset >= Records.properties.length) {
           this.#complete(this.#errorCount > 0);
         }
