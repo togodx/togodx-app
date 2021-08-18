@@ -8,25 +8,32 @@ class Property
     @data = property["data"]
     @data_source = property["dataSource"]
     @data_source_url = property["dataSourceUrl"]
+    @data_source_version = property["dataSourceUrlVersion"]
     @update = property["updatedAt"]
     @key = property["primaryKey"]
     @keyLabel = property["keyLabel"]
+    @view_method = property["viewMethod"]
   end
   attr_accessor :id, :label, :desc, :data, :data_source, :data_source_url, :update, :key, :keyLabel
 
   def attribute
-    {
+    attr = {
       id: @id,
       label: @label,
       description: @desc,
-      data: @data,
+      api: @data,
       idType: @key,
-      dataSource: {
-        label: @data_source,
-        url: @data_source_url,
-        updateDate: @update,
-      },
+      data: [
+        {
+          label: @data_source,
+          url: @data_source_url,
+          version: @data_source_version,
+          updateDate: @update,
+        },
+      ],
     }
+    attr[:viewMethod] = @viewMethod if @viewMethod
+    attr
   end
 end
 
