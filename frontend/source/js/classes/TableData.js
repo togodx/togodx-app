@@ -241,7 +241,7 @@ export default class TableData {
         timeStamp.toISOString().slice(0, 10).replaceAll('-',''),
         timeStamp.toLocaleTimeString().replaceAll(':', ''),
       ];
-      anchor.setAttribute('download', `togoDx-${date}-${time}.${urlType}`);
+      anchor.setAttribute('download', `togodx-${date}-${time}.${urlType}`);
     }
   }
 
