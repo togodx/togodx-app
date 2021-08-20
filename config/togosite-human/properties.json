@@ -739,10 +739,10 @@
         "label": "Clinical significance",
         "description": "Classification of variants according to their clinical significance, such as whether they are the cause of the disease or not. Obtained from ClinVar via TogoVar",
         "data": "https://integbio.jp/togosite/sparqlist/api/variant_clinical_significance_togovar",
-        "dataSource": "TogoVar,ClinVar",
-        "dataSourceUrl": "",
-        "dataSourceVersion": "",
-        "updatedAt": "",
+        "dataSource": "ClinVar",
+        "dataSourceUrl": "https://www.ncbi.nlm.nih.gov/clinvar/docs/clinsig/",
+        "dataSourceVersion": "N/A",
+        "updatedAt": "2021-07-02",
         "primaryKey": "togovar",
         "keyLabel": "TogoVar variant"
       }
