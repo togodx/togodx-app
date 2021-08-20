@@ -338,9 +338,12 @@ template {
   --color-translucent-lamp-black3: #333230AA;
   --color-black: #000;
   --color-separator: rgba(0,0,0,.2);
+  --color-separator-strong: rgba(0,0,0,.6);
   --color-hover: rgba(0,0,0,.05);
   --color-active: rgba(0,0,0,.1);
   --color-selected: #ffee0048;
+  --color-selected-deep: #ffdd00;
+  --color-error: #be3535;
   --padding-track-block-start: .4rem;
   --padding-track-inline-start: .8rem;
   --width-track-column-subject: 2rem;
@@ -611,97 +614,89 @@ main {
   overflow-y: auto;
   vertical-align: top;
 }
-.column-selector-view > .columns > .inner > .column > .item {
-  margin: 0;
-  padding: 0.2rem 1.2rem 0.2rem 0.4rem;
-  position: relative;
-  width: 100%;
-  line-height: 1;
-  cursor: pointer;
-  transition: background var(--transition-instant);
-  display: -webkit-flex;
-  display: flex;
+.column-selector-view > .columns > .inner > .column > table > thead > tr > th, .column-selector-view > .columns > .inner > .column > table > thead > tr > td, .column-selector-view > .columns > .inner > .column > table > tbody > tr > th, .column-selector-view > .columns > .inner > .column > table > tbody > tr > td {
+  padding: 0.2rem 0.4rem;
+  vertical-align: middle;
 }
-.column-selector-view > .columns > .inner > .column > .item.-all {
-  background-color: var(--color-warm-gray);
-  border-bottom: solid 0.1rem var(--color-gray);
+.column-selector-view > .columns > .inner > .column > table > thead > tr > th > label, .column-selector-view > .columns > .inner > .column > table > thead > tr > td > label, .column-selector-view > .columns > .inner > .column > table > tbody > tr > th > label, .column-selector-view > .columns > .inner > .column > table > tbody > tr > td > label {
+  margin: 0;
+  cursor: pointer;
+}
+.column-selector-view > .columns > .inner > .column > table > thead > tr > th > label > input, .column-selector-view > .columns > .inner > .column > table > thead > tr > td > label > input, .column-selector-view > .columns > .inner > .column > table > tbody > tr > th > label > input, .column-selector-view > .columns > .inner > .column > table > tbody > tr > td > label > input {
+  vertical-align: middle;
+}
+.column-selector-view > .columns > .inner > .column > table > thead > tr > .mapped, .column-selector-view > .columns > .inner > .column > table > thead > tr > .pvalue, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .mapped, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .pvalue {
   display: none;
 }
-[data-condition=values] .column-selector-view > .columns > .inner > .column > .item.-all {
-  display: inherit;
+.column-selector-view > .columns > .inner > .column > table > thead {
+  color: white;
 }
-[data-condition=values] .column-selector-view > .columns > .inner > .column > .item.-all > input {
-  display: inherit;
+.column-selector-view > .columns > .inner > .column > table > thead > .header {
+  background-color: var(--color-lamp-black);
 }
-.column-selector-view > .columns > .inner > .column > .item.-haschild::before, .column-selector-view > .columns > .inner > .column > .item.-haschild::after {
+.column-selector-view > .columns > .inner > .column > table > thead > .item {
+  background-color: var(--color-dark-gray);
+}
+[data-condition=keys] .column-selector-view > .columns > .inner > .column > table > thead > .item {
+  display: none;
+}
+.column-selector-view > .columns > .inner > .column > table > tbody > tr > .label {
+  display: relative;
+}
+[data-condition=values] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > label {
+  pointer-events: none;
+  cursor: auto;
+}
+[data-condition=values] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > label > input {
+  display: none;
+}
+.column-selector-view > .columns > .inner > .column > table > tbody > tr > .total, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .mapped, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .pvalue {
+  text-align: right;
+}
+.column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild > .drilldown {
+  position: relative;
+  cursor: pointer;
+  width: 1.6rem;
+}
+.column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild > .drilldown::before, .column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild > .drilldown::after {
   content: "";
   position: absolute;
   display: block;
 }
-.column-selector-view > .columns > .inner > .column > .item.-haschild::before {
+.column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild > .drilldown::before {
   width: 1rem;
   height: 1rem;
-  top: 0.4rem;
-  right: 0.1rem;
+  top: 0.5rem;
+  right: 0.3rem;
   border-radius: 100%;
 }
-.column-selector-view > .columns > .inner > .column > .item.-haschild::after {
+.column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild > .drilldown::after {
   border-style: solid;
   border-width: 0.3rem 0 0.3rem 0.4rem;
   border-color: transparent transparent transparent var(--color-lamp-black);
-  top: 0.6rem;
-  right: 0.3rem;
+  top: 0.7rem;
+  right: 0.5rem;
 }
-.column-selector-view > .columns > .inner > .column > .item.-haschild:hover::before, .column-selector-view > .columns > .inner > .column > .item.-haschild.-selected::before {
+.column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild > .drilldown:hover::before {
   background-color: var(--color-lamp-black);
 }
-.column-selector-view > .columns > .inner > .column > .item.-haschild:hover::after, .column-selector-view > .columns > .inner > .column > .item.-haschild.-selected::after {
+.column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild > .drilldown:hover::after {
   border-color: transparent transparent transparent white;
 }
-.column-selector-view > .columns > .inner > .column > .item > label, .column-selector-view > .columns > .inner > .column > .item > .count {
-  padding-top: 0.1rem;
-  padding-bottom: 0.1rem;
+.column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild.-selected > .drilldown::before {
+  background-color: var(--color-lamp-black);
 }
-.column-selector-view > .columns > .inner > .column > .item > input {
-  -webkit-margin-end: 0.4rem;
-          margin-inline-end: 0.4rem;
-  vertical-align: bottom;
+.column-selector-view > .columns > .inner > .column > table > tbody > tr.-haschild.-selected > .drilldown::after {
+  border-color: transparent transparent transparent white;
 }
-[data-condition=values] .column-selector-view > .columns > .inner > .column > .item > input {
-  display: none;
+body.-showuserids .column-selector-view > .columns > .inner > .column > table > thead > tr > .mapped, body.-showuserids .column-selector-view > .columns > .inner > .column > table > thead > tr > .pvalue, body.-showuserids .column-selector-view > .columns > .inner > .column > table > tbody > tr > .mapped, body.-showuserids .column-selector-view > .columns > .inner > .column > table > tbody > tr > .pvalue {
+  display: table-cell;
 }
-.column-selector-view > .columns > .inner > .column > .item > .label {
-  padding-right: 0.4rem;
-}
-.column-selector-view > .columns > .inner > .column > .item > .count {
-  font-weight: lighter;
-  padding-left: 1.2rem;
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
-  text-align: right;
-}
-.column-selector-view > .columns > .inner > .column > .item > .pin {
-  padding-left: 1rem;
-  display: none;
-}
-.column-selector-view > .columns > .inner > .column > .item > .pin > .material-icons {
-  font-size: 1.2rem;
-  vertical-align: middle;
-  position: relative;
-  top: -0.1rem;
-}
-.column-selector-view > .columns > .inner > .column > .item > .pin > .value > small {
-  font-size: 1rem;
-  font-weight: lighter;
-}
-body.-showuserids .column-selector-view > .columns > .inner > .column > .item {
+body.-showuserids .column-selector-view > .columns > .inner > .column > table > tbody > tr {
   opacity: 0.25;
 }
-body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-pinsticking {
+body.-showuserids .column-selector-view > .columns > .inner > .column > table > tbody > tr.-pinsticking {
   opacity: 1;
-}
-body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-pinsticking > .pin {
-  display: inline;
 }
 .column-selector-view > .loading-view {
   background-color: rgba(204, 204, 204, 0.5);
@@ -711,45 +706,96 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   --padding-horizontal: 1rem;
   --padding-vertical: 0;
   --height-selector: 3rem;
-  padding: 1rem 0 5rem;
+  padding: 0 0 5rem;
   background-color: white;
 }
 .histogram-range-selector-view > .selector {
-  margin: 0 var(--padding-horizontal);
-  width: calc(100% - var(--padding-horizontal) * 2);
-  height: var(--height-selector);
-  position: relative;
+  margin-bottom: 0.4rem;
+  padding: 0.6rem var(--padding-horizontal) 0.4rem;
+  border-bottom: solid 0.1rem var(--color-separator);
 }
-.histogram-range-selector-view > .selector > * {
+.histogram-range-selector-view > .selector > .inner {
+  position: relative;
+  height: var(--height-selector);
+}
+.histogram-range-selector-view > .selector > .inner > * {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
 }
-.histogram-range-selector-view > .selector > .overview {
+.histogram-range-selector-view > .selector > .inner > .overview {
   display: -webkit-flex;
   display: flex;
   -webkit-align-items: flex-end;
           align-items: flex-end;
 }
-.histogram-range-selector-view > .selector > .overview > .bar {
+.histogram-range-selector-view > .selector > .inner > .overview > .bar {
   opacity: 0.2;
 }
-.histogram-range-selector-view > .selector > .overview > .bar.-selected {
+.histogram-range-selector-view > .selector > .inner > .overview > .bar.-selected {
   opacity: 1;
   position: relative;
 }
-.histogram-range-selector-view > .selector > .overview > .bar.-selected::before {
+.histogram-range-selector-view > .selector > .inner > .selectingarea {
+  width: 0;
+  border: solid 0.1rem var(--color-selected-deep);
+  background-color: var(--color-selected);
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle {
+  position: absolute;
+  width: 1rem;
+  height: 100%;
+}
+.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle::before {
   content: "";
   position: absolute;
-  bottom: -0.2rem;
-  width: 100%;
-  height: calc(var(--height-selector) + .4rem);
-  background-color: var(--color-selected);
+  top: calc(50% - .6rem);
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent;
+  border-top-width: 0.6rem;
+  border-bottom-width: 0.6rem;
 }
-.histogram-range-selector-view > .selector > .controller {
+.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=start] {
+  left: 0;
+  -webkit-transform: translateX(-1rem);
+          transform: translateX(-1rem);
+  cursor: w-resize;
+}
+.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=start]::before {
+  right: 0.2rem;
+  border-right-width: 0.4rem;
+  border-right-color: var(--color-selected-deep);
+}
+.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=end] {
+  right: 0;
+  -webkit-transform: translateX(1rem);
+          transform: translateX(1rem);
+  cursor: e-resize;
+}
+.histogram-range-selector-view > .selector > .inner > .selectingarea > .handle[data-direction=end]::before {
+  left: 0.2rem;
+  border-left-width: 0.4rem;
+  border-left-color: var(--color-selected-deep);
+}
+.histogram-range-selector-view > .selector > .inner > .controller {
   cursor: col-resize;
+}
+.histogram-range-selector-view > .selector.-makingarea > .inner > .selectingarea, .histogram-range-selector-view > .selector.-resizingarea > .inner > .selectingarea {
+  pointer-events: none;
+}
+.histogram-range-selector-view > .selector.-draggingarea > .inner > .selectingarea {
+  pointer-events: none;
+}
+.histogram-range-selector-view > .selector.-draggingarea > .inner > .controller {
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
 }
 .histogram-range-selector-view > .histogram {
   width: calc(100% - var(--padding-horizontal) * 2);
@@ -1123,23 +1169,23 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   font-weight: bold;
   border-bottom: solid 0.1rem var(--color-separator);
 }
-.table-data-controller-view > .conditions > .condiiton {
+.table-data-controller-view > .conditions > .condition {
   padding: 0.2rem 0.4rem;
   overflow: hidden;
   -webkit-flex-grow: 1;
           flex-grow: 1;
 }
-.table-data-controller-view > .conditions > .condiiton:first-child {
+.table-data-controller-view > .conditions > .condition:first-child {
   color: white;
   background-color: var(--color-lamp-black);
 }
-.table-data-controller-view > .conditions > .condiiton > p {
+.table-data-controller-view > .conditions > .condition > p {
   margin-bottom: 0;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }
-.table-data-controller-view > .conditions > .condiiton:last-child {
+.table-data-controller-view > .conditions > .condition:last-child {
   padding-right: 1.8rem;
 }
 .table-data-controller-view > .status {
@@ -1161,51 +1207,17 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   color: red;
   opacity: 1;
 }
+.table-data-controller-view > .status > p.-flickering {
+  -webkit-animation: var(--transition-fetching) infinite alternate fetching;
+          animation: var(--transition-fetching) infinite alternate fetching;
+}
 .table-data-controller-view > .status > .material-icons-outlined {
   display: none;
-}
-.table-data-controller-view > .indicator {
-  padding: 0.4rem 0.4rem;
-  border-bottom: solid 0.1rem var(--color-separator);
-  display: none;
-}
-.table-data-controller-view > .indicator > .text {
-  line-height: 1;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-justify-content: space-between;
-          justify-content: space-between;
-}
-.table-data-controller-view > .indicator > .progress {
-  margin: 0.4rem 0;
-  position: relative;
-  height: 0.4rem;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.1);
-}
-.table-data-controller-view > .indicator > .progress > .bar {
-  background-color: var(--color-lamp-black);
-  position: absolute;
-  height: 0.4rem;
-  top: 0;
-  left: 0;
-  transition: width var(--transition-wipe);
 }
 .table-data-controller-view > .controller {
   display: -webkit-flex;
   display: flex;
   color: white;
-}
-.table-data-controller-view > .controller > [data-button=download-csv], .table-data-controller-view > .controller > [data-button=download-tsv] {
-  display: block;
-}
-.table-data-controller-view > .controller > [data-button=download-csv] > a, .table-data-controller-view > .controller > [data-button=download-tsv] > a {
-  color: white;
-  text-decoration: none;
-  display: block;
-}
-.table-data-controller-view > .controller > [data-button=download-csv] > a > span, .table-data-controller-view > .controller > [data-button=download-tsv] > a > span {
-  vertical-align: middle;
 }
 .table-data-controller-view > .controller > .button {
   padding: 0.2rem 0;
@@ -1214,16 +1226,24 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   background-color: var(--color-translucent-lamp-black2);
   transition: background-color var(--transition-instant);
   cursor: pointer;
+  display: block;
 }
 .table-data-controller-view > .controller > .button:hover {
   background-color: var(--color-lamp-black);
 }
-.table-data-controller-view > .controller > .button .material-icons-outlined {
-  position: relative;
-  top: -0.1rem;
-  font-size: 1.4rem;
+.table-data-controller-view > .controller > .button > a {
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+.table-data-controller-view > .controller > .button > a > span {
   vertical-align: middle;
-  left: -0.2rem;
+}
+.table-data-controller-view > .controller > .button.none {
+  display: none;
+}
+body[data-display=results] .table-data-controller-view > .controller > .button[data-button=edit] {
+  display: none;
 }
 .table-data-controller-view.-current, .table-data-controller-view:hover {
   opacity: 1;
@@ -1231,12 +1251,12 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
 .table-data-controller-view.-current {
   cursor: initial;
 }
-.table-data-controller-view.-fetching > .status {
-  -webkit-animation: var(--transition-fetching) infinite alternate fetching;
-          animation: var(--transition-fetching) infinite alternate fetching;
-}
-.table-data-controller-view.-fetching > .status > p {
+.table-data-controller-view.-fetching > .status > p, .table-data-controller-view[data-status="load rows"] > .status > p, .table-data-controller-view[data-status=complete] > .status > p {
   opacity: 1;
+}
+.table-data-controller-view.-fetching > .controller, .table-data-controller-view[data-status="load rows"] > .controller, .table-data-controller-view[data-status=complete] > .controller {
+  display: -webkit-flex;
+  display: flex;
 }
 .table-data-controller-view.-fetching > .status > .material-icons-outlined {
   display: block;
@@ -1244,42 +1264,6 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
 .table-data-controller-view.-fetching > .status > .material-icons-outlined.-rotating {
   -webkit-animation: rotation 3s linear infinite;
           animation: rotation 3s linear infinite;
-}
-.table-data-controller-view.-fetching > .indicator > .progress > .bar {
-  -webkit-animation: var(--transition-fetching) infinite alternate fetching;
-          animation: var(--transition-fetching) infinite alternate fetching;
-}
-.table-data-controller-view.-autoload > .controller > .button[data-button=edit] {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-.table-data-controller-view[data-status="load ids"] > .controller > .button[data-button=edit] {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-.table-data-controller-view[data-status="load rows"] > .indicator {
-  display: block;
-}
-.table-data-controller-view[data-status="load rows"] > .controller {
-  display: -webkit-flex;
-  display: flex;
-}
-.table-data-controller-view[data-status=complete] > .status > p {
-  opacity: 1;
-}
-.table-data-controller-view[data-status=complete] > .indicator {
-  display: block;
-}
-.table-data-controller-view[data-status=complete] > .controller {
-  display: -webkit-flex;
-  display: flex;
-}
-.table-data-controller-view[data-status=complete] > .controller > [data-button=download-json], .table-data-controller-view[data-status=complete] > .controller > [data-button=download-tsv] {
-  display: block;
-}
-.table-data-controller-view[data-status=complete] > .controller > .button[data-button=edit] {
-  cursor: not-allowed;
-  opacity: 0.5;
 }
 
 @-webkit-keyframes rotation {
@@ -1303,6 +1287,83 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
             transform: rotate(360deg);
   }
 }
+.progress-indicator {
+  padding: 0.4rem 0.4rem;
+  display: none;
+  font-size: 1rem;
+}
+.progress-indicator.-border {
+  border-bottom: solid 0.1rem var(--color-separator);
+}
+.progress-indicator.-simple > .text {
+  padding-top: 1rem;
+}
+.progress-indicator > .text {
+  line-height: 1;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: space-between;
+          justify-content: space-between;
+}
+.progress-indicator > .text > .amount-of-data {
+  display: none;
+}
+.progress-indicator > .text > .status {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+          align-items: center;
+  text-align: center;
+}
+.progress-indicator > .text > .status > .material-icons-outlined {
+  font-size: 1.4rem;
+  width: 1.6rem;
+}
+.progress-indicator > .text > .status > .material-icons-outlined.-rotating {
+  -webkit-animation: rotation 3s linear infinite;
+          animation: rotation 3s linear infinite;
+}
+.progress-indicator > .progress {
+  margin: 0.4rem 0;
+  position: relative;
+  height: 0.4rem;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.progress-indicator > .progress > .bar {
+  background-color: var(--color-lamp-black);
+  position: absolute;
+  height: 0.4rem;
+  top: 0;
+  left: 0;
+  transition: width var(--transition-wipe);
+}
+.-fetching .progress-indicator, [data-status="load rows"] .progress-indicator, [data-status=complete] .progress-indicator {
+  display: block;
+}
+[data-status="load rows"] .progress-indicator > .text > .amount-of-data, [data-status=complete] .progress-indicator > .text > .amount-of-data {
+  display: block;
+}
+.-fetching .progress-indicator > .text > .bar {
+  -webkit-animation: var(--transition-fetching) infinite alternate fetching;
+          animation: var(--transition-fetching) infinite alternate fetching;
+}
+[data-status=complete] .progress-indicator > .text > .status {
+  display: none;
+}
+[data-status=complete] .progress-indicator.-simple > .progress, [data-status=complete] .progress-indicator.error > .progress {
+  display: none;
+}
+[data-status=complete] .progress-indicator.-simple > .text > .status, [data-status=complete] .progress-indicator.error > .text > .status {
+  display: block;
+}
+[data-status=complete] .progress-indicator.-simple > .text > .status > .material-icons-outlined, [data-status=complete] .progress-indicator.error > .text > .status > .material-icons-outlined {
+  display: none;
+}
+[data-status=complete] .progress-indicator.error > .text > .status {
+  color: var(--color-error);
+}
+
 .togo-key-view {
   color: white;
   background-color: var(--color-translucent-lamp-black2);
@@ -1424,14 +1485,6 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   margin-bottom: 0.1rem;
   font-size: 1.2rem;
   position: relative;
-  transition: opacity var(--transition-wipe);
-}
-.track-view.-preparing {
-  pointer-events: none;
-  opacity: 0.2;
-}
-.track-view.-preparing > .row.-upper > .right > .overview {
-  background-color: transparent !important;
 }
 .track-view > .row {
   display: -webkit-flex;
@@ -1445,7 +1498,7 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
           flex-basis: var(--width-track-column-property);
   min-width: var(--width-track-column-property);
   background-color: white;
-  transition: width var(--transition-instant);
+  transition: width var(--transition-instant), opacity var(--transition-wipe);
 }
 .track-view > .row > .right {
   -webkit-flex-basis: calc(100% - var(--width-track-column-property));
@@ -1497,9 +1550,12 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
   margin: 0;
   padding: 0;
 }
+.track-view > .row.-upper > .right > .overview > .inner.-hidden {
+  display: none;
+}
 .track-view > .row.-upper > .right > .overview > .error {
   padding-left: 0.4rem;
-  color: var(--color-lamp-black);
+  color: var(--color-error);
   background-color: rgba(211, 211, 211, 0.8);
   font-size: 1rem;
   line-height: 3rem;
@@ -1511,17 +1567,25 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > .item.-p
       -ms-user-select: none;
           user-select: none;
 }
-.track-view > .row.-lower > .left > .description {
-  margin-bottom: 0.4rem;
-  padding: 0 0.8rem;
-  line-height: 1.2;
+.track-view > .row.-lower > .left > .specification {
+  padding: 0 1.2rem 1.2rem;
 }
-.track-view > .row.-lower > .left > .external-link-button-view {
+.track-view > .row.-lower > .left > .specification > dt {
   font-size: 1rem;
-  margin-left: 0.8rem;
 }
-.track-view > .row > .selector {
-  height: 100%;
+.track-view > .row.-lower > .left > .specification > dd {
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+  word-break: break-all;
+}
+.track-view.-preparing {
+  opacity: 1;
+}
+.track-view.-preparing > .row > .left {
+  opacity: 0.5;
+}
+.track-view.-preparing > .row.-upper > .right > .overview {
+  background-color: transparent !important;
 }
 .track-view.-allselected::after {
   content: "";
@@ -2127,6 +2191,24 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   padding: 0.8rem;
   overflow: auto;
   width: 100%;
+}
+#ResultDetailModal.backdrop > .popup > .container > .stanzas > .stanza > div > h1, #ResultDetailModal.backdrop > .popup > .container > .stanzas > .stanza > div > h2, #ResultDetailModal.backdrop > .popup > .container > .stanzas > .stanza > div > h3 {
+  color: var(--color-lamp-black);
+}
+#ResultDetailModal.backdrop > .popup > .container > .stanzas > .stanza > div > h1 {
+  margin-bottom: 0;
+  font-size: 2rem;
+}
+#ResultDetailModal.backdrop > .popup > .container > .stanzas > .stanza > div > h2, #ResultDetailModal.backdrop > .popup > .container > .stanzas > .stanza > div > h3 {
+  border-top: solid 0.2rem var(--color-separator-strong);
+  margin-top: 1.2rem;
+  padding-top: 0.8rem;
+}
+#ResultDetailModal.backdrop > .popup > .container > .stanzas > .stanza > div > h2 {
+  font-size: 1.6rem;
+}
+#ResultDetailModal.backdrop > .popup > .container > .stanzas > .stanza > div > h3 {
+  font-size: 1.4rem;
 }
 
 #UploadUserIDsView > textarea {

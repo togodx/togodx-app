@@ -2,37 +2,48 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
+import * as queryTemplates from '../functions/queryTemplates';
 import ProgressIndicator from './ProgressIndicator';
 import axiosRetry from 'axios-retry';
 
+const timeOutError = 'ECONNABORTED';
+
 export default class UploadUserIDsView {
-  #path;
   #ROOT;
   #BODY;
   #USER_IDS;
   #progressIndicator;
   #source;
   #offset;
+  #errorCount;
 
   constructor(elm) {
-    axios.defaults.timeout = 600000;
+    // TODO: set axios settings in common file
+    // TODO: set 'user cancel' as a const in axios setting file
+    axios.defaults.timeout = 120000;
     axiosRetry(axios, {
       retries: 5,
       shouldResetTimeout: true,
-      retryDelay: axiosRetry.exponentialDelay,
+      retryDelay: retryCount => {
+        return Math.pow(2, retryCount - 1) * 5000;
+      },
       retryCondition: error => {
-        return error.response?.status === 404;
+        return (
+          (error.code === timeOutError) ||
+          [500, 503].includes(error.response?.status)
+        );
       },
     });
 
     this.#ROOT = elm;
     this.#offset = 0;
+    this.#errorCount = 0;
 
     this.#BODY = document.querySelector('body');
     this.#USER_IDS = elm.querySelector(':scope > textarea');
 
     elm.appendChild(document.createElement('div'));
-    this.#progressIndicator = new ProgressIndicator(elm.lastChild);
+    this.#progressIndicator = new ProgressIndicator(elm.lastChild, 'simple');
 
     // attach events
     const buttons = elm.querySelector(':scope > .buttons');
@@ -40,6 +51,8 @@ export default class UploadUserIDsView {
       .querySelector(':scope > button:nth-child(1)')
       .addEventListener('click', e => {
         e.stopPropagation();
+        // clear after 2nd execution
+        if (this.#source) this.#reset(true);
         this.#fetch();
         return false;
       });
@@ -67,10 +80,6 @@ export default class UploadUserIDsView {
 
   // public methods
 
-  definePath(path) {
-    this.#path = path;
-  }
-
   // private methods
 
   // #restoreParameters({detail}) {
@@ -79,47 +88,34 @@ export default class UploadUserIDsView {
 
   #fetch() {
     if (this.#USER_IDS.value === '') return;
+    this.#prepareProgressIndicator();
+    Records.properties.forEach(property => {
+      this.#getProperty(property);
+    });
+  }
 
+  #prepareProgressIndicator() {
     // reset axios cancellation
     const CancelToken = axios.CancelToken;
     this.#source = CancelToken.source();
 
     this.#ROOT.classList.add('-fetching');
-    this.#ROOT.dataset.status = 'load rows';
-    this.#progressIndicator.setTotal(Records.properties.length);
-    const queryTemplate = `${
-      this.#path.url
-    }?sparqlet=@@sparqlet@@&primaryKey=@@primaryKey@@&categoryIds=&userKey=${
-      ConditionBuilder.currentTogoKey
-    }&userIds=${encodeURIComponent(
-      this.#USER_IDS.value.replace(/,/g, ' ').split(/\s+/).join(',')
-    )}`;
-
-    Records.properties.forEach(property => {
-      this.#getProperty(queryTemplate, property);
-    });
+    this.#ROOT.dataset.status = '';
+    this.#progressIndicator.setIndicator(
+      'In progress',
+      Records.properties.length
+    );
   }
 
-  #toggleDisplay() {
-    this.#ROOT.classList.toggle('-fetching');
-    this.#ROOT.dataset.status = 'load rows';
-  }
-
-  #getProperty(template, {propertyId, data, primaryKey}) {
+  #getProperty({propertyId, data, primaryKey}) {
     axios
-      .get(
-        template
-          .replace('@@sparqlet@@', encodeURIComponent(data))
-          .replace('@@primaryKey@@', encodeURIComponent(primaryKey)),
-        {cancelToken: this.#source.token},
-      )
+      .get(queryTemplates.dataFromUserIds(data, primaryKey), {
+        cancelToken: this.#source.token,
+      })
       .then(response => {
         this.#BODY.classList.add('-showuserids');
-        this.#offset += 1;
-        this.#progressIndicator.updateProgressBar({
-          offset: this.#offset,
-          // startTime: this.#startTime,
-        });
+        this.#handleProp();
+
         // dispatch event
         const customEvent = new CustomEvent(event.setUserValues, {
           detail: {
@@ -128,25 +124,72 @@ export default class UploadUserIDsView {
           },
         });
         DefaultEventEmitter.dispatchEvent(customEvent);
-        if (this.#offset >= Records.properties.length) this.#complete();
       })
       .catch(error => {
-        console.log(error);
+        if (axios.isCancel && error.message === 'user cancel') return;
+        const customEvent = new CustomEvent(event.toggleErrorUserValues, {
+          detail: {
+            mode: 'show',
+            propertyId,
+            message: 'Failed to map this ID',
+          },
+        });
+        DefaultEventEmitter.dispatchEvent(customEvent);
+        this.#handleProp();
+        this.#errorCount++;
+      })
+      .then(() => {
+        if (this.#offset >= Records.properties.length) {
+          this.#complete(this.#errorCount > 0);
+        }
       });
   }
 
-  #complete() {
+  #handleProp() {
+    this.#offset += 1;
+    this.#progressIndicator.updateProgressBar({
+      offset: this.#offset,
+    });
+  }
+
+  #complete(withError = false) {
+    let msg = withError
+      ? `Failed to map IDs for ${this.#errorCount} attribute${
+          this.#errorCount > 1 ? 's' : ''
+        }`
+      : 'Mapping completed';
+    this.#progressIndicator.setIndicator(msg, undefined, withError);
     this.#ROOT.dataset.status = 'complete';
+  }
+
+  #resetCounters() {
     this.#offset = 0;
+    this.#errorCount = 0;
+  }
+
+  #reset(isPreparing = false) {
+    this.#source?.cancel('user cancel');
+    this.#resetCounters();
+    const customEvent = new CustomEvent(event.clearUserValues);
+    DefaultEventEmitter.dispatchEvent(customEvent);
+
+    const customEvent2 = new CustomEvent(event.toggleErrorUserValues, {
+      detail: {
+        mode: 'hide',
+      },
+    });
+    DefaultEventEmitter.dispatchEvent(customEvent2);
+    this.#progressIndicator.reset();
+    this.#BODY.classList.remove('-showuserids');
+
+    if (isPreparing) return;
+
+    ConditionBuilder.setUserIds();
+    this.#USER_IDS.value = '';
   }
 
   #clear() {
-    this.#source.cancel('user cancel');
-
-    this.#ROOT.dataset.status = 'complete';
-    this.#BODY.classList.remove('-showuserids');
-    this.#USER_IDS.value = '';
-    const customEvent = new CustomEvent(event.clearUserValues);
-    DefaultEventEmitter.dispatchEvent(customEvent);
+    this.#reset();
+    this.#complete();
   }
 }

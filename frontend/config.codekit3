@@ -220,6 +220,20 @@
       "pg" : 0,
       "sct" : 0
     },
+    "\/source\/css\/object\/component\/_progress-indicator.sass" : {
+      "aP" : 1,
+      "bl" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 2,
+      "ma" : 1,
+      "oA" : 1,
+      "oAP" : "\/build\/css\/object\/component\/_progress-indicator.css",
+      "oF" : 0,
+      "oS" : 1,
+      "pg" : 0,
+      "sct" : 0
+    },
     "\/source\/css\/object\/component\/_rounded-button-view.sass" : {
       "aP" : 1,
       "bl" : 0,
@@ -500,6 +514,20 @@
       "pg" : 0,
       "sct" : 0
     },
+    "\/source\/css\/stanza.sass" : {
+      "aP" : 1,
+      "bl" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 2,
+      "ma" : 1,
+      "oA" : 0,
+      "oAP" : "\/build\/css\/stanza.css",
+      "oF" : 0,
+      "oS" : 1,
+      "pg" : 0,
+      "sct" : 0
+    },
     "\/source\/index.pug" : {
       "cB" : 0,
       "cOD" : 1,
@@ -617,6 +645,17 @@
       "sC" : 3,
       "tS" : 1
     },
+    "\/source\/js\/classes\/HistogramRangeSelectorController.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/classes\/HistogramRangeSelectorController.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
     "\/source\/js\/classes\/HistogramRangeSelectorView.js" : {
       "bF" : 4,
       "ft" : 64,
@@ -624,6 +663,17 @@
       "mi" : 0,
       "oA" : 1,
       "oAP" : "\/build\/js\/classes\/HistogramRangeSelectorView.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
+    "\/source\/js\/classes\/ProgressIndicator.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/classes\/ProgressIndicator.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 1
@@ -760,17 +810,6 @@
       "sC" : 3,
       "tS" : 1
     },
-    "\/source\/js\/functions\/calculateLoadingTime.js" : {
-      "bF" : 4,
-      "ft" : 64,
-      "ma" : 1,
-      "mi" : 0,
-      "oA" : 0,
-      "oAP" : "\/build\/js\/functions\/calculateLoadingTime.js",
-      "oF" : 0,
-      "sC" : 3,
-      "tS" : 1
-    },
     "\/source\/js\/functions\/collapseView.js" : {
       "bF" : 4,
       "ft" : 64,
@@ -789,6 +828,17 @@
       "mi" : 0,
       "oA" : 1,
       "oAP" : "\/build\/js\/functions\/dragView.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
+    "\/source\/js\/functions\/queryTemplates.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/functions\/queryTemplates.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 1
@@ -848,7 +898,8 @@
     "displayValue" : "NBDC Togo Site",
     "displayValueWasSetByUser" : 1,
     "iconImageName" : "brackets-koamaru",
-    "iconImageWasSetByUser" : 0
+    "iconImageWasSetByUser" : 0,
+    "lastBuiltDate" : 647767494.75567496
   },
   "projectSettings" : {
     "abortBuildOnError" : 1,

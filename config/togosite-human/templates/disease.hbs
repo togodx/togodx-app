@@ -2,7 +2,7 @@
 <script>
   (() => {
     // togoid endpoint
-    const togoidAPIURL = 'https://api.togoid.dbcls.jp.il3c.com';
+    const togoidAPIURL = 'https://api.togoid.dbcls.jp';
     const dataUrlEndpoint = 'https://integbio.jp/togosite/sparqlist/api/test_disease_template_2';
     const idTypes = ['mondo', 'nando', 'hp', 'mesh'];
 
@@ -28,6 +28,7 @@
       for (let key in attributes) {
         element.setAttribute(key, attributes[key]);
       }
+      element.setAttribute('custom-css-url', '/css/stanza.css');
     }
 
     // create a list of target ID types by removing the subject ID type

@@ -1,46 +1,80 @@
+/**
+ * @enum { string } MODE
+ */
+const MODE = {
+  SIMPLE: 'simple',
+  DETAILED: 'detailed',
+};
+
 export default class ProgressIndicator {
+  #ROOT;
   #TEXT_OFFSET;
   #TEXT_TOTAL;
-  #TEXT_TIME;
+  #TEXT_STATUS;
   #BAR;
   #totalDuration;
   #total;
+  #mode;
 
-  constructor(elm) {
-    elm.classList.add('progress-indicator');
-    elm.innerHTML = `
-      <div class="text">
-        <div class="amount-of-data">
+  /**
+   * @param { HTMLElement } elm
+   * @param { 'simple' | 'detailed' } mode - Default is detailed mode with time bar and amount tracker
+   */
+  constructor(elm, mode = MODE.DETAILED) {
+    this.#mode = mode;
+    elm.classList.add('progress-indicator', `-${mode}`);
+    const loadingIcon =
+      mode === MODE.SIMPLE
+        ? '<span class="material-icons-outlined -rotating">autorenew</span>'
+        : '';
+    const counter =
+      mode === MODE.DETAILED
+        ? `<div class="amount-of-data">
           <span class="offset">0</span>
-            / 
-          <span class="total"></span> 
-        </div>
-        <div class="remaining-time">
+          <span class="total"></span>
+      </div>`
+        : '';
+    elm.innerHTML = ` 
+      <div class="text">
+        ${counter}
+        <div class="status">
+          ${loadingIcon}
         </div>
       </div>
       <div class="progress">
         <div class="bar"></div>
-      </div>
-      `;
+      </div>`;
 
-    this.#TEXT_TIME = elm.querySelector(':scope > .text > .remaining-time');
+    this.#ROOT = elm;
+    this.#BAR = elm.querySelector(':scope > .progress > .bar');
+    this.#TEXT_STATUS = elm.querySelector(':scope > .text > .status');
+    this.#total = 0;
+
+    if (mode === MODE.SIMPLE) return;
+
     this.#TEXT_OFFSET = elm.querySelector(
       ':scope > .text > .amount-of-data > .offset'
     );
     this.#TEXT_TOTAL = elm.querySelector(
       ':scope > .text > .amount-of-data > .total'
     );
-    this.#BAR = elm.querySelector(':scope > .progress > .bar');
     this.#totalDuration = 0;
-    this.#total = 0;
   }
+
   /* private methods */
   /**
    * @param { number } offset
    */
   #updateAmount(offset) {
     this.#TEXT_OFFSET.textContent = `${offset.toString()}`;
-    this.#BAR.style.width = `${(offset / this.#total) * 100}%`;
+  }
+
+  /**
+   * @param { number } offset
+   */
+  #updateBarWidth(offset = 0) {
+    this.#BAR.style.width =
+      offset / this.#total ? `${(offset / this.#total) * 100}%` : '0%';
   }
 
   /**
@@ -63,7 +97,7 @@ export default class ProgressIndicator {
     s = Math.floor((time % 3600) % 60);
     return h > 0 ? `${h} hr.` : m > 0 ? `${m} min.` : `${s} sec.`;
   }
-  
+
   /**
    * @param { number } offset
    * @param { number } startTime - start time of 1 instance
@@ -74,17 +108,47 @@ export default class ProgressIndicator {
       this.#totalDuration / offset,
       this.#total - offset
     );
-    this.#TEXT_TIME.innerHTML = this.#timeString(remainingTime);
+    this.#TEXT_STATUS.innerHTML = this.#timeString(remainingTime);
+  }
+
+  /**
+   * @param { string } message
+   * @param { boolean } isError
+   */
+  #setMessage(message, isError) {
+    this.#TEXT_STATUS.childNodes[0].nodeValue = message;
+    isError ? this.#ROOT.classList.add('error') : this.#ROOT.classList.remove('error');
   }
 
   /* public accessors */
-  updateProgressBar({offset, startTime}) {
+
+  /**
+   * @param { {offset: number, startTime: number} } progressInfo
+   */
+  updateProgressBar({offset = 0, startTime}) {
+    console.log(`current offset: ${offset}`);
+    console.log(`current total: ${this.#total}`);
+    this.#updateBarWidth(offset);
+    if (this.#mode === MODE.SIMPLE || !startTime) return;
+
     this.#updateAmount(offset);
     if (startTime) this.#updateTime(offset, startTime);
   }
 
-  setTotal(total) {
+  /**
+   * @param { string } message
+   * @param { number } total
+   * @param { boolean } isError
+   */
+  setIndicator(message = '', total = 0, isError = false) {
     this.#total = total;
-    this.#TEXT_TOTAL.textContent = this.#total.toString();
+    if (this.#mode === MODE.SIMPLE) this.#setMessage(message, isError);
+    else if (this.#mode === MODE.DETAILED)
+      this.#TEXT_TOTAL.textContent = `/ ${this.#total.toString()}`;
+  }
+
+  reset() {
+    this.setIndicator();
+    this.#updateBarWidth();
   }
 }

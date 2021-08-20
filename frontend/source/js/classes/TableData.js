@@ -3,7 +3,6 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
-import axiosRetry from 'axios-retry';
 import ProgressIndicator from './ProgressIndicator';
 
 const LIMIT = 100;
@@ -91,17 +90,6 @@ export default class TableData {
   #BUTTON_RIGHT;
 
   constructor(condition, elm) {
-    // axios settings
-    axios.defaults.timeout = 600000;
-    axiosRetry(axios, {
-      retries: 5,
-      shouldResetTimeout: true,
-      retryDelay: axiosRetry.exponentialDelay,
-      retryCondition: error => {
-        return (error.code === timeOutError) | (error.response?.status === 500);
-      },
-    });
-
     const CancelToken = axios.CancelToken;
     this.#source = CancelToken.source();
 
@@ -152,7 +140,7 @@ export default class TableData {
       <p>Getting ID list</p>
       <span class="material-icons-outlined -rotating">autorenew</span>
     </div>
-    <div>
+    <div class="-border">
     </div>
     <div class="controller">
     </div>
@@ -248,7 +236,12 @@ export default class TableData {
     if (urlType) {
       const url = downloadUrls.get(urlType);
       anchor.setAttribute('href', url);
-      anchor.setAttribute('download', `sample.${urlType}`);
+      const timeStamp = new Date();
+      const [date, time] = [
+        timeStamp.toISOString().slice(0, 10).replaceAll('-',''),
+        timeStamp.toLocaleTimeString().replaceAll(':', ''),
+      ];
+      anchor.setAttribute('download', `togoDx-${date}-${time}.${urlType}`);
     }
   }
 
@@ -266,7 +259,7 @@ export default class TableData {
       dataButtonModes.get(modeToChangeTo)
     );
     this.#isLoading = !this.#isLoading;
-    this.#STATUS.textContent = this.#isLoading ? 'Getting Data' : 'Awaiting';
+    this.#STATUS.textContent = this.#isLoading ? 'Getting data' : 'Awaiting';
 
     if (this.#isLoading) this.#getProperties();
   }
@@ -303,14 +296,11 @@ export default class TableData {
     this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('empty'));
 
     const partiallyLoaded = this.#queryIds.length > 0;
-    const message = partiallyLoaded ? 'Getting Data' : 'Getting ID list';
+    const message = partiallyLoaded ? 'Getting data' : 'Getting ID list';
     this.#STATUS.textContent = message;
 
-    if (partiallyLoaded) {
-      this.#getProperties();
-    } else {
-      this.#getQueryIds();
-    }
+    if (partiallyLoaded) this.#getProperties();
+    else this.#getQueryIds();
   }
 
   /**
@@ -453,8 +443,8 @@ export default class TableData {
           return;
         }
         this.#ROOT.dataset.status = 'load rows';
-        this.#STATUS.textContent = 'Getting Data';
-        this.#progressIndicator.setTotal(this.#queryIds.length);
+        this.#STATUS.textContent = 'Getting data';
+        this.#progressIndicator.setIndicator(undefined, this.#queryIds.length);
         this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
         this.#getProperties();
       })
@@ -517,7 +507,8 @@ export default class TableData {
   #complete(withData = true) {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = withData ? 'Complete' : 'No Data Found';
-    this.#ROOT.classList.toggle('-fetching');
+    this.#ROOT.classList.remove('-fetching');
+    this.#STATUS.classList.remove('-flickering');
 
     if (withData) this.#setDownloadButtons();
   }
