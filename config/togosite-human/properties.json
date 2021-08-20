@@ -14,7 +14,7 @@
         "dataSource": "Ensembl",
         "dataSourceUrl": "http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index",
         "dataSourceVersion": "human release 102",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2020-10-29",
         "primaryKey": "ensembl_gene",
         "keyLabel": "Ensembl gene"
       },
@@ -26,7 +26,7 @@
         "dataSource": "Ensembl human release 102",
         "dataSourceUrl": "http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index",
         "dataSourceVersion": "human release 102",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2020-10-29",
         "primaryKey": "ensembl_gene",
         "keyLabel": "Ensembl gene"
       },
@@ -38,7 +38,7 @@
         "dataSource": "Ensembl human release 102",
         "dataSourceUrl": "http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index",
         "dataSourceVersion": "human release 102",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2020-10-29",
         "primaryKey": "ensembl_transcript",
         "keyLabel": "Ensembl transcript",
         "viewMethod": "histogram"
@@ -51,7 +51,7 @@
         "dataSource": "HomoloGene",
         "dataSourceUrl": "https://www.ncbi.nlm.nih.gov/homologene/statistics/",
         "dataSourceVersion": "Release 68",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-03-12",
         "primaryKey": "ncbigene",
         "keyLabel": "NCBI gene"
       },
@@ -63,7 +63,7 @@
         "dataSource": "HomoloGene",
         "dataSourceUrl": "https://www.ncbi.nlm.nih.gov/homologene/statistics/",
         "dataSourceVersion": "Release 68",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-03-12",
         "primaryKey": "ncbigene",
         "keyLabel": "NCBI gene"
       },
@@ -75,7 +75,7 @@
         "dataSource": "Calculations for tissue specificity of genechip human GSE7307 from RefEx",
         "dataSourceUrl": "https://doi.org/10.6084/m9.figshare.4028700.v3",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-03-12",
         "primaryKey": "ncbigene",
         "keyLabel": "NCBI gene"
       },
@@ -87,7 +87,7 @@
         "dataSource": "Calculations for tissue specificity of genechip human GSE7307 from RefEx",
         "dataSourceUrl": "https://doi.org/10.6084/m9.figshare.4028700.v3",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-03-12",
         "primaryKey": "ncbigene",
         "keyLabel": "NCBI gene"
       },
@@ -99,7 +99,7 @@
         "dataSource": "Supplementary Table 1 of A systematic survey of human tissue-specific gene expression and splicing reveals new opportunities for therapeutic target identification and evaluation; R. Y. Yang et al.; bioRxiv 311563",
         "dataSourceUrl": "https://doi.org/10.1101/311563",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-03-29",
         "primaryKey": "ensembl_gene",
         "keyLabel": "Ensembl gene"
       },
@@ -111,7 +111,7 @@
         "dataSource": "Supplementary Table 1 of A systematic survey of human tissue-specific gene expression and splicing reveals new opportunities for therapeutic target identification and evaluation; R. Y. Yang et al.; bioRxiv 311563",
         "dataSourceUrl": "https://doi.org/10.1101/311563",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-03-29",
         "primaryKey": "ensembl_gene",
         "keyLabel": "Ensembl gene"
       },
@@ -123,7 +123,7 @@
         "dataSource": "HPA TSV",
         "dataSourceUrl": "https://www.proteinatlas.org/about/download",
         "dataSourceVersion": "N/A",
-        "updatedAt": "28 Jul, 2021",
+        "updatedAt": "2021-07-28",
         "primaryKey": "ensembl_gene",
         "keyLabel": "Ensembl gene"
       },
@@ -135,7 +135,7 @@
         "dataSource": "HPA TSV",
         "dataSourceUrl": "https://www.proteinatlas.org/about/download",
         "dataSourceVersion": "N/A",
-        "updatedAt": "28 Jul, 2021",
+        "updatedAt": "2021-07-28",
         "primaryKey": "ensembl_gene",
         "keyLabel": "Ensembl gene"
       },
@@ -147,7 +147,7 @@
         "dataSource": "ChIP-Atlas",
         "dataSourceUrl": "http://dbarchive.biosciencedbc.jp/kyushu-u/hg38/target/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-03-12",
         "primaryKey": "ensembl_gene",
         "keyLabel": "Ensembl gene"
       }
@@ -168,7 +168,7 @@
         "dataSource": "UniProt",
         "dataSourceUrl": "https://www.uniprot.org/",
         "dataSourceVersion": "Release 2021_03",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-17",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt"
       },{
@@ -179,7 +179,7 @@
         "dataSource": "Gene ontology cellular component annotation from UniProt",
         "dataSourceUrl": "https://www.uniprot.org/",
         "dataSourceVersion": "Release 2021_03",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-17",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt"
       },
@@ -191,7 +191,7 @@
         "dataSource": "Gene ontology biological process annotation from UniProt",
         "dataSourceUrl": "https://www.uniprot.org/",
         "dataSourceVersion": "Release 2021_03",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-17",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt"
       },
@@ -203,7 +203,7 @@
         "dataSource": "Gene ontology molecular function annotation from UniProt",
         "dataSourceUrl": "https://www.uniprot.org/",
         "dataSourceVersion": "Release 2021_03",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-17",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt"
       },
@@ -215,7 +215,7 @@
         "dataSource": "Function from UniProt",
         "dataSourceUrl": "https://www.uniprot.org/",
         "dataSourceVersion": "Release 2021_03",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-17",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt"
       },
@@ -227,7 +227,7 @@
         "dataSource": "Sequences from UniProt",
         "dataSourceUrl": "https://www.uniprot.org/",
         "dataSourceVersion": "Release 2021_03",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-17",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt",
         "viewMethod": "histogram"
@@ -240,7 +240,7 @@
         "dataSource": "Amino acid modifications from UniProt",
         "dataSourceUrl": "https://www.uniprot.org/",
         "dataSourceVersion": "Release 2021_03",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-17",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt"
       },
@@ -252,7 +252,7 @@
         "dataSource": "Topology from UniProt",
         "dataSourceUrl": "https://www.uniprot.org/",
         "dataSourceVersion": "Release 2021_03",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-17",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt",
         "viewMethod": "histogram"
@@ -265,7 +265,7 @@
         "dataSource": "Amino acid modifications from UniProt",
         "dataSourceUrl": "https://www.uniprot.org/",
         "dataSourceVersion": "Release 2021_03",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-17",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt",
         "viewMethod": "histogram"
@@ -278,7 +278,7 @@
         "dataSource": "Amino acid modifications from UniProt",
         "dataSourceUrl": "https://www.uniprot.org/",
         "dataSourceVersion": "Release 2021_03",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-17",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt",
         "viewMethod": "histogram"
@@ -291,7 +291,7 @@
         "dataSource": "Pathology & Biotech from UniProt",
         "dataSourceUrl": "https://www.uniprot.org/",
         "dataSourceVersion": "Release 2021_03",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-17",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt"
       },
@@ -303,7 +303,7 @@
         "dataSource": "Tissue from UniProt",
         "dataSourceUrl": "https://www.uniprot.org/",
         "dataSourceVersion": "Release 2021_03",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-17",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt"
       },
@@ -315,7 +315,7 @@
         "dataSource": "HPA RDF",
         "dataSourceUrl": "https://www.proteinatlas.org/about/download",
         "dataSourceVersion": "N/A",
-        "updatedAt": "28 Jul, 2021",
+        "updatedAt": "2021-07-28",
         "primaryKey": "ensembl_gene",
         "keyLabel": "Ensembl gene"
       },
@@ -327,7 +327,7 @@
         "dataSource": "HPA RDF",
         "dataSourceUrl": "https://www.proteinatlas.org/about/download",
         "dataSourceVersion": "N/A",
-        "updatedAt": "28 Jul, 2021",
+        "updatedAt": "2021-07-28",
         "primaryKey": "ensembl_gene",
         "keyLabel": "Ensembl gene"
       },
@@ -339,7 +339,7 @@
         "dataSource": "HPA RDF",
         "dataSourceUrl": "https://www.proteinatlas.org/about/download",
         "dataSourceVersion": "N/A",
-        "updatedAt": "28 Jul, 2021",
+        "updatedAt": "2021-07-28",
         "primaryKey": "ensembl_gene",
         "keyLabel": "Ensembl gene"
       },
@@ -351,7 +351,7 @@
         "dataSource": "HPA RDF",
         "dataSourceUrl": "https://www.proteinatlas.org/about/download",
         "dataSourceVersion": "N/A",
-        "updatedAt": "28 Jul, 2021",
+        "updatedAt": "2021-07-28",
         "primaryKey": "ensembl_gene",
         "keyLabel": "Ensembl gene"
       },
@@ -363,7 +363,7 @@
         "dataSource": "Expression from neXtProt",
         "dataSourceUrl": "https://www.nextprot.org/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-02-18",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt"
       }
@@ -384,7 +384,7 @@
         "dataSource": "Structure from Uniprot",
         "dataSourceUrl": "https://www.uniprot.org/help/structure_section",
         "dataSourceVersion": "Release 2021_03",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-17",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt"
       },
@@ -396,7 +396,7 @@
         "dataSource": "'Helix' entities counted in each entry of PDB",
         "dataSourceUrl": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-10",
         "primaryKey": "pdb",
         "keyLabel": "PDB",
         "viewMethod": "histogram"
@@ -409,7 +409,7 @@
         "dataSource": "'Sheet' entities counted in each entry of PDB",
         "dataSourceUrl": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-10",
         "primaryKey": "pdb",
         "keyLabel": "PDB",
         "viewMethod": "histogram"
@@ -422,7 +422,7 @@
         "dataSource": "Entity from PDB",
         "dataSourceUrl": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-10",
         "primaryKey": "pdb",
         "keyLabel": "PDB",
         "viewMethod": "histogram"
@@ -435,7 +435,7 @@
         "dataSource": "Entity from PDB",
         "dataSourceUrl": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-10",
         "primaryKey": "pdb",
         "keyLabel": "PDB"
       },
@@ -447,7 +447,7 @@
         "dataSource": "Experimental method from PDB",
         "dataSourceUrl": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-10",
         "primaryKey": "pdb",
         "keyLabel": "PDB"
       },
@@ -459,7 +459,7 @@
         "dataSource": "Crystallization Conditions from PDB",
         "dataSourceUrl": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-10",
         "primaryKey": "pdb",
         "keyLabel": "PDB"
       },
@@ -471,7 +471,7 @@
         "dataSource": "Crystallization Conditions from PDB",
         "dataSourceUrl": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-10",
         "primaryKey": "pdb",
         "keyLabel": "PDB"
       }
@@ -488,8 +488,8 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/interaction_proteins_in_pathway_reactome",
         "dataSource": "Reactome",
         "dataSourceUrl": "https://reactome.org/download-data",
-        "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "dataSourceVersion": "71",
+        "updatedAt": "2021-03-05",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt"
       },
@@ -500,8 +500,8 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/interaction_compounds_in_pathway_reactome",
         "dataSource": "Reactome",
         "dataSourceUrl": "https://reactome.org/download-data",
-        "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "dataSourceVersion": "71",
+        "updatedAt": "2021-03-05",
         "primaryKey": "chebi",
         "keyLabel": "ChEBI compound"
       },
@@ -513,7 +513,7 @@
         "dataSource": "Interaction from UniProt",
         "dataSourceUrl": "https://www.uniprot.org/help/interaction_section",
         "dataSourceVersion": "Release 2021_03",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-17",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt",
         "viewMethod": "histogram"
@@ -525,8 +525,8 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/interaction_chembl_assay_existence_uniprot",
         "dataSource": "Target protein from ChEMBL-RDF 28.0 against all UniProt entries",
         "dataSourceUrl": "http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/",
-        "dataSourceVersion": "28.0",
-        "updatedAt": "14 Jul, 2021",
+        "dataSourceVersion": "CHEMBL28",
+        "updatedAt": "2021-03-01",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt"
       }
@@ -546,8 +546,8 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/compound_substance_type_chembl",
         "dataSource": "ChEMBL-RDF",
         "dataSourceUrl": "http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/",
-        "dataSourceVersion": "28.0",
-        "updatedAt": "14 Jul, 2021",
+        "dataSourceVersion": "CHEMBL28",
+        "updatedAt": "2021-03-01",
         "primaryKey": "chembl_compound",
         "keyLabel": "ChEMBL compound"
       },
@@ -556,10 +556,10 @@
         "label": "Chemical role",
         "description": "Classification based on the chemical roles, such as antioxidant or environmental contaminant from ChEBI",
         "data": "https://integbio.jp/togosite/sparqlist/api/compound_chemical_role_chebi",
-        "dataSource": "",
-        "dataSourceUrl": "",
-        "dataSourceVersion": "",
-        "updatedAt": "14 Jul, 2021",
+        "dataSource": "Chemical role from ChEBI",
+        "dataSourceUrl": "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:51086",
+        "dataSourceVersion": "Release 201",
+        "updatedAt": "2021-07-01",
         "primaryKey": "chebi",
         "keyLabel": "ChEBI compound"
       },
@@ -568,10 +568,10 @@
         "label": "Application type",
         "description": "Classification based on the application types, such as pharmaceutical or pesticide from ChEBI",
         "data": "https://integbio.jp/togosite/sparqlist/api/compound_application_type_chebi",
-        "dataSource": "",
-        "dataSourceUrl": "",
-        "dataSourceVersion": "",
-        "updatedAt": "14 Jul, 2021",
+        "dataSource": "Application type from ChEBI",
+        "dataSourceUrl": "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:33232",
+        "dataSourceVersion": "Release 201",
+        "updatedAt": "2021-07-01",
         "primaryKey": "chebi",
         "keyLabel": "ChEBI compound"
       },
@@ -582,8 +582,8 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/compound_action_type_chembl",
         "dataSource": "ChEMBL-RDF",
         "dataSourceUrl": "http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/",
-        "dataSourceVersion": "28.0",
-        "updatedAt": "14 Jul, 2021",
+        "dataSourceVersion": "CHEMBL28",
+        "updatedAt": "2021-03-01",
         "primaryKey": "chembl_compound",
         "keyLabel": "ChEMBL compound"
       },
@@ -592,10 +592,10 @@
         "label": "Biological role",
         "description": "Classification based on the biological roles, such as inhibitor or antimicrobial agent from ChEBI",
         "data": "https://integbio.jp/togosite/sparqlist/api/compound_biological_role_chebi",
-        "dataSource": "",
-        "dataSourceUrl": "",
-        "dataSourceVersion": "",
-        "updatedAt": "14 Jul, 2021",
+        "dataSource": "Biological role from ChEBI ",
+        "dataSourceUrl": "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:24432",
+        "dataSourceVersion": "Release 201",
+        "updatedAt": "2021-07-01",
         "primaryKey": "chebi",
         "keyLabel": "ChEBI compound"
       },
@@ -606,8 +606,8 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/compound_drug_indication_mesh_chembl",
         "dataSource": "ChEMBL-RDF",
         "dataSourceUrl": "http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/",
-        "dataSourceVersion": "28.0",
-        "updatedAt": "14 Jul, 2021",
+        "dataSourceVersion": "CHEMBL28",
+        "updatedAt": "2021-03-01",
         "primaryKey": "chembl_compound",
         "keyLabel": "ChEMBL compound"
       },
@@ -618,8 +618,8 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/compound_drug_development_phase_chembl",
         "dataSource": "ChEMBL-RDF",
         "dataSourceUrl": "http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/",
-        "dataSourceVersion": "28.0",
-        "updatedAt": "14 Jul, 2021",
+        "dataSourceVersion": "CHEMBL28",
+        "updatedAt": "2021-03-01",
         "primaryKey": "chembl_compound",
         "keyLabel": "ChEMBL compound"
       },
@@ -664,7 +664,7 @@
         "dataSource": "Mondo Disease Ontology (Mondo)",
         "dataSourceUrl": "https://mondo.monarchinitiative.org/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-23",
         "primaryKey": "mondo",
         "keyLabel": "Mondo"
       },
@@ -676,7 +676,7 @@
         "dataSource": "Medical Subject Headings (MeSH)",
         "dataSourceUrl": "https://www.nlm.nih.gov/mesh/meshhome.html",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-03-05",
         "primaryKey": "mesh",
         "keyLabel": "MeSH"
       },
@@ -687,8 +687,8 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/disease_diseases_nando",
         "dataSource": "Nanbyo Disease Ontology (NANDO)",
         "dataSourceUrl": "http://nanbyodata.jp/ontology/nando",
-        "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "dataSourceVersion": "1",
+        "updatedAt": "2021-07-23",
         "primaryKey": "nando",
         "keyLabel": "NANDO"
       },
@@ -700,7 +700,7 @@
         "dataSource": "Mondo Disease Ontology (Mondo)",
         "dataSourceUrl": "https://mondo.monarchinitiative.org/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-06-23",
         "primaryKey": "mondo",
         "keyLabel": "Mondo"
       },
@@ -712,7 +712,7 @@
         "dataSource": "Human Phenotype Ontology (HPO)",
         "dataSourceUrl": "https://hpo.jax.org/app/browse/term/HP:0000118",
         "dataSourceVersion": "N/A",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-02-17",
         "primaryKey": "hp",
         "keyLabel": "Human Phenotype Ontology"
       }
@@ -730,7 +730,7 @@
         "dataSource": "GWAS Catalog All associations ",
         "dataSourceUrl": "https://www.ebi.ac.uk/gwas/docs/file-downloads",
         "dataSourceVersion": "v1.0.2",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "2021-03-25",
         "primaryKey": "togovar",
         "keyLabel": "TogoVar variant"
       },
@@ -742,7 +742,7 @@
         "dataSource": "TogoVar,ClinVar",
         "dataSourceUrl": "",
         "dataSourceVersion": "",
-        "updatedAt": "14 Jul, 2021",
+        "updatedAt": "",
         "primaryKey": "togovar",
         "keyLabel": "TogoVar variant"
       }
