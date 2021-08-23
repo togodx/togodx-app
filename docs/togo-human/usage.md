@@ -1,4 +1,4 @@
-# Help
+# Usage
 
 - Terms
 - Application views
