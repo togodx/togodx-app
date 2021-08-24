@@ -396,7 +396,7 @@
         "dataSource": "'Helix' entities counted in each entry of PDB",
         "dataSourceUrl": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "2021-06-10",
+        "updatedAt": "2021-08-19",
         "primaryKey": "pdb",
         "keyLabel": "PDB",
         "viewMethod": "histogram"
@@ -409,7 +409,7 @@
         "dataSource": "'Sheet' entities counted in each entry of PDB",
         "dataSourceUrl": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "2021-06-10",
+        "updatedAt": "2021-08-19",
         "primaryKey": "pdb",
         "keyLabel": "PDB",
         "viewMethod": "histogram"
@@ -422,7 +422,7 @@
         "dataSource": "Entity from PDB",
         "dataSourceUrl": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "2021-06-10",
+        "updatedAt": "2021-08-19",
         "primaryKey": "pdb",
         "keyLabel": "PDB",
         "viewMethod": "histogram"
@@ -435,7 +435,7 @@
         "dataSource": "Entity from PDB",
         "dataSourceUrl": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "2021-06-10",
+        "updatedAt": "2021-08-19",
         "primaryKey": "pdb",
         "keyLabel": "PDB"
       },
@@ -447,7 +447,7 @@
         "dataSource": "Experimental method from PDB",
         "dataSourceUrl": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "2021-06-10",
+        "updatedAt": "2021-08-19",
         "primaryKey": "pdb",
         "keyLabel": "PDB"
       },
@@ -459,7 +459,7 @@
         "dataSource": "Crystallization Conditions from PDB",
         "dataSourceUrl": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "2021-06-10",
+        "updatedAt": "2021-08-19",
         "primaryKey": "pdb",
         "keyLabel": "PDB"
       },
@@ -471,7 +471,7 @@
         "dataSource": "Crystallization Conditions from PDB",
         "dataSourceUrl": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "2021-06-10",
+        "updatedAt": "2021-08-19",
         "primaryKey": "pdb",
         "keyLabel": "PDB"
       }
@@ -525,7 +525,7 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/interaction_chembl_assay_existence_uniprot",
         "dataSource": "Target protein from ChEMBL-RDF 28.0 against all UniProt entries",
         "dataSourceUrl": "http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/",
-        "dataSourceVersion": "CHEMBL28",
+        "dataSourceVersion": "CHEMBL29",
         "updatedAt": "2021-03-01",
         "primaryKey": "uniprot",
         "keyLabel": "UniProt"
@@ -546,7 +546,7 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/compound_substance_type_chembl",
         "dataSource": "ChEMBL-RDF",
         "dataSourceUrl": "http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/",
-        "dataSourceVersion": "CHEMBL28",
+        "dataSourceVersion": "CHEMBL29",
         "updatedAt": "2021-03-01",
         "primaryKey": "chembl_compound",
         "keyLabel": "ChEMBL compound"
@@ -558,8 +558,8 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/compound_chemical_role_chebi",
         "dataSource": "Chemical role from ChEBI",
         "dataSourceUrl": "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:51086",
-        "dataSourceVersion": "Release 201",
-        "updatedAt": "2021-07-01",
+        "dataSourceVersion": "Release 202",
+        "updatedAt": "2021-08-01",
         "primaryKey": "chebi",
         "keyLabel": "ChEBI compound"
       },
@@ -570,8 +570,8 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/compound_application_type_chebi",
         "dataSource": "Application type from ChEBI",
         "dataSourceUrl": "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:33232",
-        "dataSourceVersion": "Release 201",
-        "updatedAt": "2021-07-01",
+        "dataSourceVersion": "Release 202",
+        "updatedAt": "2021-08-01",
         "primaryKey": "chebi",
         "keyLabel": "ChEBI compound"
       },
@@ -594,8 +594,8 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/compound_biological_role_chebi",
         "dataSource": "Biological role from ChEBI ",
         "dataSourceUrl": "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:24432",
-        "dataSourceVersion": "Release 201",
-        "updatedAt": "2021-07-01",
+        "dataSourceVersion": "Release 202",
+        "updatedAt": "2021-08-01",
         "primaryKey": "chebi",
         "keyLabel": "ChEBI compound"
       },
@@ -663,8 +663,8 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/disease_diseases_mondo",
         "dataSource": "Mondo Disease Ontology (Mondo)",
         "dataSourceUrl": "https://mondo.monarchinitiative.org/",
-        "dataSourceVersion": "v2021-06-01",
-        "updatedAt": "2021-06-23",
+        "dataSourceVersion": "v2021-08-11",
+        "updatedAt": "2021-08-11",
         "primaryKey": "mondo",
         "keyLabel": "Mondo"
       },
@@ -687,8 +687,8 @@
         "data": "https://integbio.jp/togosite/sparqlist/api/disease_diseases_nando",
         "dataSource": "Nanbyo Disease Ontology (NANDO)",
         "dataSourceUrl": "http://nanbyodata.jp/ontology/nando",
-        "dataSourceVersion": "1",
-        "updatedAt": "2021-07-23",
+        "dataSourceVersion": "1.0.1",
+        "updatedAt": "2021-08-05",
         "primaryKey": "nando",
         "keyLabel": "NANDO"
       },
@@ -742,7 +742,7 @@
         "dataSource": "ClinVar",
         "dataSourceUrl": "https://www.ncbi.nlm.nih.gov/clinvar/docs/clinsig/",
         "dataSourceVersion": "N/A",
-        "updatedAt": "2021-07-02",
+        "updatedAt": "2021-08-05",
         "primaryKey": "togovar",
         "keyLabel": "TogoVar variant"
       }
