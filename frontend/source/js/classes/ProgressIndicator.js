@@ -132,7 +132,7 @@ export default class ProgressIndicator {
     if (this.#mode === MODE.SIMPLE || !startTime) return;
 
     this.#updateAmount(offset);
-    if (startTime) this.#updateTime(offset, startTime);
+    this.#updateTime(offset, startTime);
   }
 
   /**
