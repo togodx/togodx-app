@@ -8,6 +8,7 @@
     - [Add filtersとMap Attributesの両方を利用した探索方法(AND・OR検索)](#add-filters%E3%81%A8map-attributes%E3%81%AE%E4%B8%A1%E6%96%B9%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E6%8E%A2%E7%B4%A2%E6%96%B9%E6%B3%95andor%E6%A4%9C%E7%B4%A2)
     - [Map your IDsを用いてデータを俯瞰する](#map-your-ids%E3%82%92%E7%94%A8%E3%81%84%E3%81%A6%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E4%BF%AF%E7%9E%B0%E3%81%99%E3%82%8B)
 - [Results画面](#results%E7%94%BB%E9%9D%A2)
+
 ---
 ## Explorer画面 (トップページ)
 ![Explore](https://github.com/dbcls/togosite/raw/develop/docs/togo-human/img/20210825_togodx_beta_toppage.png)
