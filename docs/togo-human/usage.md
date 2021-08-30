@@ -1,4 +1,4 @@
-#  How to use for TogoDX/Human
+#  How to use TogoDX/Human
 ## Table of Contents
 - [Explorer画面 (トップページ)](#explorer%E7%94%BB%E9%9D%A2-%E3%83%88%E3%83%83%E3%83%97%E3%83%9A%E3%83%BC%E3%82%B8)
     - [Attribute keys](#attribute-keys)   
