@@ -1,5 +1,14 @@
 #  How to use for TogoDX/Human
-
+## Table of Contents
+- [Explorer画面 (トップページ)](#explorer%E7%94%BB%E9%9D%A2-%E3%83%88%E3%83%83%E3%83%97%E3%83%9A%E3%83%BC%E3%82%B8)
+    - [Attribute keys](#attribute-keys)   
+- [Explorer画面における操作方法](#%E6%93%8D%E4%BD%9C%E8%AA%AC%E6%98%8E)
+    - [Add filterを利用した探索方法(AND検索)](#add-filter%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E6%8E%A2%E7%B4%A2%E6%96%B9%E6%B3%95and%E6%A4%9C%E7%B4%A2)
+    - [Map attributesを利用した探索方法(OR検索)](#map-attributes%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E6%8E%A2%E7%B4%A2%E6%96%B9%E6%B3%95or%E6%A4%9C%E7%B4%A2)
+    - [Add filtersとMap Attributesの両方を利用した探索方法(AND・OR検索)](#add-filters%E3%81%A8map-attributes%E3%81%AE%E4%B8%A1%E6%96%B9%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E6%8E%A2%E7%B4%A2%E6%96%B9%E6%B3%95andor%E6%A4%9C%E7%B4%A2)
+    - [Map your IDsを用いてデータを俯瞰する](#map-your-ids%E3%82%92%E7%94%A8%E3%81%84%E3%81%A6%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E4%BF%AF%E7%9E%B0%E3%81%99%E3%82%8B)
+- [Results画面](#results%E7%94%BB%E9%9D%A2)
+---
 ## Explorer画面 (トップページ)
 ![Explore](https://github.com/dbcls/togosite/raw/develop/docs/togo-human/img/20210825_togodx_beta_toppage.png)
 ### 画面内の用語と機能
@@ -72,31 +81,8 @@
 - 左端のチェックボックスをクリックすると、その`Values`が`Add filters`に追加されます。
 - 数値の`Values`については2段のヒストグラムで表示されます。上段のヒストグラムで指定した範囲が下段に表示され、その範囲が`Add filters`に追加されます。
 
-
-## Results画面
-![result](https://github.com/dbcls/togosite/raw/develop/docs/togo-human/img/20210826_togodx_devpro_result.png)
-
-### 用語説明
-- `Return`
-    - クリックするとExplorer画面に戻ることができます
-        - ブラウザの戻るボタンではExplore画面には戻れないので注意が必要です。
-    
-### 機能説明
-- 探索結果を表示する画面です。
-- `Saved Conditions`のプログレスバーでは、データ取得の状況が表示されます。
-- データ取得が全て完了すると、`complete` と表示され、ダウンロードボタンがアクティブになり、TSVもしくはJSON形式でダウンロードすることができます。
-- 画面上部に、`取得したAttribute valuesの件数とその割合(変更予定)`が表示されます。
-- 画面下部に表示されている各種IDをクリックすると、関連情報が表示されます。
-![result_stanza](https://github.com/dbcls/togosite/raw/develop/docs/togo-human/img/20210826_togodx_devpro_result_stanza.png)
-    - Resultページに表示される各種IDをクリックすると、IDに紐づく関連情報が表示されます。
-    - 表示された情報の中で、リンクがある項目については、外部のデータベースと紐づいており、更に詳細な情報を見ることができます。
-（これらのデータは、[MetaStanza](リンクを貼る)を利用して表示しています）
-- `Return`をクリックすると、Explorer画面に戻りますが、探索条件は`Saved Conditions`に保存されており、再度結果を表示することができます。（※ブラウザを閉じたり、再読み込みをすると、保存された探索条件はすべて消去されます。）
-
-
-
-***
-## 操作説明
+---
+## Explorer画面における操作方法
 
 ### Add filterを利用した探索方法(AND検索)
 - `Select target category`から探索の起点とするデータベースを選択します。
@@ -136,6 +122,26 @@
 
 - （**後で、入力可能な数についての、何らかの説明を足す**）
 　
+## Results画面
+![result](https://github.com/dbcls/togosite/raw/develop/docs/togo-human/img/20210826_togodx_devpro_result.png)
+
+### 用語説明
+- `Return`
+    - クリックするとExplorer画面に戻ることができます
+        - ブラウザの戻るボタンではExplore画面には戻れないので注意が必要です。
+    
+### 機能説明
+- 探索結果を表示する画面です。
+- `Saved Conditions`のプログレスバーでは、データ取得の状況が表示されます。
+- データ取得が全て完了すると、`complete` と表示され、ダウンロードボタンがアクティブになり、TSVもしくはJSON形式でダウンロードすることができます。
+- 画面上部に、`取得したAttribute valuesの件数とその割合(変更予定)`が表示されます。
+- 画面下部に表示されている各種IDをクリックすると、関連情報が表示されます。
+![result_stanza](https://github.com/dbcls/togosite/raw/develop/docs/togo-human/img/20210826_togodx_devpro_result_stanza.png)
+    - Resultページに表示される各種IDをクリックすると、IDに紐づく関連情報が表示されます。
+    - 表示された情報の中で、リンクがある項目については、外部のデータベースと紐づいており、更に詳細な情報を見ることができます。
+（これらのデータは、[MetaStanza](リンクを貼る)を利用して表示しています）
+- `Return`をクリックすると、Explorer画面に戻りますが、探索条件は`Saved Conditions`に保存されており、再度結果を表示することができます。（※ブラウザを閉じたり、再読み込みをすると、保存された探索条件はすべて消去されます。）
+
 
 
 
