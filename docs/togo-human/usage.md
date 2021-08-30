@@ -2,7 +2,7 @@
 ## Table of Contents
 - [Explorer画面 (トップページ)](#explorer%E7%94%BB%E9%9D%A2-%E3%83%88%E3%83%83%E3%83%97%E3%83%9A%E3%83%BC%E3%82%B8)
     - [Attribute keys](#attribute-keys)   
-- [Explorer画面における操作方法](#%E6%93%8D%E4%BD%9C%E8%AA%AC%E6%98%8E)
+- [Explorer画面における操作方法](#explorer%E7%94%BB%E9%9D%A2%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8B%E6%93%8D%E4%BD%9C%E6%96%B9%E6%B3%95)
     - [Add filterを利用した探索方法(AND検索)](#add-filter%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E6%8E%A2%E7%B4%A2%E6%96%B9%E6%B3%95and%E6%A4%9C%E7%B4%A2)
     - [Map attributesを利用した探索方法(OR検索)](#map-attributes%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E6%8E%A2%E7%B4%A2%E6%96%B9%E6%B3%95or%E6%A4%9C%E7%B4%A2)
     - [Add filtersとMap Attributesの両方を利用した探索方法(AND・OR検索)](#add-filters%E3%81%A8map-attributes%E3%81%AE%E4%B8%A1%E6%96%B9%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E6%8E%A2%E7%B4%A2%E6%96%B9%E6%B3%95andor%E6%A4%9C%E7%B4%A2)
