@@ -6688,7 +6688,7 @@
 
         _classPrivateMethodGet(this, _updateAmount, _updateAmount2).call(this, offset);
 
-        _classPrivateMethodGet(this, _updateTime, _updateTime2).call(this, offset, startTime);
+        if (startTime) _classPrivateMethodGet(this, _updateTime, _updateTime2).call(this, offset, startTime);
       }
       /**
        * @param { string } message
@@ -7149,7 +7149,7 @@
       var _ref = [timeStamp.toISOString().slice(0, 10).replaceAll('-', ''), timeStamp.toLocaleTimeString().replaceAll(':', '')],
           date = _ref[0],
           time = _ref[1];
-      anchor.setAttribute('download', "togoDx-".concat(date, "-").concat(time, ".").concat(urlType));
+      anchor.setAttribute('download', "togodx-".concat(date, "-").concat(time, ".").concat(urlType));
     }
   }
 
