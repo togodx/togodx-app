@@ -611,7 +611,7 @@
       {
         "propertyId": "glycan_mass_glycosmos",
         "label": "Molecular mass of glycans",
-        "description": "Molecular weight of the glycans from UniProt",
+        "description": "Molecular weight of the glycans from GlyCosmos",
         "data": "https://integbio.jp/togosite/sparqlist/api/glycan_mass_glycosmos",
         "dataSource": "GlyCosmos",
         "dataSourceUrl": "https://glycosmos.org/data",
@@ -624,7 +624,7 @@
       {
         "propertyId": "glycan_tissue_glycosmos",
         "label": "Tissues",
-        "description": "Tissues where glycans observed",
+        "description": "Tissues where glycans are expressed",
         "data": "https://integbio.jp/togosite/sparqlist/api/glycan_tissue_glycosmos",
         "dataSource": "GlyCosmos",
         "dataSourceUrl": "https://glycosmos.org/data",
