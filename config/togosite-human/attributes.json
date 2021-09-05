@@ -34,10 +34,6 @@
         "protein_number_of_glycosylation_sites_uniprot",
         "protein_disease_related_proteins_uniprot",
         "protein_isolation_source_uniprot",
-        "protein_high_level_expression_in_tissues_hpa",
-        "protein_medium_level_expression_in_tissues_hpa",
-        "protein_low_level_expression_in_tissues_hpa",
-        "protein_no_expression_in_tissues_hpa",
         "protein_evidence_of_existence_nextprot"
       ]
     },
@@ -81,6 +77,14 @@
       ]
     },
     {
+      "id": "glycan",
+      "label": "Glycan",
+      "attributes": [
+        "glycan_mass_glycosmos",
+        "glycan_tissue_glycosmos"
+      ]
+    },
+    {
       "id": "disease",
       "label": "Disease",
       "attributes": [
@@ -111,7 +115,7 @@
           "label": "Ensembl",
           "url": "http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2020-10-29"
         }
       ]
     },
@@ -125,7 +129,7 @@
           "label": "Ensembl human release 102",
           "url": "http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2020-10-29"
         }
       ]
     },
@@ -139,7 +143,7 @@
           "label": "Ensembl human release 102",
           "url": "http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2020-10-29"
         }
       ]
     },
@@ -153,7 +157,7 @@
           "label": "HomoloGene",
           "url": "https://www.ncbi.nlm.nih.gov/homologene/statistics/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-03-12"
         }
       ]
     },
@@ -167,7 +171,7 @@
           "label": "HomoloGene",
           "url": "https://www.ncbi.nlm.nih.gov/homologene/statistics/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-03-12"
         }
       ]
     },
@@ -181,7 +185,7 @@
           "label": "Calculations for tissue specificity of genechip human GSE7307 from RefEx",
           "url": "https://doi.org/10.6084/m9.figshare.4028700.v3",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-03-12"
         }
       ]
     },
@@ -195,7 +199,7 @@
           "label": "Calculations for tissue specificity of genechip human GSE7307 from RefEx",
           "url": "https://doi.org/10.6084/m9.figshare.4028700.v3",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-03-12"
         }
       ]
     },
@@ -209,7 +213,7 @@
           "label": "Supplementary Table 1 of A systematic survey of human tissue-specific gene expression and splicing reveals new opportunities for therapeutic target identification and evaluation; R. Y. Yang et al.; bioRxiv 311563",
           "url": "https://doi.org/10.1101/311563",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-03-29"
         }
       ]
     },
@@ -223,7 +227,7 @@
           "label": "Supplementary Table 1 of A systematic survey of human tissue-specific gene expression and splicing reveals new opportunities for therapeutic target identification and evaluation; R. Y. Yang et al.; bioRxiv 311563",
           "url": "https://doi.org/10.1101/311563",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-03-29"
         }
       ]
     },
@@ -237,7 +241,7 @@
           "label": "HPA TSV",
           "url": "https://www.proteinatlas.org/about/download",
           "version": null,
-          "updateDate": "28 Jul, 2021"
+          "updateDate": "2021-07-28"
         }
       ]
     },
@@ -251,7 +255,7 @@
           "label": "HPA TSV",
           "url": "https://www.proteinatlas.org/about/download",
           "version": null,
-          "updateDate": "28 Jul, 2021"
+          "updateDate": "2021-07-28"
         }
       ]
     },
@@ -265,7 +269,7 @@
           "label": "ChIP-Atlas",
           "url": "http://dbarchive.biosciencedbc.jp/kyushu-u/hg38/target/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-03-12"
         }
       ]
     },
@@ -279,7 +283,7 @@
           "label": "UniProt",
           "url": "https://www.uniprot.org/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-06-17"
         }
       ]
     },
@@ -293,7 +297,7 @@
           "label": "Gene ontology cellular component annotation from UniProt",
           "url": "https://www.uniprot.org/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-06-17"
         }
       ]
     },
@@ -307,7 +311,7 @@
           "label": "Gene ontology biological process annotation from UniProt",
           "url": "https://www.uniprot.org/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-06-17"
         }
       ]
     },
@@ -321,7 +325,7 @@
           "label": "Gene ontology molecular function annotation from UniProt",
           "url": "https://www.uniprot.org/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-06-17"
         }
       ]
     },
@@ -335,7 +339,7 @@
           "label": "Function from UniProt",
           "url": "https://www.uniprot.org/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-06-17"
         }
       ]
     },
@@ -349,7 +353,7 @@
           "label": "Sequences from UniProt",
           "url": "https://www.uniprot.org/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-06-17"
         }
       ]
     },
@@ -363,7 +367,7 @@
           "label": "Amino acid modifications from UniProt",
           "url": "https://www.uniprot.org/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-06-17"
         }
       ]
     },
@@ -377,7 +381,7 @@
           "label": "Topology from UniProt",
           "url": "https://www.uniprot.org/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-06-17"
         }
       ]
     },
@@ -391,7 +395,7 @@
           "label": "Amino acid modifications from UniProt",
           "url": "https://www.uniprot.org/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-06-17"
         }
       ]
     },
@@ -405,7 +409,7 @@
           "label": "Amino acid modifications from UniProt",
           "url": "https://www.uniprot.org/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-06-17"
         }
       ]
     },
@@ -419,7 +423,7 @@
           "label": "Pathology & Biotech from UniProt",
           "url": "https://www.uniprot.org/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-06-17"
         }
       ]
     },
@@ -433,63 +437,7 @@
           "label": "Tissue from UniProt",
           "url": "https://www.uniprot.org/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
-        }
-      ]
-    },
-    "protein_high_level_expression_in_tissues_hpa": {
-      "label": "Highly expressed in tissues (HPA)",
-      "description": "Tissues in which expression level of a gene is evaluated as \"High\" by HPA",
-      "api": "https://integbio.jp/togosite/sparqlist/api/protein_high_level_expression_in_tissues_hpa",
-      "idType": "ensembl_gene",
-      "data": [
-        {
-          "label": "HPA RDF",
-          "url": "https://www.proteinatlas.org/about/download",
-          "version": null,
-          "updateDate": "28 Jul, 2021"
-        }
-      ]
-    },
-    "protein_medium_level_expression_in_tissues_hpa": {
-      "label": "Intermediately expressed in tissues (HPA)",
-      "description": "Tissues in which expression level of a gene is evaluated as \"Medium\" by HPA",
-      "api": "https://integbio.jp/togosite/sparqlist/api/protein_medium_level_expression_in_tissues_hpa",
-      "idType": "ensembl_gene",
-      "data": [
-        {
-          "label": "HPA RDF",
-          "url": "https://www.proteinatlas.org/about/download",
-          "version": null,
-          "updateDate": "28 Jul, 2021"
-        }
-      ]
-    },
-    "protein_low_level_expression_in_tissues_hpa": {
-      "label": "Lowly expressed in tissues (HPA)",
-      "description": "Tissues in which expression level of a gene is evaluated as \"Low\" by HPA",
-      "api": "https://integbio.jp/togosite/sparqlist/api/protein_low_level_expression_in_tissues_hpa",
-      "idType": "ensembl_gene",
-      "data": [
-        {
-          "label": "HPA RDF",
-          "url": "https://www.proteinatlas.org/about/download",
-          "version": null,
-          "updateDate": "28 Jul, 2021"
-        }
-      ]
-    },
-    "protein_no_expression_in_tissues_hpa": {
-      "label": "Not expressed in tissues (HPA)",
-      "description": "Tissues in which expression level of a gene is evaluated as \"Not_detected\" by HPA",
-      "api": "https://integbio.jp/togosite/sparqlist/api/protein_no_expression_in_tissues_hpa",
-      "idType": "ensembl_gene",
-      "data": [
-        {
-          "label": "HPA RDF",
-          "url": "https://www.proteinatlas.org/about/download",
-          "version": null,
-          "updateDate": "28 Jul, 2021"
+          "updateDate": "2021-06-17"
         }
       ]
     },
@@ -503,7 +451,7 @@
           "label": "Expression from neXtProt",
           "url": "https://www.nextprot.org/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-02-18"
         }
       ]
     },
@@ -517,7 +465,7 @@
           "label": "Structure from Uniprot",
           "url": "https://www.uniprot.org/help/structure_section",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-06-17"
         }
       ]
     },
@@ -531,7 +479,7 @@
           "label": "'Helix' entities counted in each entry of PDB",
           "url": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-08-19"
         }
       ]
     },
@@ -545,7 +493,7 @@
           "label": "'Sheet' entities counted in each entry of PDB",
           "url": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-08-19"
         }
       ]
     },
@@ -559,7 +507,7 @@
           "label": "Entity from PDB",
           "url": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-08-19"
         }
       ]
     },
@@ -573,7 +521,7 @@
           "label": "Entity from PDB",
           "url": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-08-19"
         }
       ]
     },
@@ -587,7 +535,7 @@
           "label": "Experimental method from PDB",
           "url": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-08-19"
         }
       ]
     },
@@ -601,7 +549,7 @@
           "label": "Crystallization Conditions from PDB",
           "url": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-08-19"
         }
       ]
     },
@@ -615,7 +563,7 @@
           "label": "Crystallization Conditions from PDB",
           "url": "https://data.pdbj.org/pdbjplus/data/pdb/rdf/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-08-19"
         }
       ]
     },
@@ -629,7 +577,7 @@
           "label": "Reactome",
           "url": "https://reactome.org/download-data",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-03-05"
         }
       ]
     },
@@ -643,7 +591,7 @@
           "label": "Reactome",
           "url": "https://reactome.org/download-data",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-03-05"
         }
       ]
     },
@@ -657,7 +605,7 @@
           "label": "Interaction from UniProt",
           "url": "https://www.uniprot.org/help/interaction_section",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-06-17"
         }
       ]
     },
@@ -671,7 +619,7 @@
           "label": "Target protein from ChEMBL-RDF 28.0 against all UniProt entries",
           "url": "http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-03-01"
         }
       ]
     },
@@ -685,7 +633,7 @@
           "label": "ChEMBL-RDF",
           "url": "http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-03-01"
         }
       ]
     },
@@ -696,10 +644,10 @@
       "idType": "chebi",
       "data": [
         {
-          "label": "",
-          "url": "",
+          "label": "Chemical role from ChEBI",
+          "url": "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:51086",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-08-01"
         }
       ]
     },
@@ -710,10 +658,10 @@
       "idType": "chebi",
       "data": [
         {
-          "label": "",
-          "url": "",
+          "label": "Application type from ChEBI",
+          "url": "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:33232",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-08-01"
         }
       ]
     },
@@ -727,7 +675,7 @@
           "label": "ChEMBL-RDF",
           "url": "http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-03-01"
         }
       ]
     },
@@ -738,10 +686,10 @@
       "idType": "chebi",
       "data": [
         {
-          "label": "",
-          "url": "",
+          "label": "Biological role from ChEBI ",
+          "url": "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:24432",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-08-01"
         }
       ]
     },
@@ -755,7 +703,7 @@
           "label": "ChEMBL-RDF",
           "url": "http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-03-01"
         }
       ]
     },
@@ -769,7 +717,7 @@
           "label": "ChEMBL-RDF",
           "url": "http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-03-01"
         }
       ]
     },
@@ -801,6 +749,34 @@
         }
       ]
     },
+    "glycan_mass_glycosmos": {
+      "label": "Molecular mass of glycans",
+      "description": "Molecular weight of the glycans from GlyCosmos",
+      "api": "https://integbio.jp/togosite/sparqlist/api/glycan_mass_glycosmos",
+      "idType": "glytoucan",
+      "data": [
+        {
+          "label": "GlyCosmos",
+          "url": "https://glycosmos.org/data",
+          "version": null,
+          "updateDate": "N/A"
+        }
+      ]
+    },
+    "glycan_tissue_glycosmos": {
+      "label": "Tissues",
+      "description": "Tissues where glycans are expressed",
+      "api": "https://integbio.jp/togosite/sparqlist/api/glycan_tissue_glycosmos",
+      "idType": "glytoucan",
+      "data": [
+        {
+          "label": "GlyCosmos",
+          "url": "https://glycosmos.org/data",
+          "version": null,
+          "updateDate": "N/A"
+        }
+      ]
+    },
     "disease_diseases_mondo": {
       "label": "Diseases in Mondo",
       "description": "Subcategories in the Disease or disorder category in the Mondo Disease Ontology (Mondo)",
@@ -811,7 +787,7 @@
           "label": "Mondo Disease Ontology (Mondo)",
           "url": "https://mondo.monarchinitiative.org/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-08-11"
         }
       ]
     },
@@ -825,7 +801,7 @@
           "label": "Medical Subject Headings (MeSH)",
           "url": "https://www.nlm.nih.gov/mesh/meshhome.html",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-03-05"
         }
       ]
     },
@@ -839,7 +815,7 @@
           "label": "Nanbyo Disease Ontology (NANDO)",
           "url": "http://nanbyodata.jp/ontology/nando",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-08-05"
         }
       ]
     },
@@ -853,7 +829,7 @@
           "label": "Mondo Disease Ontology (Mondo)",
           "url": "https://mondo.monarchinitiative.org/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-06-23"
         }
       ]
     },
@@ -867,7 +843,7 @@
           "label": "Human Phenotype Ontology (HPO)",
           "url": "https://hpo.jax.org/app/browse/term/HP:0000118",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-02-17"
         }
       ]
     },
@@ -881,7 +857,7 @@
           "label": "GWAS Catalog All associations ",
           "url": "https://www.ebi.ac.uk/gwas/docs/file-downloads",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-03-25"
         }
       ]
     },
@@ -892,10 +868,10 @@
       "idType": "togovar",
       "data": [
         {
-          "label": "TogoVar,ClinVar",
-          "url": "",
+          "label": "ClinVar",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/docs/clinsig/",
           "version": null,
-          "updateDate": "14 Jul, 2021"
+          "updateDate": "2021-08-05"
         }
       ]
     }
@@ -913,6 +889,7 @@
         "chebi": "https://api.togoid.jp/convert?format=json&route=ensembl_gene,chebi",
         "chembl_compound": "https://api.togoid.jp/convert?format=json&route=ensembl_gene,chembl_compound",
         "pubchem_compound": "https://api.togoid.jp/convert?format=json&route=ensembl_gene,pubchem_compound",
+        "glytoucan": "https://api.togoid.jp/convert?format=json&route=ensembl_gene,glytoucan",
         "mondo": "https://api.togoid.jp/convert?format=json&route=ensembl_gene,mondo",
         "mesh": "https://api.togoid.jp/convert?format=json&route=ensembl_gene,mesh",
         "nando": "https://api.togoid.jp/convert?format=json&route=ensembl_gene,nando",
@@ -932,6 +909,7 @@
         "chebi": "https://api.togoid.jp/convert?format=json&route=ensembl_transcript,chebi",
         "chembl_compound": "https://api.togoid.jp/convert?format=json&route=ensembl_transcript,chembl_compound",
         "pubchem_compound": "https://api.togoid.jp/convert?format=json&route=ensembl_transcript,pubchem_compound",
+        "glytoucan": "https://api.togoid.jp/convert?format=json&route=ensembl_transcript,glytoucan",
         "mondo": "https://api.togoid.jp/convert?format=json&route=ensembl_transcript,mondo",
         "mesh": "https://api.togoid.jp/convert?format=json&route=ensembl_transcript,mesh",
         "nando": "https://api.togoid.jp/convert?format=json&route=ensembl_transcript,nando",
@@ -951,6 +929,7 @@
         "chebi": "https://api.togoid.jp/convert?format=json&route=ncbigene,chebi",
         "chembl_compound": "https://api.togoid.jp/convert?format=json&route=ncbigene,chembl_compound",
         "pubchem_compound": "https://api.togoid.jp/convert?format=json&route=ncbigene,pubchem_compound",
+        "glytoucan": "https://api.togoid.jp/convert?format=json&route=ncbigene,glytoucan",
         "mondo": "https://api.togoid.jp/convert?format=json&route=ncbigene,mondo",
         "mesh": "https://api.togoid.jp/convert?format=json&route=ncbigene,mesh",
         "nando": "https://api.togoid.jp/convert?format=json&route=ncbigene,nando",
@@ -970,6 +949,7 @@
         "chebi": "https://api.togoid.jp/convert?format=json&route=uniprot,chebi",
         "chembl_compound": "https://api.togoid.jp/convert?format=json&route=uniprot,chembl_compound",
         "pubchem_compound": "https://api.togoid.jp/convert?format=json&route=uniprot,pubchem_compound",
+        "glytoucan": "https://api.togoid.jp/convert?format=json&route=uniprot,glytoucan",
         "mondo": "https://api.togoid.jp/convert?format=json&route=uniprot,mondo",
         "mesh": "https://api.togoid.jp/convert?format=json&route=uniprot,mesh",
         "nando": "https://api.togoid.jp/convert?format=json&route=uniprot,nando",
@@ -989,6 +969,7 @@
         "chebi": "https://api.togoid.jp/convert?format=json&route=pdb,chebi",
         "chembl_compound": "https://api.togoid.jp/convert?format=json&route=pdb,chembl_compound",
         "pubchem_compound": "https://api.togoid.jp/convert?format=json&route=pdb,pubchem_compound",
+        "glytoucan": "https://api.togoid.jp/convert?format=json&route=pdb,glytoucan",
         "mondo": "https://api.togoid.jp/convert?format=json&route=pdb,mondo",
         "mesh": "https://api.togoid.jp/convert?format=json&route=pdb,mesh",
         "nando": "https://api.togoid.jp/convert?format=json&route=pdb,nando",
@@ -1008,6 +989,7 @@
         "pdb": "https://api.togoid.jp/convert?format=json&route=chebi,pdb",
         "chembl_compound": "https://api.togoid.jp/convert?format=json&route=chebi,chembl_compound",
         "pubchem_compound": "https://api.togoid.jp/convert?format=json&route=chebi,pubchem_compound",
+        "glytoucan": "https://api.togoid.jp/convert?format=json&route=chebi,glytoucan",
         "mondo": "https://api.togoid.jp/convert?format=json&route=chebi,mondo",
         "mesh": "https://api.togoid.jp/convert?format=json&route=chebi,mesh",
         "nando": "https://api.togoid.jp/convert?format=json&route=chebi,nando",
@@ -1027,6 +1009,7 @@
         "pdb": "https://api.togoid.jp/convert?format=json&route=chembl_compound,pdb",
         "chebi": "https://api.togoid.jp/convert?format=json&route=chembl_compound,chebi",
         "pubchem_compound": "https://api.togoid.jp/convert?format=json&route=chembl_compound,pubchem_compound",
+        "glytoucan": "https://api.togoid.jp/convert?format=json&route=chembl_compound,glytoucan",
         "mondo": "https://api.togoid.jp/convert?format=json&route=chembl_compound,mondo",
         "mesh": "https://api.togoid.jp/convert?format=json&route=chembl_compound,mesh",
         "nando": "https://api.togoid.jp/convert?format=json&route=chembl_compound,nando",
@@ -1046,11 +1029,32 @@
         "pdb": "https://api.togoid.jp/convert?format=json&route=pubchem_compound,pdb",
         "chebi": "https://api.togoid.jp/convert?format=json&route=pubchem_compound,chebi",
         "chembl_compound": "https://api.togoid.jp/convert?format=json&route=pubchem_compound,chembl_compound",
+        "glytoucan": "https://api.togoid.jp/convert?format=json&route=pubchem_compound,glytoucan",
         "mondo": "https://api.togoid.jp/convert?format=json&route=pubchem_compound,mondo",
         "mesh": "https://api.togoid.jp/convert?format=json&route=pubchem_compound,mesh",
         "nando": "https://api.togoid.jp/convert?format=json&route=pubchem_compound,nando",
         "hp": "https://api.togoid.jp/convert?format=json&route=pubchem_compound,hp",
         "togovar": "https://api.togoid.jp/convert?format=json&route=pubchem_compound,togovar"
+      }
+    },
+    "glytoucan": {
+      "label": "GlyTouCan",
+      "template": "https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates/glytoucan.hbs",
+      "target": true,
+      "conversion": {
+        "ensembl_gene": "https://api.togoid.jp/convert?format=json&route=glytoucan,ensembl_gene",
+        "ensembl_transcript": "https://api.togoid.jp/convert?format=json&route=glytoucan,ensembl_transcript",
+        "ncbigene": "https://api.togoid.jp/convert?format=json&route=glytoucan,ncbigene",
+        "uniprot": "https://api.togoid.jp/convert?format=json&route=glytoucan,uniprot",
+        "pdb": "https://api.togoid.jp/convert?format=json&route=glytoucan,pdb",
+        "chebi": "https://api.togoid.jp/convert?format=json&route=glytoucan,chebi",
+        "chembl_compound": "https://api.togoid.jp/convert?format=json&route=glytoucan,chembl_compound",
+        "pubchem_compound": "https://api.togoid.jp/convert?format=json&route=glytoucan,pubchem_compound",
+        "mondo": "https://api.togoid.jp/convert?format=json&route=glytoucan,mondo",
+        "mesh": "https://api.togoid.jp/convert?format=json&route=glytoucan,mesh",
+        "nando": "https://api.togoid.jp/convert?format=json&route=glytoucan,nando",
+        "hp": "https://api.togoid.jp/convert?format=json&route=glytoucan,hp",
+        "togovar": "https://api.togoid.jp/convert?format=json&route=glytoucan,togovar"
       }
     },
     "mondo": {
@@ -1066,6 +1070,7 @@
         "chebi": "https://api.togoid.jp/convert?format=json&route=mondo,chebi",
         "chembl_compound": "https://api.togoid.jp/convert?format=json&route=mondo,chembl_compound",
         "pubchem_compound": "https://api.togoid.jp/convert?format=json&route=mondo,pubchem_compound",
+        "glytoucan": "https://api.togoid.jp/convert?format=json&route=mondo,glytoucan",
         "mesh": "https://api.togoid.jp/convert?format=json&route=mondo,mesh",
         "nando": "https://api.togoid.jp/convert?format=json&route=mondo,nando",
         "hp": "https://api.togoid.jp/convert?format=json&route=mondo,hp",
@@ -1085,6 +1090,7 @@
         "chebi": "https://api.togoid.jp/convert?format=json&route=mesh,chebi",
         "chembl_compound": "https://api.togoid.jp/convert?format=json&route=mesh,chembl_compound",
         "pubchem_compound": "https://api.togoid.jp/convert?format=json&route=mesh,pubchem_compound",
+        "glytoucan": "https://api.togoid.jp/convert?format=json&route=mesh,glytoucan",
         "mondo": "https://api.togoid.jp/convert?format=json&route=mesh,mondo",
         "nando": "https://api.togoid.jp/convert?format=json&route=mesh,nando",
         "hp": "https://api.togoid.jp/convert?format=json&route=mesh,hp",
@@ -1104,6 +1110,7 @@
         "chebi": "https://api.togoid.jp/convert?format=json&route=nando,chebi",
         "chembl_compound": "https://api.togoid.jp/convert?format=json&route=nando,chembl_compound",
         "pubchem_compound": "https://api.togoid.jp/convert?format=json&route=nando,pubchem_compound",
+        "glytoucan": "https://api.togoid.jp/convert?format=json&route=nando,glytoucan",
         "mondo": "https://api.togoid.jp/convert?format=json&route=nando,mondo",
         "mesh": "https://api.togoid.jp/convert?format=json&route=nando,mesh",
         "hp": "https://api.togoid.jp/convert?format=json&route=nando,hp",
@@ -1123,6 +1130,7 @@
         "chebi": "https://api.togoid.jp/convert?format=json&route=hp,chebi",
         "chembl_compound": "https://api.togoid.jp/convert?format=json&route=hp,chembl_compound",
         "pubchem_compound": "https://api.togoid.jp/convert?format=json&route=hp,pubchem_compound",
+        "glytoucan": "https://api.togoid.jp/convert?format=json&route=hp,glytoucan",
         "mondo": "https://api.togoid.jp/convert?format=json&route=hp,mondo",
         "mesh": "https://api.togoid.jp/convert?format=json&route=hp,mesh",
         "nando": "https://api.togoid.jp/convert?format=json&route=hp,nando",
@@ -1142,6 +1150,7 @@
         "chebi": "https://api.togoid.jp/convert?format=json&route=togovar,chebi",
         "chembl_compound": "https://api.togoid.jp/convert?format=json&route=togovar,chembl_compound",
         "pubchem_compound": "https://api.togoid.jp/convert?format=json&route=togovar,pubchem_compound",
+        "glytoucan": "https://api.togoid.jp/convert?format=json&route=togovar,glytoucan",
         "mondo": "https://api.togoid.jp/convert?format=json&route=togovar,mondo",
         "mesh": "https://api.togoid.jp/convert?format=json&route=togovar,mesh",
         "nando": "https://api.togoid.jp/convert?format=json&route=togovar,nando",
