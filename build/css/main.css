@@ -350,7 +350,7 @@ template {
   --width-track-column-property: 18rem;
   --width-condition: 24rem;
   --height-track: 3rem;
-  --height-header: 2.4rem;
+  --height-header: 5rem;
   --min-width-app: 102.4rem;
   --height-results-statistics: 20rem;
   --font-size-title: 1.5rem;
@@ -1802,6 +1802,9 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #Header > h1 {
   font-size: 1.6rem;
 }
+#Header > h1 > a > img {
+  height: 3.1rem;
+}
 #Header > nav {
   -webkit-flex-grow: 1;
           flex-grow: 1;
@@ -1813,6 +1816,7 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 }
 
 #Properties {
+  --height-header: 2.4rem;
   width: calc(100vw - var(--width-condition));
   min-width: calc(var(--min-width-app) - var(--width-condition));
   overflow-y: auto;
@@ -2233,4 +2237,5 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   margin-top: -0.2rem;
   text-align: center;
 }
+
 /*# sourceMappingURL=main.css.map */
