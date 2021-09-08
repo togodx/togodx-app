@@ -100,9 +100,6 @@ export default class ResultDetailModal {
         ${path}
       </div>
       <div>
-        <a class='external-link-button-view' href='${
-          props.reportLink
-        }' target='_blank'>Report</a>
     `;
     header.classList.add('_subject-background-color');
     header.lastChild.appendChild(this.#exit_button);
