@@ -269,17 +269,11 @@ export default class ResultsTable {
       const tr = this.#TBODY.querySelector(
         `:scope > tr[data-index="${actualIndex}"]`
       );
-      const reportLink = `
-      report.html?togoKey=${detail.tableData.togoKey}&id=${
-        detail.rows[index].id
-      }&properties=${window.btoa(
-        RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))
-      )}`;
 
       const uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(uniqueEntry => {
         uniqueEntry.addEventListener('click', () => {
-          createPopupEvent(uniqueEntry, reportLink, event.showPopup);
+          createPopupEvent(uniqueEntry, event.showPopup);
         });
         // remove highlight on mouseleave only when there is no popup
         const td = uniqueEntry.closest('td');

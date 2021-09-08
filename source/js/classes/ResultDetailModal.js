@@ -217,13 +217,9 @@ export default class ResultDetailModal {
   #setMovementArrow(movement) {
     try {
       const targetEntry = this.#getTargetEntry(movement);
-      const targetTr = targetEntry.closest('tr');
-      const reportLink = targetTr.querySelector(
-        ':scope > th > .inner > .external-link-button-view'
-      ).href;
 
       targetEntry.scrollIntoView({block: 'center'});
-      createPopupEvent(targetEntry, reportLink, event.movePopup);
+      createPopupEvent(targetEntry, event.movePopup);
     } catch (error) {
       console.log('Movement out of bounds');
     }

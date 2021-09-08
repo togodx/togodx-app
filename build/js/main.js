@@ -4896,7 +4896,7 @@
       }
     }).to('srgb');
   }
-  function createPopupEvent(uniqueEntry, reportLink, newEvent) {
+  function createPopupEvent(uniqueEntry, newEvent) {
     var _uniqueEntry$getAttri = uniqueEntry.getAttribute('data-order').split(','),
         _uniqueEntry$getAttri2 = _slicedToArray(_uniqueEntry$getAttri, 2),
         x = _uniqueEntry$getAttri2[0],
@@ -4915,8 +4915,7 @@
           dataX: x,
           dataY: y,
           dataSubOrder: uniqueEntry.getAttribute('data-sub-order'),
-          isPrimaryKey: uniqueEntry.classList.contains('primarykey'),
-          reportLink: reportLink
+          isPrimaryKey: uniqueEntry.classList.contains('primarykey')
         }
       }
     });
@@ -5995,11 +5994,10 @@
 
       var tr = _classPrivateFieldGet(_this2, _TBODY).querySelector(":scope > tr[data-index=\"".concat(actualIndex, "\"]"));
 
-      var reportLink = "\n      report.html?togoKey=".concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(window.btoa(RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))));
       var uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(function (uniqueEntry) {
         uniqueEntry.addEventListener('click', function () {
-          createPopupEvent(uniqueEntry, reportLink, showPopup);
+          createPopupEvent(uniqueEntry, showPopup);
         }); // remove highlight on mouseleave only when there is no popup
 
         var td = uniqueEntry.closest('td');
@@ -6415,12 +6413,10 @@
     try {
       var targetEntry = _classPrivateMethodGet(this, _getTargetEntry, _getTargetEntry2).call(this, movement);
 
-      var targetTr = targetEntry.closest('tr');
-      var reportLink = targetTr.querySelector(':scope > th > .inner > .external-link-button-view').href;
       targetEntry.scrollIntoView({
         block: 'center'
       });
-      createPopupEvent(targetEntry, reportLink, movePopup);
+      createPopupEvent(targetEntry, movePopup);
     } catch (error) {
       console.log('Movement out of bounds');
     }
