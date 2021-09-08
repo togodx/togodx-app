@@ -5672,7 +5672,10 @@
   function _draw2(detail) {
     var _this2 = this;
 
-    // const data = detail.tableData.data;
+    console.log(detail);
+    console.log(detail.tableData.data);
+    console.log(Records$1.getProperty(_classPrivateFieldGet(this, _propertyId)).values); // const data = detail.tableData.data;
+
     var attributes = detail.tableData.data.map(function (datum) {
       return datum.properties.find(function (property) {
         return property.propertyId === _classPrivateFieldGet(_this2, _propertyId);
@@ -5684,46 +5687,79 @@
     }).flat().map(function (property) {
       return property.attribute;
     });
-
-    var categoryIds = _toConsumableArray(new Set(attributes.map(function (attribute) {
-      return attribute.categoryId;
-    }))); // count
-
-
-    var counts = categoryIds.map(function (categoryId) {
-      return attributes.filter(function (attribute) {
-        return attribute.categoryId === categoryId;
-      }).length;
-    });
-    var countMax = Math.max.apply(Math, _toConsumableArray(counts)); // draw
-
-    _classPrivateFieldGet(this, _COUNTS).innerHTML = counts.map(function (count) {
-      var position = count / countMax < .5 ? ' -below' : '';
-      return "\n      <div class=\"bar _subject-background-color\" style=\"height: ".concat(count / countMax * 100, "%;\">\n        <div class=\"value").concat(position, "\">").concat(count.toLocaleString(), "</div>\n      </div>");
-    }).join(''); // rate
-
-    var rates = categoryIds.map(function (categoryId, index) {
-      var value = Records$1.getValue(_classPrivateFieldGet(_this2, _propertyId), categoryId);
-      var sum = value.count * detail.tableData.rateOfProgress;
-      return counts[index] / sum;
-    });
-    var rateMax = Math.max.apply(Math, _toConsumableArray(rates)); // draw
-
-    _classPrivateFieldGet(this, _RATES).innerHTML = rates.map(function (rate) {
-      var position = rate / rateMax < .5 ? ' -below' : '';
-      return "\n      <div class=\"bar _subject-background-color\" style=\"height: ".concat(rate / rateMax * 100, "%;\">\n        <div class=\"value").concat(position, "\">").concat(rate.toLocaleString(), "</div>\n      </div>");
-    }).join(''); // tick
-
-    var labels = categoryIds.map(function (categoryId) {
-      return attributes.find(function (attribute) {
+    var hitVlues = [];
+    Records$1.getProperty(_classPrivateFieldGet(this, _propertyId)).values.forEach(function (_ref2) {
+      var categoryId = _ref2.categoryId,
+          label = _ref2.label,
+          count = _ref2.count;
+      console.log(categoryId, label);
+      var filtered = attributes.filter(function (attribute) {
         return attribute.categoryId === categoryId;
       });
-    }).map(function (attribute) {
-      return attribute.label;
+      console.log(filtered);
+      if (filtered.length === 0) return;
+      hitVlues.push({
+        categoryId: categoryId,
+        label: label,
+        count: count,
+        hitCount: filtered.length
+      });
     });
-    _classPrivateFieldGet(this, _TICKS).innerHTML = labels.map(function (label) {
+    console.log(hitVlues);
+    var count__Max = Math.max.apply(Math, _toConsumableArray(hitVlues.map(function (value) {
+      return value.count;
+    })));
+    console.log(count__Max); // const categoryIds = [...new Set(attributes.map(attribute => attribute.categoryId))];
+    // console.log(attributes)
+    // console.log(categoryIds)
+    // // count
+    // const counts = categoryIds.map(categoryId => attributes.filter(attribute => attribute.categoryId === categoryId).length);
+    // console.log(counts)
+    // const countMax = Math.max(...counts);
+    // draw
+
+    _classPrivateFieldGet(this, _COUNTS).innerHTML = hitVlues.map(function (_ref3) {
+      _ref3.categoryId;
+          _ref3.label;
+          var count = _ref3.count;
+          _ref3.hitCount;
+      // const position = (count / countMax < .5) ? ' -below' : '';
+      var position = '';
+      return "\n      <div class=\"bar _subject-background-color\" style=\"height: ".concat(count / count__Max * 100, "%;\">\n        <div class=\"value").concat(position, "\">").concat(count.toLocaleString(), "</div>\n      </div>");
+    }).join(''); // this.#COUNTS.innerHTML = counts.map(count => {
+    //   const position = (count / countMax < .5) ? ' -below' : '';
+    //   return `
+    //   <div class="bar _subject-background-color" style="height: ${count / countMax * 100}%;">
+    //     <div class="value${position}">${count.toLocaleString()}</div>
+    //   </div>`;
+    // }).join('');
+    // // rate
+    // const rates = categoryIds.map((categoryId, index) => {
+    //   const value = Records.getValue(this.#propertyId, categoryId);
+    //   const sum = value.count * detail.tableData.rateOfProgress;
+    //   return counts[index] / sum;
+    // });
+    // const rateMax = Math.max(...rates);
+    // // draw
+    // this.#RATES.innerHTML = rates.map(rate => {
+    //   const position = (rate / rateMax < .5) ? ' -below' : '';
+    //   return `
+    //   <div class="bar _subject-background-color" style="height: ${rate / rateMax * 100}%;">
+    //     <div class="value${position}">${rate.toLocaleString()}</div>
+    //   </div>`;
+    // }).join('');
+    // tick
+    // const labels = categoryIds.map(categoryId => attributes.find(attribute => attribute.categoryId === categoryId)).map(attribute => attribute.label);
+
+    _classPrivateFieldGet(this, _TICKS).innerHTML = hitVlues.map(function (_ref4) {
+      var label = _ref4.label;
       return "\n      <div class=\"bar\">\n        <div class=\"label\">".concat(label, "</div>\n      </div>");
-    }).join('');
+    }).join(''); // this.#TICKS.innerHTML = labels.map(label => {
+    //   return `
+    //   <div class="bar">
+    //     <div class="label">${label}</div>
+    //   </div>`;
+    // }).join('');
   }
 
   var _intersctionObserver = new WeakMap();
@@ -5957,7 +5993,7 @@
     }); // make table
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
-      console.log(row);
+      // console.log(row);
       return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n            <th>\n              <div class=\"inner\">\n                <a class=\"external-link-button-view\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(window.btoa(RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))), "\" target=\"_blank\">Report</a>\n              </div>\n            </th>\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order= \"").concat([0, detail.tableData.offset + index], "\"\n                    data-sub-order= \"0\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "\n                  </div>\n                  <span>").concat(detail.rows[index].label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.map(function (column, columnIndex) {
         // console.log(column)
         if (column) {
@@ -6688,7 +6724,7 @@
 
         _classPrivateMethodGet(this, _updateAmount, _updateAmount2).call(this, offset);
 
-        if (startTime) _classPrivateMethodGet(this, _updateTime, _updateTime2).call(this, offset, startTime);
+        _classPrivateMethodGet(this, _updateTime, _updateTime2).call(this, offset, startTime);
       }
       /**
        * @param { string } message

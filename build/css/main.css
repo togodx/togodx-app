@@ -1081,7 +1081,7 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   --height-tick: 3rem;
   --height-gap: .5rem;
   --height-statistics: calc(var(--height-results-statistics) - var(--padding-block-start) - var(--padding-block-end) - var(--margin-block-end-title) - var(--height-tick));
-  --height-bar: calc((var(--height-statistics) - var(--height-gap)) * .5);
+  --height-bar: calc((var(--height-statistics) - var(--height-gap)) * 1);
   padding: var(--padding-block-start) 1.5rem var(--padding-block-end);
 }
 .statistics-view > .statistics {
@@ -1129,10 +1129,6 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   top: calc(0rem - var(--height-statistics));
 }
 .statistics-view > .statistics > .counts {
-  height: var(--height-bar);
-}
-.statistics-view > .statistics > .rates {
-  margin-top: var(--height-gap);
   height: var(--height-bar);
 }
 .statistics-view > .statistics > .ticks {

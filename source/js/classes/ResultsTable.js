@@ -181,7 +181,7 @@ export default class ResultsTable {
       'beforeend',
       rows
         .map((row, index) => {
-          console.log(row);
+          // console.log(row);
           return `<tr data-index="${
             detail.tableData.offset + index
           }" data-togo-id="${detail.rows[index].id}">
