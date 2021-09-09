@@ -5,27 +5,34 @@ import * as event from '../events';
 export default class ConditionsController {
 
   #tableData;
-  #body;
-  #conditionsContainer;
+  #ROOT;
+  #CONDITIONS_CONTAINER;
 
   constructor(elm) {
 
     this.#tableData = [];
 
     // references
-    this.#conditionsContainer = elm.querySelector(':scope > .conditions');
-    this.#body = document.querySelector('body');
+    this.#ROOT = elm;
+    this.#CONDITIONS_CONTAINER = elm.querySelector(':scope > .conditions');
 
     // event listener
     DefaultEventEmitter.addEventListener(event.completeQueryParameter, e => this.#setTableData(e.detail));
     DefaultEventEmitter.addEventListener(event.selectTableData, e => this.#selectTableData(e.detail));
     DefaultEventEmitter.addEventListener(event.deleteTableData, e => this.#deleteTableData(e.detail));
+
+    // observe number of conditions
+    const config = { attributes: false, childList: true, subtree: false };
+    const callback = (mutationsList, observer) => {
+      this.#ROOT.dataset.numberOfConditions = this.#CONDITIONS_CONTAINER.childNodes.length;
+    };
+    const observer = new MutationObserver(callback);
+    observer.observe(this.#CONDITIONS_CONTAINER, config);
   }
 
   /* private methods */
 
   #setTableData(newCondition) {
-    console.log(newCondition)
 
     // find matching condition from already existing conditions
     const sameConditionTableData = this.#tableData.find(tableData => {
@@ -71,13 +78,13 @@ export default class ConditionsController {
     } else {
       // make new table data
       const elm = document.createElement('div');
-      this.#conditionsContainer.insertAdjacentElement('afterbegin', elm);
+      this.#CONDITIONS_CONTAINER.insertAdjacentElement('afterbegin', elm);
       this.#tableData.push(new TableData(newCondition, elm));
     }
   }
 
   #selectTableData(selectedTableData) {
-    this.#body.dataset.display = 'results';
+    document.body.dataset.display = 'results';
     // deselect
     for (const tableData of this.#tableData) {
       if (tableData !== selectedTableData) tableData.deselect();

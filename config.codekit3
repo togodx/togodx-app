@@ -708,6 +708,17 @@
       "sC" : 3,
       "tS" : 1
     },
+    "\/source\/js\/classes\/ReportApp.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/classes\/ReportApp.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
     "\/source\/js\/classes\/ResultDetailModal.js" : {
       "bF" : 4,
       "ft" : 64,
@@ -872,6 +883,27 @@
       "oF" : 0,
       "sC" : 3,
       "tS" : 1
+    },
+    "\/source\/js\/report.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 0,
+      "oAP" : "\/build\/js\/report.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
+    "\/source\/report.pug" : {
+      "cB" : 0,
+      "cOD" : 1,
+      "ft" : 512,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/build\/report.html",
+      "oF" : 0,
+      "oS" : 0
     }
   },
   "hooks" : [
@@ -882,7 +914,7 @@
   },
   "projectAttributes" : {
     "creationDate" : 636360098.66385698,
-    "displayValue" : "NBDC Togo Site",
+    "displayValue" : "NBDC Togo DX",
     "displayValueWasSetByUser" : 1,
     "iconImageName" : "brackets-koamaru",
     "iconImageWasSetByUser" : 0,
