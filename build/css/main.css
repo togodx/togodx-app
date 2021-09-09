@@ -1720,6 +1720,9 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #Conditions > header {
   margin-bottom: -0.6rem;
 }
+#Conditions[data-number-of-conditions="0"] > header {
+  visibility: hidden;
+}
 
 #Document {
   margin: 1rem auto;

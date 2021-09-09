@@ -221,7 +221,7 @@ block main
               .inner
                 h2.title
                   span.material-icons layers
-                  | Select target category
+                  | Select target database
                 select(disabled)
                   //- option(val="gene") Gene
               hr
@@ -272,9 +272,9 @@ block main
 
       .lower
         
-        section#Conditions
+        section#Conditions(data-number-of-conditions="0")
           header
-            h2.title Saved Conditions
+            h2.title Saved conditions
           .conditions
 
     .loading-view.-shown
