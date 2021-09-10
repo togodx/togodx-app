@@ -5668,6 +5668,8 @@
       key: "destroy",
       value: function destroy() {
         DefaultEventEmitter$1.removeEventListener(addNextRows, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+        DefaultEventEmitter$1.removeEventListener(changeToOnlyHitCountInStatisticsView, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+        DefaultEventEmitter$1.removeEventListener(changeToStretchInStatisticsView, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
       }
       /**
        * @param {TableData} detail.tableData
