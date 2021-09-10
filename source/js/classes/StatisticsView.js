@@ -5,11 +5,15 @@ import * as event from '../events';
 export default class StatisticsView {
 
   #propertyId;
+  #tableData;
   #BARS;
+  #ROOT_NODE;
 
-  constructor(elm, {subject, property}) {
+  constructor(statisticsRootNode, elm, tableData, {subject, property}) {
 
     this.#propertyId = property.propertyId;
+    this.#tableData = tableData;
+    this.#ROOT_NODE = statisticsRootNode;
 
     elm.classList.add('statistics-view');
     elm.dataset.subjectId = subject.subjectId;
@@ -24,7 +28,12 @@ export default class StatisticsView {
     this.#BARS = container.querySelector(':scope > .bars');
 
     // event listener
-    DefaultEventEmitter.addEventListener(event.addNextRows, e => this.#draw(e.detail));
+    DefaultEventEmitter.addEventListener(event.addNextRows, this.#draw.bind(this));
+    DefaultEventEmitter.addEventListener(event.changeToOnlyHitCountInStatisticsView, this.#draw.bind(this));
+  }
+
+  destory() {
+    DefaultEventEmitter.removeEventListener(event.addNextRows, this.#draw.bind(this));
   }
 
   /**
@@ -32,13 +41,11 @@ export default class StatisticsView {
    * @param {Array} detail.rows
    * @param {Boolean} detail.done
    */
-  #draw(detail) {
-    console.log(detail)
-    console.log(detail.tableData.data)
-    console.log(Records.getProperty(this.#propertyId).values)
+  #draw({detail}) {
 
     // const data = detail.tableData.data;
-    const attributes = detail.tableData.data
+    // const attributes = detail.tableData.data
+    const attributes = this.#tableData.data
       .map(datum => datum.properties.find(property => property.propertyId === this.#propertyId))
       .filter(property => property !== undefined)
       .map(property => property.attributes)
@@ -54,7 +61,14 @@ export default class StatisticsView {
         hitCount: filtered.length
       })
     });
-    const countMax = Math.max(...hitVlues.map(value => value.count));
+
+    // max
+    let countMax;
+    if (this.#ROOT_NODE.classList.contains('-onlyhitcount')) {
+      countMax = Math.max(...hitVlues.map(value => value.hitCount));
+    } else {
+      countMax = Math.max(...hitVlues.map(value => value.count));
+    }
 
     hitVlues.reduce((lastBar, {categoryId, label, count, hitCount}) => {
       let bar = this.#BARS.querySelector(`:scope > .bar[data-category-id="${categoryId}"]`);

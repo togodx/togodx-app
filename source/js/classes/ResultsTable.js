@@ -8,6 +8,7 @@ export default class ResultsTable {
   #intersctionObserver;
   #tableData;
   #header;
+  #statisticsViews;
   #ROOT;
   #THEAD;
   #THEAD_SUB;
@@ -17,6 +18,9 @@ export default class ResultsTable {
   #LOADING_VIEW;
 
   constructor(elm) {
+
+    this.#statisticsViews = [];
+
     // references
     this.#ROOT = elm;
     const TABLE = elm.querySelector(':scope > .body > table');
@@ -71,6 +75,15 @@ export default class ResultsTable {
     });
     mutationObserver.observe(document.querySelector('body'), {
       attributes: true,
+    });
+
+    // statistics
+    this.#STATS.querySelector(':scope > th.controller > .inner > label > input.onlyhitcount').addEventListener('change', e => {
+      this.#STATS.classList.toggle('-onlyhitcount');
+      const customEvent = new CustomEvent(event.changeToOnlyHitCountInStatisticsView, {
+        detail: this.#STATS.classList.contains('-onlyhitcount')
+      });
+      DefaultEventEmitter.dispatchEvent(customEvent);
     });
   }
 
@@ -148,11 +161,15 @@ export default class ResultsTable {
     for (const td of this.#STATS.querySelectorAll(':scope > td')) {
       td.remove();
     }
+    for (const statisticsView of this.#statisticsViews) {
+      statisticsView.destroy();
+    }
+    this.#statisticsViews = [];
     for (const property of properties) {
       const td = document.createElement('td');
       td.innerHTML = '<div class="inner"><div></div></div>';
       this.#STATS.append(td);
-      new StatisticsView(td.querySelector(':scope > .inner > div'), property);
+      this.#statisticsViews.push(new StatisticsView(this.#STATS, td.querySelector(':scope > .inner > div'), tableData, property));
     }
   }
 

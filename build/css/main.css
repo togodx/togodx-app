@@ -1082,7 +1082,7 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   --height-gap: .5rem;
   --height-statistics: calc(var(--height-results-statistics) - var(--padding-block-start) - var(--padding-block-end) - var(--margin-block-end-title) - var(--height-tick));
   --height-bar: calc((var(--height-statistics) - var(--height-gap)) * 1);
-  padding: var(--padding-block-start) 1.5rem var(--padding-block-end);
+  padding: var(--padding-block-start) 1.5rem var(--padding-block-end) 0;
 }
 .statistics-view > .statistics {
   text-align: left;
@@ -1106,10 +1106,14 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   bottom: 0;
   width: 100%;
   height: 0%;
-  transition: height var(--transition-instant);
+  transition: height var(--transition-wipe), opacity var(--transition-wipe);
 }
 .statistics-view > .statistics > .bars > .bar > .wholebar {
   background-color: var(--color-light-gray);
+}
+.-onlyhitcount .statistics-view > .statistics > .bars > .bar > .wholebar {
+  height: 0% !important;
+  opacity: 0;
 }
 .statistics-view > .statistics > .bars > .bar > .hitbar > .value {
   color: var(--color-lamp-black);

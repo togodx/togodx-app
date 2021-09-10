@@ -42,3 +42,6 @@ export const highlightCol = 'highlightCol';
 export const enterPropertyValueItemView = 'enterPropertyValueItemView';
 export const leavePropertyValueItemView = 'leavePropertyValueItemView';
 export const allTracksCollapse = 'allTracksCollapse';
+
+// Statistics
+export const changeToOnlyHitCountInStatisticsView = 'changeToOnlyHitCountInStatisticsView';
