@@ -56,17 +56,38 @@ export default class StatisticsView {
     });
     const countMax = Math.max(...hitVlues.map(value => value.count));
 
-    this.#BARS.innerHTML = hitVlues.map(({categoryId, label, count, hitCount}) => {
-      const position = (hitCount / countMax < .5) ? ' -below' : '';
-      return `
-      <div class="bar">
-        <div class="wholebar" style="height: ${count / countMax * 100}%;"></div>
-        <div class="hitbar _subject-background-color" style="height: ${hitCount / countMax * 100}%;">
-          <div class="value${position}">${hitCount.toLocaleString()}</div>
+    hitVlues.reduce((lastBar, {categoryId, label, count, hitCount}) => {
+      let bar = this.#BARS.querySelector(`:scope > .bar[data-category-id="${categoryId}"]`);
+      if (bar === null) {
+        // add bar
+        bar = document.createElement('div');
+        bar.classList.add('bar');
+        bar.dataset.categoryId = categoryId;
+        bar.innerHTML = `
+        <div class="wholebar"></div>
+        <div class="hitbar _subject-background-color">
+          <div class="value"></div>
         </div>
-        <div class="label">${label}</div>
-      </div>`;
-    }).join('');
+        <div class="label">${label}</div>`;
+        if (lastBar) {
+          lastBar.after(bar);
+        } else {
+          this.#BARS.append(bar);
+        }
+      }
+      // styling
+      bar.querySelector(':scope > .wholebar').style.height = `${count / countMax * 100}%`;
+      const hitbar = bar.querySelector(':scope > .hitbar');
+      hitbar.style.height = `${hitCount / countMax * 100}%`;
+      const hitCountLabel = hitbar.querySelector(':scope > .value');
+      hitCountLabel.textContent = hitCount.toLocaleString();
+      if (hitCount / countMax < .5) {
+        hitCountLabel.classList.add('-below');
+      } else {
+        hitCountLabel.classList.remove('-below');
+      }
+      return bar;
+    }, undefined);
 
   }
 

@@ -5687,14 +5687,43 @@
     var countMax = Math.max.apply(Math, _toConsumableArray(hitVlues.map(function (value) {
       return value.count;
     })));
-    _classPrivateFieldGet(this, _BARS).innerHTML = hitVlues.map(function (_ref3) {
-      _ref3.categoryId;
-          var label = _ref3.label,
+    hitVlues.reduce(function (lastBar, _ref3) {
+      var categoryId = _ref3.categoryId,
+          label = _ref3.label,
           count = _ref3.count,
           hitCount = _ref3.hitCount;
-      var position = hitCount / countMax < .5 ? ' -below' : '';
-      return "\n      <div class=\"bar\">\n        <div class=\"wholebar\" style=\"height: ".concat(count / countMax * 100, "%;\"></div>\n        <div class=\"hitbar _subject-background-color\" style=\"height: ").concat(hitCount / countMax * 100, "%;\">\n          <div class=\"value").concat(position, "\">").concat(hitCount.toLocaleString(), "</div>\n        </div>\n        <div class=\"label\">").concat(label, "</div>\n      </div>");
-    }).join('');
+
+      var bar = _classPrivateFieldGet(_this2, _BARS).querySelector(":scope > .bar[data-category-id=\"".concat(categoryId, "\"]"));
+
+      if (bar === null) {
+        // add bar
+        bar = document.createElement('div');
+        bar.classList.add('bar');
+        bar.dataset.categoryId = categoryId;
+        bar.innerHTML = "\n        <div class=\"wholebar\"></div>\n        <div class=\"hitbar _subject-background-color\">\n          <div class=\"value\"></div>\n        </div>\n        <div class=\"label\">".concat(label, "</div>");
+
+        if (lastBar) {
+          lastBar.after(bar);
+        } else {
+          _classPrivateFieldGet(_this2, _BARS).append(bar);
+        }
+      } // styling
+
+
+      bar.querySelector(':scope > .wholebar').style.height = "".concat(count / countMax * 100, "%");
+      var hitbar = bar.querySelector(':scope > .hitbar');
+      hitbar.style.height = "".concat(hitCount / countMax * 100, "%");
+      var hitCountLabel = hitbar.querySelector(':scope > .value');
+      hitCountLabel.textContent = hitCount.toLocaleString();
+
+      if (hitCount / countMax < .5) {
+        hitCountLabel.classList.add('-below');
+      } else {
+        hitCountLabel.classList.remove('-below');
+      }
+
+      return bar;
+    }, undefined);
   }
 
   var _intersctionObserver = new WeakMap();
