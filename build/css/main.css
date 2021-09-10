@@ -1081,8 +1081,8 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   --height-tick: 3rem;
   --height-gap: .5rem;
   --height-statistics: calc(var(--height-results-statistics) - var(--padding-block-start) - var(--padding-block-end) - var(--margin-block-end-title) - var(--height-tick));
-  --height-bar: calc((var(--height-statistics) - var(--height-gap)) * .5);
-  padding: var(--padding-block-start) 1.5rem var(--padding-block-end);
+  --height-bar: calc((var(--height-statistics) - var(--height-gap)) * 1);
+  padding: var(--padding-block-start) 1.5rem var(--padding-block-end) 0;
 }
 .statistics-view > .statistics {
   text-align: left;
@@ -1090,24 +1090,35 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   margin-bottom: var(--height-tick);
   white-space: nowrap;
 }
-.statistics-view > .statistics > * > .bar {
+.statistics-view > .statistics > .bars {
+  height: var(--height-bar);
+}
+.statistics-view > .statistics > .bars > .bar {
   margin: 0 0.2rem;
   display: inline-block;
   vertical-align: bottom;
   position: relative;
   width: 1.2rem;
+  height: 100%;
 }
-.statistics-view > .statistics > * > .bar > .label {
+.statistics-view > .statistics > .bars > .bar > .wholebar, .statistics-view > .statistics > .bars > .bar > .hitbar {
   position: absolute;
-  font-size: 1rem;
   bottom: 0;
-  left: 0.9rem;
-  -webkit-transform-origin: 0% 0%;
-          transform-origin: 0% 0%;
-  -webkit-transform: rotate(30deg);
-          transform: rotate(30deg);
+  width: 100%;
+  height: 0%;
+  transition: height var(--transition-wipe), opacity var(--transition-wipe);
 }
-.statistics-view > .statistics > * > .bar > .value {
+.statistics-view > .statistics > .bars > .bar > .wholebar {
+  background-color: var(--color-light-gray);
+}
+.-stretch .statistics-view > .statistics > .bars > .bar > .wholebar {
+  height: 100% !important;
+}
+.-onlyhitcount .statistics-view > .statistics > .bars > .bar > .wholebar {
+  height: 0% !important;
+  opacity: 0;
+}
+.statistics-view > .statistics > .bars > .bar > .hitbar > .value {
   color: white;
   position: absolute;
   top: 0;
@@ -1123,20 +1134,20 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   pointer-events: none;
   text-align: left;
 }
-.statistics-view > .statistics > * > .bar > .value.-below {
-  color: var(--color-gray);
+.statistics-view > .statistics > .bars > .bar > .hitbar > .value.-below {
+  color: var(--color-lamp-black);
   text-align: right;
   top: calc(0rem - var(--height-statistics));
 }
-.statistics-view > .statistics > .counts {
-  height: var(--height-bar);
-}
-.statistics-view > .statistics > .rates {
-  margin-top: var(--height-gap);
-  height: var(--height-bar);
-}
-.statistics-view > .statistics > .ticks {
-  height: 0;
+.statistics-view > .statistics > .bars > .bar > .label {
+  position: absolute;
+  font-size: 1rem;
+  bottom: 0;
+  left: 0.9rem;
+  -webkit-transform-origin: 0% 0%;
+          transform-origin: 0% 0%;
+  -webkit-transform: translate(-0.2rem, 1.3rem) rotate(30deg);
+          transform: translate(-0.2rem, 1.3rem) rotate(30deg);
 }
 
 .table-data-controller-view {
@@ -1977,6 +1988,18 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 }
 #ResultsTable > .body > table > thead > tr.header.subheader > th > .inner._subject-color, #ResultsTable > .body > table > thead > tr.subheader.subheader > th > .inner._subject-color {
   background-color: white;
+}
+#ResultsTable > .body > table > thead > tr.statistics > th.controller > .inner > label {
+  display: block;
+  white-space: nowrap;
+}
+#ResultsTable > .body > table > thead > tr.statistics > th.controller > .inner > label > input {
+  vertical-align: bottom;
+  margin-right: 0.4rem;
+}
+#ResultsTable > .body > table > thead > tr.statistics.-onlyhitcount > th.controller > .inner > label.stretch {
+  opacity: 0.4;
+  pointer-events: none;
 }
 #ResultsTable > .body > table > thead > tr.statistics > td > .inner {
   background-color: white;

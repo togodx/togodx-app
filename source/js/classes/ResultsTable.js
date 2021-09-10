@@ -8,6 +8,7 @@ export default class ResultsTable {
   #intersctionObserver;
   #tableData;
   #header;
+  #statisticsViews;
   #ROOT;
   #THEAD;
   #THEAD_SUB;
@@ -17,6 +18,9 @@ export default class ResultsTable {
   #LOADING_VIEW;
 
   constructor(elm) {
+
+    this.#statisticsViews = [];
+
     // references
     this.#ROOT = elm;
     const TABLE = elm.querySelector(':scope > .body > table');
@@ -71,6 +75,24 @@ export default class ResultsTable {
     });
     mutationObserver.observe(document.querySelector('body'), {
       attributes: true,
+    });
+
+    // statistics
+    const controller = this.#STATS.querySelector(':scope > th.controller > .inner');
+    controller.querySelector(':scope > label.onlyhitcount > input').addEventListener('change', e => {
+      this.#STATS.classList.toggle('-onlyhitcount');
+      const customEvent = new CustomEvent(event.changeToOnlyHitCountInStatisticsView, {
+        detail: this.#STATS.classList.contains('-onlyhitcount')
+      });
+      DefaultEventEmitter.dispatchEvent(customEvent);
+    });
+    const controllerStretch = controller.querySelector(':scope > label.stretch > input');
+    controllerStretch.addEventListener('change', e => {
+      this.#STATS.classList.toggle('-stretch');
+      const customEvent = new CustomEvent(event.changeToStretchInStatisticsView, {
+        detail: this.#STATS.classList.contains('-stretch')
+      });
+      DefaultEventEmitter.dispatchEvent(customEvent);
     });
   }
 
@@ -145,21 +167,23 @@ export default class ResultsTable {
       .join('')}`;
 
     // make stats
-    this.#STATS.innerHTML =
-      `<td><div class="inner"><div></td>` +
-      properties
-        .map(() => `<td><div class="inner"><div></div></div></td>`)
-        .join('');
-    this.#STATS
-      .querySelectorAll(':scope > td > .inner > div')
-      .forEach((elm, index) => {
-        if (index === 0) return;
-        new StatisticsView(elm, properties[index - 1]);
-      });
+    for (const td of this.#STATS.querySelectorAll(':scope > td')) {
+      td.remove();
+    }
+    for (const statisticsView of this.#statisticsViews) {
+      statisticsView.destroy();
+    }
+    this.#statisticsViews = [];
+    for (const property of properties) {
+      const td = document.createElement('td');
+      td.innerHTML = '<div class="inner"><div></div></div>';
+      this.#STATS.append(td);
+      this.#statisticsViews.push(new StatisticsView(this.#STATS, td.querySelector(':scope > .inner > div'), tableData, property));
+    }
   }
 
   #addTableRows(detail) {
-    console.log(detail);
+    // console.log(detail);
 
     this.#tableData = detail.tableData;
 
@@ -178,7 +202,7 @@ export default class ResultsTable {
       'beforeend',
       rows
         .map((row, index) => {
-          console.log(row);
+          // console.log(row);
           return `<tr data-index="${
             detail.tableData.offset + index
           }" data-togo-id="${detail.rows[index].id}">

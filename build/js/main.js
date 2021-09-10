@@ -2947,7 +2947,10 @@
 
   var enterPropertyValueItemView = 'enterPropertyValueItemView';
   var leavePropertyValueItemView = 'leavePropertyValueItemView';
-  var allTracksCollapse = 'allTracksCollapse';
+  var allTracksCollapse = 'allTracksCollapse'; // Statistics
+
+  var changeToOnlyHitCountInStatisticsView = 'changeToOnlyHitCountInStatisticsView';
+  var changeToStretchInStatisticsView = 'changeToStretchInStatisticsView';
 
   var _propertyConditions = new WeakMap();
 
@@ -5603,78 +5606,90 @@
 
   var _propertyId = new WeakMap();
 
-  var _COUNTS = new WeakMap();
+  var _tableData$2 = new WeakMap();
 
-  var _RATES = new WeakMap();
+  var _BARS = new WeakMap();
 
-  var _TICKS = new WeakMap();
+  var _ROOT_NODE = new WeakMap();
 
   var _draw = new WeakSet();
 
-  var StatisticsView = function StatisticsView(elm, _ref) {
+  var StatisticsView = /*#__PURE__*/function () {
+    function StatisticsView(statisticsRootNode, elm, tableData, _ref) {
+      var subject = _ref.subject,
+          _property = _ref.property;
+
+      _classCallCheck(this, StatisticsView);
+
+      _draw.add(this);
+
+      _propertyId.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _tableData$2.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _BARS.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _ROOT_NODE.set(this, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldSet(this, _propertyId, _property.propertyId);
+
+      _classPrivateFieldSet(this, _tableData$2, tableData);
+
+      _classPrivateFieldSet(this, _ROOT_NODE, statisticsRootNode);
+
+      elm.classList.add('statistics-view');
+      elm.dataset.subjectId = subject.subjectId; // make HTML
+
+      elm.innerHTML = "<div class=\"statistics\">\n      <div class=\"bars\"></div>\n    </div>"; // references
+
+      var container = elm.querySelector(':scope > .statistics');
+
+      _classPrivateFieldSet(this, _BARS, container.querySelector(':scope > .bars')); // event listener
+
+
+      DefaultEventEmitter$1.addEventListener(addNextRows, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+      DefaultEventEmitter$1.addEventListener(changeToOnlyHitCountInStatisticsView, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+      DefaultEventEmitter$1.addEventListener(changeToStretchInStatisticsView, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+    }
+
+    _createClass(StatisticsView, [{
+      key: "destroy",
+      value: function destroy() {
+        DefaultEventEmitter$1.removeEventListener(addNextRows, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+      }
+      /**
+       * @param {TableData} detail.tableData
+       * @param {Array} detail.rows
+       * @param {Boolean} detail.done
+       */
+
+    }]);
+
+    return StatisticsView;
+  }();
+
+  function _draw2(_ref2) {
     var _this = this;
 
-    var subject = _ref.subject,
-        _property = _ref.property;
-
-    _classCallCheck(this, StatisticsView);
-
-    _draw.add(this);
-
-    _propertyId.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _COUNTS.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _RATES.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _TICKS.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _classPrivateFieldSet(this, _propertyId, _property.propertyId);
-
-    elm.classList.add('statistics-view');
-    elm.dataset.subjectId = subject.subjectId; // make HTML
-
-    elm.innerHTML = "<div class=\"statistics\">\n      <div class=\"counts\"></div>\n      <div class=\"rates\"></div>\n      <div class=\"ticks\"></div>\n    </div>"; // references
-
-    var container = elm.querySelector(':scope > .statistics');
-
-    _classPrivateFieldSet(this, _COUNTS, container.querySelector(':scope > .counts'));
-
-    _classPrivateFieldSet(this, _RATES, container.querySelector(':scope > .rates'));
-
-    _classPrivateFieldSet(this, _TICKS, container.querySelector(':scope > .ticks')); // event listener
-
-
-    DefaultEventEmitter$1.addEventListener(addNextRows, function (e) {
-      return _classPrivateMethodGet(_this, _draw, _draw2).call(_this, e.detail);
-    });
-  }
-  /**
-   * @param {TableData} detail.tableData
-   * @param {Array} detail.rows
-   * @param {Boolean} detail.done
-   */
-  ;
-
-  function _draw2(detail) {
-    var _this2 = this;
+    _ref2.detail;
 
     // const data = detail.tableData.data;
-    var attributes = detail.tableData.data.map(function (datum) {
+    // const attributes = detail.tableData.data
+    var attributes = _classPrivateFieldGet(this, _tableData$2).data.map(function (datum) {
       return datum.properties.find(function (property) {
-        return property.propertyId === _classPrivateFieldGet(_this2, _propertyId);
+        return property.propertyId === _classPrivateFieldGet(_this, _propertyId);
       });
     }).filter(function (property) {
       return property !== undefined;
@@ -5684,45 +5699,76 @@
       return property.attribute;
     });
 
-    var categoryIds = _toConsumableArray(new Set(attributes.map(function (attribute) {
-      return attribute.categoryId;
-    }))); // count
-
-
-    var counts = categoryIds.map(function (categoryId) {
-      return attributes.filter(function (attribute) {
-        return attribute.categoryId === categoryId;
-      }).length;
-    });
-    var countMax = Math.max.apply(Math, _toConsumableArray(counts)); // draw
-
-    _classPrivateFieldGet(this, _COUNTS).innerHTML = counts.map(function (count) {
-      var position = count / countMax < .5 ? ' -below' : '';
-      return "\n      <div class=\"bar _subject-background-color\" style=\"height: ".concat(count / countMax * 100, "%;\">\n        <div class=\"value").concat(position, "\">").concat(count.toLocaleString(), "</div>\n      </div>");
-    }).join(''); // rate
-
-    var rates = categoryIds.map(function (categoryId, index) {
-      var value = Records$1.getValue(_classPrivateFieldGet(_this2, _propertyId), categoryId);
-      var sum = value.count * detail.tableData.rateOfProgress;
-      return counts[index] / sum;
-    });
-    var rateMax = Math.max.apply(Math, _toConsumableArray(rates)); // draw
-
-    _classPrivateFieldGet(this, _RATES).innerHTML = rates.map(function (rate) {
-      var position = rate / rateMax < .5 ? ' -below' : '';
-      return "\n      <div class=\"bar _subject-background-color\" style=\"height: ".concat(rate / rateMax * 100, "%;\">\n        <div class=\"value").concat(position, "\">").concat(rate.toLocaleString(), "</div>\n      </div>");
-    }).join(''); // tick
-
-    var labels = categoryIds.map(function (categoryId) {
-      return attributes.find(function (attribute) {
+    var hitVlues = [];
+    Records$1.getProperty(_classPrivateFieldGet(this, _propertyId)).values.forEach(function (_ref3) {
+      var categoryId = _ref3.categoryId,
+          label = _ref3.label,
+          count = _ref3.count;
+      var filtered = attributes.filter(function (attribute) {
         return attribute.categoryId === categoryId;
       });
-    }).map(function (attribute) {
-      return attribute.label;
-    });
-    _classPrivateFieldGet(this, _TICKS).innerHTML = labels.map(function (label) {
-      return "\n      <div class=\"bar\">\n        <div class=\"label\">".concat(label, "</div>\n      </div>");
-    }).join('');
+      if (filtered.length === 0) return;
+      hitVlues.push({
+        categoryId: categoryId,
+        label: label,
+        count: count,
+        hitCount: filtered.length
+      });
+    }); // max
+
+    var countMax;
+
+    var isOnlyHitCount = _classPrivateFieldGet(this, _ROOT_NODE).classList.contains('-onlyhitcount');
+
+    var isStretch = !isOnlyHitCount && _classPrivateFieldGet(this, _ROOT_NODE).classList.contains('-stretch');
+
+    if (isOnlyHitCount) {
+      countMax = Math.max.apply(Math, _toConsumableArray(hitVlues.map(function (value) {
+        return value.hitCount;
+      })));
+    } else {
+      countMax = Math.max.apply(Math, _toConsumableArray(hitVlues.map(function (value) {
+        return value.count;
+      })));
+    }
+
+    hitVlues.reduce(function (lastBar, _ref4) {
+      var categoryId = _ref4.categoryId,
+          label = _ref4.label,
+          count = _ref4.count,
+          hitCount = _ref4.hitCount;
+
+      var bar = _classPrivateFieldGet(_this, _BARS).querySelector(":scope > .bar[data-category-id=\"".concat(categoryId, "\"]"));
+
+      if (bar === null) {
+        // add bar
+        bar = document.createElement('div');
+        bar.classList.add('bar');
+        bar.dataset.categoryId = categoryId;
+        bar.innerHTML = "\n        <div class=\"wholebar\"></div>\n        <div class=\"hitbar _subject-background-color-strong\">\n          <div class=\"value\"></div>\n        </div>\n        <div class=\"label\">".concat(label, "</div>");
+
+        if (lastBar) {
+          lastBar.after(bar);
+        } else {
+          _classPrivateFieldGet(_this, _BARS).append(bar);
+        }
+      } // styling
+
+
+      bar.querySelector(':scope > .wholebar').style.height = "".concat(count / countMax * 100, "%");
+      var hitbar = bar.querySelector(':scope > .hitbar');
+      if (isStretch) hitbar.style.height = "".concat(hitCount / count * 100, "%");else hitbar.style.height = "".concat(hitCount / countMax * 100, "%");
+      var hitCountLabel = hitbar.querySelector(':scope > .value');
+      hitCountLabel.textContent = hitCount.toLocaleString();
+
+      if (hitCount / countMax < .5) {
+        hitCountLabel.classList.add('-below');
+      } else {
+        hitCountLabel.classList.remove('-below');
+      }
+
+      return bar;
+    }, undefined);
   }
 
   var _intersctionObserver = new WeakMap();
@@ -5730,6 +5776,8 @@
   var _tableData$1 = new WeakMap();
 
   var _header$1 = new WeakMap();
+
+  var _statisticsViews = new WeakMap();
 
   var _ROOT$6 = new WeakMap();
 
@@ -5755,7 +5803,7 @@
 
   var _colHighlight = new WeakSet();
 
-  var ResultsTable = function ResultsTable(_elm) {
+  var ResultsTable = function ResultsTable(elm) {
     var _this = this;
 
     _classCallCheck(this, ResultsTable);
@@ -5781,6 +5829,11 @@
     });
 
     _header$1.set(this, {
+      writable: true,
+      value: void 0
+    });
+
+    _statisticsViews.set(this, {
       writable: true,
       value: void 0
     });
@@ -5820,10 +5873,12 @@
       value: void 0
     });
 
-    // references
-    _classPrivateFieldSet(this, _ROOT$6, _elm);
+    _classPrivateFieldSet(this, _statisticsViews, []); // references
 
-    var TABLE = _elm.querySelector(':scope > .body > table');
+
+    _classPrivateFieldSet(this, _ROOT$6, elm);
+
+    var TABLE = elm.querySelector(':scope > .body > table');
 
     _classPrivateFieldSet(this, _THEAD, TABLE.querySelector(':scope > thead > tr.header'));
 
@@ -5833,7 +5888,7 @@
 
     _classPrivateFieldSet(this, _TBODY, TABLE.querySelector(':scope > tbody'));
 
-    _classPrivateFieldSet(this, _TABLE_END, _elm.querySelector(':scope > .body > .tableend'));
+    _classPrivateFieldSet(this, _TABLE_END, elm.querySelector(':scope > .body > .tableend'));
 
     _classPrivateFieldSet(this, _LOADING_VIEW, _classPrivateFieldGet(this, _TABLE_END).querySelector(':scope > .loading-view')); // get next data automatically
 
@@ -5887,6 +5942,26 @@
     });
     mutationObserver.observe(document.querySelector('body'), {
       attributes: true
+    }); // statistics
+
+    var controller = _classPrivateFieldGet(this, _STATS).querySelector(':scope > th.controller > .inner');
+
+    controller.querySelector(':scope > label.onlyhitcount > input').addEventListener('change', function (e) {
+      _classPrivateFieldGet(_this, _STATS).classList.toggle('-onlyhitcount');
+
+      var customEvent = new CustomEvent(changeToOnlyHitCountInStatisticsView, {
+        detail: _classPrivateFieldGet(_this, _STATS).classList.contains('-onlyhitcount')
+      });
+      DefaultEventEmitter$1.dispatchEvent(customEvent);
+    });
+    var controllerStretch = controller.querySelector(':scope > label.stretch > input');
+    controllerStretch.addEventListener('change', function (e) {
+      _classPrivateFieldGet(_this, _STATS).classList.toggle('-stretch');
+
+      var customEvent = new CustomEvent(changeToStretchInStatisticsView, {
+        detail: _classPrivateFieldGet(_this, _STATS).classList.contains('-stretch')
+      });
+      DefaultEventEmitter$1.dispatchEvent(customEvent);
     });
   } // private methods
   ;
@@ -5928,21 +6003,62 @@
       return "\n    <th>\n      <div class=\"inner _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n        <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.parentCategoryId ? Records$1.getValue(property.query.propertyId, property.parentCategoryId).label : property.property.label, "</span>\n      </div>\n    </th>");
     }).join('')); // make stats
 
-    _classPrivateFieldGet(this, _STATS).innerHTML = "<td><div class=\"inner\"><div></td>" + properties.map(function () {
-      return "<td><div class=\"inner\"><div></div></div></td>";
-    }).join('');
+    var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _STATS).querySelectorAll(':scope > td')),
+        _step2;
 
-    _classPrivateFieldGet(this, _STATS).querySelectorAll(':scope > td > .inner > div').forEach(function (elm, index) {
-      if (index === 0) return;
-      new StatisticsView(elm, properties[index - 1]);
-    });
+    try {
+      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+        var td = _step2.value;
+        td.remove();
+      }
+    } catch (err) {
+      _iterator2.e(err);
+    } finally {
+      _iterator2.f();
+    }
+
+    var _iterator3 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _statisticsViews)),
+        _step3;
+
+    try {
+      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+        var statisticsView = _step3.value;
+        statisticsView.destroy();
+      }
+    } catch (err) {
+      _iterator3.e(err);
+    } finally {
+      _iterator3.f();
+    }
+
+    _classPrivateFieldSet(this, _statisticsViews, []);
+
+    var _iterator4 = _createForOfIteratorHelper(properties),
+        _step4;
+
+    try {
+      for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+        var property = _step4.value;
+
+        var _td = document.createElement('td');
+
+        _td.innerHTML = '<div class="inner"><div></div></div>';
+
+        _classPrivateFieldGet(this, _STATS).append(_td);
+
+        _classPrivateFieldGet(this, _statisticsViews).push(new StatisticsView(_classPrivateFieldGet(this, _STATS), _td.querySelector(':scope > .inner > div'), tableData, property));
+      }
+    } catch (err) {
+      _iterator4.e(err);
+    } finally {
+      _iterator4.f();
+    }
   }
 
   function _addTableRows2(detail) {
     var _this2 = this;
 
-    console.log(detail);
-
+    // console.log(detail);
     _classPrivateFieldSet(this, _tableData$1, detail.tableData); // normalize
 
 
@@ -5956,7 +6072,7 @@
     }); // make table
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
-      console.log(row);
+      // console.log(row);
       return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order= \"").concat([0, detail.tableData.offset + index], "\"\n                    data-sub-order= \"0\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "\n                  </div>\n                  <span>").concat(detail.rows[index].label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.map(function (column, columnIndex) {
         // console.log(column)
         if (column) {

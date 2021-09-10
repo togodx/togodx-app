@@ -5,32 +5,36 @@ import * as event from '../events';
 export default class StatisticsView {
 
   #propertyId;
-  #COUNTS;
-  #RATES;
-  #TICKS;
+  #tableData;
+  #BARS;
+  #ROOT_NODE;
 
-  constructor(elm, {subject, property}) {
+  constructor(statisticsRootNode, elm, tableData, {subject, property}) {
 
     this.#propertyId = property.propertyId;
+    this.#tableData = tableData;
+    this.#ROOT_NODE = statisticsRootNode;
 
     elm.classList.add('statistics-view');
     elm.dataset.subjectId = subject.subjectId;
 
     // make HTML
     elm.innerHTML = `<div class="statistics">
-      <div class="counts"></div>
-      <div class="rates"></div>
-      <div class="ticks"></div>
+      <div class="bars"></div>
     </div>`;
 
     // references
     const container = elm.querySelector(':scope > .statistics');
-    this.#COUNTS = container.querySelector(':scope > .counts');
-    this.#RATES = container.querySelector(':scope > .rates');
-    this.#TICKS = container.querySelector(':scope > .ticks');
+    this.#BARS = container.querySelector(':scope > .bars');
 
     // event listener
-    DefaultEventEmitter.addEventListener(event.addNextRows, e => this.#draw(e.detail));
+    DefaultEventEmitter.addEventListener(event.addNextRows, this.#draw.bind(this));
+    DefaultEventEmitter.addEventListener(event.changeToOnlyHitCountInStatisticsView, this.#draw.bind(this));
+    DefaultEventEmitter.addEventListener(event.changeToStretchInStatisticsView, this.#draw.bind(this));
+  }
+
+  destroy() {
+    DefaultEventEmitter.removeEventListener(event.addNextRows, this.#draw.bind(this));
   }
 
   /**
@@ -38,54 +42,71 @@ export default class StatisticsView {
    * @param {Array} detail.rows
    * @param {Boolean} detail.done
    */
-  #draw(detail) {
+  #draw({detail}) {
 
     // const data = detail.tableData.data;
-    const attributes = detail.tableData.data
+    // const attributes = detail.tableData.data
+    const attributes = this.#tableData.data
       .map(datum => datum.properties.find(property => property.propertyId === this.#propertyId))
       .filter(property => property !== undefined)
       .map(property => property.attributes)
       .flat()
       .map(property => property.attribute);
 
-    const categoryIds = [...new Set(attributes.map(attribute => attribute.categoryId))];
-    
-    // count
-    const counts = categoryIds.map(categoryId => attributes.filter(attribute => attribute.categoryId === categoryId).length);
-    const countMax = Math.max(...counts);
-    // draw
-    this.#COUNTS.innerHTML = counts.map(count => {
-      const position = (count / countMax < .5) ? ' -below' : '';
-      return `
-      <div class="bar _subject-background-color" style="height: ${count / countMax * 100}%;">
-        <div class="value${position}">${count.toLocaleString()}</div>
-      </div>`;
-    }).join('');
-
-    // rate
-    const rates = categoryIds.map((categoryId, index) => {
-      const value = Records.getValue(this.#propertyId, categoryId);
-      const sum = value.count * detail.tableData.rateOfProgress;
-      return counts[index] / sum;
+    const hitVlues = [];
+    Records.getProperty(this.#propertyId).values.forEach(({categoryId, label, count}) => {
+      const filtered = attributes.filter(attribute => attribute.categoryId === categoryId);
+      if (filtered.length === 0) return;
+      hitVlues.push({
+        categoryId, label, count,
+        hitCount: filtered.length
+      })
     });
-    const rateMax = Math.max(...rates);
-    // draw
-    this.#RATES.innerHTML = rates.map(rate => {
-      const position = (rate / rateMax < .5) ? ' -below' : '';
-      return `
-      <div class="bar _subject-background-color" style="height: ${rate / rateMax * 100}%;">
-        <div class="value${position}">${rate.toLocaleString()}</div>
-      </div>`;
-    }).join('');
 
-    // tick
-    const labels = categoryIds.map(categoryId => attributes.find(attribute => attribute.categoryId === categoryId)).map(attribute => attribute.label);
-    this.#TICKS.innerHTML = labels.map(label => {
-      return `
-      <div class="bar">
-        <div class="label">${label}</div>
-      </div>`;
-    }).join('');
+    // max
+    let countMax;
+    const isOnlyHitCount = this.#ROOT_NODE.classList.contains('-onlyhitcount');
+    const isStretch = !isOnlyHitCount && this.#ROOT_NODE.classList.contains('-stretch');
+    if (isOnlyHitCount) {
+      countMax = Math.max(...hitVlues.map(value => value.hitCount));
+    } else {
+      countMax = Math.max(...hitVlues.map(value => value.count));
+    }
+
+    hitVlues.reduce((lastBar, {categoryId, label, count, hitCount}) => {
+      let bar = this.#BARS.querySelector(`:scope > .bar[data-category-id="${categoryId}"]`);
+      if (bar === null) {
+        // add bar
+        bar = document.createElement('div');
+        bar.classList.add('bar');
+        bar.dataset.categoryId = categoryId;
+        bar.innerHTML = `
+        <div class="wholebar"></div>
+        <div class="hitbar _subject-background-color-strong">
+          <div class="value"></div>
+        </div>
+        <div class="label">${label}</div>`;
+        if (lastBar) {
+          lastBar.after(bar);
+        } else {
+          this.#BARS.append(bar);
+        }
+      }
+      // styling
+      bar.querySelector(':scope > .wholebar').style.height = `${count / countMax * 100}%`;
+      const hitbar = bar.querySelector(':scope > .hitbar');
+      if (isStretch)  hitbar.style.height = `${hitCount / count * 100}%`;
+      else            hitbar.style.height = `${hitCount / countMax * 100}%`;
+      const hitCountLabel = hitbar.querySelector(':scope > .value');
+      hitCountLabel.textContent = hitCount.toLocaleString();
+      if (hitCount / countMax < .5) {
+        hitCountLabel.classList.add('-below');
+      } else {
+        hitCountLabel.classList.remove('-below');
+      }
+      return bar;
+    }, undefined);
+
   }
 
 }
