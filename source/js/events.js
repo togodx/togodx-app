@@ -45,3 +45,4 @@ export const allTracksCollapse = 'allTracksCollapse';
 
 // Statistics
 export const changeToOnlyHitCountInStatisticsView = 'changeToOnlyHitCountInStatisticsView';
+export const changeToStretchInStatisticsView = 'changeToStretchInStatisticsView';

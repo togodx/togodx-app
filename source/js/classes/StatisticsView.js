@@ -30,6 +30,7 @@ export default class StatisticsView {
     // event listener
     DefaultEventEmitter.addEventListener(event.addNextRows, this.#draw.bind(this));
     DefaultEventEmitter.addEventListener(event.changeToOnlyHitCountInStatisticsView, this.#draw.bind(this));
+    DefaultEventEmitter.addEventListener(event.changeToStretchInStatisticsView, this.#draw.bind(this));
   }
 
   destory() {
@@ -64,7 +65,9 @@ export default class StatisticsView {
 
     // max
     let countMax;
-    if (this.#ROOT_NODE.classList.contains('-onlyhitcount')) {
+    const isOnlyHitCount = this.#ROOT_NODE.classList.contains('-onlyhitcount');
+    const isStretch = !isOnlyHitCount && this.#ROOT_NODE.classList.contains('-stretch');
+    if (isOnlyHitCount) {
       countMax = Math.max(...hitVlues.map(value => value.hitCount));
     } else {
       countMax = Math.max(...hitVlues.map(value => value.count));
@@ -79,7 +82,7 @@ export default class StatisticsView {
         bar.dataset.categoryId = categoryId;
         bar.innerHTML = `
         <div class="wholebar"></div>
-        <div class="hitbar _subject-background-color">
+        <div class="hitbar _subject-background-color-strong">
           <div class="value"></div>
         </div>
         <div class="label">${label}</div>`;
@@ -92,7 +95,8 @@ export default class StatisticsView {
       // styling
       bar.querySelector(':scope > .wholebar').style.height = `${count / countMax * 100}%`;
       const hitbar = bar.querySelector(':scope > .hitbar');
-      hitbar.style.height = `${hitCount / countMax * 100}%`;
+      if (isStretch)  hitbar.style.height = `${hitCount / count * 100}%`;
+      else            hitbar.style.height = `${hitCount / countMax * 100}%`;
       const hitCountLabel = hitbar.querySelector(':scope > .value');
       hitCountLabel.textContent = hitCount.toLocaleString();
       if (hitCount / countMax < .5) {

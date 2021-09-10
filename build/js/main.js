@@ -2950,6 +2950,7 @@
   var allTracksCollapse = 'allTracksCollapse'; // Statistics
 
   var changeToOnlyHitCountInStatisticsView = 'changeToOnlyHitCountInStatisticsView';
+  var changeToStretchInStatisticsView = 'changeToStretchInStatisticsView';
 
   var _propertyConditions = new WeakMap();
 
@@ -5660,6 +5661,7 @@
 
       DefaultEventEmitter$1.addEventListener(addNextRows, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
       DefaultEventEmitter$1.addEventListener(changeToOnlyHitCountInStatisticsView, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+      DefaultEventEmitter$1.addEventListener(changeToStretchInStatisticsView, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
     }
 
     _createClass(StatisticsView, [{
@@ -5716,7 +5718,11 @@
 
     var countMax;
 
-    if (_classPrivateFieldGet(this, _ROOT_NODE).classList.contains('-onlyhitcount')) {
+    var isOnlyHitCount = _classPrivateFieldGet(this, _ROOT_NODE).classList.contains('-onlyhitcount');
+
+    var isStretch = !isOnlyHitCount && _classPrivateFieldGet(this, _ROOT_NODE).classList.contains('-stretch');
+
+    if (isOnlyHitCount) {
       countMax = Math.max.apply(Math, _toConsumableArray(hitVlues.map(function (value) {
         return value.hitCount;
       })));
@@ -5739,7 +5745,7 @@
         bar = document.createElement('div');
         bar.classList.add('bar');
         bar.dataset.categoryId = categoryId;
-        bar.innerHTML = "\n        <div class=\"wholebar\"></div>\n        <div class=\"hitbar _subject-background-color\">\n          <div class=\"value\"></div>\n        </div>\n        <div class=\"label\">".concat(label, "</div>");
+        bar.innerHTML = "\n        <div class=\"wholebar\"></div>\n        <div class=\"hitbar _subject-background-color-strong\">\n          <div class=\"value\"></div>\n        </div>\n        <div class=\"label\">".concat(label, "</div>");
 
         if (lastBar) {
           lastBar.after(bar);
@@ -5751,7 +5757,7 @@
 
       bar.querySelector(':scope > .wholebar').style.height = "".concat(count / countMax * 100, "%");
       var hitbar = bar.querySelector(':scope > .hitbar');
-      hitbar.style.height = "".concat(hitCount / countMax * 100, "%");
+      if (isStretch) hitbar.style.height = "".concat(hitCount / count * 100, "%");else hitbar.style.height = "".concat(hitCount / countMax * 100, "%");
       var hitCountLabel = hitbar.querySelector(':scope > .value');
       hitCountLabel.textContent = hitCount.toLocaleString();
 
@@ -5938,11 +5944,22 @@
       attributes: true
     }); // statistics
 
-    _classPrivateFieldGet(this, _STATS).querySelector(':scope > th.controller > .inner > label > input.onlyhitcount').addEventListener('change', function (e) {
+    var controller = _classPrivateFieldGet(this, _STATS).querySelector(':scope > th.controller > .inner');
+
+    controller.querySelector(':scope > label.onlyhitcount > input').addEventListener('change', function (e) {
       _classPrivateFieldGet(_this, _STATS).classList.toggle('-onlyhitcount');
 
       var customEvent = new CustomEvent(changeToOnlyHitCountInStatisticsView, {
         detail: _classPrivateFieldGet(_this, _STATS).classList.contains('-onlyhitcount')
+      });
+      DefaultEventEmitter$1.dispatchEvent(customEvent);
+    });
+    var controllerStretch = controller.querySelector(':scope > label.stretch > input');
+    controllerStretch.addEventListener('change', function (e) {
+      _classPrivateFieldGet(_this, _STATS).classList.toggle('-stretch');
+
+      var customEvent = new CustomEvent(changeToStretchInStatisticsView, {
+        detail: _classPrivateFieldGet(_this, _STATS).classList.contains('-stretch')
       });
       DefaultEventEmitter$1.dispatchEvent(customEvent);
     });

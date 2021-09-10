@@ -1111,12 +1111,15 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
 .statistics-view > .statistics > .bars > .bar > .wholebar {
   background-color: var(--color-light-gray);
 }
+.-stretch .statistics-view > .statistics > .bars > .bar > .wholebar {
+  height: 100% !important;
+}
 .-onlyhitcount .statistics-view > .statistics > .bars > .bar > .wholebar {
   height: 0% !important;
   opacity: 0;
 }
 .statistics-view > .statistics > .bars > .bar > .hitbar > .value {
-  color: var(--color-lamp-black);
+  color: white;
   position: absolute;
   top: 0;
   left: 0;
@@ -1132,6 +1135,7 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   text-align: left;
 }
 .statistics-view > .statistics > .bars > .bar > .hitbar > .value.-below {
+  color: var(--color-lamp-black);
   text-align: right;
   top: calc(0rem - var(--height-statistics));
 }
@@ -1992,6 +1996,10 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #ResultsTable > .body > table > thead > tr.statistics > th.controller > .inner > label > input {
   vertical-align: bottom;
   margin-right: 0.4rem;
+}
+#ResultsTable > .body > table > thead > tr.statistics.-onlyhitcount > th.controller > .inner > label.stretch {
+  opacity: 0.4;
+  pointer-events: none;
 }
 #ResultsTable > .body > table > thead > tr.statistics > td > .inner {
   background-color: white;

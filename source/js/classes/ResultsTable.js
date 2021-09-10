@@ -78,10 +78,19 @@ export default class ResultsTable {
     });
 
     // statistics
-    this.#STATS.querySelector(':scope > th.controller > .inner > label > input.onlyhitcount').addEventListener('change', e => {
+    const controller = this.#STATS.querySelector(':scope > th.controller > .inner');
+    controller.querySelector(':scope > label.onlyhitcount > input').addEventListener('change', e => {
       this.#STATS.classList.toggle('-onlyhitcount');
       const customEvent = new CustomEvent(event.changeToOnlyHitCountInStatisticsView, {
         detail: this.#STATS.classList.contains('-onlyhitcount')
+      });
+      DefaultEventEmitter.dispatchEvent(customEvent);
+    });
+    const controllerStretch = controller.querySelector(':scope > label.stretch > input');
+    controllerStretch.addEventListener('change', e => {
+      this.#STATS.classList.toggle('-stretch');
+      const customEvent = new CustomEvent(event.changeToStretchInStatisticsView, {
+        detail: this.#STATS.classList.contains('-stretch')
       });
       DefaultEventEmitter.dispatchEvent(customEvent);
     });
