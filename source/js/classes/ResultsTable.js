@@ -104,9 +104,6 @@ export default class ResultsTable {
     // make table header
     this.#THEAD.innerHTML = `
       <th rowspan="2">
-        <div class="inner">Report</div>
-      </th>
-      <th rowspan="2">
         <div class="inner">
           <div class="togo-key-view">${Records.getLabelFromTogoKey(
             tableData.condition.togoKey
@@ -149,7 +146,7 @@ export default class ResultsTable {
 
     // make stats
     this.#STATS.innerHTML =
-      `<td colspan="2"><div class="inner"><div></td>` +
+      `<td><div class="inner"><div></td>` +
       properties
         .map(() => `<td><div class="inner"><div></div></div></td>`)
         .join('');
@@ -185,15 +182,6 @@ export default class ResultsTable {
           return `<tr data-index="${
             detail.tableData.offset + index
           }" data-togo-id="${detail.rows[index].id}">
-            <th>
-              <div class="inner">
-                <a class="external-link-button-view" href="report.html?togoKey=${
-                  detail.tableData.togoKey
-                }&id=${detail.rows[index].id}&properties=${window.btoa(
-            RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))
-          )}" target="_blank">Report</a>
-              </div>
-            </th>
             <td>
               <div class="inner">
                 <ul>
@@ -281,17 +269,11 @@ export default class ResultsTable {
       const tr = this.#TBODY.querySelector(
         `:scope > tr[data-index="${actualIndex}"]`
       );
-      const reportLink = `
-      report.html?togoKey=${detail.tableData.togoKey}&id=${
-        detail.rows[index].id
-      }&properties=${window.btoa(
-        RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))
-      )}`;
 
       const uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(uniqueEntry => {
         uniqueEntry.addEventListener('click', () => {
-          createPopupEvent(uniqueEntry, reportLink, event.showPopup);
+          createPopupEvent(uniqueEntry, event.showPopup);
         });
         // remove highlight on mouseleave only when there is no popup
         const td = uniqueEntry.closest('td');

@@ -4896,7 +4896,7 @@
       }
     }).to('srgb');
   }
-  function createPopupEvent(uniqueEntry, reportLink, newEvent) {
+  function createPopupEvent(uniqueEntry, newEvent) {
     var _uniqueEntry$getAttri = uniqueEntry.getAttribute('data-order').split(','),
         _uniqueEntry$getAttri2 = _slicedToArray(_uniqueEntry$getAttri, 2),
         x = _uniqueEntry$getAttri2[0],
@@ -4915,8 +4915,7 @@
           dataX: x,
           dataY: y,
           dataSubOrder: uniqueEntry.getAttribute('data-sub-order'),
-          isPrimaryKey: uniqueEntry.classList.contains('primarykey'),
-          reportLink: reportLink
+          isPrimaryKey: uniqueEntry.classList.contains('primarykey')
         }
       }
     });
@@ -5921,7 +5920,7 @@
 
     DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
-    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">Report</div>\n      </th>\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getLabelFromTogoKey(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      "); // makte table sub header
+    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getLabelFromTogoKey(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      "); // makte table sub header
 
     _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    ".concat(tableData.condition.attributes.map(function (property) {
       return "\n    <th>\n      <div class=\"inner _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n      <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.property.label, "</span>\n      </div>\n    </th>");
@@ -5929,7 +5928,7 @@
       return "\n    <th>\n      <div class=\"inner _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n        <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.parentCategoryId ? Records$1.getValue(property.query.propertyId, property.parentCategoryId).label : property.property.label, "</span>\n      </div>\n    </th>");
     }).join('')); // make stats
 
-    _classPrivateFieldGet(this, _STATS).innerHTML = "<td colspan=\"2\"><div class=\"inner\"><div></td>" + properties.map(function () {
+    _classPrivateFieldGet(this, _STATS).innerHTML = "<td><div class=\"inner\"><div></td>" + properties.map(function () {
       return "<td><div class=\"inner\"><div></div></div></td>";
     }).join('');
 
@@ -5958,7 +5957,7 @@
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
       console.log(row);
-      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n            <th>\n              <div class=\"inner\">\n                <a class=\"external-link-button-view\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(window.btoa(RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))), "\" target=\"_blank\">Report</a>\n              </div>\n            </th>\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order= \"").concat([0, detail.tableData.offset + index], "\"\n                    data-sub-order= \"0\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "\n                  </div>\n                  <span>").concat(detail.rows[index].label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.map(function (column, columnIndex) {
+      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order= \"").concat([0, detail.tableData.offset + index], "\"\n                    data-sub-order= \"0\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "\n                  </div>\n                  <span>").concat(detail.rows[index].label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.map(function (column, columnIndex) {
         // console.log(column)
         if (column) {
           return "\n                  <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute, attributeIndex) {
@@ -5995,11 +5994,10 @@
 
       var tr = _classPrivateFieldGet(_this2, _TBODY).querySelector(":scope > tr[data-index=\"".concat(actualIndex, "\"]"));
 
-      var reportLink = "\n      report.html?togoKey=".concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(window.btoa(RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))));
       var uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(function (uniqueEntry) {
         uniqueEntry.addEventListener('click', function () {
-          createPopupEvent(uniqueEntry, reportLink, showPopup);
+          createPopupEvent(uniqueEntry, showPopup);
         }); // remove highlight on mouseleave only when there is no popup
 
         var td = uniqueEntry.closest('td');
@@ -6338,9 +6336,9 @@
     var subCategory = isPrimaryKey ? '' : Records$1.getValue(keys.mainCategoryId, keys.subCategoryId);
     var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(subject.subject, " / ").concat(subCategory.label, "</span>");
     var header = document.createElement('header');
-    header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div>\n        <a class='external-link-button-view' href='").concat(props.reportLink, "' target='_blank'>Report</a>\n    ");
+    header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div/>\n    ");
     header.classList.add('_subject-background-color');
-    header.lastChild.appendChild(_classPrivateFieldGet(this, _exit_button));
+    header.lastElementChild.appendChild(_classPrivateFieldGet(this, _exit_button));
     header.addEventListener('mousedown', function (e) {
       var customEvent = new CustomEvent(dragElement, {
         detail: {
@@ -6415,12 +6413,10 @@
     try {
       var targetEntry = _classPrivateMethodGet(this, _getTargetEntry, _getTargetEntry2).call(this, movement);
 
-      var targetTr = targetEntry.closest('tr');
-      var reportLink = targetTr.querySelector(':scope > th > .inner > .external-link-button-view').href;
       targetEntry.scrollIntoView({
         block: 'center'
       });
-      createPopupEvent(targetEntry, reportLink, movePopup);
+      createPopupEvent(targetEntry, movePopup);
     } catch (error) {
       console.log('Movement out of bounds');
     }

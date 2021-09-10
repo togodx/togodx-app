@@ -13,7 +13,7 @@ export function colorTintByHue(baseColor, hue) {
     .to('srgb');
 }
 
-export function createPopupEvent(uniqueEntry, reportLink, newEvent) {
+export function createPopupEvent(uniqueEntry, newEvent) {
   const [x, y] = uniqueEntry.getAttribute('data-order').split(',');
   const customEvent = new CustomEvent(newEvent, {
     detail: {
@@ -29,7 +29,6 @@ export function createPopupEvent(uniqueEntry, reportLink, newEvent) {
         dataY: y,
         dataSubOrder: uniqueEntry.getAttribute('data-sub-order'),
         isPrimaryKey: uniqueEntry.classList.contains('primarykey'),
-        reportLink: reportLink,
       },
     },
   });
