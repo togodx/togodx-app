@@ -22,7 +22,6 @@ export default class StatisticsView {
     // references
     const container = elm.querySelector(':scope > .statistics');
     this.#BARS = container.querySelector(':scope > .bars');
-    this.#RATES = container.querySelector(':scope > .rates');
 
     // event listener
     DefaultEventEmitter.addEventListener(event.addNextRows, e => this.#draw(e.detail));

@@ -99,13 +99,10 @@ export default class ResultDetailModal {
         } </strong>
         ${path}
       </div>
-      <div>
-        <a class='external-link-button-view' href='${
-          props.reportLink
-        }' target='_blank'>Report</a>
+      <div/>
     `;
     header.classList.add('_subject-background-color');
-    header.lastChild.appendChild(this.#exit_button);
+    header.lastElementChild.appendChild(this.#exit_button);
     header.addEventListener('mousedown', e => {
       const customEvent = new CustomEvent(event.dragElement, {
         detail: {
@@ -217,13 +214,9 @@ export default class ResultDetailModal {
   #setMovementArrow(movement) {
     try {
       const targetEntry = this.#getTargetEntry(movement);
-      const targetTr = targetEntry.closest('tr');
-      const reportLink = targetTr.querySelector(
-        ':scope > th > .inner > .external-link-button-view'
-      ).href;
 
       targetEntry.scrollIntoView({block: 'center'});
-      createPopupEvent(targetEntry, reportLink, event.movePopup);
+      createPopupEvent(targetEntry, event.movePopup);
     } catch (error) {
       console.log('Movement out of bounds');
     }

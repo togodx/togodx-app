@@ -1721,6 +1721,9 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #Conditions > header {
   margin-bottom: -0.6rem;
 }
+#Conditions[data-number-of-conditions="0"] > header {
+  visibility: hidden;
+}
 
 #Document {
   margin: 1rem auto;
@@ -1960,17 +1963,14 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #ResultsTable > .body > table > thead > tr.header.header > th, #ResultsTable > .body > table > thead > tr.subheader.header > th {
   top: 0;
 }
-#ResultsTable > .body > table > thead > tr.header.header > th:first-child > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:first-child > .inner {
-  background-color: var(--color-light-gray);
-}
-#ResultsTable > .body > table > thead > tr.header.header > th:nth-child(1) > .inner, #ResultsTable > .body > table > thead > tr.header.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(1) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(2) > .inner {
+#ResultsTable > .body > table > thead > tr.header.header > th:nth-child(1) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(1) > .inner {
   height: calc(var(--thheight) * 4);
   padding-top: calc(var(--thheight) * 0.5 + var(--padding-track-block-start));
 }
-#ResultsTable > .body > table > thead > tr.header.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.header.header > th:nth-child(3) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(3) > .inner {
+#ResultsTable > .body > table > thead > tr.header.header > th:nth-child(1) > .inner, #ResultsTable > .body > table > thead > tr.header.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(1) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(2) > .inner {
   background-color: var(--color-lamp-black);
 }
-#ResultsTable > .body > table > thead > tr.header.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.header.header > th:nth-child(3) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(3) > .inner > .togo-key-view {
+#ResultsTable > .body > table > thead > tr.header.header > th:nth-child(1) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.header.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(1) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(2) > .inner > .togo-key-view {
   background-color: var(--color-dark-gray);
 }
 #ResultsTable > .body > table > thead > tr.header.subheader > th, #ResultsTable > .body > table > thead > tr.subheader.subheader > th {
