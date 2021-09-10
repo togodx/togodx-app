@@ -6017,8 +6017,6 @@
       _iterator2.f();
     }
 
-    console.log(_classPrivateFieldGet(this, _statisticsViews));
-
     var _iterator3 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _statisticsViews)),
         _step3;
 
@@ -6060,8 +6058,7 @@
   function _addTableRows2(detail) {
     var _this2 = this;
 
-    console.log(detail);
-
+    // console.log(detail);
     _classPrivateFieldSet(this, _tableData$1, detail.tableData); // normalize
 
 
