@@ -13,41 +13,42 @@
     height: var(--height-statistics)
     margin-bottom: var(--height-tick)
     white-space: nowrap
-    > *
+    > .bars
+      height: var(--height-bar)
       > .bar
         margin: 0 .2rem
         display: inline-block
         vertical-align: bottom
         position: relative
         width: 1.2rem
+        height: 100%
+        > .wholebar, > .hitbar
+          position: absolute
+          bottom: 0
+          width: 100%
+        > .wholebar
+          background-color: var(--color-light-gray)
+        > .hitbar
+          > .value
+            color: var(--color-lamp-black)
+            position: absolute
+            top: 0
+            left: 0
+            font-size: 1rem
+            writing-mode: vertical-rl
+            height: var(--height-statistics)
+            width: 1.2rem
+            line-height: 1.2rem
+            padding: 2px 0
+            pointer-events: none
+            text-align: left
+            &.-below
+              text-align: right
+              top: calc(0rem - var(--height-statistics))
         > .label
           position: absolute
           font-size: 1rem
           bottom: 0
           left: .9rem
           transform-origin: 0% 0%
-          transform: rotate(30deg)
-        > .value
-          color: white
-          position: absolute
-          top: 0
-          left: 0
-          font-size: 1rem
-          writing-mode: vertical-rl
-          height: var(--height-statistics)
-          width: 1.2rem
-          line-height: 1.2rem
-          padding: 2px 0
-          pointer-events: none
-          text-align: left
-          &.-below
-            color: var(--color-gray)
-            text-align: right
-            top: calc(0rem - var(--height-statistics))
-    > .counts
-      height: var(--height-bar)
-    // > .rates
-    //   margin-top: var(--height-gap)
-    //   height: var(--height-bar)
-    > .ticks
-      height: 0
+          transform: translate(-.2rem, 1.3rem) rotate(30deg)

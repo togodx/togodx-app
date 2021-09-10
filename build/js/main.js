@@ -5604,7 +5604,7 @@
 
   var _propertyId = new WeakMap();
 
-  var _COUNTS = new WeakMap();
+  var _BARS = new WeakMap();
 
   var _RATES = new WeakMap();
 
@@ -5627,7 +5627,7 @@
       value: void 0
     });
 
-    _COUNTS.set(this, {
+    _BARS.set(this, {
       writable: true,
       value: void 0
     });
@@ -5647,15 +5647,13 @@
     elm.classList.add('statistics-view');
     elm.dataset.subjectId = subject.subjectId; // make HTML
 
-    elm.innerHTML = "<div class=\"statistics\">\n      <div class=\"counts\"></div>\n      <div class=\"rates\"></div>\n      <div class=\"ticks\"></div>\n    </div>"; // references
+    elm.innerHTML = "<div class=\"statistics\">\n      <div class=\"bars\"></div>\n      <div class=\"rates\"></div>\n    </div>"; // references
 
     var container = elm.querySelector(':scope > .statistics');
 
-    _classPrivateFieldSet(this, _COUNTS, container.querySelector(':scope > .counts'));
+    _classPrivateFieldSet(this, _BARS, container.querySelector(':scope > .bars'));
 
-    _classPrivateFieldSet(this, _RATES, container.querySelector(':scope > .rates'));
-
-    _classPrivateFieldSet(this, _TICKS, container.querySelector(':scope > .ticks')); // event listener
+    _classPrivateFieldSet(this, _RATES, container.querySelector(':scope > .rates')); // event listener
 
 
     DefaultEventEmitter$1.addEventListener(addNextRows, function (e) {
@@ -5692,11 +5690,9 @@
       var categoryId = _ref2.categoryId,
           label = _ref2.label,
           count = _ref2.count;
-      console.log(categoryId, label);
       var filtered = attributes.filter(function (attribute) {
         return attribute.categoryId === categoryId;
       });
-      console.log(filtered);
       if (filtered.length === 0) return;
       hitVlues.push({
         categoryId: categoryId,
@@ -5718,15 +5714,14 @@
     // const countMax = Math.max(...counts);
     // draw
 
-    _classPrivateFieldGet(this, _COUNTS).innerHTML = hitVlues.map(function (_ref3) {
+    _classPrivateFieldGet(this, _BARS).innerHTML = hitVlues.map(function (_ref3) {
       _ref3.categoryId;
-          _ref3.label;
-          var count = _ref3.count;
-          _ref3.hitCount;
-      // const position = (count / countMax < .5) ? ' -below' : '';
-      var position = '';
-      return "\n      <div class=\"bar _subject-background-color\" style=\"height: ".concat(count / count__Max * 100, "%;\">\n        <div class=\"value").concat(position, "\">").concat(count.toLocaleString(), "</div>\n      </div>");
-    }).join(''); // this.#COUNTS.innerHTML = counts.map(count => {
+          var label = _ref3.label,
+          count = _ref3.count,
+          hitCount = _ref3.hitCount;
+      var position = hitCount / count__Max < .5 ? ' -below' : '';
+      return "\n      <div class=\"bar\">\n        <div class=\"wholebar\" style=\"height: ".concat(count / count__Max * 100, "%;\"></div>\n        <div class=\"hitbar _subject-background-color\" style=\"height: ").concat(hitCount / count__Max * 100, "%;\">\n          <div class=\"value").concat(position, "\">").concat(hitCount.toLocaleString(), "</div>\n        </div>\n        <div class=\"label\">").concat(label, "</div>\n      </div>");
+    }).join(''); // this.#BARS.innerHTML = counts.map(count => {
     //   const position = (count / countMax < .5) ? ' -below' : '';
     //   return `
     //   <div class="bar _subject-background-color" style="height: ${count / countMax * 100}%;">
@@ -5746,18 +5741,6 @@
     //   return `
     //   <div class="bar _subject-background-color" style="height: ${rate / rateMax * 100}%;">
     //     <div class="value${position}">${rate.toLocaleString()}</div>
-    //   </div>`;
-    // }).join('');
-    // tick
-    // const labels = categoryIds.map(categoryId => attributes.find(attribute => attribute.categoryId === categoryId)).map(attribute => attribute.label);
-
-    _classPrivateFieldGet(this, _TICKS).innerHTML = hitVlues.map(function (_ref4) {
-      var label = _ref4.label;
-      return "\n      <div class=\"bar\">\n        <div class=\"label\">".concat(label, "</div>\n      </div>");
-    }).join(''); // this.#TICKS.innerHTML = labels.map(label => {
-    //   return `
-    //   <div class="bar">
-    //     <div class="label">${label}</div>
     //   </div>`;
     // }).join('');
   }

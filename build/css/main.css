@@ -1090,25 +1090,27 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   margin-bottom: var(--height-tick);
   white-space: nowrap;
 }
-.statistics-view > .statistics > * > .bar {
+.statistics-view > .statistics > .bars {
+  height: var(--height-bar);
+}
+.statistics-view > .statistics > .bars > .bar {
   margin: 0 0.2rem;
   display: inline-block;
   vertical-align: bottom;
   position: relative;
   width: 1.2rem;
+  height: 100%;
 }
-.statistics-view > .statistics > * > .bar > .label {
+.statistics-view > .statistics > .bars > .bar > .wholebar, .statistics-view > .statistics > .bars > .bar > .hitbar {
   position: absolute;
-  font-size: 1rem;
   bottom: 0;
-  left: 0.9rem;
-  -webkit-transform-origin: 0% 0%;
-          transform-origin: 0% 0%;
-  -webkit-transform: rotate(30deg);
-          transform: rotate(30deg);
+  width: 100%;
 }
-.statistics-view > .statistics > * > .bar > .value {
-  color: white;
+.statistics-view > .statistics > .bars > .bar > .wholebar {
+  background-color: var(--color-light-gray);
+}
+.statistics-view > .statistics > .bars > .bar > .hitbar > .value {
+  color: var(--color-lamp-black);
   position: absolute;
   top: 0;
   left: 0;
@@ -1123,16 +1125,19 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   pointer-events: none;
   text-align: left;
 }
-.statistics-view > .statistics > * > .bar > .value.-below {
-  color: var(--color-gray);
+.statistics-view > .statistics > .bars > .bar > .hitbar > .value.-below {
   text-align: right;
   top: calc(0rem - var(--height-statistics));
 }
-.statistics-view > .statistics > .counts {
-  height: var(--height-bar);
-}
-.statistics-view > .statistics > .ticks {
-  height: 0;
+.statistics-view > .statistics > .bars > .bar > .label {
+  position: absolute;
+  font-size: 1rem;
+  bottom: 0;
+  left: 0.9rem;
+  -webkit-transform-origin: 0% 0%;
+          transform-origin: 0% 0%;
+  -webkit-transform: translate(-0.2rem, 1.3rem) rotate(30deg);
+          transform: translate(-0.2rem, 1.3rem) rotate(30deg);
 }
 
 .table-data-controller-view {
