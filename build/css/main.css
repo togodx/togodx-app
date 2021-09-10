@@ -1981,6 +1981,14 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #ResultsTable > .body > table > thead > tr.header.subheader > th > .inner._subject-color, #ResultsTable > .body > table > thead > tr.subheader.subheader > th > .inner._subject-color {
   background-color: white;
 }
+#ResultsTable > .body > table > thead > tr.statistics > th.controller > .inner > label {
+  display: block;
+  white-space: nowrap;
+}
+#ResultsTable > .body > table > thead > tr.statistics > th.controller > .inner > label > input {
+  vertical-align: bottom;
+  margin-right: 0.4rem;
+}
 #ResultsTable > .body > table > thead > tr.statistics > td > .inner {
   background-color: white;
 }

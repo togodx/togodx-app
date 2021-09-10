@@ -145,17 +145,15 @@ export default class ResultsTable {
       .join('')}`;
 
     // make stats
-    this.#STATS.innerHTML =
-      `<td><div class="inner"><div></td>` +
-      properties
-        .map(() => `<td><div class="inner"><div></div></div></td>`)
-        .join('');
-    this.#STATS
-      .querySelectorAll(':scope > td > .inner > div')
-      .forEach((elm, index) => {
-        if (index === 0) return;
-        new StatisticsView(elm, properties[index - 1]);
-      });
+    for (const td of this.#STATS.querySelectorAll(':scope > td')) {
+      td.remove();
+    }
+    for (const property of properties) {
+      const td = document.createElement('td');
+      td.innerHTML = '<div class="inner"><div></div></div>';
+      this.#STATS.append(td);
+      new StatisticsView(td.querySelector(':scope > .inner > div'), property);
+    }
   }
 
   #addTableRows(detail) {

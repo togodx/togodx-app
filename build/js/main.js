@@ -5756,7 +5756,7 @@
 
   var _colHighlight = new WeakSet();
 
-  var ResultsTable = function ResultsTable(_elm) {
+  var ResultsTable = function ResultsTable(elm) {
     var _this = this;
 
     _classCallCheck(this, ResultsTable);
@@ -5822,9 +5822,9 @@
     });
 
     // references
-    _classPrivateFieldSet(this, _ROOT$6, _elm);
+    _classPrivateFieldSet(this, _ROOT$6, elm);
 
-    var TABLE = _elm.querySelector(':scope > .body > table');
+    var TABLE = elm.querySelector(':scope > .body > table');
 
     _classPrivateFieldSet(this, _THEAD, TABLE.querySelector(':scope > thead > tr.header'));
 
@@ -5834,7 +5834,7 @@
 
     _classPrivateFieldSet(this, _TBODY, TABLE.querySelector(':scope > tbody'));
 
-    _classPrivateFieldSet(this, _TABLE_END, _elm.querySelector(':scope > .body > .tableend'));
+    _classPrivateFieldSet(this, _TABLE_END, elm.querySelector(':scope > .body > .tableend'));
 
     _classPrivateFieldSet(this, _LOADING_VIEW, _classPrivateFieldGet(this, _TABLE_END).querySelector(':scope > .loading-view')); // get next data automatically
 
@@ -5929,14 +5929,40 @@
       return "\n    <th>\n      <div class=\"inner _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n        <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.parentCategoryId ? Records$1.getValue(property.query.propertyId, property.parentCategoryId).label : property.property.label, "</span>\n      </div>\n    </th>");
     }).join('')); // make stats
 
-    _classPrivateFieldGet(this, _STATS).innerHTML = "<td><div class=\"inner\"><div></td>" + properties.map(function () {
-      return "<td><div class=\"inner\"><div></div></div></td>";
-    }).join('');
+    var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _STATS).querySelectorAll(':scope > td')),
+        _step2;
 
-    _classPrivateFieldGet(this, _STATS).querySelectorAll(':scope > td > .inner > div').forEach(function (elm, index) {
-      if (index === 0) return;
-      new StatisticsView(elm, properties[index - 1]);
-    });
+    try {
+      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+        var td = _step2.value;
+        td.remove();
+      }
+    } catch (err) {
+      _iterator2.e(err);
+    } finally {
+      _iterator2.f();
+    }
+
+    var _iterator3 = _createForOfIteratorHelper(properties),
+        _step3;
+
+    try {
+      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+        var property = _step3.value;
+
+        var _td = document.createElement('td');
+
+        _td.innerHTML = '<div class="inner"><div></div></div>';
+
+        _classPrivateFieldGet(this, _STATS).append(_td);
+
+        new StatisticsView(_td.querySelector(':scope > .inner > div'), property);
+      }
+    } catch (err) {
+      _iterator3.e(err);
+    } finally {
+      _iterator3.f();
+    }
   }
 
   function _addTableRows2(detail) {
