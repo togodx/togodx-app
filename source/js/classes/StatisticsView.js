@@ -33,7 +33,7 @@ export default class StatisticsView {
     DefaultEventEmitter.addEventListener(event.changeToStretchInStatisticsView, this.#draw.bind(this));
   }
 
-  destory() {
+  destroy() {
     DefaultEventEmitter.removeEventListener(event.addNextRows, this.#draw.bind(this));
   }
 

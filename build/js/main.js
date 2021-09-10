@@ -5665,8 +5665,8 @@
     }
 
     _createClass(StatisticsView, [{
-      key: "destory",
-      value: function destory() {
+      key: "destroy",
+      value: function destroy() {
         DefaultEventEmitter$1.removeEventListener(addNextRows, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
       }
       /**
@@ -6016,6 +6016,8 @@
     } finally {
       _iterator2.f();
     }
+
+    console.log(_classPrivateFieldGet(this, _statisticsViews));
 
     var _iterator3 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _statisticsViews)),
         _step3;

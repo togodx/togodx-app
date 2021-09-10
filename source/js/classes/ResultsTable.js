@@ -170,6 +170,7 @@ export default class ResultsTable {
     for (const td of this.#STATS.querySelectorAll(':scope > td')) {
       td.remove();
     }
+    console.log(this.#statisticsViews)
     for (const statisticsView of this.#statisticsViews) {
       statisticsView.destroy();
     }
