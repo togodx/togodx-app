@@ -35,6 +35,8 @@ export default class StatisticsView {
 
   destroy() {
     DefaultEventEmitter.removeEventListener(event.addNextRows, this.#draw.bind(this));
+    DefaultEventEmitter.removeEventListener(event.changeToOnlyHitCountInStatisticsView, this.#draw.bind(this));
+    DefaultEventEmitter.removeEventListener(event.changeToStretchInStatisticsView, this.#draw.bind(this));
   }
 
   /**
