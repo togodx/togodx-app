@@ -90,7 +90,7 @@ export default class ResultDetailModal {
       : Records.getValue(keys.mainCategoryId, keys.subCategoryId);
     const path = isPrimaryKey
       ? keys.dataKey
-      : `<span class='path'>${subject.subject} / ${subCategory.label}</span>`;
+      : `<span class='path'>${subject.subject} / ${subCategory.label ?? ''}</span>`;
     const header = document.createElement('header');
     header.innerHTML = `
       <div class='label'>
@@ -124,17 +124,15 @@ export default class ResultDetailModal {
     ['Up', 'Right', 'Down', 'Left'].forEach(direction => {
       container.appendChild(this.#arrow(direction, props));
     });
-    container.appendChild(
-      this.#stanzas(keys.subjectId, keys.uniqueEntryId, keys.dataKey)
-    );
+    container.appendChild(this.#stanzas(keys.uniqueEntryId, keys.dataKey));
 
     return container;
   }
 
-  #stanzas(subjectId, uniqueEntryId, dataKey) {
+  #stanzas(uniqueEntryId, dataKey) {
     const stanzas = document.createElement('div');
     stanzas.className = 'stanzas';
-    stanzas.innerHTML += StanzaManager.draw(subjectId, uniqueEntryId, dataKey);
+    stanzas.innerHTML += StanzaManager.draw(dataKey, uniqueEntryId);
     stanzas.querySelectorAll('script').forEach(scriptElement => {
       const _script = document.createElement('script');
       _script.textContent = scriptElement.textContent;

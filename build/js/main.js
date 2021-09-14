@@ -6208,21 +6208,20 @@
 
           _classPrivateFieldSet(_this, _isReady, true);
 
+          console.log('templates');
           console.log(_classPrivateFieldGet(_this, _templates));
         });
       }
-      /**
-       * 
-       * @param {String} subjectId  e.g. gene, protein (category name)
+      /**˝
+       * @param {String} key  key of Database used to get template
        * @param {String} id  ID of dataset
-       * @param {String} key  e.g. hgnc, uniplot (dataset name)
        * @returns {String} HTML
        */
 
     }, {
       key: "draw",
-      value: function draw(subjectId, id, key) {
-        return "<div class=\"stanza\">".concat(_classPrivateFieldGet(this, _templates)[subjectId].replace(/{{id}}/g, id).replace(/{{type}}/g, key), "</div>");
+      value: function draw(key, id) {
+        return "<div class=\"stanza\">".concat(_classPrivateFieldGet(this, _templates)[key].replace(/{{id}}/g, id), "</div>");
       }
     }, {
       key: "isReady",
@@ -6448,11 +6447,13 @@
   }
 
   function _header2(keys, props) {
+    var _subCategory$label;
+
     var subject = Records$1.getSubject(keys.subjectId);
     var isPrimaryKey = props.isPrimaryKey;
     var mainCategory = isPrimaryKey ? '' : Records$1.getProperty(keys.mainCategoryId);
     var subCategory = isPrimaryKey ? '' : Records$1.getValue(keys.mainCategoryId, keys.subCategoryId);
-    var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(subject.subject, " / ").concat(subCategory.label, "</span>");
+    var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(subject.subject, " / ").concat((_subCategory$label = subCategory.label) !== null && _subCategory$label !== void 0 ? _subCategory$label : '', "</span>");
     var header = document.createElement('header');
     header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div/>\n    ");
     header.classList.add('_subject-background-color');
@@ -6479,14 +6480,14 @@
     ['Up', 'Right', 'Down', 'Left'].forEach(function (direction) {
       container.appendChild(_classPrivateMethodGet(_this2, _arrow, _arrow2).call(_this2, direction, props));
     });
-    container.appendChild(_classPrivateMethodGet(this, _stanzas, _stanzas2).call(this, keys.subjectId, keys.uniqueEntryId, keys.dataKey));
+    container.appendChild(_classPrivateMethodGet(this, _stanzas, _stanzas2).call(this, keys.uniqueEntryId, keys.dataKey));
     return container;
   }
 
-  function _stanzas2(subjectId, uniqueEntryId, dataKey) {
+  function _stanzas2(uniqueEntryId, dataKey) {
     var stanzas = document.createElement('div');
     stanzas.className = 'stanzas';
-    stanzas.innerHTML += StanzaManager$1.draw(subjectId, uniqueEntryId, dataKey);
+    stanzas.innerHTML += StanzaManager$1.draw(dataKey, uniqueEntryId);
     stanzas.querySelectorAll('script').forEach(function (scriptElement) {
       var _script = document.createElement('script');
 
