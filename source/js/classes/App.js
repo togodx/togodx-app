@@ -67,15 +67,17 @@ class App {
     Promise.all([
       fetch(api.PROPERTIES),
       fetch(api.TEMPLATES),
-      fetch(api.AGGREGATE)
+      fetch(api.AGGREGATE),
+      fetch(api.ATTRIBUTES)
     ])
       .then(responces => Promise.all(responces.map(responce => responce.json())))
-      .then(([subjects, templates, aggregate]) => {
+      .then(([subjects, templates, aggregate, attributes]) => {
+        console.log(attributes)
         Records.setSubjects(subjects);
         ConditionBuilder.init();
 
         // define primary keys
-        const customEvent = new CustomEvent(event.defineTogoKey, {detail: {subjects}});
+        const customEvent = new CustomEvent(event.defineTogoKey, {detail: {subjects, idTypes: attributes.idTypes}});
         DefaultEventEmitter.dispatchEvent(customEvent);
 
         // initialize stanza manager

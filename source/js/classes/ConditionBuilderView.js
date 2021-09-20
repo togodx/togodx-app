@@ -77,20 +77,24 @@ export default class ConditionBuilderView {
 
   // private methods
 
-  #defineTogoKeys({detail: {subjects}}) {
+  #defineTogoKeys({detail: {subjects, idTypes}}) {
+    console.log(idTypes)
     this.#isDefined = true;
-    this.#placeHolderExamples = Object.fromEntries(subjects.filter(subject => subject.togoKey).map(subject => [subject.togoKey, subject.togoKeyExamples]));
+    // this.#placeHolderExamples = Object.fromEntries(subjects.filter(subject => subject.togoKey).map(subject => [subject.togoKey, subject.togoKeyExamples]));
+    this.#placeHolderExamples = Object.fromEntries(Object.keys(idTypes).map(key => [key, []])); // TODO: サンプルがない
     // make options
-    this.#TOGO_KEYS.innerHTML = subjects.map(subject => {
-      let option = '';
-      if (subject.togoKey) option = `<option value="${subject.togoKey}" data-subject-id="${subject.subjectId}">${subject.keyLabel}</option>`;
-      return option;
-    }).join('');
+    this.#TOGO_KEYS.innerHTML = Object.keys(idTypes).map(key => `<option value="${key}" data-subject-id="hoge">${idTypes[key].label}</option>`).join('');
+    // this.#TOGO_KEYS.innerHTML = subjects.map(subject => {
+    //   let option = '';
+    //   if (subject.togoKey) option = `<option value="${subject.togoKey}" data-subject-id="${subject.subjectId}">${subject.keyLabel}</option>`;
+    //   return option;
+    // }).join('');
     this.#TOGO_KEYS.disabled = false;
     this.#TOGO_KEYS.value = ConditionBuilder.currentTogoKey;
     // attach event
     this.#TOGO_KEYS.addEventListener('change', e => {
-      const subject = subjects.find(subject => subject.togoKey === e.target.value);
+      // const subject = subjects.find(subject => subject.togoKey === e.target.value);
+      const subject = {subjectId: 'hoge'}; // TODO: subjectId は不要？
       ConditionBuilder.setSubject(e.target.value, subject.subjectId);
       this.#USER_IDS.placeholder = `e.g. ${this.#placeHolderExamples[e.target.value].join(', ')}`;
     });
