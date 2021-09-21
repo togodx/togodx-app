@@ -4036,20 +4036,20 @@
 
     var _ref$detail = _ref.detail;
         _ref$detail.subjects;
-        var idTypes = _ref$detail.idTypes;
-    console.log(idTypes);
+        var datasets = _ref$detail.datasets;
+    console.log(datasets);
 
     _classPrivateFieldSet(this, _isDefined, true); // this.#placeHolderExamples = Object.fromEntries(subjects.filter(subject => subject.togoKey).map(subject => [subject.togoKey, subject.togoKeyExamples]));
 
 
-    _classPrivateFieldSet(this, _placeHolderExamples, Object.fromEntries(Object.keys(idTypes).map(function (key) {
-      return [key, []];
+    _classPrivateFieldSet(this, _placeHolderExamples, Object.fromEntries(Object.keys(datasets).map(function (key) {
+      return [key, datasets[key].examples];
     }))); // TODO: サンプルがない
     // make options
 
 
-    _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = Object.keys(idTypes).map(function (key) {
-      return "<option value=\"".concat(key, "\" data-subject-id=\"hoge\">").concat(idTypes[key].label, "</option>");
+    _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = Object.keys(datasets).map(function (key) {
+      return "<option value=\"".concat(key, "\" data-subject-id=\"hoge\">").concat(datasets[key].label, "</option>");
     }).join(''); // this.#TOGO_KEYS.innerHTML = subjects.map(subject => {
     //   let option = '';
     //   if (subject.togoKey) option = `<option value="${subject.togoKey}" data-subject-id="${subject.subjectId}">${subject.keyLabel}</option>`;
@@ -8449,7 +8449,7 @@
           var customEvent = new CustomEvent(defineTogoKey, {
             detail: {
               subjects: subjects,
-              idTypes: attributes.idTypes
+              datasets: attributes.datasets
             }
           });
           DefaultEventEmitter$1.dispatchEvent(customEvent); // initialize stanza manager

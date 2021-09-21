@@ -77,13 +77,13 @@ export default class ConditionBuilderView {
 
   // private methods
 
-  #defineTogoKeys({detail: {subjects, idTypes}}) {
-    console.log(idTypes)
+  #defineTogoKeys({detail: {subjects, datasets}}) {
+    console.log(datasets)
     this.#isDefined = true;
     // this.#placeHolderExamples = Object.fromEntries(subjects.filter(subject => subject.togoKey).map(subject => [subject.togoKey, subject.togoKeyExamples]));
-    this.#placeHolderExamples = Object.fromEntries(Object.keys(idTypes).map(key => [key, []])); // TODO: サンプルがない
+    this.#placeHolderExamples = Object.fromEntries(Object.keys(datasets).map(key => [key, datasets[key].examples])); // TODO: サンプルがない
     // make options
-    this.#TOGO_KEYS.innerHTML = Object.keys(idTypes).map(key => `<option value="${key}" data-subject-id="hoge">${idTypes[key].label}</option>`).join('');
+    this.#TOGO_KEYS.innerHTML = Object.keys(datasets).map(key => `<option value="${key}" data-subject-id="hoge">${datasets[key].label}</option>`).join('');
     // this.#TOGO_KEYS.innerHTML = subjects.map(subject => {
     //   let option = '';
     //   if (subject.togoKey) option = `<option value="${subject.togoKey}" data-subject-id="${subject.subjectId}">${subject.keyLabel}</option>`;

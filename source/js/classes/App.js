@@ -77,7 +77,7 @@ class App {
         ConditionBuilder.init();
 
         // define primary keys
-        const customEvent = new CustomEvent(event.defineTogoKey, {detail: {subjects, idTypes: attributes.idTypes}});
+        const customEvent = new CustomEvent(event.defineTogoKey, {detail: {subjects, datasets: attributes.datasets}});
         DefaultEventEmitter.dispatchEvent(customEvent);
 
         // initialize stanza manager
