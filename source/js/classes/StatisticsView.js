@@ -7,6 +7,7 @@ export default class StatisticsView {
   #propertyId;
   #tableData;
   #BARS;
+  #ROOT;
   #ROOT_NODE;
 
   constructor(statisticsRootNode, elm, tableData, {subject, property}) {
@@ -14,14 +15,18 @@ export default class StatisticsView {
     this.#propertyId = property.propertyId;
     this.#tableData = tableData;
     this.#ROOT_NODE = statisticsRootNode;
+    this.#ROOT = elm;
 
     elm.classList.add('statistics-view');
     elm.dataset.subjectId = subject.subjectId;
 
     // make HTML
-    elm.innerHTML = `<div class="statistics">
+    elm.innerHTML = `
+    <div class="statistics">
       <div class="bars"></div>
-    </div>`;
+    </div>
+    <div class="loading-view -shown"></div>
+    `;
 
     // references
     const container = elm.querySelector(':scope > .statistics');
@@ -44,7 +49,7 @@ export default class StatisticsView {
    * @param {Array} detail.rows
    * @param {Boolean} detail.done
    */
-  #draw() {
+  #draw(e) {
 
     const attributes = (
       _.uniqBy(
@@ -110,6 +115,11 @@ export default class StatisticsView {
       }
       return bar;
     }, undefined);
+
+    if (e?.detail.done) {
+      this.#ROOT.classList.add('-completed');
+      this.#ROOT.querySelector(':scope > .loading-view').classList.remove('-shown');
+    }
 
   }
 

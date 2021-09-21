@@ -3669,7 +3669,7 @@
 
   var _condition$1 = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$b = /*#__PURE__*/new WeakMap();
+  var _ROOT$c = /*#__PURE__*/new WeakMap();
 
   var _LABELS = /*#__PURE__*/new WeakMap();
 
@@ -3699,7 +3699,7 @@
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _ROOT$b, {
+      _classPrivateFieldInitSpec(this, _ROOT$c, {
         writable: true,
         value: void 0
       });
@@ -3715,14 +3715,14 @@
       var property = Records$1.getProperty(condition.propertyId); // this.#isRange = isRange;
       // attributes
 
-      _classPrivateFieldSet(this, _ROOT$b, document.createElement('div'));
+      _classPrivateFieldSet(this, _ROOT$c, document.createElement('div'));
 
-      _classPrivateFieldGet(this, _ROOT$b).classList.add('stacking-condition-view');
+      _classPrivateFieldGet(this, _ROOT$c).classList.add('stacking-condition-view');
 
-      _classPrivateFieldGet(this, _ROOT$b).dataset.subjectId = subject.subjectId;
-      _classPrivateFieldGet(this, _ROOT$b).dataset.propertyId = condition.propertyId;
-      if (condition.value) _classPrivateFieldGet(this, _ROOT$b).dataset.categoryId = condition.value.categoryId;
-      if (condition.parentCategoryId) _classPrivateFieldGet(this, _ROOT$b).dataset.parentCategoryId = condition.parentCategoryId; // make view
+      _classPrivateFieldGet(this, _ROOT$c).dataset.subjectId = subject.subjectId;
+      _classPrivateFieldGet(this, _ROOT$c).dataset.propertyId = condition.propertyId;
+      if (condition.value) _classPrivateFieldGet(this, _ROOT$c).dataset.categoryId = condition.value.categoryId;
+      if (condition.parentCategoryId) _classPrivateFieldGet(this, _ROOT$c).dataset.parentCategoryId = condition.parentCategoryId; // make view
 
       var _label,
           _ancestorLabels = [subject.subject];
@@ -3797,7 +3797,7 @@
       key: "removeProperty",
       value: function removeProperty(propertyId, parentCategoryId) {
         var isMatch = propertyId === _classPrivateFieldGet(this, _condition$1).propertyId && (parentCategoryId ? parentCategoryId === _classPrivateFieldGet(this, _condition$1).parentCategoryId : true);
-        if (isMatch) _classPrivateFieldGet(this, _ROOT$b).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$b));
+        if (isMatch) _classPrivateFieldGet(this, _ROOT$c).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$c));
         return isMatch;
       }
     }, {
@@ -3807,7 +3807,7 @@
           _classPrivateFieldGet(this, _LABELS).removeChild(_classPrivateFieldGet(this, _LABELS).querySelector(":scope > [data-category-id=\"".concat(categoryId, "\"")));
 
           if (_classPrivateFieldGet(this, _LABELS).childNodes.length === 0) {
-            _classPrivateFieldGet(this, _ROOT$b).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$b));
+            _classPrivateFieldGet(this, _ROOT$c).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$c));
 
             return true;
           } else {
@@ -3831,19 +3831,19 @@
     var _this3 = this;
 
     console.log(container, type, ancestorLabels, label);
-    _classPrivateFieldGet(this, _ROOT$b).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      ".concat(ancestorLabels.map(function (ancestor) {
+    _classPrivateFieldGet(this, _ROOT$c).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      ".concat(ancestorLabels.map(function (ancestor) {
       return "<li>".concat(ancestor, "</li>");
     }).join(''), "\n    </ul>\n    ").concat(label);
-    container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$b)); // reference
+    container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$c)); // reference
 
     if (type === 'value') {
-      _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .labels'));
+      _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$c).querySelector(':scope > .labels'));
 
       this.addValue(_classPrivateFieldGet(this, _condition$1).categoryId);
     } // event
 
 
-    _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .close-button-view').addEventListener('click', function () {
+    _classPrivateFieldGet(this, _ROOT$c).querySelector(':scope > .close-button-view').addEventListener('click', function () {
       switch (type) {
         case 'property':
           // notify
@@ -4161,7 +4161,7 @@
 
   var _userValues$1 = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$a = /*#__PURE__*/new WeakMap();
+  var _ROOT$b = /*#__PURE__*/new WeakMap();
 
   var _CONTAINER$1 = /*#__PURE__*/new WeakMap();
 
@@ -4238,7 +4238,7 @@
       value: void 0
     });
 
-    _classPrivateFieldInitSpec(this, _ROOT$a, {
+    _classPrivateFieldInitSpec(this, _ROOT$b, {
       writable: true,
       value: void 0
     });
@@ -4268,11 +4268,11 @@
 
     elm.innerHTML = "\n    <div class=\"column-selector-view\">\n      <div class=\"columns\">\n        <div class=\"inner\"></div>\n      </div>\n      <div class=\"loading-view\"></div>\n    </div>";
 
-    _classPrivateFieldSet(this, _ROOT$a, elm.querySelector(':scope > .column-selector-view'));
+    _classPrivateFieldSet(this, _ROOT$b, elm.querySelector(':scope > .column-selector-view'));
 
-    _classPrivateFieldSet(this, _CONTAINER$1, _classPrivateFieldGet(this, _ROOT$a).querySelector(':scope > .columns > .inner'));
+    _classPrivateFieldSet(this, _CONTAINER$1, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .columns > .inner'));
 
-    _classPrivateFieldSet(this, _LOADING_VIEW$2, _classPrivateFieldGet(this, _ROOT$a).querySelector(':scope > .loading-view')); // even listener
+    _classPrivateFieldSet(this, _LOADING_VIEW$2, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .loading-view')); // even listener
 
 
     DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
@@ -4971,7 +4971,7 @@
 
   var _OVERVIEW_CONTAINER$1 = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$9 = /*#__PURE__*/new WeakMap();
+  var _ROOT$a = /*#__PURE__*/new WeakMap();
 
   var _GRIDS = /*#__PURE__*/new WeakMap();
 
@@ -5005,7 +5005,7 @@
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _ROOT$9, {
+      _classPrivateFieldInitSpec(this, _ROOT$a, {
         writable: true,
         value: void 0
       });
@@ -5027,11 +5027,11 @@
 
       elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\" data-subject-id=\"".concat(subject.subjectId, "\">\n      <div class=\"selector\">\n        <div class=\"inner\">\n          <div class=\"overview\"></div>\n          <div class=\"controller\"></div>\n          <div class=\"selectingarea\">\n            <div class=\"handle\" data-direction=\"start\"></div>\n            <div class=\"handle\" data-direction=\"end\"></div>\n          </div>\n        </div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ").concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>");
 
-      _classPrivateFieldSet(this, _ROOT$9, elm.querySelector(':scope > .histogram-range-selector-view'));
+      _classPrivateFieldSet(this, _ROOT$a, elm.querySelector(':scope > .histogram-range-selector-view'));
 
-      var histogram = _classPrivateFieldGet(this, _ROOT$9).querySelector(':scope > .histogram');
+      var histogram = _classPrivateFieldGet(this, _ROOT$a).querySelector(':scope > .histogram');
 
-      var selector = _classPrivateFieldGet(this, _ROOT$9).querySelector(':scope > .selector > .inner');
+      var selector = _classPrivateFieldGet(this, _ROOT$a).querySelector(':scope > .selector > .inner');
 
       var overview = selector.querySelector(':scope > .overview'); // make graph
 
@@ -5062,7 +5062,7 @@
         return _this.update();
       }); // this.#setupRangeSelector();
 
-      _classPrivateFieldSet(this, _selectorController, new HistogramRangeSelectorController(this, _classPrivateFieldGet(this, _ROOT$9).querySelector(':scope > .selector')));
+      _classPrivateFieldSet(this, _selectorController, new HistogramRangeSelectorController(this, _classPrivateFieldGet(this, _ROOT$a).querySelector(':scope > .selector')));
 
       this.update();
     } // private methods
@@ -5129,7 +5129,7 @@
 
   var _userValues = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$8 = /*#__PURE__*/new WeakMap();
+  var _ROOT$9 = /*#__PURE__*/new WeakMap();
 
   var _update = /*#__PURE__*/new WeakSet();
 
@@ -5168,12 +5168,12 @@
       value: void 0
     });
 
-    _classPrivateFieldInitSpec(this, _ROOT$8, {
+    _classPrivateFieldInitSpec(this, _ROOT$9, {
       writable: true,
       value: void 0
     });
 
-    _classPrivateFieldSet(this, _ROOT$8, elm);
+    _classPrivateFieldSet(this, _ROOT$9, elm);
 
     _classPrivateFieldSet(this, _subject$1, subject);
 
@@ -5326,7 +5326,7 @@
 
   function _plotUserIdValues2(detail) {
     if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
-      _classPrivateFieldGet(this, _ROOT$8).classList.add('-pinsticking');
+      _classPrivateFieldGet(this, _ROOT$9).classList.add('-pinsticking');
 
       _classPrivateFieldSet(this, _userValues, detail.values); // calculate min value
       // let maxPValue;
@@ -5410,7 +5410,7 @@
 
   var _sparqlist = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$7 = /*#__PURE__*/new WeakMap();
+  var _ROOT$8 = /*#__PURE__*/new WeakMap();
 
   var _LOADING_VIEW$1 = /*#__PURE__*/new WeakMap();
 
@@ -5454,7 +5454,7 @@
       value: void 0
     });
 
-    _classPrivateFieldInitSpec(this, _ROOT$7, {
+    _classPrivateFieldInitSpec(this, _ROOT$8, {
       writable: true,
       value: void 0
     });
@@ -5489,7 +5489,7 @@
     var elm = document.createElement('div');
     container.insertAdjacentElement('beforeend', elm);
 
-    _classPrivateFieldSet(this, _ROOT$7, elm);
+    _classPrivateFieldSet(this, _ROOT$8, elm);
 
     _classPrivateFieldSet(this, _subject, subject);
 
@@ -5527,12 +5527,12 @@
         // add
         ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this, _property).propertyId);
 
-        _classPrivateFieldGet(_this, _ROOT$7).classList.add('-allselected');
+        _classPrivateFieldGet(_this, _ROOT$8).classList.add('-allselected');
       } else {
         // remove
         ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this, _property).propertyId);
 
-        _classPrivateFieldGet(_this, _ROOT$7).classList.remove('-allselected');
+        _classPrivateFieldGet(_this, _ROOT$8).classList.remove('-allselected');
       }
     }); // event listener
 
@@ -5545,7 +5545,7 @@
           if (e.detail.propertyId === _classPrivateFieldGet(_this, _property).propertyId) {
             _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = true;
 
-            _classPrivateFieldGet(_this, _ROOT$7).classList.add('-allselected');
+            _classPrivateFieldGet(_this, _ROOT$8).classList.add('-allselected');
           }
 
           break;
@@ -5554,7 +5554,7 @@
           if (e.detail.propertyId === _classPrivateFieldGet(_this, _property).propertyId) {
             _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = false;
 
-            _classPrivateFieldGet(_this, _ROOT$7).classList.remove('-allselected');
+            _classPrivateFieldGet(_this, _ROOT$8).classList.remove('-allselected');
           }
 
           break;
@@ -5562,11 +5562,11 @@
     });
     DefaultEventEmitter$1.addEventListener(allTracksCollapse, function (e) {
       if (e.detail) {
-        if (!_classPrivateFieldGet(_this, _ROOT$7).classList.contains('-spread')) {
+        if (!_classPrivateFieldGet(_this, _ROOT$8).classList.contains('-spread')) {
           _classPrivateFieldGet(_this, _COLLAPSE_BUTTON).dispatchEvent(new MouseEvent('click'));
         }
       } else {
-        if (_classPrivateFieldGet(_this, _ROOT$7).classList.contains('-spread')) {
+        if (_classPrivateFieldGet(_this, _ROOT$8).classList.contains('-spread')) {
           _classPrivateFieldGet(_this, _COLLAPSE_BUTTON).dispatchEvent(new MouseEvent('click'));
         }
       }
@@ -5592,7 +5592,7 @@
   ;
 
   function _makeValues2(values) {
-    _classPrivateFieldGet(this, _ROOT$7).classList.remove('-preparing'); // make overview
+    _classPrivateFieldGet(this, _ROOT$8).classList.remove('-preparing'); // make overview
 
 
     new TrackOverviewCategorical(_classPrivateFieldGet(this, _OVERVIEW_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values); // make selector view
@@ -5646,6 +5646,8 @@
 
   var _BARS = /*#__PURE__*/new WeakMap();
 
+  var _ROOT$7 = /*#__PURE__*/new WeakMap();
+
   var _ROOT_NODE = /*#__PURE__*/new WeakMap();
 
   var _draw = /*#__PURE__*/new WeakSet();
@@ -5674,6 +5676,11 @@
         value: void 0
       });
 
+      _classPrivateFieldInitSpec(this, _ROOT$7, {
+        writable: true,
+        value: void 0
+      });
+
       _classPrivateFieldInitSpec(this, _ROOT_NODE, {
         writable: true,
         value: void 0
@@ -5685,10 +5692,12 @@
 
       _classPrivateFieldSet(this, _ROOT_NODE, statisticsRootNode);
 
+      _classPrivateFieldSet(this, _ROOT$7, elm);
+
       elm.classList.add('statistics-view');
       elm.dataset.subjectId = subject.subjectId; // make HTML
 
-      elm.innerHTML = "<div class=\"statistics\">\n      <div class=\"bars\"></div>\n    </div>"; // references
+      elm.innerHTML = "\n    <div class=\"statistics\">\n      <div class=\"bars\"></div>\n    </div>\n    <div class=\"loading-view -shown\"></div>\n    "; // references
 
       var container = elm.querySelector(':scope > .statistics');
 
@@ -5718,7 +5727,7 @@
     return StatisticsView;
   }();
 
-  function _draw2() {
+  function _draw2(e) {
     var _this = this;
 
     var attributes = _.uniqBy(_classPrivateFieldGet(this, _tableData$2).data.map(function (datum) {
@@ -5803,6 +5812,12 @@
 
       return bar;
     }, undefined);
+
+    if (e !== null && e !== void 0 && e.detail.done) {
+      _classPrivateFieldGet(this, _ROOT$7).classList.add('-completed');
+
+      _classPrivateFieldGet(this, _ROOT$7).querySelector(':scope > .loading-view').classList.remove('-shown');
+    }
   }
 
   var _intersctionObserver = /*#__PURE__*/new WeakMap();
