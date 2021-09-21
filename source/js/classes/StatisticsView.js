@@ -107,7 +107,11 @@ export default class StatisticsView {
       if (isStretch)  hitbar.style.height = `${hitCount / count * 100}%`;
       else            hitbar.style.height = `${hitCount / countMax * 100}%`;
       const hitCountLabel = hitbar.querySelector(':scope > .value');
-      hitCountLabel.textContent = hitCount.toLocaleString();
+      if (isOnlyHitCount) {
+        hitCountLabel.textContent = hitCount.toLocaleString();
+      } else {
+        hitCountLabel.textContent = Math.round(hitCount / countMax * 100) + '%';
+      }
       if (hitCount / countMax < .5) {
         hitCountLabel.classList.add('-below');
       } else {

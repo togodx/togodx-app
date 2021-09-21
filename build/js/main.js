@@ -5802,7 +5802,12 @@
       var hitbar = bar.querySelector(':scope > .hitbar');
       if (isStretch) hitbar.style.height = "".concat(hitCount / count * 100, "%");else hitbar.style.height = "".concat(hitCount / countMax * 100, "%");
       var hitCountLabel = hitbar.querySelector(':scope > .value');
-      hitCountLabel.textContent = hitCount.toLocaleString();
+
+      if (isOnlyHitCount) {
+        hitCountLabel.textContent = hitCount.toLocaleString();
+      } else {
+        hitCountLabel.textContent = Math.round(hitCount / countMax * 100) + '%';
+      }
 
       if (hitCount / countMax < .5) {
         hitCountLabel.classList.add('-below');
