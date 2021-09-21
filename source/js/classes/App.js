@@ -74,6 +74,7 @@ class App {
       .then(([subjects, templates, aggregate, attributes]) => {
         console.log(attributes)
         Records.setSubjects(subjects);
+        Records.setDatasets(attributes);
         ConditionBuilder.init();
 
         // define primary keys

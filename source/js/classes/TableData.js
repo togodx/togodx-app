@@ -111,15 +111,15 @@ export default class TableData {
     <div class="close-button-view"></div>
     <div class="conditions">
       <div class="condition">
-        <p title="${condition.togoKey}">${Records.getLabelFromTogoKey(
-      condition.togoKey
-    )}</p>
+        <p title="${condition.togoKey}">${
+          Records.getDatasetLabel(condition.togoKey)
+        }</p>
       </div>
       ${condition.attributes
         .map(
           property => `<div class="condition _subject-background-color" data-subject-id="${property.subject.subjectId}">
-        <p title="${property.property.label}">${property.property.label}</p>
-      </div>`
+            <p title="${property.property.label}">${property.property.label}</p>
+          </div>`
         )
         .join('')}
       ${condition.properties
@@ -548,9 +548,6 @@ export default class TableData {
   }
   get togoKey() {
     return this.condition.togoKey;
-  }
-  get subjectId() {
-    return this.condition.subjectId;
   }
   get condition() {
     return this.#condition;
