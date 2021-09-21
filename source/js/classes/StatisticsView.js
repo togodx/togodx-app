@@ -44,16 +44,18 @@ export default class StatisticsView {
    * @param {Array} detail.rows
    * @param {Boolean} detail.done
    */
-  #draw({detail}) {
+  #draw() {
 
-    // const data = detail.tableData.data;
-    // const attributes = detail.tableData.data
-    const attributes = this.#tableData.data
-      .map(datum => datum.properties.find(property => property.propertyId === this.#propertyId))
-      .filter(property => property !== undefined)
-      .map(property => property.attributes)
-      .flat()
-      .map(property => property.attribute);
+    const attributes = (
+      _.uniqBy(
+        this.#tableData.data
+        .map(datum => datum.properties.find(property => property.propertyId === this.#propertyId))
+        .filter(property => property !== undefined)
+        .map(property => property.attributes)
+        .flat(),
+        'id'
+      ).map(property => property.attribute)
+    );
 
     const hitVlues = [];
     Records.getProperty(this.#propertyId).values.forEach(({categoryId, label, count}) => {
