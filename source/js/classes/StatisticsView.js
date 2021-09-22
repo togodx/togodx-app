@@ -7,6 +7,7 @@ export default class StatisticsView {
   #propertyId;
   #tableData;
   #BARS;
+  #ROOT;
   #ROOT_NODE;
 
   constructor(statisticsRootNode, elm, tableData, {subject, property}) {
@@ -14,14 +15,18 @@ export default class StatisticsView {
     this.#propertyId = property.propertyId;
     this.#tableData = tableData;
     this.#ROOT_NODE = statisticsRootNode;
+    this.#ROOT = elm;
 
     elm.classList.add('statistics-view');
     elm.dataset.subjectId = subject.subjectId;
 
     // make HTML
-    elm.innerHTML = `<div class="statistics">
+    elm.innerHTML = `
+    <div class="statistics">
       <div class="bars"></div>
-    </div>`;
+    </div>
+    <div class="loading-view -shown"></div>
+    `;
 
     // references
     const container = elm.querySelector(':scope > .statistics');
@@ -44,16 +49,18 @@ export default class StatisticsView {
    * @param {Array} detail.rows
    * @param {Boolean} detail.done
    */
-  #draw({detail}) {
+  #draw(e) {
 
-    // const data = detail.tableData.data;
-    // const attributes = detail.tableData.data
-    const attributes = this.#tableData.data
-      .map(datum => datum.properties.find(property => property.propertyId === this.#propertyId))
-      .filter(property => property !== undefined)
-      .map(property => property.attributes)
-      .flat()
-      .map(property => property.attribute);
+    const attributes = (
+      _.uniqBy(
+        this.#tableData.data
+        .map(datum => datum.properties.find(property => property.propertyId === this.#propertyId))
+        .filter(property => property !== undefined)
+        .map(property => property.attributes)
+        .flat(),
+        'id'
+      ).map(property => property.attribute)
+    );
 
     const hitVlues = [];
     Records.getProperty(this.#propertyId).values.forEach(({categoryId, label, count}) => {
@@ -100,7 +107,11 @@ export default class StatisticsView {
       if (isStretch)  hitbar.style.height = `${hitCount / count * 100}%`;
       else            hitbar.style.height = `${hitCount / countMax * 100}%`;
       const hitCountLabel = hitbar.querySelector(':scope > .value');
-      hitCountLabel.textContent = hitCount.toLocaleString();
+      if (isOnlyHitCount) {
+        hitCountLabel.textContent = hitCount.toLocaleString();
+      } else {
+        hitCountLabel.textContent = Math.round(hitCount / countMax * 100) + '%';
+      }
       if (hitCount / countMax < .5) {
         hitCountLabel.classList.add('-below');
       } else {
@@ -108,6 +119,11 @@ export default class StatisticsView {
       }
       return bar;
     }, undefined);
+
+    if (e?.detail.done) {
+      this.#ROOT.classList.add('-completed');
+      this.#ROOT.querySelector(':scope > .loading-view').classList.remove('-shown');
+    }
 
   }
 
