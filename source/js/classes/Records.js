@@ -2,6 +2,7 @@ import Color from "./Color";
 
 class Records {
   #subjects;
+  #datasets;
   #properties;
   #fetchedCategoryIds;
 
@@ -71,6 +72,11 @@ class Records {
     }
   }
 
+  setDatasets({tracks, attributes, datasets}) {
+    // TODO:
+    this.#datasets = datasets;
+  }
+
   fetchPropertyValues(propertyId, categoryId) {
     const property = this.getProperty(propertyId);
     return new Promise((resolve, reject) => {
@@ -129,8 +135,8 @@ class Records {
     return ancestors;
   }
 
-  getLabelFromTogoKey(togoKey) {
-    return this.#subjects.find(subject => subject.togoKey === togoKey).keyLabel;
+  getDatasetLabel(dataset) {
+    return this.#datasets[dataset].label;
   }
 
   // public accessors

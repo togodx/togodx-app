@@ -127,9 +127,9 @@ export default class ResultsTable {
     this.#THEAD.innerHTML = `
       <th rowspan="2">
         <div class="inner">
-          <div class="togo-key-view">${Records.getLabelFromTogoKey(
-            tableData.condition.togoKey
-          )}</div>
+          <div class="togo-key-view">${
+            Records.getDatasetLabel(tableData.condition.togoKey)
+          }</div>
         </div>
       </th>
       <th colspan="100%">

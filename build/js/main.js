@@ -2737,6 +2737,8 @@
 
   var _subjects = /*#__PURE__*/new WeakMap();
 
+  var _datasets = /*#__PURE__*/new WeakMap();
+
   var _properties$1 = /*#__PURE__*/new WeakMap();
 
   var _fetchedCategoryIds = /*#__PURE__*/new WeakMap();
@@ -2746,6 +2748,11 @@
       _classCallCheck(this, Records);
 
       _classPrivateFieldInitSpec(this, _subjects, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _datasets, {
         writable: true,
         value: void 0
       });
@@ -2828,6 +2835,16 @@
         } finally {
           _iterator.f();
         }
+      }
+    }, {
+      key: "setDatasets",
+      value: function setDatasets(_ref) {
+        _ref.tracks;
+            _ref.attributes;
+            var datasets = _ref.datasets;
+
+        // TODO:
+        _classPrivateFieldSet(this, _datasets, datasets);
       }
     }, {
       key: "fetchPropertyValues",
@@ -2926,11 +2943,9 @@
         return ancestors;
       }
     }, {
-      key: "getLabelFromTogoKey",
-      value: function getLabelFromTogoKey(togoKey) {
-        return _classPrivateFieldGet(this, _subjects).find(function (subject) {
-          return subject.togoKey === togoKey;
-        }).keyLabel;
+      key: "getDatasetLabel",
+      value: function getDatasetLabel(dataset) {
+        return _classPrivateFieldGet(this, _datasets)[dataset].label;
       } // public accessors
 
     }, {
@@ -2992,8 +3007,6 @@
 
   var _attributeConditions = /*#__PURE__*/new WeakMap();
 
-  var _subjectId = /*#__PURE__*/new WeakMap();
-
   var _togoKey = /*#__PURE__*/new WeakMap();
 
   var _userIds = /*#__PURE__*/new WeakMap();
@@ -3052,11 +3065,6 @@
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _subjectId, {
-        writable: true,
-        value: void 0
-      });
-
       _classPrivateFieldInitSpec(this, _togoKey, {
         writable: true,
         value: void 0
@@ -3098,13 +3106,8 @@
       }
     }, {
       key: "setSubject",
-      value: function setSubject(togoKey, subjectId) {
-        console.log('setSubject', togoKey, subjectId);
-
+      value: function setSubject(togoKey) {
         _classPrivateFieldSet(this, _togoKey, togoKey);
-
-        _classPrivateFieldSet(this, _subjectId, subjectId); // post processing (permalink, evaluate)
-
 
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
@@ -3360,7 +3363,6 @@
         var customEvent = new CustomEvent(completeQueryParameter, {
           detail: {
             togoKey: _classPrivateFieldGet(this, _togoKey),
-            subjectId: _classPrivateFieldGet(this, _subjectId),
             properties: properties,
             attributes: attributes
           }
@@ -3423,7 +3425,7 @@
     console.log(_classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions), dontLeaveInHistory);
     if (!_classPrivateFieldGet(this, _isRestoredConditinoFromURLParameters)) return; // evaluate if search is possible
 
-    var established = _classPrivateFieldGet(this, _togoKey) && _classPrivateFieldGet(this, _subjectId) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
+    var established = _classPrivateFieldGet(this, _togoKey) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
     var customEvent = new CustomEvent(mutateEstablishConditions, {
       detail: established
     });
@@ -4034,30 +4036,26 @@
   function _defineTogoKeys2(_ref) {
     var _this2 = this;
 
-    var subjects = _ref.detail.subjects;
+    var _ref$detail = _ref.detail;
+        _ref$detail.subjects;
+        var datasets = _ref$detail.datasets;
+    console.log(datasets);
 
     _classPrivateFieldSet(this, _isDefined, true);
 
-    _classPrivateFieldSet(this, _placeHolderExamples, Object.fromEntries(subjects.filter(function (subject) {
-      return subject.togoKey;
-    }).map(function (subject) {
-      return [subject.togoKey, subject.togoKeyExamples];
+    _classPrivateFieldSet(this, _placeHolderExamples, Object.fromEntries(Object.keys(datasets).map(function (key) {
+      return [key, datasets[key].examples];
     }))); // make options
 
 
-    _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = subjects.map(function (subject) {
-      var option = '';
-      if (subject.togoKey) option = "<option value=\"".concat(subject.togoKey, "\" data-subject-id=\"").concat(subject.subjectId, "\">").concat(subject.keyLabel, "</option>");
-      return option;
+    _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = Object.keys(datasets).map(function (key) {
+      return "<option value=\"".concat(key, "\" data-subject-id=\"hoge\">").concat(datasets[key].label, "</option>");
     }).join('');
     _classPrivateFieldGet(this, _TOGO_KEYS).disabled = false;
     _classPrivateFieldGet(this, _TOGO_KEYS).value = ConditionBuilder$1.currentTogoKey; // attach event
 
     _classPrivateFieldGet(this, _TOGO_KEYS).addEventListener('change', function (e) {
-      var subject = subjects.find(function (subject) {
-        return subject.togoKey === e.target.value;
-      });
-      ConditionBuilder$1.setSubject(e.target.value, subject.subjectId);
+      ConditionBuilder$1.setSubject(e.target.value);
       _classPrivateFieldGet(_this2, _USER_IDS$1).placeholder = "e.g. ".concat(_classPrivateFieldGet(_this2, _placeHolderExamples)[e.target.value].join(', '));
     }); // preset
 
@@ -6049,7 +6047,7 @@
 
     DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
-    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getLabelFromTogoKey(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      "); // makte table sub header
+    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getDatasetLabel(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      "); // makte table sub header
 
     _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    ".concat(tableData.condition.attributes.map(function (property) {
       return "\n    <th>\n      <div class=\"inner _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n      <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.property.label, "</span>\n      </div>\n    </th>");
@@ -7149,8 +7147,8 @@
 
       elm.classList.add('table-data-controller-view');
       elm.dataset.status = 'load ids';
-      elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condition\">\n        <p title=\"".concat(condition.togoKey, "\">").concat(Records$1.getLabelFromTogoKey(condition.togoKey), "</p>\n      </div>\n      ").concat(condition.attributes.map(function (property) {
-        return "<div class=\"condition _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
+      elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condition\">\n        <p title=\"".concat(condition.togoKey, "\">").concat(Records$1.getDatasetLabel(condition.togoKey), "</p>\n      </div>\n      ").concat(condition.attributes.map(function (property) {
+        return "<div class=\"condition _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n            <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n          </div>");
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         var label = property.parentCategoryId ? Records$1.getValue(property.query.propertyId, property.parentCategoryId).label : property.property.label;
         return "<div class=\"condition _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n          <p title=\"").concat(label, "\">").concat(label, "</p>\n        </div>");
@@ -7242,11 +7240,6 @@
       key: "togoKey",
       get: function get() {
         return this.condition.togoKey;
-      }
-    }, {
-      key: "subjectId",
-      get: function get() {
-        return this.condition.subjectId;
       }
     }, {
       key: "condition",
@@ -8439,22 +8432,26 @@
         new BalloonView();
         new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
 
-        Promise.all([fetch(api.PROPERTIES), fetch(api.TEMPLATES), fetch(api.AGGREGATE)]).then(function (responces) {
+        Promise.all([fetch(api.PROPERTIES), fetch(api.TEMPLATES), fetch(api.AGGREGATE), fetch(api.ATTRIBUTES)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
           }));
         }).then(function (_ref) {
-          var _ref2 = _slicedToArray(_ref, 3),
+          var _ref2 = _slicedToArray(_ref, 4),
               subjects = _ref2[0],
               templates = _ref2[1],
-              aggregate = _ref2[2];
+              aggregate = _ref2[2],
+              attributes = _ref2[3];
 
+          console.log(attributes);
           Records$1.setSubjects(subjects);
+          Records$1.setDatasets(attributes);
           ConditionBuilder$1.init(); // define primary keys
 
           var customEvent = new CustomEvent(defineTogoKey, {
             detail: {
-              subjects: subjects
+              subjects: subjects,
+              datasets: attributes.datasets
             }
           });
           DefaultEventEmitter$1.dispatchEvent(customEvent); // initialize stanza manager
