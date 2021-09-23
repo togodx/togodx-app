@@ -76,7 +76,7 @@ const dataButtonModes = new Map([
 
 export default class TableData {
   #condition;
-  #newNew__condition;
+  #dxCondition;
   #serializedHeader;
   #queryIds;
   #rows;
@@ -90,19 +90,19 @@ export default class TableData {
   #BUTTON_LEFT;
   #BUTTON_RIGHT;
 
-  constructor(condition, newNew__condition, elm) {
+  constructor(condition, dxCondition, elm) {
     console.log(condition)
-    console.log(newNew__condition)
+    console.log(dxCondition)
     const CancelToken = axios.CancelToken;
     this.#source = CancelToken.source();
 
     this.#isLoading = false;
     this.#isCompleted = false;
     this.#condition = condition;
-    this.#newNew__condition = newNew__condition;
+    this.#dxCondition = dxCondition;
     this.#serializedHeader = [
       ...condition.attributes.map(property => property.query.propertyId),
-      ...condition.properties.map(property => property.query.propertyId),
+      ...dxCondition.keyConditions.map(keyCondition => keyCondition.propertyId),
     ];
     console.log(this.#serializedHeader)
     this.#queryIds = [];
@@ -116,37 +116,28 @@ export default class TableData {
     <div class="close-button-view"></div>
     <div class="conditions">
       <div class="condition">
-        <p title="${condition.togoKey}">${
-          Records.getDatasetLabel(condition.togoKey)
+        <p title="${dxCondition.togoKey}">${
+          Records.getDatasetLabel(dxCondition.togoKey)
         }</p>
       </div>
-      ${condition.attributes
-        .map(
-          property => `<div class="condition _subject-background-color" data-subject-id="${property.subject.subjectId}">
-            <p title="${property.property.label}">${property.property.label}</p>
-          </div>`
-        )
-        .join('')}
-      ${condition.properties
-        .map(property => {
-          console.log(property)
-          console.log(
-            Records.getValue(
-              property.query.propertyId,
-              property.parentCategoryId
-            )
+      ${
+        condition.attributes
+          .map(
+            property => `<div class="condition _subject-background-color" data-subject-id="${property.subject.subjectId}">
+              <p title="${property.property.label}">${property.property.label}</p>
+            </div>`
           )
-          const label = property.parentCategoryId
-            ? Records.getValue(
-                property.query.propertyId,
-                property.parentCategoryId
-              ).label
-            : property.property.label;
-          return `<div class="condition _subject-color" data-subject-id="${property.subject.subjectId}">
-          <p title="${label}">${label}</p>
-        </div>`;
-        })
-        .join('')}
+          .join('')
+      }
+      ${
+        this.#dxCondition.keyConditions
+          .map(keyCondition => {
+            return `<div class="condition _subject-color" data-subject-id="${keyCondition.key.subjectId}">
+              <p title="${keyCondition.label}">${keyCondition.label}</p>
+            </div>`;
+          })
+          .join('')
+      }
     </div>
     <div class="status">
       <p>Getting ID list</p>
@@ -364,7 +355,7 @@ export default class TableData {
       row.properties.forEach(property => {
         property.attributes.forEach(attribute => {
           const singleItem = [
-            this.#condition.togoKey, // togoKey
+            this.#dxCondition.togoKey, // togoKey
             row.id, // togoKeyId
             row.label, // togoKeyLabel
             property.propertyId, // attribute
@@ -431,7 +422,7 @@ export default class TableData {
   }
 
   #getQueryIdsPayload() {
-    return `togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(
+    return `togoKey=${this.#dxCondition.togoKey}&properties=${encodeURIComponent(
       JSON.stringify(this.#condition.attributes.map(property => property.query))
     )}${
       ConditionBuilder.userIds?.length > 0
@@ -467,16 +458,20 @@ export default class TableData {
 
   #getPropertiesFetch() {
     return `${App.aggregateRows}?togoKey=${
-      this.#condition.togoKey
-    }&properties=${encodeURIComponent(
-      JSON.stringify(
-        this.#condition.attributes
-          .map(property => property.query)
-          .concat(this.#condition.properties.map(property => property.query))
+      this.#dxCondition.togoKey
+    }&properties=${
+      encodeURIComponent(
+        JSON.stringify(
+          this.#condition.attributes
+            .map(property => property.query)
+            .concat(this.#dxCondition.keyConditions.map(keyCondition => keyCondition.query))
+        )
       )
-    )}&queryIds=${encodeURIComponent(
-      JSON.stringify(this.#queryIds.slice(this.offset, this.offset + LIMIT))
-    )}`;
+    }&queryIds=${
+      encodeURIComponent(
+        JSON.stringify(this.#queryIds.slice(this.offset, this.offset + LIMIT))
+      )
+    }`;
   }
 
   #getProperties() {
@@ -559,7 +554,7 @@ export default class TableData {
     return this.#rows.length;
   }
   get togoKey() {
-    return this.condition.togoKey;
+    return this.#dxCondition.togoKey;
   }
   get condition() {
     return this.#condition;

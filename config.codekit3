@@ -696,6 +696,17 @@
       "sC" : 3,
       "tS" : 1
     },
+    "\/source\/js\/classes\/DXCondition.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/classes\/DXCondition.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
     "\/source\/js\/classes\/HistogramRangeSelectorController.js" : {
       "bF" : 4,
       "ft" : 64,

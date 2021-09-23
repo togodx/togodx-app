@@ -108,9 +108,7 @@ class Records {
   }
 
   getValue(propertyId, categoryId) {
-    // console.log(propertyId, categoryId)
     const property = this.getProperty(propertyId);
-    // console.log(property)
     const value = property.values.find(value => value.categoryId === categoryId);
     return value;
   }

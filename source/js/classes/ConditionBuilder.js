@@ -2,6 +2,7 @@ import DefaultEventEmitter from "./DefaultEventEmitter";
 import Records from "./Records";
 import KeyCondition from "./KeyCondition";
 import ValuesCondition from "./ValuesCondition";
+import DXCondition from "./DXCondition";
 import * as event from '../events';
 
 class ConditionBuilder {
@@ -171,10 +172,17 @@ class ConditionBuilder {
       }
     })
     // emmit event
+    // const customEvent = new CustomEvent(event.completeQueryParameter, {detail: {
+    //   togoKey: this.#togoKey,
+    //   properties,
+    //   attributes,
+    //   keyCondiitons: [...this.#keyConditions]
+    // }});
     const customEvent = new CustomEvent(event.completeQueryParameter, {detail: {
       togoKey: this.#togoKey,
       properties,
-      attributes
+      attributes,
+      dxCondition: new DXCondition(this.#togoKey, [...this.#keyConditions])
     }});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }

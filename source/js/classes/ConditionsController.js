@@ -90,23 +90,7 @@ export default class ConditionsController {
       // make new table data
       const elm = document.createElement('div');
       this.#CONDITIONS_CONTAINER.insertAdjacentElement('afterbegin', elm);
-      const newNew__condition = {
-        togoKey: newCondition.togoKey,
-        properties: newCondition.properties.map(property => {
-          return {
-            propertyId: property.query.propertyId,
-            parentCategoryId: property.parentCategoryId
-          }
-        }),
-        attributes: newCondition.attributes.map(property => {
-          return {
-            propertyId: property.query.propertyId,
-            categoryIds: property.query.categoryIds
-          }
-        })
-      }
-      console.log(newNew__condition)
-      this.#tableData.push(new TableData(newCondition, newNew__condition, elm));
+      this.#tableData.push(new TableData(newCondition, newCondition.dxCondition, elm));
     }
   }
 
