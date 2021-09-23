@@ -41,11 +41,11 @@ export default class ColumnSelectorView {
     this.#LOADING_VIEW = this.#ROOT.querySelector(':scope > .loading-view');
 
     // even listener
-    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, e => {
-      if (e.detail.action === 'remove') {
-        if (this.#property.propertyId === e.detail.propertyId) {
-          if (e.detail.parentCategoryId) {
-            const checkbox = this.#CONTAINER.querySelector(`[data-parent-category-id="${e.detail.parentCategoryId}"] > input`);
+    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail}) => {
+      if (detail.action === 'remove') {
+        if (this.#property.propertyId === detail.propertyId) {
+          if (detail.parentCategoryId) {
+            const checkbox = this.#CONTAINER.querySelector(`[data-parent-category-id="${detail.parentCategoryId}"] > input`);
             if (checkbox) checkbox.checked = false;
           }
         }

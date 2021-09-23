@@ -3274,7 +3274,6 @@
       value: function addProperty(propertyId, parentCategoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
         // store
-        // this.#keyConditions.push({propertyId, parentCategoryId});
         var keyCondiiton = new KeyCondition(propertyId, parentCategoryId);
 
         _classPrivateFieldGet(this, _keyConditions).push(keyCondiiton); // evaluate
@@ -3671,6 +3670,7 @@
         _ref6.userIds;
         var keys = _ref6.keys,
         values = _ref6.values;
+    console.log(keys, values);
 
     _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true); // restore conditions
 
@@ -4409,19 +4409,21 @@
     _classPrivateFieldSet(this, _LOADING_VIEW$2, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .loading-view')); // even listener
 
 
-    DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
-      if (e.detail.action === 'remove') {
-        if (_classPrivateFieldGet(_this, _property$3).propertyId === e.detail.propertyId) {
-          if (e.detail.parentCategoryId) {
-            var checkbox = _classPrivateFieldGet(_this, _CONTAINER$1).querySelector("[data-parent-category-id=\"".concat(e.detail.parentCategoryId, "\"] > input"));
+    DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (_ref) {
+      var detail = _ref.detail;
+
+      if (detail.action === 'remove') {
+        if (_classPrivateFieldGet(_this, _property$3).propertyId === detail.propertyId) {
+          if (detail.parentCategoryId) {
+            var checkbox = _classPrivateFieldGet(_this, _CONTAINER$1).querySelector("[data-parent-category-id=\"".concat(detail.parentCategoryId, "\"] > input"));
 
             if (checkbox) checkbox.checked = false;
           }
         }
       }
     });
-    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref) {
-      var detail = _ref.detail;
+    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref2) {
+      var detail = _ref2.detail;
 
       if (_classPrivateFieldGet(_this, _property$3).propertyId === detail.propertyId) {
         _classPrivateFieldGet(_this, _currentColumns).forEach(function (column) {
@@ -4701,11 +4703,11 @@
     });
   }
 
-  function _setUserValues2(_ref2) {
+  function _setUserValues2(_ref3) {
     var _this8 = this;
 
-    var propertyId = _ref2.propertyId,
-        values = _ref2.values;
+    var propertyId = _ref3.propertyId,
+        values = _ref3.values;
     var bySubdirectory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     if (_classPrivateFieldGet(this, _property$3).propertyId === propertyId) {
@@ -7495,10 +7497,10 @@
 
     e.stopPropagation(); // property (attribute)
 
-    ConditionBuilder$1.setProperties(_classPrivateFieldGet(this, _condition).properties.map(function (property) {
+    ConditionBuilder$1.setProperties(_classPrivateFieldGet(this, _dxCondition).keyConditions.map(function (keyCondition) {
       return {
-        propertyId: property.query.propertyId,
-        parentCategoryId: property.parentCategoryId
+        propertyId: keyCondition.propertyId,
+        parentCategoryId: keyCondition.parentCategoryId
       };
     }), false); // attribute (classification/distribution)
 

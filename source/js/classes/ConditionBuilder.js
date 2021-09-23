@@ -46,7 +46,6 @@ class ConditionBuilder {
 
   addProperty(propertyId, parentCategoryId, isFinal = true) {
     // store
-    // this.#keyConditions.push({propertyId, parentCategoryId});
     const keyCondiiton = new KeyCondition(propertyId, parentCategoryId);
     this.#keyConditions.push(keyCondiiton);
     // evaluate
@@ -312,6 +311,7 @@ class ConditionBuilder {
   }
 
   #restoreConditions({togoKey, userIds, keys, values}) {
+    console.log(keys, values)
     
     this.#isRestoredConditinoFromURLParameters = true;
 

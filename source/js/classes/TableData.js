@@ -274,11 +274,11 @@ export default class TableData {
     e.stopPropagation();
     // property (attribute)
     ConditionBuilder.setProperties(
-      this.#condition.properties.map(property => {
+      this.#dxCondition.keyConditions.map(keyCondition => {
         return {
-          propertyId: property.query.propertyId,
-          parentCategoryId: property.parentCategoryId,
-        };
+          propertyId: keyCondition.propertyId,
+          parentCategoryId: keyCondition.parentCategoryId,
+        }
       }),
       false
     );
