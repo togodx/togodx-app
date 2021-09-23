@@ -36,14 +36,12 @@ class ConditionBuilder {
   }
 
   setUserIds(ids = '') {
-    console.log('setUserIds', ids)
     this.#userIds = ids.replace(/,/g," ").split(/\s+/).join(',');
     // post processing (permalink, evaluate)
     this.#postProcessing();
   }
 
   addProperty(propertyId, parentCategoryId, isFinal = true) {
-    // console.log('addProperty', propertyId, parentCategoryId, isFinal)
     // store
     this.#propertyConditions.push({propertyId, parentCategoryId});
     // evaluate
@@ -54,7 +52,6 @@ class ConditionBuilder {
   }
 
   addPropertyValue(propertyId, categoryId, isFinal = true) {
-    // console.log('addPropertyValue', propertyId, categoryId, isFinal)
     // find value of same property
     const samePropertyCondition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
     // store
@@ -74,7 +71,6 @@ class ConditionBuilder {
   }
 
   removeProperty(propertyId, parentCategoryId, isFinal = true) {
-    // console.log('removeProperty', propertyId, parentCategoryId, isFinal)
     // remove from store
     const index = this.#propertyConditions.findIndex(condition => {
       if (propertyId === condition.propertyId) {
@@ -95,7 +91,6 @@ class ConditionBuilder {
   }
 
   removePropertyValue(propertyId, categoryId, isFinal = true) {
-    // console.log('removePropertyValue', propertyId, categoryId, isFinal)
     // remove from store
     const index = this.#attributeConditions.findIndex(condition => {
       if (condition.propertyId === propertyId) {
@@ -115,7 +110,6 @@ class ConditionBuilder {
   }
 
   setProperties(conditions, isFinal = true) {
-    // console.log('setProperties', conditions, isFinal)
     // delete existing properties
     while (this.#propertyConditions.length > 0) {
       this.removeProperty(this.#propertyConditions[0].propertyId, this.#propertyConditions[0].parentCategoryId, false);
@@ -127,7 +121,6 @@ class ConditionBuilder {
   }
 
   setPropertyValues(propertyId, categoryIds, isFinal = true) {
-    // console.log('setPropertyValues', propertyId, categoryIds, isFinal)
     const oldCondition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
     if (oldCondition) {
       const originalValues = Records.getProperty(propertyId).values;
@@ -152,12 +145,10 @@ class ConditionBuilder {
   }
 
   finish(dontLeaveInHistory) {
-    console.log('finish', dontLeaveInHistory)
     this.#postProcessing(dontLeaveInHistory);
   }
 
   makeQueryParameter() {
-    console.log(this.#propertyConditions, this.#attributeConditions)
     // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
     // create properties
     const properties = this.#propertyConditions.map(({propertyId, parentCategoryId}) => {
@@ -183,7 +174,6 @@ class ConditionBuilder {
       }
     })
     // emmit event
-    console.log(properties, attributes)
     const customEvent = new CustomEvent(event.completeQueryParameter, {detail: {
       togoKey: this.#togoKey,
       properties,
@@ -228,7 +218,6 @@ class ConditionBuilder {
   // private methods
 
   #postProcessing(dontLeaveInHistory = true) {
-    console.log(this.#propertyConditions, this.#attributeConditions, dontLeaveInHistory)
 
     if (!this.#isRestoredConditinoFromURLParameters) return;
 
@@ -241,7 +230,6 @@ class ConditionBuilder {
 
     // get hierarchic conditions
     const [keys, values] = this.#getHierarchicConditions();
-    console.log(keys, values)
 
     // generate permalink
     const params = new URL(location).searchParams;
@@ -263,7 +251,6 @@ class ConditionBuilder {
       keys: JSON.parse(params.get('keys')) ?? [],
       values: JSON.parse(params.get('values')) ?? []
     }
-    console.log(condition)
 
     if (isFirst) {
       // get child category ids
@@ -318,15 +305,13 @@ class ConditionBuilder {
   }
 
   #restoreConditions({togoKey, userIds, keys, values}) {
-    console.log(togoKey, userIds, keys, values)
-
+    
     this.#isRestoredConditinoFromURLParameters = true;
 
     // restore conditions
     this.#togoKey = togoKey;
     // this.#userIds = userIds;
     const [properties, attributes] = this.#getCondtionsFromHierarchicConditions(keys, values);
-    console.log(properties, attributes)
     this.setProperties(properties, false);
     Records.properties.forEach(({propertyId}) => {
       const property = attributes.find(property => property.propertyId === propertyId);
