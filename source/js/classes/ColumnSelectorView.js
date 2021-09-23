@@ -235,10 +235,21 @@ export default class ColumnSelectorView {
       const checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
       checkbox.addEventListener('click', e => {
         e.stopPropagation();
+        const ancestors = [];
+        let parentCategoryId;
+        let column = checkbox.closest('.column');
+        do { // find ancestors
+          parentCategoryId = column?.querySelector(':scope > table > thead > tr.item.-all').dataset.parentCategoryId;
+          if (parentCategoryId) {
+            ancestors.unshift(parentCategoryId);
+            column = column.previousElementSibling;
+          }
+        } while (parentCategoryId);
         if (checkbox.checked) { // add
           ConditionBuilder.addPropertyValue(
             this.#property.propertyId,
-            checkbox.value
+            checkbox.value,
+            ancestors
           );
         } else { // remove
           ConditionBuilder.removePropertyValue(this.#property.propertyId, checkbox.value);

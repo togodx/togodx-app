@@ -33,6 +33,7 @@ export default class ConditionsController {
   /* private methods */
 
   #setTableData(newCondition) {
+    console.log(newCondition)
 
     // find matching condition from already existing conditions
     const sameConditionTableData = this.#tableData.find(tableData => {
@@ -57,20 +58,30 @@ export default class ConditionsController {
         }
       })();
       // compare attributes
-      const matchAttributes = newCondition.attributes.every(newProperty => {
-        return tableData.condition.attributes.find(property => {
-          if (
-            newProperty.query.propertyId === property.query.propertyId &&
-            newProperty.query.categoryIds.length === property.query.categoryIds.length) {
-            let matchValues = newProperty.query.categoryIds.every(categoryId => property.query.categoryIds.indexOf(categoryId) !== -1);
-            return matchValues;
-          } else {
-            return false;
-          }
-        });
-      });
+      const matchAttributes = (() => {
+        if (newCondition.attributes.length === tableData.condition.attributes.length) {
+          return newCondition.attributes.every(newProperty => {
+            tableData.condition.attributes.find(property => {
+              if (
+                newProperty.query.propertyId === property.query.propertyId &&
+                newProperty.query.categoryIds.length === property.query.categoryIds.length
+              ) {
+                let matchValues = newProperty.query.categoryIds.every(categoryId => {
+                  return property.query.categoryIds.indexOf(categoryId) !== -1;
+                });
+                return matchValues;
+              } else {
+                return false;
+              }
+            });
+          });
+        } else {
+          return false;
+        }
+      })();
       return matchProperties && matchAttributes;
     });
+    console.log(sameConditionTableData)
 
     if (sameConditionTableData) {
       // use existing table data
@@ -79,7 +90,23 @@ export default class ConditionsController {
       // make new table data
       const elm = document.createElement('div');
       this.#CONDITIONS_CONTAINER.insertAdjacentElement('afterbegin', elm);
-      this.#tableData.push(new TableData(newCondition, elm));
+      const newNew__condition = {
+        togoKey: newCondition.togoKey,
+        properties: newCondition.properties.map(property => {
+          return {
+            propertyId: property.query.propertyId,
+            parentCategoryId: property.parentCategoryId
+          }
+        }),
+        attributes: newCondition.attributes.map(property => {
+          return {
+            propertyId: property.query.propertyId,
+            categoryIds: property.query.categoryIds
+          }
+        })
+      }
+      console.log(newNew__condition)
+      this.#tableData.push(new TableData(newCondition, newNew__condition, elm));
     }
   }
 

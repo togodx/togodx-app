@@ -17,6 +17,7 @@ export default class StackingConditionView {
    * @param {Object} condition 
    */
   constructor(container, type, condition, isRange = false) {
+    console.log(condition)
 
     this.#condition = condition;
     const subject = Records.getSubjectWithPropertyId(condition.propertyId);
@@ -65,7 +66,6 @@ export default class StackingConditionView {
   // private methods
 
   #make(container, type, ancestorLabels, label) {
-    console.log(container, type, ancestorLabels, label)
     this.#ROOT.innerHTML = `
     <div class="close-button-view"></div>
     <ul class="path">

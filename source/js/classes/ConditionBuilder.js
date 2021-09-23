@@ -1,11 +1,13 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import Records from "./Records";
+import KeyCondition from "./KeyCondition";
+import ValuesCondition from "./ValuesCondition";
 import * as event from '../events';
 
 class ConditionBuilder {
 
-  #propertyConditions;
-  #attributeConditions;
+  #keyConditions; // Array<ConditionKey>
+  #attributeConditions; // Array<ConditionValues>
   #togoKey;
   #userIds;
   #isRestoredConditinoFromURLParameters = false;
@@ -13,7 +15,7 @@ class ConditionBuilder {
 
   constructor() {
 
-    this.#propertyConditions = [];
+    this.#keyConditions = [];
     this.#attributeConditions = [];
     this.#preparingCounter = 0;
     this.#isRestoredConditinoFromURLParameters = false;
@@ -43,7 +45,9 @@ class ConditionBuilder {
 
   addProperty(propertyId, parentCategoryId, isFinal = true) {
     // store
-    this.#propertyConditions.push({propertyId, parentCategoryId});
+    // this.#keyConditions.push({propertyId, parentCategoryId});
+    const keyCondiiton = new KeyCondition(propertyId, parentCategoryId);
+    this.#keyConditions.push(keyCondiiton);
     // evaluate
     if (isFinal) this.#postProcessing();
     // dispatch event
@@ -51,7 +55,8 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  addPropertyValue(propertyId, categoryId, isFinal = true) {
+  addPropertyValue(propertyId, categoryId, ancestors = [], isFinal = true) {
+    console.log(this.#attributeConditions)
     // find value of same property
     const samePropertyCondition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
     // store
@@ -72,17 +77,9 @@ class ConditionBuilder {
 
   removeProperty(propertyId, parentCategoryId, isFinal = true) {
     // remove from store
-    const index = this.#propertyConditions.findIndex(condition => {
-      if (propertyId === condition.propertyId) {
-        if (parentCategoryId) {
-          return parentCategoryId === condition.parentCategoryId;
-        } else {
-          return true;
-        }
-      }
-    });
+    const index = this.#keyConditions.findIndex(keyCondition => keyCondition.isSameCondition(propertyId, parentCategoryId));
     if (index === -1) return;
-    this.#propertyConditions.splice(index, 1)[0];
+    this.#keyConditions.splice(index, 1)[0];
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
     // dispatch event
@@ -111,8 +108,8 @@ class ConditionBuilder {
 
   setProperties(conditions, isFinal = true) {
     // delete existing properties
-    while (this.#propertyConditions.length > 0) {
-      this.removeProperty(this.#propertyConditions[0].propertyId, this.#propertyConditions[0].parentCategoryId, false);
+    while (this.#keyConditions.length > 0) {
+      this.removeProperty(this.#keyConditions[0].propertyId, this.#keyConditions[0].parentCategoryId, false);
     };
     // set new properties
     conditions.forEach(({propertyId, parentCategoryId}) => this.addProperty(propertyId, parentCategoryId, false));
@@ -129,7 +126,7 @@ class ConditionBuilder {
         const indexInOld = oldCondition.categoryIds.indexOf(originalValue.categoryId);
         if (indexInNew !== -1) {
           // if new value does not exist in old values, add property value
-          if (indexInOld === -1) this.addPropertyValue(propertyId, originalValue.categoryId, false);
+          if (indexInOld === -1) this.addPropertyValue(propertyId, originalValue.categoryId, [], false);
         } else {
           // if extra value exists in old values, remove property value
           if (indexInOld !== -1) this.removePropertyValue(propertyId, originalValue.categoryId, false);
@@ -137,7 +134,7 @@ class ConditionBuilder {
       });
     } else {
       for (const categoryId of categoryIds) {
-        this.addPropertyValue(propertyId, categoryId, false);
+        this.addPropertyValue(propertyId, categoryId, [], false);
       }
     }
     // post processing (permalink, evaluate)
@@ -151,7 +148,7 @@ class ConditionBuilder {
   makeQueryParameter() {
     // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
     // create properties
-    const properties = this.#propertyConditions.map(({propertyId, parentCategoryId}) => {
+    const properties = this.#keyConditions.map(({propertyId, parentCategoryId}) => {
       const subject = Records.getSubjectWithPropertyId(propertyId);
       const property = Records.getProperty(propertyId);
       const query = {propertyId};
@@ -183,8 +180,8 @@ class ConditionBuilder {
   }
 
   isSelectedProperty(propertyId) {
-    const condiiton = this.#propertyConditions.find(condiiton => condiiton.propertyId === propertyId);
-    if (condiiton && condiiton.parentCategoryId === undefined) {
+    const keyCondiiton = this.#keyConditions.find(keyCondiiton => keyCondiiton.propertyId === propertyId);
+    if (keyCondiiton && keyCondiiton.parentCategoryId === undefined) {
       return true;
     } else {
       return false;
@@ -192,8 +189,8 @@ class ConditionBuilder {
   }
 
   getSelectedParentCategoryId(propertyId) {
-    const condition = this.#propertyConditions.find(condition => condition.propertyId === propertyId);
-    return condition?.parentCategoryId;
+    const keyCondition = this.#keyConditions.find(keyCondition => keyCondition.propertyId === propertyId);
+    return keyCondition?.parentCategoryId;
   }
 
   getSelectedCategoryIds(propertyId) {
@@ -224,7 +221,7 @@ class ConditionBuilder {
     // evaluate if search is possible
     const established 
       = this.#togoKey
-      && (this.#propertyConditions.length > 0 || this.#attributeConditions.length > 0);
+      && (this.#keyConditions.length > 0 || this.#attributeConditions.length > 0);
     const customEvent = new CustomEvent(event.mutateEstablishConditions, {detail: established});
     DefaultEventEmitter.dispatchEvent(customEvent);
 
@@ -262,6 +259,7 @@ class ConditionBuilder {
   }
 
   #makeQueueOfGettingChildCategoryIds(condition) {
+    console.log(condition)
     const queue = [];
     condition.keys.forEach(({propertyId, id}) => {
       if (id) {
@@ -283,6 +281,7 @@ class ConditionBuilder {
   }
 
   #progressQueueOfGettingChildCategoryIds(condition, queue) {
+    console.log(queue)
     if (queue.length > 0) {
       const {propertyId, categoryId} = queue.shift();
       this.#getChildCategoryIds(propertyId, categoryId)
@@ -328,8 +327,9 @@ class ConditionBuilder {
   }
 
   #clearConditinos() {
-    while (this.#propertyConditions.length > 0) {
-      const {propertyId, parentCategoryId} = this.#propertyConditions[0];
+    while (this.#keyConditions.length > 0) {
+      const {propertyId, parentCategoryId} = this.#keyConditions[0];
+      console.log(propertyId, parentCategoryId)
       this.removeProperty(propertyId, parentCategoryId, false);
     };
     while (this.#attributeConditions.length > 0) {
@@ -343,7 +343,7 @@ class ConditionBuilder {
 
   #getHierarchicConditions() {
     const keys = [];
-    this.#propertyConditions.forEach(({propertyId, parentCategoryId}) => {
+    this.#keyConditions.forEach(({propertyId, parentCategoryId}) => {
       const property = {propertyId};
       if (parentCategoryId) {
         property.id = {

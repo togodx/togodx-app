@@ -76,6 +76,7 @@ const dataButtonModes = new Map([
 
 export default class TableData {
   #condition;
+  #newNew__condition;
   #serializedHeader;
   #queryIds;
   #rows;
@@ -89,17 +90,21 @@ export default class TableData {
   #BUTTON_LEFT;
   #BUTTON_RIGHT;
 
-  constructor(condition, elm) {
+  constructor(condition, newNew__condition, elm) {
+    console.log(condition)
+    console.log(newNew__condition)
     const CancelToken = axios.CancelToken;
     this.#source = CancelToken.source();
 
     this.#isLoading = false;
     this.#isCompleted = false;
     this.#condition = condition;
+    this.#newNew__condition = newNew__condition;
     this.#serializedHeader = [
       ...condition.attributes.map(property => property.query.propertyId),
       ...condition.properties.map(property => property.query.propertyId),
     ];
+    console.log(this.#serializedHeader)
     this.#queryIds = [];
     this.#rows = [];
 
@@ -124,6 +129,13 @@ export default class TableData {
         .join('')}
       ${condition.properties
         .map(property => {
+          console.log(property)
+          console.log(
+            Records.getValue(
+              property.query.propertyId,
+              property.parentCategoryId
+            )
+          )
           const label = property.parentCategoryId
             ? Records.getValue(
                 property.query.propertyId,
