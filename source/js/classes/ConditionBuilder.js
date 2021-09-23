@@ -7,8 +7,9 @@ import * as event from '../events';
 
 class ConditionBuilder {
 
-  #keyConditions; // Array<ConditionKey>
-  #attributeConditions; // Array<ConditionValues>
+  #keyConditions; // Array<KeyCondition>
+  #valuesConditions; // Array<ValuesCondition>
+  #attributeConditions;
   #togoKey;
   #userIds;
   #isRestoredConditinoFromURLParameters = false;
@@ -17,6 +18,7 @@ class ConditionBuilder {
   constructor() {
 
     this.#keyConditions = [];
+    this.#valuesConditions = [];
     this.#attributeConditions = [];
     this.#preparingCounter = 0;
     this.#isRestoredConditinoFromURLParameters = false;
@@ -58,15 +60,14 @@ class ConditionBuilder {
   addPropertyValue(propertyId, categoryId, ancestors = [], isFinal = true) {
     console.log(this.#attributeConditions)
     // find value of same property
-    const samePropertyCondition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
+    const sameValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
     // store
-    if (samePropertyCondition) {
-      samePropertyCondition.categoryIds.push(categoryId);
+    console.log(sameValuesCondition)
+    if (sameValuesCondition) {
+      sameValuesCondition.addCategoryId(categoryId);
     } else {
-      this.#attributeConditions.push({
-        propertyId,
-        categoryIds: [categoryId]
-      });
+      const valuesCondition = new ValuesCondition(propertyId, [categoryId]);
+      this.#valuesConditions.push(valuesCondition);
     }
     // evaluate
     if (isFinal) this.#postProcessing();
@@ -89,16 +90,15 @@ class ConditionBuilder {
 
   removePropertyValue(propertyId, categoryId, isFinal = true) {
     // remove from store
-    const index = this.#attributeConditions.findIndex(condition => {
-      if (condition.propertyId === propertyId) {
-        const index = condition.categoryIds.indexOf(categoryId);
-        condition.categoryIds.splice(index, 1);
-        return condition.categoryIds.length === 0;
+    const index = this.#valuesConditions.findIndex(valuesCondition => {
+      if (valuesCondition.propertyId === propertyId) {
+        valuesCondition.removeCategoryId(categoryId);
+        return valuesCondition.categoryIds.length === 0;
       } else {
         return false;
       }
     });
-    if (index !== -1) this.#attributeConditions.splice(index, 1)[0];
+    if (index !== -1) this.#valuesConditions.splice(index, 1)[0];
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
     // dispatch event

@@ -11,6 +11,7 @@ export default class KeyCondition {
     this.#propertyId = propertyId;
     this.#parentCategoryId = parentCategoryId;
   }
+  
 
   // methods
   
@@ -31,6 +32,7 @@ export default class KeyCondition {
       return false;
     }
   }
+
 
   // accessor
 
