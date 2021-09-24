@@ -101,7 +101,7 @@ export default class TableData {
     this.#condition = condition;
     this.#dxCondition = dxCondition;
     this.#serializedHeader = [
-      ...condition.attributes.map(property => property.query.propertyId),
+      ...dxCondition.valuesConditions.map(valuesCondition => valuesCondition.propertyId),
       ...dxCondition.keyConditions.map(keyCondition => keyCondition.propertyId),
     ];
     console.log(this.#serializedHeader)
@@ -121,12 +121,13 @@ export default class TableData {
         }</p>
       </div>
       ${
-        condition.attributes
-          .map(
-            property => `<div class="condition _subject-background-color" data-subject-id="${property.subject.subjectId}">
-              <p title="${property.property.label}">${property.property.label}</p>
+        this.#dxCondition.valuesConditions
+          .map(valuesCondition => {
+            const label = Records.getProperty(valuesCondition.propertyId).label;
+            return `<div class="condition _subject-background-color" data-subject-id="${valuesCondition.key.subjectId}">
+              <p title="${label}">${label}</p>
             </div>`
-          )
+          })
           .join('')
       }
       ${
@@ -284,11 +285,13 @@ export default class TableData {
     );
     // attribute (classification/distribution)
     Records.properties.forEach(({propertyId}) => {
-      const attribute = this.#condition.attributes.find(
-        attribute => attribute.property.propertyId === propertyId
-      );
+      const valuesCondition = this.#dxCondition.valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
+      // const attribute = this.#condition.attributes.find(
+      //   attribute => attribute.property.propertyId === propertyId
+      // );
       const categoryIds = [];
-      if (attribute) categoryIds.push(...attribute.query.categoryIds);
+      if (valuesCondition) categoryIds.push(...valuesCondition.categoryIds);
+      // if (attribute) categoryIds.push(...attribute.query.categoryIds);
       ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
     });
   }

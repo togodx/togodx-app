@@ -1,12 +1,12 @@
+import BaseCondition from "./BaseCondition";
 import Records from "./Records";
 
-export default class ValuesCondition {
+export default class ValuesCondition extends BaseCondition {
 
-  #propertyId
-  #categoryIds
+  #categoryIds;
 
   constructor(propertyId, categoryIds) {
-    this.#propertyId = propertyId;
+    super(propertyId);
     this.#categoryIds = categoryIds;
   }
 
@@ -24,10 +24,6 @@ export default class ValuesCondition {
 
 
   // accessor
-
-  get propertyId() {
-    return this.#propertyId;
-  }
 
   get categoryIds() {
     return this.#categoryIds;

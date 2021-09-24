@@ -158,7 +158,7 @@ class ConditionBuilder {
       return {query, subject, property, parentCategoryId};
     });
     // create attributes (property values)
-    const attributes = this.#attributeConditions.map(({propertyId, categoryIds}) => {
+    const attributes = this.#valuesConditions.map(({propertyId, categoryIds}) => {
       const subject = Records.getSubjectWithPropertyId(propertyId);
       const property = Records.getProperty(propertyId);
       return {
@@ -169,7 +169,7 @@ class ConditionBuilder {
         subject,
         property
       }
-    })
+    });
     // emmit event
     // const customEvent = new CustomEvent(event.completeQueryParameter, {detail: {
     //   togoKey: this.#togoKey,
@@ -181,7 +181,7 @@ class ConditionBuilder {
       togoKey: this.#togoKey,
       properties,
       attributes,
-      dxCondition: new DXCondition(this.#togoKey, [...this.#keyConditions])
+      dxCondition: new DXCondition(this.#togoKey, [...this.#keyConditions], [...this.#valuesConditions])
     }});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
