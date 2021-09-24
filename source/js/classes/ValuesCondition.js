@@ -22,6 +22,20 @@ export default class ValuesCondition extends BaseCondition {
     this.#categoryIds.splice(index, 1);
   }
 
+  getURLParameter() {
+    const values = {
+      propertyId: this.propertyId,
+      ids: []
+    }
+    this.#categoryIds.forEach(categoryId => {
+      const id = {categoryId};
+      const ancestors = Records.getAncestors(this.propertyId, categoryId).map(ancestor => ancestor.categoryId);
+      if (ancestors.length > 0) id.ancestors = ancestors;
+      values.ids.push(id);
+    })
+    return values;
+}
+
 
   // accessor
 

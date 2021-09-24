@@ -3048,6 +3048,24 @@
         } else {
           return false;
         }
+      }
+    }, {
+      key: "getURLParameter",
+      value: function getURLParameter() {
+        var key = {
+          propertyId: this.propertyId
+        };
+
+        if (_classPrivateFieldGet(this, _parentCategoryId)) {
+          key.id = {
+            categoryId: _classPrivateFieldGet(this, _parentCategoryId),
+            ancestors: Records$1.getAncestors(this.propertyId, _classPrivateFieldGet(this, _parentCategoryId)).map(function (ancestor) {
+              return ancestor.categoryId;
+            })
+          };
+        }
+
+        return key;
       } // accessor
 
     }, {
@@ -3123,6 +3141,29 @@
         var index = _classPrivateFieldGet(this, _categoryIds).indexOf(categoryId);
 
         _classPrivateFieldGet(this, _categoryIds).splice(index, 1);
+      }
+    }, {
+      key: "getURLParameter",
+      value: function getURLParameter() {
+        var _this2 = this;
+
+        var values = {
+          propertyId: this.propertyId,
+          ids: []
+        };
+
+        _classPrivateFieldGet(this, _categoryIds).forEach(function (categoryId) {
+          var id = {
+            categoryId: categoryId
+          };
+          var ancestors = Records$1.getAncestors(_this2.propertyId, categoryId).map(function (ancestor) {
+            return ancestor.categoryId;
+          });
+          if (ancestors.length > 0) id.ancestors = ancestors;
+          values.ids.push(id);
+        });
+
+        return values;
       } // accessor
 
     }, {
@@ -3254,8 +3295,6 @@
 
   var _clearConditinos = /*#__PURE__*/new WeakSet();
 
-  var _getHierarchicConditions = /*#__PURE__*/new WeakSet();
-
   var _getCondtionsFromHierarchicConditions = /*#__PURE__*/new WeakSet();
 
   var ConditionBuilder = /*#__PURE__*/function () {
@@ -3265,8 +3304,6 @@
       _classCallCheck(this, ConditionBuilder);
 
       _classPrivateMethodInitSpec(this, _getCondtionsFromHierarchicConditions);
-
-      _classPrivateMethodInitSpec(this, _getHierarchicConditions);
 
       _classPrivateMethodInitSpec(this, _clearConditinos);
 
@@ -3380,8 +3417,8 @@
       key: "addPropertyValue",
       value: function addPropertyValue(propertyId, categoryId) {
         var isFinal = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-        console.log(_classPrivateFieldGet(this, _attributeConditions)); // find value of same property
 
+        // find value of same property
         var sameValuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
           return valuesCondition.propertyId === propertyId;
         }); // store
@@ -3645,16 +3682,19 @@
     var dontLeaveInHistory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
     if (!_classPrivateFieldGet(this, _isRestoredConditinoFromURLParameters)) return; // evaluate if search is possible
 
-    var established = _classPrivateFieldGet(this, _togoKey) && (_classPrivateFieldGet(this, _keyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
+    var established = _classPrivateFieldGet(this, _togoKey) && (_classPrivateFieldGet(this, _keyConditions).length > 0 || _classPrivateFieldGet(this, _valuesConditions).length > 0);
     var customEvent = new CustomEvent(mutateEstablishConditions, {
       detail: established
     });
     DefaultEventEmitter$1.dispatchEvent(customEvent); // get hierarchic conditions
 
-    var _classPrivateMethodGe = _classPrivateMethodGet(this, _getHierarchicConditions, _getHierarchicConditions2).call(this),
-        _classPrivateMethodGe2 = _slicedToArray(_classPrivateMethodGe, 2),
-        keys = _classPrivateMethodGe2[0],
-        values = _classPrivateMethodGe2[1]; // generate permalink
+    var keys = _classPrivateFieldGet(this, _keyConditions).map(function (keyCondiiton) {
+      return keyCondiiton.getURLParameter();
+    });
+
+    var values = _classPrivateFieldGet(this, _valuesConditions).map(function (valuesCondition) {
+      return valuesCondition.getURLParameter();
+    }); // generate permalink
 
 
     var params = new URL(location).searchParams;
@@ -3763,10 +3803,10 @@
     _classPrivateFieldSet(this, _togoKey, togoKey); // this.#userIds = userIds;
 
 
-    var _classPrivateMethodGe3 = _classPrivateMethodGet(this, _getCondtionsFromHierarchicConditions, _getCondtionsFromHierarchicConditions2).call(this, keys, values),
-        _classPrivateMethodGe4 = _slicedToArray(_classPrivateMethodGe3, 2),
-        properties = _classPrivateMethodGe4[0],
-        attributes = _classPrivateMethodGe4[1];
+    var _classPrivateMethodGe = _classPrivateMethodGet(this, _getCondtionsFromHierarchicConditions, _getCondtionsFromHierarchicConditions2).call(this, keys, values),
+        _classPrivateMethodGe2 = _slicedToArray(_classPrivateMethodGe, 2),
+        properties = _classPrivateMethodGe2[0],
+        attributes = _classPrivateMethodGe2[1];
 
     this.setProperties(properties, false);
     Records$1.properties.forEach(function (_ref7) {
@@ -3814,66 +3854,19 @@
     _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
   }
 
-  function _getHierarchicConditions2() {
-    var keys = [];
-
-    _classPrivateFieldGet(this, _keyConditions).forEach(function (_ref8) {
-      var propertyId = _ref8.propertyId,
-          parentCategoryId = _ref8.parentCategoryId;
-      var property = {
-        propertyId: propertyId
-      };
-
-      if (parentCategoryId) {
-        property.id = {
-          categoryId: parentCategoryId,
-          ancestors: Records$1.getAncestors(propertyId, parentCategoryId).map(function (ancestor) {
-            return ancestor.categoryId;
-          })
-        };
-      }
-
-      keys.push(property);
-    });
-
-    var values = [];
-
-    _classPrivateFieldGet(this, _attributeConditions).forEach(function (_ref9) {
-      var propertyId = _ref9.propertyId,
-          categoryIds = _ref9.categoryIds;
-      var ids = [];
-      categoryIds.forEach(function (categoryId) {
-        var id = {
-          categoryId: categoryId
-        };
-        var ancestors = Records$1.getAncestors(propertyId, categoryId).map(function (ancestor) {
-          return ancestor.categoryId;
-        });
-        if (ancestors.length > 0) id.ancestors = ancestors;
-        ids.push(id);
-      });
-      values.push({
-        propertyId: propertyId,
-        ids: ids
-      });
-    });
-
-    return [keys, values];
-  }
-
   function _getCondtionsFromHierarchicConditions2(keys, values) {
     // restore conditions
-    var properties = keys.map(function (_ref10) {
-      var propertyId = _ref10.propertyId,
-          id = _ref10.id;
+    var properties = keys.map(function (_ref8) {
+      var propertyId = _ref8.propertyId,
+          id = _ref8.id;
       return {
         propertyId: propertyId,
         parentCategoryId: id === null || id === void 0 ? void 0 : id.categoryId
       };
     });
-    var attributes = values.map(function (_ref11) {
-      var propertyId = _ref11.propertyId,
-          ids = _ref11.ids;
+    var attributes = values.map(function (_ref9) {
+      var propertyId = _ref9.propertyId,
+          ids = _ref9.ids;
       return {
         propertyId: propertyId,
         categoryIds: ids.map(function (id) {

@@ -32,6 +32,19 @@ export default class KeyCondition extends BaseCondition {
     }
   }
 
+  getURLParameter() {
+    const key = {
+      propertyId: this.propertyId
+    };
+    if (this.#parentCategoryId) {
+      key.id = {
+        categoryId: this.#parentCategoryId,
+        ancestors: Records.getAncestors(this.propertyId, this.#parentCategoryId).map(ancestor => ancestor.categoryId)
+      }
+    }
+    return key;
+  }
+
 
   // accessor
 

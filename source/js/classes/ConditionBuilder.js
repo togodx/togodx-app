@@ -58,7 +58,6 @@ class ConditionBuilder {
   }
 
   addPropertyValue(propertyId, categoryId, ancestors = [], isFinal = true) {
-    console.log(this.#attributeConditions)
     // find value of same property
     const sameValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
     // store
@@ -228,12 +227,13 @@ class ConditionBuilder {
     // evaluate if search is possible
     const established 
       = this.#togoKey
-      && (this.#keyConditions.length > 0 || this.#attributeConditions.length > 0);
+      && (this.#keyConditions.length > 0 || this.#valuesConditions.length > 0);
     const customEvent = new CustomEvent(event.mutateEstablishConditions, {detail: established});
     DefaultEventEmitter.dispatchEvent(customEvent);
 
     // get hierarchic conditions
-    const [keys, values] = this.#getHierarchicConditions();
+    const keys = this.#keyConditions.map(keyCondiiton => keyCondiiton.getURLParameter());
+    const values = this.#valuesConditions.map(valuesCondition => valuesCondition.getURLParameter());
 
     // generate permalink
     const params = new URL(location).searchParams;
@@ -242,7 +242,6 @@ class ConditionBuilder {
     params.set('keys', JSON.stringify(keys));
     params.set('values', JSON.stringify(values));
     if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
-
   }
 
   #createSearchConditionFromURLParameters(isFirst = false) {
@@ -347,32 +346,6 @@ class ConditionBuilder {
       }
     };
     this.#postProcessing();
-  }
-
-  #getHierarchicConditions() {
-    const keys = [];
-    this.#keyConditions.forEach(({propertyId, parentCategoryId}) => {
-      const property = {propertyId};
-      if (parentCategoryId) {
-        property.id = {
-          categoryId: parentCategoryId,
-          ancestors: Records.getAncestors(propertyId, parentCategoryId).map(ancestor => ancestor.categoryId)
-        }
-      }
-      keys.push(property);
-    });
-    const values = [];
-    this.#attributeConditions.forEach(({propertyId, categoryIds}) => {
-      const ids = [];
-      categoryIds.forEach(categoryId => {
-        const id = {categoryId};
-        const ancestors = Records.getAncestors(propertyId, categoryId).map(ancestor => ancestor.categoryId);
-        if (ancestors.length > 0) id.ancestors = ancestors;
-        ids.push(id);
-      })
-      values.push({propertyId, ids});
-    });
-    return [keys, values];
   }
 
   #getCondtionsFromHierarchicConditions(keys, values) {
