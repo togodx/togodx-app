@@ -9,7 +9,6 @@ class ConditionBuilder {
 
   #keyConditions; // Array<KeyCondition>
   #valuesConditions; // Array<ValuesCondition>
-  #attributeConditions;
   #togoKey;
   #userIds;
   #isRestoredConditinoFromURLParameters = false;
@@ -19,7 +18,6 @@ class ConditionBuilder {
 
     this.#keyConditions = [];
     this.#valuesConditions = [];
-    this.#attributeConditions = [];
     this.#preparingCounter = 0;
     this.#isRestoredConditinoFromURLParameters = false;
 
@@ -201,8 +199,8 @@ class ConditionBuilder {
 
   getSelectedCategoryIds(propertyId) {
     const categoryIds = [];
-    const condition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
-    if (condition) categoryIds.push(...condition.categoryIds);
+    const valuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
+    if (valuesCondition) categoryIds.push(...valuesCondition.categoryIds);
     return categoryIds;
   }
 
@@ -336,11 +334,10 @@ class ConditionBuilder {
   #clearConditinos() {
     while (this.#keyConditions.length > 0) {
       const {propertyId, parentCategoryId} = this.#keyConditions[0];
-      console.log(propertyId, parentCategoryId)
       this.removeProperty(propertyId, parentCategoryId, false);
     };
-    while (this.#attributeConditions.length > 0) {
-      const {propertyId, categoryIds} = this.#attributeConditions[0];
+    while (this.#valuesConditions.length > 0) {
+      const {propertyId, categoryIds} = this.#valuesConditions[0];
       while (categoryIds.length > 0) {
         this.removePropertyValue(propertyId, categoryIds[0], false);
       }

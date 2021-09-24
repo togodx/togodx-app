@@ -3271,8 +3271,6 @@
 
   var _valuesConditions = /*#__PURE__*/new WeakMap();
 
-  var _attributeConditions = /*#__PURE__*/new WeakMap();
-
   var _togoKey = /*#__PURE__*/new WeakMap();
 
   var _userIds = /*#__PURE__*/new WeakMap();
@@ -3329,11 +3327,6 @@
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _attributeConditions, {
-        writable: true,
-        value: void 0
-      });
-
       _classPrivateFieldInitSpec(this, _togoKey, {
         writable: true,
         value: void 0
@@ -3357,8 +3350,6 @@
       _classPrivateFieldSet(this, _keyConditions, []);
 
       _classPrivateFieldSet(this, _valuesConditions, []);
-
-      _classPrivateFieldSet(this, _attributeConditions, []);
 
       _classPrivateFieldSet(this, _preparingCounter, 0);
 
@@ -3654,11 +3645,11 @@
       value: function getSelectedCategoryIds(propertyId) {
         var categoryIds = [];
 
-        var condition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
-          return condition.propertyId === propertyId;
+        var valuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
+          return valuesCondition.propertyId === propertyId;
         });
 
-        if (condition) categoryIds.push.apply(categoryIds, _toConsumableArray(condition.categoryIds));
+        if (valuesCondition) categoryIds.push.apply(categoryIds, _toConsumableArray(valuesCondition.categoryIds));
         return categoryIds;
       } // public accessor
 
@@ -3837,12 +3828,11 @@
           propertyId = _classPrivateFieldGet2.propertyId,
           parentCategoryId = _classPrivateFieldGet2.parentCategoryId;
 
-      console.log(propertyId, parentCategoryId);
       this.removeProperty(propertyId, parentCategoryId, false);
     }
 
-    while (_classPrivateFieldGet(this, _attributeConditions).length > 0) {
-      var _classPrivateFieldGet3 = _classPrivateFieldGet(this, _attributeConditions)[0],
+    while (_classPrivateFieldGet(this, _valuesConditions).length > 0) {
+      var _classPrivateFieldGet3 = _classPrivateFieldGet(this, _valuesConditions)[0],
           _propertyId = _classPrivateFieldGet3.propertyId,
           categoryIds = _classPrivateFieldGet3.categoryIds;
 
