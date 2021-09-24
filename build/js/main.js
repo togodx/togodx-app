@@ -3463,15 +3463,15 @@
 
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
-        var oldCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
-          return condition.propertyId === propertyId;
+        var oldValuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
+          return valuesCondition.propertyId === propertyId;
         });
 
-        if (oldCondition) {
+        if (oldValuesCondition) {
           var originalValues = Records$1.getProperty(propertyId).values;
           originalValues.forEach(function (originalValue) {
             var indexInNew = categoryIds.indexOf(originalValue.categoryId);
-            var indexInOld = oldCondition.categoryIds.indexOf(originalValue.categoryId);
+            var indexInOld = oldValuesCondition.categoryIds.indexOf(originalValue.categoryId);
 
             if (indexInNew !== -1) {
               // if new value does not exist in old values, add property value

@@ -118,12 +118,12 @@ class ConditionBuilder {
   }
 
   setPropertyValues(propertyId, categoryIds, isFinal = true) {
-    const oldCondition = this.#attributeConditions.find(condition => condition.propertyId === propertyId);
-    if (oldCondition) {
+    const oldValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
+    if (oldValuesCondition) {
       const originalValues = Records.getProperty(propertyId).values;
       originalValues.forEach(originalValue => {
         const indexInNew = categoryIds.indexOf(originalValue.categoryId);
-        const indexInOld = oldCondition.categoryIds.indexOf(originalValue.categoryId);
+        const indexInOld = oldValuesCondition.categoryIds.indexOf(originalValue.categoryId);
         if (indexInNew !== -1) {
           // if new value does not exist in old values, add property value
           if (indexInOld === -1) this.addPropertyValue(propertyId, originalValue.categoryId, [], false);
