@@ -5804,7 +5804,7 @@
       if (isOnlyHitCount) {
         hitCountLabel.textContent = hitCount.toLocaleString();
       } else {
-        hitCountLabel.textContent = Math.round(hitCount / countMax * 100) + '%';
+        hitCountLabel.textContent = Math.round(hitCount / count * 100) + '%';
       }
 
       if (hitCount / countMax < .5) {
