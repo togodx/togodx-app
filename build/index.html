@@ -65,7 +65,18 @@
               <div class="body">
                 <table>
                   <thead>
-                    <tr class="statistics"></tr>
+                    <tr class="statistics">
+                      <th class="controller">
+                        <div class="inner">
+                          <label class="onlyhitcount">
+                            <input type="checkbox"><span>Only hit count</span>
+                          </label>
+                          <label class="stretch">
+                            <input type="checkbox"><span>Stretch</span>
+                          </label>
+                        </div>
+                      </th>
+                    </tr>
                     <tr class="header"></tr>
                     <tr class="subheader"></tr>
                   </thead>
@@ -89,7 +100,7 @@
             <div class="conditions" data-hidden-by="results">
               <div class="condition" id="ConditionTogoKey">
                 <div class="inner">
-                  <h2 class="title"><span class="material-icons">layers</span>Select target database</h2>
+                  <h2 class="title"><span class="material-icons">layers</span>Select target dataset</h2>
                   <select disabled></select>
                 </div>
                 <hr>
@@ -132,7 +143,7 @@
       </section>
       <div class="loading-view -shown"></div>
     </main>
-    <script src="js/vendor/rawdeflate.js"></script>
+    <script src="js/vendor/lodash.js"></script>
     <script src="js/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </body>

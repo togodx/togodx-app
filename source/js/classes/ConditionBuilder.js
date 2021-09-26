@@ -6,7 +6,6 @@ class ConditionBuilder {
 
   #propertyConditions;
   #attributeConditions;
-  #subjectId;
   #togoKey;
   #userIds;
   #isRestoredConditinoFromURLParameters = false;
@@ -31,11 +30,8 @@ class ConditionBuilder {
     this.#createSearchConditionFromURLParameters(true);
   }
 
-  setSubject(togoKey, subjectId) {
-    console.log('setSubject', togoKey, subjectId)
+  setSubject(togoKey) {
     this.#togoKey = togoKey;
-    this.#subjectId = subjectId;
-    // post processing (permalink, evaluate)
     this.#postProcessing();
   }
 
@@ -190,7 +186,6 @@ class ConditionBuilder {
     console.log(properties, attributes)
     const customEvent = new CustomEvent(event.completeQueryParameter, {detail: {
       togoKey: this.#togoKey,
-      subjectId: this.#subjectId,
       properties,
       attributes
     }});
@@ -239,7 +234,7 @@ class ConditionBuilder {
 
     // evaluate if search is possible
     const established 
-      = (this.#togoKey && this.#subjectId)
+      = this.#togoKey
       && (this.#propertyConditions.length > 0 || this.#attributeConditions.length > 0);
     const customEvent = new CustomEvent(event.mutateEstablishConditions, {detail: established});
     DefaultEventEmitter.dispatchEvent(customEvent);

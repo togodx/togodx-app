@@ -8,6 +8,7 @@ export default class ResultsTable {
   #intersctionObserver;
   #tableData;
   #header;
+  #statisticsViews;
   #ROOT;
   #THEAD;
   #THEAD_SUB;
@@ -17,6 +18,9 @@ export default class ResultsTable {
   #LOADING_VIEW;
 
   constructor(elm) {
+
+    this.#statisticsViews = [];
+
     // references
     this.#ROOT = elm;
     const TABLE = elm.querySelector(':scope > .body > table');
@@ -72,6 +76,24 @@ export default class ResultsTable {
     mutationObserver.observe(document.querySelector('body'), {
       attributes: true,
     });
+
+    // statistics
+    const controller = this.#STATS.querySelector(':scope > th.controller > .inner');
+    controller.querySelector(':scope > label.onlyhitcount > input').addEventListener('change', e => {
+      this.#STATS.classList.toggle('-onlyhitcount');
+      const customEvent = new CustomEvent(event.changeToOnlyHitCountInStatisticsView, {
+        detail: this.#STATS.classList.contains('-onlyhitcount')
+      });
+      DefaultEventEmitter.dispatchEvent(customEvent);
+    });
+    const controllerStretch = controller.querySelector(':scope > label.stretch > input');
+    controllerStretch.addEventListener('change', e => {
+      this.#STATS.classList.toggle('-stretch');
+      const customEvent = new CustomEvent(event.changeToStretchInStatisticsView, {
+        detail: this.#STATS.classList.contains('-stretch')
+      });
+      DefaultEventEmitter.dispatchEvent(customEvent);
+    });
   }
 
   // private methods
@@ -104,13 +126,10 @@ export default class ResultsTable {
     // make table header
     this.#THEAD.innerHTML = `
       <th rowspan="2">
-        <div class="inner">Report</div>
-      </th>
-      <th rowspan="2">
         <div class="inner">
-          <div class="togo-key-view">${Records.getLabelFromTogoKey(
-            tableData.condition.togoKey
-          )}</div>
+          <div class="togo-key-view">${
+            Records.getDatasetLabel(tableData.condition.togoKey)
+          }</div>
         </div>
       </th>
       <th colspan="100%">
@@ -148,21 +167,23 @@ export default class ResultsTable {
       .join('')}`;
 
     // make stats
-    this.#STATS.innerHTML =
-      `<td colspan="2"><div class="inner"><div></td>` +
-      properties
-        .map(() => `<td><div class="inner"><div></div></div></td>`)
-        .join('');
-    this.#STATS
-      .querySelectorAll(':scope > td > .inner > div')
-      .forEach((elm, index) => {
-        if (index === 0) return;
-        new StatisticsView(elm, properties[index - 1]);
-      });
+    for (const td of this.#STATS.querySelectorAll(':scope > td')) {
+      td.remove();
+    }
+    for (const statisticsView of this.#statisticsViews) {
+      statisticsView.destroy();
+    }
+    this.#statisticsViews = [];
+    for (const property of properties) {
+      const td = document.createElement('td');
+      td.innerHTML = '<div class="inner"><div></div></div>';
+      this.#STATS.append(td);
+      this.#statisticsViews.push(new StatisticsView(this.#STATS, td.querySelector(':scope > .inner > div'), tableData, property));
+    }
   }
 
   #addTableRows(detail) {
-    console.log(detail);
+    // console.log(detail);
 
     this.#tableData = detail.tableData;
 
@@ -181,19 +202,10 @@ export default class ResultsTable {
       'beforeend',
       rows
         .map((row, index) => {
-          console.log(row);
+          // console.log(row);
           return `<tr data-index="${
             detail.tableData.offset + index
           }" data-togo-id="${detail.rows[index].id}">
-            <th>
-              <div class="inner">
-                <a class="external-link-button-view" href="report.html?togoKey=${
-                  detail.tableData.togoKey
-                }&id=${detail.rows[index].id}&properties=${window.btoa(
-            RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))
-          )}" target="_blank">Report</a>
-              </div>
-            </th>
             <td>
               <div class="inner">
                 <ul>
@@ -281,17 +293,11 @@ export default class ResultsTable {
       const tr = this.#TBODY.querySelector(
         `:scope > tr[data-index="${actualIndex}"]`
       );
-      const reportLink = `
-      report.html?togoKey=${detail.tableData.togoKey}&id=${
-        detail.rows[index].id
-      }&properties=${window.btoa(
-        RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))
-      )}`;
 
       const uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(uniqueEntry => {
         uniqueEntry.addEventListener('click', () => {
-          createPopupEvent(uniqueEntry, reportLink, event.showPopup);
+          createPopupEvent(uniqueEntry, event.showPopup);
         });
         // remove highlight on mouseleave only when there is no popup
         const td = uniqueEntry.closest('td');

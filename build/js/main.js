@@ -1,6 +1,44 @@
 (function () {
   'use strict';
 
+  function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(object);
+
+      if (enumerableOnly) {
+        symbols = symbols.filter(function (sym) {
+          return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+        });
+      }
+
+      keys.push.apply(keys, symbols);
+    }
+
+    return keys;
+  }
+
+  function _objectSpread2(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i] != null ? arguments[i] : {};
+
+      if (i % 2) {
+        ownKeys(Object(source), true).forEach(function (key) {
+          _defineProperty(target, key, source[key]);
+        });
+      } else if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+      } else {
+        ownKeys(Object(source)).forEach(function (key) {
+          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+      }
+    }
+
+    return target;
+  }
+
   function _typeof(obj) {
     "@babel/helpers - typeof";
 
@@ -52,40 +90,6 @@
     }
 
     return obj;
-  }
-
-  function ownKeys(object, enumerableOnly) {
-    var keys = Object.keys(object);
-
-    if (Object.getOwnPropertySymbols) {
-      var symbols = Object.getOwnPropertySymbols(object);
-      if (enumerableOnly) symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      });
-      keys.push.apply(keys, symbols);
-    }
-
-    return keys;
-  }
-
-  function _objectSpread2(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i] != null ? arguments[i] : {};
-
-      if (i % 2) {
-        ownKeys(Object(source), true).forEach(function (key) {
-          _defineProperty(target, key, source[key]);
-        });
-      } else if (Object.getOwnPropertyDescriptors) {
-        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-      } else {
-        ownKeys(Object(source)).forEach(function (key) {
-          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-        });
-      }
-    }
-
-    return target;
   }
 
   function _inherits(subClass, superClass) {
@@ -234,6 +238,8 @@
   function _possibleConstructorReturn(self, call) {
     if (call && (typeof call === "object" || typeof call === "function")) {
       return call;
+    } else if (call !== void 0) {
+      throw new TypeError("Derived constructors may only return object or undefined");
     }
 
     return _assertThisInitialized(self);
@@ -275,18 +281,21 @@
   }
 
   function _iterableToArray(iter) {
-    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
   }
 
   function _iterableToArrayLimit(arr, i) {
-    if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+    var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+
+    if (_i == null) return;
     var _arr = [];
     var _n = true;
     var _d = false;
-    var _e = undefined;
+
+    var _s, _e;
 
     try {
-      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
         _arr.push(_s.value);
 
         if (i && _arr.length === i) break;
@@ -331,9 +340,9 @@
   }
 
   function _createForOfIteratorHelper(o, allowArrayLike) {
-    var it;
+    var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
 
-    if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+    if (!it) {
       if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
         if (it) o = it;
         var i = 0;
@@ -366,7 +375,7 @@
         err;
     return {
       s: function () {
-        it = o[Symbol.iterator]();
+        it = it.call(o);
       },
       n: function () {
         var step = it.next();
@@ -437,6 +446,24 @@
     return fn;
   }
 
+  function _checkPrivateRedeclaration(obj, privateCollection) {
+    if (privateCollection.has(obj)) {
+      throw new TypeError("Cannot initialize the same private elements twice on an object");
+    }
+  }
+
+  function _classPrivateFieldInitSpec(obj, privateMap, value) {
+    _checkPrivateRedeclaration(obj, privateMap);
+
+    privateMap.set(obj, value);
+  }
+
+  function _classPrivateMethodInitSpec(obj, privateSet) {
+    _checkPrivateRedeclaration(obj, privateSet);
+
+    privateSet.add(obj);
+  }
+
   var DefaultEventEmitter = /*#__PURE__*/function (_EventTarget) {
     _inherits(DefaultEventEmitter, _EventTarget);
 
@@ -452,6 +479,15 @@
   }( /*#__PURE__*/_wrapNativeSuper(EventTarget));
 
   var DefaultEventEmitter$1 = new DefaultEventEmitter();
+
+  var _excluded = ["method"],
+      _excluded2 = ["format"],
+      _excluded3 = ["format"],
+      _excluded4 = ["inGamut", "commas", "format"],
+      _excluded5 = ["precision", "commas", "format", "inGamut"],
+      _excluded6 = ["format", "commas", "inGamut"],
+      _excluded7 = ["format"],
+      _excluded8 = ["maxDeltaE", "deltaEMethod", "steps", "maxSteps"];
 
   function t(t, e) {
     var r = t.length;
@@ -676,7 +712,7 @@
         var _r5 = r,
             _r5$method = _r5.method,
             a = _r5$method === void 0 ? h.defaults.deltaE : _r5$method,
-            s = _objectWithoutProperties(_r5, ["method"]);
+            s = _objectWithoutProperties(_r5, _excluded);
 
         return t = h.get(t), this["deltaE" + a] ? this["deltaE" + a](t, s) : this.deltaE76(t);
       }
@@ -1327,7 +1363,7 @@
       toString: function toString() {
         var _ref9 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
             t = _ref9.format,
-            e = _objectWithoutProperties(_ref9, ["format"]);
+            e = _objectWithoutProperties(_ref9, _excluded2);
 
         return t || (t = function t(_t19, e) {
           return 0 === e ? _t19 + "%" : _t19;
@@ -1393,7 +1429,7 @@
       toString: function toString() {
         var _ref10 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
             t = _ref10.format,
-            e = _objectWithoutProperties(_ref10, ["format"]);
+            e = _objectWithoutProperties(_ref10, _excluded3);
 
         return t || (t = function t(_t23, e) {
           return 0 === e ? _t23 + "%" : _t23;
@@ -1469,7 +1505,7 @@
             e = _ref12.commas,
             _ref12$format = _ref12.format,
             r = _ref12$format === void 0 ? "%" : _ref12$format,
-            a = _objectWithoutProperties(_ref12, ["inGamut", "commas", "format"]);
+            a = _objectWithoutProperties(_ref12, _excluded4);
 
         if (255 === r) r = function r(t) {
           return 255 * t;
@@ -1587,7 +1623,7 @@
             var e = _ref13.commas,
             r = _ref13.format;
             _ref13.inGamut;
-            var s = _objectWithoutProperties(_ref13, ["precision", "commas", "format", "inGamut"]);
+            var s = _objectWithoutProperties(_ref13, _excluded5);
 
         return r || (r = function r(t, e) {
           return e > 0 ? t + "%" : t;
@@ -1691,7 +1727,7 @@
             t = _ref14.format;
             _ref14.commas;
             _ref14.inGamut;
-            var a = _objectWithoutProperties(_ref14, ["format", "commas", "inGamut"]);
+            var a = _objectWithoutProperties(_ref14, _excluded6);
 
         return t || (t = function t(_t32, e) {
           return e > 0 ? _t32 + "%" : _t32;
@@ -1928,7 +1964,7 @@
       toString: function toString() {
         var _ref15 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
             t = _ref15.format,
-            e = _objectWithoutProperties(_ref15, ["format"]);
+            e = _objectWithoutProperties(_ref15, _excluded7);
 
         return h.prototype.toString.call(this, _objectSpread2({
           name: "jzazbz",
@@ -2279,7 +2315,7 @@
         i = _r10$steps === void 0 ? 2 : _r10$steps,
         _r10$maxSteps = _r10.maxSteps,
         n = _r10$maxSteps === void 0 ? 1e3 : _r10$maxSteps,
-        c = _objectWithoutProperties(_r10, ["maxDeltaE", "deltaEMethod", "steps", "maxSteps"]);
+        c = _objectWithoutProperties(_r10, _excluded8);
 
     a || (t = h.get(t), e = h.get(e), a = h.range(t, e, c));
     var l = this.deltaE(e),
@@ -2699,27 +2735,34 @@
     "transparent" === e ? (r.coords = g.black, r.alpha = 0) : r.coords = g[e], r.coords && (t.color = r);
   });
 
-  var _subjects = new WeakMap();
+  var _subjects = /*#__PURE__*/new WeakMap();
 
-  var _properties$1 = new WeakMap();
+  var _datasets = /*#__PURE__*/new WeakMap();
 
-  var _fetchedCategoryIds = new WeakMap();
+  var _properties$1 = /*#__PURE__*/new WeakMap();
+
+  var _fetchedCategoryIds = /*#__PURE__*/new WeakMap();
 
   var Records = /*#__PURE__*/function () {
     function Records() {
       _classCallCheck(this, Records);
 
-      _subjects.set(this, {
+      _classPrivateFieldInitSpec(this, _subjects, {
         writable: true,
         value: void 0
       });
 
-      _properties$1.set(this, {
+      _classPrivateFieldInitSpec(this, _datasets, {
         writable: true,
         value: void 0
       });
 
-      _fetchedCategoryIds.set(this, {
+      _classPrivateFieldInitSpec(this, _properties$1, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _fetchedCategoryIds, {
         writable: true,
         value: void 0
       });
@@ -2792,6 +2835,16 @@
         } finally {
           _iterator.f();
         }
+      }
+    }, {
+      key: "setDatasets",
+      value: function setDatasets(_ref) {
+        _ref.tracks;
+            _ref.attributes;
+            var datasets = _ref.datasets;
+
+        // TODO:
+        _classPrivateFieldSet(this, _datasets, datasets);
       }
     }, {
       key: "fetchPropertyValues",
@@ -2890,11 +2943,9 @@
         return ancestors;
       }
     }, {
-      key: "getLabelFromTogoKey",
-      value: function getLabelFromTogoKey(togoKey) {
-        return _classPrivateFieldGet(this, _subjects).find(function (subject) {
-          return subject.togoKey === togoKey;
-        }).keyLabel;
+      key: "getDatasetLabel",
+      value: function getDatasetLabel(dataset) {
+        return _classPrivateFieldGet(this, _datasets)[dataset].label;
       } // public accessors
 
     }, {
@@ -2947,93 +2998,89 @@
 
   var enterPropertyValueItemView = 'enterPropertyValueItemView';
   var leavePropertyValueItemView = 'leavePropertyValueItemView';
-  var allTracksCollapse = 'allTracksCollapse';
+  var allTracksCollapse = 'allTracksCollapse'; // Statistics
 
-  var _propertyConditions = new WeakMap();
+  var changeToOnlyHitCountInStatisticsView = 'changeToOnlyHitCountInStatisticsView';
+  var changeToStretchInStatisticsView = 'changeToStretchInStatisticsView';
 
-  var _attributeConditions = new WeakMap();
+  var _propertyConditions = /*#__PURE__*/new WeakMap();
 
-  var _subjectId = new WeakMap();
+  var _attributeConditions = /*#__PURE__*/new WeakMap();
 
-  var _togoKey = new WeakMap();
+  var _togoKey = /*#__PURE__*/new WeakMap();
 
-  var _userIds = new WeakMap();
+  var _userIds = /*#__PURE__*/new WeakMap();
 
-  var _isRestoredConditinoFromURLParameters = new WeakMap();
+  var _isRestoredConditinoFromURLParameters = /*#__PURE__*/new WeakMap();
 
-  var _preparingCounter = new WeakMap();
+  var _preparingCounter = /*#__PURE__*/new WeakMap();
 
-  var _postProcessing = new WeakSet();
+  var _postProcessing = /*#__PURE__*/new WeakSet();
 
-  var _createSearchConditionFromURLParameters = new WeakSet();
+  var _createSearchConditionFromURLParameters = /*#__PURE__*/new WeakSet();
 
-  var _makeQueueOfGettingChildCategoryIds = new WeakSet();
+  var _makeQueueOfGettingChildCategoryIds = /*#__PURE__*/new WeakSet();
 
-  var _progressQueueOfGettingChildCategoryIds = new WeakSet();
+  var _progressQueueOfGettingChildCategoryIds = /*#__PURE__*/new WeakSet();
 
-  var _getChildCategoryIds = new WeakSet();
+  var _getChildCategoryIds = /*#__PURE__*/new WeakSet();
 
-  var _restoreConditions = new WeakSet();
+  var _restoreConditions = /*#__PURE__*/new WeakSet();
 
-  var _clearConditinos = new WeakSet();
+  var _clearConditinos = /*#__PURE__*/new WeakSet();
 
-  var _getHierarchicConditions = new WeakSet();
+  var _getHierarchicConditions = /*#__PURE__*/new WeakSet();
 
-  var _getCondtionsFromHierarchicConditions = new WeakSet();
+  var _getCondtionsFromHierarchicConditions = /*#__PURE__*/new WeakSet();
 
   var ConditionBuilder = /*#__PURE__*/function () {
     function ConditionBuilder() {
       _classCallCheck(this, ConditionBuilder);
 
-      _getCondtionsFromHierarchicConditions.add(this);
+      _classPrivateMethodInitSpec(this, _getCondtionsFromHierarchicConditions);
 
-      _getHierarchicConditions.add(this);
+      _classPrivateMethodInitSpec(this, _getHierarchicConditions);
 
-      _clearConditinos.add(this);
+      _classPrivateMethodInitSpec(this, _clearConditinos);
 
-      _restoreConditions.add(this);
+      _classPrivateMethodInitSpec(this, _restoreConditions);
 
-      _getChildCategoryIds.add(this);
+      _classPrivateMethodInitSpec(this, _getChildCategoryIds);
 
-      _progressQueueOfGettingChildCategoryIds.add(this);
+      _classPrivateMethodInitSpec(this, _progressQueueOfGettingChildCategoryIds);
 
-      _makeQueueOfGettingChildCategoryIds.add(this);
+      _classPrivateMethodInitSpec(this, _makeQueueOfGettingChildCategoryIds);
 
-      _createSearchConditionFromURLParameters.add(this);
+      _classPrivateMethodInitSpec(this, _createSearchConditionFromURLParameters);
 
-      _postProcessing.add(this);
+      _classPrivateMethodInitSpec(this, _postProcessing);
 
-      _propertyConditions.set(this, {
+      _classPrivateFieldInitSpec(this, _propertyConditions, {
         writable: true,
         value: void 0
       });
 
-      _attributeConditions.set(this, {
+      _classPrivateFieldInitSpec(this, _attributeConditions, {
         writable: true,
         value: void 0
       });
 
-      _subjectId.set(this, {
+      _classPrivateFieldInitSpec(this, _togoKey, {
         writable: true,
         value: void 0
       });
 
-      _togoKey.set(this, {
+      _classPrivateFieldInitSpec(this, _userIds, {
         writable: true,
         value: void 0
       });
 
-      _userIds.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _isRestoredConditinoFromURLParameters.set(this, {
+      _classPrivateFieldInitSpec(this, _isRestoredConditinoFromURLParameters, {
         writable: true,
         value: false
       });
 
-      _preparingCounter.set(this, {
+      _classPrivateFieldInitSpec(this, _preparingCounter, {
         writable: true,
         value: void 0
       });
@@ -3059,13 +3106,8 @@
       }
     }, {
       key: "setSubject",
-      value: function setSubject(togoKey, subjectId) {
-        console.log('setSubject', togoKey, subjectId);
-
+      value: function setSubject(togoKey) {
         _classPrivateFieldSet(this, _togoKey, togoKey);
-
-        _classPrivateFieldSet(this, _subjectId, subjectId); // post processing (permalink, evaluate)
-
 
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
@@ -3321,7 +3363,6 @@
         var customEvent = new CustomEvent(completeQueryParameter, {
           detail: {
             togoKey: _classPrivateFieldGet(this, _togoKey),
-            subjectId: _classPrivateFieldGet(this, _subjectId),
             properties: properties,
             attributes: attributes
           }
@@ -3384,7 +3425,7 @@
     console.log(_classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions), dontLeaveInHistory);
     if (!_classPrivateFieldGet(this, _isRestoredConditinoFromURLParameters)) return; // evaluate if search is possible
 
-    var established = _classPrivateFieldGet(this, _togoKey) && _classPrivateFieldGet(this, _subjectId) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
+    var established = _classPrivateFieldGet(this, _togoKey) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
     var customEvent = new CustomEvent(mutateEstablishConditions, {
       detail: established
     });
@@ -3626,15 +3667,15 @@
 
   var POLLING_DURATION = 100;
 
-  var _isRange = new WeakMap();
+  var _isRange = /*#__PURE__*/new WeakMap();
 
-  var _condition$1 = new WeakMap();
+  var _condition$1 = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$b = new WeakMap();
+  var _ROOT$c = /*#__PURE__*/new WeakMap();
 
-  var _LABELS = new WeakMap();
+  var _LABELS = /*#__PURE__*/new WeakMap();
 
-  var _make = new WeakSet();
+  var _make = /*#__PURE__*/new WeakSet();
 
   var StackingConditionView = /*#__PURE__*/function () {
     /**
@@ -3648,24 +3689,24 @@
 
       _classCallCheck(this, StackingConditionView);
 
-      _make.add(this);
+      _classPrivateMethodInitSpec(this, _make);
 
-      _isRange.set(this, {
+      _classPrivateFieldInitSpec(this, _isRange, {
         writable: true,
         value: void 0
       });
 
-      _condition$1.set(this, {
+      _classPrivateFieldInitSpec(this, _condition$1, {
         writable: true,
         value: void 0
       });
 
-      _ROOT$b.set(this, {
+      _classPrivateFieldInitSpec(this, _ROOT$c, {
         writable: true,
         value: void 0
       });
 
-      _LABELS.set(this, {
+      _classPrivateFieldInitSpec(this, _LABELS, {
         writable: true,
         value: void 0
       });
@@ -3676,14 +3717,14 @@
       var property = Records$1.getProperty(condition.propertyId); // this.#isRange = isRange;
       // attributes
 
-      _classPrivateFieldSet(this, _ROOT$b, document.createElement('div'));
+      _classPrivateFieldSet(this, _ROOT$c, document.createElement('div'));
 
-      _classPrivateFieldGet(this, _ROOT$b).classList.add('stacking-condition-view');
+      _classPrivateFieldGet(this, _ROOT$c).classList.add('stacking-condition-view');
 
-      _classPrivateFieldGet(this, _ROOT$b).dataset.subjectId = subject.subjectId;
-      _classPrivateFieldGet(this, _ROOT$b).dataset.propertyId = condition.propertyId;
-      if (condition.value) _classPrivateFieldGet(this, _ROOT$b).dataset.categoryId = condition.value.categoryId;
-      if (condition.parentCategoryId) _classPrivateFieldGet(this, _ROOT$b).dataset.parentCategoryId = condition.parentCategoryId; // make view
+      _classPrivateFieldGet(this, _ROOT$c).dataset.subjectId = subject.subjectId;
+      _classPrivateFieldGet(this, _ROOT$c).dataset.propertyId = condition.propertyId;
+      if (condition.value) _classPrivateFieldGet(this, _ROOT$c).dataset.categoryId = condition.value.categoryId;
+      if (condition.parentCategoryId) _classPrivateFieldGet(this, _ROOT$c).dataset.parentCategoryId = condition.parentCategoryId; // make view
 
       var _label,
           _ancestorLabels = [subject.subject];
@@ -3758,7 +3799,7 @@
       key: "removeProperty",
       value: function removeProperty(propertyId, parentCategoryId) {
         var isMatch = propertyId === _classPrivateFieldGet(this, _condition$1).propertyId && (parentCategoryId ? parentCategoryId === _classPrivateFieldGet(this, _condition$1).parentCategoryId : true);
-        if (isMatch) _classPrivateFieldGet(this, _ROOT$b).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$b));
+        if (isMatch) _classPrivateFieldGet(this, _ROOT$c).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$c));
         return isMatch;
       }
     }, {
@@ -3768,7 +3809,7 @@
           _classPrivateFieldGet(this, _LABELS).removeChild(_classPrivateFieldGet(this, _LABELS).querySelector(":scope > [data-category-id=\"".concat(categoryId, "\"")));
 
           if (_classPrivateFieldGet(this, _LABELS).childNodes.length === 0) {
-            _classPrivateFieldGet(this, _ROOT$b).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$b));
+            _classPrivateFieldGet(this, _ROOT$c).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$c));
 
             return true;
           } else {
@@ -3792,19 +3833,19 @@
     var _this3 = this;
 
     console.log(container, type, ancestorLabels, label);
-    _classPrivateFieldGet(this, _ROOT$b).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      ".concat(ancestorLabels.map(function (ancestor) {
+    _classPrivateFieldGet(this, _ROOT$c).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      ".concat(ancestorLabels.map(function (ancestor) {
       return "<li>".concat(ancestor, "</li>");
     }).join(''), "\n    </ul>\n    ").concat(label);
-    container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$b)); // reference
+    container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$c)); // reference
 
     if (type === 'value') {
-      _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .labels'));
+      _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$c).querySelector(':scope > .labels'));
 
       this.addValue(_classPrivateFieldGet(this, _condition$1).categoryId);
     } // event
 
 
-    _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .close-button-view').addEventListener('click', function () {
+    _classPrivateFieldGet(this, _ROOT$c).querySelector(':scope > .close-button-view').addEventListener('click', function () {
       switch (type) {
         case 'property':
           // notify
@@ -3831,90 +3872,90 @@
     });
   }
 
-  var _properties = new WeakMap();
+  var _properties = /*#__PURE__*/new WeakMap();
 
-  var _propertyValues = new WeakMap();
+  var _propertyValues = /*#__PURE__*/new WeakMap();
 
-  var _isDefined = new WeakMap();
+  var _isDefined = /*#__PURE__*/new WeakMap();
 
-  var _placeHolderExamples = new WeakMap();
+  var _placeHolderExamples = /*#__PURE__*/new WeakMap();
 
-  var _TOGO_KEYS = new WeakMap();
+  var _TOGO_KEYS = /*#__PURE__*/new WeakMap();
 
-  var _USER_IDS$1 = new WeakMap();
+  var _USER_IDS$1 = /*#__PURE__*/new WeakMap();
 
-  var _PROPERTIES_CONDITIONS_CONTAINER = new WeakMap();
+  var _PROPERTIES_CONDITIONS_CONTAINER = /*#__PURE__*/new WeakMap();
 
-  var _ATTRIBUTES_CONDITIONS_CONTAINER = new WeakMap();
+  var _ATTRIBUTES_CONDITIONS_CONTAINER = /*#__PURE__*/new WeakMap();
 
-  var _EXEC_BUTTON = new WeakMap();
+  var _EXEC_BUTTON = /*#__PURE__*/new WeakMap();
 
-  var _defineTogoKeys = new WeakSet();
+  var _defineTogoKeys = /*#__PURE__*/new WeakSet();
 
-  var _addProperty = new WeakSet();
+  var _addProperty = /*#__PURE__*/new WeakSet();
 
-  var _removeProperty = new WeakSet();
+  var _removeProperty = /*#__PURE__*/new WeakSet();
 
-  var _addPropertyValue = new WeakSet();
+  var _addPropertyValue = /*#__PURE__*/new WeakSet();
 
-  var _removePropertyValue = new WeakSet();
+  var _removePropertyValue = /*#__PURE__*/new WeakSet();
 
   var ConditionBuilderView = function ConditionBuilderView(elm) {
     var _this = this;
 
     _classCallCheck(this, ConditionBuilderView);
 
-    _removePropertyValue.add(this);
+    _classPrivateMethodInitSpec(this, _removePropertyValue);
 
-    _addPropertyValue.add(this);
+    _classPrivateMethodInitSpec(this, _addPropertyValue);
 
-    _removeProperty.add(this);
+    _classPrivateMethodInitSpec(this, _removeProperty);
 
-    _addProperty.add(this);
+    _classPrivateMethodInitSpec(this, _addProperty);
 
-    _defineTogoKeys.add(this);
+    _classPrivateMethodInitSpec(this, _defineTogoKeys);
 
-    _properties.set(this, {
+    _classPrivateFieldInitSpec(this, _properties, {
       writable: true,
       value: void 0
     });
 
-    _propertyValues.set(this, {
+    _classPrivateFieldInitSpec(this, _propertyValues, {
       writable: true,
       value: void 0
     });
 
-    _isDefined.set(this, {
+    _classPrivateFieldInitSpec(this, _isDefined, {
       writable: true,
       value: void 0
     });
 
-    _placeHolderExamples.set(this, {
+    _classPrivateFieldInitSpec(this, _placeHolderExamples, {
       writable: true,
       value: void 0
     });
 
-    _TOGO_KEYS.set(this, {
+    _classPrivateFieldInitSpec(this, _TOGO_KEYS, {
       writable: true,
       value: void 0
     });
 
-    _USER_IDS$1.set(this, {
+    _classPrivateFieldInitSpec(this, _USER_IDS$1, {
       writable: true,
       value: void 0
     });
 
-    _PROPERTIES_CONDITIONS_CONTAINER.set(this, {
+    _classPrivateFieldInitSpec(this, _PROPERTIES_CONDITIONS_CONTAINER, {
       writable: true,
       value: void 0
     });
 
-    _ATTRIBUTES_CONDITIONS_CONTAINER.set(this, {
+    _classPrivateFieldInitSpec(this, _ATTRIBUTES_CONDITIONS_CONTAINER, {
       writable: true,
       value: void 0
     });
 
-    _EXEC_BUTTON.set(this, {
+    _classPrivateFieldInitSpec(this, _EXEC_BUTTON, {
       writable: true,
       value: void 0
     });
@@ -3995,30 +4036,26 @@
   function _defineTogoKeys2(_ref) {
     var _this2 = this;
 
-    var subjects = _ref.detail.subjects;
+    var _ref$detail = _ref.detail;
+        _ref$detail.subjects;
+        var datasets = _ref$detail.datasets;
+    console.log(datasets);
 
     _classPrivateFieldSet(this, _isDefined, true);
 
-    _classPrivateFieldSet(this, _placeHolderExamples, Object.fromEntries(subjects.filter(function (subject) {
-      return subject.togoKey;
-    }).map(function (subject) {
-      return [subject.togoKey, subject.togoKeyExamples];
+    _classPrivateFieldSet(this, _placeHolderExamples, Object.fromEntries(Object.keys(datasets).map(function (key) {
+      return [key, datasets[key].examples];
     }))); // make options
 
 
-    _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = subjects.map(function (subject) {
-      var option = '';
-      if (subject.togoKey) option = "<option value=\"".concat(subject.togoKey, "\" data-subject-id=\"").concat(subject.subjectId, "\">").concat(subject.keyLabel, "</option>");
-      return option;
+    _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = Object.keys(datasets).map(function (key) {
+      return "<option value=\"".concat(key, "\" data-subject-id=\"hoge\">").concat(datasets[key].label, "</option>");
     }).join('');
     _classPrivateFieldGet(this, _TOGO_KEYS).disabled = false;
     _classPrivateFieldGet(this, _TOGO_KEYS).value = ConditionBuilder$1.currentTogoKey; // attach event
 
     _classPrivateFieldGet(this, _TOGO_KEYS).addEventListener('change', function (e) {
-      var subject = subjects.find(function (subject) {
-        return subject.togoKey === e.target.value;
-      });
-      ConditionBuilder$1.setSubject(e.target.value, subject.subjectId);
+      ConditionBuilder$1.setSubject(e.target.value);
       _classPrivateFieldGet(_this2, _USER_IDS$1).placeholder = "e.g. ".concat(_classPrivateFieldGet(_this2, _placeHolderExamples)[e.target.value].join(', '));
     }); // preset
 
@@ -4110,106 +4147,106 @@
 
   var ALL_PROPERTIES = 'ALL_PROPERTIES';
 
-  var _subject$2 = new WeakMap();
+  var _subject$2 = /*#__PURE__*/new WeakMap();
 
-  var _property$3 = new WeakMap();
+  var _property$3 = /*#__PURE__*/new WeakMap();
 
-  var _items$1 = new WeakMap();
+  var _items$1 = /*#__PURE__*/new WeakMap();
 
-  var _columns = new WeakMap();
+  var _columns = /*#__PURE__*/new WeakMap();
 
-  var _currentColumns = new WeakMap();
+  var _currentColumns = /*#__PURE__*/new WeakMap();
 
-  var _userValues$1 = new WeakMap();
+  var _userValues$1 = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$a = new WeakMap();
+  var _ROOT$b = /*#__PURE__*/new WeakMap();
 
-  var _CONTAINER$1 = new WeakMap();
+  var _CONTAINER$1 = /*#__PURE__*/new WeakMap();
 
-  var _LOADING_VIEW$2 = new WeakMap();
+  var _LOADING_VIEW$2 = /*#__PURE__*/new WeakMap();
 
-  var _setItems = new WeakSet();
+  var _setItems = /*#__PURE__*/new WeakSet();
 
-  var _setSubColumn = new WeakSet();
+  var _setSubColumn = /*#__PURE__*/new WeakSet();
 
-  var _getColumn = new WeakSet();
+  var _getColumn = /*#__PURE__*/new WeakSet();
 
-  var _makeColumn = new WeakSet();
+  var _makeColumn = /*#__PURE__*/new WeakSet();
 
-  var _appendSubColumn = new WeakSet();
+  var _appendSubColumn = /*#__PURE__*/new WeakSet();
 
-  var _update$2 = new WeakSet();
+  var _update$2 = /*#__PURE__*/new WeakSet();
 
-  var _getUserValues = new WeakSet();
+  var _getUserValues = /*#__PURE__*/new WeakSet();
 
-  var _setUserValues = new WeakSet();
+  var _setUserValues = /*#__PURE__*/new WeakSet();
 
-  var _clearUserValues = new WeakSet();
+  var _clearUserValues = /*#__PURE__*/new WeakSet();
 
   var ColumnSelectorView = function ColumnSelectorView(elm, subject, property, _items2) {
     var _this = this;
 
     _classCallCheck(this, ColumnSelectorView);
 
-    _clearUserValues.add(this);
+    _classPrivateMethodInitSpec(this, _clearUserValues);
 
-    _setUserValues.add(this);
+    _classPrivateMethodInitSpec(this, _setUserValues);
 
-    _getUserValues.add(this);
+    _classPrivateMethodInitSpec(this, _getUserValues);
 
-    _update$2.add(this);
+    _classPrivateMethodInitSpec(this, _update$2);
 
-    _appendSubColumn.add(this);
+    _classPrivateMethodInitSpec(this, _appendSubColumn);
 
-    _makeColumn.add(this);
+    _classPrivateMethodInitSpec(this, _makeColumn);
 
-    _getColumn.add(this);
+    _classPrivateMethodInitSpec(this, _getColumn);
 
-    _setSubColumn.add(this);
+    _classPrivateMethodInitSpec(this, _setSubColumn);
 
-    _setItems.add(this);
+    _classPrivateMethodInitSpec(this, _setItems);
 
-    _subject$2.set(this, {
+    _classPrivateFieldInitSpec(this, _subject$2, {
       writable: true,
       value: void 0
     });
 
-    _property$3.set(this, {
+    _classPrivateFieldInitSpec(this, _property$3, {
       writable: true,
       value: void 0
     });
 
-    _items$1.set(this, {
+    _classPrivateFieldInitSpec(this, _items$1, {
       writable: true,
       value: void 0
     });
 
-    _columns.set(this, {
+    _classPrivateFieldInitSpec(this, _columns, {
       writable: true,
       value: void 0
     });
 
-    _currentColumns.set(this, {
+    _classPrivateFieldInitSpec(this, _currentColumns, {
       writable: true,
       value: void 0
     });
 
-    _userValues$1.set(this, {
+    _classPrivateFieldInitSpec(this, _userValues$1, {
       writable: true,
       value: void 0
     });
 
-    _ROOT$a.set(this, {
+    _classPrivateFieldInitSpec(this, _ROOT$b, {
       writable: true,
       value: void 0
     });
 
-    _CONTAINER$1.set(this, {
+    _classPrivateFieldInitSpec(this, _CONTAINER$1, {
       writable: true,
       value: void 0
     });
 
-    _LOADING_VIEW$2.set(this, {
+    _classPrivateFieldInitSpec(this, _LOADING_VIEW$2, {
       writable: true,
       value: void 0
     });
@@ -4229,11 +4266,11 @@
 
     elm.innerHTML = "\n    <div class=\"column-selector-view\">\n      <div class=\"columns\">\n        <div class=\"inner\"></div>\n      </div>\n      <div class=\"loading-view\"></div>\n    </div>";
 
-    _classPrivateFieldSet(this, _ROOT$a, elm.querySelector(':scope > .column-selector-view'));
+    _classPrivateFieldSet(this, _ROOT$b, elm.querySelector(':scope > .column-selector-view'));
 
-    _classPrivateFieldSet(this, _CONTAINER$1, _classPrivateFieldGet(this, _ROOT$a).querySelector(':scope > .columns > .inner'));
+    _classPrivateFieldSet(this, _CONTAINER$1, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .columns > .inner'));
 
-    _classPrivateFieldSet(this, _LOADING_VIEW$2, _classPrivateFieldGet(this, _ROOT$a).querySelector(':scope > .loading-view')); // even listener
+    _classPrivateFieldSet(this, _LOADING_VIEW$2, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .loading-view')); // even listener
 
 
     DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
@@ -4565,53 +4602,53 @@
     }
   }
 
-  var _target = new WeakMap();
+  var _target = /*#__PURE__*/new WeakMap();
 
-  var _selection = new WeakMap();
+  var _selection = /*#__PURE__*/new WeakMap();
 
-  var _unit = new WeakMap();
+  var _unit = /*#__PURE__*/new WeakMap();
 
-  var _SELECTING_AREA = new WeakMap();
+  var _SELECTING_AREA = /*#__PURE__*/new WeakMap();
 
-  var _SELECTOR_BARS = new WeakMap();
+  var _SELECTOR_BARS = /*#__PURE__*/new WeakMap();
 
-  var _defineSelection = new WeakSet();
+  var _defineSelection = /*#__PURE__*/new WeakSet();
 
-  var _defineInteraction = new WeakSet();
+  var _defineInteraction = /*#__PURE__*/new WeakSet();
 
-  var _update$1 = new WeakSet();
+  var _update$1 = /*#__PURE__*/new WeakSet();
 
   var HistogramRangeSelectorController = /*#__PURE__*/function () {
     function HistogramRangeSelectorController(target, _selector) {
       _classCallCheck(this, HistogramRangeSelectorController);
 
-      _update$1.add(this);
+      _classPrivateMethodInitSpec(this, _update$1);
 
-      _defineInteraction.add(this);
+      _classPrivateMethodInitSpec(this, _defineInteraction);
 
-      _defineSelection.add(this);
+      _classPrivateMethodInitSpec(this, _defineSelection);
 
-      _target.set(this, {
+      _classPrivateFieldInitSpec(this, _target, {
         writable: true,
         value: void 0
       });
 
-      _selection.set(this, {
+      _classPrivateFieldInitSpec(this, _selection, {
         writable: true,
         value: void 0
       });
 
-      _unit.set(this, {
+      _classPrivateFieldInitSpec(this, _unit, {
         writable: true,
         value: void 0
       });
 
-      _SELECTING_AREA.set(this, {
+      _classPrivateFieldInitSpec(this, _SELECTING_AREA, {
         writable: true,
         value: void 0
       });
 
-      _SELECTOR_BARS.set(this, {
+      _classPrivateFieldInitSpec(this, _SELECTOR_BARS, {
         writable: true,
         value: void 0
       });
@@ -4896,7 +4933,7 @@
       }
     }).to('srgb');
   }
-  function createPopupEvent(uniqueEntry, reportLink, newEvent) {
+  function createPopupEvent(uniqueEntry, newEvent) {
     var _uniqueEntry$getAttri = uniqueEntry.getAttribute('data-order').split(','),
         _uniqueEntry$getAttri2 = _slicedToArray(_uniqueEntry$getAttri, 2),
         x = _uniqueEntry$getAttri2[0],
@@ -4915,8 +4952,7 @@
           dataX: x,
           dataY: y,
           dataSubOrder: uniqueEntry.getAttribute('data-sub-order'),
-          isPrimaryKey: uniqueEntry.classList.contains('primarykey'),
-          reportLink: reportLink
+          isPrimaryKey: uniqueEntry.classList.contains('primarykey')
         }
       }
     });
@@ -4925,19 +4961,19 @@
 
   var NUM_OF_GRID = 4;
 
-  var _items = new WeakMap();
+  var _items = /*#__PURE__*/new WeakMap();
 
-  var _property$2 = new WeakMap();
+  var _property$2 = /*#__PURE__*/new WeakMap();
 
-  var _selectorController = new WeakMap();
+  var _selectorController = /*#__PURE__*/new WeakMap();
 
-  var _OVERVIEW_CONTAINER$1 = new WeakMap();
+  var _OVERVIEW_CONTAINER$1 = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$9 = new WeakMap();
+  var _ROOT$a = /*#__PURE__*/new WeakMap();
 
-  var _GRIDS = new WeakMap();
+  var _GRIDS = /*#__PURE__*/new WeakMap();
 
-  var _indicateValue = new WeakSet();
+  var _indicateValue = /*#__PURE__*/new WeakSet();
 
   var HistogramRangeSelectorView = /*#__PURE__*/function () {
     function HistogramRangeSelectorView(elm, subject, property, items, overviewContainer) {
@@ -4945,34 +4981,34 @@
 
       _classCallCheck(this, HistogramRangeSelectorView);
 
-      _indicateValue.add(this);
+      _classPrivateMethodInitSpec(this, _indicateValue);
 
-      _items.set(this, {
+      _classPrivateFieldInitSpec(this, _items, {
         writable: true,
         value: void 0
       });
 
-      _property$2.set(this, {
+      _classPrivateFieldInitSpec(this, _property$2, {
         writable: true,
         value: void 0
       });
 
-      _selectorController.set(this, {
+      _classPrivateFieldInitSpec(this, _selectorController, {
         writable: true,
         value: void 0
       });
 
-      _OVERVIEW_CONTAINER$1.set(this, {
+      _classPrivateFieldInitSpec(this, _OVERVIEW_CONTAINER$1, {
         writable: true,
         value: void 0
       });
 
-      _ROOT$9.set(this, {
+      _classPrivateFieldInitSpec(this, _ROOT$a, {
         writable: true,
         value: void 0
       });
 
-      _GRIDS.set(this, {
+      _classPrivateFieldInitSpec(this, _GRIDS, {
         writable: true,
         value: void 0
       });
@@ -4989,11 +5025,11 @@
 
       elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\" data-subject-id=\"".concat(subject.subjectId, "\">\n      <div class=\"selector\">\n        <div class=\"inner\">\n          <div class=\"overview\"></div>\n          <div class=\"controller\"></div>\n          <div class=\"selectingarea\">\n            <div class=\"handle\" data-direction=\"start\"></div>\n            <div class=\"handle\" data-direction=\"end\"></div>\n          </div>\n        </div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ").concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>");
 
-      _classPrivateFieldSet(this, _ROOT$9, elm.querySelector(':scope > .histogram-range-selector-view'));
+      _classPrivateFieldSet(this, _ROOT$a, elm.querySelector(':scope > .histogram-range-selector-view'));
 
-      var histogram = _classPrivateFieldGet(this, _ROOT$9).querySelector(':scope > .histogram');
+      var histogram = _classPrivateFieldGet(this, _ROOT$a).querySelector(':scope > .histogram');
 
-      var selector = _classPrivateFieldGet(this, _ROOT$9).querySelector(':scope > .selector > .inner');
+      var selector = _classPrivateFieldGet(this, _ROOT$a).querySelector(':scope > .selector > .inner');
 
       var overview = selector.querySelector(':scope > .overview'); // make graph
 
@@ -5024,7 +5060,7 @@
         return _this.update();
       }); // this.#setupRangeSelector();
 
-      _classPrivateFieldSet(this, _selectorController, new HistogramRangeSelectorController(this, _classPrivateFieldGet(this, _ROOT$9).querySelector(':scope > .selector')));
+      _classPrivateFieldSet(this, _selectorController, new HistogramRangeSelectorController(this, _classPrivateFieldGet(this, _ROOT$a).querySelector(':scope > .selector')));
 
       this.update();
     } // private methods
@@ -5083,59 +5119,59 @@
   var MAX_PIN_SIZE = 24;
   var RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
 
-  var _subject$1 = new WeakMap();
+  var _subject$1 = /*#__PURE__*/new WeakMap();
 
-  var _property$1 = new WeakMap();
+  var _property$1 = /*#__PURE__*/new WeakMap();
 
-  var _values = new WeakMap();
+  var _values = /*#__PURE__*/new WeakMap();
 
-  var _userValues = new WeakMap();
+  var _userValues = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$8 = new WeakMap();
+  var _ROOT$9 = /*#__PURE__*/new WeakMap();
 
-  var _update = new WeakSet();
+  var _update = /*#__PURE__*/new WeakSet();
 
-  var _plotUserIdValues = new WeakSet();
+  var _plotUserIdValues = /*#__PURE__*/new WeakSet();
 
-  var _clearUserIdValues = new WeakSet();
+  var _clearUserIdValues = /*#__PURE__*/new WeakSet();
 
   var TrackOverviewCategorical = function TrackOverviewCategorical(elm, subject, property, values) {
     var _this = this;
 
     _classCallCheck(this, TrackOverviewCategorical);
 
-    _clearUserIdValues.add(this);
+    _classPrivateMethodInitSpec(this, _clearUserIdValues);
 
-    _plotUserIdValues.add(this);
+    _classPrivateMethodInitSpec(this, _plotUserIdValues);
 
-    _update.add(this);
+    _classPrivateMethodInitSpec(this, _update);
 
-    _subject$1.set(this, {
+    _classPrivateFieldInitSpec(this, _subject$1, {
       writable: true,
       value: void 0
     });
 
-    _property$1.set(this, {
+    _classPrivateFieldInitSpec(this, _property$1, {
       writable: true,
       value: void 0
     });
 
-    _values.set(this, {
+    _classPrivateFieldInitSpec(this, _values, {
       writable: true,
       value: void 0
     });
 
-    _userValues.set(this, {
+    _classPrivateFieldInitSpec(this, _userValues, {
       writable: true,
       value: void 0
     });
 
-    _ROOT$8.set(this, {
+    _classPrivateFieldInitSpec(this, _ROOT$9, {
       writable: true,
       value: void 0
     });
 
-    _classPrivateFieldSet(this, _ROOT$8, elm);
+    _classPrivateFieldSet(this, _ROOT$9, elm);
 
     _classPrivateFieldSet(this, _subject$1, subject);
 
@@ -5288,7 +5324,7 @@
 
   function _plotUserIdValues2(detail) {
     if (_classPrivateFieldGet(this, _property$1).propertyId === detail.propertyId) {
-      _classPrivateFieldGet(this, _ROOT$8).classList.add('-pinsticking');
+      _classPrivateFieldGet(this, _ROOT$9).classList.add('-pinsticking');
 
       _classPrivateFieldSet(this, _userValues, detail.values); // calculate min value
       // let maxPValue;
@@ -5366,82 +5402,82 @@
     _classPrivateFieldSet(this, _userValues, undefined);
   }
 
-  var _subject = new WeakMap();
+  var _subject = /*#__PURE__*/new WeakMap();
 
-  var _property = new WeakMap();
+  var _property = /*#__PURE__*/new WeakMap();
 
-  var _sparqlist = new WeakMap();
+  var _sparqlist = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$7 = new WeakMap();
+  var _ROOT$8 = /*#__PURE__*/new WeakMap();
 
-  var _LOADING_VIEW$1 = new WeakMap();
+  var _LOADING_VIEW$1 = /*#__PURE__*/new WeakMap();
 
-  var _SELECT_CONTAINER = new WeakMap();
+  var _SELECT_CONTAINER = /*#__PURE__*/new WeakMap();
 
-  var _OVERVIEW_CONTAINER = new WeakMap();
+  var _OVERVIEW_CONTAINER = /*#__PURE__*/new WeakMap();
 
-  var _CHECKBOX_ALL_PROPERTIES = new WeakMap();
+  var _CHECKBOX_ALL_PROPERTIES = /*#__PURE__*/new WeakMap();
 
-  var _COLLAPSE_BUTTON = new WeakMap();
+  var _COLLAPSE_BUTTON = /*#__PURE__*/new WeakMap();
 
-  var _makeValues = new WeakSet();
+  var _makeValues = /*#__PURE__*/new WeakSet();
 
-  var _showError = new WeakSet();
+  var _showError = /*#__PURE__*/new WeakSet();
 
-  var _clearError = new WeakSet();
+  var _clearError = /*#__PURE__*/new WeakSet();
 
   var TrackView = function TrackView(subject, property, container, positionRate) {
     var _this = this;
 
     _classCallCheck(this, TrackView);
 
-    _clearError.add(this);
+    _classPrivateMethodInitSpec(this, _clearError);
 
-    _showError.add(this);
+    _classPrivateMethodInitSpec(this, _showError);
 
-    _makeValues.add(this);
+    _classPrivateMethodInitSpec(this, _makeValues);
 
-    _subject.set(this, {
+    _classPrivateFieldInitSpec(this, _subject, {
       writable: true,
       value: void 0
     });
 
-    _property.set(this, {
+    _classPrivateFieldInitSpec(this, _property, {
       writable: true,
       value: void 0
     });
 
-    _sparqlist.set(this, {
+    _classPrivateFieldInitSpec(this, _sparqlist, {
       writable: true,
       value: void 0
     });
 
-    _ROOT$7.set(this, {
+    _classPrivateFieldInitSpec(this, _ROOT$8, {
       writable: true,
       value: void 0
     });
 
-    _LOADING_VIEW$1.set(this, {
+    _classPrivateFieldInitSpec(this, _LOADING_VIEW$1, {
       writable: true,
       value: void 0
     });
 
-    _SELECT_CONTAINER.set(this, {
+    _classPrivateFieldInitSpec(this, _SELECT_CONTAINER, {
       writable: true,
       value: void 0
     });
 
-    _OVERVIEW_CONTAINER.set(this, {
+    _classPrivateFieldInitSpec(this, _OVERVIEW_CONTAINER, {
       writable: true,
       value: void 0
     });
 
-    _CHECKBOX_ALL_PROPERTIES.set(this, {
+    _classPrivateFieldInitSpec(this, _CHECKBOX_ALL_PROPERTIES, {
       writable: true,
       value: void 0
     });
 
-    _COLLAPSE_BUTTON.set(this, {
+    _classPrivateFieldInitSpec(this, _COLLAPSE_BUTTON, {
       writable: true,
       value: void 0
     });
@@ -5451,7 +5487,7 @@
     var elm = document.createElement('div');
     container.insertAdjacentElement('beforeend', elm);
 
-    _classPrivateFieldSet(this, _ROOT$7, elm);
+    _classPrivateFieldSet(this, _ROOT$8, elm);
 
     _classPrivateFieldSet(this, _subject, subject);
 
@@ -5489,12 +5525,12 @@
         // add
         ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this, _property).propertyId);
 
-        _classPrivateFieldGet(_this, _ROOT$7).classList.add('-allselected');
+        _classPrivateFieldGet(_this, _ROOT$8).classList.add('-allselected');
       } else {
         // remove
         ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this, _property).propertyId);
 
-        _classPrivateFieldGet(_this, _ROOT$7).classList.remove('-allselected');
+        _classPrivateFieldGet(_this, _ROOT$8).classList.remove('-allselected');
       }
     }); // event listener
 
@@ -5507,7 +5543,7 @@
           if (e.detail.propertyId === _classPrivateFieldGet(_this, _property).propertyId) {
             _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = true;
 
-            _classPrivateFieldGet(_this, _ROOT$7).classList.add('-allselected');
+            _classPrivateFieldGet(_this, _ROOT$8).classList.add('-allselected');
           }
 
           break;
@@ -5516,7 +5552,7 @@
           if (e.detail.propertyId === _classPrivateFieldGet(_this, _property).propertyId) {
             _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = false;
 
-            _classPrivateFieldGet(_this, _ROOT$7).classList.remove('-allselected');
+            _classPrivateFieldGet(_this, _ROOT$8).classList.remove('-allselected');
           }
 
           break;
@@ -5524,11 +5560,11 @@
     });
     DefaultEventEmitter$1.addEventListener(allTracksCollapse, function (e) {
       if (e.detail) {
-        if (!_classPrivateFieldGet(_this, _ROOT$7).classList.contains('-spread')) {
+        if (!_classPrivateFieldGet(_this, _ROOT$8).classList.contains('-spread')) {
           _classPrivateFieldGet(_this, _COLLAPSE_BUTTON).dispatchEvent(new MouseEvent('click'));
         }
       } else {
-        if (_classPrivateFieldGet(_this, _ROOT$7).classList.contains('-spread')) {
+        if (_classPrivateFieldGet(_this, _ROOT$8).classList.contains('-spread')) {
           _classPrivateFieldGet(_this, _COLLAPSE_BUTTON).dispatchEvent(new MouseEvent('click'));
         }
       }
@@ -5554,7 +5590,7 @@
   ;
 
   function _makeValues2(values) {
-    _classPrivateFieldGet(this, _ROOT$7).classList.remove('-preparing'); // make overview
+    _classPrivateFieldGet(this, _ROOT$8).classList.remove('-preparing'); // make overview
 
 
     new TrackOverviewCategorical(_classPrivateFieldGet(this, _OVERVIEW_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values); // make selector view
@@ -5602,229 +5638,299 @@
     }
   };
 
-  var _propertyId = new WeakMap();
+  var _propertyId = /*#__PURE__*/new WeakMap();
 
-  var _COUNTS = new WeakMap();
+  var _tableData$2 = /*#__PURE__*/new WeakMap();
 
-  var _RATES = new WeakMap();
+  var _BARS = /*#__PURE__*/new WeakMap();
 
-  var _TICKS = new WeakMap();
+  var _ROOT$7 = /*#__PURE__*/new WeakMap();
 
-  var _draw = new WeakSet();
+  var _ROOT_NODE = /*#__PURE__*/new WeakMap();
 
-  var StatisticsView = function StatisticsView(elm, _ref) {
+  var _draw = /*#__PURE__*/new WeakSet();
+
+  var StatisticsView = /*#__PURE__*/function () {
+    function StatisticsView(statisticsRootNode, elm, tableData, _ref) {
+      var subject = _ref.subject,
+          _property = _ref.property;
+
+      _classCallCheck(this, StatisticsView);
+
+      _classPrivateMethodInitSpec(this, _draw);
+
+      _classPrivateFieldInitSpec(this, _propertyId, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _tableData$2, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _BARS, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _ROOT$7, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _ROOT_NODE, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldSet(this, _propertyId, _property.propertyId);
+
+      _classPrivateFieldSet(this, _tableData$2, tableData);
+
+      _classPrivateFieldSet(this, _ROOT_NODE, statisticsRootNode);
+
+      _classPrivateFieldSet(this, _ROOT$7, elm);
+
+      elm.classList.add('statistics-view');
+      elm.dataset.subjectId = subject.subjectId; // make HTML
+
+      elm.innerHTML = "\n    <div class=\"statistics\">\n      <div class=\"bars\"></div>\n    </div>\n    <div class=\"loading-view -shown\"></div>\n    "; // references
+
+      var container = elm.querySelector(':scope > .statistics');
+
+      _classPrivateFieldSet(this, _BARS, container.querySelector(':scope > .bars')); // event listener
+
+
+      DefaultEventEmitter$1.addEventListener(addNextRows, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+      DefaultEventEmitter$1.addEventListener(changeToOnlyHitCountInStatisticsView, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+      DefaultEventEmitter$1.addEventListener(changeToStretchInStatisticsView, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+    }
+
+    _createClass(StatisticsView, [{
+      key: "destroy",
+      value: function destroy() {
+        DefaultEventEmitter$1.removeEventListener(addNextRows, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+        DefaultEventEmitter$1.removeEventListener(changeToOnlyHitCountInStatisticsView, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+        DefaultEventEmitter$1.removeEventListener(changeToStretchInStatisticsView, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+      }
+      /**
+       * @param {TableData} detail.tableData
+       * @param {Array} detail.rows
+       * @param {Boolean} detail.done
+       */
+
+    }]);
+
+    return StatisticsView;
+  }();
+
+  function _draw2(e) {
     var _this = this;
 
-    var subject = _ref.subject,
-        _property = _ref.property;
-
-    _classCallCheck(this, StatisticsView);
-
-    _draw.add(this);
-
-    _propertyId.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _COUNTS.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _RATES.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _TICKS.set(this, {
-      writable: true,
-      value: void 0
-    });
-
-    _classPrivateFieldSet(this, _propertyId, _property.propertyId);
-
-    elm.classList.add('statistics-view');
-    elm.dataset.subjectId = subject.subjectId; // make HTML
-
-    elm.innerHTML = "<div class=\"statistics\">\n      <div class=\"counts\"></div>\n      <div class=\"rates\"></div>\n      <div class=\"ticks\"></div>\n    </div>"; // references
-
-    var container = elm.querySelector(':scope > .statistics');
-
-    _classPrivateFieldSet(this, _COUNTS, container.querySelector(':scope > .counts'));
-
-    _classPrivateFieldSet(this, _RATES, container.querySelector(':scope > .rates'));
-
-    _classPrivateFieldSet(this, _TICKS, container.querySelector(':scope > .ticks')); // event listener
-
-
-    DefaultEventEmitter$1.addEventListener(addNextRows, function (e) {
-      return _classPrivateMethodGet(_this, _draw, _draw2).call(_this, e.detail);
-    });
-  }
-  /**
-   * @param {TableData} detail.tableData
-   * @param {Array} detail.rows
-   * @param {Boolean} detail.done
-   */
-  ;
-
-  function _draw2(detail) {
-    var _this2 = this;
-
-    // const data = detail.tableData.data;
-    var attributes = detail.tableData.data.map(function (datum) {
+    var attributes = _.uniqBy(_classPrivateFieldGet(this, _tableData$2).data.map(function (datum) {
       return datum.properties.find(function (property) {
-        return property.propertyId === _classPrivateFieldGet(_this2, _propertyId);
+        return property.propertyId === _classPrivateFieldGet(_this, _propertyId);
       });
     }).filter(function (property) {
       return property !== undefined;
     }).map(function (property) {
       return property.attributes;
-    }).flat().map(function (property) {
+    }).flat(), 'id').map(function (property) {
       return property.attribute;
     });
 
-    var categoryIds = _toConsumableArray(new Set(attributes.map(function (attribute) {
-      return attribute.categoryId;
-    }))); // count
-
-
-    var counts = categoryIds.map(function (categoryId) {
-      return attributes.filter(function (attribute) {
-        return attribute.categoryId === categoryId;
-      }).length;
-    });
-    var countMax = Math.max.apply(Math, _toConsumableArray(counts)); // draw
-
-    _classPrivateFieldGet(this, _COUNTS).innerHTML = counts.map(function (count) {
-      var position = count / countMax < .5 ? ' -below' : '';
-      return "\n      <div class=\"bar _subject-background-color\" style=\"height: ".concat(count / countMax * 100, "%;\">\n        <div class=\"value").concat(position, "\">").concat(count.toLocaleString(), "</div>\n      </div>");
-    }).join(''); // rate
-
-    var rates = categoryIds.map(function (categoryId, index) {
-      var value = Records$1.getValue(_classPrivateFieldGet(_this2, _propertyId), categoryId);
-      var sum = value.count * detail.tableData.rateOfProgress;
-      return counts[index] / sum;
-    });
-    var rateMax = Math.max.apply(Math, _toConsumableArray(rates)); // draw
-
-    _classPrivateFieldGet(this, _RATES).innerHTML = rates.map(function (rate) {
-      var position = rate / rateMax < .5 ? ' -below' : '';
-      return "\n      <div class=\"bar _subject-background-color\" style=\"height: ".concat(rate / rateMax * 100, "%;\">\n        <div class=\"value").concat(position, "\">").concat(rate.toLocaleString(), "</div>\n      </div>");
-    }).join(''); // tick
-
-    var labels = categoryIds.map(function (categoryId) {
-      return attributes.find(function (attribute) {
+    var hitVlues = [];
+    Records$1.getProperty(_classPrivateFieldGet(this, _propertyId)).values.forEach(function (_ref2) {
+      var categoryId = _ref2.categoryId,
+          label = _ref2.label,
+          count = _ref2.count;
+      var filtered = attributes.filter(function (attribute) {
         return attribute.categoryId === categoryId;
       });
-    }).map(function (attribute) {
-      return attribute.label;
-    });
-    _classPrivateFieldGet(this, _TICKS).innerHTML = labels.map(function (label) {
-      return "\n      <div class=\"bar\">\n        <div class=\"label\">".concat(label, "</div>\n      </div>");
-    }).join('');
+      if (filtered.length === 0) return;
+      hitVlues.push({
+        categoryId: categoryId,
+        label: label,
+        count: count,
+        hitCount: filtered.length
+      });
+    }); // max
+
+    var countMax;
+
+    var isOnlyHitCount = _classPrivateFieldGet(this, _ROOT_NODE).classList.contains('-onlyhitcount');
+
+    var isStretch = !isOnlyHitCount && _classPrivateFieldGet(this, _ROOT_NODE).classList.contains('-stretch');
+
+    if (isOnlyHitCount) {
+      countMax = Math.max.apply(Math, _toConsumableArray(hitVlues.map(function (value) {
+        return value.hitCount;
+      })));
+    } else {
+      countMax = Math.max.apply(Math, _toConsumableArray(hitVlues.map(function (value) {
+        return value.count;
+      })));
+    }
+
+    hitVlues.reduce(function (lastBar, _ref3) {
+      var categoryId = _ref3.categoryId,
+          label = _ref3.label,
+          count = _ref3.count,
+          hitCount = _ref3.hitCount;
+
+      var bar = _classPrivateFieldGet(_this, _BARS).querySelector(":scope > .bar[data-category-id=\"".concat(categoryId, "\"]"));
+
+      if (bar === null) {
+        // add bar
+        bar = document.createElement('div');
+        bar.classList.add('bar');
+        bar.dataset.categoryId = categoryId;
+        bar.innerHTML = "\n        <div class=\"wholebar\"></div>\n        <div class=\"hitbar _subject-background-color-strong\">\n          <div class=\"value\"></div>\n        </div>\n        <div class=\"label\">".concat(label, "</div>");
+
+        if (lastBar) {
+          lastBar.after(bar);
+        } else {
+          _classPrivateFieldGet(_this, _BARS).append(bar);
+        }
+      } // styling
+
+
+      bar.querySelector(':scope > .wholebar').style.height = "".concat(count / countMax * 100, "%");
+      var hitbar = bar.querySelector(':scope > .hitbar');
+      if (isStretch) hitbar.style.height = "".concat(hitCount / count * 100, "%");else hitbar.style.height = "".concat(hitCount / countMax * 100, "%");
+      var hitCountLabel = hitbar.querySelector(':scope > .value');
+
+      if (isOnlyHitCount) {
+        hitCountLabel.textContent = hitCount.toLocaleString();
+      } else {
+        hitCountLabel.textContent = Math.round(hitCount / countMax * 100) + '%';
+      }
+
+      if (hitCount / countMax < .5) {
+        hitCountLabel.classList.add('-below');
+      } else {
+        hitCountLabel.classList.remove('-below');
+      }
+
+      return bar;
+    }, undefined);
+
+    if (e !== null && e !== void 0 && e.detail.done) {
+      _classPrivateFieldGet(this, _ROOT$7).classList.add('-completed');
+
+      _classPrivateFieldGet(this, _ROOT$7).querySelector(':scope > .loading-view').classList.remove('-shown');
+    }
   }
 
-  var _intersctionObserver = new WeakMap();
+  var _intersctionObserver = /*#__PURE__*/new WeakMap();
 
-  var _tableData$1 = new WeakMap();
+  var _tableData$1 = /*#__PURE__*/new WeakMap();
 
-  var _header$1 = new WeakMap();
+  var _header$1 = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$6 = new WeakMap();
+  var _statisticsViews = /*#__PURE__*/new WeakMap();
 
-  var _THEAD = new WeakMap();
+  var _ROOT$6 = /*#__PURE__*/new WeakMap();
 
-  var _THEAD_SUB = new WeakMap();
+  var _THEAD = /*#__PURE__*/new WeakMap();
 
-  var _STATS = new WeakMap();
+  var _THEAD_SUB = /*#__PURE__*/new WeakMap();
 
-  var _TBODY = new WeakMap();
+  var _STATS = /*#__PURE__*/new WeakMap();
 
-  var _TABLE_END = new WeakMap();
+  var _TBODY = /*#__PURE__*/new WeakMap();
 
-  var _LOADING_VIEW = new WeakMap();
+  var _TABLE_END = /*#__PURE__*/new WeakMap();
 
-  var _enterTableEnd = new WeakSet();
+  var _LOADING_VIEW = /*#__PURE__*/new WeakMap();
 
-  var _setupTable = new WeakSet();
+  var _enterTableEnd = /*#__PURE__*/new WeakSet();
 
-  var _addTableRows = new WeakSet();
+  var _setupTable = /*#__PURE__*/new WeakSet();
 
-  var _failed = new WeakSet();
+  var _addTableRows = /*#__PURE__*/new WeakSet();
 
-  var _colHighlight = new WeakSet();
+  var _failed = /*#__PURE__*/new WeakSet();
 
-  var ResultsTable = function ResultsTable(_elm) {
+  var _colHighlight = /*#__PURE__*/new WeakSet();
+
+  var ResultsTable = function ResultsTable(elm) {
     var _this = this;
 
     _classCallCheck(this, ResultsTable);
 
-    _colHighlight.add(this);
+    _classPrivateMethodInitSpec(this, _colHighlight);
 
-    _failed.add(this);
+    _classPrivateMethodInitSpec(this, _failed);
 
-    _addTableRows.add(this);
+    _classPrivateMethodInitSpec(this, _addTableRows);
 
-    _setupTable.add(this);
+    _classPrivateMethodInitSpec(this, _setupTable);
 
-    _enterTableEnd.add(this);
+    _classPrivateMethodInitSpec(this, _enterTableEnd);
 
-    _intersctionObserver.set(this, {
+    _classPrivateFieldInitSpec(this, _intersctionObserver, {
       writable: true,
       value: void 0
     });
 
-    _tableData$1.set(this, {
+    _classPrivateFieldInitSpec(this, _tableData$1, {
       writable: true,
       value: void 0
     });
 
-    _header$1.set(this, {
+    _classPrivateFieldInitSpec(this, _header$1, {
       writable: true,
       value: void 0
     });
 
-    _ROOT$6.set(this, {
+    _classPrivateFieldInitSpec(this, _statisticsViews, {
       writable: true,
       value: void 0
     });
 
-    _THEAD.set(this, {
+    _classPrivateFieldInitSpec(this, _ROOT$6, {
       writable: true,
       value: void 0
     });
 
-    _THEAD_SUB.set(this, {
+    _classPrivateFieldInitSpec(this, _THEAD, {
       writable: true,
       value: void 0
     });
 
-    _STATS.set(this, {
+    _classPrivateFieldInitSpec(this, _THEAD_SUB, {
       writable: true,
       value: void 0
     });
 
-    _TBODY.set(this, {
+    _classPrivateFieldInitSpec(this, _STATS, {
       writable: true,
       value: void 0
     });
 
-    _TABLE_END.set(this, {
+    _classPrivateFieldInitSpec(this, _TBODY, {
       writable: true,
       value: void 0
     });
 
-    _LOADING_VIEW.set(this, {
+    _classPrivateFieldInitSpec(this, _TABLE_END, {
       writable: true,
       value: void 0
     });
 
-    // references
-    _classPrivateFieldSet(this, _ROOT$6, _elm);
+    _classPrivateFieldInitSpec(this, _LOADING_VIEW, {
+      writable: true,
+      value: void 0
+    });
 
-    var TABLE = _elm.querySelector(':scope > .body > table');
+    _classPrivateFieldSet(this, _statisticsViews, []); // references
+
+
+    _classPrivateFieldSet(this, _ROOT$6, elm);
+
+    var TABLE = elm.querySelector(':scope > .body > table');
 
     _classPrivateFieldSet(this, _THEAD, TABLE.querySelector(':scope > thead > tr.header'));
 
@@ -5834,7 +5940,7 @@
 
     _classPrivateFieldSet(this, _TBODY, TABLE.querySelector(':scope > tbody'));
 
-    _classPrivateFieldSet(this, _TABLE_END, _elm.querySelector(':scope > .body > .tableend'));
+    _classPrivateFieldSet(this, _TABLE_END, elm.querySelector(':scope > .body > .tableend'));
 
     _classPrivateFieldSet(this, _LOADING_VIEW, _classPrivateFieldGet(this, _TABLE_END).querySelector(':scope > .loading-view')); // get next data automatically
 
@@ -5888,6 +5994,26 @@
     });
     mutationObserver.observe(document.querySelector('body'), {
       attributes: true
+    }); // statistics
+
+    var controller = _classPrivateFieldGet(this, _STATS).querySelector(':scope > th.controller > .inner');
+
+    controller.querySelector(':scope > label.onlyhitcount > input').addEventListener('change', function (e) {
+      _classPrivateFieldGet(_this, _STATS).classList.toggle('-onlyhitcount');
+
+      var customEvent = new CustomEvent(changeToOnlyHitCountInStatisticsView, {
+        detail: _classPrivateFieldGet(_this, _STATS).classList.contains('-onlyhitcount')
+      });
+      DefaultEventEmitter$1.dispatchEvent(customEvent);
+    });
+    var controllerStretch = controller.querySelector(':scope > label.stretch > input');
+    controllerStretch.addEventListener('change', function (e) {
+      _classPrivateFieldGet(_this, _STATS).classList.toggle('-stretch');
+
+      var customEvent = new CustomEvent(changeToStretchInStatisticsView, {
+        detail: _classPrivateFieldGet(_this, _STATS).classList.contains('-stretch')
+      });
+      DefaultEventEmitter$1.dispatchEvent(customEvent);
     });
   } // private methods
   ;
@@ -5921,7 +6047,7 @@
 
     DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
-    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">Report</div>\n      </th>\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getLabelFromTogoKey(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      "); // makte table sub header
+    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getDatasetLabel(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      "); // makte table sub header
 
     _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    ".concat(tableData.condition.attributes.map(function (property) {
       return "\n    <th>\n      <div class=\"inner _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n      <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.property.label, "</span>\n      </div>\n    </th>");
@@ -5929,21 +6055,62 @@
       return "\n    <th>\n      <div class=\"inner _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n        <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.parentCategoryId ? Records$1.getValue(property.query.propertyId, property.parentCategoryId).label : property.property.label, "</span>\n      </div>\n    </th>");
     }).join('')); // make stats
 
-    _classPrivateFieldGet(this, _STATS).innerHTML = "<td colspan=\"2\"><div class=\"inner\"><div></td>" + properties.map(function () {
-      return "<td><div class=\"inner\"><div></div></div></td>";
-    }).join('');
+    var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _STATS).querySelectorAll(':scope > td')),
+        _step2;
 
-    _classPrivateFieldGet(this, _STATS).querySelectorAll(':scope > td > .inner > div').forEach(function (elm, index) {
-      if (index === 0) return;
-      new StatisticsView(elm, properties[index - 1]);
-    });
+    try {
+      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+        var td = _step2.value;
+        td.remove();
+      }
+    } catch (err) {
+      _iterator2.e(err);
+    } finally {
+      _iterator2.f();
+    }
+
+    var _iterator3 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _statisticsViews)),
+        _step3;
+
+    try {
+      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+        var statisticsView = _step3.value;
+        statisticsView.destroy();
+      }
+    } catch (err) {
+      _iterator3.e(err);
+    } finally {
+      _iterator3.f();
+    }
+
+    _classPrivateFieldSet(this, _statisticsViews, []);
+
+    var _iterator4 = _createForOfIteratorHelper(properties),
+        _step4;
+
+    try {
+      for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+        var property = _step4.value;
+
+        var _td = document.createElement('td');
+
+        _td.innerHTML = '<div class="inner"><div></div></div>';
+
+        _classPrivateFieldGet(this, _STATS).append(_td);
+
+        _classPrivateFieldGet(this, _statisticsViews).push(new StatisticsView(_classPrivateFieldGet(this, _STATS), _td.querySelector(':scope > .inner > div'), tableData, property));
+      }
+    } catch (err) {
+      _iterator4.e(err);
+    } finally {
+      _iterator4.f();
+    }
   }
 
   function _addTableRows2(detail) {
     var _this2 = this;
 
-    console.log(detail);
-
+    // console.log(detail);
     _classPrivateFieldSet(this, _tableData$1, detail.tableData); // normalize
 
 
@@ -5957,8 +6124,8 @@
     }); // make table
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
-      console.log(row);
-      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n            <th>\n              <div class=\"inner\">\n                <a class=\"external-link-button-view\" href=\"report.html?togoKey=").concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(window.btoa(RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))), "\" target=\"_blank\">Report</a>\n              </div>\n            </th>\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order= \"").concat([0, detail.tableData.offset + index], "\"\n                    data-sub-order= \"0\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "\n                  </div>\n                  <span>").concat(detail.rows[index].label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.map(function (column, columnIndex) {
+      // console.log(row);
+      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order= \"").concat([0, detail.tableData.offset + index], "\"\n                    data-sub-order= \"0\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "\n                  </div>\n                  <span>").concat(detail.rows[index].label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.map(function (column, columnIndex) {
         // console.log(column)
         if (column) {
           return "\n                  <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute, attributeIndex) {
@@ -5995,11 +6162,10 @@
 
       var tr = _classPrivateFieldGet(_this2, _TBODY).querySelector(":scope > tr[data-index=\"".concat(actualIndex, "\"]"));
 
-      var reportLink = "\n      report.html?togoKey=".concat(detail.tableData.togoKey, "&id=").concat(detail.rows[index].id, "&properties=").concat(window.btoa(RawDeflate.deflate(encodeURIComponent(JSON.stringify(row)))));
       var uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(function (uniqueEntry) {
         uniqueEntry.addEventListener('click', function () {
-          createPopupEvent(uniqueEntry, reportLink, showPopup);
+          createPopupEvent(uniqueEntry, showPopup);
         }); // remove highlight on mouseleave only when there is no popup
 
         var td = uniqueEntry.closest('td');
@@ -6042,20 +6208,20 @@
     });
   }
 
-  var _templates = new WeakMap();
+  var _templates = /*#__PURE__*/new WeakMap();
 
-  var _isReady = new WeakMap();
+  var _isReady = /*#__PURE__*/new WeakMap();
 
   var StanzaManager = /*#__PURE__*/function () {
     function StanzaManager() {
       _classCallCheck(this, StanzaManager);
 
-      _templates.set(this, {
+      _classPrivateFieldInitSpec(this, _templates, {
         writable: true,
         value: void 0
       });
 
-      _isReady.set(this, {
+      _classPrivateFieldInitSpec(this, _isReady, {
         writable: true,
         value: void 0
       });
@@ -6092,21 +6258,20 @@
 
           _classPrivateFieldSet(_this, _isReady, true);
 
+          console.log('templates');
           console.log(_classPrivateFieldGet(_this, _templates));
         });
       }
-      /**
-       * 
-       * @param {String} subjectId  e.g. gene, protein (category name)
+      /**˝
+       * @param {String} key  key of Database used to get template
        * @param {String} id  ID of dataset
-       * @param {String} key  e.g. hgnc, uniplot (dataset name)
        * @returns {String} HTML
        */
 
     }, {
       key: "draw",
-      value: function draw(subjectId, id, key) {
-        return "<div class=\"stanza\">".concat(_classPrivateFieldGet(this, _templates)[subjectId].replace(/{{id}}/g, id).replace(/{{type}}/g, key), "</div>");
+      value: function draw(key, id) {
+        return "<div class=\"stanza\">".concat(_classPrivateFieldGet(this, _templates)[key].replace(/{{id}}/g, id), "</div>");
       }
     }, {
       key: "isReady",
@@ -6146,102 +6311,102 @@
     }
   }
 
-  var _ROOT$5 = new WeakMap();
+  var _ROOT$5 = /*#__PURE__*/new WeakMap();
 
-  var _RESULTS_TABLE = new WeakMap();
+  var _RESULTS_TABLE = /*#__PURE__*/new WeakMap();
 
-  var _RESULT_MODAL = new WeakMap();
+  var _RESULT_MODAL = /*#__PURE__*/new WeakMap();
 
-  var _exit_button = new WeakMap();
+  var _exit_button = /*#__PURE__*/new WeakMap();
 
-  var _popup_top = new WeakMap();
+  var _popup_top = /*#__PURE__*/new WeakMap();
 
-  var _popup_left = new WeakMap();
+  var _popup_left = /*#__PURE__*/new WeakMap();
 
-  var _showPopup = new WeakSet();
+  var _showPopup = /*#__PURE__*/new WeakSet();
 
-  var _popup = new WeakSet();
+  var _popup = /*#__PURE__*/new WeakSet();
 
-  var _header = new WeakSet();
+  var _header = /*#__PURE__*/new WeakSet();
 
-  var _container = new WeakSet();
+  var _container = /*#__PURE__*/new WeakSet();
 
-  var _stanzas = new WeakSet();
+  var _stanzas = /*#__PURE__*/new WeakSet();
 
-  var _arrow = new WeakSet();
+  var _arrow = /*#__PURE__*/new WeakSet();
 
-  var _setHighlight = new WeakSet();
+  var _setHighlight = /*#__PURE__*/new WeakSet();
 
-  var _handleKeydown = new WeakMap();
+  var _handleKeydown = /*#__PURE__*/new WeakMap();
 
-  var _arrowFuncs = new WeakMap();
+  var _arrowFuncs = /*#__PURE__*/new WeakMap();
 
-  var _setMovementArrow = new WeakSet();
+  var _setMovementArrow = /*#__PURE__*/new WeakSet();
 
-  var _getTargetEntry = new WeakSet();
+  var _getTargetEntry = /*#__PURE__*/new WeakSet();
 
-  var _entriesByAxes = new WeakSet();
+  var _entriesByAxes = /*#__PURE__*/new WeakSet();
 
-  var _hidePopup = new WeakSet();
+  var _hidePopup = /*#__PURE__*/new WeakSet();
 
   var ResultDetailModal = function ResultDetailModal() {
     var _this = this;
 
     _classCallCheck(this, ResultDetailModal);
 
-    _hidePopup.add(this);
+    _classPrivateMethodInitSpec(this, _hidePopup);
 
-    _entriesByAxes.add(this);
+    _classPrivateMethodInitSpec(this, _entriesByAxes);
 
-    _getTargetEntry.add(this);
+    _classPrivateMethodInitSpec(this, _getTargetEntry);
 
-    _setMovementArrow.add(this);
+    _classPrivateMethodInitSpec(this, _setMovementArrow);
 
-    _setHighlight.add(this);
+    _classPrivateMethodInitSpec(this, _setHighlight);
 
-    _arrow.add(this);
+    _classPrivateMethodInitSpec(this, _arrow);
 
-    _stanzas.add(this);
+    _classPrivateMethodInitSpec(this, _stanzas);
 
-    _container.add(this);
+    _classPrivateMethodInitSpec(this, _container);
 
-    _header.add(this);
+    _classPrivateMethodInitSpec(this, _header);
 
-    _popup.add(this);
+    _classPrivateMethodInitSpec(this, _popup);
 
-    _showPopup.add(this);
+    _classPrivateMethodInitSpec(this, _showPopup);
 
-    _ROOT$5.set(this, {
+    _classPrivateFieldInitSpec(this, _ROOT$5, {
       writable: true,
       value: void 0
     });
 
-    _RESULTS_TABLE.set(this, {
+    _classPrivateFieldInitSpec(this, _RESULTS_TABLE, {
       writable: true,
       value: void 0
     });
 
-    _RESULT_MODAL.set(this, {
+    _classPrivateFieldInitSpec(this, _RESULT_MODAL, {
       writable: true,
       value: void 0
     });
 
-    _exit_button.set(this, {
+    _classPrivateFieldInitSpec(this, _exit_button, {
       writable: true,
       value: void 0
     });
 
-    _popup_top.set(this, {
+    _classPrivateFieldInitSpec(this, _popup_top, {
       writable: true,
       value: void 0
     });
 
-    _popup_left.set(this, {
+    _classPrivateFieldInitSpec(this, _popup_left, {
       writable: true,
       value: void 0
     });
 
-    _handleKeydown.set(this, {
+    _classPrivateFieldInitSpec(this, _handleKeydown, {
       writable: true,
       value: function value(e) {
         if (e.key == 'Escape') {
@@ -6254,7 +6419,7 @@
       }
     });
 
-    _arrowFuncs.set(this, {
+    _classPrivateFieldInitSpec(this, _arrowFuncs, {
       writable: true,
       value: new Map([['ArrowLeft', function (x, y) {
         return [x - 1, y];
@@ -6332,15 +6497,17 @@
   }
 
   function _header2(keys, props) {
+    var _subCategory$label;
+
     var subject = Records$1.getSubject(keys.subjectId);
     var isPrimaryKey = props.isPrimaryKey;
     var mainCategory = isPrimaryKey ? '' : Records$1.getProperty(keys.mainCategoryId);
     var subCategory = isPrimaryKey ? '' : Records$1.getValue(keys.mainCategoryId, keys.subCategoryId);
-    var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(subject.subject, " / ").concat(subCategory.label, "</span>");
+    var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(subject.subject, " / ").concat((_subCategory$label = subCategory === null || subCategory === void 0 ? void 0 : subCategory.label) !== null && _subCategory$label !== void 0 ? _subCategory$label : '--', "</span>");
     var header = document.createElement('header');
-    header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div>\n        <a class='external-link-button-view' href='").concat(props.reportLink, "' target='_blank'>Report</a>\n    ");
+    header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div/>\n    ");
     header.classList.add('_subject-background-color');
-    header.lastChild.appendChild(_classPrivateFieldGet(this, _exit_button));
+    header.lastElementChild.appendChild(_classPrivateFieldGet(this, _exit_button));
     header.addEventListener('mousedown', function (e) {
       var customEvent = new CustomEvent(dragElement, {
         detail: {
@@ -6363,14 +6530,14 @@
     ['Up', 'Right', 'Down', 'Left'].forEach(function (direction) {
       container.appendChild(_classPrivateMethodGet(_this2, _arrow, _arrow2).call(_this2, direction, props));
     });
-    container.appendChild(_classPrivateMethodGet(this, _stanzas, _stanzas2).call(this, keys.subjectId, keys.uniqueEntryId, keys.dataKey));
+    container.appendChild(_classPrivateMethodGet(this, _stanzas, _stanzas2).call(this, keys.uniqueEntryId, keys.dataKey));
     return container;
   }
 
-  function _stanzas2(subjectId, uniqueEntryId, dataKey) {
+  function _stanzas2(uniqueEntryId, dataKey) {
     var stanzas = document.createElement('div');
     stanzas.className = 'stanzas';
-    stanzas.innerHTML += StanzaManager$1.draw(subjectId, uniqueEntryId, dataKey);
+    stanzas.innerHTML += StanzaManager$1.draw(dataKey, uniqueEntryId);
     stanzas.querySelectorAll('script').forEach(function (scriptElement) {
       var _script = document.createElement('script');
 
@@ -6415,12 +6582,10 @@
     try {
       var targetEntry = _classPrivateMethodGet(this, _getTargetEntry, _getTargetEntry2).call(this, movement);
 
-      var targetTr = targetEntry.closest('tr');
-      var reportLink = targetTr.querySelector(':scope > th > .inner > .external-link-button-view').href;
       targetEntry.scrollIntoView({
         block: 'center'
       });
-      createPopupEvent(targetEntry, reportLink, movePopup);
+      createPopupEvent(targetEntry, movePopup);
     } catch (error) {
       console.log('Movement out of bounds');
     }
@@ -6480,21 +6645,21 @@
     document.removeEventListener('keydown', _classPrivateFieldGet(this, _handleKeydown));
   }
 
-  var _ROOT$4 = new WeakMap();
+  var _ROOT$4 = /*#__PURE__*/new WeakMap();
 
-  var _CONTAINER = new WeakMap();
+  var _CONTAINER = /*#__PURE__*/new WeakMap();
 
   var BalloonView = function BalloonView() {
     var _this = this;
 
     _classCallCheck(this, BalloonView);
 
-    _ROOT$4.set(this, {
+    _classPrivateFieldInitSpec(this, _ROOT$4, {
       writable: true,
       value: void 0
     });
 
-    _CONTAINER.set(this, {
+    _classPrivateFieldInitSpec(this, _CONTAINER, {
       writable: true,
       value: void 0
     });
@@ -6547,33 +6712,33 @@
     DETAILED: 'detailed'
   };
 
-  var _ROOT$3 = new WeakMap();
+  var _ROOT$3 = /*#__PURE__*/new WeakMap();
 
-  var _TEXT_OFFSET = new WeakMap();
+  var _TEXT_OFFSET = /*#__PURE__*/new WeakMap();
 
-  var _TEXT_TOTAL = new WeakMap();
+  var _TEXT_TOTAL = /*#__PURE__*/new WeakMap();
 
-  var _TEXT_STATUS = new WeakMap();
+  var _TEXT_STATUS = /*#__PURE__*/new WeakMap();
 
-  var _BAR = new WeakMap();
+  var _BAR = /*#__PURE__*/new WeakMap();
 
-  var _totalDuration = new WeakMap();
+  var _totalDuration = /*#__PURE__*/new WeakMap();
 
-  var _total = new WeakMap();
+  var _total = /*#__PURE__*/new WeakMap();
 
-  var _mode = new WeakMap();
+  var _mode = /*#__PURE__*/new WeakMap();
 
-  var _updateAmount = new WeakSet();
+  var _updateAmount = /*#__PURE__*/new WeakSet();
 
-  var _updateBarWidth = new WeakSet();
+  var _updateBarWidth = /*#__PURE__*/new WeakSet();
 
-  var _remainingTimeInSec = new WeakSet();
+  var _remainingTimeInSec = /*#__PURE__*/new WeakSet();
 
-  var _timeString = new WeakSet();
+  var _timeString = /*#__PURE__*/new WeakSet();
 
-  var _updateTime = new WeakSet();
+  var _updateTime = /*#__PURE__*/new WeakSet();
 
-  var _setMessage = new WeakSet();
+  var _setMessage = /*#__PURE__*/new WeakSet();
 
   var ProgressIndicator = /*#__PURE__*/function () {
     /**
@@ -6585,54 +6750,54 @@
 
       _classCallCheck(this, ProgressIndicator);
 
-      _setMessage.add(this);
+      _classPrivateMethodInitSpec(this, _setMessage);
 
-      _updateTime.add(this);
+      _classPrivateMethodInitSpec(this, _updateTime);
 
-      _timeString.add(this);
+      _classPrivateMethodInitSpec(this, _timeString);
 
-      _remainingTimeInSec.add(this);
+      _classPrivateMethodInitSpec(this, _remainingTimeInSec);
 
-      _updateBarWidth.add(this);
+      _classPrivateMethodInitSpec(this, _updateBarWidth);
 
-      _updateAmount.add(this);
+      _classPrivateMethodInitSpec(this, _updateAmount);
 
-      _ROOT$3.set(this, {
+      _classPrivateFieldInitSpec(this, _ROOT$3, {
         writable: true,
         value: void 0
       });
 
-      _TEXT_OFFSET.set(this, {
+      _classPrivateFieldInitSpec(this, _TEXT_OFFSET, {
         writable: true,
         value: void 0
       });
 
-      _TEXT_TOTAL.set(this, {
+      _classPrivateFieldInitSpec(this, _TEXT_TOTAL, {
         writable: true,
         value: void 0
       });
 
-      _TEXT_STATUS.set(this, {
+      _classPrivateFieldInitSpec(this, _TEXT_STATUS, {
         writable: true,
         value: void 0
       });
 
-      _BAR.set(this, {
+      _classPrivateFieldInitSpec(this, _BAR, {
         writable: true,
         value: void 0
       });
 
-      _totalDuration.set(this, {
+      _classPrivateFieldInitSpec(this, _totalDuration, {
         writable: true,
         value: void 0
       });
 
-      _total.set(this, {
+      _classPrivateFieldInitSpec(this, _total, {
         writable: true,
         value: void 0
       });
 
-      _mode.set(this, {
+      _classPrivateFieldInitSpec(this, _mode, {
         writable: true,
         value: void 0
       });
@@ -6794,65 +6959,65 @@
     dataButton: ''
   }]]);
 
-  var _condition = new WeakMap();
+  var _condition = /*#__PURE__*/new WeakMap();
 
-  var _serializedHeader = new WeakMap();
+  var _serializedHeader = /*#__PURE__*/new WeakMap();
 
-  var _queryIds = new WeakMap();
+  var _queryIds = /*#__PURE__*/new WeakMap();
 
-  var _rows = new WeakMap();
+  var _rows = /*#__PURE__*/new WeakMap();
 
-  var _source$1 = new WeakMap();
+  var _source$1 = /*#__PURE__*/new WeakMap();
 
-  var _isLoading = new WeakMap();
+  var _isLoading = /*#__PURE__*/new WeakMap();
 
-  var _isCompleted = new WeakMap();
+  var _isCompleted = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$2 = new WeakMap();
+  var _ROOT$2 = /*#__PURE__*/new WeakMap();
 
-  var _STATUS = new WeakMap();
+  var _STATUS = /*#__PURE__*/new WeakMap();
 
-  var _progressIndicator$1 = new WeakMap();
+  var _progressIndicator$1 = /*#__PURE__*/new WeakMap();
 
-  var _CONTROLLER = new WeakMap();
+  var _CONTROLLER = /*#__PURE__*/new WeakMap();
 
-  var _BUTTON_LEFT = new WeakMap();
+  var _BUTTON_LEFT = /*#__PURE__*/new WeakMap();
 
-  var _BUTTON_RIGHT = new WeakMap();
+  var _BUTTON_RIGHT = /*#__PURE__*/new WeakMap();
 
-  var _deleteCondition = new WeakSet();
+  var _deleteCondition = /*#__PURE__*/new WeakSet();
 
-  var _makeDataButton = new WeakSet();
+  var _makeDataButton = /*#__PURE__*/new WeakSet();
 
-  var _updateDataButton = new WeakSet();
+  var _updateDataButton = /*#__PURE__*/new WeakSet();
 
-  var _dataButtonPauseOrResume = new WeakSet();
+  var _dataButtonPauseOrResume = /*#__PURE__*/new WeakSet();
 
-  var _dataButtonEdit = new WeakSet();
+  var _dataButtonEdit = /*#__PURE__*/new WeakSet();
 
-  var _dataButtonRetry = new WeakSet();
+  var _dataButtonRetry = /*#__PURE__*/new WeakSet();
 
-  var _dataButtonEvent = new WeakSet();
+  var _dataButtonEvent = /*#__PURE__*/new WeakSet();
 
-  var _setDownloadButtons = new WeakSet();
+  var _setDownloadButtons = /*#__PURE__*/new WeakSet();
 
-  var _setJsonUrl = new WeakSet();
+  var _setJsonUrl = /*#__PURE__*/new WeakSet();
 
-  var _setTsvUrl = new WeakSet();
+  var _setTsvUrl = /*#__PURE__*/new WeakSet();
 
-  var _handleError = new WeakSet();
+  var _handleError = /*#__PURE__*/new WeakSet();
 
-  var _displayError = new WeakSet();
+  var _displayError = /*#__PURE__*/new WeakSet();
 
-  var _getQueryIdsPayload = new WeakSet();
+  var _getQueryIdsPayload = /*#__PURE__*/new WeakSet();
 
-  var _getQueryIds = new WeakSet();
+  var _getQueryIds = /*#__PURE__*/new WeakSet();
 
-  var _getPropertiesFetch = new WeakSet();
+  var _getPropertiesFetch = /*#__PURE__*/new WeakSet();
 
-  var _getProperties = new WeakSet();
+  var _getProperties = /*#__PURE__*/new WeakSet();
 
-  var _complete$1 = new WeakSet();
+  var _complete$1 = /*#__PURE__*/new WeakSet();
 
   var TableData = /*#__PURE__*/function () {
     function TableData(condition, elm) {
@@ -6860,101 +7025,101 @@
 
       _classCallCheck(this, TableData);
 
-      _complete$1.add(this);
+      _classPrivateMethodInitSpec(this, _complete$1);
 
-      _getProperties.add(this);
+      _classPrivateMethodInitSpec(this, _getProperties);
 
-      _getPropertiesFetch.add(this);
+      _classPrivateMethodInitSpec(this, _getPropertiesFetch);
 
-      _getQueryIds.add(this);
+      _classPrivateMethodInitSpec(this, _getQueryIds);
 
-      _getQueryIdsPayload.add(this);
+      _classPrivateMethodInitSpec(this, _getQueryIdsPayload);
 
-      _displayError.add(this);
+      _classPrivateMethodInitSpec(this, _displayError);
 
-      _handleError.add(this);
+      _classPrivateMethodInitSpec(this, _handleError);
 
-      _setTsvUrl.add(this);
+      _classPrivateMethodInitSpec(this, _setTsvUrl);
 
-      _setJsonUrl.add(this);
+      _classPrivateMethodInitSpec(this, _setJsonUrl);
 
-      _setDownloadButtons.add(this);
+      _classPrivateMethodInitSpec(this, _setDownloadButtons);
 
-      _dataButtonEvent.add(this);
+      _classPrivateMethodInitSpec(this, _dataButtonEvent);
 
-      _dataButtonRetry.add(this);
+      _classPrivateMethodInitSpec(this, _dataButtonRetry);
 
-      _dataButtonEdit.add(this);
+      _classPrivateMethodInitSpec(this, _dataButtonEdit);
 
-      _dataButtonPauseOrResume.add(this);
+      _classPrivateMethodInitSpec(this, _dataButtonPauseOrResume);
 
-      _updateDataButton.add(this);
+      _classPrivateMethodInitSpec(this, _updateDataButton);
 
-      _makeDataButton.add(this);
+      _classPrivateMethodInitSpec(this, _makeDataButton);
 
-      _deleteCondition.add(this);
+      _classPrivateMethodInitSpec(this, _deleteCondition);
 
-      _condition.set(this, {
+      _classPrivateFieldInitSpec(this, _condition, {
         writable: true,
         value: void 0
       });
 
-      _serializedHeader.set(this, {
+      _classPrivateFieldInitSpec(this, _serializedHeader, {
         writable: true,
         value: void 0
       });
 
-      _queryIds.set(this, {
+      _classPrivateFieldInitSpec(this, _queryIds, {
         writable: true,
         value: void 0
       });
 
-      _rows.set(this, {
+      _classPrivateFieldInitSpec(this, _rows, {
         writable: true,
         value: void 0
       });
 
-      _source$1.set(this, {
+      _classPrivateFieldInitSpec(this, _source$1, {
         writable: true,
         value: void 0
       });
 
-      _isLoading.set(this, {
+      _classPrivateFieldInitSpec(this, _isLoading, {
         writable: true,
         value: void 0
       });
 
-      _isCompleted.set(this, {
+      _classPrivateFieldInitSpec(this, _isCompleted, {
         writable: true,
         value: void 0
       });
 
-      _ROOT$2.set(this, {
+      _classPrivateFieldInitSpec(this, _ROOT$2, {
         writable: true,
         value: void 0
       });
 
-      _STATUS.set(this, {
+      _classPrivateFieldInitSpec(this, _STATUS, {
         writable: true,
         value: void 0
       });
 
-      _progressIndicator$1.set(this, {
+      _classPrivateFieldInitSpec(this, _progressIndicator$1, {
         writable: true,
         value: void 0
       });
 
-      _CONTROLLER.set(this, {
+      _classPrivateFieldInitSpec(this, _CONTROLLER, {
         writable: true,
         value: void 0
       });
 
-      _BUTTON_LEFT.set(this, {
+      _classPrivateFieldInitSpec(this, _BUTTON_LEFT, {
         writable: true,
         value: void 0
       });
 
-      _BUTTON_RIGHT.set(this, {
+      _classPrivateFieldInitSpec(this, _BUTTON_RIGHT, {
         writable: true,
         value: void 0
       });
@@ -6982,8 +7147,8 @@
 
       elm.classList.add('table-data-controller-view');
       elm.dataset.status = 'load ids';
-      elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condition\">\n        <p title=\"".concat(condition.togoKey, "\">").concat(Records$1.getLabelFromTogoKey(condition.togoKey), "</p>\n      </div>\n      ").concat(condition.attributes.map(function (property) {
-        return "<div class=\"condition _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n        <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n      </div>");
+      elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condition\">\n        <p title=\"".concat(condition.togoKey, "\">").concat(Records$1.getDatasetLabel(condition.togoKey), "</p>\n      </div>\n      ").concat(condition.attributes.map(function (property) {
+        return "<div class=\"condition _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n            <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n          </div>");
       }).join(''), "\n      ").concat(condition.properties.map(function (property) {
         var label = property.parentCategoryId ? Records$1.getValue(property.query.propertyId, property.parentCategoryId).label : property.property.label;
         return "<div class=\"condition _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n          <p title=\"").concat(label, "\">").concat(label, "</p>\n        </div>");
@@ -7075,11 +7240,6 @@
       key: "togoKey",
       get: function get() {
         return this.condition.togoKey;
-      }
-    }, {
-      key: "subjectId",
-      get: function get() {
-        return this.condition.subjectId;
       }
     }, {
       key: "condition",
@@ -7418,40 +7578,40 @@
     if (withData) _classPrivateMethodGet(this, _setDownloadButtons, _setDownloadButtons2).call(this);
   }
 
-  var _tableData = new WeakMap();
+  var _tableData = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$1 = new WeakMap();
+  var _ROOT$1 = /*#__PURE__*/new WeakMap();
 
-  var _CONDITIONS_CONTAINER = new WeakMap();
+  var _CONDITIONS_CONTAINER = /*#__PURE__*/new WeakMap();
 
-  var _setTableData = new WeakSet();
+  var _setTableData = /*#__PURE__*/new WeakSet();
 
-  var _selectTableData = new WeakSet();
+  var _selectTableData = /*#__PURE__*/new WeakSet();
 
-  var _deleteTableData = new WeakSet();
+  var _deleteTableData = /*#__PURE__*/new WeakSet();
 
   var ConditionsController = function ConditionsController(_elm) {
     var _this = this;
 
     _classCallCheck(this, ConditionsController);
 
-    _deleteTableData.add(this);
+    _classPrivateMethodInitSpec(this, _deleteTableData);
 
-    _selectTableData.add(this);
+    _classPrivateMethodInitSpec(this, _selectTableData);
 
-    _setTableData.add(this);
+    _classPrivateMethodInitSpec(this, _setTableData);
 
-    _tableData.set(this, {
+    _classPrivateFieldInitSpec(this, _tableData, {
       writable: true,
       value: void 0
     });
 
-    _ROOT$1.set(this, {
+    _classPrivateFieldInitSpec(this, _ROOT$1, {
       writable: true,
       value: void 0
     });
 
-    _CONDITIONS_CONTAINER.set(this, {
+    _classPrivateFieldInitSpec(this, _CONDITIONS_CONTAINER, {
       writable: true,
       value: void 0
     });
@@ -7567,6 +7727,8 @@
     _classPrivateFieldGet(this, _tableData).splice(index, 1);
   }
 
+  var lib = {};
+
   var WHITELIST = [
   	'ETIMEDOUT',
   	'ECONNRESET',
@@ -7628,17 +7790,20 @@
   	return true;
   };
 
-  var isNetworkError_1 = isNetworkError;
-  var isRetryableError_1 = isRetryableError;
-  var isSafeRequestError_1 = isSafeRequestError;
-  var isIdempotentRequestError_1 = isIdempotentRequestError;
-  var isNetworkOrIdempotentRequestError_1 = isNetworkOrIdempotentRequestError;
-  var exponentialDelay_1 = exponentialDelay;
-  var _default = axiosRetry$1;
+  Object.defineProperty(lib, "__esModule", {
+    value: true
+  });
+  lib.isNetworkError = isNetworkError;
+  lib.isRetryableError = isRetryableError;
+  lib.isSafeRequestError = isSafeRequestError;
+  lib.isIdempotentRequestError = isIdempotentRequestError;
+  lib.isNetworkOrIdempotentRequestError = isNetworkOrIdempotentRequestError;
+  lib.exponentialDelay = exponentialDelay;
+  lib.default = axiosRetry$1;
 
+  var _isRetryAllowed = isRetryAllowed;
 
-
-  var _isRetryAllowed2 = _interopRequireDefault(isRetryAllowed);
+  var _isRetryAllowed2 = _interopRequireDefault(_isRetryAllowed);
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7874,103 +8039,92 @@
   axiosRetry$1.exponentialDelay = exponentialDelay;
   axiosRetry$1.isRetryableError = isRetryableError;
 
-
-  var lib = /*#__PURE__*/Object.defineProperty({
-  	isNetworkError: isNetworkError_1,
-  	isRetryableError: isRetryableError_1,
-  	isSafeRequestError: isSafeRequestError_1,
-  	isIdempotentRequestError: isIdempotentRequestError_1,
-  	isNetworkOrIdempotentRequestError: isNetworkOrIdempotentRequestError_1,
-  	exponentialDelay: exponentialDelay_1,
-  	default: _default
-  }, '__esModule', {value: true});
-
   var axiosRetry = lib.default;
 
   var timeOutError = 'ECONNABORTED';
 
-  var _ROOT = new WeakMap();
+  var _ROOT = /*#__PURE__*/new WeakMap();
 
-  var _BODY = new WeakMap();
+  var _BODY = /*#__PURE__*/new WeakMap();
 
-  var _USER_IDS = new WeakMap();
+  var _USER_IDS = /*#__PURE__*/new WeakMap();
 
-  var _progressIndicator = new WeakMap();
+  var _progressIndicator = /*#__PURE__*/new WeakMap();
 
-  var _source = new WeakMap();
+  var _source = /*#__PURE__*/new WeakMap();
 
-  var _offset = new WeakMap();
+  var _offset = /*#__PURE__*/new WeakMap();
 
-  var _errorCount = new WeakMap();
+  var _errorCount = /*#__PURE__*/new WeakMap();
 
-  var _fetch = new WeakSet();
+  var _fetch = /*#__PURE__*/new WeakSet();
 
-  var _prepareProgressIndicator = new WeakSet();
+  var _prepareProgressIndicator = /*#__PURE__*/new WeakSet();
 
-  var _getProperty = new WeakSet();
+  var _getProperty = /*#__PURE__*/new WeakSet();
 
-  var _handleProp = new WeakSet();
+  var _handleProp = /*#__PURE__*/new WeakSet();
 
-  var _complete = new WeakSet();
+  var _complete = /*#__PURE__*/new WeakSet();
 
-  var _resetCounters = new WeakSet();
+  var _resetCounters = /*#__PURE__*/new WeakSet();
 
-  var _reset = new WeakSet();
+  var _reset = /*#__PURE__*/new WeakSet();
 
-  var _clear = new WeakSet();
+  var _clear = /*#__PURE__*/new WeakSet();
 
   var UploadUserIDsView = function UploadUserIDsView(elm) {
     var _this = this;
 
     _classCallCheck(this, UploadUserIDsView);
 
-    _clear.add(this);
+    _classPrivateMethodInitSpec(this, _clear);
 
-    _reset.add(this);
+    _classPrivateMethodInitSpec(this, _reset);
 
-    _resetCounters.add(this);
+    _classPrivateMethodInitSpec(this, _resetCounters);
 
-    _complete.add(this);
+    _classPrivateMethodInitSpec(this, _complete);
 
-    _handleProp.add(this);
+    _classPrivateMethodInitSpec(this, _handleProp);
 
-    _getProperty.add(this);
+    _classPrivateMethodInitSpec(this, _getProperty);
 
-    _prepareProgressIndicator.add(this);
+    _classPrivateMethodInitSpec(this, _prepareProgressIndicator);
 
-    _fetch.add(this);
+    _classPrivateMethodInitSpec(this, _fetch);
 
-    _ROOT.set(this, {
+    _classPrivateFieldInitSpec(this, _ROOT, {
       writable: true,
       value: void 0
     });
 
-    _BODY.set(this, {
+    _classPrivateFieldInitSpec(this, _BODY, {
       writable: true,
       value: void 0
     });
 
-    _USER_IDS.set(this, {
+    _classPrivateFieldInitSpec(this, _USER_IDS, {
       writable: true,
       value: void 0
     });
 
-    _progressIndicator.set(this, {
+    _classPrivateFieldInitSpec(this, _progressIndicator, {
       writable: true,
       value: void 0
     });
 
-    _source.set(this, {
+    _classPrivateFieldInitSpec(this, _source, {
       writable: true,
       value: void 0
     });
 
-    _offset.set(this, {
+    _classPrivateFieldInitSpec(this, _offset, {
       writable: true,
       value: void 0
     });
 
-    _errorCount.set(this, {
+    _classPrivateFieldInitSpec(this, _errorCount, {
       writable: true,
       value: void 0
     });
@@ -8087,7 +8241,6 @@
       });
       DefaultEventEmitter$1.dispatchEvent(customEvent);
     }).catch(function (error) {
-      var _this$errorCount;
 
       if (axios.isCancel && error.message === 'user cancel') return;
       var customEvent = new CustomEvent(toggleErrorUserValues, {
@@ -8101,7 +8254,7 @@
 
       _classPrivateMethodGet(_this3, _handleProp, _handleProp2).call(_this3);
 
-      _classPrivateFieldSet(_this3, _errorCount, (_this$errorCount = +_classPrivateFieldGet(_this3, _errorCount)) + 1), _this$errorCount;
+      _classPrivateFieldSet(_this3, _errorCount, (+_classPrivateFieldGet(_this3, _errorCount)) + 1);
     }).then(function () {
       if (_classPrivateFieldGet(_this3, _offset) >= Records$1.properties.length) {
         _classPrivateMethodGet(_this3, _complete, _complete2).call(_this3, _classPrivateFieldGet(_this3, _errorCount) > 0);
@@ -8164,70 +8317,70 @@
     _classPrivateMethodGet(this, _complete, _complete2).call(this);
   }
 
-  var _viewModes = new WeakMap();
+  var _viewModes = /*#__PURE__*/new WeakMap();
 
-  var _aggregate = new WeakMap();
+  var _aggregate = /*#__PURE__*/new WeakMap();
 
-  var _colorWhite = new WeakMap();
+  var _colorWhite = /*#__PURE__*/new WeakMap();
 
-  var _colorLightGray = new WeakMap();
+  var _colorLightGray = /*#__PURE__*/new WeakMap();
 
-  var _colorSilver = new WeakMap();
+  var _colorSilver = /*#__PURE__*/new WeakMap();
 
-  var _colorGray = new WeakMap();
+  var _colorGray = /*#__PURE__*/new WeakMap();
 
-  var _colorDarkGray = new WeakMap();
+  var _colorDarkGray = /*#__PURE__*/new WeakMap();
 
-  var _colorLampBlack = new WeakMap();
+  var _colorLampBlack = /*#__PURE__*/new WeakMap();
 
-  var _makeConceptViews = new WeakSet();
+  var _makeConceptViews = /*#__PURE__*/new WeakSet();
 
-  var _defineAllTracksCollapseButton = new WeakSet();
+  var _defineAllTracksCollapseButton = /*#__PURE__*/new WeakSet();
 
   var App = /*#__PURE__*/function () {
     function App() {
       _classCallCheck(this, App);
 
-      _defineAllTracksCollapseButton.add(this);
+      _classPrivateMethodInitSpec(this, _defineAllTracksCollapseButton);
 
-      _makeConceptViews.add(this);
+      _classPrivateMethodInitSpec(this, _makeConceptViews);
 
-      _viewModes.set(this, {
+      _classPrivateFieldInitSpec(this, _viewModes, {
         writable: true,
         value: void 0
       });
 
-      _aggregate.set(this, {
+      _classPrivateFieldInitSpec(this, _aggregate, {
         writable: true,
         value: void 0
       });
 
-      _colorWhite.set(this, {
+      _classPrivateFieldInitSpec(this, _colorWhite, {
         writable: true,
         value: void 0
       });
 
-      _colorLightGray.set(this, {
+      _classPrivateFieldInitSpec(this, _colorLightGray, {
         writable: true,
         value: void 0
       });
 
-      _colorSilver.set(this, {
+      _classPrivateFieldInitSpec(this, _colorSilver, {
         writable: true,
         value: void 0
       });
 
-      _colorGray.set(this, {
+      _classPrivateFieldInitSpec(this, _colorGray, {
         writable: true,
         value: void 0
       });
 
-      _colorDarkGray.set(this, {
+      _classPrivateFieldInitSpec(this, _colorDarkGray, {
         writable: true,
         value: void 0
       });
 
-      _colorLampBlack.set(this, {
+      _classPrivateFieldInitSpec(this, _colorLampBlack, {
         writable: true,
         value: void 0
       });
@@ -8279,22 +8432,26 @@
         new BalloonView();
         new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
 
-        Promise.all([fetch(api.PROPERTIES), fetch(api.TEMPLATES), fetch(api.AGGREGATE)]).then(function (responces) {
+        Promise.all([fetch(api.PROPERTIES), fetch(api.TEMPLATES), fetch(api.AGGREGATE), fetch(api.ATTRIBUTES)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
           }));
         }).then(function (_ref) {
-          var _ref2 = _slicedToArray(_ref, 3),
+          var _ref2 = _slicedToArray(_ref, 4),
               subjects = _ref2[0],
               templates = _ref2[1],
-              aggregate = _ref2[2];
+              aggregate = _ref2[2],
+              attributes = _ref2[3];
 
+          console.log(attributes);
           Records$1.setSubjects(subjects);
+          Records$1.setDatasets(attributes);
           ConditionBuilder$1.init(); // define primary keys
 
           var customEvent = new CustomEvent(defineTogoKey, {
             detail: {
-              subjects: subjects
+              subjects: subjects,
+              datasets: attributes.datasets
             }
           });
           DefaultEventEmitter$1.dispatchEvent(customEvent); // initialize stanza manager

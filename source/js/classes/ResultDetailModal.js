@@ -90,7 +90,7 @@ export default class ResultDetailModal {
       : Records.getValue(keys.mainCategoryId, keys.subCategoryId);
     const path = isPrimaryKey
       ? keys.dataKey
-      : `<span class='path'>${subject.subject} / ${subCategory.label}</span>`;
+      : `<span class='path'>${subject.subject} / ${subCategory?.label ?? '--'}</span>`;
     const header = document.createElement('header');
     header.innerHTML = `
       <div class='label'>
@@ -99,13 +99,10 @@ export default class ResultDetailModal {
         } </strong>
         ${path}
       </div>
-      <div>
-        <a class='external-link-button-view' href='${
-          props.reportLink
-        }' target='_blank'>Report</a>
+      <div/>
     `;
     header.classList.add('_subject-background-color');
-    header.lastChild.appendChild(this.#exit_button);
+    header.lastElementChild.appendChild(this.#exit_button);
     header.addEventListener('mousedown', e => {
       const customEvent = new CustomEvent(event.dragElement, {
         detail: {
@@ -127,17 +124,15 @@ export default class ResultDetailModal {
     ['Up', 'Right', 'Down', 'Left'].forEach(direction => {
       container.appendChild(this.#arrow(direction, props));
     });
-    container.appendChild(
-      this.#stanzas(keys.subjectId, keys.uniqueEntryId, keys.dataKey)
-    );
+    container.appendChild(this.#stanzas(keys.uniqueEntryId, keys.dataKey));
 
     return container;
   }
 
-  #stanzas(subjectId, uniqueEntryId, dataKey) {
+  #stanzas(uniqueEntryId, dataKey) {
     const stanzas = document.createElement('div');
     stanzas.className = 'stanzas';
-    stanzas.innerHTML += StanzaManager.draw(subjectId, uniqueEntryId, dataKey);
+    stanzas.innerHTML += StanzaManager.draw(dataKey, uniqueEntryId);
     stanzas.querySelectorAll('script').forEach(scriptElement => {
       const _script = document.createElement('script');
       _script.textContent = scriptElement.textContent;
@@ -217,13 +212,9 @@ export default class ResultDetailModal {
   #setMovementArrow(movement) {
     try {
       const targetEntry = this.#getTargetEntry(movement);
-      const targetTr = targetEntry.closest('tr');
-      const reportLink = targetTr.querySelector(
-        ':scope > th > .inner > .external-link-button-view'
-      ).href;
 
       targetEntry.scrollIntoView({block: 'center'});
-      createPopupEvent(targetEntry, reportLink, event.movePopup);
+      createPopupEvent(targetEntry, event.movePopup);
     } catch (error) {
       console.log('Movement out of bounds');
     }

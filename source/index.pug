@@ -4,7 +4,7 @@ block var
   - page = "top"
 
 block script
-  script(src="js/vendor/rawdeflate.js")
+  script(src="js/vendor/lodash.js")
   script(src="js/main.js")
   script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
 
@@ -151,6 +151,14 @@ block main
               table
                 thead
                   tr.statistics
+                    th.controller
+                      .inner
+                        label.onlyhitcount
+                          input(type="checkbox")
+                          span Only hit count
+                        label.stretch
+                          input(type="checkbox")
+                          span Stretch
                   tr.header
                   tr.subheader
                   //-
@@ -221,7 +229,7 @@ block main
               .inner
                 h2.title
                   span.material-icons layers
-                  | Select target database
+                  | Select target dataset
                 select(disabled)
                   //- option(val="gene") Gene
               hr
