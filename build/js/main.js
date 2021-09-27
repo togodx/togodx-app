@@ -3261,8 +3261,45 @@
       _classPrivateFieldSet(this, _valuesConditions$1, _classPrivateMethodGet(this, _copyValuesConditions, _copyValuesConditions2).call(this, _valuesConditions2));
     } // methods
 
+    /**
+     * 
+     * @param {DXCondition} dxCondition 
+     * @return Boolean
+     */
+
 
     _createClass(DXCondition, [{
+      key: "checkSameCondition",
+      value: function checkSameCondition(dxCondition) {
+        // keys
+        var matchKeys = false;
+
+        if (this.keyConditions.length === dxCondition.keyConditions.length) {
+          matchKeys = this.keyConditions.every(function (keyCondition) {
+            return dxCondition.keyConditions.findIndex(function (newKeyCondition) {
+              return keyCondition.propertyId === newKeyCondition.propertyId && keyCondition.parentCategoryId === newKeyCondition.parentCategoryId;
+            }) !== -1;
+          });
+        } // values
+
+
+        var matchValues = false;
+
+        if (this.valuesConditions.length === dxCondition.valuesConditions.length) {
+          matchValues = this.valuesConditions.every(function (valuesCondition) {
+            return dxCondition.valuesConditions.findIndex(function (newValuesCondition) {
+              return valuesCondition.propertyId === newValuesCondition.propertyId && valuesCondition.categoryIds.length === newValuesCondition.categoryIds.length && valuesCondition.categoryIds.every(function (categoryId) {
+                return newValuesCondition.categoryIds.findIndex(function (newCategoryId) {
+                  return categoryId === newCategoryId;
+                }) !== -1;
+              });
+            }) !== -1;
+          });
+        }
+
+        return matchKeys && matchValues;
+      }
+    }, {
       key: "togoKey",
       get: // accessor
       function get() {
@@ -7940,57 +7977,15 @@
   ;
 
   function _setTableData2(dxCondition) {
-    console.log(dxCondition); // find matching condition from already existing conditions
-    // const sameConditionTableData = this.#tableData.find(tableData => {
-    //   console.log(tableData.condition)
-    //   // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
-    //   if (newCondition.togoKey !== tableData.condition.togoKey) return;
-    //   // compare properties
-    //   const matchProperties = (() => {
-    //     if (newCondition.properties.length === tableData.condition.properties.length) {
-    //       return newCondition.properties.every(newProperty => {
-    //         const matchProperty = tableData.condition.properties.find(property => {
-    //           if (newProperty.query.propertyId === property.query.propertyId) {
-    //             return newProperty.parentCategoryId === property.parentCategoryId;
-    //           } else {
-    //             return false;
-    //           }
-    //         });
-    //         return matchProperty;
-    //       });
-    //     } else {
-    //       return false;
-    //     }
-    //   })();
-    //   // compare attributes
-    //   const matchAttributes = (() => {
-    //     if (newCondition.attributes.length === tableData.condition.attributes.length) {
-    //       return newCondition.attributes.every(newProperty => {
-    //         tableData.condition.attributes.find(property => {
-    //           if (
-    //             newProperty.query.propertyId === property.query.propertyId &&
-    //             newProperty.query.categoryIds.length === property.query.categoryIds.length
-    //           ) {
-    //             let matchValues = newProperty.query.categoryIds.every(categoryId => {
-    //               return property.query.categoryIds.indexOf(categoryId) !== -1;
-    //             });
-    //             return matchValues;
-    //           } else {
-    //             return false;
-    //           }
-    //         });
-    //       });
-    //     } else {
-    //       return false;
-    //     }
-    //   })();
-    //   return matchProperties && matchAttributes;
-    // });
+    // find matching condition from already existing conditions
+    var sameConditionTableData = _classPrivateFieldGet(this, _tableData).find(function (tableData) {
+      return tableData.dxCondition.checkSameCondition(dxCondition);
+    });
 
-    var sameConditionTableData = undefined;
-    console.log(sameConditionTableData);
-
-    {
+    if (sameConditionTableData) {
+      // use existing table data
+      sameConditionTableData.select();
+    } else {
       // make new table data
       var elm = document.createElement('div');
 

@@ -16,6 +16,44 @@ export default class DXCondition {
 
   // methods
 
+  /**
+   * 
+   * @param {DXCondition} dxCondition 
+   * @return Boolean
+   */
+  checkSameCondition(dxCondition) {
+    // keys
+    let matchKeys = false;
+    if (this.keyConditions.length === dxCondition.keyConditions.length) {
+      matchKeys = this.keyConditions.every(keyCondition => {
+        return dxCondition.keyConditions.findIndex(newKeyCondition => {
+          return (
+            keyCondition.propertyId === newKeyCondition.propertyId &&
+            keyCondition.parentCategoryId === newKeyCondition.parentCategoryId
+          );
+        }) !== -1;
+      });
+    }
+    // values
+    let matchValues = false;
+    if (this.valuesConditions.length === dxCondition.valuesConditions.length) {
+      matchValues = this.valuesConditions.every(valuesCondition => {
+        return dxCondition.valuesConditions.findIndex(newValuesCondition => {
+          return (
+            valuesCondition.propertyId === newValuesCondition.propertyId &&
+            (
+              valuesCondition.categoryIds.length === newValuesCondition.categoryIds.length &&
+              valuesCondition.categoryIds.every(categoryId => {
+                return newValuesCondition.categoryIds.findIndex(newCategoryId => categoryId === newCategoryId) !== -1;
+              })
+            )
+          );
+        }) !== -1;
+      });
+    }
+    return matchKeys && matchValues;
+  }
+
   #copyKeyConditions(keyConditions) {
     return keyConditions.map(keyCondition => new KeyCondition(keyCondition.propertyId, keyCondition.parentCategoryId));
   }
