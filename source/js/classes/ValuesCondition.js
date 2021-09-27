@@ -43,4 +43,11 @@ export default class ValuesCondition extends BaseCondition {
     return [...this.#categoryIds];
   }
 
+  get query() {
+    return {
+      propertyId: this.propertyId,
+      categoryIds: this.categoryIds
+    }
+  }
+
 }

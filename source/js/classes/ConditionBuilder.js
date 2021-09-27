@@ -56,11 +56,9 @@ class ConditionBuilder {
   }
 
   addPropertyValue(propertyId, categoryId, ancestors = [], isFinal = true) {
-    console.log(propertyId, categoryId)
     // find value of same property
     const sameValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
     // store
-    console.log(sameValuesCondition)
     if (sameValuesCondition) {
       sameValuesCondition.addCategoryId(categoryId);
     } else {
@@ -116,7 +114,7 @@ class ConditionBuilder {
   }
 
   setPropertyValues(propertyId, categoryIds, isFinal = true) {
-    console.log(propertyId, categoryIds, isFinal)
+    // console.log(propertyId, categoryIds, isFinal)
     const oldValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
     if (oldValuesCondition) {
       const originalValues = Records.getProperty(propertyId).values;
@@ -287,7 +285,6 @@ class ConditionBuilder {
   }
 
   #progressQueueOfGettingChildCategoryIds(condition, queue) {
-    console.log(queue)
     if (queue.length > 0) {
       const {propertyId, categoryId} = queue.shift();
       this.#getChildCategoryIds(propertyId, categoryId)
@@ -310,7 +307,6 @@ class ConditionBuilder {
   }
 
   #restoreConditions({togoKey, userIds, keys, values}) {
-    console.log(keys, values)
     
     this.#isRestoredConditinoFromURLParameters = true;
 

@@ -290,13 +290,8 @@ export default class TableData {
     // attribute (classification/distribution)
     Records.properties.forEach(({propertyId}) => {
       const valuesCondition = this.#dxCondition.valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
-      // const attribute = this.#condition.attributes.find(
-      //   attribute => attribute.property.propertyId === propertyId
-      // );
       const categoryIds = [];
       if (valuesCondition) categoryIds.push(...valuesCondition.categoryIds);
-      // if (attribute) categoryIds.push(...attribute.query.categoryIds);
-      console.log(propertyId, categoryIds)
       ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
     });
   }
@@ -430,9 +425,11 @@ export default class TableData {
   }
 
   #getQueryIdsPayload() {
-    return `togoKey=${this.#dxCondition.togoKey}&properties=${encodeURIComponent(
-      JSON.stringify(this.#condition.attributes.map(property => property.query))
-    )}${
+    return `togoKey=${
+      this.#dxCondition.togoKey
+    }&properties=${
+      this.#dxCondition.queryIds
+    }${
       ConditionBuilder.userIds?.length > 0
         ? `&inputIds=${encodeURIComponent(
             JSON.stringify(ConditionBuilder.userIds.split(','))
@@ -468,13 +465,7 @@ export default class TableData {
     return `${App.aggregateRows}?togoKey=${
       this.#dxCondition.togoKey
     }&properties=${
-      encodeURIComponent(
-        JSON.stringify(
-          this.#condition.attributes
-            .map(property => property.query)
-            .concat(this.#dxCondition.keyConditions.map(keyCondition => keyCondition.query))
-        )
-      )
+      this.#dxCondition.queryProperties
     }&queryIds=${
       encodeURIComponent(
         JSON.stringify(this.#queryIds.slice(this.offset, this.offset + LIMIT))

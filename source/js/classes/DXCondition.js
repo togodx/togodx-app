@@ -28,4 +28,26 @@ export default class DXCondition {
     return this.#valuesConditions;
   }
 
+  get queryIds() {
+    return encodeURIComponent(
+      JSON.stringify(
+        this.#valuesConditions
+          .map(
+            valuesConditions => valuesConditions.query
+          )
+      )
+    );
+  }
+
+  get queryProperties() {
+    return encodeURIComponent(
+      JSON.stringify(
+        [
+          ...this.#valuesConditions.map(valuesConditions => valuesConditions.query),
+          ...this.#keyConditions.map(keyConditions => keyConditions.query)
+        ]
+      )
+    );
+  }
+
 }

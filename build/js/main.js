@@ -3171,6 +3171,14 @@
       get: function get() {
         return _toConsumableArray(_classPrivateFieldGet(this, _categoryIds));
       }
+    }, {
+      key: "query",
+      get: function get() {
+        return {
+          propertyId: this.propertyId,
+          categoryIds: this.categoryIds
+        };
+      }
     }]);
 
     return ValuesCondition;
@@ -3227,6 +3235,22 @@
       key: "valuesConditions",
       get: function get() {
         return _classPrivateFieldGet(this, _valuesConditions$1);
+      }
+    }, {
+      key: "queryIds",
+      get: function get() {
+        return encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _valuesConditions$1).map(function (valuesConditions) {
+          return valuesConditions.query;
+        })));
+      }
+    }, {
+      key: "queryProperties",
+      get: function get() {
+        return encodeURIComponent(JSON.stringify([].concat(_toConsumableArray(_classPrivateFieldGet(this, _valuesConditions$1).map(function (valuesConditions) {
+          return valuesConditions.query;
+        })), _toConsumableArray(_classPrivateFieldGet(this, _keyConditions$1).map(function (keyConditions) {
+          return keyConditions.query;
+        })))));
       }
     }]);
 
@@ -3412,14 +3436,12 @@
       key: "addPropertyValue",
       value: function addPropertyValue(propertyId, categoryId) {
         var isFinal = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-        console.log(propertyId, categoryId); // find value of same property
 
+        // find value of same property
         var sameValuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
           return valuesCondition.propertyId === propertyId;
         }); // store
 
-
-        console.log(sameValuesCondition);
 
         if (sameValuesCondition) {
           sameValuesCondition.addCategoryId(categoryId);
@@ -3519,8 +3541,8 @@
         var _this2 = this;
 
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log(propertyId, categoryIds, isFinal);
 
+        // console.log(propertyId, categoryIds, isFinal)
         var oldValuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
           return valuesCondition.propertyId === propertyId;
         });
@@ -3759,8 +3781,6 @@
   function _progressQueueOfGettingChildCategoryIds2(condition, queue) {
     var _this3 = this;
 
-    console.log(queue);
-
     if (queue.length > 0) {
       var _queue$shift = queue.shift(),
           propertyId = _queue$shift.propertyId,
@@ -3791,7 +3811,6 @@
         _ref6.userIds;
         var keys = _ref6.keys,
         values = _ref6.values;
-    console.log(keys, values);
 
     _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true); // restore conditions
 
@@ -7588,15 +7607,10 @@
 
       var valuesCondition = _classPrivateFieldGet(_this3, _dxCondition).valuesConditions.find(function (valuesCondition) {
         return valuesCondition.propertyId === propertyId;
-      }); // const attribute = this.#condition.attributes.find(
-      //   attribute => attribute.property.propertyId === propertyId
-      // );
-
+      });
 
       var categoryIds = [];
-      if (valuesCondition) categoryIds.push.apply(categoryIds, _toConsumableArray(valuesCondition.categoryIds)); // if (attribute) categoryIds.push(...attribute.query.categoryIds);
-
-      console.log(propertyId, categoryIds);
+      if (valuesCondition) categoryIds.push.apply(categoryIds, _toConsumableArray(valuesCondition.categoryIds));
       ConditionBuilder$1.setPropertyValues(propertyId, categoryIds, false);
     });
   }
@@ -7730,9 +7744,7 @@
   function _getQueryIdsPayload2() {
     var _ConditionBuilder$use;
 
-    return "togoKey=".concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
-      return property.query;
-    })))).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : '');
+    return "togoKey=".concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&properties=").concat(_classPrivateFieldGet(this, _dxCondition).queryIds).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : '');
   }
 
   function _getQueryIds2() {
@@ -7763,11 +7775,7 @@
   }
 
   function _getPropertiesFetch2() {
-    return "".concat(App$1.aggregateRows, "?togoKey=").concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
-      return property.query;
-    }).concat(_classPrivateFieldGet(this, _dxCondition).keyConditions.map(function (keyCondition) {
-      return keyCondition.query;
-    })))), "&queryIds=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _queryIds).slice(this.offset, this.offset + LIMIT))));
+    return "".concat(App$1.aggregateRows, "?togoKey=").concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&properties=").concat(_classPrivateFieldGet(this, _dxCondition).queryProperties, "&queryIds=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _queryIds).slice(this.offset, this.offset + LIMIT))));
   }
 
   function _getProperties2() {
