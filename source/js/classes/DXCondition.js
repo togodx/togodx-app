@@ -1,3 +1,6 @@
+import KeyCondition from "./KeyCondition";
+import ValuesCondition from "./ValuesCondition";
+
 export default class DXCondition {
 
   #togoKey;
@@ -6,8 +9,8 @@ export default class DXCondition {
 
   constructor(togoKey, keyConditions, valuesConditions) {
     this.#togoKey = togoKey;
-    this.#keyConditions = keyConditions;
-    this.#valuesConditions = valuesConditions;
+    this.#keyConditions = keyConditions.map(keyCondition => new KeyCondition(keyCondition.propertyId, keyCondition.parentCategoryId));
+    this.#valuesConditions = valuesConditions.map(valuesCondition => new ValuesCondition(valuesCondition.propertyId, valuesCondition.categoryIds));
   }
 
 

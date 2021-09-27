@@ -93,6 +93,9 @@ export default class TableData {
   constructor(condition, dxCondition, elm) {
     console.log(condition)
     console.log(dxCondition)
+    dxCondition.valuesConditions.forEach(valuesCondition => {
+      console.log(...valuesCondition.categoryIds)
+    })
     const CancelToken = axios.CancelToken;
     this.#source = CancelToken.source();
 
@@ -104,7 +107,6 @@ export default class TableData {
       ...dxCondition.valuesConditions.map(valuesCondition => valuesCondition.propertyId),
       ...dxCondition.keyConditions.map(keyCondition => keyCondition.propertyId),
     ];
-    console.log(this.#serializedHeader)
     this.#queryIds = [];
     this.#rows = [];
 
@@ -272,6 +274,8 @@ export default class TableData {
    * @param { MouseEvent } e
    */
   #dataButtonEdit(e) {
+    console.log(this)
+    console.log(this.#dxCondition)
     e.stopPropagation();
     // property (attribute)
     ConditionBuilder.setProperties(
@@ -292,6 +296,7 @@ export default class TableData {
       const categoryIds = [];
       if (valuesCondition) categoryIds.push(...valuesCondition.categoryIds);
       // if (attribute) categoryIds.push(...attribute.query.categoryIds);
+      console.log(propertyId, categoryIds)
       ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
     });
   }

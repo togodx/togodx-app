@@ -56,6 +56,7 @@ class ConditionBuilder {
   }
 
   addPropertyValue(propertyId, categoryId, ancestors = [], isFinal = true) {
+    console.log(propertyId, categoryId)
     // find value of same property
     const sameValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
     // store
@@ -115,6 +116,7 @@ class ConditionBuilder {
   }
 
   setPropertyValues(propertyId, categoryIds, isFinal = true) {
+    console.log(propertyId, categoryIds, isFinal)
     const oldValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
     if (oldValuesCondition) {
       const originalValues = Records.getProperty(propertyId).values;
@@ -178,7 +180,7 @@ class ConditionBuilder {
       togoKey: this.#togoKey,
       properties,
       attributes,
-      dxCondition: new DXCondition(this.#togoKey, [...this.#keyConditions], [...this.#valuesConditions])
+      dxCondition: new DXCondition(this.#togoKey, this.#keyConditions, this.#valuesConditions)
     }});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }

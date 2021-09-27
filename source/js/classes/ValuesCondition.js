@@ -14,7 +14,7 @@ export default class ValuesCondition extends BaseCondition {
   // methods
 
   addCategoryId(categoryId) {
-    this.categoryIds.push(categoryId);
+    this.#categoryIds.push(categoryId);
   }
 
   removeCategoryId(categoryId) {
@@ -40,7 +40,7 @@ export default class ValuesCondition extends BaseCondition {
   // accessor
 
   get categoryIds() {
-    return this.#categoryIds;
+    return [...this.#categoryIds];
   }
 
 }

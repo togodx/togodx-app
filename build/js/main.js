@@ -3133,7 +3133,7 @@
     _createClass(ValuesCondition, [{
       key: "addCategoryId",
       value: function addCategoryId(categoryId) {
-        this.categoryIds.push(categoryId);
+        _classPrivateFieldGet(this, _categoryIds).push(categoryId);
       }
     }, {
       key: "removeCategoryId",
@@ -3169,7 +3169,7 @@
     }, {
       key: "categoryIds",
       get: function get() {
-        return _classPrivateFieldGet(this, _categoryIds);
+        return _toConsumableArray(_classPrivateFieldGet(this, _categoryIds));
       }
     }]);
 
@@ -3203,9 +3203,13 @@
 
       _classPrivateFieldSet(this, _togoKey$1, togoKey);
 
-      _classPrivateFieldSet(this, _keyConditions$1, keyConditions);
+      _classPrivateFieldSet(this, _keyConditions$1, keyConditions.map(function (keyCondition) {
+        return new KeyCondition(keyCondition.propertyId, keyCondition.parentCategoryId);
+      }));
 
-      _classPrivateFieldSet(this, _valuesConditions$1, valuesConditions);
+      _classPrivateFieldSet(this, _valuesConditions$1, valuesConditions.map(function (valuesCondition) {
+        return new ValuesCondition(valuesCondition.propertyId, valuesCondition.categoryIds);
+      }));
     } // accessor
 
 
@@ -3408,8 +3412,8 @@
       key: "addPropertyValue",
       value: function addPropertyValue(propertyId, categoryId) {
         var isFinal = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+        console.log(propertyId, categoryId); // find value of same property
 
-        // find value of same property
         var sameValuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
           return valuesCondition.propertyId === propertyId;
         }); // store
@@ -3515,6 +3519,7 @@
         var _this2 = this;
 
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+        console.log(propertyId, categoryIds, isFinal);
 
         var oldValuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
           return valuesCondition.propertyId === propertyId;
@@ -3613,7 +3618,7 @@
             togoKey: _classPrivateFieldGet(this, _togoKey),
             properties: properties,
             attributes: attributes,
-            dxCondition: new DXCondition(_classPrivateFieldGet(this, _togoKey), _toConsumableArray(_classPrivateFieldGet(this, _keyConditions)), _toConsumableArray(_classPrivateFieldGet(this, _valuesConditions)))
+            dxCondition: new DXCondition(_classPrivateFieldGet(this, _togoKey), _classPrivateFieldGet(this, _keyConditions), _classPrivateFieldGet(this, _valuesConditions))
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
@@ -7351,6 +7356,11 @@
 
       console.log(condition);
       console.log(dxCondition);
+      dxCondition.valuesConditions.forEach(function (valuesCondition) {
+        var _console;
+
+        (_console = console).log.apply(_console, _toConsumableArray(valuesCondition.categoryIds));
+      });
       var CancelToken = axios.CancelToken;
 
       _classPrivateFieldSet(this, _source$1, CancelToken.source());
@@ -7368,8 +7378,6 @@
       })), _toConsumableArray(dxCondition.keyConditions.map(function (keyCondition) {
         return keyCondition.propertyId;
       }))));
-
-      console.log(_classPrivateFieldGet(this, _serializedHeader));
 
       _classPrivateFieldSet(this, _queryIds, []);
 
@@ -7564,6 +7572,8 @@
   function _dataButtonEdit2(e) {
     var _this3 = this;
 
+    console.log(this);
+    console.log(_classPrivateFieldGet(this, _dxCondition));
     e.stopPropagation(); // property (attribute)
 
     ConditionBuilder$1.setProperties(_classPrivateFieldGet(this, _dxCondition).keyConditions.map(function (keyCondition) {
@@ -7586,6 +7596,7 @@
       var categoryIds = [];
       if (valuesCondition) categoryIds.push.apply(categoryIds, _toConsumableArray(valuesCondition.categoryIds)); // if (attribute) categoryIds.push(...attribute.query.categoryIds);
 
+      console.log(propertyId, categoryIds);
       ConditionBuilder$1.setPropertyValues(propertyId, categoryIds, false);
     });
   }
@@ -7887,58 +7898,56 @@
 
   function _setTableData2(newCondition) {
     console.log(newCondition); // find matching condition from already existing conditions
+    // const sameConditionTableData = this.#tableData.find(tableData => {
+    //   console.log(tableData.condition)
+    //   // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
+    //   if (newCondition.togoKey !== tableData.condition.togoKey) return;
+    //   // compare properties
+    //   const matchProperties = (() => {
+    //     if (newCondition.properties.length === tableData.condition.properties.length) {
+    //       return newCondition.properties.every(newProperty => {
+    //         const matchProperty = tableData.condition.properties.find(property => {
+    //           if (newProperty.query.propertyId === property.query.propertyId) {
+    //             return newProperty.parentCategoryId === property.parentCategoryId;
+    //           } else {
+    //             return false;
+    //           }
+    //         });
+    //         return matchProperty;
+    //       });
+    //     } else {
+    //       return false;
+    //     }
+    //   })();
+    //   // compare attributes
+    //   const matchAttributes = (() => {
+    //     if (newCondition.attributes.length === tableData.condition.attributes.length) {
+    //       return newCondition.attributes.every(newProperty => {
+    //         tableData.condition.attributes.find(property => {
+    //           if (
+    //             newProperty.query.propertyId === property.query.propertyId &&
+    //             newProperty.query.categoryIds.length === property.query.categoryIds.length
+    //           ) {
+    //             let matchValues = newProperty.query.categoryIds.every(categoryId => {
+    //               return property.query.categoryIds.indexOf(categoryId) !== -1;
+    //             });
+    //             return matchValues;
+    //           } else {
+    //             return false;
+    //           }
+    //         });
+    //       });
+    //     } else {
+    //       return false;
+    //     }
+    //   })();
+    //   return matchProperties && matchAttributes;
+    // });
 
-    var sameConditionTableData = _classPrivateFieldGet(this, _tableData).find(function (tableData) {
-      console.log(tableData.condition); // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
-
-      if (newCondition.togoKey !== tableData.condition.togoKey) return; // compare properties
-
-      var matchProperties = function () {
-        if (newCondition.properties.length === tableData.condition.properties.length) {
-          return newCondition.properties.every(function (newProperty) {
-            var matchProperty = tableData.condition.properties.find(function (property) {
-              if (newProperty.query.propertyId === property.query.propertyId) {
-                return newProperty.parentCategoryId === property.parentCategoryId;
-              } else {
-                return false;
-              }
-            });
-            return matchProperty;
-          });
-        } else {
-          return false;
-        }
-      }(); // compare attributes
-
-
-      var matchAttributes = function () {
-        if (newCondition.attributes.length === tableData.condition.attributes.length) {
-          return newCondition.attributes.every(function (newProperty) {
-            tableData.condition.attributes.find(function (property) {
-              if (newProperty.query.propertyId === property.query.propertyId && newProperty.query.categoryIds.length === property.query.categoryIds.length) {
-                var matchValues = newProperty.query.categoryIds.every(function (categoryId) {
-                  return property.query.categoryIds.indexOf(categoryId) !== -1;
-                });
-                return matchValues;
-              } else {
-                return false;
-              }
-            });
-          });
-        } else {
-          return false;
-        }
-      }();
-
-      return matchProperties && matchAttributes;
-    });
-
+    var sameConditionTableData = undefined;
     console.log(sameConditionTableData);
 
-    if (sameConditionTableData) {
-      // use existing table data
-      sameConditionTableData.select();
-    } else {
+    {
       // make new table data
       var elm = document.createElement('div');
 
