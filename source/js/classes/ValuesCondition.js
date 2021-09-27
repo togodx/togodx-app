@@ -43,6 +43,10 @@ export default class ValuesCondition extends BaseCondition {
     return [...this.#categoryIds];
   }
 
+  get label() {
+    return this.key.label;
+  }
+
   get query() {
     return {
       propertyId: this.propertyId,

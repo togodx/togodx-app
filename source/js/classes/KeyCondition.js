@@ -61,7 +61,6 @@ export default class KeyCondition extends BaseCondition {
     }
   }
 
-
   get value() {
     if (!this.#value) {
       this.#value = Records.getValue(this._propertyId, this.#parentCategoryId);

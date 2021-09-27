@@ -93,9 +93,6 @@ export default class TableData {
   constructor(condition, dxCondition, elm) {
     console.log(condition)
     console.log(dxCondition)
-    dxCondition.valuesConditions.forEach(valuesCondition => {
-      console.log(...valuesCondition.categoryIds)
-    })
     const CancelToken = axios.CancelToken;
     this.#source = CancelToken.source();
 
@@ -126,7 +123,7 @@ export default class TableData {
         this.#dxCondition.valuesConditions
           .map(valuesCondition => {
             const label = Records.getProperty(valuesCondition.propertyId).label;
-            return `<div class="condition _subject-background-color" data-subject-id="${valuesCondition.key.subjectId}">
+            return `<div class="condition _subject-background-color" data-subject-id="${valuesCondition.subjectId}">
               <p title="${label}">${label}</p>
             </div>`
           })
@@ -135,7 +132,7 @@ export default class TableData {
       ${
         this.#dxCondition.keyConditions
           .map(keyCondition => {
-            return `<div class="condition _subject-color" data-subject-id="${keyCondition.key.subjectId}">
+            return `<div class="condition _subject-color" data-subject-id="${keyCondition.subjectId}">
               <p title="${keyCondition.label}">${keyCondition.label}</p>
             </div>`;
           })
@@ -424,7 +421,7 @@ export default class TableData {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  #getQueryIdsPayload() {
+  get #queryIdsPayload() {
     return `togoKey=${
       this.#dxCondition.togoKey
     }&properties=${
@@ -440,7 +437,7 @@ export default class TableData {
 
   #getQueryIds() {
     axios
-      .post(App.aggregatePrimaryKeys, this.#getQueryIdsPayload(), {
+      .post(App.aggregatePrimaryKeys, this.#queryIdsPayload, {
         cancelToken: this.#source.token,
       })
       .then(response => {
@@ -461,7 +458,7 @@ export default class TableData {
       });
   }
 
-  #getPropertiesFetch() {
+  get #propertiesPayload() {
     return `${App.aggregateRows}?togoKey=${
       this.#dxCondition.togoKey
     }&properties=${
@@ -477,7 +474,7 @@ export default class TableData {
     this.#isLoading = true;
     const startTime = Date.now();
     axios
-      .get(this.#getPropertiesFetch(), {cancelToken: this.#source.token})
+      .get(this.#propertiesPayload, {cancelToken: this.#source.token})
       .then(response => {
         this.#rows.push(...response.data);
         this.#isCompleted = this.offset >= this.#queryIds.length;
@@ -557,6 +554,9 @@ export default class TableData {
   }
   get condition() {
     return this.#condition;
+  }
+  get dxCondition() {
+    return this.#dxCondition;
   }
   get serializedHeader() {
     return this.#serializedHeader;

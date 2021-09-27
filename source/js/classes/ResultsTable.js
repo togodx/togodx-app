@@ -104,17 +104,15 @@ export default class ResultsTable {
   }
 
   #setupTable(tableData) {
-    const properties = tableData.condition.attributes.concat(
-      tableData.condition.properties
-    );
+    const propertyIds = tableData.serializedHeader;
 
     // reset
     this.#tableData = tableData;
     this.#intersctionObserver.unobserve(this.#TABLE_END);
-    this.#header = properties.map(property => {
+    this.#header = propertyIds.map(propertyId => {
       return {
-        subjectId: property.subject.subjectId,
-        propertyId: property.property.propertyId,
+        subjectId: Records.getProperty(propertyId).subjectId,
+        propertyId,
       };
     });
     this.#ROOT.classList.remove('-complete');
@@ -128,7 +126,7 @@ export default class ResultsTable {
       <th rowspan="2">
         <div class="inner">
           <div class="togo-key-view">${
-            Records.getDatasetLabel(tableData.condition.togoKey)
+            Records.getDatasetLabel(tableData.togoKey)
           }</div>
         </div>
       </th>
@@ -139,32 +137,32 @@ export default class ResultsTable {
 
     // makte table sub header
     this.#THEAD_SUB.innerHTML = `
-    ${tableData.condition.attributes
-      .map(
-        property => `
-    <th>
-      <div class="inner _subject-background-color" data-subject-id="${property.subject.subjectId}">
-      <div class="togo-key-view">${property.property.primaryKey}</div>
-        <span>${property.property.label}</span>
-      </div>
-    </th>`
-      )
-      .join('')}
-    ${tableData.condition.properties
-      .map(
-        property => `
-    <th>
-      <div class="inner _subject-color" data-subject-id="${property.subject.subjectId}">
-        <div class="togo-key-view">${property.property.primaryKey}</div>
-        <span>${
-          property.parentCategoryId
-            ? Records.getValue(property.query.propertyId, property.parentCategoryId).label
-            : property.property.label
-        }</span>
-      </div>
-    </th>`
-      )
-      .join('')}`;
+    ${
+      tableData.dxCondition.valuesConditions
+        .map(
+          valuesCondition => `
+          <th>
+            <div class="inner _subject-background-color" data-subject-id="${valuesCondition.subjectId}">
+            <div class="togo-key-view">${valuesCondition.dataset}</div>
+              <span>${valuesCondition.label}</span>
+            </div>
+          </th>`
+        )
+        .join('')
+    }
+    ${
+      tableData.dxCondition.keyConditions
+        .map(
+          keyCondition => `
+          <th>
+            <div class="inner _subject-color" data-subject-id="${keyCondition.subjectId}">
+              <div class="togo-key-view">${keyCondition.dataset}</div>
+              <span>${keyCondition.label}</span>
+            </div>
+          </th>`
+        )
+        .join('')
+    }`;
 
     // make stats
     for (const td of this.#STATS.querySelectorAll(':scope > td')) {
@@ -174,11 +172,11 @@ export default class ResultsTable {
       statisticsView.destroy();
     }
     this.#statisticsViews = [];
-    for (const property of properties) {
+    for (const propertyId of propertyIds) {
       const td = document.createElement('td');
       td.innerHTML = '<div class="inner"><div></div></div>';
       this.#STATS.append(td);
-      this.#statisticsViews.push(new StatisticsView(this.#STATS, td.querySelector(':scope > .inner > div'), tableData, property));
+      this.#statisticsViews.push(new StatisticsView(this.#STATS, td.querySelector(':scope > .inner > div'), tableData, propertyId));
     }
   }
 
