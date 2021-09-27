@@ -3383,8 +3383,7 @@
   var leavePropertyValueItemView = 'leavePropertyValueItemView';
   var allTracksCollapse = 'allTracksCollapse'; // Statistics
 
-  var changeToOnlyHitCountInStatisticsView = 'changeToOnlyHitCountInStatisticsView';
-  var changeToStretchInStatisticsView = 'changeToStretchInStatisticsView';
+  var changeStatisticsViewMode = 'changeStatisticsViewMode';
 
   var _keyConditions = /*#__PURE__*/new WeakMap();
 
@@ -6025,16 +6024,14 @@
 
 
       DefaultEventEmitter$1.addEventListener(addNextRows, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
-      DefaultEventEmitter$1.addEventListener(changeToOnlyHitCountInStatisticsView, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
-      DefaultEventEmitter$1.addEventListener(changeToStretchInStatisticsView, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+      DefaultEventEmitter$1.addEventListener(changeStatisticsViewMode, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
     }
 
     _createClass(StatisticsView, [{
       key: "destroy",
       value: function destroy() {
         DefaultEventEmitter$1.removeEventListener(addNextRows, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
-        DefaultEventEmitter$1.removeEventListener(changeToOnlyHitCountInStatisticsView, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
-        DefaultEventEmitter$1.removeEventListener(changeToStretchInStatisticsView, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+        DefaultEventEmitter$1.removeEventListener(changeStatisticsViewMode, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
       }
       /**
        * @param {TableData} detail.tableData
@@ -6048,7 +6045,8 @@
   }();
 
   function _draw2(e) {
-    var _this = this;
+    var _this = this,
+        _e$detail;
 
     var attributes = _.uniqBy(_classPrivateFieldGet(this, _tableData$2).data.map(function (datum) {
       return datum.properties.find(function (property) {
@@ -6126,7 +6124,7 @@
       if (isOnlyHitCount) {
         hitCountLabel.textContent = hitCount.toLocaleString();
       } else {
-        hitCountLabel.textContent = Math.round(hitCount / countMax * 100) + '%';
+        hitCountLabel.textContent = Math.round(hitCount / count * 100) + '%';
       }
 
       if (hitCount / countMax < .5) {
@@ -6138,7 +6136,7 @@
       return bar;
     }, undefined);
 
-    if (e !== null && e !== void 0 && e.detail.done) {
+    if (e !== null && e !== void 0 && (_e$detail = e.detail) !== null && _e$detail !== void 0 && _e$detail.done) {
       _classPrivateFieldGet(this, _ROOT$7).classList.add('-completed');
 
       _classPrivateFieldGet(this, _ROOT$7).querySelector(':scope > .loading-view').classList.remove('-shown');
@@ -6178,7 +6176,8 @@
   var _colHighlight = /*#__PURE__*/new WeakSet();
 
   var ResultsTable = function ResultsTable(elm) {
-    var _this = this;
+    var _this = this,
+        _controller$querySele;
 
     _classCallCheck(this, ResultsTable);
 
@@ -6320,23 +6319,38 @@
 
     var controller = _classPrivateFieldGet(this, _STATS).querySelector(':scope > th.controller > .inner');
 
-    controller.querySelector(':scope > label.onlyhitcount > input').addEventListener('change', function (e) {
-      _classPrivateFieldGet(_this, _STATS).classList.toggle('-onlyhitcount');
+    controller.querySelectorAll(':scope > label > input').forEach(function (radio) {
+      radio.addEventListener('change', function (e) {
+        switch (radio.value) {
+          case 'hits_all':
+            _classPrivateFieldGet(_this, _STATS).classList.remove('-onlyhitcount');
 
-      var customEvent = new CustomEvent(changeToOnlyHitCountInStatisticsView, {
-        detail: _classPrivateFieldGet(_this, _STATS).classList.contains('-onlyhitcount')
-      });
-      DefaultEventEmitter$1.dispatchEvent(customEvent);
-    });
-    var controllerStretch = controller.querySelector(':scope > label.stretch > input');
-    controllerStretch.addEventListener('change', function (e) {
-      _classPrivateFieldGet(_this, _STATS).classList.toggle('-stretch');
+            _classPrivateFieldGet(_this, _STATS).classList.remove('-stretch');
 
-      var customEvent = new CustomEvent(changeToStretchInStatisticsView, {
-        detail: _classPrivateFieldGet(_this, _STATS).classList.contains('-stretch')
+            break;
+
+          case 'hits_all_percentage':
+            _classPrivateFieldGet(_this, _STATS).classList.remove('-onlyhitcount');
+
+            _classPrivateFieldGet(_this, _STATS).classList.add('-stretch');
+
+            break;
+
+          case 'hits_only':
+            _classPrivateFieldGet(_this, _STATS).classList.add('-onlyhitcount');
+
+            _classPrivateFieldGet(_this, _STATS).classList.remove('-stretch');
+
+            break;
+        }
+
+        var customEvent = new CustomEvent(changeStatisticsViewMode);
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
+        window.localStorage.setItem('statistics_view_moe', radio.value);
       });
-      DefaultEventEmitter$1.dispatchEvent(customEvent);
     });
+    var statisticsViewMoe = window.localStorage.getItem('statistics_view_moe');
+    (_controller$querySele = controller.querySelector(":scope > label > input[value=\"".concat(statisticsViewMoe, "\"]"))) === null || _controller$querySele === void 0 ? void 0 : _controller$querySele.dispatchEvent(new MouseEvent('click'));
   } // private methods
   ;
 
@@ -8452,8 +8466,13 @@
     _classPrivateFieldSet(this, _progressIndicator, new ProgressIndicator(elm.lastChild, 'simple')); // attach events
 
 
+    elm.querySelector(':scope > .title > .button > button').addEventListener('click', function () {
+      _classPrivateFieldGet(_this, _USER_IDS).value = _classPrivateFieldGet(_this, _USER_IDS).placeholder.replace('e.g. ', '');
+      submitButton.dispatchEvent(new Event('click'));
+    });
     var buttons = elm.querySelector(':scope > .buttons');
-    buttons.querySelector(':scope > button:nth-child(1)').addEventListener('click', function (e) {
+    var submitButton = buttons.querySelector(':scope > button:nth-child(1)');
+    submitButton.addEventListener('click', function (e) {
       e.stopPropagation(); // clear after 2nd execution
 
       if (_classPrivateFieldGet(_this, _source)) _classPrivateMethodGet(_this, _reset, _reset2).call(_this, true);
@@ -8479,8 +8498,7 @@
 
 
     DefaultEventEmitter$1.addEventListener(clearCondition, _classPrivateMethodGet(this, _clear, _clear2).bind(this));
-  } // public methods
-  // private methods
+  } // private methods
   // #restoreParameters({detail}) {
   //   this.#USER_IDS.value = detail.userIds;
   // }

@@ -153,12 +153,15 @@ block main
                   tr.statistics
                     th.controller
                       .inner
-                        label.onlyhitcount
-                          input(type="checkbox")
-                          span Only hit count
-                        label.stretch
-                          input(type="checkbox")
-                          span Stretch
+                        label
+                          input(type="radio" name="statistics_mode" value="hits_all" checked)
+                          span Hits/All
+                        label
+                          input(type="radio" name="statistics_mode" value="hits_all_percentage")
+                          span Hits/All (%)
+                        label
+                          input(type="radio" name="statistics_mode" value="hits_only")
+                          span Hits only
                   tr.header
                   tr.subheader
                   //-
@@ -238,6 +241,10 @@ block main
                   span.material-icons location_on
                   | Map your IDs
                   small optional
+                  .button
+                    button.rounded-button-view.-verysmall.-black
+                      span.material-icons subdirectory_arrow_right
+                      | Try
                 textarea(type="text" placeholder="Enter IDs")
                 .buttons
                   button.rounded-button-view.-verysmall.-outline(type="button") Submit

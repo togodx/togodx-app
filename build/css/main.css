@@ -990,11 +990,11 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   top: auto;
 }
 .rounded-button-view > .material-icons, .rounded-button-view > .material-icons-outlined {
-  font-size: 1.4rem;
+  font-size: 1.4em;
   vertical-align: middle;
   position: relative;
-  top: -0.1rem;
-  margin-right: 0.2rem;
+  top: -0.1em;
+  margin-right: 0.2em;
 }
 
 .stacking-condition-view {
@@ -1077,6 +1077,7 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   margin: calc(var(--padding-track-block-start) * -1) calc(var(--padding-track-inline-start) * -1);
   padding: var(--padding-block-start) 1.5rem var(--padding-block-end) 0.8rem;
   position: relative;
+  overflow: hidden;
 }
 .statistics-view > .statistics {
   text-align: left;
@@ -1655,7 +1656,10 @@ body[data-display=results] #App > .inner {
 }
 #ConditionBuilder > .conditions > .condition > .inner > .title > small {
   font-weight: normal;
+  margin-left: 0.5rem;
   flex-grow: 1;
+}
+#ConditionBuilder > .conditions > .condition > .inner > .title > .button {
   text-align: right;
 }
 #ConditionBuilder > .conditions > .condition > .inner > .title + * {

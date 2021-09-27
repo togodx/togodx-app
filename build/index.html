@@ -29,7 +29,7 @@
           <li><a href="https://togodx.github.io/togodx-config-human/about.html">About</a></li>
           <li><a href="https://togodx.github.io/togodx-config-human/usage.html">Help</a></li>
           <li><a href="https://togodx.github.io/togodx-config-human/examples.html">Example</a></li>
-          <li><a href="./contact.html">Contact</a></li>
+          <li><a href="http://dbcls.jp/contact-en.html">Contact</a></li>
         </ul>
       </nav>
     </header>
@@ -68,11 +68,14 @@
                     <tr class="statistics">
                       <th class="controller">
                         <div class="inner">
-                          <label class="onlyhitcount">
-                            <input type="checkbox"><span>Only hit count</span>
+                          <label>
+                            <input type="radio" name="statistics_mode" value="hits_all" checked><span>Hits/All</span>
                           </label>
-                          <label class="stretch">
-                            <input type="checkbox"><span>Stretch</span>
+                          <label>
+                            <input type="radio" name="statistics_mode" value="hits_all_percentage"><span>Hits/All (%)</span>
+                          </label>
+                          <label>
+                            <input type="radio" name="statistics_mode" value="hits_only"><span>Hits only</span>
                           </label>
                         </div>
                       </th>
@@ -105,7 +108,11 @@
                 </div>
                 <hr>
                 <div class="inner" id="UploadUserIDsView">
-                  <h2 class="title"><span class="material-icons">location_on</span>Map your IDs<small>optional</small></h2>
+                  <h2 class="title"><span class="material-icons">location_on</span>Map your IDs<small>optional</small>
+                    <div class="button">
+                      <button class="rounded-button-view -verysmall -black"><span class="material-icons">subdirectory_arrow_right</span>Try</button>
+                    </div>
+                  </h2>
                   <textarea type="text" placeholder="Enter IDs"></textarea>
                   <div class="buttons">
                     <button class="rounded-button-view -verysmall -outline" type="button">Submit</button>

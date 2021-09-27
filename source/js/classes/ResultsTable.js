@@ -79,21 +79,29 @@ export default class ResultsTable {
 
     // statistics
     const controller = this.#STATS.querySelector(':scope > th.controller > .inner');
-    controller.querySelector(':scope > label.onlyhitcount > input').addEventListener('change', e => {
-      this.#STATS.classList.toggle('-onlyhitcount');
-      const customEvent = new CustomEvent(event.changeToOnlyHitCountInStatisticsView, {
-        detail: this.#STATS.classList.contains('-onlyhitcount')
+    controller.querySelectorAll(':scope > label > input').forEach(radio => {
+      radio.addEventListener('change', e => {
+        switch (radio.value) {
+          case 'hits_all':
+            this.#STATS.classList.remove('-onlyhitcount');
+            this.#STATS.classList.remove('-stretch');
+            break;
+          case 'hits_all_percentage':
+            this.#STATS.classList.remove('-onlyhitcount');
+            this.#STATS.classList.add('-stretch');
+            break;
+          case 'hits_only':
+            this.#STATS.classList.add('-onlyhitcount');
+            this.#STATS.classList.remove('-stretch');
+            break;
+          }
+        const customEvent = new CustomEvent(event.changeStatisticsViewMode);
+        DefaultEventEmitter.dispatchEvent(customEvent);
+        window.localStorage.setItem('statistics_view_moe', radio.value);
       });
-      DefaultEventEmitter.dispatchEvent(customEvent);
     });
-    const controllerStretch = controller.querySelector(':scope > label.stretch > input');
-    controllerStretch.addEventListener('change', e => {
-      this.#STATS.classList.toggle('-stretch');
-      const customEvent = new CustomEvent(event.changeToStretchInStatisticsView, {
-        detail: this.#STATS.classList.contains('-stretch')
-      });
-      DefaultEventEmitter.dispatchEvent(customEvent);
-    });
+    const statisticsViewMoe = window.localStorage.getItem('statistics_view_moe');
+    controller.querySelector(`:scope > label > input[value="${statisticsViewMoe}"]`)?.dispatchEvent(new MouseEvent('click'));
   }
 
   // private methods
