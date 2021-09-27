@@ -34,14 +34,12 @@ export default class StatisticsView {
 
     // event listener
     DefaultEventEmitter.addEventListener(event.addNextRows, this.#draw.bind(this));
-    DefaultEventEmitter.addEventListener(event.changeToOnlyHitCountInStatisticsView, this.#draw.bind(this));
-    DefaultEventEmitter.addEventListener(event.changeToStretchInStatisticsView, this.#draw.bind(this));
+    DefaultEventEmitter.addEventListener(event.changeStatisticsViewMode, this.#draw.bind(this));
   }
 
   destroy() {
     DefaultEventEmitter.removeEventListener(event.addNextRows, this.#draw.bind(this));
-    DefaultEventEmitter.removeEventListener(event.changeToOnlyHitCountInStatisticsView, this.#draw.bind(this));
-    DefaultEventEmitter.removeEventListener(event.changeToStretchInStatisticsView, this.#draw.bind(this));
+    DefaultEventEmitter.removeEventListener(event.changeStatisticsViewMode, this.#draw.bind(this));
   }
 
   /**
@@ -120,7 +118,7 @@ export default class StatisticsView {
       return bar;
     }, undefined);
 
-    if (e?.detail.done) {
+    if (e?.detail?.done) {
       this.#ROOT.classList.add('-completed');
       this.#ROOT.querySelector(':scope > .loading-view').classList.remove('-shown');
     }

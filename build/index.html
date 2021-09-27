@@ -68,11 +68,14 @@
                     <tr class="statistics">
                       <th class="controller">
                         <div class="inner">
-                          <label class="onlyhitcount">
-                            <input type="checkbox"><span>Only hit count</span>
+                          <label>
+                            <input type="radio" name="statistics_mode" value="hits_all" checked><span>Hits/All</span>
                           </label>
-                          <label class="stretch">
-                            <input type="checkbox"><span>Stretch</span>
+                          <label>
+                            <input type="radio" name="statistics_mode" value="hits_all_percentage"><span>Hits/All (%)</span>
+                          </label>
+                          <label>
+                            <input type="radio" name="statistics_mode" value="hits_only"><span>Hits only</span>
                           </label>
                         </div>
                       </th>
