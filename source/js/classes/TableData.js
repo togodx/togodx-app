@@ -75,7 +75,6 @@ const dataButtonModes = new Map([
 ]);
 
 export default class TableData {
-  #condition;
   #dxCondition;
   #serializedHeader;
   #queryIds;
@@ -90,15 +89,12 @@ export default class TableData {
   #BUTTON_LEFT;
   #BUTTON_RIGHT;
 
-  constructor(condition, dxCondition, elm) {
-    console.log(condition)
-    console.log(dxCondition)
+  constructor(dxCondition, elm) {
     const CancelToken = axios.CancelToken;
     this.#source = CancelToken.source();
 
     this.#isLoading = false;
     this.#isCompleted = false;
-    this.#condition = condition;
     this.#dxCondition = dxCondition;
     this.#serializedHeader = [
       ...dxCondition.valuesConditions.map(valuesCondition => valuesCondition.propertyId),
@@ -551,9 +547,6 @@ export default class TableData {
   }
   get togoKey() {
     return this.#dxCondition.togoKey;
-  }
-  get condition() {
-    return this.#condition;
   }
   get dxCondition() {
     return this.#dxCondition;

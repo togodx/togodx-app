@@ -3644,7 +3644,7 @@
       value: function makeQueryParameter() {
         // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
         // create properties
-        var properties = _classPrivateFieldGet(this, _keyConditions).map(function (_ref2) {
+        _classPrivateFieldGet(this, _keyConditions).map(function (_ref2) {
           var propertyId = _ref2.propertyId,
               parentCategoryId = _ref2.parentCategoryId;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
@@ -3667,7 +3667,7 @@
         }); // create attributes (property values)
 
 
-        var attributes = _classPrivateFieldGet(this, _valuesConditions).map(function (_ref3) {
+        _classPrivateFieldGet(this, _valuesConditions).map(function (_ref3) {
           var propertyId = _ref3.propertyId,
               categoryIds = _ref3.categoryIds;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
@@ -3681,21 +3681,10 @@
             property: property
           };
         }); // emmit event
-        // const customEvent = new CustomEvent(event.completeQueryParameter, {detail: {
-        //   togoKey: this.#togoKey,
-        //   properties,
-        //   attributes,
-        //   keyCondiitons: [...this.#keyConditions]
-        // }});
 
 
         var customEvent = new CustomEvent(completeQueryParameter, {
-          detail: {
-            togoKey: _classPrivateFieldGet(this, _togoKey),
-            properties: properties,
-            attributes: attributes,
-            dxCondition: new DXCondition(_classPrivateFieldGet(this, _togoKey), _classPrivateFieldGet(this, _keyConditions), _classPrivateFieldGet(this, _valuesConditions))
-          }
+          detail: new DXCondition(_classPrivateFieldGet(this, _togoKey), _classPrivateFieldGet(this, _keyConditions), _classPrivateFieldGet(this, _valuesConditions))
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
@@ -3951,7 +3940,7 @@
 
   var _isRange = /*#__PURE__*/new WeakMap();
 
-  var _condition$1 = /*#__PURE__*/new WeakMap();
+  var _condition = /*#__PURE__*/new WeakMap();
 
   var _ROOT$c = /*#__PURE__*/new WeakMap();
 
@@ -3978,7 +3967,7 @@
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _condition$1, {
+      _classPrivateFieldInitSpec(this, _condition, {
         writable: true,
         value: void 0
       });
@@ -3995,7 +3984,7 @@
 
       console.log(condition);
 
-      _classPrivateFieldSet(this, _condition$1, condition);
+      _classPrivateFieldSet(this, _condition, condition);
 
       var subject = Records$1.getSubjectWithPropertyId(condition.propertyId);
       var property = Records$1.getProperty(condition.propertyId); // this.#isRange = isRange;
@@ -4062,7 +4051,7 @@
         var _this2 = this;
 
         var getValue = function getValue() {
-          var value = Records$1.getValue(_classPrivateFieldGet(_this2, _condition$1).propertyId, categoryId);
+          var value = Records$1.getValue(_classPrivateFieldGet(_this2, _condition).propertyId, categoryId);
 
           if (value === undefined) {
             setTimeout(getValue, POLLING_DURATION);
@@ -4072,7 +4061,7 @@
 
             _classPrivateFieldGet(_this2, _LABELS).querySelector(':scope > .label:last-child').addEventListener('click', function (e) {
               e.stopPropagation();
-              ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this2, _condition$1).propertyId, e.target.parentNode.dataset.categoryId);
+              ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this2, _condition).propertyId, e.target.parentNode.dataset.categoryId);
             });
           }
         };
@@ -4082,14 +4071,14 @@
     }, {
       key: "removeProperty",
       value: function removeProperty(propertyId, parentCategoryId) {
-        var isMatch = propertyId === _classPrivateFieldGet(this, _condition$1).propertyId && (parentCategoryId ? parentCategoryId === _classPrivateFieldGet(this, _condition$1).parentCategoryId : true);
+        var isMatch = propertyId === _classPrivateFieldGet(this, _condition).propertyId && (parentCategoryId ? parentCategoryId === _classPrivateFieldGet(this, _condition).parentCategoryId : true);
         if (isMatch) _classPrivateFieldGet(this, _ROOT$c).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$c));
         return isMatch;
       }
     }, {
       key: "removePropertyValue",
       value: function removePropertyValue(propertyId, categoryId) {
-        if (propertyId === _classPrivateFieldGet(this, _condition$1).propertyId) {
+        if (propertyId === _classPrivateFieldGet(this, _condition).propertyId) {
           _classPrivateFieldGet(this, _LABELS).removeChild(_classPrivateFieldGet(this, _LABELS).querySelector(":scope > [data-category-id=\"".concat(categoryId, "\"")));
 
           if (_classPrivateFieldGet(this, _LABELS).childNodes.length === 0) {
@@ -4106,7 +4095,7 @@
     }, {
       key: "sameProperty",
       value: function sameProperty(propertyId) {
-        return propertyId === _classPrivateFieldGet(this, _condition$1).propertyId;
+        return propertyId === _classPrivateFieldGet(this, _condition).propertyId;
       }
     }]);
 
@@ -4124,7 +4113,7 @@
     if (type === 'value') {
       _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$c).querySelector(':scope > .labels'));
 
-      this.addValue(_classPrivateFieldGet(this, _condition$1).categoryId);
+      this.addValue(_classPrivateFieldGet(this, _condition).categoryId);
     } // event
 
 
@@ -4132,7 +4121,7 @@
       switch (type) {
         case 'property':
           // notify
-          ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this3, _condition$1).propertyId, _classPrivateFieldGet(_this3, _condition$1).parentCategoryId);
+          ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this3, _condition).propertyId, _classPrivateFieldGet(_this3, _condition).parentCategoryId);
           break;
 
         case 'value':
@@ -4142,7 +4131,7 @@
           try {
             for (_iterator.s(); !(_step = _iterator.n()).done;) {
               var _label2 = _step.value;
-              ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _condition$1).propertyId, _label2.dataset.categoryId);
+              ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _condition).propertyId, _label2.dataset.categoryId);
             }
           } catch (err) {
             _iterator.e(err);
@@ -7252,8 +7241,6 @@
     dataButton: ''
   }]]);
 
-  var _condition = /*#__PURE__*/new WeakMap();
-
   var _dxCondition = /*#__PURE__*/new WeakMap();
 
   var _serializedHeader = /*#__PURE__*/new WeakMap();
@@ -7315,7 +7302,7 @@
   var _complete$1 = /*#__PURE__*/new WeakSet();
 
   var TableData = /*#__PURE__*/function () {
-    function TableData(condition, dxCondition, elm) {
+    function TableData(dxCondition, elm) {
       var _this = this;
 
       _classCallCheck(this, TableData);
@@ -7359,11 +7346,6 @@
       _classPrivateMethodInitSpec(this, _makeDataButton);
 
       _classPrivateMethodInitSpec(this, _deleteCondition);
-
-      _classPrivateFieldInitSpec(this, _condition, {
-        writable: true,
-        value: void 0
-      });
 
       _classPrivateFieldInitSpec(this, _dxCondition, {
         writable: true,
@@ -7430,8 +7412,6 @@
         value: void 0
       });
 
-      console.log(condition);
-      console.log(dxCondition);
       var CancelToken = axios.CancelToken;
 
       _classPrivateFieldSet(this, _source$1, CancelToken.source());
@@ -7439,8 +7419,6 @@
       _classPrivateFieldSet(this, _isLoading, false);
 
       _classPrivateFieldSet(this, _isCompleted, false);
-
-      _classPrivateFieldSet(this, _condition, condition);
 
       _classPrivateFieldSet(this, _dxCondition, dxCondition);
 
@@ -7550,11 +7528,6 @@
       key: "togoKey",
       get: function get() {
         return _classPrivateFieldGet(this, _dxCondition).togoKey;
-      }
-    }, {
-      key: "condition",
-      get: function get() {
-        return _classPrivateFieldGet(this, _condition);
       }
     }, {
       key: "dxCondition",
@@ -7959,10 +7932,15 @@
     observer.observe(_classPrivateFieldGet(this, _CONDITIONS_CONTAINER), config);
   }
   /* private methods */
+
+  /**
+   * 
+   * @param {DXCondition} dxCondition 
+   */
   ;
 
-  function _setTableData2(newCondition) {
-    console.log(newCondition); // find matching condition from already existing conditions
+  function _setTableData2(dxCondition) {
+    console.log(dxCondition); // find matching condition from already existing conditions
     // const sameConditionTableData = this.#tableData.find(tableData => {
     //   console.log(tableData.condition)
     //   // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
@@ -8018,7 +7996,7 @@
 
       _classPrivateFieldGet(this, _CONDITIONS_CONTAINER).insertAdjacentElement('afterbegin', elm);
 
-      _classPrivateFieldGet(this, _tableData).push(new TableData(newCondition, newCondition.dxCondition, elm));
+      _classPrivateFieldGet(this, _tableData).push(new TableData(dxCondition, elm));
     }
   }
 

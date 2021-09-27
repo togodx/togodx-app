@@ -32,8 +32,12 @@ export default class ConditionsController {
 
   /* private methods */
 
-  #setTableData(newCondition) {
-    console.log(newCondition)
+  /**
+   * 
+   * @param {DXCondition} dxCondition 
+   */
+  #setTableData(dxCondition) {
+    console.log(dxCondition)
 
     // find matching condition from already existing conditions
     // const sameConditionTableData = this.#tableData.find(tableData => {
@@ -91,7 +95,7 @@ export default class ConditionsController {
       // make new table data
       const elm = document.createElement('div');
       this.#CONDITIONS_CONTAINER.insertAdjacentElement('afterbegin', elm);
-      this.#tableData.push(new TableData(newCondition, newCondition.dxCondition, elm));
+      this.#tableData.push(new TableData(dxCondition, elm));
     }
   }
 

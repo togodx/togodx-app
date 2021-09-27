@@ -168,18 +168,11 @@ class ConditionBuilder {
       }
     });
     // emmit event
-    // const customEvent = new CustomEvent(event.completeQueryParameter, {detail: {
-    //   togoKey: this.#togoKey,
-    //   properties,
-    //   attributes,
-    //   keyCondiitons: [...this.#keyConditions]
-    // }});
-    const customEvent = new CustomEvent(event.completeQueryParameter, {detail: {
-      togoKey: this.#togoKey,
-      properties,
-      attributes,
-      dxCondition: new DXCondition(this.#togoKey, this.#keyConditions, this.#valuesConditions)
-    }});
+    const customEvent = new CustomEvent(event.completeQueryParameter, {detail: new DXCondition(
+      this.#togoKey,
+      this.#keyConditions,
+      this.#valuesConditions
+    )});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
