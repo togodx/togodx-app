@@ -46,9 +46,13 @@ export default class UploadUserIDsView {
     this.#progressIndicator = new ProgressIndicator(elm.lastChild, 'simple');
 
     // attach events
+    elm.querySelector(':scope > .title > .button > button').addEventListener('click', () => {
+      this.#USER_IDS.value = this.#USER_IDS.placeholder.replace('e.g. ', '');
+      submitButton.dispatchEvent(new Event('click'));
+    });
     const buttons = elm.querySelector(':scope > .buttons');
-    buttons
-      .querySelector(':scope > button:nth-child(1)')
+    const submitButton = buttons.querySelector(':scope > button:nth-child(1)');
+    submitButton
       .addEventListener('click', e => {
         e.stopPropagation();
         // clear after 2nd execution
@@ -78,7 +82,6 @@ export default class UploadUserIDsView {
     );
   }
 
-  // public methods
 
   // private methods
 
