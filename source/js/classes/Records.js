@@ -11,7 +11,6 @@ class Records {
   // public methods
 
   setSubjects(subjects) {
-    console.log(subjects)
 
     // define subjects
     for (let i = 0; i < subjects.length; i++) {
@@ -38,9 +37,6 @@ class Records {
         this.#fetchedCategoryIds[property.propertyId] = [];
       });
     });
-    console.log(this.#subjects);
-    console.log(this.#properties);
-    console.log(this.#fetchedCategoryIds);
 
     // make stylesheet
     const styleElm = document.createElement('style');

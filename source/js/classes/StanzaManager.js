@@ -33,8 +33,6 @@ class StanzaManager {
           ])
         );
         this.#isReady = true;
-        console.log('templates');
-        console.log(this.#templates);
       });
   }
 
