@@ -112,17 +112,18 @@ export default class ResultsTable {
   }
 
   #setupTable(tableData) {
-    const propertyIds = tableData.serializedHeader;
 
     // reset
     this.#tableData = tableData;
     this.#intersctionObserver.unobserve(this.#TABLE_END);
-    this.#header = propertyIds.map(propertyId => {
-      return {
-        subjectId: Records.getProperty(propertyId).subjectId,
-        propertyId,
-      };
-    });
+    this.#header = [
+      ...tableData.dxCondition.valuesConditions.map(({subjectId, propertyId}) => {
+        return {subjectId, propertyId};
+      }),
+      ...tableData.dxCondition.keyConditions.map(({subjectId, propertyId}) => {
+        return {subjectId, propertyId};
+      })
+    ];
     this.#ROOT.classList.remove('-complete');
     this.#THEAD.innerHTML = '';
     this.#TBODY.innerHTML = '';
@@ -180,12 +181,12 @@ export default class ResultsTable {
       statisticsView.destroy();
     }
     this.#statisticsViews = [];
-    for (const propertyId of propertyIds) {
+    this.#header.forEach((column, index) => {
       const td = document.createElement('td');
       td.innerHTML = '<div class="inner"><div></div></div>';
       this.#STATS.append(td);
-      this.#statisticsViews.push(new StatisticsView(this.#STATS, td.querySelector(':scope > .inner > div'), tableData, propertyId));
-    }
+      this.#statisticsViews.push(new StatisticsView(this.#STATS, td.querySelector(':scope > .inner > div'), tableData, index, column.propertyId));
+    });
   }
 
   #addTableRows({done, rows, tableData}) {
