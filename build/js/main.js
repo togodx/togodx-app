@@ -3686,25 +3686,12 @@
       }
     }, {
       key: "isSelectedProperty",
-      value: function isSelectedProperty(propertyId) {
+      value: function isSelectedProperty(propertyId, parentCategoryId) {
         var keyCondiiton = _classPrivateFieldGet(this, _keyConditions).find(function (keyCondiiton) {
-          return keyCondiiton.propertyId === propertyId;
+          return keyCondiiton.propertyId === propertyId && keyCondiiton.parentCategoryId === parentCategoryId;
         });
 
-        if (keyCondiiton && keyCondiiton.parentCategoryId === undefined) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    }, {
-      key: "getSelectedParentCategoryId",
-      value: function getSelectedParentCategoryId(propertyId) {
-        var keyCondition = _classPrivateFieldGet(this, _keyConditions).find(function (keyCondition) {
-          return keyCondition.propertyId === propertyId;
-        });
-
-        return keyCondition === null || keyCondition === void 0 ? void 0 : keyCondition.parentCategoryId;
+        return keyCondiiton !== undefined;
       }
     }, {
       key: "getSelectedCategoryIds",
@@ -4432,6 +4419,8 @@
 
   var _LOADING_VIEW$2 = /*#__PURE__*/new WeakMap();
 
+  var _ITEM_ALL_INPUT_OF_ROOT = /*#__PURE__*/new WeakMap();
+
   var _setItems = /*#__PURE__*/new WeakSet();
 
   var _setSubColumn = /*#__PURE__*/new WeakSet();
@@ -4443,6 +4432,8 @@
   var _appendSubColumn = /*#__PURE__*/new WeakSet();
 
   var _update$2 = /*#__PURE__*/new WeakSet();
+
+  var _mutatePropertyCondition = /*#__PURE__*/new WeakSet();
 
   var _getUserValues = /*#__PURE__*/new WeakSet();
 
@@ -4460,6 +4451,8 @@
     _classPrivateMethodInitSpec(this, _setUserValues);
 
     _classPrivateMethodInitSpec(this, _getUserValues);
+
+    _classPrivateMethodInitSpec(this, _mutatePropertyCondition);
 
     _classPrivateMethodInitSpec(this, _update$2);
 
@@ -4514,6 +4507,11 @@
     });
 
     _classPrivateFieldInitSpec(this, _LOADING_VIEW$2, {
+      writable: true,
+      value: void 0
+    });
+
+    _classPrivateFieldInitSpec(this, _ITEM_ALL_INPUT_OF_ROOT, {
       writable: true,
       value: void 0
     });
@@ -4579,6 +4577,7 @@
     DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
       return _classPrivateMethodGet(_this, _update$2, _update2$2).call(_this, e.detail.log10);
     });
+    DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, _classPrivateMethodGet(this, _mutatePropertyCondition, _mutatePropertyCondition2).bind(this));
     DefaultEventEmitter$1.addEventListener(setUserValues, function (e) {
       return _classPrivateMethodGet(_this, _setUserValues, _setUserValues2).call(_this, e.detail);
     });
@@ -4662,21 +4661,20 @@
     });
   }
 
-  function _makeColumn2(items, depth) {
+  function _makeColumn2(items, depth, parentCategoryId) {
     var _this4 = this;
 
-    var parentCategoryId = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
     // console.log(items, depth, parentCategoryId)
     var parentItem = parentCategoryId ? _classPrivateFieldGet(this, _items$1)[parentCategoryId] : undefined;
-    var selectedParentCategoryId = ConditionBuilder$1.getSelectedParentCategoryId(_classPrivateFieldGet(this, _property$3).propertyId);
     var selectedCategoryIds = ConditionBuilder$1.getSelectedCategoryIds(_classPrivateFieldGet(this, _property$3).propertyId); // make column
 
     var column = document.createElement('div');
+    var isSelected = ConditionBuilder$1.isSelectedProperty(_classPrivateFieldGet(this, _property$3).propertyId, parentCategoryId);
     column.classList.add('column');
     var max = 0;
-    column.innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label\">Values</th>\n          <th class=\"total\">Total</th>\n          <th class=\"mapped\">Mapped</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n        <tr\n          class=\"item -all\"\n          ".concat(parentCategoryId ? "\n                data-parent-category-id=\"".concat(parentCategoryId, "\"\n                data-parent-label=\"").concat(parentItem.label, "\"") : '', "\n          data-category-ids=\"").concat(items.map(function (item) {
+    column.innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label\">Values</th>\n          <th class=\"total\">Total</th>\n          <th class=\"mapped\">Mapped</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n        <tr\n          class=\"item -all\"\n          ".concat(parentCategoryId ? "\n                data-parent-category-id=\"".concat(parentCategoryId !== null && parentCategoryId !== void 0 ? parentCategoryId : '', "\"\n                data-parent-label=\"").concat(parentItem.label, "\"") : '', "\n          data-category-ids=\"").concat(items.map(function (item) {
       return item.categoryId;
-    }), "\"\n          data-depth=\"").concat(depth, "\">\n          <td class=\"label\" colspan=\"5\">\n            <label>\n              <input\n                type=\"checkbox\"\n                value=\"").concat(ALL_PROPERTIES, "\" \n                ").concat(selectedParentCategoryId === parentCategoryId ? ' checked' : '', "/>\n              Map following attributes\n            </label>\n          </td>\n        </tr>\n      </thead>\n      <tbody>").concat(items.map(function (item) {
+    }), "\"\n          data-depth=\"").concat(depth, "\">\n          <td class=\"label\" colspan=\"5\">\n            <label>\n              <input\n                type=\"checkbox\"\n                value=\"").concat(ALL_PROPERTIES, "\" \n                ").concat(isSelected ? ' checked' : '', "/>\n              Map following attributes\n            </label>\n          </td>\n        </tr>\n      </thead>\n      <tbody>").concat(items.map(function (item) {
       max = Math.max(max, item.count);
       var checked = selectedCategoryIds.indexOf(item.categoryId) !== -1 ? ' checked' : '';
       return "\n        <tr\n          class=\"item".concat(item.hasChild ? ' -haschild' : '', "\"\n          data-id=\"").concat(item.categoryId, "\"\n          data-category-id=\"").concat(item.categoryId, "\"\n          data-count=\"").concat(item.count, "\">\n          <td class=\"label\">\n            <label>\n              <input type=\"checkbox\" value=\"").concat(item.categoryId, "\"").concat(checked, "/>\n              ").concat(item.label, "\n            </label>\n          </td>\n          <td class=\"total\">").concat(item.count.toLocaleString(), "</td>\n          <td class=\"mapped\"></td>\n          <td class=\"pvalue\"></td>\n          <td class=\"drilldown\"></td>\n        </tr>");
@@ -4757,10 +4755,17 @@
       });
     }); // Map attributes event
 
-    column.querySelector(':scope > table > thead > .item.-all').addEventListener('change', function (e) {
+    var itemAllInput = column.querySelector(':scope > table > thead > .item.-all > .label > label > input');
+    itemAllInput.addEventListener('change', function (e) {
       var parentCategoryId = e.target.closest('.item.-all').dataset.parentCategoryId;
-      if (e.target.checked) ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this4, _property$3).propertyId, parentCategoryId);else ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this4, _property$3).propertyId, parentCategoryId);
+
+      if (e.target.checked) {
+        ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this4, _property$3).propertyId, parentCategoryId);
+      } else {
+        ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this4, _property$3).propertyId, parentCategoryId);
+      }
     });
+    if (depth === 0) _classPrivateFieldSet(this, _ITEM_ALL_INPUT_OF_ROOT, itemAllInput);
 
     _classPrivateFieldGet(this, _columns).push({
       column: column,
@@ -4816,6 +4821,18 @@
     });
   }
 
+  function _mutatePropertyCondition2(_ref3) {
+    var _ref3$detail = _ref3.detail,
+        action = _ref3$detail.action,
+        propertyId = _ref3$detail.propertyId,
+        parentCategoryId = _ref3$detail.parentCategoryId;
+
+    if (propertyId === _classPrivateFieldGet(this, _property$3).propertyId) {
+      console.log(action, propertyId, parentCategoryId);
+      _classPrivateFieldGet(this, _ITEM_ALL_INPUT_OF_ROOT).checked = action === 'add';
+    }
+  }
+
   function _getUserValues2(query) {
     var _this7 = this;
 
@@ -4834,11 +4851,11 @@
     });
   }
 
-  function _setUserValues2(_ref3) {
+  function _setUserValues2(_ref4) {
     var _this8 = this;
 
-    var propertyId = _ref3.propertyId,
-        values = _ref3.values;
+    var propertyId = _ref4.propertyId,
+        values = _ref4.values;
     var bySubdirectory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     if (_classPrivateFieldGet(this, _property$3).propertyId === propertyId) {

@@ -152,18 +152,9 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  isSelectedProperty(propertyId) {
-    const keyCondiiton = this.#keyConditions.find(keyCondiiton => keyCondiiton.propertyId === propertyId);
-    if (keyCondiiton && keyCondiiton.parentCategoryId === undefined) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  getSelectedParentCategoryId(propertyId) {
-    const keyCondition = this.#keyConditions.find(keyCondition => keyCondition.propertyId === propertyId);
-    return keyCondition?.parentCategoryId;
+  isSelectedProperty(propertyId, parentCategoryId) {
+    const keyCondiiton = this.#keyConditions.find(keyCondiiton => keyCondiiton.propertyId === propertyId && keyCondiiton.parentCategoryId === parentCategoryId);
+    return keyCondiiton !== undefined;
   }
 
   getSelectedCategoryIds(propertyId) {
