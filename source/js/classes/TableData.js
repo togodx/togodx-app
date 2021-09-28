@@ -76,7 +76,6 @@ const dataButtonModes = new Map([
 
 export default class TableData {
   #dxCondition;
-  #serializedHeader;
   #queryIds;
   #rows;
   #source;
@@ -90,16 +89,12 @@ export default class TableData {
   #BUTTON_RIGHT;
 
   constructor(dxCondition, elm) {
-    const CancelToken = axios.CancelToken;
-    this.#source = CancelToken.source();
+    const cancelToken = axios.CancelToken;
+    this.#source = cancelToken.source();
 
     this.#isLoading = false;
     this.#isCompleted = false;
     this.#dxCondition = dxCondition;
-    this.#serializedHeader = [
-      ...dxCondition.valuesConditions.map(valuesCondition => valuesCondition.propertyId),
-      ...dxCondition.keyConditions.map(keyCondition => keyCondition.propertyId),
-    ];
     this.#queryIds = [];
     this.#rows = [];
 
@@ -550,9 +545,6 @@ export default class TableData {
   }
   get dxCondition() {
     return this.#dxCondition;
-  }
-  get serializedHeader() {
-    return this.#serializedHeader;
   }
   get data() {
     return this.#rows;

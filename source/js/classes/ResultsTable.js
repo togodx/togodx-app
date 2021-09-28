@@ -112,17 +112,18 @@ export default class ResultsTable {
   }
 
   #setupTable(tableData) {
-    const propertyIds = tableData.serializedHeader;
 
     // reset
     this.#tableData = tableData;
     this.#intersctionObserver.unobserve(this.#TABLE_END);
-    this.#header = propertyIds.map(propertyId => {
-      return {
-        subjectId: Records.getProperty(propertyId).subjectId,
-        propertyId,
-      };
-    });
+    this.#header = [
+      ...tableData.dxCondition.valuesConditions.map(({subjectId, propertyId}) => {
+        return {subjectId, propertyId};
+      }),
+      ...tableData.dxCondition.keyConditions.map(({subjectId, propertyId}) => {
+        return {subjectId, propertyId};
+      })
+    ];
     this.#ROOT.classList.remove('-complete');
     this.#THEAD.innerHTML = '';
     this.#TBODY.innerHTML = '';
@@ -180,58 +181,44 @@ export default class ResultsTable {
       statisticsView.destroy();
     }
     this.#statisticsViews = [];
-    for (const propertyId of propertyIds) {
+    this.#header.forEach((column, index) => {
       const td = document.createElement('td');
       td.innerHTML = '<div class="inner"><div></div></div>';
       this.#STATS.append(td);
-      this.#statisticsViews.push(new StatisticsView(this.#STATS, td.querySelector(':scope > .inner > div'), tableData, propertyId));
-    }
+      this.#statisticsViews.push(new StatisticsView(this.#STATS, td.querySelector(':scope > .inner > div'), tableData, index, column.propertyId));
+    });
   }
 
-  #addTableRows(detail) {
-    // console.log(detail);
+  #addTableRows({done, rows, tableData}) {
 
-    this.#tableData = detail.tableData;
-
-    // normalize
-    const rows = [];
-    detail.rows.forEach(row => {
-      rows.push([
-        ...detail.tableData.serializedHeader.map(head =>
-          row.properties.find(property => property.propertyId === head)
-        ),
-      ]);
-    });
+    this.#tableData = tableData;
 
     // make table
     this.#TBODY.insertAdjacentHTML(
       'beforeend',
       rows
         .map((row, index) => {
-          // console.log(row);
-          return `<tr data-index="${
-            detail.tableData.offset + index
-          }" data-togo-id="${detail.rows[index].id}">
+          return `
+          <tr
+            data-index="${tableData.offset + index}"
+            data-togo-id="${row.id}">
             <td>
               <div class="inner">
                 <ul>
                   <div
                     class="togo-key-view primarykey"
-                    data-key="${detail.tableData.togoKey}"
-                    data-order= "${[0, detail.tableData.offset + index]}"
-                    data-sub-order= "0"
-                    data-subject-id="${detail.tableData.subjectId}"
-                    data-unique-entry-id="${detail.rows[index].id}">${
-            detail.rows[index].id
-          }
+                    data-key="${tableData.togoKey}"
+                    data-order="${[0, tableData.offset + index]}"
+                    data-sub-order="0"
+                    data-subject-id="${tableData.subjectId}"
+                    data-unique-entry-id="${row.id}">${row.id}
                   </div>
-                  <span>${detail.rows[index].label}</span>
+                  <span>${row.label}</span>
                 </ul>
               </div<
             </td>
-            ${row
+            ${row.properties
               .map((column, columnIndex) => {
-                // console.log(column)
                 if (column) {
                   return `
                   <td><div class="inner"><ul>${column.attributes
@@ -243,7 +230,7 @@ export default class ResultsTable {
                           class="togo-key-view"
                           data-order="${[
                             columnIndex + 1,
-                            detail.tableData.offset + index,
+                            tableData.offset + index,
                           ]}"
                           data-sub-order="${attributeIndex}"
                           data-key="${column.propertyKey}"
@@ -279,7 +266,7 @@ export default class ResultsTable {
     );
 
     // turn off auto-loading after last line is displayed
-    if (detail.done) {
+    if (done) {
       this.#ROOT.classList.add('-complete');
       this.#LOADING_VIEW.classList.remove('-shown');
     } else {
@@ -295,11 +282,8 @@ export default class ResultsTable {
     //      → Sub-Category  (Thyroid Gland)
     //        → Unique-Entry (ENSG00000139304)
     rows.forEach((row, index) => {
-      const actualIndex = detail.tableData.offset + index;
-      const tr = this.#TBODY.querySelector(
-        `:scope > tr[data-index="${actualIndex}"]`
-      );
-
+      const actualIndex = tableData.offset + index;
+      const tr = this.#TBODY.querySelector(`:scope > tr[data-index="${actualIndex}"]`);
       const uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(uniqueEntry => {
         uniqueEntry.addEventListener('click', () => {
@@ -322,6 +306,7 @@ export default class ResultsTable {
         });
       });
     });
+
   }
 
   #failed(tableData) {
