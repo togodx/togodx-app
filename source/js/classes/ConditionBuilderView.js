@@ -1,6 +1,8 @@
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import StackingConditionView from "./StackingConditionView";
+import KeyCondition from "./KeyCondition";
+import ValuesCondition from "./ValuesCondition";
 import * as event from '../events';
 
 const POLLING_DURATION = 100;
@@ -103,7 +105,7 @@ export default class ConditionBuilderView {
     // modifier
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
-    this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'property', {propertyId, parentCategoryId}));
+    this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'key', {propertyId, parentCategoryId}));
   }
   
   #removeProperty(propertyId, parentCategoryId) {
@@ -124,7 +126,7 @@ export default class ConditionBuilderView {
       stackingConditionView.addValue(categoryId);
     } else {
       // otherwise, make new condition view
-      this.#propertyValues.push(new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', {propertyId, categoryId}));
+      this.#propertyValues.push(new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', new ValuesCondition(propertyId, [categoryId])));
     }
   }
 
