@@ -193,17 +193,6 @@ export default class ResultsTable {
 
     this.#tableData = detail.tableData;
 
-    // normalize
-    const rows = [];
-    detail.rows.forEach(row => {
-      rows.push([
-        ...detail.tableData.serializedHeader.map(head =>
-          row.properties.find(property => property.propertyId === head)
-        ),
-      ]);
-    });
-    detail.rows.forEach(row => console.log(row));
-
     // make table
     this.#TBODY.insertAdjacentHTML(
       'beforeend',
@@ -292,34 +281,31 @@ export default class ResultsTable {
     //    → Main-Category  (Expressed in tissues)
     //      → Sub-Category  (Thyroid Gland)
     //        → Unique-Entry (ENSG00000139304)
-    // rows.forEach((row, index) => {
-    //   const actualIndex = detail.tableData.offset + index;
-    //   const tr = this.#TBODY.querySelector(
-    //     `:scope > tr[data-index="${actualIndex}"]`
-    //   );
+    detail.rows.forEach((row, index) => {
+      const actualIndex = detail.tableData.offset + index;
+      const tr = this.#TBODY.querySelector(`:scope > tr[data-index="${actualIndex}"]`);
+      const uniqueEntries = tr.querySelectorAll('.togo-key-view');
+      uniqueEntries.forEach(uniqueEntry => {
+        uniqueEntry.addEventListener('click', () => {
+          createPopupEvent(uniqueEntry, event.showPopup);
+        });
+        // remove highlight on mouseleave only when there is no popup
+        const td = uniqueEntry.closest('td');
+        td.addEventListener('mouseenter', () => {
+          const customEvent = new CustomEvent(event.highlightCol, {
+            detail: uniqueEntry.getAttribute('data-order').split(',')[0],
+          });
+          DefaultEventEmitter.dispatchEvent(customEvent);
+        });
+        td.addEventListener('mouseleave', () => {
+          if (document.querySelector('#ResultDetailModal').innerHTML === '') {
+            this.#TBODY
+              .querySelectorAll('td')
+              .forEach(td => td.classList.remove('-selected'));
+          }
+        });
+      });
 
-    //   const uniqueEntries = tr.querySelectorAll('.togo-key-view');
-    //   uniqueEntries.forEach(uniqueEntry => {
-    //     uniqueEntry.addEventListener('click', () => {
-    //       createPopupEvent(uniqueEntry, event.showPopup);
-    //     });
-    //     // remove highlight on mouseleave only when there is no popup
-    //     const td = uniqueEntry.closest('td');
-    //     td.addEventListener('mouseenter', () => {
-    //       const customEvent = new CustomEvent(event.highlightCol, {
-    //         detail: uniqueEntry.getAttribute('data-order').split(',')[0],
-    //       });
-    //       DefaultEventEmitter.dispatchEvent(customEvent);
-    //     });
-    //     td.addEventListener('mouseleave', () => {
-    //       if (document.querySelector('#ResultDetailModal').innerHTML === '') {
-    //         this.#TBODY
-    //           .querySelectorAll('td')
-    //           .forEach(td => td.classList.remove('-selected'));
-    //       }
-    //     });
-    //   });
-    // });
   }
 
   #failed(tableData) {

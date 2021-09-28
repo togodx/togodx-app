@@ -6409,19 +6409,17 @@
     console.log(detail);
 
     _classPrivateFieldSet(this, _tableData$1, detail.tableData); // normalize
+    // const rows = [];
+    // detail.rows.forEach(row => {
+    //   rows.push([
+    //     ...detail.tableData.serializedHeader.map(head =>
+    //       row.properties.find(property => property.propertyId === head)
+    //     ),
+    //   ]);
+    // });
+    // detail.rows.forEach(row => console.log(row));
+    // make table
 
-
-    var rows = [];
-    detail.rows.forEach(function (row) {
-      rows.push(_toConsumableArray(detail.tableData.serializedHeader.map(function (head) {
-        return row.properties.find(function (property) {
-          return property.propertyId === head;
-        });
-      })));
-    });
-    detail.rows.forEach(function (row) {
-      return console.log(row);
-    }); // make table
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', detail.rows.map(function (row, index) {
       return "\n          <tr\n            data-index=\"".concat(detail.tableData.offset + index, "\"\n            data-togo-id=\"").concat(row.id, "\">\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order=\"").concat([0, detail.tableData.offset + index], "\"\n                    data-sub-order=\"0\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(row.id, "\">").concat(row.id, "\n                  </div>\n                  <span>").concat(row.label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.properties.map(function (column, columnIndex) {
@@ -6453,7 +6451,35 @@
     //    → Main-Category  (Expressed in tissues)
     //      → Sub-Category  (Thyroid Gland)
     //        → Unique-Entry (ENSG00000139304)
-    // rows.forEach((row, index) => {
+
+
+    detail.rows.forEach(function (row, index) {
+      var actualIndex = detail.tableData.offset + index;
+
+      var tr = _classPrivateFieldGet(_this2, _TBODY).querySelector(":scope > tr[data-index=\"".concat(actualIndex, "\"]"));
+
+      var uniqueEntries = tr.querySelectorAll('.togo-key-view');
+      uniqueEntries.forEach(function (uniqueEntry) {
+        uniqueEntry.addEventListener('click', function () {
+          createPopupEvent(uniqueEntry, showPopup);
+        }); // remove highlight on mouseleave only when there is no popup
+
+        var td = uniqueEntry.closest('td');
+        td.addEventListener('mouseenter', function () {
+          var customEvent = new CustomEvent(highlightCol, {
+            detail: uniqueEntry.getAttribute('data-order').split(',')[0]
+          });
+          DefaultEventEmitter$1.dispatchEvent(customEvent);
+        });
+        td.addEventListener('mouseleave', function () {
+          if (document.querySelector('#ResultDetailModal').innerHTML === '') {
+            _classPrivateFieldGet(_this2, _TBODY).querySelectorAll('td').forEach(function (td) {
+              return td.classList.remove('-selected');
+            });
+          }
+        });
+      });
+    }); // rows.forEach((row, index) => {
     //   const actualIndex = detail.tableData.offset + index;
     //   const tr = this.#TBODY.querySelector(
     //     `:scope > tr[data-index="${actualIndex}"]`
@@ -6480,7 +6506,6 @@
     //     });
     //   });
     // });
-
   }
 
   function _failed2(tableData) {
