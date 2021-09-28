@@ -105,7 +105,7 @@ export default class ConditionBuilderView {
     // modifier
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
-    this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'key', {propertyId, parentCategoryId}));
+    this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'key', new KeyCondition(propertyId, parentCategoryId)));
   }
   
   #removeProperty(propertyId, parentCategoryId) {

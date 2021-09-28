@@ -59,10 +59,11 @@ export default class StackingConditionView {
       case this.#condition instanceof ValuesCondition:
         label = `<ul class="labels"></ul>`;
         ancestorLabels.push(property.label);
-        console.log(label, ancestorLabels)
         this.#make(container, type, ancestorLabels, label);
         break;
     }
+
+    // TODO: クリックイベントで当該要素を表示する
   }
 
 

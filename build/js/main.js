@@ -4068,12 +4068,11 @@
 
           _ancestorLabels.push(property.label);
 
-          console.log(_label, _ancestorLabels);
-
           _classPrivateMethodGet(this, _make, _make2).call(this, _container, type, _ancestorLabels, _label);
 
           break;
-      }
+      } // TODO: クリックイベントで当該要素を表示する
+
     } // private methods
 
 
@@ -4394,10 +4393,7 @@
     _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.remove('-empty'); // make view
 
 
-    _classPrivateFieldGet(this, _properties).push(new StackingConditionView(_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER), 'key', {
-      propertyId: propertyId,
-      parentCategoryId: parentCategoryId
-    }));
+    _classPrivateFieldGet(this, _properties).push(new StackingConditionView(_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER), 'key', new KeyCondition(propertyId, parentCategoryId)));
   }
 
   function _removeProperty2(propertyId, parentCategoryId) {
