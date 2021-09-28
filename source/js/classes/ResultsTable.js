@@ -188,29 +188,28 @@ export default class ResultsTable {
     }
   }
 
-  #addTableRows(detail) {
-    console.log(detail);
+  #addTableRows({done, rows, tableData}) {
 
-    this.#tableData = detail.tableData;
+    this.#tableData = tableData;
 
     // make table
     this.#TBODY.insertAdjacentHTML(
       'beforeend',
-      detail.rows
+      rows
         .map((row, index) => {
           return `
           <tr
-            data-index="${detail.tableData.offset + index}"
+            data-index="${tableData.offset + index}"
             data-togo-id="${row.id}">
             <td>
               <div class="inner">
                 <ul>
                   <div
                     class="togo-key-view primarykey"
-                    data-key="${detail.tableData.togoKey}"
-                    data-order="${[0, detail.tableData.offset + index]}"
+                    data-key="${tableData.togoKey}"
+                    data-order="${[0, tableData.offset + index]}"
                     data-sub-order="0"
-                    data-subject-id="${detail.tableData.subjectId}"
+                    data-subject-id="${tableData.subjectId}"
                     data-unique-entry-id="${row.id}">${row.id}
                   </div>
                   <span>${row.label}</span>
@@ -230,7 +229,7 @@ export default class ResultsTable {
                           class="togo-key-view"
                           data-order="${[
                             columnIndex + 1,
-                            detail.tableData.offset + index,
+                            tableData.offset + index,
                           ]}"
                           data-sub-order="${attributeIndex}"
                           data-key="${column.propertyKey}"
@@ -266,7 +265,7 @@ export default class ResultsTable {
     );
 
     // turn off auto-loading after last line is displayed
-    if (detail.done) {
+    if (done) {
       this.#ROOT.classList.add('-complete');
       this.#LOADING_VIEW.classList.remove('-shown');
     } else {
@@ -281,8 +280,8 @@ export default class ResultsTable {
     //    → Main-Category  (Expressed in tissues)
     //      → Sub-Category  (Thyroid Gland)
     //        → Unique-Entry (ENSG00000139304)
-    detail.rows.forEach((row, index) => {
-      const actualIndex = detail.tableData.offset + index;
+    rows.forEach((row, index) => {
+      const actualIndex = tableData.offset + index;
       const tr = this.#TBODY.querySelector(`:scope > tr[data-index="${actualIndex}"]`);
       const uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(uniqueEntry => {
@@ -305,6 +304,7 @@ export default class ResultsTable {
           }
         });
       });
+    });
 
   }
 

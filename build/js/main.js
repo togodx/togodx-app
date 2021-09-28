@@ -6403,30 +6403,22 @@
     }
   }
 
-  function _addTableRows2(detail) {
+  function _addTableRows2(_ref) {
     var _this2 = this;
 
-    console.log(detail);
+    var done = _ref.done,
+        rows = _ref.rows,
+        tableData = _ref.tableData;
 
-    _classPrivateFieldSet(this, _tableData$1, detail.tableData); // normalize
-    // const rows = [];
-    // detail.rows.forEach(row => {
-    //   rows.push([
-    //     ...detail.tableData.serializedHeader.map(head =>
-    //       row.properties.find(property => property.propertyId === head)
-    //     ),
-    //   ]);
-    // });
-    // detail.rows.forEach(row => console.log(row));
-    // make table
+    _classPrivateFieldSet(this, _tableData$1, tableData); // make table
 
 
-    _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', detail.rows.map(function (row, index) {
-      return "\n          <tr\n            data-index=\"".concat(detail.tableData.offset + index, "\"\n            data-togo-id=\"").concat(row.id, "\">\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order=\"").concat([0, detail.tableData.offset + index], "\"\n                    data-sub-order=\"0\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(row.id, "\">").concat(row.id, "\n                  </div>\n                  <span>").concat(row.label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.properties.map(function (column, columnIndex) {
+    _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
+      return "\n          <tr\n            data-index=\"".concat(tableData.offset + index, "\"\n            data-togo-id=\"").concat(row.id, "\">\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(tableData.togoKey, "\"\n                    data-order=\"").concat([0, tableData.offset + index], "\"\n                    data-sub-order=\"0\"\n                    data-subject-id=\"").concat(tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(row.id, "\">").concat(row.id, "\n                  </div>\n                  <span>").concat(row.label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.properties.map(function (column, columnIndex) {
         if (column) {
           return "\n                  <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute, attributeIndex) {
             if (!attribute.attribute) console.error(attribute);
-            return "\n                      <li>\n                        <div\n                          class=\"togo-key-view\"\n                          data-order=\"".concat([columnIndex + 1, detail.tableData.offset + index], "\"\n                          data-sub-order=\"").concat(attributeIndex, "\"\n                          data-key=\"").concat(column.propertyKey, "\"\n                          data-subject-id=\"").concat(_classPrivateFieldGet(_this2, _header$1)[columnIndex].subjectId, "\"\n                          data-main-category-id=\"").concat(_classPrivateFieldGet(_this2, _header$1)[columnIndex].propertyId, "\"\n                          data-sub-category-id=\"").concat(attribute.attribute.categoryId ? attribute.attribute.categoryId : attribute.attribute.categoryIds, "\"\n                          data-unique-entry-id=\"").concat(attribute.id, "\"\n                          >").concat(attribute.id, "</div>\n                        <span>").concat(attribute.attribute ? attribute.attribute.label : attribute, "</span>\n                      </li>");
+            return "\n                      <li>\n                        <div\n                          class=\"togo-key-view\"\n                          data-order=\"".concat([columnIndex + 1, tableData.offset + index], "\"\n                          data-sub-order=\"").concat(attributeIndex, "\"\n                          data-key=\"").concat(column.propertyKey, "\"\n                          data-subject-id=\"").concat(_classPrivateFieldGet(_this2, _header$1)[columnIndex].subjectId, "\"\n                          data-main-category-id=\"").concat(_classPrivateFieldGet(_this2, _header$1)[columnIndex].propertyId, "\"\n                          data-sub-category-id=\"").concat(attribute.attribute.categoryId ? attribute.attribute.categoryId : attribute.attribute.categoryIds, "\"\n                          data-unique-entry-id=\"").concat(attribute.id, "\"\n                          >").concat(attribute.id, "</div>\n                        <span>").concat(attribute.attribute ? attribute.attribute.label : attribute, "</span>\n                      </li>");
           }).join(''), "</ul></div></td>");
         } else {
           return "<td><div class=\"inner -empty\"></div></td>";
@@ -6435,7 +6427,7 @@
     }).join('')); // turn off auto-loading after last line is displayed
 
 
-    if (detail.done) {
+    if (done) {
       _classPrivateFieldGet(this, _ROOT$6).classList.add('-complete');
 
       _classPrivateFieldGet(this, _LOADING_VIEW).classList.remove('-shown');
@@ -6453,8 +6445,8 @@
     //        → Unique-Entry (ENSG00000139304)
 
 
-    detail.rows.forEach(function (row, index) {
-      var actualIndex = detail.tableData.offset + index;
+    rows.forEach(function (row, index) {
+      var actualIndex = tableData.offset + index;
 
       var tr = _classPrivateFieldGet(_this2, _TBODY).querySelector(":scope > tr[data-index=\"".concat(actualIndex, "\"]"));
 
@@ -6479,33 +6471,7 @@
           }
         });
       });
-    }); // rows.forEach((row, index) => {
-    //   const actualIndex = detail.tableData.offset + index;
-    //   const tr = this.#TBODY.querySelector(
-    //     `:scope > tr[data-index="${actualIndex}"]`
-    //   );
-    //   const uniqueEntries = tr.querySelectorAll('.togo-key-view');
-    //   uniqueEntries.forEach(uniqueEntry => {
-    //     uniqueEntry.addEventListener('click', () => {
-    //       createPopupEvent(uniqueEntry, event.showPopup);
-    //     });
-    //     // remove highlight on mouseleave only when there is no popup
-    //     const td = uniqueEntry.closest('td');
-    //     td.addEventListener('mouseenter', () => {
-    //       const customEvent = new CustomEvent(event.highlightCol, {
-    //         detail: uniqueEntry.getAttribute('data-order').split(',')[0],
-    //       });
-    //       DefaultEventEmitter.dispatchEvent(customEvent);
-    //     });
-    //     td.addEventListener('mouseleave', () => {
-    //       if (document.querySelector('#ResultDetailModal').innerHTML === '') {
-    //         this.#TBODY
-    //           .querySelectorAll('td')
-    //           .forEach(td => td.classList.remove('-selected'));
-    //       }
-    //     });
-    //   });
-    // });
+    });
   }
 
   function _failed2(tableData) {
