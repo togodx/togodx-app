@@ -3678,47 +3678,7 @@
     }, {
       key: "makeQueryParameter",
       value: function makeQueryParameter() {
-        // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
-        // create properties
-        _classPrivateFieldGet(this, _keyConditions).map(function (_ref2) {
-          var propertyId = _ref2.propertyId,
-              parentCategoryId = _ref2.parentCategoryId;
-          var subject = Records$1.getSubjectWithPropertyId(propertyId);
-          var property = Records$1.getProperty(propertyId);
-          var query = {
-            propertyId: propertyId
-          };
-
-          if (parentCategoryId) {
-            query.categoryIds = Records$1.getValuesWithParentCategoryId(propertyId, parentCategoryId).map(function (value) {
-              return value.categoryId;
-            });
-          }
-          return {
-            query: query,
-            subject: subject,
-            property: property,
-            parentCategoryId: parentCategoryId
-          };
-        }); // create attributes (property values)
-
-
-        _classPrivateFieldGet(this, _valuesConditions).map(function (_ref3) {
-          var propertyId = _ref3.propertyId,
-              categoryIds = _ref3.categoryIds;
-          var subject = Records$1.getSubjectWithPropertyId(propertyId);
-          var property = Records$1.getProperty(propertyId);
-          return {
-            query: {
-              propertyId: propertyId,
-              categoryIds: [].concat(categoryIds)
-            },
-            subject: subject,
-            property: property
-          };
-        }); // emmit event
-
-
+        // emmit event
         var customEvent = new CustomEvent(completeQueryParameter, {
           detail: new DXCondition(_classPrivateFieldGet(this, _togoKey), _classPrivateFieldGet(this, _keyConditions), _classPrivateFieldGet(this, _valuesConditions))
         });
@@ -3826,9 +3786,9 @@
   function _makeQueueOfGettingChildCategoryIds2(condition) {
     console.log(condition);
     var queue = [];
-    condition.keys.forEach(function (_ref4) {
-      var propertyId = _ref4.propertyId,
-          id = _ref4.id;
+    condition.keys.forEach(function (_ref2) {
+      var propertyId = _ref2.propertyId,
+          id = _ref2.id;
 
       if (id) {
         id.ancestors.forEach(function (categoryId) {
@@ -3839,9 +3799,9 @@
         });
       }
     });
-    condition.values.forEach(function (_ref5) {
-      var propertyId = _ref5.propertyId,
-          ids = _ref5.ids;
+    condition.values.forEach(function (_ref3) {
+      var propertyId = _ref3.propertyId,
+          ids = _ref3.ids;
       ids.forEach(function (id) {
         if (id.ancestors) {
           id.ancestors.forEach(function (categoryId) {
@@ -3883,13 +3843,13 @@
     });
   }
 
-  function _restoreConditions2(_ref6) {
+  function _restoreConditions2(_ref4) {
     var _this4 = this;
 
-    var togoKey = _ref6.togoKey;
-        _ref6.userIds;
-        var keys = _ref6.keys,
-        values = _ref6.values;
+    var togoKey = _ref4.togoKey;
+        _ref4.userIds;
+        var keys = _ref4.keys,
+        values = _ref4.values;
 
     _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true); // restore conditions
 
@@ -3903,8 +3863,8 @@
         attributes = _classPrivateMethodGe2[1];
 
     this.setProperties(properties, false);
-    Records$1.properties.forEach(function (_ref7) {
-      var propertyId = _ref7.propertyId;
+    Records$1.properties.forEach(function (_ref5) {
+      var propertyId = _ref5.propertyId;
       var property = attributes.find(function (property) {
         return property.propertyId === propertyId;
       });
@@ -3949,17 +3909,17 @@
 
   function _getCondtionsFromHierarchicConditions2(keys, values) {
     // restore conditions
-    var properties = keys.map(function (_ref8) {
-      var propertyId = _ref8.propertyId,
-          id = _ref8.id;
+    var properties = keys.map(function (_ref6) {
+      var propertyId = _ref6.propertyId,
+          id = _ref6.id;
       return {
         propertyId: propertyId,
         parentCategoryId: id === null || id === void 0 ? void 0 : id.categoryId
       };
     });
-    var attributes = values.map(function (_ref9) {
-      var propertyId = _ref9.propertyId,
-          ids = _ref9.ids;
+    var attributes = values.map(function (_ref7) {
+      var propertyId = _ref7.propertyId,
+          ids = _ref7.ids;
       return {
         propertyId: propertyId,
         categoryIds: ids.map(function (id) {
@@ -6446,7 +6406,8 @@
   function _addTableRows2(detail) {
     var _this2 = this;
 
-    // console.log(detail);
+    console.log(detail);
+
     _classPrivateFieldSet(this, _tableData$1, detail.tableData); // normalize
 
 
@@ -6457,12 +6418,13 @@
           return property.propertyId === head;
         });
       })));
+    });
+    detail.rows.forEach(function (row) {
+      return console.log(row);
     }); // make table
 
-    _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
-      // console.log(row);
-      return "<tr data-index=\"".concat(detail.tableData.offset + index, "\" data-togo-id=\"").concat(detail.rows[index].id, "\">\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order= \"").concat([0, detail.tableData.offset + index], "\"\n                    data-sub-order= \"0\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(detail.rows[index].id, "\">").concat(detail.rows[index].id, "\n                  </div>\n                  <span>").concat(detail.rows[index].label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.map(function (column, columnIndex) {
-        // console.log(column)
+    _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', detail.rows.map(function (row, index) {
+      return "\n          <tr\n            data-index=\"".concat(detail.tableData.offset + index, "\"\n            data-togo-id=\"").concat(row.id, "\">\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(detail.tableData.togoKey, "\"\n                    data-order=\"").concat([0, detail.tableData.offset + index], "\"\n                    data-sub-order=\"0\"\n                    data-subject-id=\"").concat(detail.tableData.subjectId, "\"\n                    data-unique-entry-id=\"").concat(row.id, "\">").concat(row.id, "\n                  </div>\n                  <span>").concat(row.label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.properties.map(function (column, columnIndex) {
         if (column) {
           return "\n                  <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute, attributeIndex) {
             if (!attribute.attribute) console.error(attribute);
@@ -6491,35 +6453,34 @@
     //    → Main-Category  (Expressed in tissues)
     //      → Sub-Category  (Thyroid Gland)
     //        → Unique-Entry (ENSG00000139304)
+    // rows.forEach((row, index) => {
+    //   const actualIndex = detail.tableData.offset + index;
+    //   const tr = this.#TBODY.querySelector(
+    //     `:scope > tr[data-index="${actualIndex}"]`
+    //   );
+    //   const uniqueEntries = tr.querySelectorAll('.togo-key-view');
+    //   uniqueEntries.forEach(uniqueEntry => {
+    //     uniqueEntry.addEventListener('click', () => {
+    //       createPopupEvent(uniqueEntry, event.showPopup);
+    //     });
+    //     // remove highlight on mouseleave only when there is no popup
+    //     const td = uniqueEntry.closest('td');
+    //     td.addEventListener('mouseenter', () => {
+    //       const customEvent = new CustomEvent(event.highlightCol, {
+    //         detail: uniqueEntry.getAttribute('data-order').split(',')[0],
+    //       });
+    //       DefaultEventEmitter.dispatchEvent(customEvent);
+    //     });
+    //     td.addEventListener('mouseleave', () => {
+    //       if (document.querySelector('#ResultDetailModal').innerHTML === '') {
+    //         this.#TBODY
+    //           .querySelectorAll('td')
+    //           .forEach(td => td.classList.remove('-selected'));
+    //       }
+    //     });
+    //   });
+    // });
 
-
-    rows.forEach(function (row, index) {
-      var actualIndex = detail.tableData.offset + index;
-
-      var tr = _classPrivateFieldGet(_this2, _TBODY).querySelector(":scope > tr[data-index=\"".concat(actualIndex, "\"]"));
-
-      var uniqueEntries = tr.querySelectorAll('.togo-key-view');
-      uniqueEntries.forEach(function (uniqueEntry) {
-        uniqueEntry.addEventListener('click', function () {
-          createPopupEvent(uniqueEntry, showPopup);
-        }); // remove highlight on mouseleave only when there is no popup
-
-        var td = uniqueEntry.closest('td');
-        td.addEventListener('mouseenter', function () {
-          var customEvent = new CustomEvent(highlightCol, {
-            detail: uniqueEntry.getAttribute('data-order').split(',')[0]
-          });
-          DefaultEventEmitter$1.dispatchEvent(customEvent);
-        });
-        td.addEventListener('mouseleave', function () {
-          if (document.querySelector('#ResultDetailModal').innerHTML === '') {
-            _classPrivateFieldGet(_this2, _TBODY).querySelectorAll('td').forEach(function (td) {
-              return td.classList.remove('-selected');
-            });
-          }
-        });
-      });
-    });
   }
 
   function _failed2(tableData) {
@@ -7463,9 +7424,9 @@
         value: void 0
       });
 
-      var CancelToken = axios.CancelToken;
+      var cancelToken = axios.CancelToken;
 
-      _classPrivateFieldSet(this, _source$1, CancelToken.source());
+      _classPrivateFieldSet(this, _source$1, cancelToken.source());
 
       _classPrivateFieldSet(this, _isLoading, false);
 

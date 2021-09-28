@@ -189,7 +189,7 @@ export default class ResultsTable {
   }
 
   #addTableRows(detail) {
-    // console.log(detail);
+    console.log(detail);
 
     this.#tableData = detail.tableData;
 
@@ -202,36 +202,34 @@ export default class ResultsTable {
         ),
       ]);
     });
+    detail.rows.forEach(row => console.log(row));
 
     // make table
     this.#TBODY.insertAdjacentHTML(
       'beforeend',
-      rows
+      detail.rows
         .map((row, index) => {
-          // console.log(row);
-          return `<tr data-index="${
-            detail.tableData.offset + index
-          }" data-togo-id="${detail.rows[index].id}">
+          return `
+          <tr
+            data-index="${detail.tableData.offset + index}"
+            data-togo-id="${row.id}">
             <td>
               <div class="inner">
                 <ul>
                   <div
                     class="togo-key-view primarykey"
                     data-key="${detail.tableData.togoKey}"
-                    data-order= "${[0, detail.tableData.offset + index]}"
-                    data-sub-order= "0"
+                    data-order="${[0, detail.tableData.offset + index]}"
+                    data-sub-order="0"
                     data-subject-id="${detail.tableData.subjectId}"
-                    data-unique-entry-id="${detail.rows[index].id}">${
-            detail.rows[index].id
-          }
+                    data-unique-entry-id="${row.id}">${row.id}
                   </div>
-                  <span>${detail.rows[index].label}</span>
+                  <span>${row.label}</span>
                 </ul>
               </div<
             </td>
-            ${row
+            ${row.properties
               .map((column, columnIndex) => {
-                // console.log(column)
                 if (column) {
                   return `
                   <td><div class="inner"><ul>${column.attributes
@@ -294,34 +292,34 @@ export default class ResultsTable {
     //    → Main-Category  (Expressed in tissues)
     //      → Sub-Category  (Thyroid Gland)
     //        → Unique-Entry (ENSG00000139304)
-    rows.forEach((row, index) => {
-      const actualIndex = detail.tableData.offset + index;
-      const tr = this.#TBODY.querySelector(
-        `:scope > tr[data-index="${actualIndex}"]`
-      );
+    // rows.forEach((row, index) => {
+    //   const actualIndex = detail.tableData.offset + index;
+    //   const tr = this.#TBODY.querySelector(
+    //     `:scope > tr[data-index="${actualIndex}"]`
+    //   );
 
-      const uniqueEntries = tr.querySelectorAll('.togo-key-view');
-      uniqueEntries.forEach(uniqueEntry => {
-        uniqueEntry.addEventListener('click', () => {
-          createPopupEvent(uniqueEntry, event.showPopup);
-        });
-        // remove highlight on mouseleave only when there is no popup
-        const td = uniqueEntry.closest('td');
-        td.addEventListener('mouseenter', () => {
-          const customEvent = new CustomEvent(event.highlightCol, {
-            detail: uniqueEntry.getAttribute('data-order').split(',')[0],
-          });
-          DefaultEventEmitter.dispatchEvent(customEvent);
-        });
-        td.addEventListener('mouseleave', () => {
-          if (document.querySelector('#ResultDetailModal').innerHTML === '') {
-            this.#TBODY
-              .querySelectorAll('td')
-              .forEach(td => td.classList.remove('-selected'));
-          }
-        });
-      });
-    });
+    //   const uniqueEntries = tr.querySelectorAll('.togo-key-view');
+    //   uniqueEntries.forEach(uniqueEntry => {
+    //     uniqueEntry.addEventListener('click', () => {
+    //       createPopupEvent(uniqueEntry, event.showPopup);
+    //     });
+    //     // remove highlight on mouseleave only when there is no popup
+    //     const td = uniqueEntry.closest('td');
+    //     td.addEventListener('mouseenter', () => {
+    //       const customEvent = new CustomEvent(event.highlightCol, {
+    //         detail: uniqueEntry.getAttribute('data-order').split(',')[0],
+    //       });
+    //       DefaultEventEmitter.dispatchEvent(customEvent);
+    //     });
+    //     td.addEventListener('mouseleave', () => {
+    //       if (document.querySelector('#ResultDetailModal').innerHTML === '') {
+    //         this.#TBODY
+    //           .querySelectorAll('td')
+    //           .forEach(td => td.classList.remove('-selected'));
+    //       }
+    //     });
+    //   });
+    // });
   }
 
   #failed(tableData) {

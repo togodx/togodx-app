@@ -90,8 +90,8 @@ export default class TableData {
   #BUTTON_RIGHT;
 
   constructor(dxCondition, elm) {
-    const CancelToken = axios.CancelToken;
-    this.#source = CancelToken.source();
+    const cancelToken = axios.CancelToken;
+    this.#source = cancelToken.source();
 
     this.#isLoading = false;
     this.#isCompleted = false;

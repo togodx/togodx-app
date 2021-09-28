@@ -143,30 +143,6 @@ class ConditionBuilder {
   }
 
   makeQueryParameter() {
-    // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
-    // create properties
-    const properties = this.#keyConditions.map(({propertyId, parentCategoryId}) => {
-      const subject = Records.getSubjectWithPropertyId(propertyId);
-      const property = Records.getProperty(propertyId);
-      const query = {propertyId};
-      if (parentCategoryId) {
-        query.categoryIds = Records.getValuesWithParentCategoryId(propertyId, parentCategoryId).map(value => value.categoryId);
-      };
-      return {query, subject, property, parentCategoryId};
-    });
-    // create attributes (property values)
-    const attributes = this.#valuesConditions.map(({propertyId, categoryIds}) => {
-      const subject = Records.getSubjectWithPropertyId(propertyId);
-      const property = Records.getProperty(propertyId);
-      return {
-        query: {
-          propertyId, 
-          categoryIds: [].concat(categoryIds)
-        },
-        subject,
-        property
-      }
-    });
     // emmit event
     const customEvent = new CustomEvent(event.completeQueryParameter, {detail: new DXCondition(
       this.#togoKey,
