@@ -6085,13 +6085,14 @@
 
       bar.querySelector(':scope > .wholebar').style.height = "".concat(count / countMax * 100, "%");
       var hitbar = bar.querySelector(':scope > .hitbar');
-      if (isStretch) hitbar.style.height = "".concat(hitCount / count * 100, "%");else hitbar.style.height = "".concat(hitCount / countMax * 100, "%");
       var hitCountLabel = hitbar.querySelector(':scope > .value');
 
-      if (isOnlyHitCount) {
-        hitCountLabel.textContent = hitCount.toLocaleString();
-      } else {
+      if (isStretch) {
+        hitbar.style.height = "".concat(hitCount / count * 100, "%");
         hitCountLabel.textContent = Math.round(hitCount / count * 100) + '%';
+      } else {
+        hitbar.style.height = "".concat(hitCount / countMax * 100, "%");
+        hitCountLabel.textContent = hitCount.toLocaleString();
       }
 
       if (hitCount / countMax < .5) {
@@ -6287,7 +6288,7 @@
     var controller = _classPrivateFieldGet(this, _STATS).querySelector(':scope > th.controller > .inner');
 
     controller.querySelectorAll(':scope > label > input').forEach(function (radio) {
-      radio.addEventListener('change', function (e) {
+      radio.addEventListener('change', function () {
         switch (radio.value) {
           case 'hits_all':
             _classPrivateFieldGet(_this, _STATS).classList.remove('-onlyhitcount');
