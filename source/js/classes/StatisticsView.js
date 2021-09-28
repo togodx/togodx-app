@@ -10,15 +10,15 @@ export default class StatisticsView {
   #ROOT;
   #ROOT_NODE;
 
-  constructor(statisticsRootNode, elm, tableData, {subject, property}) {
+  constructor(statisticsRootNode, elm, tableData, propertyId) {
 
-    this.#propertyId = property.propertyId;
+    this.#propertyId = propertyId;
     this.#tableData = tableData;
     this.#ROOT_NODE = statisticsRootNode;
     this.#ROOT = elm;
 
     elm.classList.add('statistics-view');
-    elm.dataset.subjectId = subject.subjectId;
+    elm.dataset.subjectId = Records.getProperty(propertyId).subjectId;
 
     // make HTML
     elm.innerHTML = `
@@ -52,11 +52,11 @@ export default class StatisticsView {
     const attributes = (
       _.uniqBy(
         this.#tableData.data
-        .map(datum => datum.properties.find(property => property.propertyId === this.#propertyId))
-        .filter(property => property !== undefined)
-        .map(property => property.attributes)
-        .flat(),
-        'id'
+          .map(datum => datum.properties.find(property => property.propertyId === this.#propertyId))
+          .filter(property => property !== undefined)
+          .map(property => property.attributes)
+          .flat(),
+          'id'
       ).map(property => property.attribute)
     );
 

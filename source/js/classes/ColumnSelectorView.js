@@ -41,11 +41,11 @@ export default class ColumnSelectorView {
     this.#LOADING_VIEW = this.#ROOT.querySelector(':scope > .loading-view');
 
     // even listener
-    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, e => {
-      if (e.detail.action === 'remove') {
-        if (this.#property.propertyId === e.detail.propertyId) {
-          if (e.detail.parentCategoryId) {
-            const checkbox = this.#CONTAINER.querySelector(`[data-parent-category-id="${e.detail.parentCategoryId}"] > input`);
+    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail}) => {
+      if (detail.action === 'remove') {
+        if (this.#property.propertyId === detail.propertyId) {
+          if (detail.parentCategoryId) {
+            const checkbox = this.#CONTAINER.querySelector(`[data-parent-category-id="${detail.parentCategoryId}"] > input`);
             if (checkbox) checkbox.checked = false;
           }
         }
@@ -235,10 +235,21 @@ export default class ColumnSelectorView {
       const checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
       checkbox.addEventListener('click', e => {
         e.stopPropagation();
+        const ancestors = [];
+        let parentCategoryId;
+        let column = checkbox.closest('.column');
+        do { // find ancestors
+          parentCategoryId = column?.querySelector(':scope > table > thead > tr.item.-all').dataset.parentCategoryId;
+          if (parentCategoryId) {
+            ancestors.unshift(parentCategoryId);
+            column = column.previousElementSibling;
+          }
+        } while (parentCategoryId);
         if (checkbox.checked) { // add
           ConditionBuilder.addPropertyValue(
             this.#property.propertyId,
-            checkbox.value
+            checkbox.value,
+            ancestors
           );
         } else { // remove
           ConditionBuilder.removePropertyValue(this.#property.propertyId, checkbox.value);

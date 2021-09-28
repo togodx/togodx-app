@@ -75,7 +75,7 @@ const dataButtonModes = new Map([
 ]);
 
 export default class TableData {
-  #condition;
+  #dxCondition;
   #serializedHeader;
   #queryIds;
   #rows;
@@ -89,16 +89,16 @@ export default class TableData {
   #BUTTON_LEFT;
   #BUTTON_RIGHT;
 
-  constructor(condition, elm) {
+  constructor(dxCondition, elm) {
     const CancelToken = axios.CancelToken;
     this.#source = CancelToken.source();
 
     this.#isLoading = false;
     this.#isCompleted = false;
-    this.#condition = condition;
+    this.#dxCondition = dxCondition;
     this.#serializedHeader = [
-      ...condition.attributes.map(property => property.query.propertyId),
-      ...condition.properties.map(property => property.query.propertyId),
+      ...dxCondition.valuesConditions.map(valuesCondition => valuesCondition.propertyId),
+      ...dxCondition.keyConditions.map(keyCondition => keyCondition.propertyId),
     ];
     this.#queryIds = [];
     this.#rows = [];
@@ -111,30 +111,29 @@ export default class TableData {
     <div class="close-button-view"></div>
     <div class="conditions">
       <div class="condition">
-        <p title="${condition.togoKey}">${
-          Records.getDatasetLabel(condition.togoKey)
+        <p title="${dxCondition.togoKey}">${
+          Records.getDatasetLabel(dxCondition.togoKey)
         }</p>
       </div>
-      ${condition.attributes
-        .map(
-          property => `<div class="condition _subject-background-color" data-subject-id="${property.subject.subjectId}">
-            <p title="${property.property.label}">${property.property.label}</p>
-          </div>`
-        )
-        .join('')}
-      ${condition.properties
-        .map(property => {
-          const label = property.parentCategoryId
-            ? Records.getValue(
-                property.query.propertyId,
-                property.parentCategoryId
-              ).label
-            : property.property.label;
-          return `<div class="condition _subject-color" data-subject-id="${property.subject.subjectId}">
-          <p title="${label}">${label}</p>
-        </div>`;
-        })
-        .join('')}
+      ${
+        this.#dxCondition.valuesConditions
+          .map(valuesCondition => {
+            const label = Records.getProperty(valuesCondition.propertyId).label;
+            return `<div class="condition _subject-background-color" data-subject-id="${valuesCondition.subjectId}">
+              <p title="${label}">${label}</p>
+            </div>`
+          })
+          .join('')
+      }
+      ${
+        this.#dxCondition.keyConditions
+          .map(keyCondition => {
+            return `<div class="condition _subject-color" data-subject-id="${keyCondition.subjectId}">
+              <p title="${keyCondition.label}">${keyCondition.label}</p>
+            </div>`;
+          })
+          .join('')
+      }
     </div>
     <div class="status">
       <p>Getting ID list</p>
@@ -268,24 +267,24 @@ export default class TableData {
    * @param { MouseEvent } e
    */
   #dataButtonEdit(e) {
+    console.log(this)
+    console.log(this.#dxCondition)
     e.stopPropagation();
     // property (attribute)
     ConditionBuilder.setProperties(
-      this.#condition.properties.map(property => {
+      this.#dxCondition.keyConditions.map(keyCondition => {
         return {
-          propertyId: property.query.propertyId,
-          parentCategoryId: property.parentCategoryId,
-        };
+          propertyId: keyCondition.propertyId,
+          parentCategoryId: keyCondition.parentCategoryId,
+        }
       }),
       false
     );
     // attribute (classification/distribution)
     Records.properties.forEach(({propertyId}) => {
-      const attribute = this.#condition.attributes.find(
-        attribute => attribute.property.propertyId === propertyId
-      );
+      const valuesCondition = this.#dxCondition.valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
       const categoryIds = [];
-      if (attribute) categoryIds.push(...attribute.query.categoryIds);
+      if (valuesCondition) categoryIds.push(...valuesCondition.categoryIds);
       ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
     });
   }
@@ -352,7 +351,7 @@ export default class TableData {
       row.properties.forEach(property => {
         property.attributes.forEach(attribute => {
           const singleItem = [
-            this.#condition.togoKey, // togoKey
+            this.#dxCondition.togoKey, // togoKey
             row.id, // togoKeyId
             row.label, // togoKeyLabel
             property.propertyId, // attribute
@@ -418,10 +417,12 @@ export default class TableData {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  #getQueryIdsPayload() {
-    return `togoKey=${this.#condition.togoKey}&properties=${encodeURIComponent(
-      JSON.stringify(this.#condition.attributes.map(property => property.query))
-    )}${
+  get #queryIdsPayload() {
+    return `togoKey=${
+      this.#dxCondition.togoKey
+    }&properties=${
+      this.#dxCondition.queryIds
+    }${
       ConditionBuilder.userIds?.length > 0
         ? `&inputIds=${encodeURIComponent(
             JSON.stringify(ConditionBuilder.userIds.split(','))
@@ -432,7 +433,7 @@ export default class TableData {
 
   #getQueryIds() {
     axios
-      .post(App.aggregatePrimaryKeys, this.#getQueryIdsPayload(), {
+      .post(App.aggregatePrimaryKeys, this.#queryIdsPayload, {
         cancelToken: this.#source.token,
       })
       .then(response => {
@@ -453,25 +454,23 @@ export default class TableData {
       });
   }
 
-  #getPropertiesFetch() {
+  get #propertiesPayload() {
     return `${App.aggregateRows}?togoKey=${
-      this.#condition.togoKey
-    }&properties=${encodeURIComponent(
-      JSON.stringify(
-        this.#condition.attributes
-          .map(property => property.query)
-          .concat(this.#condition.properties.map(property => property.query))
+      this.#dxCondition.togoKey
+    }&properties=${
+      this.#dxCondition.queryProperties
+    }&queryIds=${
+      encodeURIComponent(
+        JSON.stringify(this.#queryIds.slice(this.offset, this.offset + LIMIT))
       )
-    )}&queryIds=${encodeURIComponent(
-      JSON.stringify(this.#queryIds.slice(this.offset, this.offset + LIMIT))
-    )}`;
+    }`;
   }
 
   #getProperties() {
     this.#isLoading = true;
     const startTime = Date.now();
     axios
-      .get(this.#getPropertiesFetch(), {cancelToken: this.#source.token})
+      .get(this.#propertiesPayload, {cancelToken: this.#source.token})
       .then(response => {
         this.#rows.push(...response.data);
         this.#isCompleted = this.offset >= this.#queryIds.length;
@@ -547,10 +546,10 @@ export default class TableData {
     return this.#rows.length;
   }
   get togoKey() {
-    return this.condition.togoKey;
+    return this.#dxCondition.togoKey;
   }
-  get condition() {
-    return this.#condition;
+  get dxCondition() {
+    return this.#dxCondition;
   }
   get serializedHeader() {
     return this.#serializedHeader;

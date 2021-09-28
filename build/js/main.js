@@ -2774,8 +2774,7 @@
       value: function setSubjects(subjects) {
         var _this = this;
 
-        console.log(subjects); // define subjects
-
+        // define subjects
         for (var i = 0; i < subjects.length; i++) {
           var hue = 360 - 360 * i / subjects.length + 130;
           hue -= hue > 360 ? 360 : 0;
@@ -2807,10 +2806,7 @@
 
             _classPrivateFieldGet(_this, _fetchedCategoryIds)[property.propertyId] = [];
           });
-        });
-        console.log(_classPrivateFieldGet(this, _subjects));
-        console.log(_classPrivateFieldGet(this, _properties$1));
-        console.log(_classPrivateFieldGet(this, _fetchedCategoryIds)); // make stylesheet
+        }); // make stylesheet
 
         var styleElm = document.createElement('style');
         document.head.appendChild(styleElm);
@@ -2965,6 +2961,393 @@
 
   var Records$1 = new Records();
 
+  var _key = /*#__PURE__*/new WeakMap();
+
+  var _subjectId = /*#__PURE__*/new WeakMap();
+
+  var _dataset = /*#__PURE__*/new WeakMap();
+
+  var BaseCondition = /*#__PURE__*/function () {
+    function BaseCondition(propertyId) {
+      _classCallCheck(this, BaseCondition);
+
+      _defineProperty(this, "_propertyId", void 0);
+
+      _classPrivateFieldInitSpec(this, _key, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _subjectId, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _dataset, {
+        writable: true,
+        value: void 0
+      });
+
+      this._propertyId = propertyId;
+    } // accessor
+
+
+    _createClass(BaseCondition, [{
+      key: "propertyId",
+      get: function get() {
+        return this._propertyId;
+      }
+    }, {
+      key: "key",
+      get: function get() {
+        if (!_classPrivateFieldGet(this, _key)) {
+          _classPrivateFieldSet(this, _key, Records$1.getProperty(this._propertyId));
+        }
+
+        return _classPrivateFieldGet(this, _key);
+      }
+    }, {
+      key: "subjectId",
+      get: function get() {
+        if (!_classPrivateFieldGet(this, _subjectId)) {
+          _classPrivateFieldSet(this, _subjectId, this.key.subjectId);
+        }
+
+        return _classPrivateFieldGet(this, _subjectId);
+      }
+    }, {
+      key: "dataset",
+      get: function get() {
+        if (!_classPrivateFieldGet(this, _dataset)) {
+          _classPrivateFieldSet(this, _dataset, this.key.primaryKey);
+        }
+
+        return _classPrivateFieldGet(this, _dataset);
+      }
+    }]);
+
+    return BaseCondition;
+  }();
+
+  var _parentCategoryId = /*#__PURE__*/new WeakMap();
+
+  var _value = /*#__PURE__*/new WeakMap();
+
+  var KeyCondition = /*#__PURE__*/function (_BaseCondition) {
+    _inherits(KeyCondition, _BaseCondition);
+
+    var _super = _createSuper(KeyCondition);
+
+    function KeyCondition(propertyId, parentCategoryId) {
+      var _this;
+
+      _classCallCheck(this, KeyCondition);
+
+      _this = _super.call(this, propertyId);
+
+      _classPrivateFieldInitSpec(_assertThisInitialized(_this), _parentCategoryId, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(_assertThisInitialized(_this), _value, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldSet(_assertThisInitialized(_this), _parentCategoryId, parentCategoryId);
+
+      return _this;
+    } // methods
+
+    /**
+     * 
+     * @param {String} propertyId 
+     * @param {String} parentCategoryId 
+     * @return {Boolean}
+     */
+
+
+    _createClass(KeyCondition, [{
+      key: "isSameCondition",
+      value: function isSameCondition(propertyId, parentCategoryId) {
+        if (propertyId === this._propertyId) {
+          if (parentCategoryId) {
+            return parentCategoryId === _classPrivateFieldGet(this, _parentCategoryId);
+          } else {
+            return true;
+          }
+        } else {
+          return false;
+        }
+      }
+    }, {
+      key: "getURLParameter",
+      value: function getURLParameter() {
+        var key = {
+          propertyId: this.propertyId
+        };
+
+        if (_classPrivateFieldGet(this, _parentCategoryId)) {
+          key.id = {
+            categoryId: _classPrivateFieldGet(this, _parentCategoryId),
+            ancestors: Records$1.getAncestors(this.propertyId, _classPrivateFieldGet(this, _parentCategoryId)).map(function (ancestor) {
+              return ancestor.categoryId;
+            })
+          };
+        }
+
+        return key;
+      } // accessor
+
+    }, {
+      key: "parentCategoryId",
+      get: function get() {
+        return _classPrivateFieldGet(this, _parentCategoryId);
+      }
+    }, {
+      key: "label",
+      get: function get() {
+        if (_classPrivateFieldGet(this, _parentCategoryId)) {
+          return this.value.label;
+        } else {
+          return this.key.label;
+        }
+      }
+    }, {
+      key: "value",
+      get: function get() {
+        if (!_classPrivateFieldGet(this, _value)) {
+          _classPrivateFieldSet(this, _value, Records$1.getValue(this._propertyId, _classPrivateFieldGet(this, _parentCategoryId)));
+        }
+
+        return _classPrivateFieldGet(this, _value);
+      }
+    }, {
+      key: "query",
+      get: function get() {
+        var query = {
+          propertyId: this._propertyId
+        };
+        if (_classPrivateFieldGet(this, _parentCategoryId)) query.categoryIds = [_classPrivateFieldGet(this, _parentCategoryId)];
+        return query;
+      }
+    }]);
+
+    return KeyCondition;
+  }(BaseCondition);
+
+  var _categoryIds = /*#__PURE__*/new WeakMap();
+
+  var ValuesCondition = /*#__PURE__*/function (_BaseCondition) {
+    _inherits(ValuesCondition, _BaseCondition);
+
+    var _super = _createSuper(ValuesCondition);
+
+    function ValuesCondition(propertyId, categoryIds) {
+      var _this;
+
+      _classCallCheck(this, ValuesCondition);
+
+      _this = _super.call(this, propertyId);
+
+      _classPrivateFieldInitSpec(_assertThisInitialized(_this), _categoryIds, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldSet(_assertThisInitialized(_this), _categoryIds, categoryIds);
+
+      return _this;
+    } // methods
+
+
+    _createClass(ValuesCondition, [{
+      key: "addCategoryId",
+      value: function addCategoryId(categoryId) {
+        _classPrivateFieldGet(this, _categoryIds).push(categoryId);
+      }
+    }, {
+      key: "removeCategoryId",
+      value: function removeCategoryId(categoryId) {
+        var index = _classPrivateFieldGet(this, _categoryIds).indexOf(categoryId);
+
+        _classPrivateFieldGet(this, _categoryIds).splice(index, 1);
+      }
+    }, {
+      key: "getURLParameter",
+      value: function getURLParameter() {
+        var _this2 = this;
+
+        var values = {
+          propertyId: this.propertyId,
+          ids: []
+        };
+
+        _classPrivateFieldGet(this, _categoryIds).forEach(function (categoryId) {
+          var id = {
+            categoryId: categoryId
+          };
+          var ancestors = Records$1.getAncestors(_this2.propertyId, categoryId).map(function (ancestor) {
+            return ancestor.categoryId;
+          });
+          if (ancestors.length > 0) id.ancestors = ancestors;
+          values.ids.push(id);
+        });
+
+        return values;
+      } // accessor
+
+    }, {
+      key: "categoryIds",
+      get: function get() {
+        return _toConsumableArray(_classPrivateFieldGet(this, _categoryIds));
+      }
+    }, {
+      key: "label",
+      get: function get() {
+        return this.key.label;
+      }
+    }, {
+      key: "query",
+      get: function get() {
+        return {
+          propertyId: this.propertyId,
+          categoryIds: this.categoryIds
+        };
+      }
+    }]);
+
+    return ValuesCondition;
+  }(BaseCondition);
+
+  var _togoKey$1 = /*#__PURE__*/new WeakMap();
+
+  var _keyConditions$1 = /*#__PURE__*/new WeakMap();
+
+  var _valuesConditions$1 = /*#__PURE__*/new WeakMap();
+
+  var _copyKeyConditions = /*#__PURE__*/new WeakSet();
+
+  var _copyValuesConditions = /*#__PURE__*/new WeakSet();
+
+  var DXCondition = /*#__PURE__*/function () {
+    function DXCondition(togoKey, _keyConditions2, _valuesConditions2) {
+      _classCallCheck(this, DXCondition);
+
+      _classPrivateMethodInitSpec(this, _copyValuesConditions);
+
+      _classPrivateMethodInitSpec(this, _copyKeyConditions);
+
+      _classPrivateFieldInitSpec(this, _togoKey$1, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _keyConditions$1, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _valuesConditions$1, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldSet(this, _togoKey$1, togoKey);
+
+      _classPrivateFieldSet(this, _keyConditions$1, _classPrivateMethodGet(this, _copyKeyConditions, _copyKeyConditions2).call(this, _keyConditions2));
+
+      _classPrivateFieldSet(this, _valuesConditions$1, _classPrivateMethodGet(this, _copyValuesConditions, _copyValuesConditions2).call(this, _valuesConditions2));
+    } // methods
+
+    /**
+     * 
+     * @param {DXCondition} dxCondition 
+     * @return Boolean
+     */
+
+
+    _createClass(DXCondition, [{
+      key: "checkSameCondition",
+      value: function checkSameCondition(dxCondition) {
+        // keys
+        var matchKeys = false;
+
+        if (this.keyConditions.length === dxCondition.keyConditions.length) {
+          matchKeys = this.keyConditions.every(function (keyCondition) {
+            return dxCondition.keyConditions.findIndex(function (newKeyCondition) {
+              return keyCondition.propertyId === newKeyCondition.propertyId && keyCondition.parentCategoryId === newKeyCondition.parentCategoryId;
+            }) !== -1;
+          });
+        } // values
+
+
+        var matchValues = false;
+
+        if (this.valuesConditions.length === dxCondition.valuesConditions.length) {
+          matchValues = this.valuesConditions.every(function (valuesCondition) {
+            return dxCondition.valuesConditions.findIndex(function (newValuesCondition) {
+              return valuesCondition.propertyId === newValuesCondition.propertyId && valuesCondition.categoryIds.length === newValuesCondition.categoryIds.length && valuesCondition.categoryIds.every(function (categoryId) {
+                return newValuesCondition.categoryIds.findIndex(function (newCategoryId) {
+                  return categoryId === newCategoryId;
+                }) !== -1;
+              });
+            }) !== -1;
+          });
+        }
+
+        return matchKeys && matchValues;
+      }
+    }, {
+      key: "togoKey",
+      get: // accessor
+      function get() {
+        return _classPrivateFieldGet(this, _togoKey$1);
+      }
+    }, {
+      key: "keyConditions",
+      get: function get() {
+        return _classPrivateFieldGet(this, _keyConditions$1);
+      }
+    }, {
+      key: "valuesConditions",
+      get: function get() {
+        return _classPrivateFieldGet(this, _valuesConditions$1);
+      }
+    }, {
+      key: "queryIds",
+      get: function get() {
+        return encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _valuesConditions$1).map(function (valuesConditions) {
+          return valuesConditions.query;
+        })));
+      }
+    }, {
+      key: "queryProperties",
+      get: function get() {
+        return encodeURIComponent(JSON.stringify([].concat(_toConsumableArray(_classPrivateFieldGet(this, _valuesConditions$1).map(function (valuesConditions) {
+          return valuesConditions.query;
+        })), _toConsumableArray(_classPrivateFieldGet(this, _keyConditions$1).map(function (keyConditions) {
+          return keyConditions.query;
+        })))));
+      }
+    }]);
+
+    return DXCondition;
+  }();
+
+  function _copyKeyConditions2(keyConditions) {
+    return keyConditions.map(function (keyCondition) {
+      return new KeyCondition(keyCondition.propertyId, keyCondition.parentCategoryId);
+    });
+  }
+
+  function _copyValuesConditions2(valuesConditions) {
+    return valuesConditions.map(function (valuesCondition) {
+      return new ValuesCondition(valuesCondition.propertyId, valuesCondition.categoryIds);
+    });
+  }
+
   // TogoKey
   var defineTogoKey = 'defineTogoKey'; // User IDs
 
@@ -3002,9 +3385,9 @@
 
   var changeStatisticsViewMode = 'changeStatisticsViewMode';
 
-  var _propertyConditions = /*#__PURE__*/new WeakMap();
+  var _keyConditions = /*#__PURE__*/new WeakMap();
 
-  var _attributeConditions = /*#__PURE__*/new WeakMap();
+  var _valuesConditions = /*#__PURE__*/new WeakMap();
 
   var _togoKey = /*#__PURE__*/new WeakMap();
 
@@ -3028,17 +3411,15 @@
 
   var _clearConditinos = /*#__PURE__*/new WeakSet();
 
-  var _getHierarchicConditions = /*#__PURE__*/new WeakSet();
-
   var _getCondtionsFromHierarchicConditions = /*#__PURE__*/new WeakSet();
 
   var ConditionBuilder = /*#__PURE__*/function () {
+    // Array<KeyCondition>
+    // Array<ValuesCondition>
     function ConditionBuilder() {
       _classCallCheck(this, ConditionBuilder);
 
       _classPrivateMethodInitSpec(this, _getCondtionsFromHierarchicConditions);
-
-      _classPrivateMethodInitSpec(this, _getHierarchicConditions);
 
       _classPrivateMethodInitSpec(this, _clearConditinos);
 
@@ -3054,12 +3435,12 @@
 
       _classPrivateMethodInitSpec(this, _postProcessing);
 
-      _classPrivateFieldInitSpec(this, _propertyConditions, {
+      _classPrivateFieldInitSpec(this, _keyConditions, {
         writable: true,
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _attributeConditions, {
+      _classPrivateFieldInitSpec(this, _valuesConditions, {
         writable: true,
         value: void 0
       });
@@ -3084,9 +3465,9 @@
         value: void 0
       });
 
-      _classPrivateFieldSet(this, _propertyConditions, []);
+      _classPrivateFieldSet(this, _keyConditions, []);
 
-      _classPrivateFieldSet(this, _attributeConditions, []);
+      _classPrivateFieldSet(this, _valuesConditions, []);
 
       _classPrivateFieldSet(this, _preparingCounter, 0);
 
@@ -3114,7 +3495,6 @@
       key: "setUserIds",
       value: function setUserIds() {
         var ids = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-        console.log('setUserIds', ids);
 
         _classPrivateFieldSet(this, _userIds, ids.replace(/,/g, " ").split(/\s+/).join(',')); // post processing (permalink, evaluate)
 
@@ -3125,13 +3505,10 @@
       key: "addProperty",
       value: function addProperty(propertyId, parentCategoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-
-        // console.log('addProperty', propertyId, parentCategoryId, isFinal)
         // store
-        _classPrivateFieldGet(this, _propertyConditions).push({
-          propertyId: propertyId,
-          parentCategoryId: parentCategoryId
-        }); // evaluate
+        var keyCondiiton = new KeyCondition(propertyId, parentCategoryId);
+
+        _classPrivateFieldGet(this, _keyConditions).push(keyCondiiton); // evaluate
 
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
@@ -3148,22 +3525,20 @@
     }, {
       key: "addPropertyValue",
       value: function addPropertyValue(propertyId, categoryId) {
-        var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+        var isFinal = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 
-        // console.log('addPropertyValue', propertyId, categoryId, isFinal)
         // find value of same property
-        var samePropertyCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
-          return condition.propertyId === propertyId;
+        var sameValuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
+          return valuesCondition.propertyId === propertyId;
         }); // store
 
 
-        if (samePropertyCondition) {
-          samePropertyCondition.categoryIds.push(categoryId);
+        if (sameValuesCondition) {
+          sameValuesCondition.addCategoryId(categoryId);
         } else {
-          _classPrivateFieldGet(this, _attributeConditions).push({
-            propertyId: propertyId,
-            categoryIds: [categoryId]
-          });
+          var valuesCondition = new ValuesCondition(propertyId, [categoryId]);
+
+          _classPrivateFieldGet(this, _valuesConditions).push(valuesCondition);
         } // evaluate
 
 
@@ -3183,20 +3558,13 @@
       value: function removeProperty(propertyId, parentCategoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
-        // console.log('removeProperty', propertyId, parentCategoryId, isFinal)
         // remove from store
-        var index = _classPrivateFieldGet(this, _propertyConditions).findIndex(function (condition) {
-          if (propertyId === condition.propertyId) {
-            if (parentCategoryId) {
-              return parentCategoryId === condition.parentCategoryId;
-            } else {
-              return true;
-            }
-          }
+        var index = _classPrivateFieldGet(this, _keyConditions).findIndex(function (keyCondition) {
+          return keyCondition.isSameCondition(propertyId, parentCategoryId);
         });
 
         if (index === -1) return;
-        _classPrivateFieldGet(this, _propertyConditions).splice(index, 1)[0]; // post processing (permalink, evaluate)
+        _classPrivateFieldGet(this, _keyConditions).splice(index, 1)[0]; // post processing (permalink, evaluate)
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
@@ -3214,20 +3582,17 @@
       value: function removePropertyValue(propertyId, categoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
-        // console.log('removePropertyValue', propertyId, categoryId, isFinal)
         // remove from store
-        var index = _classPrivateFieldGet(this, _attributeConditions).findIndex(function (condition) {
-          if (condition.propertyId === propertyId) {
-            var _index = condition.categoryIds.indexOf(categoryId);
-
-            condition.categoryIds.splice(_index, 1);
-            return condition.categoryIds.length === 0;
+        var index = _classPrivateFieldGet(this, _valuesConditions).findIndex(function (valuesCondition) {
+          if (valuesCondition.propertyId === propertyId) {
+            valuesCondition.removeCategoryId(categoryId);
+            return valuesCondition.categoryIds.length === 0;
           } else {
             return false;
           }
         });
 
-        if (index !== -1) _classPrivateFieldGet(this, _attributeConditions).splice(index, 1)[0]; // post processing (permalink, evaluate)
+        if (index !== -1) _classPrivateFieldGet(this, _valuesConditions).splice(index, 1)[0]; // post processing (permalink, evaluate)
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
@@ -3247,10 +3612,9 @@
 
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
-        // console.log('setProperties', conditions, isFinal)
         // delete existing properties
-        while (_classPrivateFieldGet(this, _propertyConditions).length > 0) {
-          this.removeProperty(_classPrivateFieldGet(this, _propertyConditions)[0].propertyId, _classPrivateFieldGet(this, _propertyConditions)[0].parentCategoryId, false);
+        while (_classPrivateFieldGet(this, _keyConditions).length > 0) {
+          this.removeProperty(_classPrivateFieldGet(this, _keyConditions)[0].propertyId, _classPrivateFieldGet(this, _keyConditions)[0].parentCategoryId, false);
         }
 
         conditions.forEach(function (_ref) {
@@ -3268,20 +3632,20 @@
 
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
-        // console.log('setPropertyValues', propertyId, categoryIds, isFinal)
-        var oldCondition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
-          return condition.propertyId === propertyId;
+        // console.log(propertyId, categoryIds, isFinal)
+        var oldValuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
+          return valuesCondition.propertyId === propertyId;
         });
 
-        if (oldCondition) {
+        if (oldValuesCondition) {
           var originalValues = Records$1.getProperty(propertyId).values;
           originalValues.forEach(function (originalValue) {
             var indexInNew = categoryIds.indexOf(originalValue.categoryId);
-            var indexInOld = oldCondition.categoryIds.indexOf(originalValue.categoryId);
+            var indexInOld = oldValuesCondition.categoryIds.indexOf(originalValue.categoryId);
 
             if (indexInNew !== -1) {
               // if new value does not exist in old values, add property value
-              if (indexInOld === -1) _this2.addPropertyValue(propertyId, originalValue.categoryId, false);
+              if (indexInOld === -1) _this2.addPropertyValue(propertyId, originalValue.categoryId, [], false);
             } else {
               // if extra value exists in old values, remove property value
               if (indexInOld !== -1) _this2.removePropertyValue(propertyId, originalValue.categoryId, false);
@@ -3294,7 +3658,7 @@
           try {
             for (_iterator.s(); !(_step = _iterator.n()).done;) {
               var categoryId = _step.value;
-              this.addPropertyValue(propertyId, categoryId, false);
+              this.addPropertyValue(propertyId, categoryId, [], false);
             }
           } catch (err) {
             _iterator.e(err);
@@ -3309,17 +3673,14 @@
     }, {
       key: "finish",
       value: function finish(dontLeaveInHistory) {
-        console.log('finish', dontLeaveInHistory);
-
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this, dontLeaveInHistory);
       }
     }, {
       key: "makeQueryParameter",
       value: function makeQueryParameter() {
-        console.log(_classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions)); // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
+        // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
         // create properties
-
-        var properties = _classPrivateFieldGet(this, _propertyConditions).map(function (_ref2) {
+        _classPrivateFieldGet(this, _keyConditions).map(function (_ref2) {
           var propertyId = _ref2.propertyId,
               parentCategoryId = _ref2.parentCategoryId;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
@@ -3342,7 +3703,7 @@
         }); // create attributes (property values)
 
 
-        var attributes = _classPrivateFieldGet(this, _attributeConditions).map(function (_ref3) {
+        _classPrivateFieldGet(this, _valuesConditions).map(function (_ref3) {
           var propertyId = _ref3.propertyId,
               categoryIds = _ref3.categoryIds;
           var subject = Records$1.getSubjectWithPropertyId(propertyId);
@@ -3358,24 +3719,19 @@
         }); // emmit event
 
 
-        console.log(properties, attributes);
         var customEvent = new CustomEvent(completeQueryParameter, {
-          detail: {
-            togoKey: _classPrivateFieldGet(this, _togoKey),
-            properties: properties,
-            attributes: attributes
-          }
+          detail: new DXCondition(_classPrivateFieldGet(this, _togoKey), _classPrivateFieldGet(this, _keyConditions), _classPrivateFieldGet(this, _valuesConditions))
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
       key: "isSelectedProperty",
       value: function isSelectedProperty(propertyId) {
-        var condiiton = _classPrivateFieldGet(this, _propertyConditions).find(function (condiiton) {
-          return condiiton.propertyId === propertyId;
+        var keyCondiiton = _classPrivateFieldGet(this, _keyConditions).find(function (keyCondiiton) {
+          return keyCondiiton.propertyId === propertyId;
         });
 
-        if (condiiton && condiiton.parentCategoryId === undefined) {
+        if (keyCondiiton && keyCondiiton.parentCategoryId === undefined) {
           return true;
         } else {
           return false;
@@ -3384,22 +3740,22 @@
     }, {
       key: "getSelectedParentCategoryId",
       value: function getSelectedParentCategoryId(propertyId) {
-        var condition = _classPrivateFieldGet(this, _propertyConditions).find(function (condition) {
-          return condition.propertyId === propertyId;
+        var keyCondition = _classPrivateFieldGet(this, _keyConditions).find(function (keyCondition) {
+          return keyCondition.propertyId === propertyId;
         });
 
-        return condition === null || condition === void 0 ? void 0 : condition.parentCategoryId;
+        return keyCondition === null || keyCondition === void 0 ? void 0 : keyCondition.parentCategoryId;
       }
     }, {
       key: "getSelectedCategoryIds",
       value: function getSelectedCategoryIds(propertyId) {
         var categoryIds = [];
 
-        var condition = _classPrivateFieldGet(this, _attributeConditions).find(function (condition) {
-          return condition.propertyId === propertyId;
+        var valuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
+          return valuesCondition.propertyId === propertyId;
         });
 
-        if (condition) categoryIds.push.apply(categoryIds, _toConsumableArray(condition.categoryIds));
+        if (valuesCondition) categoryIds.push.apply(categoryIds, _toConsumableArray(valuesCondition.categoryIds));
         return categoryIds;
       } // public accessor
 
@@ -3421,21 +3777,22 @@
 
   function _postProcessing2() {
     var dontLeaveInHistory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-    console.log(_classPrivateFieldGet(this, _propertyConditions), _classPrivateFieldGet(this, _attributeConditions), dontLeaveInHistory);
     if (!_classPrivateFieldGet(this, _isRestoredConditinoFromURLParameters)) return; // evaluate if search is possible
 
-    var established = _classPrivateFieldGet(this, _togoKey) && (_classPrivateFieldGet(this, _propertyConditions).length > 0 || _classPrivateFieldGet(this, _attributeConditions).length > 0);
+    var established = _classPrivateFieldGet(this, _togoKey) && (_classPrivateFieldGet(this, _keyConditions).length > 0 || _classPrivateFieldGet(this, _valuesConditions).length > 0);
     var customEvent = new CustomEvent(mutateEstablishConditions, {
       detail: established
     });
     DefaultEventEmitter$1.dispatchEvent(customEvent); // get hierarchic conditions
 
-    var _classPrivateMethodGe = _classPrivateMethodGet(this, _getHierarchicConditions, _getHierarchicConditions2).call(this),
-        _classPrivateMethodGe2 = _slicedToArray(_classPrivateMethodGe, 2),
-        keys = _classPrivateMethodGe2[0],
-        values = _classPrivateMethodGe2[1];
+    var keys = _classPrivateFieldGet(this, _keyConditions).map(function (keyCondiiton) {
+      return keyCondiiton.getURLParameter();
+    });
 
-    console.log(keys, values); // generate permalink
+    var values = _classPrivateFieldGet(this, _valuesConditions).map(function (valuesCondition) {
+      return valuesCondition.getURLParameter();
+    }); // generate permalink
+
 
     var params = new URL(location).searchParams;
     params.set('togoKey', _classPrivateFieldGet(this, _togoKey)); // params.set('userIds', this.userIds ? this.userIds : '');
@@ -3457,7 +3814,6 @@
       keys: (_JSON$parse = JSON.parse(params.get('keys'))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
       values: (_JSON$parse2 = JSON.parse(params.get('values'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
     };
-    console.log(condition);
 
     if (isFirst) {
       // get child category ids
@@ -3468,6 +3824,7 @@
   }
 
   function _makeQueueOfGettingChildCategoryIds2(condition) {
+    console.log(condition);
     var queue = [];
     condition.keys.forEach(function (_ref4) {
       var propertyId = _ref4.propertyId,
@@ -3529,11 +3886,10 @@
   function _restoreConditions2(_ref6) {
     var _this4 = this;
 
-    var togoKey = _ref6.togoKey,
-        userIds = _ref6.userIds,
-        keys = _ref6.keys,
+    var togoKey = _ref6.togoKey;
+        _ref6.userIds;
+        var keys = _ref6.keys,
         values = _ref6.values;
-    console.log(togoKey, userIds, keys, values);
 
     _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true); // restore conditions
 
@@ -3541,12 +3897,11 @@
     _classPrivateFieldSet(this, _togoKey, togoKey); // this.#userIds = userIds;
 
 
-    var _classPrivateMethodGe3 = _classPrivateMethodGet(this, _getCondtionsFromHierarchicConditions, _getCondtionsFromHierarchicConditions2).call(this, keys, values),
-        _classPrivateMethodGe4 = _slicedToArray(_classPrivateMethodGe3, 2),
-        properties = _classPrivateMethodGe4[0],
-        attributes = _classPrivateMethodGe4[1];
+    var _classPrivateMethodGe = _classPrivateMethodGet(this, _getCondtionsFromHierarchicConditions, _getCondtionsFromHierarchicConditions2).call(this, keys, values),
+        _classPrivateMethodGe2 = _slicedToArray(_classPrivateMethodGe, 2),
+        properties = _classPrivateMethodGe2[0],
+        attributes = _classPrivateMethodGe2[1];
 
-    console.log(properties, attributes);
     this.setProperties(properties, false);
     Records$1.properties.forEach(function (_ref7) {
       var propertyId = _ref7.propertyId;
@@ -3571,16 +3926,16 @@
   }
 
   function _clearConditinos2() {
-    while (_classPrivateFieldGet(this, _propertyConditions).length > 0) {
-      var _classPrivateFieldGet2 = _classPrivateFieldGet(this, _propertyConditions)[0],
+    while (_classPrivateFieldGet(this, _keyConditions).length > 0) {
+      var _classPrivateFieldGet2 = _classPrivateFieldGet(this, _keyConditions)[0],
           propertyId = _classPrivateFieldGet2.propertyId,
           parentCategoryId = _classPrivateFieldGet2.parentCategoryId;
 
       this.removeProperty(propertyId, parentCategoryId, false);
     }
 
-    while (_classPrivateFieldGet(this, _attributeConditions).length > 0) {
-      var _classPrivateFieldGet3 = _classPrivateFieldGet(this, _attributeConditions)[0],
+    while (_classPrivateFieldGet(this, _valuesConditions).length > 0) {
+      var _classPrivateFieldGet3 = _classPrivateFieldGet(this, _valuesConditions)[0],
           _propertyId = _classPrivateFieldGet3.propertyId,
           categoryIds = _classPrivateFieldGet3.categoryIds;
 
@@ -3592,66 +3947,19 @@
     _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
   }
 
-  function _getHierarchicConditions2() {
-    var keys = [];
-
-    _classPrivateFieldGet(this, _propertyConditions).forEach(function (_ref8) {
-      var propertyId = _ref8.propertyId,
-          parentCategoryId = _ref8.parentCategoryId;
-      var property = {
-        propertyId: propertyId
-      };
-
-      if (parentCategoryId) {
-        property.id = {
-          categoryId: parentCategoryId,
-          ancestors: Records$1.getAncestors(propertyId, parentCategoryId).map(function (ancestor) {
-            return ancestor.categoryId;
-          })
-        };
-      }
-
-      keys.push(property);
-    });
-
-    var values = [];
-
-    _classPrivateFieldGet(this, _attributeConditions).forEach(function (_ref9) {
-      var propertyId = _ref9.propertyId,
-          categoryIds = _ref9.categoryIds;
-      var ids = [];
-      categoryIds.forEach(function (categoryId) {
-        var id = {
-          categoryId: categoryId
-        };
-        var ancestors = Records$1.getAncestors(propertyId, categoryId).map(function (ancestor) {
-          return ancestor.categoryId;
-        });
-        if (ancestors.length > 0) id.ancestors = ancestors;
-        ids.push(id);
-      });
-      values.push({
-        propertyId: propertyId,
-        ids: ids
-      });
-    });
-
-    return [keys, values];
-  }
-
   function _getCondtionsFromHierarchicConditions2(keys, values) {
     // restore conditions
-    var properties = keys.map(function (_ref10) {
-      var propertyId = _ref10.propertyId,
-          id = _ref10.id;
+    var properties = keys.map(function (_ref8) {
+      var propertyId = _ref8.propertyId,
+          id = _ref8.id;
       return {
         propertyId: propertyId,
         parentCategoryId: id === null || id === void 0 ? void 0 : id.categoryId
       };
     });
-    var attributes = values.map(function (_ref11) {
-      var propertyId = _ref11.propertyId,
-          ids = _ref11.ids;
+    var attributes = values.map(function (_ref9) {
+      var propertyId = _ref9.propertyId,
+          ids = _ref9.ids;
       return {
         propertyId: propertyId,
         categoryIds: ids.map(function (id) {
@@ -3668,7 +3976,7 @@
 
   var _isRange = /*#__PURE__*/new WeakMap();
 
-  var _condition$1 = /*#__PURE__*/new WeakMap();
+  var _condition = /*#__PURE__*/new WeakMap();
 
   var _ROOT$c = /*#__PURE__*/new WeakMap();
 
@@ -3695,7 +4003,7 @@
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _condition$1, {
+      _classPrivateFieldInitSpec(this, _condition, {
         writable: true,
         value: void 0
       });
@@ -3710,7 +4018,9 @@
         value: void 0
       });
 
-      _classPrivateFieldSet(this, _condition$1, condition);
+      console.log(condition);
+
+      _classPrivateFieldSet(this, _condition, condition);
 
       var subject = Records$1.getSubjectWithPropertyId(condition.propertyId);
       var property = Records$1.getProperty(condition.propertyId); // this.#isRange = isRange;
@@ -3777,7 +4087,7 @@
         var _this2 = this;
 
         var getValue = function getValue() {
-          var value = Records$1.getValue(_classPrivateFieldGet(_this2, _condition$1).propertyId, categoryId);
+          var value = Records$1.getValue(_classPrivateFieldGet(_this2, _condition).propertyId, categoryId);
 
           if (value === undefined) {
             setTimeout(getValue, POLLING_DURATION);
@@ -3787,7 +4097,7 @@
 
             _classPrivateFieldGet(_this2, _LABELS).querySelector(':scope > .label:last-child').addEventListener('click', function (e) {
               e.stopPropagation();
-              ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this2, _condition$1).propertyId, e.target.parentNode.dataset.categoryId);
+              ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this2, _condition).propertyId, e.target.parentNode.dataset.categoryId);
             });
           }
         };
@@ -3797,14 +4107,14 @@
     }, {
       key: "removeProperty",
       value: function removeProperty(propertyId, parentCategoryId) {
-        var isMatch = propertyId === _classPrivateFieldGet(this, _condition$1).propertyId && (parentCategoryId ? parentCategoryId === _classPrivateFieldGet(this, _condition$1).parentCategoryId : true);
+        var isMatch = propertyId === _classPrivateFieldGet(this, _condition).propertyId && (parentCategoryId ? parentCategoryId === _classPrivateFieldGet(this, _condition).parentCategoryId : true);
         if (isMatch) _classPrivateFieldGet(this, _ROOT$c).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$c));
         return isMatch;
       }
     }, {
       key: "removePropertyValue",
       value: function removePropertyValue(propertyId, categoryId) {
-        if (propertyId === _classPrivateFieldGet(this, _condition$1).propertyId) {
+        if (propertyId === _classPrivateFieldGet(this, _condition).propertyId) {
           _classPrivateFieldGet(this, _LABELS).removeChild(_classPrivateFieldGet(this, _LABELS).querySelector(":scope > [data-category-id=\"".concat(categoryId, "\"")));
 
           if (_classPrivateFieldGet(this, _LABELS).childNodes.length === 0) {
@@ -3821,7 +4131,7 @@
     }, {
       key: "sameProperty",
       value: function sameProperty(propertyId) {
-        return propertyId === _classPrivateFieldGet(this, _condition$1).propertyId;
+        return propertyId === _classPrivateFieldGet(this, _condition).propertyId;
       }
     }]);
 
@@ -3831,7 +4141,6 @@
   function _make2(container, type, ancestorLabels, label) {
     var _this3 = this;
 
-    console.log(container, type, ancestorLabels, label);
     _classPrivateFieldGet(this, _ROOT$c).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      ".concat(ancestorLabels.map(function (ancestor) {
       return "<li>".concat(ancestor, "</li>");
     }).join(''), "\n    </ul>\n    ").concat(label);
@@ -3840,7 +4149,7 @@
     if (type === 'value') {
       _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$c).querySelector(':scope > .labels'));
 
-      this.addValue(_classPrivateFieldGet(this, _condition$1).categoryId);
+      this.addValue(_classPrivateFieldGet(this, _condition).categoryId);
     } // event
 
 
@@ -3848,7 +4157,7 @@
       switch (type) {
         case 'property':
           // notify
-          ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this3, _condition$1).propertyId, _classPrivateFieldGet(_this3, _condition$1).parentCategoryId);
+          ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this3, _condition).propertyId, _classPrivateFieldGet(_this3, _condition).parentCategoryId);
           break;
 
         case 'value':
@@ -3858,7 +4167,7 @@
           try {
             for (_iterator.s(); !(_step = _iterator.n()).done;) {
               var _label2 = _step.value;
-              ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _condition$1).propertyId, _label2.dataset.categoryId);
+              ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _condition).propertyId, _label2.dataset.categoryId);
             }
           } catch (err) {
             _iterator.e(err);
@@ -4038,7 +4347,6 @@
     var _ref$detail = _ref.detail;
         _ref$detail.subjects;
         var datasets = _ref$detail.datasets;
-    console.log(datasets);
 
     _classPrivateFieldSet(this, _isDefined, true);
 
@@ -4272,19 +4580,21 @@
     _classPrivateFieldSet(this, _LOADING_VIEW$2, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .loading-view')); // even listener
 
 
-    DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
-      if (e.detail.action === 'remove') {
-        if (_classPrivateFieldGet(_this, _property$3).propertyId === e.detail.propertyId) {
-          if (e.detail.parentCategoryId) {
-            var checkbox = _classPrivateFieldGet(_this, _CONTAINER$1).querySelector("[data-parent-category-id=\"".concat(e.detail.parentCategoryId, "\"] > input"));
+    DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (_ref) {
+      var detail = _ref.detail;
+
+      if (detail.action === 'remove') {
+        if (_classPrivateFieldGet(_this, _property$3).propertyId === detail.propertyId) {
+          if (detail.parentCategoryId) {
+            var checkbox = _classPrivateFieldGet(_this, _CONTAINER$1).querySelector("[data-parent-category-id=\"".concat(detail.parentCategoryId, "\"] > input"));
 
             if (checkbox) checkbox.checked = false;
           }
         }
       }
     });
-    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref) {
-      var detail = _ref.detail;
+    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref2) {
+      var detail = _ref2.detail;
 
       if (_classPrivateFieldGet(_this, _property$3).propertyId === detail.propertyId) {
         _classPrivateFieldGet(_this, _currentColumns).forEach(function (column) {
@@ -4461,10 +4771,25 @@
       var checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
       checkbox.addEventListener('click', function (e) {
         e.stopPropagation();
+        var ancestors = [];
+        var parentCategoryId;
+        var column = checkbox.closest('.column');
+
+        do {
+          var _column2;
+
+          // find ancestors
+          parentCategoryId = (_column2 = column) === null || _column2 === void 0 ? void 0 : _column2.querySelector(':scope > table > thead > tr.item.-all').dataset.parentCategoryId;
+
+          if (parentCategoryId) {
+            ancestors.unshift(parentCategoryId);
+            column = column.previousElementSibling;
+          }
+        } while (parentCategoryId);
 
         if (checkbox.checked) {
           // add
-          ConditionBuilder$1.addPropertyValue(_classPrivateFieldGet(_this4, _property$3).propertyId, checkbox.value);
+          ConditionBuilder$1.addPropertyValue(_classPrivateFieldGet(_this4, _property$3).propertyId, checkbox.value, ancestors);
         } else {
           // remove
           ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this4, _property$3).propertyId, checkbox.value);
@@ -4549,11 +4874,11 @@
     });
   }
 
-  function _setUserValues2(_ref2) {
+  function _setUserValues2(_ref3) {
     var _this8 = this;
 
-    var propertyId = _ref2.propertyId,
-        values = _ref2.values;
+    var propertyId = _ref3.propertyId,
+        values = _ref3.values;
     var bySubdirectory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     if (_classPrivateFieldGet(this, _property$3).propertyId === propertyId) {
@@ -5650,10 +5975,7 @@
   var _draw = /*#__PURE__*/new WeakSet();
 
   var StatisticsView = /*#__PURE__*/function () {
-    function StatisticsView(statisticsRootNode, elm, tableData, _ref) {
-      var subject = _ref.subject,
-          _property = _ref.property;
-
+    function StatisticsView(statisticsRootNode, elm, tableData, propertyId) {
       _classCallCheck(this, StatisticsView);
 
       _classPrivateMethodInitSpec(this, _draw);
@@ -5683,7 +6005,7 @@
         value: void 0
       });
 
-      _classPrivateFieldSet(this, _propertyId, _property.propertyId);
+      _classPrivateFieldSet(this, _propertyId, propertyId);
 
       _classPrivateFieldSet(this, _tableData$2, tableData);
 
@@ -5692,7 +6014,7 @@
       _classPrivateFieldSet(this, _ROOT$7, elm);
 
       elm.classList.add('statistics-view');
-      elm.dataset.subjectId = subject.subjectId; // make HTML
+      elm.dataset.subjectId = Records$1.getProperty(propertyId).subjectId; // make HTML
 
       elm.innerHTML = "\n    <div class=\"statistics\">\n      <div class=\"bars\"></div>\n    </div>\n    <div class=\"loading-view -shown\"></div>\n    "; // references
 
@@ -5739,10 +6061,10 @@
     });
 
     var hitVlues = [];
-    Records$1.getProperty(_classPrivateFieldGet(this, _propertyId)).values.forEach(function (_ref2) {
-      var categoryId = _ref2.categoryId,
-          label = _ref2.label,
-          count = _ref2.count;
+    Records$1.getProperty(_classPrivateFieldGet(this, _propertyId)).values.forEach(function (_ref) {
+      var categoryId = _ref.categoryId,
+          label = _ref.label,
+          count = _ref.count;
       var filtered = attributes.filter(function (attribute) {
         return attribute.categoryId === categoryId;
       });
@@ -5771,11 +6093,11 @@
       })));
     }
 
-    hitVlues.reduce(function (lastBar, _ref3) {
-      var categoryId = _ref3.categoryId,
-          label = _ref3.label,
-          count = _ref3.count,
-          hitCount = _ref3.hitCount;
+    hitVlues.reduce(function (lastBar, _ref2) {
+      var categoryId = _ref2.categoryId,
+          label = _ref2.label,
+          count = _ref2.count,
+          hitCount = _ref2.hitCount;
 
       var bar = _classPrivateFieldGet(_this, _BARS).querySelector(":scope > .bar[data-category-id=\"".concat(categoryId, "\"]"));
 
@@ -6040,16 +6362,16 @@
   }
 
   function _setupTable2(tableData) {
-    var properties = tableData.condition.attributes.concat(tableData.condition.properties); // reset
+    var propertyIds = tableData.serializedHeader; // reset
 
     _classPrivateFieldSet(this, _tableData$1, tableData);
 
     _classPrivateFieldGet(this, _intersctionObserver).unobserve(_classPrivateFieldGet(this, _TABLE_END));
 
-    _classPrivateFieldSet(this, _header$1, properties.map(function (property) {
+    _classPrivateFieldSet(this, _header$1, propertyIds.map(function (propertyId) {
       return {
-        subjectId: property.subject.subjectId,
-        propertyId: property.property.propertyId
+        subjectId: Records$1.getProperty(propertyId).subjectId,
+        propertyId: propertyId
       };
     }));
 
@@ -6062,12 +6384,12 @@
 
     DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
 
-    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getDatasetLabel(tableData.condition.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      "); // makte table sub header
+    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getDatasetLabel(tableData.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      "); // makte table sub header
 
-    _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    ".concat(tableData.condition.attributes.map(function (property) {
-      return "\n    <th>\n      <div class=\"inner _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n      <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.property.label, "</span>\n      </div>\n    </th>");
-    }).join(''), "\n    ").concat(tableData.condition.properties.map(function (property) {
-      return "\n    <th>\n      <div class=\"inner _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n        <div class=\"togo-key-view\">").concat(property.property.primaryKey, "</div>\n        <span>").concat(property.parentCategoryId ? Records$1.getValue(property.query.propertyId, property.parentCategoryId).label : property.property.label, "</span>\n      </div>\n    </th>");
+    _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    ".concat(tableData.dxCondition.valuesConditions.map(function (valuesCondition) {
+      return "\n          <th>\n            <div class=\"inner _subject-background-color\" data-subject-id=\"".concat(valuesCondition.subjectId, "\">\n            <div class=\"togo-key-view\">").concat(valuesCondition.dataset, "</div>\n              <span>").concat(valuesCondition.label, "</span>\n            </div>\n          </th>");
+    }).join(''), "\n    ").concat(tableData.dxCondition.keyConditions.map(function (keyCondition) {
+      return "\n          <th>\n            <div class=\"inner _subject-color\" data-subject-id=\"".concat(keyCondition.subjectId, "\">\n              <div class=\"togo-key-view\">").concat(keyCondition.dataset, "</div>\n              <span>").concat(keyCondition.label, "</span>\n            </div>\n          </th>");
     }).join('')); // make stats
 
     var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _STATS).querySelectorAll(':scope > td')),
@@ -6100,12 +6422,12 @@
 
     _classPrivateFieldSet(this, _statisticsViews, []);
 
-    var _iterator4 = _createForOfIteratorHelper(properties),
+    var _iterator4 = _createForOfIteratorHelper(propertyIds),
         _step4;
 
     try {
       for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-        var property = _step4.value;
+        var propertyId = _step4.value;
 
         var _td = document.createElement('td');
 
@@ -6113,7 +6435,7 @@
 
         _classPrivateFieldGet(this, _STATS).append(_td);
 
-        _classPrivateFieldGet(this, _statisticsViews).push(new StatisticsView(_classPrivateFieldGet(this, _STATS), _td.querySelector(':scope > .inner > div'), tableData, property));
+        _classPrivateFieldGet(this, _statisticsViews).push(new StatisticsView(_classPrivateFieldGet(this, _STATS), _td.querySelector(':scope > .inner > div'), tableData, propertyId));
       }
     } catch (err) {
       _iterator4.e(err);
@@ -6272,9 +6594,6 @@
           })));
 
           _classPrivateFieldSet(_this, _isReady, true);
-
-          console.log('templates');
-          console.log(_classPrivateFieldGet(_this, _templates));
         });
       }
       /**˝
@@ -6859,9 +7178,9 @@
         var _ref$offset = _ref.offset,
             offset = _ref$offset === void 0 ? 0 : _ref$offset,
             startTime = _ref.startTime;
-        console.log("current offset: ".concat(offset));
-        console.log("current total: ".concat(_classPrivateFieldGet(this, _total)));
 
+        // console.log(`current offset: ${offset}`);
+        // console.log(`current total: ${this.#total}`);
         _classPrivateMethodGet(this, _updateBarWidth, _updateBarWidth2).call(this, offset);
 
         if (_classPrivateFieldGet(this, _mode) === MODE.SIMPLE || !startTime) return;
@@ -6974,7 +7293,7 @@
     dataButton: ''
   }]]);
 
-  var _condition = /*#__PURE__*/new WeakMap();
+  var _dxCondition = /*#__PURE__*/new WeakMap();
 
   var _serializedHeader = /*#__PURE__*/new WeakMap();
 
@@ -7024,18 +7343,18 @@
 
   var _displayError = /*#__PURE__*/new WeakSet();
 
-  var _getQueryIdsPayload = /*#__PURE__*/new WeakSet();
+  var _queryIdsPayload = /*#__PURE__*/new WeakMap();
 
   var _getQueryIds = /*#__PURE__*/new WeakSet();
 
-  var _getPropertiesFetch = /*#__PURE__*/new WeakSet();
+  var _propertiesPayload = /*#__PURE__*/new WeakMap();
 
   var _getProperties = /*#__PURE__*/new WeakSet();
 
   var _complete$1 = /*#__PURE__*/new WeakSet();
 
   var TableData = /*#__PURE__*/function () {
-    function TableData(condition, elm) {
+    function TableData(dxCondition, elm) {
       var _this = this;
 
       _classCallCheck(this, TableData);
@@ -7044,11 +7363,17 @@
 
       _classPrivateMethodInitSpec(this, _getProperties);
 
-      _classPrivateMethodInitSpec(this, _getPropertiesFetch);
+      _classPrivateFieldInitSpec(this, _propertiesPayload, {
+        get: _get_propertiesPayload,
+        set: void 0
+      });
 
       _classPrivateMethodInitSpec(this, _getQueryIds);
 
-      _classPrivateMethodInitSpec(this, _getQueryIdsPayload);
+      _classPrivateFieldInitSpec(this, _queryIdsPayload, {
+        get: _get_queryIdsPayload,
+        set: void 0
+      });
 
       _classPrivateMethodInitSpec(this, _displayError);
 
@@ -7074,7 +7399,7 @@
 
       _classPrivateMethodInitSpec(this, _deleteCondition);
 
-      _classPrivateFieldInitSpec(this, _condition, {
+      _classPrivateFieldInitSpec(this, _dxCondition, {
         writable: true,
         value: void 0
       });
@@ -7147,12 +7472,12 @@
 
       _classPrivateFieldSet(this, _isCompleted, false);
 
-      _classPrivateFieldSet(this, _condition, condition);
+      _classPrivateFieldSet(this, _dxCondition, dxCondition);
 
-      _classPrivateFieldSet(this, _serializedHeader, [].concat(_toConsumableArray(condition.attributes.map(function (property) {
-        return property.query.propertyId;
-      })), _toConsumableArray(condition.properties.map(function (property) {
-        return property.query.propertyId;
+      _classPrivateFieldSet(this, _serializedHeader, [].concat(_toConsumableArray(dxCondition.valuesConditions.map(function (valuesCondition) {
+        return valuesCondition.propertyId;
+      })), _toConsumableArray(dxCondition.keyConditions.map(function (keyCondition) {
+        return keyCondition.propertyId;
       }))));
 
       _classPrivateFieldSet(this, _queryIds, []);
@@ -7162,11 +7487,11 @@
 
       elm.classList.add('table-data-controller-view');
       elm.dataset.status = 'load ids';
-      elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condition\">\n        <p title=\"".concat(condition.togoKey, "\">").concat(Records$1.getDatasetLabel(condition.togoKey), "</p>\n      </div>\n      ").concat(condition.attributes.map(function (property) {
-        return "<div class=\"condition _subject-background-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n            <p title=\"").concat(property.property.label, "\">").concat(property.property.label, "</p>\n          </div>");
-      }).join(''), "\n      ").concat(condition.properties.map(function (property) {
-        var label = property.parentCategoryId ? Records$1.getValue(property.query.propertyId, property.parentCategoryId).label : property.property.label;
-        return "<div class=\"condition _subject-color\" data-subject-id=\"".concat(property.subject.subjectId, "\">\n          <p title=\"").concat(label, "\">").concat(label, "</p>\n        </div>");
+      elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condition\">\n        <p title=\"".concat(dxCondition.togoKey, "\">").concat(Records$1.getDatasetLabel(dxCondition.togoKey), "</p>\n      </div>\n      ").concat(_classPrivateFieldGet(this, _dxCondition).valuesConditions.map(function (valuesCondition) {
+        var label = Records$1.getProperty(valuesCondition.propertyId).label;
+        return "<div class=\"condition _subject-background-color\" data-subject-id=\"".concat(valuesCondition.subjectId, "\">\n              <p title=\"").concat(label, "\">").concat(label, "</p>\n            </div>");
+      }).join(''), "\n      ").concat(_classPrivateFieldGet(this, _dxCondition).keyConditions.map(function (keyCondition) {
+        return "<div class=\"condition _subject-color\" data-subject-id=\"".concat(keyCondition.subjectId, "\">\n              <p title=\"").concat(keyCondition.label, "\">").concat(keyCondition.label, "</p>\n            </div>");
       }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting ID list</p>\n      <span class=\"material-icons-outlined -rotating\">autorenew</span>\n    </div>\n    <div class=\"-border\">\n    </div>\n    <div class=\"controller\">\n    </div>\n    "); // reference
 
       _classPrivateFieldSet(this, _ROOT$2, elm);
@@ -7254,12 +7579,12 @@
     }, {
       key: "togoKey",
       get: function get() {
-        return this.condition.togoKey;
+        return _classPrivateFieldGet(this, _dxCondition).togoKey;
       }
     }, {
-      key: "condition",
+      key: "dxCondition",
       get: function get() {
-        return _classPrivateFieldGet(this, _condition);
+        return _classPrivateFieldGet(this, _dxCondition);
       }
     }, {
       key: "serializedHeader",
@@ -7348,24 +7673,26 @@
   function _dataButtonEdit2(e) {
     var _this3 = this;
 
+    console.log(this);
+    console.log(_classPrivateFieldGet(this, _dxCondition));
     e.stopPropagation(); // property (attribute)
 
-    ConditionBuilder$1.setProperties(_classPrivateFieldGet(this, _condition).properties.map(function (property) {
+    ConditionBuilder$1.setProperties(_classPrivateFieldGet(this, _dxCondition).keyConditions.map(function (keyCondition) {
       return {
-        propertyId: property.query.propertyId,
-        parentCategoryId: property.parentCategoryId
+        propertyId: keyCondition.propertyId,
+        parentCategoryId: keyCondition.parentCategoryId
       };
     }), false); // attribute (classification/distribution)
 
     Records$1.properties.forEach(function (_ref2) {
       var propertyId = _ref2.propertyId;
 
-      var attribute = _classPrivateFieldGet(_this3, _condition).attributes.find(function (attribute) {
-        return attribute.property.propertyId === propertyId;
+      var valuesCondition = _classPrivateFieldGet(_this3, _dxCondition).valuesConditions.find(function (valuesCondition) {
+        return valuesCondition.propertyId === propertyId;
       });
 
       var categoryIds = [];
-      if (attribute) categoryIds.push.apply(categoryIds, _toConsumableArray(attribute.query.categoryIds));
+      if (valuesCondition) categoryIds.push.apply(categoryIds, _toConsumableArray(valuesCondition.categoryIds));
       ConditionBuilder$1.setPropertyValues(propertyId, categoryIds, false);
     });
   }
@@ -7435,7 +7762,7 @@
     _classPrivateFieldGet(this, _rows).forEach(function (row) {
       row.properties.forEach(function (property) {
         property.attributes.forEach(function (attribute) {
-          var singleItem = [_classPrivateFieldGet(_this4, _condition).togoKey, // togoKey
+          var singleItem = [_classPrivateFieldGet(_this4, _dxCondition).togoKey, // togoKey
           row.id, // togoKeyId
           row.label, // togoKeyLabel
           property.propertyId, // attribute
@@ -7496,18 +7823,16 @@
     DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
 
-  function _getQueryIdsPayload2() {
+  function _get_queryIdsPayload() {
     var _ConditionBuilder$use;
 
-    return "togoKey=".concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
-      return property.query;
-    })))).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : '');
+    return "togoKey=".concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&properties=").concat(_classPrivateFieldGet(this, _dxCondition).queryIds).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : '');
   }
 
   function _getQueryIds2() {
     var _this5 = this;
 
-    axios.post(App$1.aggregatePrimaryKeys, _classPrivateMethodGet(this, _getQueryIdsPayload, _getQueryIdsPayload2).call(this), {
+    axios.post(App$1.aggregatePrimaryKeys, _classPrivateFieldGet(this, _queryIdsPayload), {
       cancelToken: _classPrivateFieldGet(this, _source$1).token
     }).then(function (response) {
       _classPrivateFieldSet(_this5, _queryIds, response.data);
@@ -7531,12 +7856,8 @@
     });
   }
 
-  function _getPropertiesFetch2() {
-    return "".concat(App$1.aggregateRows, "?togoKey=").concat(_classPrivateFieldGet(this, _condition).togoKey, "&properties=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _condition).attributes.map(function (property) {
-      return property.query;
-    }).concat(_classPrivateFieldGet(this, _condition).properties.map(function (property) {
-      return property.query;
-    })))), "&queryIds=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _queryIds).slice(this.offset, this.offset + LIMIT))));
+  function _get_propertiesPayload() {
+    return "".concat(App$1.aggregateRows, "?togoKey=").concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&properties=").concat(_classPrivateFieldGet(this, _dxCondition).queryProperties, "&queryIds=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _queryIds).slice(this.offset, this.offset + LIMIT))));
   }
 
   function _getProperties2() {
@@ -7545,7 +7866,7 @@
     _classPrivateFieldSet(this, _isLoading, true);
 
     var startTime = Date.now();
-    axios.get(_classPrivateMethodGet(this, _getPropertiesFetch, _getPropertiesFetch2).call(this), {
+    axios.get(_classPrivateFieldGet(this, _propertiesPayload), {
       cancelToken: _classPrivateFieldGet(this, _source$1).token
     }).then(function (response) {
       var _classPrivateFieldGet2;
@@ -7663,46 +7984,17 @@
     observer.observe(_classPrivateFieldGet(this, _CONDITIONS_CONTAINER), config);
   }
   /* private methods */
+
+  /**
+   * 
+   * @param {DXCondition} dxCondition 
+   */
   ;
 
-  function _setTableData2(newCondition) {
+  function _setTableData2(dxCondition) {
     // find matching condition from already existing conditions
     var sameConditionTableData = _classPrivateFieldGet(this, _tableData).find(function (tableData) {
-      console.log(tableData.condition); // TODO: table Data に渡すデータも最適化したいが、現在なかなか合流されない他のブランチで編集中のため、見送り
-
-      if (newCondition.togoKey !== tableData.condition.togoKey) return; // compare properties
-
-      var matchProperties = function () {
-        if (newCondition.properties.length === tableData.condition.properties.length) {
-          return newCondition.properties.every(function (newProperty) {
-            var matchProperty = tableData.condition.properties.find(function (property) {
-              if (newProperty.query.propertyId === property.query.propertyId) {
-                return newProperty.parentCategoryId === property.parentCategoryId;
-              } else {
-                return false;
-              }
-            });
-            return matchProperty;
-          });
-        } else {
-          return false;
-        }
-      }(); // compare attributes
-
-
-      var matchAttributes = newCondition.attributes.every(function (newProperty) {
-        return tableData.condition.attributes.find(function (property) {
-          if (newProperty.query.propertyId === property.query.propertyId && newProperty.query.categoryIds.length === property.query.categoryIds.length) {
-            var matchValues = newProperty.query.categoryIds.every(function (categoryId) {
-              return property.query.categoryIds.indexOf(categoryId) !== -1;
-            });
-            return matchValues;
-          } else {
-            return false;
-          }
-        });
-      });
-      return matchProperties && matchAttributes;
+      return tableData.dxCondition.checkSameCondition(dxCondition);
     });
 
     if (sameConditionTableData) {
@@ -7714,7 +8006,7 @@
 
       _classPrivateFieldGet(this, _CONDITIONS_CONTAINER).insertAdjacentElement('afterbegin', elm);
 
-      _classPrivateFieldGet(this, _tableData).push(new TableData(newCondition, elm));
+      _classPrivateFieldGet(this, _tableData).push(new TableData(dxCondition, elm));
     }
   }
 

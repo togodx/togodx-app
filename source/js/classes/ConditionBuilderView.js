@@ -78,7 +78,6 @@ export default class ConditionBuilderView {
   // private methods
 
   #defineTogoKeys({detail: {subjects, datasets}}) {
-    console.log(datasets)
     this.#isDefined = true;
     this.#placeHolderExamples = Object.fromEntries(Object.keys(datasets).map(key => [key, datasets[key].examples]));
     // make options
