@@ -80,7 +80,7 @@ export default class ResultsTable {
     // statistics
     const controller = this.#STATS.querySelector(':scope > th.controller > .inner');
     controller.querySelectorAll(':scope > label > input').forEach(radio => {
-      radio.addEventListener('change', e => {
+      radio.addEventListener('change', () => {
         switch (radio.value) {
           case 'hits_all':
             this.#STATS.classList.remove('-onlyhitcount');
