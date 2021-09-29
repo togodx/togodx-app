@@ -3771,7 +3771,6 @@
   }
 
   function _makeQueueOfGettingChildCategoryIds2(condition) {
-    console.log(condition);
     var queue = [];
     condition.keys.forEach(function (_ref2) {
       var propertyId = _ref2.propertyId,
@@ -3921,8 +3920,6 @@
 
   var POLLING_DURATION = 100;
 
-  var _isRange = /*#__PURE__*/new WeakMap();
-
   var _condition = /*#__PURE__*/new WeakMap();
 
   var _ROOT$c = /*#__PURE__*/new WeakMap();
@@ -3932,23 +3929,20 @@
   var _make = /*#__PURE__*/new WeakSet();
 
   var StackingConditionView = /*#__PURE__*/function () {
+    // #isRange;
+
     /**
      * 
      * @param {HTMLElement} container 
      * @param {String} type: 'property' or 'value'
-     * @param {Object} condition 
+     * @param {keyCondition, valuesCondition} condition 
      */
-    function StackingConditionView(_container, _type, condition) {
+    function StackingConditionView(_container, type, condition) {
       var _this = this;
 
       _classCallCheck(this, StackingConditionView);
 
       _classPrivateMethodInitSpec(this, _make);
-
-      _classPrivateFieldInitSpec(this, _isRange, {
-        writable: true,
-        value: void 0
-      });
 
       _classPrivateFieldInitSpec(this, _condition, {
         writable: true,
@@ -3964,8 +3958,6 @@
         writable: true,
         value: void 0
       });
-
-      console.log(condition);
 
       _classPrivateFieldSet(this, _condition, condition);
 
@@ -3985,8 +3977,8 @@
       var _label,
           _ancestorLabels = [subject.subject];
 
-      switch (_type) {
-        case 'property':
+      switch (true) {
+        case _classPrivateFieldGet(this, _condition) instanceof KeyCondition:
           {
             if (condition.parentCategoryId) {
               var getValue = function getValue() {
@@ -4000,7 +3992,7 @@
                     return ancestor.label;
                   }))));
 
-                  _classPrivateMethodGet(_this, _make, _make2).call(_this, _container, _type, _ancestorLabels, _label);
+                  _classPrivateMethodGet(_this, _make, _make2).call(_this, _container, type, _ancestorLabels, _label);
                 } else {
                   setTimeout(getValue, POLLING_DURATION);
                 }
@@ -4010,20 +4002,21 @@
             } else {
               _label = "<div class=\"label _subject-color\">".concat(property.label, "</div>");
 
-              _classPrivateMethodGet(this, _make, _make2).call(this, _container, _type, _ancestorLabels, _label);
+              _classPrivateMethodGet(this, _make, _make2).call(this, _container, type, _ancestorLabels, _label);
             }
           }
           break;
 
-        case 'value':
+        case _classPrivateFieldGet(this, _condition) instanceof ValuesCondition:
           _label = "<ul class=\"labels\"></ul>";
 
           _ancestorLabels.push(property.label);
 
-          _classPrivateMethodGet(this, _make, _make2).call(this, _container, _type, _ancestorLabels, _label);
+          _classPrivateMethodGet(this, _make, _make2).call(this, _container, type, _ancestorLabels, _label);
 
           break;
-      }
+      } // TODO: クリックイベントで当該要素を表示する
+
     } // private methods
 
 
@@ -4093,33 +4086,45 @@
     }).join(''), "\n    </ul>\n    ").concat(label);
     container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$c)); // reference
 
-    if (type === 'value') {
+    if (_classPrivateFieldGet(this, _condition) instanceof ValuesCondition) {
       _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$c).querySelector(':scope > .labels'));
 
-      this.addValue(_classPrivateFieldGet(this, _condition).categoryId);
+      var _iterator = _createForOfIteratorHelper(_classPrivateFieldGet(this, _condition).categoryIds),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var categoryId = _step.value;
+          this.addValue(categoryId);
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
     } // event
 
 
     _classPrivateFieldGet(this, _ROOT$c).querySelector(':scope > .close-button-view').addEventListener('click', function () {
-      switch (type) {
-        case 'property':
+      switch (true) {
+        case _classPrivateFieldGet(_this3, _condition) instanceof KeyCondition:
           // notify
           ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this3, _condition).propertyId, _classPrivateFieldGet(_this3, _condition).parentCategoryId);
           break;
 
-        case 'value':
-          var _iterator = _createForOfIteratorHelper(_classPrivateFieldGet(_this3, _LABELS).querySelectorAll(':scope > .label')),
-              _step;
+        case _classPrivateFieldGet(_this3, _condition) instanceof ValuesCondition:
+          var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(_this3, _LABELS).querySelectorAll(':scope > .label')),
+              _step2;
 
           try {
-            for (_iterator.s(); !(_step = _iterator.n()).done;) {
-              var _label2 = _step.value;
+            for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+              var _label2 = _step2.value;
               ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _condition).propertyId, _label2.dataset.categoryId);
             }
           } catch (err) {
-            _iterator.e(err);
+            _iterator2.e(err);
           } finally {
-            _iterator.f();
+            _iterator2.f();
           }
 
           break;
@@ -4332,10 +4337,7 @@
     _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.remove('-empty'); // make view
 
 
-    _classPrivateFieldGet(this, _properties).push(new StackingConditionView(_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER), 'property', {
-      propertyId: propertyId,
-      parentCategoryId: parentCategoryId
-    }));
+    _classPrivateFieldGet(this, _properties).push(new StackingConditionView(_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER), 'key', new KeyCondition(propertyId, parentCategoryId)));
   }
 
   function _removeProperty2(propertyId, parentCategoryId) {
@@ -4364,10 +4366,7 @@
       stackingConditionView.addValue(categoryId);
     } else {
       // otherwise, make new condition view
-      _classPrivateFieldGet(this, _propertyValues).push(new StackingConditionView(_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER), 'value', {
-        propertyId: propertyId,
-        categoryId: categoryId
-      }));
+      _classPrivateFieldGet(this, _propertyValues).push(new StackingConditionView(_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER), 'value', new ValuesCondition(propertyId, [categoryId])));
     }
   }
 
