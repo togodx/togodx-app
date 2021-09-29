@@ -4823,11 +4823,10 @@
   function _mutatePropertyCondition2(_ref3) {
     var _ref3$detail = _ref3.detail,
         action = _ref3$detail.action,
-        propertyId = _ref3$detail.propertyId,
-        parentCategoryId = _ref3$detail.parentCategoryId;
+        propertyId = _ref3$detail.propertyId;
+        _ref3$detail.parentCategoryId;
 
     if (propertyId === _classPrivateFieldGet(this, _property$3).propertyId) {
-      console.log(action, propertyId, parentCategoryId);
       _classPrivateFieldGet(this, _ITEM_ALL_INPUT_OF_ROOT).checked = action === 'add';
     }
   }
@@ -6102,16 +6101,19 @@
       bar.querySelector(':scope > .wholebar').style.height = "".concat(count / countMax * 100, "%");
       var hitbar = bar.querySelector(':scope > .hitbar');
       var hitCountLabel = hitbar.querySelector(':scope > .value');
+      var hitbarHeight;
 
       if (isStretch) {
-        hitbar.style.height = "".concat(hitCount / count * 100, "%");
-        hitCountLabel.textContent = Math.round(hitCount / count * 100) + '%';
+        hitbarHeight = hitCount / count;
+        hitCountLabel.textContent = "".concat(Math.round(hitCount / count * 100), "%");
       } else {
-        hitbar.style.height = "".concat(hitCount / countMax * 100, "%");
+        hitbarHeight = hitCount / countMax;
         hitCountLabel.textContent = hitCount.toLocaleString();
       }
 
-      if (hitCount / countMax < .5) {
+      hitbar.style.height = "".concat(hitbarHeight * 100, "%");
+
+      if (hitbarHeight < .5) {
         hitCountLabel.classList.add('-below');
       } else {
         hitCountLabel.classList.remove('-below');

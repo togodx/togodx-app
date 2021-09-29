@@ -320,7 +320,6 @@ export default class ColumnSelectorView {
 
   #mutatePropertyCondition({detail: {action, propertyId, parentCategoryId}}) {
     if (propertyId === this.#property.propertyId) {
-      console.log(action, propertyId, parentCategoryId)
       this.#ITEM_ALL_INPUT_OF_ROOT.checked = action === 'add';
     }
   }

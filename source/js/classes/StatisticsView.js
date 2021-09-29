@@ -105,14 +105,16 @@ export default class StatisticsView {
       bar.querySelector(':scope > .wholebar').style.height = `${count / countMax * 100}%`;
       const hitbar = bar.querySelector(':scope > .hitbar');
       const hitCountLabel = hitbar.querySelector(':scope > .value');
+      let hitbarHeight;
       if (isStretch) {
-        hitbar.style.height = `${hitCount / count * 100}%`;
-        hitCountLabel.textContent = Math.round(hitCount / count * 100) + '%';
+        hitbarHeight = hitCount / count;
+        hitCountLabel.textContent = `${Math.round(hitCount / count * 100)}%`;
       } else {
-        hitbar.style.height = `${hitCount / countMax * 100}%`;
+        hitbarHeight = hitCount / countMax;
         hitCountLabel.textContent = hitCount.toLocaleString();
       }
-      if (hitCount / countMax < .5) {
+      hitbar.style.height = `${hitbarHeight * 100}%`;
+      if (hitbarHeight < .5) {
         hitCountLabel.classList.add('-below');
       } else {
         hitCountLabel.classList.remove('-below');
