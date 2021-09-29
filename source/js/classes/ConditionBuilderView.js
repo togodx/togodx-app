@@ -77,11 +77,14 @@ export default class ConditionBuilderView {
 
   // private methods
 
-  #defineTogoKeys({detail: {subjects, datasets}}) {
+  #defineTogoKeys({detail: {datasets}}) {
     this.#isDefined = true;
     this.#placeHolderExamples = Object.fromEntries(Object.keys(datasets).map(key => [key, datasets[key].examples]));
     // make options
-    this.#TOGO_KEYS.innerHTML = Object.keys(datasets).map(key => `<option value="${key}" data-subject-id="hoge">${datasets[key].label}</option>`).join('');
+    this.#TOGO_KEYS.innerHTML = Object.keys(datasets)
+      .filter(key => datasets[key].target)
+      .map(key => `<option value="${key}" data-subject-id="hoge">${datasets[key].label}</option>`)
+      .join('');
     this.#TOGO_KEYS.disabled = false;
     this.#TOGO_KEYS.value = ConditionBuilder.currentTogoKey;
     // attach event

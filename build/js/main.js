@@ -4343,9 +4343,7 @@
   function _defineTogoKeys2(_ref) {
     var _this2 = this;
 
-    var _ref$detail = _ref.detail;
-        _ref$detail.subjects;
-        var datasets = _ref$detail.datasets;
+    var datasets = _ref.detail.datasets;
 
     _classPrivateFieldSet(this, _isDefined, true);
 
@@ -4354,7 +4352,9 @@
     }))); // make options
 
 
-    _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = Object.keys(datasets).map(function (key) {
+    _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = Object.keys(datasets).filter(function (key) {
+      return datasets[key].target;
+    }).map(function (key) {
       return "<option value=\"".concat(key, "\" data-subject-id=\"hoge\">").concat(datasets[key].label, "</option>");
     }).join('');
     _classPrivateFieldGet(this, _TOGO_KEYS).disabled = false;
@@ -8760,7 +8760,6 @@
 
           var customEvent = new CustomEvent(defineTogoKey, {
             detail: {
-              subjects: subjects,
               datasets: attributes.datasets
             }
           });
