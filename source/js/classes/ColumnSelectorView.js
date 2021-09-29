@@ -18,6 +18,7 @@ export default class ColumnSelectorView {
   #ROOT;
   #CONTAINER;
   #LOADING_VIEW;
+  #ITEM_ALL_INPUT_OF_ROOT;
 
   constructor(elm, subject, property, items) {
 
@@ -73,6 +74,7 @@ export default class ColumnSelectorView {
       }
     });
     DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
+    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, this.#mutatePropertyCondition.bind(this));
     DefaultEventEmitter.addEventListener(event.setUserValues, e => this.#setUserValues(e.detail));
     DefaultEventEmitter.addEventListener(event.clearUserValues, () => this.#clearUserValues());
 
@@ -135,15 +137,15 @@ export default class ColumnSelectorView {
     });
   }
 
-  #makeColumn(items, depth, parentCategoryId = '') {
+  #makeColumn(items, depth, parentCategoryId) {
     // console.log(items, depth, parentCategoryId)
 
     const parentItem = parentCategoryId ? this.#items[parentCategoryId] : undefined;
-    const selectedParentCategoryId = ConditionBuilder.getSelectedParentCategoryId(this.#property.propertyId);
     const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.#property.propertyId);
 
     // make column
     const column = document.createElement('div');
+    const isSelected = ConditionBuilder.isSelectedProperty(this.#property.propertyId, parentCategoryId);
     column.classList.add('column');
     let max = 0;
     column.innerHTML = `
@@ -161,7 +163,7 @@ export default class ColumnSelectorView {
           ${
             parentCategoryId
               ? `
-                data-parent-category-id="${parentCategoryId}"
+                data-parent-category-id="${parentCategoryId ?? ''}"
                 data-parent-label="${parentItem.label}"`
               : ''
           }
@@ -172,7 +174,7 @@ export default class ColumnSelectorView {
               <input
                 type="checkbox"
                 value="${ALL_PROPERTIES}" 
-                ${selectedParentCategoryId === parentCategoryId ? ' checked' : ''}/>
+                ${isSelected ? ' checked' : ''}/>
               Map following attributes
             </label>
           </td>
@@ -258,11 +260,17 @@ export default class ColumnSelectorView {
     });
 
     // Map attributes event
-    column.querySelector(':scope > table > thead > .item.-all').addEventListener('change', e => {
+    const itemAllInput = column.querySelector(':scope > table > thead > .item.-all > .label > label > input');
+    itemAllInput.addEventListener('change', e => {
       const parentCategoryId = e.target.closest('.item.-all').dataset.parentCategoryId;
-      if (e.target.checked) ConditionBuilder.addProperty(this.#property.propertyId, parentCategoryId);
-      else                  ConditionBuilder.removeProperty(this.#property.propertyId, parentCategoryId);
+      if (e.target.checked) {
+        ConditionBuilder.addProperty(this.#property.propertyId, parentCategoryId);
+      } else {
+        ConditionBuilder.removeProperty(this.#property.propertyId, parentCategoryId);
+      }
     });
+    if (depth === 0) this.#ITEM_ALL_INPUT_OF_ROOT = itemAllInput;
+
     this.#columns.push({column, parentCategoryId, max});
     this.#update(App.viewModes.log10);
     return column;
@@ -308,6 +316,13 @@ export default class ColumnSelectorView {
         tr.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
       });
     });
+  }
+
+  #mutatePropertyCondition({detail: {action, propertyId, parentCategoryId}}) {
+    if (propertyId === this.#property.propertyId) {
+      console.log(action, propertyId, parentCategoryId)
+      this.#ITEM_ALL_INPUT_OF_ROOT.checked = action === 'add';
+    }
   }
 
   #getUserValues(query) {

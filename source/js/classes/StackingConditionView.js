@@ -1,11 +1,13 @@
 import ConditionBuilder from "./ConditionBuilder";
 import Records from "./Records";
+import KeyCondition from "./KeyCondition";
+import ValuesCondition from "./ValuesCondition";
 
 const POLLING_DURATION = 100;
 
 export default class StackingConditionView {
 
-  #isRange;
+  // #isRange;
   #condition;
   #ROOT;
   #LABELS;
@@ -14,10 +16,9 @@ export default class StackingConditionView {
    * 
    * @param {HTMLElement} container 
    * @param {String} type: 'property' or 'value'
-   * @param {Object} condition 
+   * @param {keyCondition, valuesCondition} condition 
    */
   constructor(container, type, condition, isRange = false) {
-    console.log(condition)
 
     this.#condition = condition;
     const subject = Records.getSubjectWithPropertyId(condition.propertyId);
@@ -33,8 +34,8 @@ export default class StackingConditionView {
     if (condition.parentCategoryId) this.#ROOT.dataset.parentCategoryId = condition.parentCategoryId;
     // make view
     let label, ancestorLabels = [subject.subject];
-    switch(type) {
-      case 'property': {
+    switch(true) {
+      case this.#condition instanceof KeyCondition: {
         if (condition.parentCategoryId) {
           const getValue = () => {
             const value = Records.getValue(condition.propertyId, condition.parentCategoryId);
@@ -54,12 +55,14 @@ export default class StackingConditionView {
         }
       }
         break;
-      case 'value':
+      case this.#condition instanceof ValuesCondition:
         label = `<ul class="labels"></ul>`;
         ancestorLabels.push(property.label);
         this.#make(container, type, ancestorLabels, label);
         break;
     }
+
+    // TODO: クリックイベントで当該要素を表示する
   }
 
 
@@ -74,19 +77,21 @@ export default class StackingConditionView {
     ${label}`;
     container.insertAdjacentElement('beforeend', this.#ROOT);
     // reference
-    if (type === 'value') {
+    if (this.#condition instanceof ValuesCondition) {
       this.#LABELS = this.#ROOT.querySelector(':scope > .labels');
-      this.addValue(this.#condition.categoryId);
+      for (const categoryId of this.#condition.categoryIds) {
+        this.addValue(categoryId);
+      }
     }
 
     // event
     this.#ROOT.querySelector(':scope > .close-button-view').addEventListener('click', () => {
-      switch (type) {
-        case 'property':
+      switch (true) {
+        case this.#condition instanceof KeyCondition:
           // notify
           ConditionBuilder.removeProperty(this.#condition.propertyId, this.#condition.parentCategoryId);
           break;
-        case 'value':
+        case this.#condition instanceof ValuesCondition:
           for (const label of this.#LABELS.querySelectorAll(':scope > .label')) {
             ConditionBuilder.removePropertyValue(this.#condition.propertyId, label.dataset.categoryId);
           }
