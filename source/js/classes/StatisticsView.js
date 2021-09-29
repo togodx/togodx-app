@@ -4,14 +4,16 @@ import * as event from '../events';
 
 export default class StatisticsView {
 
+  #index;
   #propertyId;
   #tableData;
   #BARS;
   #ROOT;
   #ROOT_NODE;
 
-  constructor(statisticsRootNode, elm, tableData, propertyId) {
+  constructor(statisticsRootNode, elm, tableData, index, propertyId) {
 
+    this.#index = index;
     this.#propertyId = propertyId;
     this.#tableData = tableData;
     this.#ROOT_NODE = statisticsRootNode;
@@ -52,7 +54,7 @@ export default class StatisticsView {
     const attributes = (
       _.uniqBy(
         this.#tableData.data
-          .map(datum => datum.properties.find(property => property.propertyId === this.#propertyId))
+          .map(datum => datum.properties[this.#index])
           .filter(property => property !== undefined)
           .map(property => property.attributes)
           .flat(),
