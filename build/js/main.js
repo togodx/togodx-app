@@ -3201,7 +3201,7 @@
     }, {
       key: "categoryIds",
       get: function get() {
-        return _toConsumableArray(_classPrivateFieldGet(this, _categoryIds));
+        return _classPrivateFieldGet(this, _categoryIds);
       }
     }, {
       key: "label",
@@ -3344,7 +3344,7 @@
 
   function _copyValuesConditions2(valuesConditions) {
     return valuesConditions.map(function (valuesCondition) {
-      return new ValuesCondition(valuesCondition.propertyId, valuesCondition.categoryIds);
+      return new ValuesCondition(valuesCondition.propertyId, _toConsumableArray(valuesCondition.categoryIds));
     });
   }
 
@@ -3824,7 +3824,6 @@
   }
 
   function _makeQueueOfGettingChildCategoryIds2(condition) {
-    console.log(condition);
     var queue = [];
     condition.keys.forEach(function (_ref4) {
       var propertyId = _ref4.propertyId,

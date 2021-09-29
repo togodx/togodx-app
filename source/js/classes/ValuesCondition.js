@@ -40,7 +40,7 @@ export default class ValuesCondition extends BaseCondition {
   // accessor
 
   get categoryIds() {
-    return [...this.#categoryIds];
+    return this.#categoryIds;
   }
 
   get label() {

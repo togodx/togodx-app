@@ -59,7 +59,7 @@ export default class DXCondition {
   }
 
   #copyValuesConditions(valuesConditions) {
-    return valuesConditions.map(valuesCondition => new ValuesCondition(valuesCondition.propertyId, valuesCondition.categoryIds));
+    return valuesConditions.map(valuesCondition => new ValuesCondition(valuesCondition.propertyId, [...valuesCondition.categoryIds]));
   }
 
 
