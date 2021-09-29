@@ -256,7 +256,6 @@ class ConditionBuilder {
   }
 
   #makeQueueOfGettingChildCategoryIds(condition) {
-    console.log(condition)
     const queue = [];
     condition.keys.forEach(({propertyId, id}) => {
       if (id) {

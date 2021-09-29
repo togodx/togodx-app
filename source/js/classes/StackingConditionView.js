@@ -19,7 +19,6 @@ export default class StackingConditionView {
    * @param {keyCondition, valuesCondition} condition 
    */
   constructor(container, type, condition, isRange = false) {
-    console.log(condition)
 
     this.#condition = condition;
     const subject = Records.getSubjectWithPropertyId(condition.propertyId);
