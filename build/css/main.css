@@ -1247,6 +1247,9 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
 body[data-display=results] .table-data-controller-view > .controller > .button[data-button=edit] {
   display: none;
 }
+.table-data-controller-view > .controller > .button[data-button=download-json] {
+  display: none;
+}
 .table-data-controller-view.-current, .table-data-controller-view:hover {
   opacity: 1;
 }
