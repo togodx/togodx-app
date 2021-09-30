@@ -10,7 +10,6 @@ const ALL_PROPERTIES = 'ALL_PROPERTIES';
 
 export default class ColumnSelectorView {
 
-  #subject;
   #property;
   #items;
   #columns;
@@ -21,9 +20,8 @@ export default class ColumnSelectorView {
   #LOADING_VIEW;
   #ITEM_ALL_INPUT_OF_ROOT;
 
-  constructor(elm, subject, property, items) {
+  constructor(elm, property, items) {
 
-    this.#subject = subject;
     this.#property = property;
     this.#items = {};
     this.#columns = [];
@@ -314,7 +312,8 @@ export default class ColumnSelectorView {
       max = isLog10 && max > 1 ? Math.log10(max) : max;
       column.column.querySelectorAll(':scope > table > tbody > .item').forEach(tr => {
         const count = Number(tr.dataset.count);
-        tr.style.backgroundColor = `rgb(${this.#subject.color.mix(App.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
+        const subject = Records.getSubjectWithPropertyId(this.#property.propertyId);
+        tr.style.backgroundColor = `rgb(${subject.color.mix(App.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
       });
     });
   }

@@ -8,7 +8,6 @@ import TrackOverviewCategorical from './TrackOverviewCategorical';
 import * as event from '../events';
 
 export default class TrackView {
-  #subject;
   #property;
   #sparqlist;
   #ROOT;
@@ -18,15 +17,15 @@ export default class TrackView {
   #CHECKBOX_ALL_PROPERTIES;
   #COLLAPSE_BUTTON;
 
-  constructor(subject, property, container, positionRate) {
+  constructor(property, container, positionRate) {
     // console.log(subject, property, container)
 
     const isSelected = ConditionBuilder.isSelectedProperty(property.propertyId);
     const elm = document.createElement('div');
     container.insertAdjacentElement('beforeend', elm);
     this.#ROOT = elm;
-    this.#subject = subject;
     this.#property = property;
+    const subject = Records.getSubjectWithPropertyId(this.#property.propertyId);
     this.#sparqlist = property.data;
     elm.classList.add('track-view', '-preparing', 'collapse-view');
     if (isSelected) elm.classList.add('-allselected');
@@ -178,7 +177,6 @@ export default class TrackView {
     } else {
       new ColumnSelectorView(
         this.#SELECT_CONTAINER,
-        this.#subject,
         this.#property,
         values
       );

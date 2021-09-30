@@ -4400,8 +4400,6 @@
 
   var ALL_PROPERTIES = 'ALL_PROPERTIES';
 
-  var _subject$1 = /*#__PURE__*/new WeakMap();
-
   var _property$3 = /*#__PURE__*/new WeakMap();
 
   var _items$1 = /*#__PURE__*/new WeakMap();
@@ -4440,7 +4438,7 @@
 
   var _clearUserValues = /*#__PURE__*/new WeakSet();
 
-  var ColumnSelectorView = function ColumnSelectorView(elm, subject, property, _items2) {
+  var ColumnSelectorView = function ColumnSelectorView(elm, property, _items2) {
     var _this = this;
 
     _classCallCheck(this, ColumnSelectorView);
@@ -4464,11 +4462,6 @@
     _classPrivateMethodInitSpec(this, _setSubColumn);
 
     _classPrivateMethodInitSpec(this, _setItems);
-
-    _classPrivateFieldInitSpec(this, _subject$1, {
-      writable: true,
-      value: void 0
-    });
 
     _classPrivateFieldInitSpec(this, _property$3, {
       writable: true,
@@ -4514,8 +4507,6 @@
       writable: true,
       value: void 0
     });
-
-    _classPrivateFieldSet(this, _subject$1, subject);
 
     _classPrivateFieldSet(this, _property$3, property);
 
@@ -4813,7 +4804,8 @@
       max = isLog10 && max > 1 ? Math.log10(max) : max;
       column.column.querySelectorAll(':scope > table > tbody > .item').forEach(function (tr) {
         var count = Number(tr.dataset.count);
-        tr.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this6, _subject$1).color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
+        var subject = Records$1.getSubjectWithPropertyId(_classPrivateFieldGet(_this6, _property$3).propertyId);
+        tr.style.backgroundColor = "rgb(".concat(subject.color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
           return cood * 256;
         }).join(','), ")");
       });
@@ -5695,8 +5687,6 @@
     _classPrivateFieldSet(this, _userValues, undefined);
   }
 
-  var _subject = /*#__PURE__*/new WeakMap();
-
   var _property = /*#__PURE__*/new WeakMap();
 
   var _sparqlist = /*#__PURE__*/new WeakMap();
@@ -5719,7 +5709,7 @@
 
   var _clearError = /*#__PURE__*/new WeakSet();
 
-  var TrackView = function TrackView(subject, property, container, positionRate) {
+  var TrackView = function TrackView(property, container, positionRate) {
     var _this = this;
 
     _classCallCheck(this, TrackView);
@@ -5729,11 +5719,6 @@
     _classPrivateMethodInitSpec(this, _showError);
 
     _classPrivateMethodInitSpec(this, _makeValues);
-
-    _classPrivateFieldInitSpec(this, _subject, {
-      writable: true,
-      value: void 0
-    });
 
     _classPrivateFieldInitSpec(this, _property, {
       writable: true,
@@ -5782,9 +5767,9 @@
 
     _classPrivateFieldSet(this, _ROOT$8, elm);
 
-    _classPrivateFieldSet(this, _subject, subject);
-
     _classPrivateFieldSet(this, _property, property);
+
+    var subject = Records$1.getSubjectWithPropertyId(_classPrivateFieldGet(this, _property).propertyId);
 
     _classPrivateFieldSet(this, _sparqlist, property.data);
 
@@ -5891,7 +5876,7 @@
     if (_classPrivateFieldGet(this, _property).viewMethod && _classPrivateFieldGet(this, _property).viewMethod === 'histogram') {
       new HistogramRangeSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _property), values, _classPrivateFieldGet(this, _OVERVIEW_CONTAINER));
     } else {
-      new ColumnSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values);
+      new ColumnSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _property), values);
     }
   }
 
@@ -5927,7 +5912,7 @@
 
     for (var i = 0; i < properties.length; i++) {
       var property = properties[i];
-      new TrackView(subject, property, propertiesContainer, i / properties.length);
+      new TrackView(property, propertiesContainer, i / properties.length);
     }
   };
 
