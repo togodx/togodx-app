@@ -81,7 +81,8 @@ export default class ColumnSelectorView {
     this.#setItems(items, depth);
 
     // make root column
-    const column = this.#makeColumn(items, depth);
+    // const column = this.#makeColumn(items, depth);
+    const column = this.#make__Coumn(this, items, depth);
     this.#appendSubColumn(column, depth);
 
   }
@@ -126,7 +127,7 @@ export default class ColumnSelectorView {
         Records.fetchPropertyValues(this.#property.propertyId, categoryId)
           .then(values => {
             this.#setItems(values, depth, categoryId);
-            const column = this.#makeColumn(values, depth, categoryId);
+            const column = this.#make__Coumn(this, values, depth, categoryId);
             resolve(column);
           })
           .catch(error => {
@@ -134,6 +135,18 @@ export default class ColumnSelectorView {
           });
       }
     });
+  }
+
+  #make__Coumn(values, depth, parentCategoryId) {
+    const column = new ColumnView(
+      this,
+      this.#property.propertyId,
+      this.#items,
+      values,
+      depth,
+      parentCategoryId
+    );
+    return column;
   }
 
   #makeColumn(items, depth, parentCategoryId) {
