@@ -2,6 +2,7 @@ import App from "./App";
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import Records from "./Records";
+import ColumnView from "./ColumnView";
 import * as event from '../events';
 import * as queryTemplates from '../functions/queryTemplates';
 

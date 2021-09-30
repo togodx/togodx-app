@@ -4400,7 +4400,7 @@
 
   var ALL_PROPERTIES = 'ALL_PROPERTIES';
 
-  var _subject$2 = /*#__PURE__*/new WeakMap();
+  var _subject$1 = /*#__PURE__*/new WeakMap();
 
   var _property$3 = /*#__PURE__*/new WeakMap();
 
@@ -4465,7 +4465,7 @@
 
     _classPrivateMethodInitSpec(this, _setItems);
 
-    _classPrivateFieldInitSpec(this, _subject$2, {
+    _classPrivateFieldInitSpec(this, _subject$1, {
       writable: true,
       value: void 0
     });
@@ -4515,7 +4515,7 @@
       value: void 0
     });
 
-    _classPrivateFieldSet(this, _subject$2, subject);
+    _classPrivateFieldSet(this, _subject$1, subject);
 
     _classPrivateFieldSet(this, _property$3, property);
 
@@ -4813,7 +4813,7 @@
       max = isLog10 && max > 1 ? Math.log10(max) : max;
       column.column.querySelectorAll(':scope > table > tbody > .item').forEach(function (tr) {
         var count = Number(tr.dataset.count);
-        tr.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this6, _subject$2).color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
+        tr.style.backgroundColor = "rgb(".concat(_classPrivateFieldGet(_this6, _subject$1).color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
           return cood * 256;
         }).join(','), ")");
       });
@@ -5418,8 +5418,6 @@
   var MAX_PIN_SIZE = 24;
   var RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
 
-  var _subject$1 = /*#__PURE__*/new WeakMap();
-
   var _property$1 = /*#__PURE__*/new WeakMap();
 
   var _values = /*#__PURE__*/new WeakMap();
@@ -5434,7 +5432,7 @@
 
   var _clearUserIdValues = /*#__PURE__*/new WeakSet();
 
-  var TrackOverviewCategorical = function TrackOverviewCategorical(elm, subject, property, values) {
+  var TrackOverviewCategorical = function TrackOverviewCategorical(elm, property, values) {
     var _this = this;
 
     _classCallCheck(this, TrackOverviewCategorical);
@@ -5444,11 +5442,6 @@
     _classPrivateMethodInitSpec(this, _plotUserIdValues);
 
     _classPrivateMethodInitSpec(this, _update);
-
-    _classPrivateFieldInitSpec(this, _subject$1, {
-      writable: true,
-      value: void 0
-    });
 
     _classPrivateFieldInitSpec(this, _property$1, {
       writable: true,
@@ -5472,14 +5465,13 @@
 
     _classPrivateFieldSet(this, _ROOT$9, elm);
 
-    _classPrivateFieldSet(this, _subject$1, subject);
-
     _classPrivateFieldSet(this, _property$1, property);
 
     _classPrivateFieldSet(this, _values, values.map(function (value) {
       return Object.assign({}, value);
     }));
 
+    var subject = Records$1.getSubjectWithPropertyId(_classPrivateFieldGet(this, _property$1).propertyId);
     var selectedCategoryIds = ConditionBuilder$1.getSelectedCategoryIds(_classPrivateFieldGet(this, _property$1).propertyId); // make overview
     // TODO: ヒストグラムは別処理
 
@@ -5504,7 +5496,7 @@
       value.pin = elm.querySelector(':scope > .pin');
       value.icon = value.pin.querySelector(':scope > .material-icons'); // attach event: show tooltip
 
-      var label = "<span class=\"_subject-color\" data-subject-id=\"".concat(_classPrivateFieldGet(_this, _subject$1).subjectId, "\">").concat(value.label, "</span>");
+      var label = "<span class=\"_subject-color\" data-subject-id=\"".concat(subject.subjectId, "\">").concat(value.label, "</span>");
       elm.addEventListener('mouseenter', function () {
         var _classPrivateFieldGet2;
 
@@ -5892,7 +5884,7 @@
     _classPrivateFieldGet(this, _ROOT$8).classList.remove('-preparing'); // make overview
 
 
-    new TrackOverviewCategorical(_classPrivateFieldGet(this, _OVERVIEW_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values); // make selector view
+    new TrackOverviewCategorical(_classPrivateFieldGet(this, _OVERVIEW_CONTAINER), _classPrivateFieldGet(this, _property), values); // make selector view
 
     if (_classPrivateFieldGet(this, _property).viewMethod && _classPrivateFieldGet(this, _property).viewMethod === 'histogram') {
       new HistogramRangeSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _subject), _classPrivateFieldGet(this, _property), values, _classPrivateFieldGet(this, _OVERVIEW_CONTAINER));

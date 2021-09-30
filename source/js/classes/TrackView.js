@@ -160,7 +160,6 @@ export default class TrackView {
     // make overview
     new TrackOverviewCategorical(
       this.#OVERVIEW_CONTAINER,
-      this.#subject,
       this.#property,
       values
     );
