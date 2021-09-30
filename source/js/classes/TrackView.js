@@ -171,7 +171,6 @@ export default class TrackView {
     ) {
       new HistogramRangeSelectorView(
         this.#SELECT_CONTAINER,
-        this.#subject,
         this.#property,
         values,
         this.#OVERVIEW_CONTAINER
