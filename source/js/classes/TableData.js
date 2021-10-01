@@ -411,7 +411,7 @@ export default class TableData {
   }
 
   get #queryIdsPayload() {
-    return `togoKey=${
+    return `togokey=${
       this.#dxCondition.togoKey
     }&filters=${
       this.#dxCondition.queryFilters
@@ -448,7 +448,7 @@ export default class TableData {
   }
 
   get #propertiesPayload() {
-    return `${App.dataframe}?togoKey=${
+    return `${App.dataframe}?togokey=${
       this.#dxCondition.togoKey
     }&filters=${
       this.#dxCondition.queryFilters
