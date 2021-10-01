@@ -70,9 +70,9 @@ export default class KeyCondition extends BaseCondition {
 
   get query() {
     const query = {
-      propertyId: this._propertyId
+      attribute: this._propertyId
     };
-    if (this.#parentCategoryId) query.categoryIds = [this.#parentCategoryId];
+    if (this.#parentCategoryId) query.node = this.#parentCategoryId;
     return query;
   }
 

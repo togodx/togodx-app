@@ -3127,9 +3127,9 @@
       key: "query",
       get: function get() {
         var query = {
-          propertyId: this._propertyId
+          attribute: this._propertyId
         };
-        if (_classPrivateFieldGet(this, _parentCategoryId)) query.categoryIds = [_classPrivateFieldGet(this, _parentCategoryId)];
+        if (_classPrivateFieldGet(this, _parentCategoryId)) query.node = _classPrivateFieldGet(this, _parentCategoryId);
         return query;
       }
     }]);
@@ -3212,8 +3212,8 @@
       key: "query",
       get: function get() {
         return {
-          propertyId: this.propertyId,
-          categoryIds: this.categoryIds
+          attribute: this.propertyId,
+          nodes: this.categoryIds
         };
       }
     }]);
@@ -3316,20 +3316,18 @@
         return _classPrivateFieldGet(this, _valuesConditions$1);
       }
     }, {
-      key: "queryIds",
+      key: "queryFilters",
       get: function get() {
         return encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _valuesConditions$1).map(function (valuesConditions) {
           return valuesConditions.query;
         })));
       }
     }, {
-      key: "queryProperties",
+      key: "queryAnnotations",
       get: function get() {
-        return encodeURIComponent(JSON.stringify([].concat(_toConsumableArray(_classPrivateFieldGet(this, _valuesConditions$1).map(function (valuesConditions) {
-          return valuesConditions.query;
-        })), _toConsumableArray(_classPrivateFieldGet(this, _keyConditions$1).map(function (keyConditions) {
+        return encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _keyConditions$1).map(function (keyConditions) {
           return keyConditions.query;
-        })))));
+        })));
       }
     }]);
 
@@ -4395,7 +4393,7 @@
     var _ConditionBuilder$use;
 
     var categoryIds = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
-    return "".concat(App$1.aggregateMapping, "?sparqlet=").concat(encodeURIComponent(sparqlet), "&primaryKey=").concat(encodeURIComponent(primaryKey), "&categoryIds=").concat(categoryIds, "&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat((_ConditionBuilder$use = ConditionBuilder$1.userIds) !== null && _ConditionBuilder$use !== void 0 ? _ConditionBuilder$use : '');
+    return "".concat(App$1.locate, "?sparqlet=").concat(encodeURIComponent(sparqlet), "&primaryKey=").concat(encodeURIComponent(primaryKey), "&categoryIds=").concat(categoryIds, "&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat((_ConditionBuilder$use = ConditionBuilder$1.userIds) !== null && _ConditionBuilder$use !== void 0 ? _ConditionBuilder$use : '');
   }
 
   var ALL_PROPERTIES = 'ALL_PROPERTIES';
@@ -7630,8 +7628,6 @@
   function _dataButtonEdit2(e) {
     var _this3 = this;
 
-    console.log(this);
-    console.log(_classPrivateFieldGet(this, _dxCondition));
     e.stopPropagation(); // property (attribute)
 
     ConditionBuilder$1.setProperties(_classPrivateFieldGet(this, _dxCondition).keyConditions.map(function (keyCondition) {
@@ -7783,13 +7779,13 @@
   function _get_queryIdsPayload() {
     var _ConditionBuilder$use;
 
-    return "togoKey=".concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&properties=").concat(_classPrivateFieldGet(this, _dxCondition).queryIds).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : '');
+    return "togoKey=".concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&filters=").concat(_classPrivateFieldGet(this, _dxCondition).queryFilters).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : '');
   }
 
   function _getQueryIds2() {
     var _this5 = this;
 
-    axios.post(App$1.aggregatePrimaryKeys, _classPrivateFieldGet(this, _queryIdsPayload), {
+    axios.post(App$1.aggregate, _classPrivateFieldGet(this, _queryIdsPayload), {
       cancelToken: _classPrivateFieldGet(this, _source$1).token
     }).then(function (response) {
       _classPrivateFieldSet(_this5, _queryIds, response.data);
@@ -7814,7 +7810,7 @@
   }
 
   function _get_propertiesPayload() {
-    return "".concat(App$1.aggregateRows, "?togoKey=").concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&properties=").concat(_classPrivateFieldGet(this, _dxCondition).queryProperties, "&queryIds=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _queryIds).slice(this.offset, this.offset + LIMIT))));
+    return "".concat(App$1.dataframe, "?togoKey=").concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&filters=").concat(_classPrivateFieldGet(this, _dxCondition).queryFilters, "&annotations=").concat(_classPrivateFieldGet(this, _dxCondition).queryAnnotations, "&queries=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _queryIds).slice(this.offset, this.offset + LIMIT))));
   }
 
   function _getProperties2() {
@@ -8587,7 +8583,7 @@
 
   var _viewModes = /*#__PURE__*/new WeakMap();
 
-  var _aggregate = /*#__PURE__*/new WeakMap();
+  var _backend = /*#__PURE__*/new WeakMap();
 
   var _colorWhite = /*#__PURE__*/new WeakMap();
 
@@ -8618,7 +8614,7 @@
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _aggregate, {
+      _classPrivateFieldInitSpec(this, _backend, {
         writable: true,
         value: void 0
       });
@@ -8670,7 +8666,7 @@
 
     _createClass(App, [{
       key: "ready",
-      value: function ready(api) {
+      value: function ready(config) {
         var _this = this;
 
         var body = document.body; // view modes
@@ -8700,7 +8696,7 @@
         new BalloonView();
         new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
 
-        Promise.all([fetch(api.PROPERTIES), fetch(api.TEMPLATES), fetch(api.AGGREGATE), fetch(api.ATTRIBUTES)]).then(function (responces) {
+        Promise.all([fetch(config.PROPERTIES), fetch(config.TEMPLATES), fetch(config.BACKEND), fetch(config.ATTRIBUTES)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
           }));
@@ -8708,10 +8704,9 @@
           var _ref2 = _slicedToArray(_ref, 4),
               subjects = _ref2[0],
               templates = _ref2[1],
-              aggregate = _ref2[2],
+              backend = _ref2[2],
               attributes = _ref2[3];
 
-          console.log(attributes);
           Records$1.setSubjects(subjects);
           Records$1.setDatasets(attributes);
           ConditionBuilder$1.init(); // define primary keys
@@ -8725,7 +8720,7 @@
 
           StanzaManager$1.init(templates); // aggregate
 
-          _classPrivateFieldSet(_this, _aggregate, Object.freeze(aggregate));
+          _classPrivateFieldSet(_this, _backend, Object.freeze(backend));
 
           _classPrivateMethodGet(_this, _makeConceptViews, _makeConceptViews2).call(_this);
 
@@ -8741,19 +8736,19 @@
         return _classPrivateFieldGet(this, _viewModes);
       }
     }, {
-      key: "aggregatePrimaryKeys",
+      key: "aggregate",
       get: function get() {
-        return _classPrivateFieldGet(this, _aggregate).filter.url;
+        return _classPrivateFieldGet(this, _backend).aggregate.url;
       }
     }, {
-      key: "aggregateRows",
+      key: "dataframe",
       get: function get() {
-        return _classPrivateFieldGet(this, _aggregate).table.url;
+        return _classPrivateFieldGet(this, _backend).dataframe.url;
       }
     }, {
-      key: "aggregateMapping",
+      key: "locate",
       get: function get() {
-        return _classPrivateFieldGet(this, _aggregate).mapping.url;
+        return _classPrivateFieldGet(this, _backend).locate.url;
       }
     }, {
       key: "colorWhite",
@@ -8822,7 +8817,7 @@
 
   var App$1 = new App();
 
-  fetch('./api.json').then(function (response) {
+  fetch('./config.json').then(function (response) {
     return response.json();
   }).then(function (api) {
     globalThis.togositeapp = App$1;

@@ -49,8 +49,8 @@ export default class ValuesCondition extends BaseCondition {
 
   get query() {
     return {
-      propertyId: this.propertyId,
-      categoryIds: this.categoryIds
+      attribute: this.propertyId,
+      nodes: this.categoryIds
     }
   }
 

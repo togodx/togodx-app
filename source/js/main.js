@@ -1,6 +1,6 @@
 import App from './classes/App.js';
 
-fetch('./api.json')
+fetch('./config.json')
   .then(response => response.json())
   .then(api => {
     globalThis.togositeapp = App;

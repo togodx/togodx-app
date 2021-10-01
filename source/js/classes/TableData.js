@@ -262,8 +262,6 @@ export default class TableData {
    * @param { MouseEvent } e
    */
   #dataButtonEdit(e) {
-    console.log(this)
-    console.log(this.#dxCondition)
     e.stopPropagation();
     // property (attribute)
     ConditionBuilder.setProperties(
@@ -415,8 +413,8 @@ export default class TableData {
   get #queryIdsPayload() {
     return `togoKey=${
       this.#dxCondition.togoKey
-    }&properties=${
-      this.#dxCondition.queryIds
+    }&filters=${
+      this.#dxCondition.queryFilters
     }${
       ConditionBuilder.userIds?.length > 0
         ? `&inputIds=${encodeURIComponent(
@@ -428,7 +426,7 @@ export default class TableData {
 
   #getQueryIds() {
     axios
-      .post(App.aggregatePrimaryKeys, this.#queryIdsPayload, {
+      .post(App.aggregate, this.#queryIdsPayload, {
         cancelToken: this.#source.token,
       })
       .then(response => {
@@ -450,11 +448,13 @@ export default class TableData {
   }
 
   get #propertiesPayload() {
-    return `${App.aggregateRows}?togoKey=${
+    return `${App.dataframe}?togoKey=${
       this.#dxCondition.togoKey
-    }&properties=${
-      this.#dxCondition.queryProperties
-    }&queryIds=${
+    }&filters=${
+      this.#dxCondition.queryFilters
+    }&annotations=${
+      this.#dxCondition.queryAnnotations
+    }&queries=${
       encodeURIComponent(
         JSON.stringify(this.#queryIds.slice(this.offset, this.offset + LIMIT))
       )
