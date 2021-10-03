@@ -3,7 +3,7 @@ import ConditionBuilder from '../classes/ConditionBuilder';
 
 export function dataFromUserIds(sparqlet, primaryKey, categoryIds = '') {
   return `${
-    App.aggregateMapping
+    App.locate
   }?sparqlet=${
     encodeURIComponent(sparqlet)
   }&primaryKey=${

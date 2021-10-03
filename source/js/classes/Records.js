@@ -76,7 +76,7 @@ class Records {
   fetchPropertyValues(propertyId, categoryId) {
     const property = this.getProperty(propertyId);
     return new Promise((resolve, reject) => {
-      if (categoryId && this.#fetchedCategoryIds[propertyId].indexOf(categoryId) !== -1) {
+      if (categoryId && property.values.findIndex(value => value.parentCategoryId === categoryId) !== -1) {
         resolve(property.values.filter(value => value.parentCategoryId === categoryId));
       } else {
         fetch(`${property.data}${categoryId ? `?categoryIds=${categoryId}` : ''}`)

@@ -1077,7 +1077,6 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   margin: calc(var(--padding-track-block-start) * -1) calc(var(--padding-track-inline-start) * -1);
   padding: var(--padding-block-start) 1.5rem var(--padding-block-end) 0.8rem;
   position: relative;
-  overflow: hidden;
 }
 .statistics-view > .statistics {
   text-align: left;
@@ -1978,6 +1977,7 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #ResultsTable > .body > table > tbody > tr {
   border-bottom: solid 0.1rem var(--color-separator);
   position: relative;
+  background-color: white;
   transition: border var(--transition-instant), box-shadow var(--transition-instant);
 }
 #ResultsTable > .body > table > tbody > tr:hover, #ResultsTable > .body > table > tbody > tr.-selected {

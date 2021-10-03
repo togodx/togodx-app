@@ -77,7 +77,7 @@ export default class DXCondition {
     return this.#valuesConditions;
   }
 
-  get queryIds() {
+  get queryFilters() {
     return encodeURIComponent(
       JSON.stringify(
         this.#valuesConditions
@@ -88,13 +88,13 @@ export default class DXCondition {
     );
   }
 
-  get queryProperties() {
+  get queryAnnotations() {
     return encodeURIComponent(
       JSON.stringify(
-        [
-          ...this.#valuesConditions.map(valuesConditions => valuesConditions.query),
-          ...this.#keyConditions.map(keyConditions => keyConditions.query)
-        ]
+        this.#keyConditions
+          .map(
+            keyConditions => keyConditions.query
+          )
       )
     );
   }

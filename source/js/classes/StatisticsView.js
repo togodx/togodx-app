@@ -7,20 +7,21 @@ export default class StatisticsView {
   #index;
   #propertyId;
   #tableData;
+  #referenceValues;
   #BARS;
   #ROOT;
   #ROOT_NODE;
 
-  constructor(statisticsRootNode, elm, tableData, index, propertyId) {
+  constructor(statisticsRootNode, elm, tableData, index, condition) {
 
     this.#index = index;
-    this.#propertyId = propertyId;
+    this.#propertyId = condition.propertyId;
     this.#tableData = tableData;
     this.#ROOT_NODE = statisticsRootNode;
     this.#ROOT = elm;
 
     elm.classList.add('statistics-view');
-    elm.dataset.subjectId = Records.getProperty(propertyId).subjectId;
+    elm.dataset.subjectId = Records.getProperty(this.#propertyId).subjectId;
 
     // make HTML
     elm.innerHTML = `
@@ -29,6 +30,13 @@ export default class StatisticsView {
     </div>
     <div class="loading-view -shown"></div>
     `;
+
+    // display order of bar chart
+    if (condition.parentCategoryId) {
+      this.#referenceValues = Records.getValuesWithParentCategoryId(this.#propertyId, condition.parentCategoryId);
+    } else {
+      this.#referenceValues = Records.getProperty(this.#propertyId).values;
+    }
 
     // references
     const container = elm.querySelector(':scope > .statistics');
@@ -63,7 +71,7 @@ export default class StatisticsView {
     );
 
     const hitVlues = [];
-    Records.getProperty(this.#propertyId).values.forEach(({categoryId, label, count}) => {
+    this.#referenceValues.forEach(({categoryId, label, count}) => {
       const filtered = attributes.filter(attribute => attribute.categoryId === categoryId);
       if (filtered.length === 0) return;
       hitVlues.push({
