@@ -182,25 +182,17 @@ export default class ResultsTable {
       statisticsView.destroy();
     }
     this.#statisticsViews = [];
-    console.log(this.#header)
     this.#tableData.dxCondition
     const conditions = [
       ...this.#tableData.dxCondition.valuesConditions,
       ...this.#tableData.dxCondition.keyConditions
     ];
-    console.log(conditions)
     conditions.forEach((condition, index) => {
       const td = document.createElement('td');
       td.innerHTML = '<div class="inner"><div></div></div>';
       this.#STATS.append(td);
       this.#statisticsViews.push(new StatisticsView(this.#STATS, td.querySelector(':scope > .inner > div'), tableData, index, condition));
     });
-    // this.#header.forEach((column, index) => {
-    //   const td = document.createElement('td');
-    //   td.innerHTML = '<div class="inner"><div></div></div>';
-    //   this.#STATS.append(td);
-    //   this.#statisticsViews.push(new StatisticsView(this.#STATS, td.querySelector(':scope > .inner > div'), tableData, index, column.propertyId));
-    // });
   }
 
   #addTableRows({done, rows, tableData}) {

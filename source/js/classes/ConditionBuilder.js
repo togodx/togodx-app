@@ -225,7 +225,9 @@ class ConditionBuilder {
   #makeQueueOfGettingChildCategoryIds(condition) {
     const queue = [];
     const addQueue = (propertyId, id) => {
-      id.ancestors?.forEach(categoryId => {
+      const ancestors = [id.categoryId];
+      if (id.ancestors) ancestors.push(...id.ancestors);
+      ancestors.forEach(categoryId => {
         if (queue.findIndex(task => task.propertyId === propertyId && task.categoryId === categoryId) === -1) {
           queue.push({propertyId, categoryId});
         }

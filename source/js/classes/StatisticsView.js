@@ -33,14 +33,10 @@ export default class StatisticsView {
 
     // display order of bar chart
     if (condition.parentCategoryId) {
-      console.log(condition)
-      console.log(condition.parentCategoryId)
       this.#referenceValues = Records.getValuesWithParentCategoryId(this.#propertyId, condition.parentCategoryId);
-
     } else {
       this.#referenceValues = Records.getProperty(this.#propertyId).values;
     }
-    console.log(this.#referenceValues)
 
     // references
     const container = elm.querySelector(':scope > .statistics');
@@ -75,7 +71,7 @@ export default class StatisticsView {
     );
 
     const hitVlues = [];
-    Records.getProperty(this.#propertyId).values.forEach(({categoryId, label, count}) => {
+    this.#referenceValues.forEach(({categoryId, label, count}) => {
       const filtered = attributes.filter(attribute => attribute.categoryId === categoryId);
       if (filtered.length === 0) return;
       hitVlues.push({

@@ -3773,9 +3773,9 @@
     var queue = [];
 
     var addQueue = function addQueue(propertyId, id) {
-      var _id$ancestors;
-
-      (_id$ancestors = id.ancestors) === null || _id$ancestors === void 0 ? void 0 : _id$ancestors.forEach(function (categoryId) {
+      var ancestors = [id.categoryId];
+      if (id.ancestors) ancestors.push.apply(ancestors, _toConsumableArray(id.ancestors));
+      ancestors.forEach(function (categoryId) {
         if (queue.findIndex(function (task) {
           return task.propertyId === propertyId && task.categoryId === categoryId;
         }) === -1) {
@@ -6010,15 +6010,11 @@
       elm.innerHTML = "\n    <div class=\"statistics\">\n      <div class=\"bars\"></div>\n    </div>\n    <div class=\"loading-view -shown\"></div>\n    "; // display order of bar chart
 
       if (condition.parentCategoryId) {
-        console.log(condition);
-        console.log(condition.parentCategoryId);
-
         _classPrivateFieldSet(this, _referenceValues, Records$1.getValuesWithParentCategoryId(_classPrivateFieldGet(this, _propertyId), condition.parentCategoryId));
       } else {
         _classPrivateFieldSet(this, _referenceValues, Records$1.getProperty(_classPrivateFieldGet(this, _propertyId)).values);
-      }
+      } // references
 
-      console.log(_classPrivateFieldGet(this, _referenceValues)); // references
 
       var container = elm.querySelector(':scope > .statistics');
 
@@ -6061,7 +6057,8 @@
     });
 
     var hitVlues = [];
-    Records$1.getProperty(_classPrivateFieldGet(this, _propertyId)).values.forEach(function (_ref) {
+
+    _classPrivateFieldGet(this, _referenceValues).forEach(function (_ref) {
       var categoryId = _ref.categoryId,
           label = _ref.label,
           count = _ref.count;
@@ -6076,6 +6073,7 @@
         hitCount: filtered.length
       });
     }); // max
+
 
     var countMax;
 
@@ -6442,10 +6440,8 @@
 
     _classPrivateFieldSet(this, _statisticsViews, []);
 
-    console.log(_classPrivateFieldGet(this, _header$1));
     _classPrivateFieldGet(this, _tableData$1).dxCondition;
     var conditions = [].concat(_toConsumableArray(_classPrivateFieldGet(this, _tableData$1).dxCondition.valuesConditions), _toConsumableArray(_classPrivateFieldGet(this, _tableData$1).dxCondition.keyConditions));
-    console.log(conditions);
     conditions.forEach(function (condition, index) {
       var td = document.createElement('td');
       td.innerHTML = '<div class="inner"><div></div></div>';
@@ -6453,12 +6449,7 @@
       _classPrivateFieldGet(_this2, _STATS).append(td);
 
       _classPrivateFieldGet(_this2, _statisticsViews).push(new StatisticsView(_classPrivateFieldGet(_this2, _STATS), td.querySelector(':scope > .inner > div'), tableData, index, condition));
-    }); // this.#header.forEach((column, index) => {
-    //   const td = document.createElement('td');
-    //   td.innerHTML = '<div class="inner"><div></div></div>';
-    //   this.#STATS.append(td);
-    //   this.#statisticsViews.push(new StatisticsView(this.#STATS, td.querySelector(':scope > .inner > div'), tableData, index, column.propertyId));
-    // });
+    });
   }
 
   function _addTableRows2(_ref3) {
