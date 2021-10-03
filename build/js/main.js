@@ -2845,19 +2845,11 @@
     }, {
       key: "fetchPropertyValues",
       value: function fetchPropertyValues(propertyId, categoryId) {
-        var _this2 = this;
-
         var property = this.getProperty(propertyId);
         return new Promise(function (resolve, reject) {
-          if (categoryId) {
-            console.log(_classPrivateFieldGet(_this2, _fetchedCategoryIds));
-            console.log(property);
-            console.log(property.values.filter(function (value) {
-              return value.parentCategoryId === categoryId;
-            }));
-          }
-
-          if (categoryId && _classPrivateFieldGet(_this2, _fetchedCategoryIds)[propertyId].indexOf(categoryId) !== -1) {
+          if (categoryId && property.values.findIndex(function (value) {
+            return value.parentCategoryId === categoryId;
+          }) !== -1) {
             resolve(property.values.filter(function (value) {
               return value.parentCategoryId === categoryId;
             }));
@@ -2867,10 +2859,7 @@
             }).then(function (values) {
               var _property$values;
 
-              console.log(propertyId, categoryId);
-              console.log(values);
-              console.log(property); // set parent category id
-
+              // set parent category id
               if (categoryId) values.forEach(function (value) {
                 return value.parentCategoryId = categoryId;
               }); // set values
