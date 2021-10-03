@@ -115,7 +115,6 @@ class Records {
 
   getValuesWithParentCategoryId(propertyId, parentCategoryId) {
     const property = this.getProperty(propertyId);
-    console.log(property)
     return property.values.filter(value => value.parentCategoryId === parentCategoryId);
   }
 

@@ -2913,7 +2913,6 @@
       key: "getValuesWithParentCategoryId",
       value: function getValuesWithParentCategoryId(propertyId, parentCategoryId) {
         var property = this.getProperty(propertyId);
-        console.log(property);
         return property.values.filter(function (value) {
           return value.parentCategoryId === parentCategoryId;
         });
@@ -4823,10 +4822,10 @@
   function _mutatePropertyCondition2(_ref3) {
     var _ref3$detail = _ref3.detail,
         action = _ref3$detail.action,
-        propertyId = _ref3$detail.propertyId;
-        _ref3$detail.parentCategoryId;
+        propertyId = _ref3$detail.propertyId,
+        parentCategoryId = _ref3$detail.parentCategoryId;
 
-    if (propertyId === _classPrivateFieldGet(this, _property$3).propertyId) {
+    if (propertyId === _classPrivateFieldGet(this, _property$3).propertyId && parentCategoryId === undefined) {
       _classPrivateFieldGet(this, _ITEM_ALL_INPUT_OF_ROOT).checked = action === 'add';
     }
   }
