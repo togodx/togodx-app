@@ -224,21 +224,18 @@ class ConditionBuilder {
 
   #makeQueueOfGettingChildCategoryIds(condition) {
     const queue = [];
-    condition.keys.forEach(({propertyId, id}) => {
-      if (id) {
-        id.ancestors.forEach(categoryId => {
+    const addQueue = (propertyId, id) => {
+      id.ancestors?.forEach(categoryId => {
+        if (queue.findIndex(task => task.propertyId === propertyId && task.categoryId === categoryId) === -1) {
           queue.push({propertyId, categoryId});
-        })
-      }
+        }
+      });
+    };
+    condition.keys.forEach(({propertyId, id}) => {
+      if (id) addQueue(propertyId, id);
     });
     condition.values.forEach(({propertyId, ids}) => {
-      ids.forEach(id => {
-        if (id.ancestors) {
-          id.ancestors.forEach(categoryId => {
-            queue.push({propertyId, categoryId});
-          });
-        }
-      })
+      ids.forEach(id => addQueue(propertyId, id));
     });
     this.#progressQueueOfGettingChildCategoryIds(condition, queue);
   }
