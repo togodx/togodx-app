@@ -2845,11 +2845,11 @@
     }, {
       key: "fetchPropertyValues",
       value: function fetchPropertyValues(propertyId, categoryId) {
-        var _this2 = this;
-
         var property = this.getProperty(propertyId);
         return new Promise(function (resolve, reject) {
-          if (categoryId && _classPrivateFieldGet(_this2, _fetchedCategoryIds)[propertyId].indexOf(categoryId) !== -1) {
+          if (categoryId && property.values.findIndex(function (value) {
+            return value.parentCategoryId === categoryId;
+          }) !== -1) {
             resolve(property.values.filter(function (value) {
               return value.parentCategoryId === categoryId;
             }));
@@ -3127,9 +3127,9 @@
       key: "query",
       get: function get() {
         var query = {
-          propertyId: this._propertyId
+          attribute: this._propertyId
         };
-        if (_classPrivateFieldGet(this, _parentCategoryId)) query.categoryIds = [_classPrivateFieldGet(this, _parentCategoryId)];
+        if (_classPrivateFieldGet(this, _parentCategoryId)) query.node = _classPrivateFieldGet(this, _parentCategoryId);
         return query;
       }
     }]);
@@ -3212,8 +3212,8 @@
       key: "query",
       get: function get() {
         return {
-          propertyId: this.propertyId,
-          categoryIds: this.categoryIds
+          attribute: this.propertyId,
+          nodes: this.categoryIds
         };
       }
     }]);
@@ -3316,20 +3316,18 @@
         return _classPrivateFieldGet(this, _valuesConditions$1);
       }
     }, {
-      key: "queryIds",
+      key: "queryFilters",
       get: function get() {
         return encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _valuesConditions$1).map(function (valuesConditions) {
           return valuesConditions.query;
         })));
       }
     }, {
-      key: "queryProperties",
+      key: "queryAnnotations",
       get: function get() {
-        return encodeURIComponent(JSON.stringify([].concat(_toConsumableArray(_classPrivateFieldGet(this, _valuesConditions$1).map(function (valuesConditions) {
-          return valuesConditions.query;
-        })), _toConsumableArray(_classPrivateFieldGet(this, _keyConditions$1).map(function (keyConditions) {
+        return encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _keyConditions$1).map(function (keyConditions) {
           return keyConditions.query;
-        })))));
+        })));
       }
     }]);
 
@@ -3772,31 +3770,32 @@
 
   function _makeQueueOfGettingChildCategoryIds2(condition) {
     var queue = [];
-    condition.keys.forEach(function (_ref2) {
-      var propertyId = _ref2.propertyId,
-          id = _ref2.id;
 
-      if (id) {
-        id.ancestors.forEach(function (categoryId) {
+    var addQueue = function addQueue(propertyId, id) {
+      var ancestors = [id.categoryId];
+      if (id.ancestors) ancestors.push.apply(ancestors, _toConsumableArray(id.ancestors));
+      ancestors.forEach(function (categoryId) {
+        if (queue.findIndex(function (task) {
+          return task.propertyId === propertyId && task.categoryId === categoryId;
+        }) === -1) {
           queue.push({
             propertyId: propertyId,
             categoryId: categoryId
           });
-        });
-      }
+        }
+      });
+    };
+
+    condition.keys.forEach(function (_ref2) {
+      var propertyId = _ref2.propertyId,
+          id = _ref2.id;
+      if (id) addQueue(propertyId, id);
     });
     condition.values.forEach(function (_ref3) {
       var propertyId = _ref3.propertyId,
           ids = _ref3.ids;
       ids.forEach(function (id) {
-        if (id.ancestors) {
-          id.ancestors.forEach(function (categoryId) {
-            queue.push({
-              propertyId: propertyId,
-              categoryId: categoryId
-            });
-          });
-        }
+        return addQueue(propertyId, id);
       });
     });
 
@@ -4395,7 +4394,7 @@
     var _ConditionBuilder$use;
 
     var categoryIds = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
-    return "".concat(App$1.aggregateMapping, "?sparqlet=").concat(encodeURIComponent(sparqlet), "&primaryKey=").concat(encodeURIComponent(primaryKey), "&categoryIds=").concat(categoryIds, "&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat((_ConditionBuilder$use = ConditionBuilder$1.userIds) !== null && _ConditionBuilder$use !== void 0 ? _ConditionBuilder$use : '');
+    return "".concat(App$1.locate, "?sparqlet=").concat(encodeURIComponent(sparqlet), "&primaryKey=").concat(encodeURIComponent(primaryKey), "&categoryIds=").concat(categoryIds, "&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat((_ConditionBuilder$use = ConditionBuilder$1.userIds) !== null && _ConditionBuilder$use !== void 0 ? _ConditionBuilder$use : '');
   }
 
   var ALL_PROPERTIES = 'ALL_PROPERTIES';
@@ -4823,10 +4822,10 @@
   function _mutatePropertyCondition2(_ref3) {
     var _ref3$detail = _ref3.detail,
         action = _ref3$detail.action,
-        propertyId = _ref3$detail.propertyId;
-        _ref3$detail.parentCategoryId;
+        propertyId = _ref3$detail.propertyId,
+        parentCategoryId = _ref3$detail.parentCategoryId;
 
-    if (propertyId === _classPrivateFieldGet(this, _property$3).propertyId) {
+    if (propertyId === _classPrivateFieldGet(this, _property$3).propertyId && parentCategoryId === undefined) {
       _classPrivateFieldGet(this, _ITEM_ALL_INPUT_OF_ROOT).checked = action === 'add';
     }
   }
@@ -5943,6 +5942,8 @@
 
   var _tableData$2 = /*#__PURE__*/new WeakMap();
 
+  var _referenceValues = /*#__PURE__*/new WeakMap();
+
   var _BARS = /*#__PURE__*/new WeakMap();
 
   var _ROOT$7 = /*#__PURE__*/new WeakMap();
@@ -5952,7 +5953,7 @@
   var _draw = /*#__PURE__*/new WeakSet();
 
   var StatisticsView = /*#__PURE__*/function () {
-    function StatisticsView(statisticsRootNode, elm, tableData, index, propertyId) {
+    function StatisticsView(statisticsRootNode, elm, tableData, index, condition) {
       _classCallCheck(this, StatisticsView);
 
       _classPrivateMethodInitSpec(this, _draw);
@@ -5968,6 +5969,11 @@
       });
 
       _classPrivateFieldInitSpec(this, _tableData$2, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _referenceValues, {
         writable: true,
         value: void 0
       });
@@ -5989,7 +5995,7 @@
 
       _classPrivateFieldSet(this, _index, index);
 
-      _classPrivateFieldSet(this, _propertyId, propertyId);
+      _classPrivateFieldSet(this, _propertyId, condition.propertyId);
 
       _classPrivateFieldSet(this, _tableData$2, tableData);
 
@@ -5998,9 +6004,16 @@
       _classPrivateFieldSet(this, _ROOT$7, elm);
 
       elm.classList.add('statistics-view');
-      elm.dataset.subjectId = Records$1.getProperty(propertyId).subjectId; // make HTML
+      elm.dataset.subjectId = Records$1.getProperty(_classPrivateFieldGet(this, _propertyId)).subjectId; // make HTML
 
-      elm.innerHTML = "\n    <div class=\"statistics\">\n      <div class=\"bars\"></div>\n    </div>\n    <div class=\"loading-view -shown\"></div>\n    "; // references
+      elm.innerHTML = "\n    <div class=\"statistics\">\n      <div class=\"bars\"></div>\n    </div>\n    <div class=\"loading-view -shown\"></div>\n    "; // display order of bar chart
+
+      if (condition.parentCategoryId) {
+        _classPrivateFieldSet(this, _referenceValues, Records$1.getValuesWithParentCategoryId(_classPrivateFieldGet(this, _propertyId), condition.parentCategoryId));
+      } else {
+        _classPrivateFieldSet(this, _referenceValues, Records$1.getProperty(_classPrivateFieldGet(this, _propertyId)).values);
+      } // references
+
 
       var container = elm.querySelector(':scope > .statistics');
 
@@ -6043,7 +6056,8 @@
     });
 
     var hitVlues = [];
-    Records$1.getProperty(_classPrivateFieldGet(this, _propertyId)).values.forEach(function (_ref) {
+
+    _classPrivateFieldGet(this, _referenceValues).forEach(function (_ref) {
       var categoryId = _ref.categoryId,
           label = _ref.label,
           count = _ref.count;
@@ -6058,6 +6072,7 @@
         hitCount: filtered.length
       });
     }); // max
+
 
     var countMax;
 
@@ -6135,6 +6150,8 @@
 
   var _header$1 = /*#__PURE__*/new WeakMap();
 
+  var _hea___der = /*#__PURE__*/new WeakMap();
+
   var _statisticsViews = /*#__PURE__*/new WeakMap();
 
   var _ROOT$6 = /*#__PURE__*/new WeakMap();
@@ -6188,6 +6205,11 @@
     });
 
     _classPrivateFieldInitSpec(this, _header$1, {
+      writable: true,
+      value: void 0
+    });
+
+    _classPrivateFieldInitSpec(this, _hea___der, {
       writable: true,
       value: void 0
     });
@@ -6417,13 +6439,15 @@
 
     _classPrivateFieldSet(this, _statisticsViews, []);
 
-    _classPrivateFieldGet(this, _header$1).forEach(function (column, index) {
+    _classPrivateFieldGet(this, _tableData$1).dxCondition;
+    var conditions = [].concat(_toConsumableArray(_classPrivateFieldGet(this, _tableData$1).dxCondition.valuesConditions), _toConsumableArray(_classPrivateFieldGet(this, _tableData$1).dxCondition.keyConditions));
+    conditions.forEach(function (condition, index) {
       var td = document.createElement('td');
       td.innerHTML = '<div class="inner"><div></div></div>';
 
       _classPrivateFieldGet(_this2, _STATS).append(td);
 
-      _classPrivateFieldGet(_this2, _statisticsViews).push(new StatisticsView(_classPrivateFieldGet(_this2, _STATS), td.querySelector(':scope > .inner > div'), tableData, index, column.propertyId));
+      _classPrivateFieldGet(_this2, _statisticsViews).push(new StatisticsView(_classPrivateFieldGet(_this2, _STATS), td.querySelector(':scope > .inner > div'), tableData, index, condition));
     });
   }
 
@@ -7630,8 +7654,6 @@
   function _dataButtonEdit2(e) {
     var _this3 = this;
 
-    console.log(this);
-    console.log(_classPrivateFieldGet(this, _dxCondition));
     e.stopPropagation(); // property (attribute)
 
     ConditionBuilder$1.setProperties(_classPrivateFieldGet(this, _dxCondition).keyConditions.map(function (keyCondition) {
@@ -7783,13 +7805,13 @@
   function _get_queryIdsPayload() {
     var _ConditionBuilder$use;
 
-    return "togoKey=".concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&properties=").concat(_classPrivateFieldGet(this, _dxCondition).queryIds).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : '');
+    return "togokey=".concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&filters=").concat(_classPrivateFieldGet(this, _dxCondition).queryFilters).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : '');
   }
 
   function _getQueryIds2() {
     var _this5 = this;
 
-    axios.post(App$1.aggregatePrimaryKeys, _classPrivateFieldGet(this, _queryIdsPayload), {
+    axios.post(App$1.aggregate, _classPrivateFieldGet(this, _queryIdsPayload), {
       cancelToken: _classPrivateFieldGet(this, _source$1).token
     }).then(function (response) {
       _classPrivateFieldSet(_this5, _queryIds, response.data);
@@ -7814,7 +7836,7 @@
   }
 
   function _get_propertiesPayload() {
-    return "".concat(App$1.aggregateRows, "?togoKey=").concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&properties=").concat(_classPrivateFieldGet(this, _dxCondition).queryProperties, "&queryIds=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _queryIds).slice(this.offset, this.offset + LIMIT))));
+    return "".concat(App$1.dataframe, "?togokey=").concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&filters=").concat(_classPrivateFieldGet(this, _dxCondition).queryFilters, "&annotations=").concat(_classPrivateFieldGet(this, _dxCondition).queryAnnotations, "&queries=").concat(encodeURIComponent(JSON.stringify(_classPrivateFieldGet(this, _queryIds).slice(this.offset, this.offset + LIMIT))));
   }
 
   function _getProperties2() {
@@ -8587,7 +8609,7 @@
 
   var _viewModes = /*#__PURE__*/new WeakMap();
 
-  var _aggregate = /*#__PURE__*/new WeakMap();
+  var _backend = /*#__PURE__*/new WeakMap();
 
   var _colorWhite = /*#__PURE__*/new WeakMap();
 
@@ -8618,7 +8640,7 @@
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _aggregate, {
+      _classPrivateFieldInitSpec(this, _backend, {
         writable: true,
         value: void 0
       });
@@ -8670,7 +8692,7 @@
 
     _createClass(App, [{
       key: "ready",
-      value: function ready(api) {
+      value: function ready(config) {
         var _this = this;
 
         var body = document.body; // view modes
@@ -8700,7 +8722,7 @@
         new BalloonView();
         new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
 
-        Promise.all([fetch(api.PROPERTIES), fetch(api.TEMPLATES), fetch(api.AGGREGATE), fetch(api.ATTRIBUTES)]).then(function (responces) {
+        Promise.all([fetch(config.PROPERTIES), fetch(config.TEMPLATES), fetch(config.BACKEND), fetch(config.ATTRIBUTES)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
           }));
@@ -8708,10 +8730,9 @@
           var _ref2 = _slicedToArray(_ref, 4),
               subjects = _ref2[0],
               templates = _ref2[1],
-              aggregate = _ref2[2],
+              backend = _ref2[2],
               attributes = _ref2[3];
 
-          console.log(attributes);
           Records$1.setSubjects(subjects);
           Records$1.setDatasets(attributes);
           ConditionBuilder$1.init(); // define primary keys
@@ -8725,7 +8746,7 @@
 
           StanzaManager$1.init(templates); // aggregate
 
-          _classPrivateFieldSet(_this, _aggregate, Object.freeze(aggregate));
+          _classPrivateFieldSet(_this, _backend, Object.freeze(backend));
 
           _classPrivateMethodGet(_this, _makeConceptViews, _makeConceptViews2).call(_this);
 
@@ -8741,19 +8762,19 @@
         return _classPrivateFieldGet(this, _viewModes);
       }
     }, {
-      key: "aggregatePrimaryKeys",
+      key: "aggregate",
       get: function get() {
-        return _classPrivateFieldGet(this, _aggregate).filter.url;
+        return _classPrivateFieldGet(this, _backend).aggregate.url;
       }
     }, {
-      key: "aggregateRows",
+      key: "dataframe",
       get: function get() {
-        return _classPrivateFieldGet(this, _aggregate).table.url;
+        return _classPrivateFieldGet(this, _backend).dataframe.url;
       }
     }, {
-      key: "aggregateMapping",
+      key: "locate",
       get: function get() {
-        return _classPrivateFieldGet(this, _aggregate).mapping.url;
+        return _classPrivateFieldGet(this, _backend).locate.url;
       }
     }, {
       key: "colorWhite",
@@ -8822,7 +8843,7 @@
 
   var App$1 = new App();
 
-  fetch('./api.json').then(function (response) {
+  fetch('./config.json').then(function (response) {
     return response.json();
   }).then(function (api) {
     globalThis.togositeapp = App$1;

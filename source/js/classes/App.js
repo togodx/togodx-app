@@ -15,7 +15,7 @@ import * as event from '../events'
 class App {
 
   #viewModes;
-  #aggregate;
+  #backend;
 
   #colorWhite;
   #colorLightGray;
@@ -34,7 +34,7 @@ class App {
     this.#colorLampBlack = new Color('--color-lamp-black').to('srgb');
   }
 
-  ready(api) {
+  ready(config) {
 
     const body = document.body;
 
@@ -65,14 +65,15 @@ class App {
 
     // load config json
     Promise.all([
-      fetch(api.PROPERTIES),
-      fetch(api.TEMPLATES),
-      fetch(api.AGGREGATE),
-      fetch(api.ATTRIBUTES)
+      fetch(config.PROPERTIES),
+      fetch(config.TEMPLATES),
+      fetch(config.BACKEND),
+      fetch(config.ATTRIBUTES)
     ])
-      .then(responces => Promise.all(responces.map(responce => responce.json())))
-      .then(([subjects, templates, aggregate, attributes]) => {
-        console.log(attributes)
+      .then(responces => {
+        return Promise.all(responces.map(responce => responce.json()))
+      })
+      .then(([subjects, templates, backend, attributes]) => {
         Records.setSubjects(subjects);
         Records.setDatasets(attributes);
         ConditionBuilder.init();
@@ -85,7 +86,7 @@ class App {
         StanzaManager.init(templates);
 
         // aggregate
-        this.#aggregate = Object.freeze(aggregate);
+        this.#backend = Object.freeze(backend);
 
         this.#makeConceptViews();
         this.#defineAllTracksCollapseButton();
@@ -124,14 +125,14 @@ class App {
   get viewModes() {
     return this.#viewModes;
   }
-  get aggregatePrimaryKeys() {
-    return this.#aggregate.filter.url;
+  get aggregate() {
+    return this.#backend.aggregate.url;
   }
-  get aggregateRows() {
-    return this.#aggregate.table.url;
+  get dataframe() {
+    return this.#backend.dataframe.url;
   }
-  get aggregateMapping() {
-    return this.#aggregate.mapping.url;
+  get locate() {
+    return this.#backend.locate.url;
   }
   get colorWhite() {
     return this.#colorWhite;

@@ -1,6 +1,6 @@
 {
   "PROPERTIES": "https://raw.githubusercontent.com/togodx/togodx-config-human/develop/config/properties.json",
   "TEMPLATES": "https://raw.githubusercontent.com/togodx/togodx-config-human/develop/config/templates.json",
-  "AGGREGATE": "https://raw.githubusercontent.com/togodx/togodx-config-human/develop/config/aggregate.json",
+  "BACKEND": "https://raw.githubusercontent.com/togodx/togodx-config-human/develop/config/backend.json",
   "ATTRIBUTES": "https://raw.githubusercontent.com/togodx/togodx-config-human/develop/config/attributes.json"
 }
