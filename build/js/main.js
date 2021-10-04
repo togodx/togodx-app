@@ -4390,11 +4390,11 @@
     });
   }
 
-  function dataFromUserIds(sparqlet, primaryKey) {
+  function dataFromUserIds(propertyId) {
     var _ConditionBuilder$use;
 
-    var categoryIds = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
-    return "".concat(App$1.locate, "?sparqlet=").concat(encodeURIComponent(sparqlet), "&primaryKey=").concat(encodeURIComponent(primaryKey), "&categoryIds=").concat(categoryIds, "&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat((_ConditionBuilder$use = ConditionBuilder$1.userIds) !== null && _ConditionBuilder$use !== void 0 ? _ConditionBuilder$use : '');
+    var categoryIds = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+    return "".concat(App$1.locate, "?attribute=").concat(propertyId, "&categoryIds=").concat(categoryIds, "&togokey=").concat(ConditionBuilder$1.currentTogoKey, "&queries=").concat((_ConditionBuilder$use = ConditionBuilder$1.userIds) !== null && _ConditionBuilder$use !== void 0 ? _ConditionBuilder$use : '');
   }
 
   var ALL_PROPERTIES = 'ALL_PROPERTIES';
@@ -4795,7 +4795,7 @@
     }
 
     if (document.body.classList.contains('-showuserids') && ConditionBuilder$1.userIds) {
-      _classPrivateMethodGet(this, _getUserValues, _getUserValues2).call(this, dataFromUserIds(_classPrivateFieldGet(this, _property$3).data, _classPrivateFieldGet(this, _property$3).primaryKey, column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId)).then(function (values) {
+      _classPrivateMethodGet(this, _getUserValues, _getUserValues2).call(this, dataFromUserIds(_classPrivateFieldGet(this, _property$3).propertyId, column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId)).then(function (values) {
         _classPrivateMethodGet(_this5, _setUserValues, _setUserValues2).call(_this5, {
           propertyId: _classPrivateFieldGet(_this5, _property$3).propertyId,
           values: values
@@ -4882,7 +4882,7 @@
       if (!bySubdirectory) {
         _classPrivateFieldGet(this, _currentColumns).forEach(function (column, index) {
           if (index > 0) {
-            _classPrivateMethodGet(_this8, _getUserValues, _getUserValues2).call(_this8, dataFromUserIds(_classPrivateFieldGet(_this8, _property$3).data, _classPrivateFieldGet(_this8, _property$3).primaryKey, column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId)).then(function (values) {
+            _classPrivateMethodGet(_this8, _getUserValues, _getUserValues2).call(_this8, dataFromUserIds(_classPrivateFieldGet(_this8, _property$3).propertyId, column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId)).then(function (values) {
               _classPrivateMethodGet(_this8, _setUserValues, _setUserValues2).call(_this8, {
                 propertyId: _classPrivateFieldGet(_this8, _property$3).propertyId,
                 values: values
@@ -7805,7 +7805,7 @@
   function _get_queryIdsPayload() {
     var _ConditionBuilder$use;
 
-    return "togokey=".concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&filters=").concat(_classPrivateFieldGet(this, _dxCondition).queryFilters).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : '');
+    return "togokey=".concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&filters=").concat(_classPrivateFieldGet(this, _dxCondition).queryFilters).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&queries=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : '');
   }
 
   function _getQueryIds2() {
@@ -8448,6 +8448,9 @@
 
     elm.querySelector(':scope > .title > .button > button').addEventListener('click', function () {
       _classPrivateFieldGet(_this, _USER_IDS).value = _classPrivateFieldGet(_this, _USER_IDS).placeholder.replace('e.g. ', '');
+
+      _classPrivateFieldGet(_this, _USER_IDS).dispatchEvent(new Event('change'));
+
       submitButton.dispatchEvent(new Event('click'));
     });
     var buttons = elm.querySelector(':scope > .buttons');
@@ -8512,10 +8515,9 @@
   function _getProperty2(_ref) {
     var _this3 = this;
 
-    var propertyId = _ref.propertyId,
-        data = _ref.data,
-        primaryKey = _ref.primaryKey;
-    axios.get(dataFromUserIds(data, primaryKey), {
+    var propertyId = _ref.propertyId;
+        _ref.primaryKey;
+    axios.get(dataFromUserIds(propertyId), {
       cancelToken: _classPrivateFieldGet(this, _source).token
     }).then(function (response) {
       _classPrivateFieldGet(_this3, _BODY).classList.add('-showuserids');

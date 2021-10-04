@@ -1,18 +1,16 @@
 import App from '../classes/App';
 import ConditionBuilder from '../classes/ConditionBuilder';
 
-export function dataFromUserIds(sparqlet, primaryKey, categoryIds = '') {
+export function dataFromUserIds(propertyId, categoryIds = '') {
   return `${
     App.locate
-  }?sparqlet=${
-    encodeURIComponent(sparqlet)
-  }&primaryKey=${
-    encodeURIComponent(primaryKey)
+  }?attribute=${
+    propertyId
   }&categoryIds=${
     categoryIds
-  }&userKey=${
+  }&togokey=${
     ConditionBuilder.currentTogoKey
-  }&userIds=${
+  }&queries=${
     ConditionBuilder.userIds ?? ''
   }`
 }
