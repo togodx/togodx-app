@@ -293,8 +293,7 @@ export default class ColumnSelectorView {
     if (document.body.classList.contains('-showuserids') && ConditionBuilder.userIds) {
       this.#getUserValues(
         queryTemplates.dataFromUserIds(
-          this.#property.data,
-          this.#property.primaryKey,
+          this.#property.propertyId,
           column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId
           )
         )
@@ -358,8 +357,7 @@ export default class ColumnSelectorView {
           if (index > 0) {
             this.#getUserValues(
               queryTemplates.dataFromUserIds(
-                this.#property.data,
-                this.#property.primaryKey,
+                this.#property.propertyId,
                 column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId
                 )
               )
