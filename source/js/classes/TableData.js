@@ -417,7 +417,7 @@ export default class TableData {
       this.#dxCondition.queryFilters
     }${
       ConditionBuilder.userIds?.length > 0
-        ? `&inputIds=${encodeURIComponent(
+        ? `&queries=${encodeURIComponent(
             JSON.stringify(ConditionBuilder.userIds.split(','))
           )}`
         : ''
