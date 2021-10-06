@@ -1,5 +1,7 @@
 import ConditionBuilder from "./ConditionBuilder";
 
+const ALL_PROPERTIES = 'ALL_PROPERTIES';
+
 export default class ColumnView {
 
   #items;
@@ -7,33 +9,35 @@ export default class ColumnView {
   #max;
   #parentCategoryId;
   #inputMapAttribute;
+  #ROOT;
 
-  constructor(selector, items, depth, parentCategoryId) {
+  constructor(
+    selector,
+    items,
+    values,
+    depth,
+    propertyId,
+    parentCategoryId
+  ) {
     console.log(arguments)
     // this.#items = items;
     this.#depth = depth;
     this.#parentCategoryId = parentCategoryId;
 
-    this.#draw();
+    this.#draw(propertyId, values, depth);
   }
 
-  #draw(
-    selector,
-    propertyId,
-    items,
-    values,
-    depth,
-    parentCategoryId
-  ) {
+  #draw(propertyId, values, depth) {
+    console.log(propertyId, values)
     const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(propertyId);
-    const parentItem = parentCategoryId ? items[parentCategoryId] : undefined;
+    const parentItem = this.#parentCategoryId ? items[this.#parentCategoryId] : undefined;
 
     // make column
-    const column = document.createElement('div');
-    const isSelected = ConditionBuilder.isSelectedProperty(propertyId, parentCategoryId);
-    column.classList.add('column');
+    this.#ROOT = document.createElement('div');
+    const isSelected = ConditionBuilder.isSelectedProperty(propertyId, this.#parentCategoryId);
+    this.#ROOT.classList.add('column');
     this.#max = 0;
-    column.innerHTML = `
+    this.#ROOT.innerHTML = `
     <table>
       <thead>
         <tr class="header">
@@ -46,9 +50,9 @@ export default class ColumnView {
         <tr
           class="item -all"
           ${
-            parentCategoryId
+            this.#parentCategoryId
               ? `
-                data-parent-category-id="${parentCategoryId ?? ''}"
+                data-parent-category-id="${this.#parentCategoryId ?? ''}"
                 data-parent-label="${parentItem.label}"`
               : ''
           }
@@ -90,9 +94,11 @@ export default class ColumnView {
       }).join('')}</tbody>
     </table>
     `;
-    const tbody = column.querySelector(':scope > table > tbody');
+    const tbody = this.#ROOT.querySelector(':scope > table > tbody');
     const listItems = tbody.querySelectorAll(':scope > .item');
-    listItems.forEach(tr => items[tr.dataset.categoryId].elm = tr);
+    listItems.forEach(tr => {
+      values.find(value => value.categoryId == tr.dataset.categoryId).elm = tr;
+    });
 
     // drill down event
     tbody.querySelectorAll(':scope > .item.-haschild > .drilldown').forEach(drilldown => {
@@ -107,13 +113,13 @@ export default class ColumnView {
           }
         }
         // deselect siblings
-        const selectedItemKeys = Object.keys(items).filter(id => items[id].selected && items[id].depth >= depth);
+        const selectedItemKeys = Object.keys(values).filter(id => values[id].selected && values[id].depth >= depth);
         for (const key of selectedItemKeys) {
-          items[key].selected = false;
+          values[key].selected = false;
           selector.currentColumns[depth].querySelector(`[data-id="${key}"]`)?.classList.remove('-selected');
         }
         // get lower column
-        items[tr.dataset.id].selected = true;
+        values[tr.dataset.id].selected = true;
         selector.setSubColumn(tr.dataset.id, depth + 1);
       });
     });
@@ -146,20 +152,20 @@ export default class ColumnView {
     });
 
     // Map attributes event
-    this.#inputMapAttribute = column.querySelector(':scope > table > thead > .item.-all > .label > label > input');
+    this.#inputMapAttribute = this.#ROOT.querySelector(':scope > table > thead > .item.-all > .label > label > input');
     this.#inputMapAttribute.addEventListener('change', e => {
-      const parentCategoryId = e.target.closest('.item.-all').dataset.parentCategoryId;
+      // const parentCategoryId = e.target.closest('.item.-all').dataset.parentCategoryId;
       if (e.target.checked) {
-        ConditionBuilder.addProperty(propertyId, parentCategoryId);
+        ConditionBuilder.addProperty(propertyId, this.#parentCategoryId);
       } else {
-        ConditionBuilder.removeProperty(propertyId, parentCategoryId);
+        ConditionBuilder.removeProperty(propertyId, this.#parentCategoryId);
       }
     });
     // if (depth === 0) this.#ITEM_ALL_INPUT_OF_ROOT = inputMapAttribute;
 
     // this.#columns.push({column, parentCategoryId, max});
     // this.#update(App.viewModes.log10);
-    return column;
+    // return column;
   }
 
   get depth() {
@@ -176,6 +182,14 @@ export default class ColumnView {
 
   get max() {
     return this.#max;
+  }
+
+  get rootNode() {
+    return this.#ROOT;
+  }
+
+  get itemNodes() {
+    return this.#ROOT.querySelectorAll(':scope > table > tbody > .item');
   }
 
 }

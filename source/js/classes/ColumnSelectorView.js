@@ -6,8 +6,6 @@ import ColumnView from "./ColumnView";
 import * as event from '../events';
 import * as queryTemplates from '../functions/queryTemplates';
 
-const ALL_PROPERTIES = 'ALL_PROPERTIES';
-
 export default class ColumnSelectorView {
 
   #property;
@@ -82,7 +80,8 @@ export default class ColumnSelectorView {
 
     // make root column
     // const column = this.#makeColumn(items, depth);
-    const column = this.#make__Coumn(this, items, depth);
+    const column = this.#make__Coumn(items, depth);
+    console.log(column)
     this.#appendSubColumn(column, depth);
 
   }
@@ -113,7 +112,7 @@ export default class ColumnSelectorView {
         Records.fetchPropertyValues(this.#property.propertyId, categoryId)
           .then(values => {
             this.#setItems(values, depth, categoryId);
-            const column = this.#make__Coumn(this, values, depth, categoryId);
+            const column = this.#make__Coumn(values, depth, categoryId);
             resolve(column);
           })
           .catch(error => {
@@ -124,12 +123,13 @@ export default class ColumnSelectorView {
   }
 
   #make__Coumn(values, depth, parentCategoryId) {
+    console.log(values, depth, parentCategoryId)
     const column = new ColumnView(
       this,
-      this.#property.propertyId,
       this.#items,
       values,
       depth,
+      this.#property.propertyId,
       parentCategoryId
     );
     if (depth === 0) this.#INPUT_MAP_ATTRIBUTE_OF_ROOT = column.inputMapAttribute;
@@ -278,8 +278,9 @@ export default class ColumnSelectorView {
   }
 
   #appendSubColumn(column, depth) {
+    console.log(column)
     this.#currentColumns[depth] = column;
-    this.#CONTAINER.append(column);
+    this.#CONTAINER.append(column.rootNode);
     // scroll
     const left = this.#CONTAINER.scrollWidth - this.#CONTAINER.clientWidth;
     if (left > 0) {
@@ -312,7 +313,8 @@ export default class ColumnSelectorView {
     this.#columns.forEach(column => {
       let max = column.max;
       max = isLog10 && max > 1 ? Math.log10(max) : max;
-      column.column.querySelectorAll(':scope > table > tbody > .item').forEach(tr => {
+      console.log(column)
+      column.column.itemNodes.forEach(tr => {
         const count = Number(tr.dataset.count);
         const subject = Records.getSubjectWithPropertyId(this.#property.propertyId);
         tr.style.backgroundColor = `rgb(${subject.color.mix(App.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
