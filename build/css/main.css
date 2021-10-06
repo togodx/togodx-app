@@ -2193,6 +2193,9 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   font-size: 1.4rem;
 }
 
+#UploadUserIDsView {
+  display: none;
+}
 #UploadUserIDsView > textarea {
   width: 100%;
 }
