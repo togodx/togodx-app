@@ -9,6 +9,7 @@ export default class ColumnView {
   #max;
   #parentCategoryId;
   #inputMapAttribute;
+  #itemNodes;
   #ROOT;
 
   constructor(
@@ -99,6 +100,7 @@ export default class ColumnView {
     listItems.forEach(tr => {
       values.find(value => value.categoryId == tr.dataset.categoryId).elm = tr;
     });
+    this.#itemNodes = this.#ROOT.querySelectorAll(':scope > table > tbody > .item');
 
     // drill down event
     tbody.querySelectorAll(':scope > .item.-haschild > .drilldown').forEach(drilldown => {
@@ -189,7 +191,7 @@ export default class ColumnView {
   }
 
   get itemNodes() {
-    return this.#ROOT.querySelectorAll(':scope > table > tbody > .item');
+    return this.#itemNodes;
   }
 
 }

@@ -4402,6 +4402,8 @@
 
   var _inputMapAttribute = /*#__PURE__*/new WeakMap();
 
+  var _itemNodes = /*#__PURE__*/new WeakMap();
+
   var _ROOT$c = /*#__PURE__*/new WeakMap();
 
   var _draw$1 = /*#__PURE__*/new WeakSet();
@@ -4433,6 +4435,11 @@
       });
 
       _classPrivateFieldInitSpec(this, _inputMapAttribute, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _itemNodes, {
         writable: true,
         value: void 0
       });
@@ -4479,7 +4486,7 @@
     }, {
       key: "itemNodes",
       get: function get() {
-        return _classPrivateFieldGet(this, _ROOT$c).querySelectorAll(':scope > table > tbody > .item');
+        return _classPrivateFieldGet(this, _itemNodes);
       }
     }]);
 
@@ -4518,7 +4525,10 @@
       values.find(function (value) {
         return value.categoryId == tr.dataset.categoryId;
       }).elm = tr;
-    }); // drill down event
+    });
+
+    _classPrivateFieldSet(this, _itemNodes, _classPrivateFieldGet(this, _ROOT$c).querySelectorAll(':scope > table > tbody > .item')); // drill down event
+
 
     tbody.querySelectorAll(':scope > .item.-haschild > .drilldown').forEach(function (drilldown) {
       drilldown.addEventListener('click', function () {
@@ -4617,9 +4627,9 @@
 
   var _items$1 = /*#__PURE__*/new WeakMap();
 
-  var _columns = /*#__PURE__*/new WeakMap();
+  var _columnViews = /*#__PURE__*/new WeakMap();
 
-  var _currentColumns = /*#__PURE__*/new WeakMap();
+  var _currentColumnViews = /*#__PURE__*/new WeakMap();
 
   var _userValues$1 = /*#__PURE__*/new WeakMap();
 
@@ -4635,7 +4645,7 @@
 
   var _getColumn = /*#__PURE__*/new WeakSet();
 
-  var _make__Coumn = /*#__PURE__*/new WeakSet();
+  var _make__CoumnView = /*#__PURE__*/new WeakSet();
 
   var _makeColumn = /*#__PURE__*/new WeakSet();
 
@@ -4671,7 +4681,7 @@
 
       _classPrivateMethodInitSpec(this, _makeColumn);
 
-      _classPrivateMethodInitSpec(this, _make__Coumn);
+      _classPrivateMethodInitSpec(this, _make__CoumnView);
 
       _classPrivateMethodInitSpec(this, _getColumn);
 
@@ -4687,12 +4697,12 @@
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _columns, {
+      _classPrivateFieldInitSpec(this, _columnViews, {
         writable: true,
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _currentColumns, {
+      _classPrivateFieldInitSpec(this, _currentColumnViews, {
         writable: true,
         value: void 0
       });
@@ -4726,9 +4736,9 @@
 
       _classPrivateFieldSet(this, _items$1, {});
 
-      _classPrivateFieldSet(this, _columns, []);
+      _classPrivateFieldSet(this, _columnViews, []);
 
-      _classPrivateFieldSet(this, _currentColumns, []);
+      _classPrivateFieldSet(this, _currentColumnViews, []);
 
       _classPrivateFieldSet(this, _userValues$1, new Map()); // make container
 
@@ -4759,9 +4769,9 @@
         var detail = _ref2.detail;
 
         if (_classPrivateFieldGet(_this, _property$3).propertyId === detail.propertyId) {
-          _classPrivateFieldGet(_this, _currentColumns).forEach(function (column) {
+          _classPrivateFieldGet(_this, _currentColumnViews).forEach(function (columnView) {
             var isAllChecked = true;
-            column.querySelectorAll(':scope > table > tbody > .item').forEach(function (tr) {
+            columnView.itemNodes.forEach(function (tr) {
               var checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
               if (!checkbox.checked) isAllChecked = false;
 
@@ -4773,7 +4783,7 @@
               }
             }); // update Map attributes
 
-            column.querySelector(':scope > table > thead > .item.-all > .label > label > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
+            columnView.inputMapAttribute.checked = isAllChecked; // change ancestor status
             // TODO:
           });
         }
@@ -4791,14 +4801,11 @@
       var _depth = 0;
 
       _classPrivateMethodGet(this, _setItems, _setItems2).call(this, _items2, _depth); // make root column
-      // const column = this.#makeColumn(items, depth);
 
 
-      var _column = _classPrivateMethodGet(this, _make__Coumn, _make__Coumn2).call(this, _items2, _depth);
+      var _columnView = _classPrivateMethodGet(this, _make__CoumnView, _make__CoumnView2).call(this, _items2, _depth);
 
-      console.log(_column);
-
-      _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, _column, _depth);
+      _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, _columnView, _depth);
     } // private methods
 
 
@@ -4824,7 +4831,7 @@
     }, {
       key: "currentColumns",
       get: function get() {
-        return _classPrivateFieldGet(this, _currentColumns);
+        return _classPrivateFieldGet(this, _currentColumnViews);
       }
     }]);
 
@@ -4860,19 +4867,19 @@
     var _this3 = this;
 
     return new Promise(function (resolve, reject) {
-      var column = _classPrivateFieldGet(_this3, _columns).find(function (column) {
-        return column.parentCategoryId === categoryId;
+      var columnView = _classPrivateFieldGet(_this3, _columnViews).find(function (columnView) {
+        return columnView.parentCategoryId === categoryId;
       });
 
-      if (column) {
-        resolve(column.column);
+      if (columnView) {
+        resolve(columnView);
       } else {
         Records$1.fetchPropertyValues(_classPrivateFieldGet(_this3, _property$3).propertyId, categoryId).then(function (values) {
           _classPrivateMethodGet(_this3, _setItems, _setItems2).call(_this3, values, depth, categoryId);
 
-          var column = _classPrivateMethodGet(_this3, _make__Coumn, _make__Coumn2).call(_this3, values, depth, categoryId);
+          var columnView = _classPrivateMethodGet(_this3, _make__CoumnView, _make__CoumnView2).call(_this3, values, depth, categoryId);
 
-          resolve(column);
+          resolve(columnView);
         }).catch(function (error) {
           reject(error);
         });
@@ -4880,29 +4887,23 @@
     });
   }
 
-  function _make__Coumn2(values, depth, parentCategoryId) {
-    console.log(values, depth, parentCategoryId);
-    var column = new ColumnView(this, _classPrivateFieldGet(this, _items$1), values, depth, _classPrivateFieldGet(this, _property$3).propertyId, parentCategoryId);
-    if (depth === 0) _classPrivateFieldSet(this, _INPUT_MAP_ATTRIBUTE_OF_ROOT, column.inputMapAttribute);
+  function _make__CoumnView2(values, depth, parentCategoryId) {
+    var columnView = new ColumnView(this, _classPrivateFieldGet(this, _items$1), values, depth, _classPrivateFieldGet(this, _property$3).propertyId, parentCategoryId);
+    if (depth === 0) _classPrivateFieldSet(this, _INPUT_MAP_ATTRIBUTE_OF_ROOT, columnView.inputMapAttribute);
 
-    _classPrivateFieldGet(this, _columns).push({
-      column: column,
-      parentCategoryId: parentCategoryId,
-      max: column.max
-    });
+    _classPrivateFieldGet(this, _columnViews).push(columnView);
 
     _classPrivateMethodGet(this, _update$2, _update2$2).call(this, App$1.viewModes.log10);
 
-    return column;
+    return columnView;
   }
 
-  function _appendSubColumn2(column, depth) {
+  function _appendSubColumn2(columnView, depth) {
     var _this4 = this;
 
-    console.log(column);
-    _classPrivateFieldGet(this, _currentColumns)[depth] = column;
+    _classPrivateFieldGet(this, _currentColumnViews)[depth] = columnView;
 
-    _classPrivateFieldGet(this, _CONTAINER$1).append(column.rootNode); // scroll
+    _classPrivateFieldGet(this, _CONTAINER$1).append(columnView.rootNode); // scroll
 
 
     var left = _classPrivateFieldGet(this, _CONTAINER$1).scrollWidth - _classPrivateFieldGet(this, _CONTAINER$1).clientWidth;
@@ -4928,11 +4929,10 @@
   function _update2$2(isLog10) {
     var _this5 = this;
 
-    _classPrivateFieldGet(this, _columns).forEach(function (column) {
-      var max = column.max;
+    _classPrivateFieldGet(this, _columnViews).forEach(function (columnView) {
+      var max = columnView.max;
       max = isLog10 && max > 1 ? Math.log10(max) : max;
-      console.log(column);
-      column.column.itemNodes.forEach(function (tr) {
+      columnView.itemNodes.forEach(function (tr) {
         var count = Number(tr.dataset.count);
         var subject = Records$1.getSubjectWithPropertyId(_classPrivateFieldGet(_this5, _property$3).propertyId);
         tr.style.backgroundColor = "rgb(".concat(subject.color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
@@ -5003,9 +5003,9 @@
       }
 
       if (!bySubdirectory) {
-        _classPrivateFieldGet(this, _currentColumns).forEach(function (column, index) {
+        _classPrivateFieldGet(this, _currentColumnViews).forEach(function (columnView, index) {
           if (index > 0) {
-            _classPrivateMethodGet(_this7, _getUserValues, _getUserValues2).call(_this7, dataFromUserIds(_classPrivateFieldGet(_this7, _property$3).data, _classPrivateFieldGet(_this7, _property$3).primaryKey, column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId)).then(function (values) {
+            _classPrivateMethodGet(_this7, _getUserValues, _getUserValues2).call(_this7, dataFromUserIds(_classPrivateFieldGet(_this7, _property$3).data, _classPrivateFieldGet(_this7, _property$3).primaryKey, columnView.inputMapAttribute.dataset.parentCategoryId)).then(function (values) {
               _classPrivateMethodGet(_this7, _setUserValues, _setUserValues2).call(_this7, {
                 propertyId: _classPrivateFieldGet(_this7, _property$3).propertyId,
                 values: values

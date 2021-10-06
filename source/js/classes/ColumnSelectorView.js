@@ -10,8 +10,8 @@ export default class ColumnSelectorView {
 
   #property;
   #items;
-  #columns;
-  #currentColumns;
+  #columnViews;
+  #currentColumnViews;
   #userValues;
   #ROOT;
   #CONTAINER;
@@ -22,8 +22,8 @@ export default class ColumnSelectorView {
 
     this.#property = property;
     this.#items = {};
-    this.#columns = [];
-    this.#currentColumns = [];
+    this.#columnViews = [];
+    this.#currentColumnViews = [];
     this.#userValues = new Map();
 
     // make container
@@ -51,9 +51,9 @@ export default class ColumnSelectorView {
     })
     DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail}) => {
       if (this.#property.propertyId === detail.propertyId) {
-        this.#currentColumns.forEach(column => {
+        this.#currentColumnViews.forEach(columnView => {
           let isAllChecked = true;
-          column.querySelectorAll(':scope > table > tbody > .item').forEach(tr => {
+          columnView.itemNodes.forEach(tr => {
             const checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
             if (!checkbox.checked) isAllChecked = false;
             if (tr.dataset.id === detail.categoryId) {
@@ -64,7 +64,7 @@ export default class ColumnSelectorView {
             }
           })
           // update Map attributes
-          column.querySelector(':scope > table > thead > .item.-all > .label > label > input[type="checkbox"]').checked = isAllChecked;
+          columnView.inputMapAttribute.checked = isAllChecked;
           // change ancestor status
           // TODO:
         });
@@ -79,10 +79,8 @@ export default class ColumnSelectorView {
     this.#setItems(items, depth);
 
     // make root column
-    // const column = this.#makeColumn(items, depth);
-    const column = this.#make__Coumn(items, depth);
-    console.log(column)
-    this.#appendSubColumn(column, depth);
+    const columnView = this.#make__CoumnView(items, depth);
+    this.#appendSubColumn(columnView, depth);
 
   }
 
@@ -105,15 +103,15 @@ export default class ColumnSelectorView {
 
   #getColumn(categoryId, depth) {
     return new Promise((resolve, reject) => {
-      const column = this.#columns.find(column => column.parentCategoryId === categoryId);
-      if (column) {
-        resolve(column.column);
+      const columnView = this.#columnViews.find(columnView => columnView.parentCategoryId === categoryId);
+      if (columnView) {
+        resolve(columnView);
       } else {
         Records.fetchPropertyValues(this.#property.propertyId, categoryId)
           .then(values => {
             this.#setItems(values, depth, categoryId);
-            const column = this.#make__Coumn(values, depth, categoryId);
-            resolve(column);
+            const columnView = this.#make__CoumnView(values, depth, categoryId);
+            resolve(columnView);
           })
           .catch(error => {
             reject(error);
@@ -122,9 +120,8 @@ export default class ColumnSelectorView {
     });
   }
 
-  #make__Coumn(values, depth, parentCategoryId) {
-    console.log(values, depth, parentCategoryId)
-    const column = new ColumnView(
+  #make__CoumnView(values, depth, parentCategoryId) {
+    const columnView = new ColumnView(
       this,
       this.#items,
       values,
@@ -132,10 +129,10 @@ export default class ColumnSelectorView {
       this.#property.propertyId,
       parentCategoryId
     );
-    if (depth === 0) this.#INPUT_MAP_ATTRIBUTE_OF_ROOT = column.inputMapAttribute;
-    this.#columns.push({column, parentCategoryId, max: column.max});
+    if (depth === 0) this.#INPUT_MAP_ATTRIBUTE_OF_ROOT = columnView.inputMapAttribute;
+    this.#columnViews.push(columnView);
     this.#update(App.viewModes.log10);
-    return column;
+    return columnView;
   }
 
   #makeColumn(items, depth, parentCategoryId) {
@@ -216,16 +213,16 @@ export default class ColumnSelectorView {
     //     const tr = drilldown.closest('tr');
     //     tr.classList.add('-selected');
     //     // delete an existing lower columns
-    //     if (this.#currentColumns.length > depth + 1) {
-    //       for (let i = depth + 1; i < this.#currentColumns.length; i++) {
-    //         if (this.#currentColumns[i].parentNode) this.#CONTAINER.removeChild(this.#currentColumns[i]);
+    //     if (this.#currentColumnViews.length > depth + 1) {
+    //       for (let i = depth + 1; i < this.#currentColumnViews.length; i++) {
+    //         if (this.#currentColumnViews[i].parentNode) this.#CONTAINER.removeChild(this.#currentColumnViews[i]);
     //       }
     //     }
     //     // deselect siblings
     //     const selectedItemKeys = Object.keys(this.#items).filter(id => this.#items[id].selected && this.#items[id].depth >= depth);
     //     for (const key of selectedItemKeys) {
     //       this.#items[key].selected = false;
-    //       this.#currentColumns[depth].querySelector(`[data-id="${key}"]`)?.classList.remove('-selected');
+    //       this.#currentColumnViews[depth].querySelector(`[data-id="${key}"]`)?.classList.remove('-selected');
     //     }
     //     // get lower column
     //     this.#items[tr.dataset.id].selected = true;
@@ -277,10 +274,9 @@ export default class ColumnSelectorView {
     // return column;
   }
 
-  #appendSubColumn(column, depth) {
-    console.log(column)
-    this.#currentColumns[depth] = column;
-    this.#CONTAINER.append(column.rootNode);
+  #appendSubColumn(columnView, depth) {
+    this.#currentColumnViews[depth] = columnView;
+    this.#CONTAINER.append(columnView.rootNode);
     // scroll
     const left = this.#CONTAINER.scrollWidth - this.#CONTAINER.clientWidth;
     if (left > 0) {
@@ -310,11 +306,10 @@ export default class ColumnSelectorView {
   }
 
   #update(isLog10) {
-    this.#columns.forEach(column => {
-      let max = column.max;
+    this.#columnViews.forEach(columnView => {
+      let max = columnView.max;
       max = isLog10 && max > 1 ? Math.log10(max) : max;
-      console.log(column)
-      column.column.itemNodes.forEach(tr => {
+      columnView.itemNodes.forEach(tr => {
         const count = Number(tr.dataset.count);
         const subject = Records.getSubjectWithPropertyId(this.#property.propertyId);
         tr.style.backgroundColor = `rgb(${subject.color.mix(App.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
@@ -358,15 +353,15 @@ export default class ColumnSelectorView {
       }
       // if it doesnt called by subdirectory, get values of subdirectories
       if (!bySubdirectory) {
-        this.#currentColumns.forEach((column, index) => {
+        this.#currentColumnViews.forEach((columnView, index) => {
           if (index > 0) {
             this.#getUserValues(
               queryTemplates.dataFromUserIds(
                 this.#property.data,
                 this.#property.primaryKey,
-                column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId
-                )
+                columnView.inputMapAttribute.dataset.parentCategoryId
               )
+            )
               .then(values => {
                 this.#setUserValues({
                   propertyId: this.#property.propertyId,
@@ -403,7 +398,7 @@ export default class ColumnSelectorView {
   }
 
   get currentColumns() {
-    return this.#currentColumns;
+    return this.#currentColumnViews;
   }
 
 }
