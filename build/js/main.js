@@ -4573,155 +4573,166 @@
 
   var _clearUserValues = /*#__PURE__*/new WeakSet();
 
-  var ColumnSelectorView = function ColumnSelectorView(elm, property, _items2) {
-    var _this = this;
+  var ColumnSelectorView = /*#__PURE__*/function () {
+    function ColumnSelectorView(elm, property, _items2) {
+      var _this = this;
 
-    _classCallCheck(this, ColumnSelectorView);
+      _classCallCheck(this, ColumnSelectorView);
 
-    _classPrivateMethodInitSpec(this, _clearUserValues);
+      _classPrivateMethodInitSpec(this, _clearUserValues);
 
-    _classPrivateMethodInitSpec(this, _setUserValues);
+      _classPrivateMethodInitSpec(this, _setUserValues);
 
-    _classPrivateMethodInitSpec(this, _getUserValues);
+      _classPrivateMethodInitSpec(this, _getUserValues);
 
-    _classPrivateMethodInitSpec(this, _mutatePropertyCondition);
+      _classPrivateMethodInitSpec(this, _mutatePropertyCondition);
 
-    _classPrivateMethodInitSpec(this, _update$2);
+      _classPrivateMethodInitSpec(this, _update$2);
 
-    _classPrivateMethodInitSpec(this, _appendSubColumn);
+      _classPrivateMethodInitSpec(this, _appendSubColumn);
 
-    _classPrivateMethodInitSpec(this, _makeColumn);
+      _classPrivateMethodInitSpec(this, _makeColumn);
 
-    _classPrivateMethodInitSpec(this, _make__Coumn);
+      _classPrivateMethodInitSpec(this, _make__Coumn);
 
-    _classPrivateMethodInitSpec(this, _getColumn);
+      _classPrivateMethodInitSpec(this, _getColumn);
 
-    _classPrivateMethodInitSpec(this, _setSubColumn);
+      _classPrivateMethodInitSpec(this, _setSubColumn);
 
-    _classPrivateMethodInitSpec(this, _setItems);
+      _classPrivateMethodInitSpec(this, _setItems);
 
-    _classPrivateFieldInitSpec(this, _property$3, {
-      writable: true,
-      value: void 0
-    });
+      _classPrivateFieldInitSpec(this, _property$3, {
+        writable: true,
+        value: void 0
+      });
 
-    _classPrivateFieldInitSpec(this, _items$1, {
-      writable: true,
-      value: void 0
-    });
+      _classPrivateFieldInitSpec(this, _items$1, {
+        writable: true,
+        value: void 0
+      });
 
-    _classPrivateFieldInitSpec(this, _columns, {
-      writable: true,
-      value: void 0
-    });
+      _classPrivateFieldInitSpec(this, _columns, {
+        writable: true,
+        value: void 0
+      });
 
-    _classPrivateFieldInitSpec(this, _currentColumns, {
-      writable: true,
-      value: void 0
-    });
+      _classPrivateFieldInitSpec(this, _currentColumns, {
+        writable: true,
+        value: void 0
+      });
 
-    _classPrivateFieldInitSpec(this, _userValues$1, {
-      writable: true,
-      value: void 0
-    });
+      _classPrivateFieldInitSpec(this, _userValues$1, {
+        writable: true,
+        value: void 0
+      });
 
-    _classPrivateFieldInitSpec(this, _ROOT$b, {
-      writable: true,
-      value: void 0
-    });
+      _classPrivateFieldInitSpec(this, _ROOT$b, {
+        writable: true,
+        value: void 0
+      });
 
-    _classPrivateFieldInitSpec(this, _CONTAINER$1, {
-      writable: true,
-      value: void 0
-    });
+      _classPrivateFieldInitSpec(this, _CONTAINER$1, {
+        writable: true,
+        value: void 0
+      });
 
-    _classPrivateFieldInitSpec(this, _LOADING_VIEW$2, {
-      writable: true,
-      value: void 0
-    });
+      _classPrivateFieldInitSpec(this, _LOADING_VIEW$2, {
+        writable: true,
+        value: void 0
+      });
 
-    _classPrivateFieldInitSpec(this, _ITEM_ALL_INPUT_OF_ROOT, {
-      writable: true,
-      value: void 0
-    });
+      _classPrivateFieldInitSpec(this, _ITEM_ALL_INPUT_OF_ROOT, {
+        writable: true,
+        value: void 0
+      });
 
-    _classPrivateFieldSet(this, _property$3, property);
+      _classPrivateFieldSet(this, _property$3, property);
 
-    _classPrivateFieldSet(this, _items$1, {});
+      _classPrivateFieldSet(this, _items$1, {});
 
-    _classPrivateFieldSet(this, _columns, []);
+      _classPrivateFieldSet(this, _columns, []);
 
-    _classPrivateFieldSet(this, _currentColumns, []);
+      _classPrivateFieldSet(this, _currentColumns, []);
 
-    _classPrivateFieldSet(this, _userValues$1, new Map()); // make container
-
-
-    elm.innerHTML = "\n    <div class=\"column-selector-view\">\n      <div class=\"columns\">\n        <div class=\"inner\"></div>\n      </div>\n      <div class=\"loading-view\"></div>\n    </div>";
-
-    _classPrivateFieldSet(this, _ROOT$b, elm.querySelector(':scope > .column-selector-view'));
-
-    _classPrivateFieldSet(this, _CONTAINER$1, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .columns > .inner'));
-
-    _classPrivateFieldSet(this, _LOADING_VIEW$2, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .loading-view')); // even listener
+      _classPrivateFieldSet(this, _userValues$1, new Map()); // make container
 
 
-    DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (_ref) {
-      var detail = _ref.detail;
+      elm.innerHTML = "\n    <div class=\"column-selector-view\">\n      <div class=\"columns\">\n        <div class=\"inner\"></div>\n      </div>\n      <div class=\"loading-view\"></div>\n    </div>";
 
-      if (detail.action === 'remove') {
-        if (_classPrivateFieldGet(_this, _property$3).propertyId === detail.propertyId) {
-          if (detail.parentCategoryId) {
-            var checkbox = _classPrivateFieldGet(_this, _CONTAINER$1).querySelector("[data-parent-category-id=\"".concat(detail.parentCategoryId, "\"] > input"));
+      _classPrivateFieldSet(this, _ROOT$b, elm.querySelector(':scope > .column-selector-view'));
 
-            if (checkbox) checkbox.checked = false;
+      _classPrivateFieldSet(this, _CONTAINER$1, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .columns > .inner'));
+
+      _classPrivateFieldSet(this, _LOADING_VIEW$2, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .loading-view')); // even listener
+
+
+      DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (_ref) {
+        var detail = _ref.detail;
+
+        if (detail.action === 'remove') {
+          if (_classPrivateFieldGet(_this, _property$3).propertyId === detail.propertyId) {
+            if (detail.parentCategoryId) {
+              var checkbox = _classPrivateFieldGet(_this, _CONTAINER$1).querySelector("[data-parent-category-id=\"".concat(detail.parentCategoryId, "\"] > input"));
+
+              if (checkbox) checkbox.checked = false;
+            }
           }
         }
+      });
+      DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref2) {
+        var detail = _ref2.detail;
+
+        if (_classPrivateFieldGet(_this, _property$3).propertyId === detail.propertyId) {
+          _classPrivateFieldGet(_this, _currentColumns).forEach(function (column) {
+            var isAllChecked = true;
+            column.querySelectorAll(':scope > table > tbody > .item').forEach(function (tr) {
+              var checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
+              if (!checkbox.checked) isAllChecked = false;
+
+              if (tr.dataset.id === detail.categoryId) {
+                // change checkbox status
+                var isChecked = detail.action === 'add';
+                checkbox.checked = isChecked;
+                _classPrivateFieldGet(_this, _items$1)[tr.dataset.id].checked = isChecked;
+              }
+            }); // update Map attributes
+
+            column.querySelector(':scope > table > thead > .item.-all > .label > label > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
+            // TODO:
+          });
+        }
+      });
+      DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
+        return _classPrivateMethodGet(_this, _update$2, _update2$2).call(_this, e.detail.log10);
+      });
+      DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, _classPrivateMethodGet(this, _mutatePropertyCondition, _mutatePropertyCondition2).bind(this));
+      DefaultEventEmitter$1.addEventListener(setUserValues, function (e) {
+        return _classPrivateMethodGet(_this, _setUserValues, _setUserValues2).call(_this, e.detail);
+      });
+      DefaultEventEmitter$1.addEventListener(clearUserValues, function () {
+        return _classPrivateMethodGet(_this, _clearUserValues, _clearUserValues2).call(_this);
+      });
+      var _depth = 0;
+
+      _classPrivateMethodGet(this, _setItems, _setItems2).call(this, _items2, _depth); // make root column
+      // const column = this.#makeColumn(items, depth);
+
+
+      var _column = _classPrivateMethodGet(this, _make__Coumn, _make__Coumn2).call(this, this, _items2, _depth);
+
+      _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, _column, _depth);
+    } // private methods
+
+
+    _createClass(ColumnSelectorView, [{
+      key: "currentColumns",
+      get: function get() {
+        return _classPrivateFieldGet(this, _currentColumns);
       }
-    });
-    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref2) {
-      var detail = _ref2.detail;
+    }]);
 
-      if (_classPrivateFieldGet(_this, _property$3).propertyId === detail.propertyId) {
-        _classPrivateFieldGet(_this, _currentColumns).forEach(function (column) {
-          var isAllChecked = true;
-          column.querySelectorAll(':scope > table > tbody > .item').forEach(function (tr) {
-            var checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
-            if (!checkbox.checked) isAllChecked = false;
-
-            if (tr.dataset.id === detail.categoryId) {
-              // change checkbox status
-              var isChecked = detail.action === 'add';
-              checkbox.checked = isChecked;
-              _classPrivateFieldGet(_this, _items$1)[tr.dataset.id].checked = isChecked;
-            }
-          }); // update Map attributes
-
-          column.querySelector(':scope > table > thead > .item.-all > .label > label > input[type="checkbox"]').checked = isAllChecked; // change ancestor status
-          // TODO:
-        });
-      }
-    });
-    DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
-      return _classPrivateMethodGet(_this, _update$2, _update2$2).call(_this, e.detail.log10);
-    });
-    DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, _classPrivateMethodGet(this, _mutatePropertyCondition, _mutatePropertyCondition2).bind(this));
-    DefaultEventEmitter$1.addEventListener(setUserValues, function (e) {
-      return _classPrivateMethodGet(_this, _setUserValues, _setUserValues2).call(_this, e.detail);
-    });
-    DefaultEventEmitter$1.addEventListener(clearUserValues, function () {
-      return _classPrivateMethodGet(_this, _clearUserValues, _clearUserValues2).call(_this);
-    });
-    var _depth = 0;
-
-    _classPrivateMethodGet(this, _setItems, _setItems2).call(this, _items2, _depth); // make root column
-    // const column = this.#makeColumn(items, depth);
-
-
-    var _column = _classPrivateMethodGet(this, _make__Coumn, _make__Coumn2).call(this, this, _items2, _depth);
-
-    _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, _column, _depth);
-  } // private methods
-  ;
+    return ColumnSelectorView;
+  }();
 
   function _setItems2(items, depth, parent) {
     var _iterator = _createForOfIteratorHelper(items),
