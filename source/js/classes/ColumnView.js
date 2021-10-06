@@ -4,8 +4,9 @@ export default class ColumnView {
 
   #items;
   #depth;
+  #max;
   #parentCategoryId;
-  #itemAllInput;
+  #inputMapAttribute;
 
   constructor(selector, items, depth, parentCategoryId) {
     console.log(arguments)
@@ -31,7 +32,7 @@ export default class ColumnView {
     const column = document.createElement('div');
     const isSelected = ConditionBuilder.isSelectedProperty(propertyId, parentCategoryId);
     column.classList.add('column');
-    let max = 0;
+    this.#max = 0;
     column.innerHTML = `
     <table>
       <thead>
@@ -65,7 +66,7 @@ export default class ColumnView {
         </tr>
       </thead>
       <tbody>${values.map(item => {
-        max = Math.max(max, item.count);
+        this.#max = Math.max(this.#max, item.count);
         const checked = selectedCategoryIds.indexOf(item.categoryId) !== -1
           ? ' checked'
           : '';
@@ -145,8 +146,8 @@ export default class ColumnView {
     });
 
     // Map attributes event
-    this.#itemAllInput = column.querySelector(':scope > table > thead > .item.-all > .label > label > input');
-    this.#itemAllInput.addEventListener('change', e => {
+    this.#inputMapAttribute = column.querySelector(':scope > table > thead > .item.-all > .label > label > input');
+    this.#inputMapAttribute.addEventListener('change', e => {
       const parentCategoryId = e.target.closest('.item.-all').dataset.parentCategoryId;
       if (e.target.checked) {
         ConditionBuilder.addProperty(propertyId, parentCategoryId);
@@ -154,10 +155,10 @@ export default class ColumnView {
         ConditionBuilder.removeProperty(propertyId, parentCategoryId);
       }
     });
-    // if (depth === 0) this.#ITEM_ALL_INPUT_OF_ROOT = itemAllInput;
+    // if (depth === 0) this.#ITEM_ALL_INPUT_OF_ROOT = inputMapAttribute;
 
-    this.#columns.push({column, parentCategoryId, max});
-    this.#update(App.viewModes.log10);
+    // this.#columns.push({column, parentCategoryId, max});
+    // this.#update(App.viewModes.log10);
     return column;
   }
 
@@ -169,8 +170,12 @@ export default class ColumnView {
     return this.#parentCategoryId;
   }
 
-  get itemAllInput() {
-    return this.#itemAllInput;
+  get inputMapAttribute() {
+    return this.#inputMapAttribute;
+  }
+
+  get max() {
+    return this.#max;
   }
 
 }

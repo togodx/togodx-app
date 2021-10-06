@@ -18,7 +18,7 @@ export default class ColumnSelectorView {
   #ROOT;
   #CONTAINER;
   #LOADING_VIEW;
-  #ITEM_ALL_INPUT_OF_ROOT;
+  #INPUT_MAP_ATTRIBUTE_OF_ROOT;
 
   constructor(elm, property, items) {
 
@@ -132,6 +132,9 @@ export default class ColumnSelectorView {
       depth,
       parentCategoryId
     );
+    if (depth === 0) this.#INPUT_MAP_ATTRIBUTE_OF_ROOT = column.inputMapAttribute;
+    this.#columns.push({column, parentCategoryId, max: column.max});
+    this.#update(App.viewModes.log10);
     return column;
   }
 
@@ -267,7 +270,7 @@ export default class ColumnSelectorView {
     //     ConditionBuilder.removeProperty(this.#property.propertyId, parentCategoryId);
     //   }
     // });
-    // if (depth === 0) this.#ITEM_ALL_INPUT_OF_ROOT = itemAllInput;
+    // if (depth === 0) this.#INPUT_MAP_ATTRIBUTE_OF_ROOT = itemAllInput;
 
     // this.#columns.push({column, parentCategoryId, max});
     // this.#update(App.viewModes.log10);
@@ -319,7 +322,7 @@ export default class ColumnSelectorView {
 
   #mutatePropertyCondition({detail: {action, propertyId, parentCategoryId}}) {
     if (propertyId === this.#property.propertyId && parentCategoryId === undefined) {
-      this.#ITEM_ALL_INPUT_OF_ROOT.checked = action === 'add';
+      this.#INPUT_MAP_ATTRIBUTE_OF_ROOT.checked = action === 'add';
     }
   }
 
