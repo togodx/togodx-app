@@ -1,10 +1,11 @@
 import ConditionBuilder from "./ConditionBuilder";
+import DefaultEventEmitter from "./DefaultEventEmitter";
+import * as event from '../events';
 
 const ALL_PROPERTIES = 'ALL_PROPERTIES';
 
 export default class ColumnView {
 
-  #items;
   #depth;
   #max;
   #parentCategoryId;
@@ -14,23 +15,45 @@ export default class ColumnView {
 
   constructor(
     selector,
-    items,
     values,
     depth,
     propertyId,
     parentCategoryId
   ) {
     console.log(arguments)
-    // this.#items = items;
+
+    // set members
     this.#depth = depth;
     this.#parentCategoryId = parentCategoryId;
 
+    // draw
     this.#draw(selector, propertyId, values, depth);
+
+    // even listener
+    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail}) => {
+      if (detail.action === 'remove') {
+        if (propertyId === detail.propertyId) {
+          if (detail.parentCategoryId && detail.parentCategoryId == this.parentCategoryId) {
+            this.inputMapAttribute.checked = false;
+          }
+        }
+      }
+    });
+    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail}) => {
+      if (propertyId === detail.propertyId) {
+        this.itemNodes.forEach(tr => {
+          const checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
+          if (tr.dataset.id == detail.categoryId) {
+            checkbox.checked = detail.action === 'add';
+          }
+        });
+      }
+    });
+
   }
 
   #draw(selector, propertyId, values, depth) {
     const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(propertyId);
-    // const parentItem = this.#parentCategoryId ? items[this.#parentCategoryId] : undefined;
 
     // make column
     this.#ROOT = document.createElement('div');
@@ -94,9 +117,9 @@ export default class ColumnView {
     `;
     const tbody = this.#ROOT.querySelector(':scope > table > tbody');
     const listItems = tbody.querySelectorAll(':scope > .item');
-    listItems.forEach(tr => {
-      values.find(value => value.categoryId == tr.dataset.categoryId).elm = tr;
-    });
+    // listItems.forEach(tr => {
+    //   values.find(value => value.categoryId == tr.dataset.categoryId).elm = tr;
+    // });
     this.#itemNodes = this.#ROOT.querySelectorAll(':scope > table > tbody > .item');
 
     // drill down event
@@ -107,7 +130,6 @@ export default class ColumnView {
         // delete an existing lower columns
         if (selector.currentColumnViews.length > depth + 1) {
           for (let i = depth + 1; i < selector.currentColumnViews.length; i++) {
-            // if (selector.currentColumnViews[i].parentNode) this.#CONTAINER.removeChild(selector.currentColumnViews[i]);
             if (selector.currentColumnViews[i].parentNode) selector.currentColumnViews[i].remove();
           }
         }
@@ -118,8 +140,7 @@ export default class ColumnView {
           selector.currentColumnViews[depth].querySelector(`[data-id="${key}"]`)?.classList.remove('-selected');
         }
         // get lower column
-        // values[tr.dataset.id].selected = true;
-        selector.setSelectedValue(tr.dataset.id, true);
+        // selector.setSelectedValue(tr.dataset.id, true);
         selector.setSubColumn(tr.dataset.id, depth + 1);
       });
     });
@@ -161,11 +182,6 @@ export default class ColumnView {
         ConditionBuilder.removeProperty(propertyId, this.#parentCategoryId);
       }
     });
-    // if (depth === 0) this.#ITEM_ALL_INPUT_OF_ROOT = inputMapAttribute;
-
-    // this.#columns.push({column, parentCategoryId, max});
-    // this.#update(App.viewModes.log10);
-    // return column;
   }
 
   get depth() {
