@@ -25,13 +25,12 @@ export default class ColumnView {
     this.#depth = depth;
     this.#parentCategoryId = parentCategoryId;
 
-    this.#draw(propertyId, values, depth);
+    this.#draw(selector, propertyId, values, depth);
   }
 
-  #draw(propertyId, values, depth) {
-    console.log(propertyId, values)
+  #draw(selector, propertyId, values, depth) {
     const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(propertyId);
-    const parentItem = this.#parentCategoryId ? items[this.#parentCategoryId] : undefined;
+    // const parentItem = this.#parentCategoryId ? items[this.#parentCategoryId] : undefined;
 
     // make column
     this.#ROOT = document.createElement('div');
@@ -52,9 +51,7 @@ export default class ColumnView {
           class="item -all"
           ${
             this.#parentCategoryId
-              ? `
-                data-parent-category-id="${this.#parentCategoryId ?? ''}"
-                data-parent-label="${parentItem.label}"`
+              ? `data-parent-category-id="${this.#parentCategoryId ?? ''}"`
               : ''
           }
           data-category-ids="${values.map(item => item.categoryId)}"
@@ -108,20 +105,21 @@ export default class ColumnView {
         const tr = drilldown.closest('tr');
         tr.classList.add('-selected');
         // delete an existing lower columns
-        if (selector.currentColumns.length > depth + 1) {
-          for (let i = depth + 1; i < selector.currentColumns.length; i++) {
-            // if (selector.currentColumns[i].parentNode) this.#CONTAINER.removeChild(selector.currentColumns[i]);
-            if (selector.currentColumns[i].parentNode) selector.currentColumns[i].remove();
+        if (selector.currentColumnViews.length > depth + 1) {
+          for (let i = depth + 1; i < selector.currentColumnViews.length; i++) {
+            // if (selector.currentColumnViews[i].parentNode) this.#CONTAINER.removeChild(selector.currentColumnViews[i]);
+            if (selector.currentColumnViews[i].parentNode) selector.currentColumnViews[i].remove();
           }
         }
         // deselect siblings
         const selectedItemKeys = Object.keys(values).filter(id => values[id].selected && values[id].depth >= depth);
         for (const key of selectedItemKeys) {
           values[key].selected = false;
-          selector.currentColumns[depth].querySelector(`[data-id="${key}"]`)?.classList.remove('-selected');
+          selector.currentColumnViews[depth].querySelector(`[data-id="${key}"]`)?.classList.remove('-selected');
         }
         // get lower column
-        values[tr.dataset.id].selected = true;
+        // values[tr.dataset.id].selected = true;
+        selector.setSelectedValue(tr.dataset.id, true);
         selector.setSubColumn(tr.dataset.id, depth + 1);
       });
     });

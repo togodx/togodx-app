@@ -4409,7 +4409,7 @@
   var _draw$1 = /*#__PURE__*/new WeakSet();
 
   var ColumnView = /*#__PURE__*/function () {
-    function ColumnView(_selector, _items2, _values, _depth2, _propertyId, _parentCategoryId2) {
+    function ColumnView(_selector, items, _values, _depth2, _propertyId, _parentCategoryId2) {
       _classCallCheck(this, ColumnView);
 
       _classPrivateMethodInitSpec(this, _draw$1);
@@ -4455,7 +4455,7 @@
 
       _classPrivateFieldSet(this, _parentCategoryId, _parentCategoryId2);
 
-      _classPrivateMethodGet(this, _draw$1, _draw2$1).call(this, _propertyId, _values, _depth2);
+      _classPrivateMethodGet(this, _draw$1, _draw2$1).call(this, _selector, _propertyId, _values, _depth2);
     }
 
     _createClass(ColumnView, [{
@@ -4493,13 +4493,12 @@
     return ColumnView;
   }();
 
-  function _draw2$1(propertyId, values, depth) {
+  function _draw2$1(selector, propertyId, values, depth) {
     var _classPrivateFieldGet2,
         _this = this;
 
-    console.log(propertyId, values);
-    var selectedCategoryIds = ConditionBuilder$1.getSelectedCategoryIds(propertyId);
-    var parentItem = _classPrivateFieldGet(this, _parentCategoryId) ? items[_classPrivateFieldGet(this, _parentCategoryId)] : undefined; // make column
+    var selectedCategoryIds = ConditionBuilder$1.getSelectedCategoryIds(propertyId); // const parentItem = this.#parentCategoryId ? items[this.#parentCategoryId] : undefined;
+    // make column
 
     _classPrivateFieldSet(this, _ROOT$c, document.createElement('div'));
 
@@ -4509,7 +4508,7 @@
 
     _classPrivateFieldSet(this, _max, 0);
 
-    _classPrivateFieldGet(this, _ROOT$c).innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label\">Values</th>\n          <th class=\"total\">Total</th>\n          <th class=\"mapped\">Mapped</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n        <tr\n          class=\"item -all\"\n          ".concat(_classPrivateFieldGet(this, _parentCategoryId) ? "\n                data-parent-category-id=\"".concat((_classPrivateFieldGet2 = _classPrivateFieldGet(this, _parentCategoryId)) !== null && _classPrivateFieldGet2 !== void 0 ? _classPrivateFieldGet2 : '', "\"\n                data-parent-label=\"").concat(parentItem.label, "\"") : '', "\n          data-category-ids=\"").concat(values.map(function (item) {
+    _classPrivateFieldGet(this, _ROOT$c).innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label\">Values</th>\n          <th class=\"total\">Total</th>\n          <th class=\"mapped\">Mapped</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n        <tr\n          class=\"item -all\"\n          ".concat(_classPrivateFieldGet(this, _parentCategoryId) ? "data-parent-category-id=\"".concat((_classPrivateFieldGet2 = _classPrivateFieldGet(this, _parentCategoryId)) !== null && _classPrivateFieldGet2 !== void 0 ? _classPrivateFieldGet2 : '', "\"") : '', "\n          data-category-ids=\"").concat(values.map(function (item) {
       return item.categoryId;
     }), "\"\n          data-depth=\"").concat(depth, "\">\n          <td class=\"label\" colspan=\"5\">\n            <label>\n              <input\n                type=\"checkbox\"\n                value=\"").concat(ALL_PROPERTIES, "\" \n                ").concat(isSelected ? ' checked' : '', "/>\n              Map following attributes\n            </label>\n          </td>\n        </tr>\n      </thead>\n      <tbody>").concat(values.map(function (item) {
       _classPrivateFieldSet(_this, _max, Math.max(_classPrivateFieldGet(_this, _max), item.count));
@@ -4535,10 +4534,10 @@
         var tr = drilldown.closest('tr');
         tr.classList.add('-selected'); // delete an existing lower columns
 
-        if (selector.currentColumns.length > depth + 1) {
-          for (var i = depth + 1; i < selector.currentColumns.length; i++) {
-            // if (selector.currentColumns[i].parentNode) this.#CONTAINER.removeChild(selector.currentColumns[i]);
-            if (selector.currentColumns[i].parentNode) selector.currentColumns[i].remove();
+        if (selector.currentColumnViews.length > depth + 1) {
+          for (var i = depth + 1; i < selector.currentColumnViews.length; i++) {
+            // if (selector.currentColumnViews[i].parentNode) this.#CONTAINER.removeChild(selector.currentColumnViews[i]);
+            if (selector.currentColumnViews[i].parentNode) selector.currentColumnViews[i].remove();
           }
         } // deselect siblings
 
@@ -4556,8 +4555,9 @@
 
             var key = _step.value;
             values[key].selected = false;
-            (_selector$currentColu = selector.currentColumns[depth].querySelector("[data-id=\"".concat(key, "\"]"))) === null || _selector$currentColu === void 0 ? void 0 : _selector$currentColu.classList.remove('-selected');
+            (_selector$currentColu = selector.currentColumnViews[depth].querySelector("[data-id=\"".concat(key, "\"]"))) === null || _selector$currentColu === void 0 ? void 0 : _selector$currentColu.classList.remove('-selected');
           } // get lower column
+          // values[tr.dataset.id].selected = true;
 
         } catch (err) {
           _iterator.e(err);
@@ -4565,7 +4565,7 @@
           _iterator.f();
         }
 
-        values[tr.dataset.id].selected = true;
+        selector.setSelectedValue(tr.dataset.id, true);
         selector.setSubColumn(tr.dataset.id, depth + 1);
       });
     });
@@ -4829,7 +4829,12 @@
         });
       }
     }, {
-      key: "currentColumns",
+      key: "setSelectedValue",
+      value: function setSelectedValue(categoryId, selected) {
+        _classPrivateFieldGet(this, _items$1)[categoryId].selected = selected;
+      }
+    }, {
+      key: "currentColumnViews",
       get: function get() {
         return _classPrivateFieldGet(this, _currentColumnViews);
       }

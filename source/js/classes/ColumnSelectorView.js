@@ -397,7 +397,11 @@ export default class ColumnSelectorView {
       });
   }
 
-  get currentColumns() {
+  setSelectedValue(categoryId, selected) {
+    this.#items[categoryId].selected = selected;
+  }
+
+  get currentColumnViews() {
     return this.#currentColumnViews;
   }
 
