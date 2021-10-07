@@ -3297,7 +3297,7 @@
           });
         }
 
-        return matchKeys && matchValues;
+        return dxCondition.togoKey === this.togoKey && matchKeys && matchValues;
       }
     }, {
       key: "togoKey",
@@ -3769,6 +3769,7 @@
   }
 
   function _makeQueueOfGettingChildCategoryIds2(condition) {
+    if (condition.togoKey) _classPrivateFieldSet(this, _togoKey, condition.togoKey);
     var queue = [];
 
     var addQueue = function addQueue(propertyId, id) {

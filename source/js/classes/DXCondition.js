@@ -51,7 +51,7 @@ export default class DXCondition {
         }) !== -1;
       });
     }
-    return matchKeys && matchValues;
+    return dxCondition.togoKey === this.togoKey && matchKeys && matchValues;
   }
 
   #copyKeyConditions(keyConditions) {
