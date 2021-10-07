@@ -3297,7 +3297,7 @@
           });
         }
 
-        return matchKeys && matchValues;
+        return dxCondition.togoKey === this.togoKey && matchKeys && matchValues;
       }
     }, {
       key: "togoKey",
