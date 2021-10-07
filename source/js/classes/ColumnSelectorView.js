@@ -1,4 +1,4 @@
-import App from "./App";
+// import App from "./App";
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import Records from "./Records";
@@ -39,7 +39,6 @@ export default class ColumnSelectorView {
     this.#LOADING_VIEW = this.#ROOT.querySelector(':scope > .loading-view');
 
     // even listener
-    DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, this.#mutatePropertyCondition.bind(this));
     DefaultEventEmitter.addEventListener(event.setUserValues, e => this.#setUserValues(e.detail));
     DefaultEventEmitter.addEventListener(event.clearUserValues, () => this.#clearUserValues());
@@ -50,7 +49,6 @@ export default class ColumnSelectorView {
     // make root column
     const columnView = this.#makeCoumnView(items, depth);
     this.#appendSubColumn(columnView, depth);
-
   }
 
   // private methods
@@ -99,7 +97,6 @@ export default class ColumnSelectorView {
     );
     if (depth === 0) this.#INPUT_MAP_ATTRIBUTE_OF_ROOT = columnView.inputMapAttribute;
     this.#columnViews.push(columnView);
-    this.#update(App.viewModes.log10);
     return columnView;
   }
 
@@ -132,18 +129,6 @@ export default class ColumnSelectorView {
           }, true);
         });
     }
-  }
-
-  #update(isLog10) {
-    this.#columnViews.forEach(columnView => {
-      let max = columnView.max;
-      max = isLog10 && max > 1 ? Math.log10(max) : max;
-      columnView.itemNodes.forEach(tr => {
-        const count = Number(tr.dataset.count);
-        const subject = Records.getSubjectWithPropertyId(this.#property.propertyId);
-        tr.style.backgroundColor = `rgb(${subject.color.mix(App.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
-      });
-    });
   }
 
   #mutatePropertyCondition({detail: {action, propertyId, parentCategoryId}}) {

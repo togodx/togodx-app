@@ -1,5 +1,7 @@
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import App from "./App";
+import Records from "./Records";
 import * as event from '../events';
 
 const ALL_PROPERTIES = 'ALL_PROPERTIES';
@@ -8,6 +10,7 @@ export default class ColumnView {
 
   #depth;
   #max;
+  #propertyId;
   #parentCategoryId;
   #inputMapAttribute;
   #itemNodes;
@@ -24,15 +27,17 @@ export default class ColumnView {
 
     // set members
     this.#depth = depth;
+    this.#propertyId = propertyId;
     this.#parentCategoryId = parentCategoryId;
 
     // draw
-    this.#draw(selector, propertyId, values, depth);
+    this.#draw(selector, values, depth);
+    this.#update(App.viewModes.log10);
 
     // even listener
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail}) => {
       if (detail.action === 'remove') {
-        if (propertyId === detail.propertyId) {
+        if (this.#propertyId === detail.propertyId) {
           if (detail.parentCategoryId && detail.parentCategoryId == this.parentCategoryId) {
             this.inputMapAttribute.checked = false;
           }
@@ -40,7 +45,7 @@ export default class ColumnView {
       }
     });
     DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail}) => {
-      if (propertyId === detail.propertyId) {
+      if (this.#propertyId === detail.propertyId) {
         this.itemNodes.forEach(tr => {
           const checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
           if (tr.dataset.id == detail.categoryId) {
@@ -49,15 +54,16 @@ export default class ColumnView {
         });
       }
     });
+    DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
 
   }
 
-  #draw(selector, propertyId, values, depth) {
-    const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(propertyId);
+  #draw(selector, values, depth) {
+    const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.#propertyId);
 
     // make column
     this.#ROOT = document.createElement('div');
-    const isSelected = ConditionBuilder.isSelectedProperty(propertyId, this.#parentCategoryId);
+    const isSelected = ConditionBuilder.isSelectedProperty(this.#propertyId, this.#parentCategoryId);
     this.#ROOT.classList.add('column');
     this.#max = 0;
     this.#ROOT.innerHTML = `
@@ -162,12 +168,12 @@ export default class ColumnView {
         } while (parentCategoryId);
         if (checkbox.checked) { // add
           ConditionBuilder.addPropertyValue(
-            propertyId,
+            this.#propertyId,
             checkbox.value,
             ancestors
           );
         } else { // remove
-          ConditionBuilder.removePropertyValue(propertyId, checkbox.value);
+          ConditionBuilder.removePropertyValue(this.#propertyId, checkbox.value);
         }
       });
     });
@@ -175,12 +181,20 @@ export default class ColumnView {
     // Map attributes event
     this.#inputMapAttribute = this.#ROOT.querySelector(':scope > table > thead > .item.-all > .label > label > input');
     this.#inputMapAttribute.addEventListener('change', e => {
-      // const parentCategoryId = e.target.closest('.item.-all').dataset.parentCategoryId;
       if (e.target.checked) {
-        ConditionBuilder.addProperty(propertyId, this.#parentCategoryId);
+        ConditionBuilder.addProperty(this.#propertyId, this.#parentCategoryId);
       } else {
-        ConditionBuilder.removeProperty(propertyId, this.#parentCategoryId);
+        ConditionBuilder.removeProperty(this.#propertyId, this.#parentCategoryId);
       }
+    });
+  }
+
+  #update(isLog10) {
+    let max = isLog10 && this.max > 1 ? Math.log10(this.max) : this.max;
+    this.itemNodes.forEach(tr => {
+      const count = Number(tr.dataset.count);
+      const subject = Records.getSubjectWithPropertyId(this.#propertyId);
+      tr.style.backgroundColor = `rgb(${subject.color.mix(App.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
     });
   }
 
