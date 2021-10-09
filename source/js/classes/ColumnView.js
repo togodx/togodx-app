@@ -9,6 +9,7 @@ const ALL_PROPERTIES = 'ALL_PROPERTIES';
 export default class ColumnView {
 
   #depth;
+  #selector;
   #max;
   #propertyId;
   #parentCategoryId;
@@ -27,11 +28,12 @@ export default class ColumnView {
 
     // set members
     this.#depth = depth;
+    this.#selector = selector;
     this.#propertyId = propertyId;
     this.#parentCategoryId = parentCategoryId;
 
     // draw
-    this.#draw(selector, values, depth);
+    this.#draw(values);
     this.#update(App.viewModes.log10);
 
     // even listener
@@ -55,10 +57,11 @@ export default class ColumnView {
       }
     });
     DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
+    DefaultEventEmitter.addEventListener(event.setUserValues, e => this.#setUserValues(e.detail));
 
   }
 
-  #draw(selector, values, depth) {
+  #draw(values) {
     const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.#propertyId);
 
     // make column
@@ -84,7 +87,7 @@ export default class ColumnView {
               : ''
           }
           data-category-ids="${values.map(item => item.categoryId)}"
-          data-depth="${depth}">
+          data-depth="${this.#depth}">
           <td class="label" colspan="5">
             <label>
               <input
@@ -109,7 +112,7 @@ export default class ColumnView {
           data-count="${item.count}">
           <td class="label">
             <label>
-              <input type="checkbox" value="${item.categoryId}"${checked}/>
+              <input class="value" type="checkbox" value="${item.categoryId}"${checked}/>
               ${item.label}
             </label>
           </td>
@@ -122,60 +125,17 @@ export default class ColumnView {
     </table>
     `;
     const tbody = this.#ROOT.querySelector(':scope > table > tbody');
-    const listItems = tbody.querySelectorAll(':scope > .item');
-    // listItems.forEach(tr => {
-    //   values.find(value => value.categoryId == tr.dataset.categoryId).elm = tr;
-    // });
-    this.#itemNodes = this.#ROOT.querySelectorAll(':scope > table > tbody > .item');
+    this.#itemNodes = Array.from(tbody.querySelectorAll(':scope > .item'));
 
-    // drill down event
-    tbody.querySelectorAll(':scope > .item.-haschild > .drilldown').forEach(drilldown => {
-      drilldown.addEventListener('click', () => {
-        const tr = drilldown.closest('tr');
-        tr.classList.add('-selected');
-        // delete an existing lower columns
-        if (selector.currentColumnViews.length > depth + 1) {
-          for (let i = depth + 1; i < selector.currentColumnViews.length; i++) {
-            if (selector.currentColumnViews[i].parentNode) selector.currentColumnViews[i].remove();
-          }
-        }
-        // deselect siblings
-        const selectedItemKeys = Object.keys(values).filter(id => values[id].selected && values[id].depth >= depth);
-        for (const key of selectedItemKeys) {
-          values[key].selected = false;
-          selector.currentColumnViews[depth].querySelector(`[data-id="${key}"]`)?.classList.remove('-selected');
-        }
-        // get lower column
-        // selector.setSelectedValue(tr.dataset.id, true);
-        selector.setSubColumn(tr.dataset.id, depth + 1);
-      });
-    });
-
-    listItems.forEach(tr => {
+    this.#itemNodes.forEach(itemNode => {
       // select/deselect a item (attribute) > label
-      const checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
-      checkbox.addEventListener('click', e => {
-        e.stopPropagation();
-        const ancestors = [];
-        let parentCategoryId;
-        let column = checkbox.closest('.column');
-        do { // find ancestors
-          parentCategoryId = column?.querySelector(':scope > table > thead > tr.item.-all').dataset.parentCategoryId;
-          if (parentCategoryId) {
-            ancestors.unshift(parentCategoryId);
-            column = column.previousElementSibling;
-          }
-        } while (parentCategoryId);
-        if (checkbox.checked) { // add
-          ConditionBuilder.addPropertyValue(
-            this.#propertyId,
-            checkbox.value,
-            ancestors
-          );
-        } else { // remove
-          ConditionBuilder.removePropertyValue(this.#propertyId, checkbox.value);
-        }
-      });
+      const valueCheckbox = itemNode.querySelector(':scope > .label > label > input.value[type="checkbox"]');
+      valueCheckbox.addEventListener('click', this.#checkValue.bind(this));
+      // drill down event
+      if (itemNode.classList.contains('-haschild')) {
+        const drilldown = itemNode.querySelector(':scope > .drilldown');
+        drilldown.addEventListener('click', this.#drillDown.bind(this));
+      }
     });
 
     // Map attributes event
@@ -189,6 +149,56 @@ export default class ColumnView {
     });
   }
 
+  #checkValue(e) {
+    e.stopPropagation();
+    const checkbox = e.target;
+    const ancestors = [];
+    let parentCategoryId;
+    let column = checkbox.closest('.column');
+    do { // find ancestors
+      parentCategoryId = column?.querySelector(':scope > table > thead > tr.item.-all').dataset.parentCategoryId;
+      if (parentCategoryId) {
+        ancestors.unshift(parentCategoryId);
+        column = column.previousElementSibling;
+      }
+    } while (parentCategoryId);
+    if (checkbox.checked) { // add
+      ConditionBuilder.addPropertyValue(
+        this.#propertyId,
+        checkbox.value,
+        ancestors
+      );
+    } else { // remove
+      ConditionBuilder.removePropertyValue(this.#propertyId, checkbox.value);
+    }
+  }
+
+  // #checkKey(e) {
+  // }
+
+  #drillDown(e) {
+    const itemNode = e.target.closest('tr');
+    itemNode.classList.add('-selected');
+    this.#selector.drillDown(itemNode.dataset.id, this.#depth);
+
+
+    // // delete an existing lower columns
+    // if (this.#selector.currentColumnViews.length > this.#depth + 1) {
+    //   for (let i = this.#depth + 1; i < this.#selector.currentColumnViews.length; i++) {
+    //     if (this.#selector.currentColumnViews[i].parentNode) this.#selector.currentColumnViews[i].remove();
+    //   }
+    // }
+    // // deselect siblings
+    // const selectedItemKeys = Object.keys(values).filter(id => values[id].selected && values[id].depth >= this.#depth);
+    // for (const key of selectedItemKeys) {
+    //   values[key].selected = false;
+    //   this.#selector.currentColumnViews[this.#depth].querySelector(`[data-id="${key}"]`)?.classList.remove('-selected');
+    // }
+    // // get lower column
+    // // this.#selector.setSelectedValue(itemNode.dataset.id, true);
+    // this.#selector.setSubColumn(itemNode.dataset.id, this.#depth + 1);
+  }
+
   #update(isLog10) {
     let max = isLog10 && this.max > 1 ? Math.log10(this.max) : this.max;
     this.itemNodes.forEach(tr => {
@@ -196,6 +206,42 @@ export default class ColumnView {
       const subject = Records.getSubjectWithPropertyId(this.#propertyId);
       tr.style.backgroundColor = `rgb(${subject.color.mix(App.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
     });
+  }
+
+  #setUserValues({propertyId, values}, bySubdirectory = false) {
+    if (this.#propertyId === propertyId) {
+      for (const value of values) {
+        const itemNode = this.#itemNodes.filter(itemNode => itemNode.dataset.categoryId == value.categoryId);
+        // const item = this.#items[value.categoryId];
+        if (itemNode) {
+          itemNode.classList.add('-pinsticking');
+          itemNode.querySelector(':scope > .mapped').textContent = value.hit_count ? value.hit_count.toLocaleString() : '';
+          itemNode.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(2) : '';
+          if (value.hit_count === 0) itemNode.classList.remove('-pinsticking');
+          else itemNode.classList.add('-pinsticking');
+        }
+      }
+      // if it doesnt called by subdirectory, get values of subdirectories
+      // if (!bySubdirectory) {
+      //   this.#currentColumnViews.forEach((columnView, index) => {
+      //     if (index > 0) {
+      //       this.#getUserValues(
+      //         queryTemplates.dataFromUserIds(
+      //           this.#property.data,
+      //           this.#property.primaryKey,
+      //           columnView.inputMapAttribute.dataset.parentCategoryId
+      //         )
+      //       )
+      //         .then(values => {
+      //           this.#setUserValues({
+      //             propertyId: this.#property.propertyId,
+      //             values
+      //           }, true);
+      //         });
+      //       }
+      //   });
+      // }
+    }
   }
 
   get depth() {

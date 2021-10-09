@@ -1,4 +1,3 @@
-// import App from "./App";
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import Records from "./Records";
@@ -40,7 +39,7 @@ export default class ColumnSelectorView {
 
     // even listener
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, this.#mutatePropertyCondition.bind(this));
-    DefaultEventEmitter.addEventListener(event.setUserValues, e => this.#setUserValues(e.detail));
+    // DefaultEventEmitter.addEventListener(event.setUserValues, e => this.#setUserValues(e.detail));
     DefaultEventEmitter.addEventListener(event.clearUserValues, () => this.#clearUserValues());
 
     const depth = 0;
@@ -50,6 +49,7 @@ export default class ColumnSelectorView {
     const columnView = this.#makeCoumnView(items, depth);
     this.#appendSubColumn(columnView, depth);
   }
+  
 
   // private methods
 
@@ -98,6 +98,20 @@ export default class ColumnSelectorView {
     if (depth === 0) this.#INPUT_MAP_ATTRIBUTE_OF_ROOT = columnView.inputMapAttribute;
     this.#columnViews.push(columnView);
     return columnView;
+  }
+
+  #setSubColumn(categoryId, depth) {
+    this.#LOADING_VIEW.classList.add('-shown');
+    this.#getColumn(categoryId, depth)
+      .then(column => {
+        this.#appendSubColumn(column, depth);
+        this.#LOADING_VIEW.classList.remove('-shown');
+      })
+      .catch(error => {
+        // TODO: エラー処理
+        this.#LOADING_VIEW.classList.remove('-shown');
+        throw Error(error);
+      });
   }
 
   #appendSubColumn(columnView, depth) {
@@ -153,6 +167,10 @@ export default class ColumnSelectorView {
     });
   }
 
+  #setSelectedValue(categoryId, selected) {
+    this.#items[categoryId].selected = selected;
+  }
+
   #setUserValues({propertyId, values}, bySubdirectory = false) {
     if (this.#property.propertyId === propertyId) {
       for (const value of values) {
@@ -197,26 +215,27 @@ export default class ColumnSelectorView {
 
   // public methods
 
-  setSubColumn(categoryId, depth) {
-    this.#LOADING_VIEW.classList.add('-shown');
-    this.#getColumn(categoryId, depth)
-      .then(column => {
-        this.#appendSubColumn(column, depth);
-        this.#LOADING_VIEW.classList.remove('-shown');
-      })
-      .catch(error => {
-        // TODO: エラー処理
-        this.#LOADING_VIEW.classList.remove('-shown');
-        throw Error(error);
-      });
+  drillDown(categoryId, depth) {
+    // delete an existing lower columns
+    if (this.#currentColumnViews.length > depth + 1) {
+      for (let depth2 = depth + 1; depth2 < this.#currentColumnViews.length; depth2++) {
+        const column = this.#currentColumnViews[depth2];
+        if (column.rootNode.parentNode) column.rootNode.remove();
+      }
+    }
+    // deselect siblings
+    const selectedItemKeys = Object.keys(this.#items).filter(id => this.#items[id].selected && this.#items[id].depth >= depth);
+    for (const key of selectedItemKeys) {
+      this.#items[key].selected = false;
+      this.#currentColumnViews[depth].rootNode.querySelector(`[data-id="${key}"]`)?.classList.remove('-selected');
+    }
+    // get lower column
+    this.#setSelectedValue(categoryId, true);
+    this.#setSubColumn(categoryId, depth + 1);
   }
 
-  // setSelectedValue(categoryId, selected) {
-  //   this.#items[categoryId].selected = selected;
+  // get currentColumnViews() {
+  //   return this.#currentColumnViews;
   // }
-
-  get currentColumnViews() {
-    return this.#currentColumnViews;
-  }
 
 }
