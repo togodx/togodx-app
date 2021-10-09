@@ -48,6 +48,7 @@ export default class UploadUserIDsView {
     // attach events
     elm.querySelector(':scope > .title > .button > button').addEventListener('click', () => {
       this.#USER_IDS.value = this.#USER_IDS.placeholder.replace('e.g. ', '');
+      this.#USER_IDS.dispatchEvent(new Event('change'));
       submitButton.dispatchEvent(new Event('click'));
     });
     const buttons = elm.querySelector(':scope > .buttons');

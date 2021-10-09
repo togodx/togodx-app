@@ -1,9 +1,7 @@
-import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import Records from "./Records";
 import ColumnView from "./ColumnView";
 import * as event from '../events';
-import * as queryTemplates from '../functions/queryTemplates';
 
 export default class ColumnSelectorView {
 
@@ -11,7 +9,6 @@ export default class ColumnSelectorView {
   #items;
   #columnViews;
   #currentColumnViews;
-  #userValues;
   #ROOT;
   #CONTAINER;
   #LOADING_VIEW;
@@ -23,7 +20,6 @@ export default class ColumnSelectorView {
     this.#items = {};
     this.#columnViews = [];
     this.#currentColumnViews = [];
-    this.#userValues = new Map();
 
     // make container
     elm.innerHTML = `
@@ -39,8 +35,6 @@ export default class ColumnSelectorView {
 
     // even listener
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, this.#mutatePropertyCondition.bind(this));
-    // DefaultEventEmitter.addEventListener(event.setUserValues, e => this.#setUserValues(e.detail));
-    DefaultEventEmitter.addEventListener(event.clearUserValues, () => this.#clearUserValues());
 
     const depth = 0;
     this.#setItems(items, depth);
@@ -49,7 +43,7 @@ export default class ColumnSelectorView {
     const columnView = this.#makeCoumnView(items, depth);
     this.#appendSubColumn(columnView, depth);
   }
-  
+
 
   // private methods
 
@@ -92,7 +86,6 @@ export default class ColumnSelectorView {
       this,
       values,
       depth,
-      this.#property.propertyId,
       parentCategoryId
     );
     if (depth === 0) this.#INPUT_MAP_ATTRIBUTE_OF_ROOT = columnView.inputMapAttribute;
@@ -117,6 +110,7 @@ export default class ColumnSelectorView {
   #appendSubColumn(columnView, depth) {
     this.#currentColumnViews[depth] = columnView;
     this.#CONTAINER.append(columnView.rootNode);
+    columnView.appended();
     // scroll
     const left = this.#CONTAINER.scrollWidth - this.#CONTAINER.clientWidth;
     if (left > 0) {
@@ -126,23 +120,6 @@ export default class ColumnSelectorView {
         behavior: 'smooth'
       });
     };
-
-    // user IDs
-    if (document.body.classList.contains('-showuserids') && ConditionBuilder.userIds) {
-      this.#getUserValues(
-        queryTemplates.dataFromUserIds(
-          this.#property.data,
-          this.#property.primaryKey,
-          column.querySelector(':scope > table > thead > .item.-all').dataset.parentCategoryId
-          )
-        )
-        .then(values => {
-          this.#setUserValues({
-            propertyId: this.#property.propertyId,
-            values
-          }, true);
-        });
-    }
   }
 
   #mutatePropertyCondition({detail: {action, propertyId, parentCategoryId}}) {
@@ -151,65 +128,8 @@ export default class ColumnSelectorView {
     }
   }
 
-  #getUserValues(query) {
-    return new Promise((resolve, reject) => {
-      const values = this.#userValues.get(query);
-      if (values) {
-        resolve(values);
-      } else {
-        axios
-          .get(query)
-          .then(response => {
-            this.#userValues.set(query, response.data);
-            resolve(response.data);
-          });
-      }
-    });
-  }
-
   #setSelectedValue(categoryId, selected) {
     this.#items[categoryId].selected = selected;
-  }
-
-  #setUserValues({propertyId, values}, bySubdirectory = false) {
-    if (this.#property.propertyId === propertyId) {
-      for (const value of values) {
-        const item = this.#items[value.categoryId];
-        if (item) {
-          item.elm.classList.add('-pinsticking');
-          item.elm.querySelector(':scope > .mapped').textContent = value.hit_count ? value.hit_count.toLocaleString() : '';
-          item.elm.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(2) : '';
-          if (value.hit_count === 0) item.elm.classList.remove('-pinsticking');
-          else                       item.elm.classList.add('-pinsticking');
-        }
-      }
-      // if it doesnt called by subdirectory, get values of subdirectories
-      if (!bySubdirectory) {
-        this.#currentColumnViews.forEach((columnView, index) => {
-          if (index > 0) {
-            this.#getUserValues(
-              queryTemplates.dataFromUserIds(
-                this.#property.data,
-                this.#property.primaryKey,
-                columnView.inputMapAttribute.dataset.parentCategoryId
-              )
-            )
-              .then(values => {
-                this.#setUserValues({
-                  propertyId: this.#property.propertyId,
-                  values
-                }, true);
-              });
-            }
-        });
-      }
-    }
-  }
-
-  #clearUserValues() {
-    for (const item in this.#items) {
-      this.#items[item].elm.classList.remove('-pinsticking');
-    }
   }
 
 
@@ -234,8 +154,19 @@ export default class ColumnSelectorView {
     this.#setSubColumn(categoryId, depth + 1);
   }
 
-  // get currentColumnViews() {
-  //   return this.#currentColumnViews;
-  // }
+
+  // accessors
+
+  get propertyId() {
+    return this.#property.propertyId;
+  }
+
+  get sparqlet() {
+    return this.#property.data;
+  }
+
+  get primaryKey() {
+    return this.#property.primaryKey;
+  }
 
 }

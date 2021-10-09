@@ -3,6 +3,7 @@ import DefaultEventEmitter from "./DefaultEventEmitter";
 import App from "./App";
 import Records from "./Records";
 import * as event from '../events';
+import * as queryTemplates from '../functions/queryTemplates';
 
 const ALL_PROPERTIES = 'ALL_PROPERTIES';
 
@@ -11,26 +12,27 @@ export default class ColumnView {
   #depth;
   #selector;
   #max;
-  #propertyId;
+  // #propertyId;
   #parentCategoryId;
   #inputMapAttribute;
   #itemNodes;
+  #cachedUserValues;
   #ROOT;
 
   constructor(
     selector,
     values,
     depth,
-    propertyId,
     parentCategoryId
   ) {
-    console.log(arguments)
+    // console.log(arguments)
 
     // set members
     this.#depth = depth;
     this.#selector = selector;
-    this.#propertyId = propertyId;
+    // this.#propertyId = propertyId;
     this.#parentCategoryId = parentCategoryId;
+    this.#cachedUserValues = new Map();
 
     // draw
     this.#draw(values);
@@ -39,7 +41,7 @@ export default class ColumnView {
     // even listener
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail}) => {
       if (detail.action === 'remove') {
-        if (this.#propertyId === detail.propertyId) {
+        if (this.#selector.propertyId === detail.propertyId) {
           if (detail.parentCategoryId && detail.parentCategoryId == this.#parentCategoryId) {
             this.inputMapAttribute.checked = false;
           }
@@ -47,7 +49,7 @@ export default class ColumnView {
       }
     });
     DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail}) => {
-      if (this.#propertyId === detail.propertyId) {
+      if (this.#selector.propertyId === detail.propertyId) {
         this.#itemNodes.forEach(tr => {
           const checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
           if (tr.dataset.id == detail.categoryId) {
@@ -58,15 +60,15 @@ export default class ColumnView {
     });
     DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
     DefaultEventEmitter.addEventListener(event.setUserValues, e => this.#setUserValues(e.detail));
-
+    DefaultEventEmitter.addEventListener(event.clearUserValues, () => this.#clearUserValues());
   }
 
   #draw(values) {
-    const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.#propertyId);
+    const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.#selector.propertyId);
 
     // make column
     this.#ROOT = document.createElement('div');
-    const isSelected = ConditionBuilder.isSelectedProperty(this.#propertyId, this.#parentCategoryId);
+    const isSelected = ConditionBuilder.isSelectedProperty(this.#selector.propertyId, this.#parentCategoryId);
     this.#ROOT.classList.add('column');
     this.#max = 0;
     this.#ROOT.innerHTML = `
@@ -142,9 +144,9 @@ export default class ColumnView {
     this.#inputMapAttribute = this.#ROOT.querySelector(':scope > table > thead > .item.-all > .label > label > input');
     this.#inputMapAttribute.addEventListener('change', e => {
       if (e.target.checked) {
-        ConditionBuilder.addProperty(this.#propertyId, this.#parentCategoryId);
+        ConditionBuilder.addProperty(this.#selector.propertyId, this.#parentCategoryId);
       } else {
-        ConditionBuilder.removeProperty(this.#propertyId, this.#parentCategoryId);
+        ConditionBuilder.removeProperty(this.#selector.propertyId, this.#parentCategoryId);
       }
     });
   }
@@ -164,12 +166,12 @@ export default class ColumnView {
     } while (parentCategoryId);
     if (checkbox.checked) { // add
       ConditionBuilder.addPropertyValue(
-        this.#propertyId,
+        this.#selector.propertyId,
         checkbox.value,
         ancestors
       );
     } else { // remove
-      ConditionBuilder.removePropertyValue(this.#propertyId, checkbox.value);
+      ConditionBuilder.removePropertyValue(this.#selector.propertyId, checkbox.value);
     }
   }
 
@@ -180,39 +182,37 @@ export default class ColumnView {
     const itemNode = e.target.closest('tr');
     itemNode.classList.add('-selected');
     this.#selector.drillDown(itemNode.dataset.id, this.#depth);
-
-
-    // // delete an existing lower columns
-    // if (this.#selector.currentColumnViews.length > this.#depth + 1) {
-    //   for (let i = this.#depth + 1; i < this.#selector.currentColumnViews.length; i++) {
-    //     if (this.#selector.currentColumnViews[i].parentNode) this.#selector.currentColumnViews[i].remove();
-    //   }
-    // }
-    // // deselect siblings
-    // const selectedItemKeys = Object.keys(values).filter(id => values[id].selected && values[id].depth >= this.#depth);
-    // for (const key of selectedItemKeys) {
-    //   values[key].selected = false;
-    //   this.#selector.currentColumnViews[this.#depth].querySelector(`[data-id="${key}"]`)?.classList.remove('-selected');
-    // }
-    // // get lower column
-    // // this.#selector.setSelectedValue(itemNode.dataset.id, true);
-    // this.#selector.setSubColumn(itemNode.dataset.id, this.#depth + 1);
   }
 
   #update(isLog10) {
     let max = isLog10 && this.#max > 1 ? Math.log10(this.#max) : this.#max;
     this.#itemNodes.forEach(tr => {
       const count = Number(tr.dataset.count);
-      const subject = Records.getSubjectWithPropertyId(this.#propertyId);
+      const subject = Records.getSubjectWithPropertyId(this.#selector.propertyId);
       tr.style.backgroundColor = `rgb(${subject.color.mix(App.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
     });
   }
 
-  #setUserValues({propertyId, values}, bySubdirectory = false) {
-    if (this.#propertyId === propertyId) {
+  #getUserValues(query) {
+    return new Promise((resolve, reject) => {
+      const values = this.#cachedUserValues.get(query);
+      if (values) {
+        resolve(values);
+      } else {
+        axios
+          .get(query)
+          .then(response => {
+            this.#cachedUserValues.set(query, response.data);
+            resolve(response.data);
+          });
+      }
+    });
+  }
+
+  #setUserValues({propertyId, values}) {
+    if (this.#selector.propertyId === propertyId) {
       for (const value of values) {
-        const itemNode = this.#itemNodes.filter(itemNode => itemNode.dataset.categoryId == value.categoryId);
-        // const item = this.#items[value.categoryId];
+        const itemNode = this.#itemNodes.find(itemNode => itemNode.dataset.categoryId == value.categoryId);
         if (itemNode) {
           itemNode.classList.add('-pinsticking');
           itemNode.querySelector(':scope > .mapped').textContent = value.hit_count ? value.hit_count.toLocaleString() : '';
@@ -221,26 +221,36 @@ export default class ColumnView {
           else itemNode.classList.add('-pinsticking');
         }
       }
-      // if it doesnt called by subdirectory, get values of subdirectories
-      // if (!bySubdirectory) {
-      //   this.#currentColumnViews.forEach((columnView, index) => {
-      //     if (index > 0) {
-      //       this.#getUserValues(
-      //         queryTemplates.dataFromUserIds(
-      //           this.#property.data,
-      //           this.#property.primaryKey,
-      //           columnView.inputMapAttribute.dataset.parentCategoryId
-      //         )
-      //       )
-      //         .then(values => {
-      //           this.#setUserValues({
-      //             propertyId: this.#property.propertyId,
-      //             values
-      //           }, true);
-      //         });
-      //       }
-      //   });
-      // }
+    }
+  }
+
+  #clearUserValues() {
+    for (const itemNode in this.#itemNodes) {
+      itemNode.classList.remove('-pinsticking');
+    }
+  }
+
+
+  // public Methods
+
+  appended() {
+    // TODO: これをきっかけに描画をするようにする
+    // user IDs
+    if (document.body.classList.contains('-showuserids') && ConditionBuilder.userIds) {
+      this.#getUserValues(
+        queryTemplates.dataFromUserIds(
+          this.#selector.sparqlet,
+          this.#selector.primaryKey,
+          this.#parentCategoryId
+          )
+        )
+        .then(values => {
+          console.log(values)
+          this.#setUserValues({
+            propertyId: this.#selector.propertyId,
+            values
+          });
+        });
     }
   }
 
