@@ -40,7 +40,7 @@ export default class ColumnView {
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail}) => {
       if (detail.action === 'remove') {
         if (this.#propertyId === detail.propertyId) {
-          if (detail.parentCategoryId && detail.parentCategoryId == this.parentCategoryId) {
+          if (detail.parentCategoryId && detail.parentCategoryId == this.#parentCategoryId) {
             this.inputMapAttribute.checked = false;
           }
         }
@@ -48,7 +48,7 @@ export default class ColumnView {
     });
     DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail}) => {
       if (this.#propertyId === detail.propertyId) {
-        this.itemNodes.forEach(tr => {
+        this.#itemNodes.forEach(tr => {
           const checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
           if (tr.dataset.id == detail.categoryId) {
             checkbox.checked = detail.action === 'add';
@@ -200,8 +200,8 @@ export default class ColumnView {
   }
 
   #update(isLog10) {
-    let max = isLog10 && this.max > 1 ? Math.log10(this.max) : this.max;
-    this.itemNodes.forEach(tr => {
+    let max = isLog10 && this.#max > 1 ? Math.log10(this.#max) : this.#max;
+    this.#itemNodes.forEach(tr => {
       const count = Number(tr.dataset.count);
       const subject = Records.getSubjectWithPropertyId(this.#propertyId);
       tr.style.backgroundColor = `rgb(${subject.color.mix(App.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
@@ -244,9 +244,8 @@ export default class ColumnView {
     }
   }
 
-  get depth() {
-    return this.#depth;
-  }
+
+  // accessors
 
   get parentCategoryId() {
     return this.#parentCategoryId;
@@ -256,16 +255,8 @@ export default class ColumnView {
     return this.#inputMapAttribute;
   }
 
-  get max() {
-    return this.#max;
-  }
-
   get rootNode() {
     return this.#ROOT;
-  }
-
-  get itemNodes() {
-    return this.#itemNodes;
   }
 
 }

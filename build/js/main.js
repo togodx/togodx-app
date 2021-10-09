@@ -4495,7 +4495,7 @@
 
         if (detail.action === 'remove') {
           if (_classPrivateFieldGet(_this, _propertyId$1) === detail.propertyId) {
-            if (detail.parentCategoryId && detail.parentCategoryId == _this.parentCategoryId) {
+            if (detail.parentCategoryId && detail.parentCategoryId == _classPrivateFieldGet(_this, _parentCategoryId)) {
               _this.inputMapAttribute.checked = false;
             }
           }
@@ -4505,7 +4505,7 @@
         var detail = _ref2.detail;
 
         if (_classPrivateFieldGet(_this, _propertyId$1) === detail.propertyId) {
-          _this.itemNodes.forEach(function (tr) {
+          _classPrivateFieldGet(_this, _itemNodes).forEach(function (tr) {
             var checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
 
             if (tr.dataset.id == detail.categoryId) {
@@ -4523,13 +4523,9 @@
     }
 
     _createClass(ColumnView, [{
-      key: "depth",
-      get: function get() {
-        return _classPrivateFieldGet(this, _depth);
-      }
-    }, {
       key: "parentCategoryId",
-      get: function get() {
+      get: // accessors
+      function get() {
         return _classPrivateFieldGet(this, _parentCategoryId);
       }
     }, {
@@ -4538,19 +4534,9 @@
         return _classPrivateFieldGet(this, _inputMapAttribute);
       }
     }, {
-      key: "max",
-      get: function get() {
-        return _classPrivateFieldGet(this, _max);
-      }
-    }, {
       key: "rootNode",
       get: function get() {
         return _classPrivateFieldGet(this, _ROOT$c);
-      }
-    }, {
-      key: "itemNodes",
-      get: function get() {
-        return _classPrivateFieldGet(this, _itemNodes);
       }
     }]);
 
@@ -4660,8 +4646,9 @@
   function _update2$2(isLog10) {
     var _this3 = this;
 
-    var max = isLog10 && this.max > 1 ? Math.log10(this.max) : this.max;
-    this.itemNodes.forEach(function (tr) {
+    var max = isLog10 && _classPrivateFieldGet(this, _max) > 1 ? Math.log10(_classPrivateFieldGet(this, _max)) : _classPrivateFieldGet(this, _max);
+
+    _classPrivateFieldGet(this, _itemNodes).forEach(function (tr) {
       var count = Number(tr.dataset.count);
       var subject = Records$1.getSubjectWithPropertyId(_classPrivateFieldGet(_this3, _propertyId$1));
       tr.style.backgroundColor = "rgb(".concat(subject.color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
