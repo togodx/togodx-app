@@ -4737,8 +4737,18 @@
   }
 
   function _clearUserValues2() {
-    for (var itemNode in _classPrivateFieldGet(this, _itemNodes)) {
-      itemNode.classList.remove('-pinsticking');
+    var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _itemNodes)),
+        _step2;
+
+    try {
+      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+        var itemNode = _step2.value;
+        itemNode.classList.remove('-pinsticking');
+      }
+    } catch (err) {
+      _iterator2.e(err);
+    } finally {
+      _iterator2.f();
     }
   }
 

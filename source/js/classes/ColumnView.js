@@ -225,7 +225,7 @@ export default class ColumnView {
   }
 
   #clearUserValues() {
-    for (const itemNode in this.#itemNodes) {
+    for (const itemNode of this.#itemNodes) {
       itemNode.classList.remove('-pinsticking');
     }
   }
