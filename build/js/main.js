@@ -4402,11 +4402,17 @@
     });
   }
 
+  var _count = /*#__PURE__*/new WeakMap();
+
+  var _categoryId = /*#__PURE__*/new WeakMap();
+
   var _ROOT$d = /*#__PURE__*/new WeakMap();
 
   var _INPUT_VALUE = /*#__PURE__*/new WeakMap();
 
   var _INPUT_KEY = /*#__PURE__*/new WeakMap();
+
+  var _clearUserValues = /*#__PURE__*/new WeakSet();
 
   var ColumnItemView = /*#__PURE__*/function () {
     function ColumnItemView(column, _ref, selectedCategoryIds) {
@@ -4418,6 +4424,18 @@
           label = _ref.label;
 
       _classCallCheck(this, ColumnItemView);
+
+      _classPrivateMethodInitSpec(this, _clearUserValues);
+
+      _classPrivateFieldInitSpec(this, _count, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _categoryId, {
+        writable: true,
+        value: void 0
+      });
 
       _classPrivateFieldInitSpec(this, _ROOT$d, {
         writable: true,
@@ -4434,7 +4452,11 @@
         value: void 0
       });
 
-      // make HTML
+      _classPrivateFieldSet(this, _count, count);
+
+      _classPrivateFieldSet(this, _categoryId, categoryId); // make HTML
+
+
       _classPrivateFieldSet(this, _ROOT$d, document.createElement('tr'));
 
       _classPrivateFieldGet(this, _ROOT$d).classList.add('item');
@@ -4476,7 +4498,14 @@
         if (column.propertyId === detail.propertyId && categoryId === detail.categoryId) {
           _classPrivateFieldGet(_this, _INPUT_VALUE).checked = detail.action === 'add';
         }
-      }); // select/deselect a item (attribute) > label
+      });
+      DefaultEventEmitter$1.addEventListener(setUserValues, function (_ref4) {
+        var _ref4$detail = _ref4.detail,
+            propertyId = _ref4$detail.propertyId,
+            values = _ref4$detail.values;
+        if (column.propertyId === propertyId) _this.setUserValues(values);
+      });
+      DefaultEventEmitter$1.addEventListener(clearUserValues, _classPrivateMethodGet(this, _clearUserValues, _clearUserValues2).bind(this)); // select/deselect a item (attribute) > label
 
       _classPrivateFieldGet(this, _INPUT_VALUE).addEventListener('click', column.checkValue.bind(column)); // drill down
 
@@ -4486,9 +4515,47 @@
 
         drilldown.addEventListener('click', column.drillDown.bind(column));
       }
-    }
+    } // private methods
+
 
     _createClass(ColumnItemView, [{
+      key: "update",
+      value: // public methods
+      function update(subject, isLog10, max) {
+        var count = isLog10 ? Math.log10(_classPrivateFieldGet(this, _count)) : _classPrivateFieldGet(this, _count);
+        _classPrivateFieldGet(this, _ROOT$d).style.backgroundColor = "rgb(".concat(subject.color.mix(App$1.colorWhite, 1 - count / max).coords.map(function (cood) {
+          return cood * 256;
+        }).join(','), ")");
+      }
+    }, {
+      key: "setUserValues",
+      value: function setUserValues(values) {
+        var _this2 = this;
+
+        var value = values.find(function (value) {
+          return value.categoryId === _classPrivateFieldGet(_this2, _categoryId);
+        });
+
+        if (value) {
+          _classPrivateFieldGet(this, _ROOT$d).classList.add('-pinsticking');
+
+          _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .mapped').textContent = value.hit_count ? value.hit_count.toLocaleString() : '';
+          _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(2) : '';
+          if (value.hit_count === 0) _classPrivateFieldGet(this, _ROOT$d).classList.remove('-pinsticking');else _classPrivateFieldGet(this, _ROOT$d).classList.add('-pinsticking');
+        }
+      } // accessors
+
+    }, {
+      key: "count",
+      get: function get() {
+        return _classPrivateFieldGet(this, _count);
+      }
+    }, {
+      key: "categoryId",
+      get: function get() {
+        return _classPrivateFieldGet(this, _categoryId);
+      }
+    }, {
       key: "rootNode",
       get: function get() {
         return _classPrivateFieldGet(this, _ROOT$d);
@@ -4497,6 +4564,10 @@
 
     return ColumnItemView;
   }();
+
+  function _clearUserValues2() {
+    _classPrivateFieldGet(this, _ROOT$d).classList.remove('-pinsticking');
+  }
 
   function dataFromUserIds(sparqlet, primaryKey) {
     var _ConditionBuilder$use;
@@ -4527,19 +4598,11 @@
 
   var _getUserValues = /*#__PURE__*/new WeakSet();
 
-  var _setUserValues = /*#__PURE__*/new WeakSet();
-
-  var _clearUserValues = /*#__PURE__*/new WeakSet();
-
   var ColumnView = /*#__PURE__*/function () {
     function ColumnView(selector, _values, depth, parentCategoryId) {
       var _this = this;
 
       _classCallCheck(this, ColumnView);
-
-      _classPrivateMethodInitSpec(this, _clearUserValues);
-
-      _classPrivateMethodInitSpec(this, _setUserValues);
 
       _classPrivateMethodInitSpec(this, _getUserValues);
 
@@ -4605,12 +4668,6 @@
       DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
         return _classPrivateMethodGet(_this, _update$2, _update2$2).call(_this, e.detail.log10);
       });
-      DefaultEventEmitter$1.addEventListener(setUserValues, function (e) {
-        return _classPrivateMethodGet(_this, _setUserValues, _setUserValues2).call(_this, e.detail);
-      });
-      DefaultEventEmitter$1.addEventListener(clearUserValues, function () {
-        return _classPrivateMethodGet(_this, _clearUserValues, _clearUserValues2).call(_this);
-      });
     }
 
     _createClass(ColumnView, [{
@@ -4625,9 +4682,8 @@
           _classPrivateMethodGet(this, _getUserValues, _getUserValues2).call(this, dataFromUserIds(_classPrivateFieldGet(this, _selector).sparqlet, _classPrivateFieldGet(this, _selector).primaryKey, _classPrivateFieldGet(this, _parentCategoryId))).then(function (values) {
             console.log(values);
 
-            _classPrivateMethodGet(_this2, _setUserValues, _setUserValues2).call(_this2, {
-              propertyId: _this2.propertyId,
-              values: values
+            _classPrivateFieldGet(_this2, _items$2).forEach(function (columnItemView) {
+              return columnItemView.setUserValues(values);
             });
           });
         }
@@ -4645,7 +4701,7 @@
           var _column;
 
           // find ancestors
-          parentCategoryId = (_column = column) === null || _column === void 0 ? void 0 : _column.querySelector(':scope > table > thead > tr.item.-all').dataset.parentCategoryId;
+          parentCategoryId = (_column = column) === null || _column === void 0 ? void 0 : _column.dataset.parentCategoryId;
 
           if (parentCategoryId) {
             ancestors.unshift(parentCategoryId);
@@ -4698,16 +4754,19 @@
   }();
 
   function _draw2$1(values) {
-    var _this3 = this;
+    var _classPrivateFieldGet2,
+        _this3 = this;
 
     // make column
     _classPrivateFieldSet(this, _ROOT$c, document.createElement('div'));
 
     _classPrivateFieldGet(this, _ROOT$c).classList.add('column');
 
+    _classPrivateFieldGet(this, _ROOT$c).dataset.parentCategoryId = (_classPrivateFieldGet2 = _classPrivateFieldGet(this, _parentCategoryId)) !== null && _classPrivateFieldGet2 !== void 0 ? _classPrivateFieldGet2 : '';
+
     _classPrivateFieldSet(this, _max, 0);
 
-    _classPrivateFieldGet(this, _ROOT$c).innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label\">Values</th>\n          <th class=\"total\">Total</th>\n          <th class=\"mapped\">Mapped</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n      </thead>\n      <tbody></tbody>\n    </table>\n    ";
+    _classPrivateFieldGet(this, _ROOT$c).innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label\">Values</th>\n          <th class=\"total\">Total</th>\n          <th class=\"mapped\">Mapped</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n      </thead>\n      <tbody></tbody>\n    </table>";
 
     var tbody = _classPrivateFieldGet(this, _ROOT$c).querySelector(':scope > table > tbody');
 
@@ -4730,12 +4789,9 @@
 
     var max = isLog10 && _classPrivateFieldGet(this, _max) > 1 ? Math.log10(_classPrivateFieldGet(this, _max)) : _classPrivateFieldGet(this, _max);
 
-    _classPrivateFieldGet(this, _itemNodes).forEach(function (tr) {
-      var count = Number(tr.dataset.count);
+    _classPrivateFieldGet(this, _items$2).forEach(function (columnItemView) {
       var subject = Records$1.getSubjectWithPropertyId(_this4.propertyId);
-      tr.style.backgroundColor = "rgb(".concat(subject.color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
-        return cood * 256;
-      }).join(','), ")");
+      columnItemView.update(subject, isLog10, max);
     });
   }
 
@@ -4755,59 +4811,6 @@
         });
       }
     });
-  }
-
-  function _setUserValues2(_ref) {
-    var _this6 = this;
-
-    var propertyId = _ref.propertyId,
-        values = _ref.values;
-
-    if (this.propertyId === propertyId) {
-      var _iterator = _createForOfIteratorHelper(values),
-          _step;
-
-      try {
-        var _loop = function _loop() {
-          var value = _step.value;
-
-          var itemNode = _classPrivateFieldGet(_this6, _itemNodes).find(function (itemNode) {
-            return itemNode.dataset.categoryId == value.categoryId;
-          });
-
-          if (itemNode) {
-            itemNode.classList.add('-pinsticking');
-            itemNode.querySelector(':scope > .mapped').textContent = value.hit_count ? value.hit_count.toLocaleString() : '';
-            itemNode.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(2) : '';
-            if (value.hit_count === 0) itemNode.classList.remove('-pinsticking');else itemNode.classList.add('-pinsticking');
-          }
-        };
-
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          _loop();
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-    }
-  }
-
-  function _clearUserValues2() {
-    var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _itemNodes)),
-        _step2;
-
-    try {
-      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-        var itemNode = _step2.value;
-        itemNode.classList.remove('-pinsticking');
-      }
-    } catch (err) {
-      _iterator2.e(err);
-    } finally {
-      _iterator2.f();
-    }
   }
 
   var _property$3 = /*#__PURE__*/new WeakMap();

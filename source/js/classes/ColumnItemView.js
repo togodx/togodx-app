@@ -1,14 +1,20 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
+import App from "./App";
 import * as event from '../events';
 
 export default class ColumnItemView {
 
+  #count;
+  #categoryId;
   #ROOT;
   #INPUT_VALUE;
   #INPUT_KEY;
 
   constructor(column, {count, categoryId, hasChild, label}, selectedCategoryIds) {
+
+    this.#count = count;
+    this.#categoryId = categoryId;
 
     // make HTML
     this.#ROOT = document.createElement('tr');
@@ -59,6 +65,10 @@ export default class ColumnItemView {
         this.#INPUT_VALUE.checked = detail.action === 'add';
       }
     });
+    DefaultEventEmitter.addEventListener(event.setUserValues, ({detail: {propertyId, values}}) => {
+      if (column.propertyId === propertyId) this.setUserValues(values);
+    });
+    DefaultEventEmitter.addEventListener(event.clearUserValues, this.#clearUserValues.bind(this));
 
     // select/deselect a item (attribute) > label
     this.#INPUT_VALUE.addEventListener('click', column.checkValue.bind(column));
@@ -69,6 +79,44 @@ export default class ColumnItemView {
       drilldown.addEventListener('click', column.drillDown.bind(column));
     }
 
+  }
+
+
+  // private methods
+
+  #clearUserValues() {
+    this.#ROOT.classList.remove('-pinsticking');
+  }
+
+
+  // public methods
+
+  update(subject, isLog10, max) {
+    const count = isLog10 ? Math.log10(this.#count) : this.#count;
+    this.#ROOT.style.backgroundColor = `rgb(${subject.color.mix(App.colorWhite, 1 - count / max).coords.map(cood => cood * 256).join(',')})`;
+  }
+
+  setUserValues(values) {
+    const value = values.find(value => value.categoryId === this.#categoryId);
+    if (value) {
+      this.#ROOT.classList.add('-pinsticking');
+      this.#ROOT.querySelector(':scope > .mapped').textContent = value.hit_count ? value.hit_count.toLocaleString() : '';
+      this.#ROOT.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(2) : '';
+      if (value.hit_count === 0) this.#ROOT.classList.remove('-pinsticking');
+      else this.#ROOT.classList.add('-pinsticking');
+
+    }
+  }
+
+
+  // accessors
+
+  get count() {
+    return this.#count;
+  }
+
+  get categoryId() {
+    return this.#categoryId;
   }
 
   get rootNode() {

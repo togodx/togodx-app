@@ -1,7 +1,5 @@
-import DefaultEventEmitter from "./DefaultEventEmitter";
 import Records from "./Records";
 import ColumnView from "./ColumnView";
-import * as event from '../events';
 
 export default class ColumnSelectorView {
 

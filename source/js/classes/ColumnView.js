@@ -36,8 +36,6 @@ export default class ColumnView {
 
     // even listener
     DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
-    DefaultEventEmitter.addEventListener(event.setUserValues, e => this.#setUserValues(e.detail));
-    DefaultEventEmitter.addEventListener(event.clearUserValues, () => this.#clearUserValues());
   }
 
   #draw(values) {
@@ -45,6 +43,7 @@ export default class ColumnView {
     // make column
     this.#ROOT = document.createElement('div');
     this.#ROOT.classList.add('column');
+    this.#ROOT.dataset.parentCategoryId = this.#parentCategoryId ?? '';
     this.#max = 0;
     this.#ROOT.innerHTML = `
     <table>
@@ -58,8 +57,7 @@ export default class ColumnView {
         </tr>
       </thead>
       <tbody></tbody>
-    </table>
-    `;
+    </table>`;
     const tbody = this.#ROOT.querySelector(':scope > table > tbody');
     const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.propertyId);
     this.#items = values.map(value => {
@@ -74,10 +72,9 @@ export default class ColumnView {
 
   #update(isLog10) {
     let max = isLog10 && this.#max > 1 ? Math.log10(this.#max) : this.#max;
-    this.#itemNodes.forEach(tr => {
-      const count = Number(tr.dataset.count);
+    this.#items.forEach(columnItemView => {
       const subject = Records.getSubjectWithPropertyId(this.propertyId);
-      tr.style.backgroundColor = `rgb(${subject.color.mix(App.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(cood => cood * 256).join(',')})`;
+      columnItemView.update(subject, isLog10, max);
     });
   }
 
@@ -97,27 +94,6 @@ export default class ColumnView {
     });
   }
 
-  #setUserValues({propertyId, values}) {
-    if (this.propertyId === propertyId) {
-      for (const value of values) {
-        const itemNode = this.#itemNodes.find(itemNode => itemNode.dataset.categoryId == value.categoryId);
-        if (itemNode) {
-          itemNode.classList.add('-pinsticking');
-          itemNode.querySelector(':scope > .mapped').textContent = value.hit_count ? value.hit_count.toLocaleString() : '';
-          itemNode.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(2) : '';
-          if (value.hit_count === 0) itemNode.classList.remove('-pinsticking');
-          else itemNode.classList.add('-pinsticking');
-        }
-      }
-    }
-  }
-
-  #clearUserValues() {
-    for (const itemNode of this.#itemNodes) {
-      itemNode.classList.remove('-pinsticking');
-    }
-  }
-
 
   // public Methods
 
@@ -134,10 +110,7 @@ export default class ColumnView {
         )
         .then(values => {
           console.log(values)
-          this.#setUserValues({
-            propertyId: this.propertyId,
-            values
-          });
+          this.#items.forEach(columnItemView => columnItemView.setUserValues(values));
         });
     }
   }
@@ -149,7 +122,7 @@ export default class ColumnView {
     let parentCategoryId;
     let column = checkbox.closest('.column');
     do { // find ancestors
-      parentCategoryId = column?.querySelector(':scope > table > thead > tr.item.-all').dataset.parentCategoryId;
+      parentCategoryId = column?.dataset.parentCategoryId;
       if (parentCategoryId) {
         ancestors.unshift(parentCategoryId);
         column = column.previousElementSibling;
