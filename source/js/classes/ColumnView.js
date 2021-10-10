@@ -13,7 +13,6 @@ export default class ColumnView {
   #max;
   #parentCategoryId;
   #items;
-  #itemNodes;
   #cachedUserValues;
   #ROOT;
 
@@ -67,7 +66,6 @@ export default class ColumnView {
       tbody.append(columnItemView.rootNode);
       return columnItemView;
     });
-    this.#itemNodes = Array.from(tbody.querySelectorAll(':scope > .item'));
   }
 
   #update(isLog10) {

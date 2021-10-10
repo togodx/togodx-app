@@ -4586,8 +4586,6 @@
 
   var _items$2 = /*#__PURE__*/new WeakMap();
 
-  var _itemNodes = /*#__PURE__*/new WeakMap();
-
   var _cachedUserValues = /*#__PURE__*/new WeakMap();
 
   var _ROOT$c = /*#__PURE__*/new WeakMap();
@@ -4631,11 +4629,6 @@
       });
 
       _classPrivateFieldInitSpec(this, _items$2, {
-        writable: true,
-        value: void 0
-      });
-
-      _classPrivateFieldInitSpec(this, _itemNodes, {
         writable: true,
         value: void 0
       });
@@ -4780,8 +4773,6 @@
       tbody.append(columnItemView.rootNode);
       return columnItemView;
     }));
-
-    _classPrivateFieldSet(this, _itemNodes, Array.from(tbody.querySelectorAll(':scope > .item')));
   }
 
   function _update2$2(isLog10) {
