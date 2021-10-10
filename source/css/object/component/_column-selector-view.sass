@@ -37,6 +37,36 @@
             color: white
             > .header
               background-color: var(--color-lamp-black)
+              > th
+                &.-sortable
+                  cursor: pointer
+                  transition: background-color var(--transition-instant)
+                  &:hover
+                    background-color: var(--color-dark-gray)
+                > .sorter
+                  display: inline-block
+                  width: 1.3rem
+                  height: 1.4rem
+                  position: relative
+                  top: -.1rem
+                  vertical-align: middle
+                  margin-left: .1rem
+                  &::before, &::after
+                    content: ""
+                    position: absolute
+                    left: .3rem
+                    display: block
+                    width: 0
+                    height: 0
+                    border-style: solid
+                  &::before
+                    border-width: 0 .3rem .3rem .3rem
+                    border-color: transparent transparent white transparent
+                    top: .2rem
+                  &::after
+                    border-width: .3rem .3rem 0 .3rem
+                    border-color: white transparent transparent transparent
+                    bottom: .2rem
           > tbody
             > tr
               > .label

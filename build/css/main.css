@@ -630,6 +630,41 @@ main {
 .column-selector-view > .columns > .inner > .column > table > thead > .header {
   background-color: var(--color-lamp-black);
 }
+.column-selector-view > .columns > .inner > .column > table > thead > .header > th.-sortable {
+  cursor: pointer;
+  transition: background-color var(--transition-instant);
+}
+.column-selector-view > .columns > .inner > .column > table > thead > .header > th.-sortable:hover {
+  background-color: var(--color-dark-gray);
+}
+.column-selector-view > .columns > .inner > .column > table > thead > .header > th > .sorter {
+  display: inline-block;
+  width: 1.3rem;
+  height: 1.4rem;
+  position: relative;
+  top: -0.1rem;
+  vertical-align: middle;
+  margin-left: 0.1rem;
+}
+.column-selector-view > .columns > .inner > .column > table > thead > .header > th > .sorter::before, .column-selector-view > .columns > .inner > .column > table > thead > .header > th > .sorter::after {
+  content: "";
+  position: absolute;
+  left: 0.3rem;
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+.column-selector-view > .columns > .inner > .column > table > thead > .header > th > .sorter::before {
+  border-width: 0 0.3rem 0.3rem 0.3rem;
+  border-color: transparent transparent white transparent;
+  top: 0.2rem;
+}
+.column-selector-view > .columns > .inner > .column > table > thead > .header > th > .sorter::after {
+  border-width: 0.3rem 0.3rem 0 0.3rem;
+  border-color: white transparent transparent transparent;
+  bottom: 0.2rem;
+}
 .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label {
   display: relative;
 }

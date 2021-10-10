@@ -48,8 +48,8 @@ export default class ColumnView {
     <table>
       <thead>
         <tr class="header">
-          <th class="label">Values</th>
-          <th class="total">Total</th>
+          <th class="label -sortable">Values<div class="sorter" data-sorter="label"></div></th>
+          <th class="total -sortable">Total<div class="sorter" data-sorter="total"></div></th>
           <th class="mapped">Mapped</th>
           <th class="pvalue">p-value</th>
           <th class="drilldown"></th>

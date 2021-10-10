@@ -4759,7 +4759,7 @@
 
     _classPrivateFieldSet(this, _max, 0);
 
-    _classPrivateFieldGet(this, _ROOT$c).innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label\">Values</th>\n          <th class=\"total\">Total</th>\n          <th class=\"mapped\">Mapped</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n      </thead>\n      <tbody></tbody>\n    </table>";
+    _classPrivateFieldGet(this, _ROOT$c).innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label -sortable\">Values<div class=\"sorter\" data-sorter=\"label\"></div></th>\n          <th class=\"total -sortable\">Total<div class=\"sorter\" data-sorter=\"total\"></div></th>\n          <th class=\"mapped\">Mapped</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n      </thead>\n      <tbody></tbody>\n    </table>";
 
     var tbody = _classPrivateFieldGet(this, _ROOT$c).querySelector(':scope > table > tbody');
 
