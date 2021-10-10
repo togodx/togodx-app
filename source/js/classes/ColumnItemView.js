@@ -41,7 +41,6 @@ export default class ColumnItemView {
 
     // even listener
     DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail}) => {
-      console.log(detail)
       if (column.propertyId === detail.propertyId && categoryId === detail.categoryId) {
         this.#INPUT_VALUE.checked = detail.action === 'add';
       }

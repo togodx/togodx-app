@@ -4240,10 +4240,10 @@
 
 
     document.querySelector('#ConditionKeys').addEventListener('click', function () {
-      return document.body.dataset.condition = 'keys';
+      return document.body.dataset.condition = 'value';
     });
     document.querySelector('#ConditionValues').addEventListener('click', function () {
-      return document.body.dataset.condition = 'values';
+      return document.body.dataset.condition = 'key';
     });
 
     _classPrivateFieldGet(this, _EXEC_BUTTON).addEventListener('click', function () {
@@ -4450,7 +4450,6 @@
 
       DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref2) {
         var detail = _ref2.detail;
-        console.log(detail);
 
         if (column.propertyId === detail.propertyId && categoryId === detail.categoryId) {
           _classPrivateFieldGet(_this, _INPUT_VALUE).checked = detail.action === 'add';

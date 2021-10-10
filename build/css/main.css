@@ -376,7 +376,7 @@ template {
   --opacity-disabled: .4;
 }
 
-[data-condition=values] {
+[data-condition=key] {
   --width-track-column-property: 20rem;
 }
 
@@ -633,16 +633,16 @@ main {
 .column-selector-view > .columns > .inner > .column > table > thead > .item {
   background-color: var(--color-dark-gray);
 }
-[data-condition=keys] .column-selector-view > .columns > .inner > .column > table > thead > .item {
+[data-condition=value] .column-selector-view > .columns > .inner > .column > table > thead > .item {
   display: none;
 }
 .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label {
   display: relative;
 }
-[data-condition=values] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > label.value {
+[data-condition=key] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > label.value {
   display: none;
 }
-[data-condition=keys] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > label.key {
+[data-condition=value] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > label.key {
   display: none;
 }
 .column-selector-view > .columns > .inner > .column > table > tbody > tr > .total, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .mapped, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .pvalue {
@@ -1380,7 +1380,7 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   cursor: pointer;
   transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
 }
-[data-condition=values] .track-value-view {
+[data-condition=key] .track-value-view {
   pointer-events: none;
 }
 .track-value-view::after {
@@ -1529,7 +1529,7 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   display: none;
   margin-right: 0.4rem;
 }
-[data-condition=values] .track-view > .row.-upper > .left > .collapsebutton > .mapping {
+[data-condition=key] .track-view > .row.-upper > .left > .collapsebutton > .mapping {
   display: inherit;
 }
 .track-view > .row.-upper > .right > .overview {
@@ -1685,7 +1685,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .condition > .condi
 #ConditionBuilder > .conditions > #ConditionKeys {
   border-radius: var(--radius) var(--radius) 0 0;
 }
-[data-condition=keys] #ConditionBuilder > .conditions > #ConditionKeys {
+[data-condition=value] #ConditionBuilder > .conditions > #ConditionKeys {
   opacity: 1;
   background-color: var(--background-color);
 }
@@ -1693,7 +1693,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .condition > .condi
   border-radius: 0 0 var(--radius) var(--radius);
   margin-top: 0.1rem;
 }
-[data-condition=values] #ConditionBuilder > .conditions > #ConditionValues {
+[data-condition=key] #ConditionBuilder > .conditions > #ConditionValues {
   opacity: 1;
   background-color: var(--background-color);
 }

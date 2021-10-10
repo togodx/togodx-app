@@ -34,8 +34,8 @@ export default class ConditionBuilderView {
     this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
 
     // attach event
-    document.querySelector('#ConditionKeys').addEventListener('click', () => document.body.dataset.condition = 'keys');
-    document.querySelector('#ConditionValues').addEventListener('click', () => document.body.dataset.condition = 'values');
+    document.querySelector('#ConditionKeys').addEventListener('click', () => document.body.dataset.condition = 'value');
+    document.querySelector('#ConditionValues').addEventListener('click', () => document.body.dataset.condition = 'key');
     this.#EXEC_BUTTON.addEventListener('click', () => {
       document.body.dataset.display = 'results';
       ConditionBuilder.makeQueryParameter();
