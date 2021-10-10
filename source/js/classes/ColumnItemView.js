@@ -2,6 +2,8 @@ export default class ColumnItemView {
 
   #categoryId;
   #ROOT;
+  #INPUT_VALUE;
+  #INPUT_KEY;
 
   constructor(column, {count, categoryId, hasChild, label}, selectedCategoryIds) {
     // console.log(selectedCategoryIds, label);
@@ -26,6 +28,16 @@ export default class ColumnItemView {
     <td class="mapped"></td>
     <td class="pvalue"></td>
     <td class="drilldown"></td>`;
+
+    // select/deselect a item (attribute) > label
+    this.#INPUT_VALUE = this.#ROOT.querySelector(':scope > td.label > label> input.value');
+    this.#INPUT_VALUE.addEventListener('click', column.checkValue.bind(column));
+
+    // drill down
+    if (hasChild) {
+      const drilldown = this.#ROOT.querySelector(':scope > .drilldown');
+      drilldown.addEventListener('click', column.drillDown.bind(column));
+    }
 
     // if (selectedCategoryIds.indexOf(categoryId) !== -1) {
     //   this.#ROOT.querySelector(':scope > td.label > label> input.value').checked = true;

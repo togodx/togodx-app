@@ -107,24 +107,15 @@ export default class ColumnView {
     console.log(this.#selector.propertyId, selectedCategoryIds)
     this.#items = values.map(value => {
       this.#max = Math.max(this.#max, value.count);
+      // add item
       const columnItemView = new ColumnItemView(this, value, selectedCategoryIds);
       tbody.append(columnItemView.rootNode);
       return columnItemView;
     });
     this.#itemNodes = Array.from(tbody.querySelectorAll(':scope > .item'));
+    return;
 
 
-
-    this.#itemNodes.forEach(itemNode => {
-      // select/deselect a item (attribute) > label
-      const valueCheckbox = itemNode.querySelector(':scope > .label > label > input.value[type="checkbox"]');
-      valueCheckbox.addEventListener('click', this.#checkValue.bind(this));
-      // drill down event
-      if (itemNode.classList.contains('-haschild')) {
-        const drilldown = itemNode.querySelector(':scope > .drilldown');
-        drilldown.addEventListener('click', this.#drillDown.bind(this));
-      }
-    });
 
     // Map attributes event
     this.#inputMapAttribute = this.#ROOT.querySelector(':scope > table > thead > .item.-all > .label > label > input');
@@ -135,39 +126,6 @@ export default class ColumnView {
         ConditionBuilder.removeProperty(this.#selector.propertyId, this.#parentCategoryId);
       }
     });
-  }
-
-  #checkValue(e) {
-    e.stopPropagation();
-    const checkbox = e.target;
-    const ancestors = [];
-    let parentCategoryId;
-    let column = checkbox.closest('.column');
-    do { // find ancestors
-      parentCategoryId = column?.querySelector(':scope > table > thead > tr.item.-all').dataset.parentCategoryId;
-      if (parentCategoryId) {
-        ancestors.unshift(parentCategoryId);
-        column = column.previousElementSibling;
-      }
-    } while (parentCategoryId);
-    if (checkbox.checked) { // add
-      ConditionBuilder.addPropertyValue(
-        this.#selector.propertyId,
-        checkbox.value,
-        ancestors
-      );
-    } else { // remove
-      ConditionBuilder.removePropertyValue(this.#selector.propertyId, checkbox.value);
-    }
-  }
-
-  // #checkKey(e) {
-  // }
-
-  #drillDown(e) {
-    const itemNode = e.target.closest('tr');
-    itemNode.classList.add('-selected');
-    this.#selector.drillDown(itemNode.dataset.id, this.#depth);
   }
 
   #update(isLog10) {
@@ -238,6 +196,39 @@ export default class ColumnView {
           });
         });
     }
+  }
+
+  checkValue(e) {
+    e.stopPropagation();
+    const checkbox = e.target;
+    const ancestors = [];
+    let parentCategoryId;
+    let column = checkbox.closest('.column');
+    do { // find ancestors
+      parentCategoryId = column?.querySelector(':scope > table > thead > tr.item.-all').dataset.parentCategoryId;
+      if (parentCategoryId) {
+        ancestors.unshift(parentCategoryId);
+        column = column.previousElementSibling;
+      }
+    } while (parentCategoryId);
+    if (checkbox.checked) { // add
+      ConditionBuilder.addPropertyValue(
+        this.#selector.propertyId,
+        checkbox.value,
+        ancestors
+      );
+    } else { // remove
+      ConditionBuilder.removePropertyValue(this.#selector.propertyId, checkbox.value);
+    }
+  }
+
+  // checkKey(e) {
+  // }
+
+  drillDown(e) {
+    const itemNode = e.target.closest('tr');
+    itemNode.classList.add('-selected');
+    this.#selector.drillDown(itemNode.dataset.id, this.#depth);
   }
 
 

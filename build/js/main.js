@@ -4394,6 +4394,10 @@
 
   var _ROOT$d = /*#__PURE__*/new WeakMap();
 
+  var _INPUT_VALUE = /*#__PURE__*/new WeakMap();
+
+  var _INPUT_KEY = /*#__PURE__*/new WeakMap();
+
   var ColumnItemView = /*#__PURE__*/function () {
     function ColumnItemView(column, _ref, selectedCategoryIds) {
       var count = _ref.count,
@@ -4413,6 +4417,16 @@
         value: void 0
       });
 
+      _classPrivateFieldInitSpec(this, _INPUT_VALUE, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _INPUT_KEY, {
+        writable: true,
+        value: void 0
+      });
+
       // console.log(selectedCategoryIds, label);
       // console.log(categoryId);
       _classPrivateFieldSet(this, _categoryId, categoryId); // make HTML
@@ -4425,9 +4439,21 @@
       if (hasChild) _classPrivateFieldGet(this, _ROOT$d).classList.add('-haschild');
       _classPrivateFieldGet(this, _ROOT$d).dataset.id = categoryId;
       _classPrivateFieldGet(this, _ROOT$d).dataset.count = count;
-      _classPrivateFieldGet(this, _ROOT$d).innerHTML = "\n    <td class=\"label\">\n      <label>\n        <input class=\"value\" type=\"checkbox\" value=\"".concat(categoryId, "\"/>\n        ").concat(label, "\n      </label>\n    </td>\n    <td class=\"total\">").concat(count.toLocaleString(), "</td>\n    <td class=\"mapped\"></td>\n    <td class=\"pvalue\"></td>\n    <td class=\"drilldown\"></td>"); // if (selectedCategoryIds.indexOf(categoryId) !== -1) {
+      _classPrivateFieldGet(this, _ROOT$d).innerHTML = "\n    <td class=\"label\">\n      <label>\n        <input class=\"value\" type=\"checkbox\" value=\"".concat(categoryId, "\"/>\n        ").concat(label, "\n      </label>\n    </td>\n    <td class=\"total\">").concat(count.toLocaleString(), "</td>\n    <td class=\"mapped\"></td>\n    <td class=\"pvalue\"></td>\n    <td class=\"drilldown\"></td>"); // select/deselect a item (attribute) > label
+
+      _classPrivateFieldSet(this, _INPUT_VALUE, _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > td.label > label> input.value'));
+
+      _classPrivateFieldGet(this, _INPUT_VALUE).addEventListener('click', column.checkValue.bind(column)); // drill down
+
+
+      if (hasChild) {
+        var drilldown = _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .drilldown');
+
+        drilldown.addEventListener('click', column.drillDown.bind(column));
+      } // if (selectedCategoryIds.indexOf(categoryId) !== -1) {
       //   this.#ROOT.querySelector(':scope > td.label > label> input.value').checked = true;
       // }
+
     }
 
     _createClass(ColumnItemView, [{
@@ -4469,10 +4495,6 @@
 
   var _draw$1 = /*#__PURE__*/new WeakSet();
 
-  var _checkValue = /*#__PURE__*/new WeakSet();
-
-  var _drillDown = /*#__PURE__*/new WeakSet();
-
   var _update$2 = /*#__PURE__*/new WeakSet();
 
   var _getUserValues = /*#__PURE__*/new WeakSet();
@@ -4482,7 +4504,7 @@
   var _clearUserValues = /*#__PURE__*/new WeakSet();
 
   var ColumnView = /*#__PURE__*/function () {
-    function ColumnView(selector, _values, depth, _parentCategoryId2) {
+    function ColumnView(selector, _values, depth, parentCategoryId) {
       var _this = this;
 
       _classCallCheck(this, ColumnView);
@@ -4494,10 +4516,6 @@
       _classPrivateMethodInitSpec(this, _getUserValues);
 
       _classPrivateMethodInitSpec(this, _update$2);
-
-      _classPrivateMethodInitSpec(this, _drillDown);
-
-      _classPrivateMethodInitSpec(this, _checkValue);
 
       _classPrivateMethodInitSpec(this, _draw$1);
 
@@ -4551,7 +4569,7 @@
 
       _classPrivateFieldSet(this, _selector, selector);
 
-      _classPrivateFieldSet(this, _parentCategoryId, _parentCategoryId2);
+      _classPrivateFieldSet(this, _parentCategoryId, parentCategoryId);
 
       _classPrivateFieldSet(this, _cachedUserValues, new Map()); // draw
 
@@ -4614,6 +4632,45 @@
             });
           });
         }
+      }
+    }, {
+      key: "checkValue",
+      value: function checkValue(e) {
+        e.stopPropagation();
+        var checkbox = e.target;
+        var ancestors = [];
+        var parentCategoryId;
+        var column = checkbox.closest('.column');
+
+        do {
+          var _column;
+
+          // find ancestors
+          parentCategoryId = (_column = column) === null || _column === void 0 ? void 0 : _column.querySelector(':scope > table > thead > tr.item.-all').dataset.parentCategoryId;
+
+          if (parentCategoryId) {
+            ancestors.unshift(parentCategoryId);
+            column = column.previousElementSibling;
+          }
+        } while (parentCategoryId);
+
+        if (checkbox.checked) {
+          // add
+          ConditionBuilder$1.addPropertyValue(_classPrivateFieldGet(this, _selector).propertyId, checkbox.value, ancestors);
+        } else {
+          // remove
+          ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(this, _selector).propertyId, checkbox.value);
+        }
+      } // checkKey(e) {
+      // }
+
+    }, {
+      key: "drillDown",
+      value: function drillDown(e) {
+        var itemNode = e.target.closest('tr');
+        itemNode.classList.add('-selected');
+
+        _classPrivateFieldGet(this, _selector).drillDown(itemNode.dataset.id, _classPrivateFieldGet(this, _depth));
       } // accessors
 
     }, {
@@ -4659,7 +4716,8 @@
     console.log(_classPrivateFieldGet(this, _selector).propertyId, selectedCategoryIds);
 
     _classPrivateFieldSet(this, _items$2, values.map(function (value) {
-      _classPrivateFieldSet(_this3, _max, Math.max(_classPrivateFieldGet(_this3, _max), value.count));
+      _classPrivateFieldSet(_this3, _max, Math.max(_classPrivateFieldGet(_this3, _max), value.count)); // add item
+
 
       var columnItemView = new ColumnItemView(_this3, value, selectedCategoryIds);
       tbody.append(columnItemView.rootNode);
@@ -4668,62 +4726,7 @@
 
     _classPrivateFieldSet(this, _itemNodes, Array.from(tbody.querySelectorAll(':scope > .item')));
 
-    _classPrivateFieldGet(this, _itemNodes).forEach(function (itemNode) {
-      // select/deselect a item (attribute) > label
-      var valueCheckbox = itemNode.querySelector(':scope > .label > label > input.value[type="checkbox"]');
-      valueCheckbox.addEventListener('click', _classPrivateMethodGet(_this3, _checkValue, _checkValue2).bind(_this3)); // drill down event
-
-      if (itemNode.classList.contains('-haschild')) {
-        var drilldown = itemNode.querySelector(':scope > .drilldown');
-        drilldown.addEventListener('click', _classPrivateMethodGet(_this3, _drillDown, _drillDown2).bind(_this3));
-      }
-    }); // Map attributes event
-
-
-    _classPrivateFieldSet(this, _inputMapAttribute, _classPrivateFieldGet(this, _ROOT$c).querySelector(':scope > table > thead > .item.-all > .label > label > input'));
-
-    _classPrivateFieldGet(this, _inputMapAttribute).addEventListener('change', function (e) {
-      if (e.target.checked) {
-        ConditionBuilder$1.addProperty(_classPrivateFieldGet(_this3, _selector).propertyId, _classPrivateFieldGet(_this3, _parentCategoryId));
-      } else {
-        ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this3, _selector).propertyId, _classPrivateFieldGet(_this3, _parentCategoryId));
-      }
-    });
-  }
-
-  function _checkValue2(e) {
-    e.stopPropagation();
-    var checkbox = e.target;
-    var ancestors = [];
-    var parentCategoryId;
-    var column = checkbox.closest('.column');
-
-    do {
-      var _column;
-
-      // find ancestors
-      parentCategoryId = (_column = column) === null || _column === void 0 ? void 0 : _column.querySelector(':scope > table > thead > tr.item.-all').dataset.parentCategoryId;
-
-      if (parentCategoryId) {
-        ancestors.unshift(parentCategoryId);
-        column = column.previousElementSibling;
-      }
-    } while (parentCategoryId);
-
-    if (checkbox.checked) {
-      // add
-      ConditionBuilder$1.addPropertyValue(_classPrivateFieldGet(this, _selector).propertyId, checkbox.value, ancestors);
-    } else {
-      // remove
-      ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(this, _selector).propertyId, checkbox.value);
-    }
-  }
-
-  function _drillDown2(e) {
-    var itemNode = e.target.closest('tr');
-    itemNode.classList.add('-selected');
-
-    _classPrivateFieldGet(this, _selector).drillDown(itemNode.dataset.id, _classPrivateFieldGet(this, _depth));
+    return; // Map attributes event
   }
 
   function _update2$2(isLog10) {
