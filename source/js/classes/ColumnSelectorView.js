@@ -49,16 +49,16 @@ export default class ColumnSelectorView {
 
   #setItems(items, depth, parent) {
     for (const item of items) {
-      const hasChild = item.hasChild && item.hasChild === true;
+      // const hasChild = item.hasChild && item.hasChild === true;
       this.#items[item.categoryId] = {
-        label: item.label,
-        parent,
-        hasChild: hasChild ? true : false,
+        // label: item.label,
+        // parent,
+        // hasChild: hasChild ? true : false,
         depth,
         selected: false,
-        checked: false
+        // checked: false
       }
-      if (hasChild) this.#items[item.categoryId].children = [];
+      // if (hasChild) this.#items[item.categoryId].children = [];
     }
   }
 
@@ -124,7 +124,7 @@ export default class ColumnSelectorView {
 
   #mutatePropertyCondition({detail: {action, propertyId, parentCategoryId}}) {
     if (propertyId === this.#property.propertyId && parentCategoryId === undefined) {
-      this.#INPUT_MAP_ATTRIBUTE_OF_ROOT.checked = action === 'add';
+      // this.#INPUT_MAP_ATTRIBUTE_OF_ROOT.checked = action === 'add';
     }
   }
 

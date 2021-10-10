@@ -1,3 +1,4 @@
+import ColumnItemView from "./ColumnItemView";
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import App from "./App";
@@ -12,9 +13,9 @@ export default class ColumnView {
   #depth;
   #selector;
   #max;
-  // #propertyId;
   #parentCategoryId;
   #inputMapAttribute;
+  #items;
   #itemNodes;
   #cachedUserValues;
   #ROOT;
@@ -25,12 +26,10 @@ export default class ColumnView {
     depth,
     parentCategoryId
   ) {
-    // console.log(arguments)
 
     // set members
     this.#depth = depth;
     this.#selector = selector;
-    // this.#propertyId = propertyId;
     this.#parentCategoryId = parentCategoryId;
     this.#cachedUserValues = new Map();
 
@@ -64,7 +63,6 @@ export default class ColumnView {
   }
 
   #draw(values) {
-    const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.#selector.propertyId);
 
     // make column
     this.#ROOT = document.createElement('div');
@@ -101,33 +99,21 @@ export default class ColumnView {
           </td>
         </tr>
       </thead>
-      <tbody>${values.map(item => {
-        this.#max = Math.max(this.#max, item.count);
-        const checked = selectedCategoryIds.indexOf(item.categoryId) !== -1
-          ? ' checked'
-          : '';
-        return `
-        <tr
-          class="item${item.hasChild ? ' -haschild' : ''}"
-          data-id="${item.categoryId}"
-          data-category-id="${item.categoryId}"
-          data-count="${item.count}">
-          <td class="label">
-            <label>
-              <input class="value" type="checkbox" value="${item.categoryId}"${checked}/>
-              ${item.label}
-            </label>
-          </td>
-          <td class="total">${item.count.toLocaleString()}</td>
-          <td class="mapped"></td>
-          <td class="pvalue"></td>
-          <td class="drilldown"></td>
-        </tr>`;
-      }).join('')}</tbody>
+      <tbody></tbody>
     </table>
     `;
     const tbody = this.#ROOT.querySelector(':scope > table > tbody');
+    const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.#selector.propertyId);
+    console.log(this.#selector.propertyId, selectedCategoryIds)
+    this.#items = values.map(value => {
+      this.#max = Math.max(this.#max, value.count);
+      const columnItemView = new ColumnItemView(this, value, selectedCategoryIds);
+      tbody.append(columnItemView.rootNode);
+      return columnItemView;
+    });
     this.#itemNodes = Array.from(tbody.querySelectorAll(':scope > .item'));
+
+
 
     this.#itemNodes.forEach(itemNode => {
       // select/deselect a item (attribute) > label
