@@ -45,13 +45,12 @@
             > tr
               > .label
                 display: relative
-                > label
+                > label.value
                   [data-condition="values"] &
-                    pointer-events: none
-                    cursor: auto
-                  > input
-                    [data-condition="values"] &
-                      display: none
+                    display: none
+                > label.key
+                  [data-condition="keys"] &
+                    display: none
               > .total, > .mapped, > .pvalue
                 text-align: right
               &.-haschild

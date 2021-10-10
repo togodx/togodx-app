@@ -4400,6 +4400,8 @@
 
   var ColumnItemView = /*#__PURE__*/function () {
     function ColumnItemView(column, _ref, selectedCategoryIds) {
+      var _this = this;
+
       var count = _ref.count,
           categoryId = _ref.categoryId,
           hasChild = _ref.hasChild,
@@ -4439,9 +4441,21 @@
       if (hasChild) _classPrivateFieldGet(this, _ROOT$d).classList.add('-haschild');
       _classPrivateFieldGet(this, _ROOT$d).dataset.id = categoryId;
       _classPrivateFieldGet(this, _ROOT$d).dataset.count = count;
-      _classPrivateFieldGet(this, _ROOT$d).innerHTML = "\n    <td class=\"label\">\n      <label>\n        <input class=\"value\" type=\"checkbox\" value=\"".concat(categoryId, "\"/>\n        ").concat(label, "\n      </label>\n    </td>\n    <td class=\"total\">").concat(count.toLocaleString(), "</td>\n    <td class=\"mapped\"></td>\n    <td class=\"pvalue\"></td>\n    <td class=\"drilldown\"></td>"); // select/deselect a item (attribute) > label
+      _classPrivateFieldGet(this, _ROOT$d).innerHTML = "\n    <td class=\"label\">\n      <label class=\"key\">\n        <input type=\"checkbox\" value=\"".concat(categoryId, "\"/>\n        ").concat(label, "\n      </label>\n      <label class=\"value\">\n        <input type=\"checkbox\" value=\"").concat(categoryId, "\"/>\n        ").concat(label, "\n      </label>\n    </td>\n    <td class=\"total\">").concat(count.toLocaleString(), "</td>\n    <td class=\"mapped\"></td>\n    <td class=\"pvalue\"></td>\n    <td class=\"drilldown\"></td>");
 
-      _classPrivateFieldSet(this, _INPUT_VALUE, _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > td.label > label> input.value'));
+      _classPrivateFieldSet(this, _INPUT_VALUE, _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > td.label > label.value > input'));
+
+      _classPrivateFieldSet(this, _INPUT_KEY, _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > td.label > label.key > input')); // even listener
+
+
+      DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref2) {
+        var detail = _ref2.detail;
+        console.log(detail);
+
+        if (column.propertyId === detail.propertyId && categoryId === detail.categoryId) {
+          _classPrivateFieldGet(_this, _INPUT_VALUE).checked = detail.action === 'add';
+        }
+      }); // select/deselect a item (attribute) > label
 
       _classPrivateFieldGet(this, _INPUT_VALUE).addEventListener('click', column.checkValue.bind(column)); // drill down
 
@@ -4450,10 +4464,11 @@
         var drilldown = _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .drilldown');
 
         drilldown.addEventListener('click', column.drillDown.bind(column));
-      } // if (selectedCategoryIds.indexOf(categoryId) !== -1) {
-      //   this.#ROOT.querySelector(':scope > td.label > label> input.value').checked = true;
-      // }
+      }
 
+      if (selectedCategoryIds.indexOf(categoryId) !== -1) {
+        _classPrivateFieldGet(this, _INPUT_VALUE).checked = true;
+      }
     }
 
     _createClass(ColumnItemView, [{
@@ -4583,24 +4598,11 @@
         var detail = _ref.detail;
 
         if (detail.action === 'remove') {
-          if (_classPrivateFieldGet(_this, _selector).propertyId === detail.propertyId) {
+          if (_this.propertyId === detail.propertyId) {
             if (detail.parentCategoryId && detail.parentCategoryId == _classPrivateFieldGet(_this, _parentCategoryId)) {
               _this.inputMapAttribute.checked = false;
             }
           }
-        }
-      });
-      DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref2) {
-        var detail = _ref2.detail;
-
-        if (_classPrivateFieldGet(_this, _selector).propertyId === detail.propertyId) {
-          _classPrivateFieldGet(_this, _itemNodes).forEach(function (tr) {
-            var checkbox = tr.querySelector(':scope > .label > label > input[type="checkbox"]');
-
-            if (tr.dataset.id == detail.categoryId) {
-              checkbox.checked = detail.action === 'add';
-            }
-          });
         }
       });
       DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
@@ -4627,7 +4629,7 @@
             console.log(values);
 
             _classPrivateMethodGet(_this2, _setUserValues, _setUserValues2).call(_this2, {
-              propertyId: _classPrivateFieldGet(_this2, _selector).propertyId,
+              propertyId: _this2.propertyId,
               values: values
             });
           });
@@ -4656,10 +4658,10 @@
 
         if (checkbox.checked) {
           // add
-          ConditionBuilder$1.addPropertyValue(_classPrivateFieldGet(this, _selector).propertyId, checkbox.value, ancestors);
+          ConditionBuilder$1.addPropertyValue(this.propertyId, checkbox.value, ancestors);
         } else {
           // remove
-          ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(this, _selector).propertyId, checkbox.value);
+          ConditionBuilder$1.removePropertyValue(this.propertyId, checkbox.value);
         }
       } // checkKey(e) {
       // }
@@ -4673,6 +4675,16 @@
         _classPrivateFieldGet(this, _selector).drillDown(itemNode.dataset.id, _classPrivateFieldGet(this, _depth));
       } // accessors
 
+    }, {
+      key: "depth",
+      get: function get() {
+        return _classPrivateFieldGet(this, _depth);
+      }
+    }, {
+      key: "propertyId",
+      get: function get() {
+        return _classPrivateFieldGet(this, _selector).propertyId;
+      }
     }, {
       key: "parentCategoryId",
       get: function get() {
@@ -4700,7 +4712,7 @@
     // make column
     _classPrivateFieldSet(this, _ROOT$c, document.createElement('div'));
 
-    var isSelected = ConditionBuilder$1.isSelectedProperty(_classPrivateFieldGet(this, _selector).propertyId, _classPrivateFieldGet(this, _parentCategoryId));
+    var isSelected = ConditionBuilder$1.isSelectedProperty(this.propertyId, _classPrivateFieldGet(this, _parentCategoryId));
 
     _classPrivateFieldGet(this, _ROOT$c).classList.add('column');
 
@@ -4712,8 +4724,7 @@
 
     var tbody = _classPrivateFieldGet(this, _ROOT$c).querySelector(':scope > table > tbody');
 
-    var selectedCategoryIds = ConditionBuilder$1.getSelectedCategoryIds(_classPrivateFieldGet(this, _selector).propertyId);
-    console.log(_classPrivateFieldGet(this, _selector).propertyId, selectedCategoryIds);
+    var selectedCategoryIds = ConditionBuilder$1.getSelectedCategoryIds(this.propertyId);
 
     _classPrivateFieldSet(this, _items$2, values.map(function (value) {
       _classPrivateFieldSet(_this3, _max, Math.max(_classPrivateFieldGet(_this3, _max), value.count)); // add item
@@ -4736,7 +4747,7 @@
 
     _classPrivateFieldGet(this, _itemNodes).forEach(function (tr) {
       var count = Number(tr.dataset.count);
-      var subject = Records$1.getSubjectWithPropertyId(_classPrivateFieldGet(_this4, _selector).propertyId);
+      var subject = Records$1.getSubjectWithPropertyId(_this4.propertyId);
       tr.style.backgroundColor = "rgb(".concat(subject.color.mix(App$1.colorWhite, 1 - (isLog10 ? Math.log10(count) : count) / max).coords.map(function (cood) {
         return cood * 256;
       }).join(','), ")");
@@ -4761,13 +4772,13 @@
     });
   }
 
-  function _setUserValues2(_ref3) {
+  function _setUserValues2(_ref2) {
     var _this6 = this;
 
-    var propertyId = _ref3.propertyId,
-        values = _ref3.values;
+    var propertyId = _ref2.propertyId,
+        values = _ref2.values;
 
-    if (_classPrivateFieldGet(this, _selector).propertyId === propertyId) {
+    if (this.propertyId === propertyId) {
       var _iterator = _createForOfIteratorHelper(values),
           _step;
 

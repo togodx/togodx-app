@@ -1,3 +1,6 @@
+import DefaultEventEmitter from "./DefaultEventEmitter";
+import * as event from '../events';
+
 export default class ColumnItemView {
 
   #categoryId;
@@ -19,8 +22,12 @@ export default class ColumnItemView {
     this.#ROOT.dataset.count = count;
     this.#ROOT.innerHTML = `
     <td class="label">
-      <label>
-        <input class="value" type="checkbox" value="${categoryId}"/>
+      <label class="key">
+        <input type="checkbox" value="${categoryId}"/>
+        ${label}
+      </label>
+      <label class="value">
+        <input type="checkbox" value="${categoryId}"/>
         ${label}
       </label>
     </td>
@@ -29,8 +36,18 @@ export default class ColumnItemView {
     <td class="pvalue"></td>
     <td class="drilldown"></td>`;
 
+    this.#INPUT_VALUE = this.#ROOT.querySelector(':scope > td.label > label.value > input');
+    this.#INPUT_KEY = this.#ROOT.querySelector(':scope > td.label > label.key > input');
+
+    // even listener
+    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail}) => {
+      console.log(detail)
+      if (column.propertyId === detail.propertyId && categoryId === detail.categoryId) {
+        this.#INPUT_VALUE.checked = detail.action === 'add';
+      }
+    });
+
     // select/deselect a item (attribute) > label
-    this.#INPUT_VALUE = this.#ROOT.querySelector(':scope > td.label > label> input.value');
     this.#INPUT_VALUE.addEventListener('click', column.checkValue.bind(column));
 
     // drill down
@@ -39,9 +56,9 @@ export default class ColumnItemView {
       drilldown.addEventListener('click', column.drillDown.bind(column));
     }
 
-    // if (selectedCategoryIds.indexOf(categoryId) !== -1) {
-    //   this.#ROOT.querySelector(':scope > td.label > label> input.value').checked = true;
-    // }
+    if (selectedCategoryIds.indexOf(categoryId) !== -1) {
+      this.#INPUT_VALUE.checked = true;
+    }
   }
 
   get rootNode() {
