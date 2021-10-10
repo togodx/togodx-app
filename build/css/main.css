@@ -628,14 +628,14 @@ main {
   color: white;
 }
 .column-selector-view > .columns > .inner > .column > table > thead > .header {
-  background-color: var(--color-lamp-black);
+  background-color: var(--color-dark-gray);
 }
 .column-selector-view > .columns > .inner > .column > table > thead > .header > th.-sortable {
   cursor: pointer;
   transition: background-color var(--transition-instant);
 }
 .column-selector-view > .columns > .inner > .column > table > thead > .header > th.-sortable:hover {
-  background-color: var(--color-dark-gray);
+  background-color: var(--color-lamp-black);
 }
 .column-selector-view > .columns > .inner > .column > table > thead > .header > th > .sorter {
   display: inline-block;
@@ -654,6 +654,7 @@ main {
   width: 0;
   height: 0;
   border-style: solid;
+  opacity: 0.4;
 }
 .column-selector-view > .columns > .inner > .column > table > thead > .header > th > .sorter::before {
   border-width: 0 0.3rem 0.3rem 0.3rem;
@@ -664,6 +665,24 @@ main {
   border-width: 0.3rem 0.3rem 0 0.3rem;
   border-color: white transparent transparent transparent;
   bottom: 0.2rem;
+}
+body[data-sort-column=label][data-sort-direction=asc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.label, body[data-sort-column=label][data-sort-direction=desc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.label {
+  background-color: var(--color-lamp-black);
+}
+body[data-sort-column=label][data-sort-direction=asc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.label > .sorter::before {
+  opacity: 1;
+}
+body[data-sort-column=label][data-sort-direction=desc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.label > .sorter::after {
+  opacity: 1;
+}
+body[data-sort-column=total][data-sort-direction=asc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.total, body[data-sort-column=total][data-sort-direction=desc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.total {
+  background-color: var(--color-lamp-black);
+}
+body[data-sort-column=total][data-sort-direction=asc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.total > .sorter::before {
+  opacity: 1;
+}
+body[data-sort-column=total][data-sort-direction=desc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.total > .sorter::after {
+  opacity: 1;
 }
 .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label {
   display: relative;

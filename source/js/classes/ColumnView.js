@@ -1,6 +1,7 @@
 import ColumnItemView from "./ColumnItemView";
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import ColumnSelectorSortManager from "./ColumnSelectorSortManager";
 import App from "./App";
 import Records from "./Records";
 import * as event from '../events';
@@ -35,6 +36,7 @@ export default class ColumnView {
 
     // even listener
     DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
+    DefaultEventEmitter.addEventListener(event.changeColumnSelectorSorter, this.#sort.bind(this));
   }
 
   #draw(values) {
@@ -48,8 +50,8 @@ export default class ColumnView {
     <table>
       <thead>
         <tr class="header">
-          <th class="label -sortable">Values<div class="sorter" data-sorter="label"></div></th>
-          <th class="total -sortable">Total<div class="sorter" data-sorter="total"></div></th>
+          <th class="label">Values</th>
+          <th class="total">Total</th>
           <th class="mapped">Mapped</th>
           <th class="pvalue">p-value</th>
           <th class="drilldown"></th>
@@ -65,6 +67,23 @@ export default class ColumnView {
       const columnItemView = new ColumnItemView(this, value, selectedCategoryIds);
       tbody.append(columnItemView.rootNode);
       return columnItemView;
+    });
+
+    // sort
+    const theadCells = Array.from(this.#ROOT.querySelectorAll(':scope > table > thead > tr > th'));
+    ColumnSelectorSortManager.sortableColumns.forEach(sortableColumn => {
+      const cell = theadCells.find(cell => cell.classList.contains(sortableColumn));
+      cell.classList.add('-sortable');
+      cell.insertAdjacentHTML('beforeend', `<div class="sorter" data-column="${sortableColumn}"></div>`);
+    });
+    this.#ROOT.querySelectorAll(':scope > table > thead > tr > .-sortable').forEach(sortable => {
+      sortable.addEventListener('click', ({target}) => {
+        const sorter = target.querySelector(':scope > .sorter');
+        const customEvent = new CustomEvent(event.changeColumnSelectorSorter, {detail: {
+          column: sorter.dataset.column
+        }});
+        DefaultEventEmitter.dispatchEvent(customEvent);
+      });
     });
   }
 
@@ -90,6 +109,10 @@ export default class ColumnView {
           });
       }
     });
+  }
+
+  #sort({detail: {column}}) {
+    console.log(column)
   }
 
 

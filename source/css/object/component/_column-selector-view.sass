@@ -36,13 +36,13 @@
           > thead
             color: white
             > .header
-              background-color: var(--color-lamp-black)
+              background-color: var(--color-dark-gray)
               > th
                 &.-sortable
                   cursor: pointer
                   transition: background-color var(--transition-instant)
                   &:hover
-                    background-color: var(--color-dark-gray)
+                    background-color: var(--color-lamp-black)
                 > .sorter
                   display: inline-block
                   width: 1.3rem
@@ -59,6 +59,7 @@
                     width: 0
                     height: 0
                     border-style: solid
+                    opacity: .4
                   &::before
                     border-width: 0 .3rem .3rem .3rem
                     border-color: transparent transparent white transparent
@@ -67,6 +68,24 @@
                     border-width: .3rem .3rem 0 .3rem
                     border-color: white transparent transparent transparent
                     bottom: .2rem
+                &.label
+                  body[data-sort-column="label"][data-sort-direction="asc"] &, body[data-sort-column="label"][data-sort-direction="desc"] &
+                    background-color: var(--color-lamp-black)
+                  body[data-sort-column="label"][data-sort-direction="asc"] &
+                    > .sorter::before
+                      opacity: 1
+                  body[data-sort-column="label"][data-sort-direction="desc"] &
+                    > .sorter::after
+                      opacity: 1
+                &.total
+                  body[data-sort-column="total"][data-sort-direction="asc"] &, body[data-sort-column="total"][data-sort-direction="desc"] &
+                    background-color: var(--color-lamp-black)
+                  body[data-sort-column="total"][data-sort-direction="asc"] &
+                    > .sorter::before
+                      opacity: 1
+                  body[data-sort-column="total"][data-sort-direction="desc"] &
+                    > .sorter::after
+                      opacity: 1
           > tbody
             > tr
               > .label

@@ -3381,7 +3381,9 @@
   var leavePropertyValueItemView = 'leavePropertyValueItemView';
   var allTracksCollapse = 'allTracksCollapse'; // Statistics
 
-  var changeStatisticsViewMode = 'changeStatisticsViewMode';
+  var changeStatisticsViewMode = 'changeStatisticsViewMode'; // Column selector
+
+  var changeColumnSelectorSorter = 'changeColumnSelectorSorter';
 
   var _keyConditions = /*#__PURE__*/new WeakMap();
 
@@ -4569,6 +4571,54 @@
     _classPrivateFieldGet(this, _ROOT$d).classList.remove('-pinsticking');
   }
 
+  var SORTABLE_COLUMNS = ['label', 'total'];
+
+  var _status = /*#__PURE__*/new WeakMap();
+
+  var ColumnSelectorSortManager = /*#__PURE__*/function () {
+    function ColumnSelectorSortManager() {
+      var _this = this;
+
+      _classCallCheck(this, ColumnSelectorSortManager);
+
+      _classPrivateFieldInitSpec(this, _status, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldSet(this, _status, new Map(SORTABLE_COLUMNS.map(function (column) {
+        return [column, ''];
+      })));
+
+      DefaultEventEmitter$1.addEventListener(changeColumnSelectorSorter, function (_ref) {
+        var column = _ref.detail.column;
+
+        var direction = {
+          '': 'asc',
+          asc: 'desc',
+          desc: ''
+        }[_classPrivateFieldGet(_this, _status).get(column)];
+
+        _classPrivateFieldGet(_this, _status).set(column, direction);
+
+        console.log(_classPrivateFieldGet(_this, _status));
+        document.body.dataset.sortColumn = column;
+        document.body.dataset.sortDirection = direction;
+      });
+    }
+
+    _createClass(ColumnSelectorSortManager, [{
+      key: "sortableColumns",
+      get: function get() {
+        return SORTABLE_COLUMNS;
+      }
+    }]);
+
+    return ColumnSelectorSortManager;
+  }();
+
+  var ColumnSelectorSortManager$1 = new ColumnSelectorSortManager();
+
   function dataFromUserIds(sparqlet, primaryKey) {
     var _ConditionBuilder$use;
 
@@ -4596,11 +4646,15 @@
 
   var _getUserValues = /*#__PURE__*/new WeakSet();
 
+  var _sort = /*#__PURE__*/new WeakSet();
+
   var ColumnView = /*#__PURE__*/function () {
     function ColumnView(selector, _values, depth, parentCategoryId) {
       var _this = this;
 
       _classCallCheck(this, ColumnView);
+
+      _classPrivateMethodInitSpec(this, _sort);
 
       _classPrivateMethodInitSpec(this, _getUserValues);
 
@@ -4661,6 +4715,7 @@
       DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
         return _classPrivateMethodGet(_this, _update$2, _update2$2).call(_this, e.detail.log10);
       });
+      DefaultEventEmitter$1.addEventListener(changeColumnSelectorSorter, _classPrivateMethodGet(this, _sort, _sort2).bind(this));
     }
 
     _createClass(ColumnView, [{
@@ -4759,7 +4814,7 @@
 
     _classPrivateFieldSet(this, _max, 0);
 
-    _classPrivateFieldGet(this, _ROOT$c).innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label -sortable\">Values<div class=\"sorter\" data-sorter=\"label\"></div></th>\n          <th class=\"total -sortable\">Total<div class=\"sorter\" data-sorter=\"total\"></div></th>\n          <th class=\"mapped\">Mapped</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n      </thead>\n      <tbody></tbody>\n    </table>";
+    _classPrivateFieldGet(this, _ROOT$c).innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label\">Values</th>\n          <th class=\"total\">Total</th>\n          <th class=\"mapped\">Mapped</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n      </thead>\n      <tbody></tbody>\n    </table>";
 
     var tbody = _classPrivateFieldGet(this, _ROOT$c).querySelector(':scope > table > tbody');
 
@@ -4772,7 +4827,30 @@
       var columnItemView = new ColumnItemView(_this3, value, selectedCategoryIds);
       tbody.append(columnItemView.rootNode);
       return columnItemView;
-    }));
+    })); // sort
+
+
+    var theadCells = Array.from(_classPrivateFieldGet(this, _ROOT$c).querySelectorAll(':scope > table > thead > tr > th'));
+    ColumnSelectorSortManager$1.sortableColumns.forEach(function (sortableColumn) {
+      var cell = theadCells.find(function (cell) {
+        return cell.classList.contains(sortableColumn);
+      });
+      cell.classList.add('-sortable');
+      cell.insertAdjacentHTML('beforeend', "<div class=\"sorter\" data-column=\"".concat(sortableColumn, "\"></div>"));
+    });
+
+    _classPrivateFieldGet(this, _ROOT$c).querySelectorAll(':scope > table > thead > tr > .-sortable').forEach(function (sortable) {
+      sortable.addEventListener('click', function (_ref) {
+        var target = _ref.target;
+        var sorter = target.querySelector(':scope > .sorter');
+        var customEvent = new CustomEvent(changeColumnSelectorSorter, {
+          detail: {
+            column: sorter.dataset.column
+          }
+        });
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
+      });
+    });
   }
 
   function _update2$2(isLog10) {
@@ -4802,6 +4880,11 @@
         });
       }
     });
+  }
+
+  function _sort2(_ref2) {
+    var column = _ref2.detail.column;
+    console.log(column);
   }
 
   var _property$3 = /*#__PURE__*/new WeakMap();
