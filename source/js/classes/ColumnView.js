@@ -32,11 +32,13 @@ export default class ColumnView {
 
     // draw
     this.#draw(values);
-    this.#update(App.viewModes.log10);
 
     // even listener
-    DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
-    DefaultEventEmitter.addEventListener(event.changeColumnSelectorSorter, this.#sort.bind(this));
+    DefaultEventEmitter.addEventListener(event.changeViewModes, this.#update.bind(this));
+    DefaultEventEmitter.addEventListener(event.changeColumnSelectorSorter, this.#update.bind(this));
+    this.#ROOT.addEventListener(event.collapsed, e => {
+      if (e.detail) this.#update();
+    })
   }
 
   #draw(values) {
@@ -44,6 +46,7 @@ export default class ColumnView {
     // make column
     this.#ROOT = document.createElement('div');
     this.#ROOT.classList.add('column');
+    this.#ROOT.dataset.capturingCollapse = true;
     this.#ROOT.dataset.parentCategoryId = this.#parentCategoryId ?? '';
     this.#max = 0;
     this.#ROOT.innerHTML = `
@@ -69,7 +72,7 @@ export default class ColumnView {
       return columnItemView;
     });
 
-    // sort
+    // attach sort function
     const theadCells = Array.from(this.#ROOT.querySelectorAll(':scope > table > thead > tr > th'));
     ColumnSelectorSortManager.sortableColumns.forEach(sortableColumn => {
       const cell = theadCells.find(cell => cell.classList.contains(sortableColumn));
@@ -79,20 +82,26 @@ export default class ColumnView {
     this.#ROOT.querySelectorAll(':scope > table > thead > tr > .-sortable').forEach(sortable => {
       sortable.addEventListener('click', ({target}) => {
         const sorter = target.querySelector(':scope > .sorter');
-        const customEvent = new CustomEvent(event.changeColumnSelectorSorter, {detail: {
-          column: sorter.dataset.column
-        }});
-        DefaultEventEmitter.dispatchEvent(customEvent);
+        console.log(sorter)
+        ColumnSelectorSortManager.setSort(sorter.dataset.column);
       });
     });
   }
 
-  #update(isLog10) {
-    let max = isLog10 && this.#max > 1 ? Math.log10(this.#max) : this.#max;
-    this.#items.forEach(columnItemView => {
-      const subject = Records.getSubjectWithPropertyId(this.propertyId);
-      columnItemView.update(subject, isLog10, max);
-    });
+  #update() {
+    if (this.#selector.isShowing && this.#existed) {
+      // sort
+      const sorting = ColumnSelectorSortManager.sorting;
+      console.log(sorting)
+
+      // heatmap
+      const isLog10 = App.viewModes.log10;
+      let max = isLog10 && this.#max > 1 ? Math.log10(this.#max) : this.#max;
+      this.#items.forEach(columnItemView => {
+        const subject = Records.getSubjectWithPropertyId(this.propertyId);
+        columnItemView.update(subject, isLog10, max);
+      });
+    }
   }
 
   #getUserValues(query) {
@@ -111,15 +120,12 @@ export default class ColumnView {
     });
   }
 
-  #sort({detail: {column}}) {
-    console.log(column)
-  }
-
 
   // public Methods
 
   appended() {
-    // TODO: これをきっかけに描画をするようにする
+    this.#update();
+    
     // user IDs
     if (document.body.classList.contains('-showuserids') && ConditionBuilder.userIds) {
       this.#getUserValues(
@@ -171,6 +177,10 @@ export default class ColumnView {
 
 
   // accessors
+
+  get #existed() {
+    return this.#ROOT.parentNode !== null;
+  }
 
   get depth() {
     return this.#depth;

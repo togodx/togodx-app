@@ -3383,7 +3383,9 @@
 
   var changeStatisticsViewMode = 'changeStatisticsViewMode'; // Column selector
 
-  var changeColumnSelectorSorter = 'changeColumnSelectorSorter';
+  var changeColumnSelectorSorter = 'changeColumnSelectorSorter'; // Collpase
+
+  var collapsed = 'collapsed';
 
   var _keyConditions = /*#__PURE__*/new WeakMap();
 
@@ -4400,7 +4402,13 @@
     button.addEventListener('click', function () {
       elm.classList.toggle('-spread');
       button.classList.toggle('-spread');
-      content.classList.toggle('-spread');
+      content.classList.toggle('-spread'); // messaging
+
+      content.querySelectorAll('[data-capturing-collapse=true]').forEach(function (node) {
+        node.dispatchEvent(new CustomEvent(collapsed, {
+          detail: content.classList.contains('-spread')
+        }));
+      });
     });
   }
 
@@ -4577,8 +4585,6 @@
 
   var ColumnSelectorSortManager = /*#__PURE__*/function () {
     function ColumnSelectorSortManager() {
-      var _this = this;
-
       _classCallCheck(this, ColumnSelectorSortManager);
 
       _classPrivateFieldInitSpec(this, _status, {
@@ -4588,29 +4594,51 @@
 
       _classPrivateFieldSet(this, _status, new Map(SORTABLE_COLUMNS.map(function (column) {
         return [column, ''];
-      })));
+      }))); // DefaultEventEmitter.addEventListener(event.changeColumnSelectorSorter, ({detail: {column}}) => {
+      // });
 
-      DefaultEventEmitter$1.addEventListener(changeColumnSelectorSorter, function (_ref) {
-        var column = _ref.detail.column;
+    } // public methods
 
+
+    _createClass(ColumnSelectorSortManager, [{
+      key: "setSort",
+      value: function setSort(column) {
+        // set sort
         var direction = {
           '': 'asc',
           asc: 'desc',
           desc: ''
-        }[_classPrivateFieldGet(_this, _status).get(column)];
+        }[_classPrivateFieldGet(this, _status).get(column)];
 
-        _classPrivateFieldGet(_this, _status).set(column, direction);
+        _classPrivateFieldGet(this, _status).set(column, direction);
 
-        console.log(_classPrivateFieldGet(_this, _status));
+        console.log(_classPrivateFieldGet(this, _status));
         document.body.dataset.sortColumn = column;
-        document.body.dataset.sortDirection = direction;
-      });
-    }
+        document.body.dataset.sortDirection = direction; // dispatch event
 
-    _createClass(ColumnSelectorSortManager, [{
+        var customEvent = new CustomEvent(changeColumnSelectorSorter, {
+          detail: {
+            column: column,
+            direction: direction
+          }
+        });
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
+      } // accessors
+
+    }, {
       key: "sortableColumns",
       get: function get() {
         return SORTABLE_COLUMNS;
+      }
+    }, {
+      key: "sorting",
+      get: function get() {
+        var column = document.body.dataset.sortDirection === '' ? '' : document.body.dataset.sortColumn;
+        var direction = document.body.dataset.sortDirection;
+        return {
+          column: column,
+          direction: direction
+        };
       }
     }]);
 
@@ -4646,7 +4674,7 @@
 
   var _getUserValues = /*#__PURE__*/new WeakSet();
 
-  var _sort = /*#__PURE__*/new WeakSet();
+  var _existed = /*#__PURE__*/new WeakMap();
 
   var ColumnView = /*#__PURE__*/function () {
     function ColumnView(selector, _values, depth, parentCategoryId) {
@@ -4654,7 +4682,10 @@
 
       _classCallCheck(this, ColumnView);
 
-      _classPrivateMethodInitSpec(this, _sort);
+      _classPrivateFieldInitSpec(this, _existed, {
+        get: _get_existed,
+        set: void 0
+      });
 
       _classPrivateMethodInitSpec(this, _getUserValues);
 
@@ -4707,15 +4738,15 @@
       _classPrivateFieldSet(this, _cachedUserValues, new Map()); // draw
 
 
-      _classPrivateMethodGet(this, _draw$1, _draw2$1).call(this, _values);
-
-      _classPrivateMethodGet(this, _update$2, _update2$2).call(this, App$1.viewModes.log10); // even listener
+      _classPrivateMethodGet(this, _draw$1, _draw2$1).call(this, _values); // even listener
 
 
-      DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
-        return _classPrivateMethodGet(_this, _update$2, _update2$2).call(_this, e.detail.log10);
+      DefaultEventEmitter$1.addEventListener(changeViewModes, _classPrivateMethodGet(this, _update$2, _update2$2).bind(this));
+      DefaultEventEmitter$1.addEventListener(changeColumnSelectorSorter, _classPrivateMethodGet(this, _update$2, _update2$2).bind(this));
+
+      _classPrivateFieldGet(this, _ROOT$c).addEventListener(collapsed, function (e) {
+        if (e.detail) _classPrivateMethodGet(_this, _update$2, _update2$2).call(_this);
       });
-      DefaultEventEmitter$1.addEventListener(changeColumnSelectorSorter, _classPrivateMethodGet(this, _sort, _sort2).bind(this));
     }
 
     _createClass(ColumnView, [{
@@ -4724,8 +4755,9 @@
       function appended() {
         var _this2 = this;
 
-        // TODO: これをきっかけに描画をするようにする
-        // user IDs
+        _classPrivateMethodGet(this, _update$2, _update2$2).call(this); // user IDs
+
+
         if (document.body.classList.contains('-showuserids') && ConditionBuilder$1.userIds) {
           _classPrivateMethodGet(this, _getUserValues, _getUserValues2).call(this, dataFromUserIds(_classPrivateFieldGet(this, _selector).sparqlet, _classPrivateFieldGet(this, _selector).primaryKey, _classPrivateFieldGet(this, _parentCategoryId))).then(function (values) {
             console.log(values);
@@ -4810,6 +4842,7 @@
 
     _classPrivateFieldGet(this, _ROOT$c).classList.add('column');
 
+    _classPrivateFieldGet(this, _ROOT$c).dataset.capturingCollapse = true;
     _classPrivateFieldGet(this, _ROOT$c).dataset.parentCategoryId = (_classPrivateFieldGet2 = _classPrivateFieldGet(this, _parentCategoryId)) !== null && _classPrivateFieldGet2 !== void 0 ? _classPrivateFieldGet2 : '';
 
     _classPrivateFieldSet(this, _max, 0);
@@ -4827,7 +4860,7 @@
       var columnItemView = new ColumnItemView(_this3, value, selectedCategoryIds);
       tbody.append(columnItemView.rootNode);
       return columnItemView;
-    })); // sort
+    })); // attach sort function
 
 
     var theadCells = Array.from(_classPrivateFieldGet(this, _ROOT$c).querySelectorAll(':scope > table > thead > tr > th'));
@@ -4843,25 +4876,28 @@
       sortable.addEventListener('click', function (_ref) {
         var target = _ref.target;
         var sorter = target.querySelector(':scope > .sorter');
-        var customEvent = new CustomEvent(changeColumnSelectorSorter, {
-          detail: {
-            column: sorter.dataset.column
-          }
-        });
-        DefaultEventEmitter$1.dispatchEvent(customEvent);
+        console.log(sorter);
+        ColumnSelectorSortManager$1.setSort(sorter.dataset.column);
       });
     });
   }
 
-  function _update2$2(isLog10) {
+  function _update2$2() {
     var _this4 = this;
 
-    var max = isLog10 && _classPrivateFieldGet(this, _max) > 1 ? Math.log10(_classPrivateFieldGet(this, _max)) : _classPrivateFieldGet(this, _max);
+    if (_classPrivateFieldGet(this, _selector).isShowing && _classPrivateFieldGet(this, _existed)) {
+      // sort
+      var sorting = ColumnSelectorSortManager$1.sorting;
+      console.log(sorting); // heatmap
 
-    _classPrivateFieldGet(this, _items$2).forEach(function (columnItemView) {
-      var subject = Records$1.getSubjectWithPropertyId(_this4.propertyId);
-      columnItemView.update(subject, isLog10, max);
-    });
+      var isLog10 = App$1.viewModes.log10;
+      var max = isLog10 && _classPrivateFieldGet(this, _max) > 1 ? Math.log10(_classPrivateFieldGet(this, _max)) : _classPrivateFieldGet(this, _max);
+
+      _classPrivateFieldGet(this, _items$2).forEach(function (columnItemView) {
+        var subject = Records$1.getSubjectWithPropertyId(_this4.propertyId);
+        columnItemView.update(subject, isLog10, max);
+      });
+    }
   }
 
   function _getUserValues2(query) {
@@ -4882,9 +4918,8 @@
     });
   }
 
-  function _sort2(_ref2) {
-    var column = _ref2.detail.column;
-    console.log(column);
+  function _get_existed() {
+    return _classPrivateFieldGet(this, _ROOT$c).parentNode !== null;
   }
 
   var _property$3 = /*#__PURE__*/new WeakMap();
@@ -4900,6 +4935,8 @@
   var _CONTAINER$1 = /*#__PURE__*/new WeakMap();
 
   var _LOADING_VIEW$2 = /*#__PURE__*/new WeakMap();
+
+  var _CONTAINED_VIEW = /*#__PURE__*/new WeakMap();
 
   var _setItems = /*#__PURE__*/new WeakSet();
 
@@ -4964,6 +5001,11 @@
         value: void 0
       });
 
+      _classPrivateFieldInitSpec(this, _CONTAINED_VIEW, {
+        writable: true,
+        value: void 0
+      });
+
       _classPrivateFieldSet(this, _property$3, property);
 
       _classPrivateFieldSet(this, _items$1, {});
@@ -4980,6 +5022,8 @@
       _classPrivateFieldSet(this, _CONTAINER$1, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .columns > .inner'));
 
       _classPrivateFieldSet(this, _LOADING_VIEW$2, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .loading-view'));
+
+      _classPrivateFieldSet(this, _CONTAINED_VIEW, _classPrivateFieldGet(this, _ROOT$b).closest('.track-view'));
 
       var _depth = 0;
 
@@ -5049,6 +5093,11 @@
       key: "primaryKey",
       get: function get() {
         return _classPrivateFieldGet(this, _property$3).primaryKey;
+      }
+    }, {
+      key: "isShowing",
+      get: function get() {
+        return _classPrivateFieldGet(this, _CONTAINED_VIEW).classList.contains('-spread');
       }
     }]);
 

@@ -10,6 +10,7 @@ export default class ColumnSelectorView {
   #ROOT;
   #CONTAINER;
   #LOADING_VIEW;
+  #CONTAINED_VIEW;
 
   constructor(elm, property, items) {
 
@@ -29,6 +30,7 @@ export default class ColumnSelectorView {
     this.#ROOT = elm.querySelector(':scope > .column-selector-view');
     this.#CONTAINER = this.#ROOT.querySelector(':scope > .columns > .inner');
     this.#LOADING_VIEW = this.#ROOT.querySelector(':scope > .loading-view');
+    this.#CONTAINED_VIEW = this.#ROOT.closest('.track-view');
 
     const depth = 0;
     this.#setItems(items, depth);
@@ -148,6 +150,10 @@ export default class ColumnSelectorView {
 
   get primaryKey() {
     return this.#property.primaryKey;
+  }
+
+  get isShowing() {
+    return this.#CONTAINED_VIEW.classList.contains('-spread');
   }
 
 }

@@ -11,22 +11,43 @@ class ColumnSelectorSortManager {
 
     this.#status = new Map(SORTABLE_COLUMNS.map(column => [column, '']));
 
-    DefaultEventEmitter.addEventListener(event.changeColumnSelectorSorter, ({detail: {column}}) => {
-      const direction = ({
-        '': 'asc',
-        asc: 'desc',
-        desc: ''
-      })[this.#status.get(column)];
-      this.#status.set(column, direction);
-      console.log(this.#status)
-      document.body.dataset.sortColumn = column;
-      document.body.dataset.sortDirection = direction;
-    });
+    // DefaultEventEmitter.addEventListener(event.changeColumnSelectorSorter, ({detail: {column}}) => {
+    // });
 
   }
 
+
+  // public methods
+
+  setSort(column) {
+
+    // set sort
+    const direction = ({
+      '': 'asc',
+      asc: 'desc',
+      desc: ''
+    })[this.#status.get(column)];
+    this.#status.set(column, direction);
+    console.log(this.#status)
+    document.body.dataset.sortColumn = column;
+    document.body.dataset.sortDirection = direction;
+
+    // dispatch event
+    const customEvent = new CustomEvent(event.changeColumnSelectorSorter, {detail: {column, direction}});
+    DefaultEventEmitter.dispatchEvent(customEvent);
+  }
+
+
+  // accessors
+
   get sortableColumns() {
     return SORTABLE_COLUMNS;
+  }
+
+  get sorting() {
+    const column = document.body.dataset.sortDirection === '' ? '' : document.body.dataset.sortColumn;
+    const direction = document.body.dataset.sortDirection;
+    return {column, direction};
   }
 
 }
