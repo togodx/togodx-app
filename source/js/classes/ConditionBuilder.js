@@ -158,9 +158,14 @@ class ConditionBuilder {
   }
 
   getSelectedCategoryIds(propertyId) {
-    const categoryIds = [];
+    const categoryIds = {
+      keys: [],
+      values: []
+    };
+    const keyConditions = this.#keyConditions.filter(keyCondition => keyCondition.propertyId === propertyId);
     const valuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
-    if (valuesCondition) categoryIds.push(...valuesCondition.categoryIds);
+    if (keyConditions) categoryIds.keys.push(...keyConditions.map(keyCondiiton => keyCondiiton.parentCategoryId));
+    if (valuesCondition) categoryIds.values.push(...valuesCondition.categoryIds);
     return categoryIds;
   }
 

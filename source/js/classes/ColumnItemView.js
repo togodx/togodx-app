@@ -1,18 +1,14 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
+import ConditionBuilder from "./ConditionBuilder";
 import * as event from '../events';
 
 export default class ColumnItemView {
 
-  #categoryId;
   #ROOT;
   #INPUT_VALUE;
   #INPUT_KEY;
 
   constructor(column, {count, categoryId, hasChild, label}, selectedCategoryIds) {
-    // console.log(selectedCategoryIds, label);
-    // console.log(categoryId);
-
-    this.#categoryId = categoryId;
 
     // make HTML
     this.#ROOT = document.createElement('tr');
@@ -38,8 +34,26 @@ export default class ColumnItemView {
 
     this.#INPUT_VALUE = this.#ROOT.querySelector(':scope > td.label > label.value > input');
     this.#INPUT_KEY = this.#ROOT.querySelector(':scope > td.label > label.key > input');
+    if (selectedCategoryIds.keys.indexOf(categoryId) !== -1) this.#INPUT_KEY.checked = true;
+    if (selectedCategoryIds.values.indexOf(categoryId) !== -1) this.#INPUT_VALUE.checked = true;
 
     // even listener
+    this.#INPUT_KEY.addEventListener('change', e => {
+      if (e.target.checked) {
+        ConditionBuilder.addProperty(column.propertyId, categoryId);
+      } else {
+        ConditionBuilder.removeProperty(column.propertyId, categoryId);
+      }
+    });
+    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail}) => {
+      if (detail.action === 'remove') {
+        if (column.propertyId === detail.propertyId) {
+          if (detail.parentCategoryId && categoryId === detail.parentCategoryId) {
+            this.#INPUT_KEY.checked = detail.action === 'add';
+          }
+        }
+      }
+    });
     DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail}) => {
       if (column.propertyId === detail.propertyId && categoryId === detail.categoryId) {
         this.#INPUT_VALUE.checked = detail.action === 'add';
@@ -55,9 +69,6 @@ export default class ColumnItemView {
       drilldown.addEventListener('click', column.drillDown.bind(column));
     }
 
-    if (selectedCategoryIds.indexOf(categoryId) !== -1) {
-      this.#INPUT_VALUE.checked = true;
-    }
   }
 
   get rootNode() {

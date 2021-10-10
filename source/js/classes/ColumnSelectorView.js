@@ -12,7 +12,6 @@ export default class ColumnSelectorView {
   #ROOT;
   #CONTAINER;
   #LOADING_VIEW;
-  #INPUT_MAP_ATTRIBUTE_OF_ROOT;
 
   constructor(elm, property, items) {
 
@@ -33,9 +32,6 @@ export default class ColumnSelectorView {
     this.#CONTAINER = this.#ROOT.querySelector(':scope > .columns > .inner');
     this.#LOADING_VIEW = this.#ROOT.querySelector(':scope > .loading-view');
 
-    // even listener
-    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, this.#mutatePropertyCondition.bind(this));
-
     const depth = 0;
     this.#setItems(items, depth);
 
@@ -47,18 +43,12 @@ export default class ColumnSelectorView {
 
   // private methods
 
-  #setItems(items, depth, parent) {
+  #setItems(items, depth) {
     for (const item of items) {
-      // const hasChild = item.hasChild && item.hasChild === true;
       this.#items[item.categoryId] = {
-        // label: item.label,
-        // parent,
-        // hasChild: hasChild ? true : false,
         depth,
         selected: false,
-        // checked: false
       }
-      // if (hasChild) this.#items[item.categoryId].children = [];
     }
   }
 
@@ -70,7 +60,7 @@ export default class ColumnSelectorView {
       } else {
         Records.fetchPropertyValues(this.#property.propertyId, categoryId)
           .then(values => {
-            this.#setItems(values, depth, categoryId);
+            this.#setItems(values, depth);
             const columnView = this.#makeCoumnView(values, depth, categoryId);
             resolve(columnView);
           })
@@ -88,7 +78,6 @@ export default class ColumnSelectorView {
       depth,
       parentCategoryId
     );
-    if (depth === 0) this.#INPUT_MAP_ATTRIBUTE_OF_ROOT = columnView.inputMapAttribute;
     this.#columnViews.push(columnView);
     return columnView;
   }
@@ -120,12 +109,6 @@ export default class ColumnSelectorView {
         behavior: 'smooth'
       });
     };
-  }
-
-  #mutatePropertyCondition({detail: {action, propertyId, parentCategoryId}}) {
-    if (propertyId === this.#property.propertyId && parentCategoryId === undefined) {
-      // this.#INPUT_MAP_ATTRIBUTE_OF_ROOT.checked = action === 'add';
-    }
   }
 
   #setSelectedValue(categoryId, selected) {

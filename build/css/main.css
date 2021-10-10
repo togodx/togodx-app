@@ -630,12 +630,6 @@ main {
 .column-selector-view > .columns > .inner > .column > table > thead > .header {
   background-color: var(--color-lamp-black);
 }
-.column-selector-view > .columns > .inner > .column > table > thead > .item {
-  background-color: var(--color-dark-gray);
-}
-[data-condition=value] .column-selector-view > .columns > .inner > .column > table > thead > .item {
-  display: none;
-}
 .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label {
   display: relative;
 }

@@ -6,15 +6,12 @@ import Records from "./Records";
 import * as event from '../events';
 import * as queryTemplates from '../functions/queryTemplates';
 
-const ALL_PROPERTIES = 'ALL_PROPERTIES';
-
 export default class ColumnView {
 
   #depth;
   #selector;
   #max;
   #parentCategoryId;
-  #inputMapAttribute;
   #items;
   #itemNodes;
   #cachedUserValues;
@@ -38,15 +35,6 @@ export default class ColumnView {
     this.#update(App.viewModes.log10);
 
     // even listener
-    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail}) => {
-      if (detail.action === 'remove') {
-        if (this.propertyId === detail.propertyId) {
-          if (detail.parentCategoryId && detail.parentCategoryId == this.#parentCategoryId) {
-            this.inputMapAttribute.checked = false;
-          }
-        }
-      }
-    });
     DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail.log10));
     DefaultEventEmitter.addEventListener(event.setUserValues, e => this.#setUserValues(e.detail));
     DefaultEventEmitter.addEventListener(event.clearUserValues, () => this.#clearUserValues());
@@ -56,7 +44,6 @@ export default class ColumnView {
 
     // make column
     this.#ROOT = document.createElement('div');
-    const isSelected = ConditionBuilder.isSelectedProperty(this.propertyId, this.#parentCategoryId);
     this.#ROOT.classList.add('column');
     this.#max = 0;
     this.#ROOT.innerHTML = `
@@ -68,25 +55,6 @@ export default class ColumnView {
           <th class="mapped">Mapped</th>
           <th class="pvalue">p-value</th>
           <th class="drilldown"></th>
-        </tr>
-        <tr
-          class="item -all"
-          ${
-            this.#parentCategoryId
-              ? `data-parent-category-id="${this.#parentCategoryId ?? ''}"`
-              : ''
-          }
-          data-category-ids="${values.map(item => item.categoryId)}"
-          data-depth="${this.#depth}">
-          <td class="label" colspan="5">
-            <label>
-              <input
-                type="checkbox"
-                value="${ALL_PROPERTIES}" 
-                ${isSelected ? ' checked' : ''}/>
-              Map following attributes
-            </label>
-          </td>
         </tr>
       </thead>
       <tbody></tbody>
@@ -102,19 +70,6 @@ export default class ColumnView {
       return columnItemView;
     });
     this.#itemNodes = Array.from(tbody.querySelectorAll(':scope > .item'));
-    return;
-
-
-
-    // Map attributes event
-    this.#inputMapAttribute = this.#ROOT.querySelector(':scope > table > thead > .item.-all > .label > label > input');
-    this.#inputMapAttribute.addEventListener('change', e => {
-      if (e.target.checked) {
-        ConditionBuilder.addProperty(this.propertyId, this.#parentCategoryId);
-      } else {
-        ConditionBuilder.removeProperty(this.propertyId, this.#parentCategoryId);
-      }
-    });
   }
 
   #update(isLog10) {
@@ -233,10 +188,6 @@ export default class ColumnView {
 
   get parentCategoryId() {
     return this.#parentCategoryId;
-  }
-
-  get inputMapAttribute() {
-    return this.#inputMapAttribute;
   }
 
   get rootNode() {
