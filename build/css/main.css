@@ -645,6 +645,7 @@ main {
   top: -0.1rem;
   vertical-align: middle;
   margin-left: 0.1rem;
+  pointer-events: none;
 }
 .column-selector-view > .columns > .inner > .column > table > thead > .header > th > .sorter::before, .column-selector-view > .columns > .inner > .column > table > thead > .header > th > .sorter::after {
   content: "";

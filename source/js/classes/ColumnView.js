@@ -13,9 +13,10 @@ export default class ColumnView {
   #selector;
   #max;
   #parentCategoryId;
-  #items;
+  #columnItemViews;
   #cachedUserValues;
   #ROOT;
+  #TBODY;
 
   constructor(
     selector,
@@ -62,13 +63,13 @@ export default class ColumnView {
       </thead>
       <tbody></tbody>
     </table>`;
-    const tbody = this.#ROOT.querySelector(':scope > table > tbody');
+    this.#TBODY = this.#ROOT.querySelector(':scope > table > tbody');
     const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.propertyId);
-    this.#items = values.map(value => {
+    this.#columnItemViews = values.map((value, index) => {
       this.#max = Math.max(this.#max, value.count);
       // add item
-      const columnItemView = new ColumnItemView(this, value, selectedCategoryIds);
-      tbody.append(columnItemView.rootNode);
+      const columnItemView = new ColumnItemView(this, value, index, selectedCategoryIds);
+      this.#TBODY.append(columnItemView.rootNode);
       return columnItemView;
     });
 
@@ -82,7 +83,6 @@ export default class ColumnView {
     this.#ROOT.querySelectorAll(':scope > table > thead > tr > .-sortable').forEach(sortable => {
       sortable.addEventListener('click', ({target}) => {
         const sorter = target.querySelector(':scope > .sorter');
-        console.log(sorter)
         ColumnSelectorSortManager.setSort(sorter.dataset.column);
       });
     });
@@ -90,18 +90,47 @@ export default class ColumnView {
 
   #update() {
     if (this.#selector.isShowing && this.#existed) {
-      // sort
-      const sorting = ColumnSelectorSortManager.sorting;
-      console.log(sorting)
-
-      // heatmap
-      const isLog10 = App.viewModes.log10;
-      let max = isLog10 && this.#max > 1 ? Math.log10(this.#max) : this.#max;
-      this.#items.forEach(columnItemView => {
-        const subject = Records.getSubjectWithPropertyId(this.propertyId);
-        columnItemView.update(subject, isLog10, max);
-      });
+      this.#sort();
+      this.#heatmap();
     }
+  }
+
+  #sort() {
+    const sortDescriptor = ColumnSelectorSortManager.sortDescriptor;
+    // sorted by 'label' or 'total (= count)'
+    const column = {
+      '': 'index',
+      label: 'label',
+      total: 'count'
+    }[sortDescriptor.column];
+    const items = this.#columnItemViews.map(columnItemView => {
+      return {
+        index: columnItemView.index,
+        value: columnItemView[column]
+      }
+    });
+    switch(sortDescriptor.column) {
+      case 'label':
+        items.sort((a, b) => a.value > b.value ? 1 : -1);
+        break;
+      case 'total':
+        items.sort((a, b) => b.value - a.value);
+        break;
+    }
+    if (sortDescriptor.direction === 'desc') items.reverse();
+    // replace
+    items.forEach(item => {
+      this.#TBODY.append(this.#columnItemViews[item.index].rootNode);
+    });
+  }
+
+  #heatmap() {
+    const isLog10 = App.viewModes.log10;
+    let max = isLog10 && this.#max > 1 ? Math.log10(this.#max) : this.#max;
+    this.#columnItemViews.forEach(columnItemView => {
+      const subject = Records.getSubjectWithPropertyId(this.propertyId);
+      columnItemView.update(subject, isLog10, max);
+    });
   }
 
   #getUserValues(query) {
@@ -125,7 +154,7 @@ export default class ColumnView {
 
   appended() {
     this.#update();
-    
+
     // user IDs
     if (document.body.classList.contains('-showuserids') && ConditionBuilder.userIds) {
       this.#getUserValues(
@@ -137,7 +166,7 @@ export default class ColumnView {
         )
         .then(values => {
           console.log(values)
-          this.#items.forEach(columnItemView => columnItemView.setUserValues(values));
+          this.#columnItemViews.forEach(columnItemView => columnItemView.setUserValues(values));
         });
     }
   }

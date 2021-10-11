@@ -10,9 +10,10 @@ class ColumnSelectorSortManager {
   constructor() {
 
     this.#status = new Map(SORTABLE_COLUMNS.map(column => [column, '']));
+    document.body.dataset.sortColumn = '';
+    document.body.dataset.sortDirection = '';
 
-    // DefaultEventEmitter.addEventListener(event.changeColumnSelectorSorter, ({detail: {column}}) => {
-    // });
+    // TODO: Local storage に保存
 
   }
 
@@ -28,7 +29,6 @@ class ColumnSelectorSortManager {
       desc: ''
     })[this.#status.get(column)];
     this.#status.set(column, direction);
-    console.log(this.#status)
     document.body.dataset.sortColumn = column;
     document.body.dataset.sortDirection = direction;
 
@@ -44,7 +44,7 @@ class ColumnSelectorSortManager {
     return SORTABLE_COLUMNS;
   }
 
-  get sorting() {
+  get sortDescriptor() {
     const column = document.body.dataset.sortDirection === '' ? '' : document.body.dataset.sortColumn;
     const direction = document.body.dataset.sortDirection;
     return {column, direction};

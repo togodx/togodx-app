@@ -5,16 +5,20 @@ import * as event from '../events';
 
 export default class ColumnItemView {
 
+  #label;
   #count;
   #categoryId;
+  #index;
   #ROOT;
   #INPUT_VALUE;
   #INPUT_KEY;
 
-  constructor(column, {count, categoryId, hasChild, label}, selectedCategoryIds) {
+  constructor(column, {count, categoryId, hasChild, label}, index, selectedCategoryIds) {
 
+    this.#label = label;
     this.#count = count;
     this.#categoryId = categoryId;
+    this.#index = index;
 
     // make HTML
     this.#ROOT = document.createElement('tr');
@@ -111,8 +115,16 @@ export default class ColumnItemView {
 
   // accessors
 
+  get label() {
+    return this.#label;
+  }
+
   get count() {
     return this.#count;
+  }
+
+  get index() {
+    return this.#index;
   }
 
   get categoryId() {
