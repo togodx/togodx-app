@@ -9,12 +9,24 @@ class ColumnSelectorSortManager {
 
   constructor() {
 
-    this.#status = new Map(SORTABLE_COLUMNS.map(column => [column, '']));
-    document.body.dataset.sortColumn = '';
-    document.body.dataset.sortDirection = '';
+    // get data from local strage
+    const column = window.localStorage.getItem('sortColumn');
+    const status = window.localStorage.getItem('sortDirectionEachOfColumns');
+    if (status) {
+      this.#status = new Map(JSON.parse(status));
+    } else {
+      this.#status = new Map(SORTABLE_COLUMNS.map(column => [column, '']));
+    }
+    this.#setDocument(column);
 
-    // TODO: Local storage に保存
+  }
 
+
+  // private methods
+
+  #setDocument(column) {
+    document.body.dataset.sortColumn = column;
+    document.body.dataset.sortDirection = this.#status.get(column);
   }
 
 
@@ -29,12 +41,15 @@ class ColumnSelectorSortManager {
       desc: ''
     })[this.#status.get(column)];
     this.#status.set(column, direction);
-    document.body.dataset.sortColumn = column;
-    document.body.dataset.sortDirection = direction;
+    this.#setDocument(column);
 
     // dispatch event
     const customEvent = new CustomEvent(event.changeColumnSelectorSorter, {detail: {column, direction}});
     DefaultEventEmitter.dispatchEvent(customEvent);
+
+    // set local storage
+    window.localStorage.setItem('sortColumn', column);
+    window.localStorage.setItem('sortDirectionEachOfColumns', JSON.stringify(Array.from(this.#status)));
   }
 
 

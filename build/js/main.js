@@ -4611,27 +4611,40 @@
 
   var _status = /*#__PURE__*/new WeakMap();
 
+  var _setDocument = /*#__PURE__*/new WeakSet();
+
   var ColumnSelectorSortManager = /*#__PURE__*/function () {
     function ColumnSelectorSortManager() {
       _classCallCheck(this, ColumnSelectorSortManager);
+
+      _classPrivateMethodInitSpec(this, _setDocument);
 
       _classPrivateFieldInitSpec(this, _status, {
         writable: true,
         value: void 0
       });
 
-      _classPrivateFieldSet(this, _status, new Map(SORTABLE_COLUMNS.map(function (column) {
-        return [column, ''];
-      })));
+      // get data from local strage
+      var _column = window.localStorage.getItem('sortColumn');
 
-      document.body.dataset.sortColumn = '';
-      document.body.dataset.sortDirection = ''; // TODO: Local storage に保存
-    } // public methods
+      var status = window.localStorage.getItem('sortDirectionEachOfColumns');
+
+      if (status) {
+        _classPrivateFieldSet(this, _status, new Map(JSON.parse(status)));
+      } else {
+        _classPrivateFieldSet(this, _status, new Map(SORTABLE_COLUMNS.map(function (column) {
+          return [column, ''];
+        })));
+      }
+
+      _classPrivateMethodGet(this, _setDocument, _setDocument2).call(this, _column);
+    } // private methods
 
 
     _createClass(ColumnSelectorSortManager, [{
       key: "setSort",
-      value: function setSort(column) {
+      value: // public methods
+      function setSort(column) {
         // set sort
         var direction = {
           '': 'asc',
@@ -4641,8 +4654,8 @@
 
         _classPrivateFieldGet(this, _status).set(column, direction);
 
-        document.body.dataset.sortColumn = column;
-        document.body.dataset.sortDirection = direction; // dispatch event
+        _classPrivateMethodGet(this, _setDocument, _setDocument2).call(this, column); // dispatch event
+
 
         var customEvent = new CustomEvent(changeColumnSelectorSorter, {
           detail: {
@@ -4650,7 +4663,10 @@
             direction: direction
           }
         });
-        DefaultEventEmitter$1.dispatchEvent(customEvent);
+        DefaultEventEmitter$1.dispatchEvent(customEvent); // set local storage
+
+        window.localStorage.setItem('sortColumn', column);
+        window.localStorage.setItem('sortDirectionEachOfColumns', JSON.stringify(Array.from(_classPrivateFieldGet(this, _status))));
       } // accessors
 
     }, {
@@ -4672,6 +4688,11 @@
 
     return ColumnSelectorSortManager;
   }();
+
+  function _setDocument2(column) {
+    document.body.dataset.sortColumn = column;
+    document.body.dataset.sortDirection = _classPrivateFieldGet(this, _status).get(column);
+  }
 
   var ColumnSelectorSortManager$1 = new ColumnSelectorSortManager();
 
