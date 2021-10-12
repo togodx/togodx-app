@@ -30,7 +30,7 @@ export default class ColumnSelectorView {
     this.#ROOT = elm.querySelector(':scope > .column-selector-view');
     this.#CONTAINER = this.#ROOT.querySelector(':scope > .columns > .inner');
     this.#LOADING_VIEW = this.#ROOT.querySelector(':scope > .loading-view');
-    this.#CONTAINED_VIEW = this.#ROOT.closest('.track-view');
+    this.#CONTAINED_VIEW = this.#ROOT.closest('.attribute-track-view');
 
     const depth = 0;
     this.#setItems(items, depth);

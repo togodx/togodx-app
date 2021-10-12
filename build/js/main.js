@@ -5210,7 +5210,7 @@
 
       _classPrivateFieldSet(this, _LOADING_VIEW$2, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .loading-view'));
 
-      _classPrivateFieldSet(this, _CONTAINED_VIEW, _classPrivateFieldGet(this, _ROOT$b).closest('.track-view'));
+      _classPrivateFieldSet(this, _CONTAINED_VIEW, _classPrivateFieldGet(this, _ROOT$b).closest('.attribute-track-view'));
 
       var _depth = 0;
 
@@ -6161,8 +6161,6 @@
 
   var _attribute = /*#__PURE__*/new WeakMap();
 
-  var _property = /*#__PURE__*/new WeakMap();
-
   var _ROOT$8 = /*#__PURE__*/new WeakMap();
 
   var _LOADING_VIEW$1 = /*#__PURE__*/new WeakMap();
@@ -6181,10 +6179,10 @@
 
   var _clearError = /*#__PURE__*/new WeakSet();
 
-  var TrackView = function TrackView(attributeId, container, positionRate) {
+  var AttributeTrackView = function AttributeTrackView(attributeId, container, positionRate) {
     var _this = this;
 
-    _classCallCheck(this, TrackView);
+    _classCallCheck(this, AttributeTrackView);
 
     _classPrivateMethodInitSpec(this, _clearError);
 
@@ -6193,11 +6191,6 @@
     _classPrivateMethodInitSpec(this, _makeValues);
 
     _classPrivateFieldInitSpec(this, _attribute, {
-      writable: true,
-      value: void 0
-    });
-
-    _classPrivateFieldInitSpec(this, _property, {
       writable: true,
       value: void 0
     });
@@ -6232,22 +6225,19 @@
       value: void 0
     });
 
-    // this.#attributeId = attributeId;
     _classPrivateFieldSet(this, _attribute, Records$1.getAttribute(attributeId));
 
     var isSelected = ConditionBuilder$1.isSelectedProperty(attributeId);
 
     _classPrivateFieldSet(this, _ROOT$8, document.createElement('div'));
 
-    container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$8)); // this.#property = property;
-
+    container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$8));
     var category = Records$1.getCategoryWithAttribute(attributeId);
 
-    _classPrivateFieldGet(this, _ROOT$8).classList.add('track-view', '-preparing', 'collapse-view');
+    _classPrivateFieldGet(this, _ROOT$8).classList.add('attribute-track-view', '-preparing', 'collapse-view');
 
     if (isSelected) _classPrivateFieldGet(this, _ROOT$8).classList.add('-allselected');
-    _classPrivateFieldGet(this, _ROOT$8).dataset.categoryId = category.id; // this.#ROOT.dataset.propertyId = attributeId;
-
+    _classPrivateFieldGet(this, _ROOT$8).dataset.categoryId = category.id;
     _classPrivateFieldGet(this, _ROOT$8).dataset.collapse = attributeId; // make html
 
     var checked = isSelected ? ' checked' : '';
@@ -6390,7 +6380,7 @@
 
     for (var i = 0; i < attributes.length; i++) {
       var attribute = attributes[i];
-      new TrackView(attribute, attributesContainer, i / attributes.length);
+      new AttributeTrackView(attribute, attributesContainer, i / attributes.length);
     }
   };
 

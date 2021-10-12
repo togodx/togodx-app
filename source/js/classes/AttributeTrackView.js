@@ -7,9 +7,8 @@ import HistogramRangeSelectorView from './HistogramRangeSelectorView';
 import TrackOverviewCategorical from './TrackOverviewCategorical';
 import * as event from '../events';
 
-export default class TrackView {
+export default class AttributeTrackView {
   #attribute;
-  #property;
   #ROOT;
   #LOADING_VIEW;
   #SELECT_CONTAINER;
@@ -19,17 +18,14 @@ export default class TrackView {
 
   constructor(attributeId, container, positionRate) {
 
-    // this.#attributeId = attributeId;
     this.#attribute = Records.getAttribute(attributeId);
     const isSelected = ConditionBuilder.isSelectedProperty(attributeId);
     this.#ROOT = document.createElement('div');
     container.insertAdjacentElement('beforeend', this.#ROOT);
-    // this.#property = property;
     const category = Records.getCategoryWithAttribute(attributeId);
-    this.#ROOT.classList.add('track-view', '-preparing', 'collapse-view');
+    this.#ROOT.classList.add('attribute-track-view', '-preparing', 'collapse-view');
     if (isSelected) this.#ROOT.classList.add('-allselected');
     this.#ROOT.dataset.categoryId = category.id;
-    // this.#ROOT.dataset.propertyId = attributeId;
     this.#ROOT.dataset.collapse = attributeId;
 
     // make html

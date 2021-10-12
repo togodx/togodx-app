@@ -1,4 +1,4 @@
-import TrackView from './TrackView.js';
+import AttributeTrackView from './AttributeTrackView.js';
 
 export default class CategoryView {
 
@@ -15,7 +15,7 @@ export default class CategoryView {
     const attributesContainer = elm.querySelector(':scope > .attributes');
     for (let i = 0; i < attributes.length; i++) {
       const attribute = attributes[i];
-      new TrackView(attribute, attributesContainer, i / attributes.length);
+      new AttributeTrackView(attribute, attributesContainer, i / attributes.length);
     }
   }
 

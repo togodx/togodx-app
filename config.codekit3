@@ -151,6 +151,21 @@
       "pg" : 0,
       "sct" : 0
     },
+    "\/source\/css\/object\/component\/_attribute-track-view.sass" : {
+      "aP" : 1,
+      "bl" : 0,
+      "co" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 2,
+      "ma" : 1,
+      "oA" : 1,
+      "oAP" : "\/build\/css\/object\/component\/_attribute-track-view.css",
+      "oF" : 0,
+      "oS" : 1,
+      "pg" : 0,
+      "sct" : 0
+    },
     "\/source\/css\/object\/component\/_balloon-view.sass" : {
       "aP" : 1,
       "bl" : 0,
@@ -391,21 +406,6 @@
       "pg" : 0,
       "sct" : 0
     },
-    "\/source\/css\/object\/component\/_track-view.sass" : {
-      "aP" : 1,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 2,
-      "ma" : 1,
-      "oA" : 1,
-      "oAP" : "\/build\/css\/object\/component\/_track-view.css",
-      "oF" : 0,
-      "oS" : 1,
-      "pg" : 0,
-      "sct" : 0
-    },
     "\/source\/css\/object\/project\/_App.sass" : {
       "aP" : 1,
       "bl" : 0,
@@ -637,6 +637,17 @@
       "mi" : 0,
       "oA" : 1,
       "oAP" : "\/build\/js\/classes\/Attribute.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
+    "\/source\/js\/classes\/AttributeTrackView.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/classes\/AttributeTrackView.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 1
@@ -912,17 +923,6 @@
       "mi" : 0,
       "oA" : 1,
       "oAP" : "\/build\/js\/classes\/TrackOverviewCategorical.js",
-      "oF" : 0,
-      "sC" : 3,
-      "tS" : 1
-    },
-    "\/source\/js\/classes\/TrackView.js" : {
-      "bF" : 4,
-      "ft" : 64,
-      "ma" : 1,
-      "mi" : 0,
-      "oA" : 1,
-      "oAP" : "\/build\/js\/classes\/TrackView.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 1
