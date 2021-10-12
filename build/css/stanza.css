@@ -53,7 +53,7 @@
   --opacity-disabled: .4;
 }
 
-[data-condition=values] {
+[data-condition=key] {
   --width-track-column-property: 20rem;
 }
 

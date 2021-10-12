@@ -1,4 +1,5 @@
 import App from "./App";
+import Records from './Records';
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import HistogramRangeSelectorController from "./HistogramRangeSelectorController";
 import * as event from '../events';
@@ -15,10 +16,11 @@ export default class HistogramRangeSelectorView {
   #ROOT;
   #GRIDS;
 
-  constructor(elm, subject, property, items, overviewContainer) {
+  constructor(elm, property, items, overviewContainer) {
     // console.log(elm, subject, property, items)
 
     this.#property = property;
+    const subject = Records.getSubjectWithPropertyId(this.#property.propertyId);
     this.#OVERVIEW_CONTAINER = overviewContainer;
     this.#items = items.map(item => Object.assign({}, item));
 

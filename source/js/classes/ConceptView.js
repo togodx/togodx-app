@@ -15,7 +15,7 @@ export default class ConceptView {
     const propertiesContainer = elm.querySelector(':scope > .properties');
     for (let i = 0; i < properties.length; i++) {
       const property = properties[i];
-      new TrackView(subject, property, propertiesContainer, i / properties.length);
+      new TrackView(property, propertiesContainer, i / properties.length);
     }
   }
 

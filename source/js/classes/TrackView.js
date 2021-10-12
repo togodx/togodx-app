@@ -8,7 +8,6 @@ import TrackOverviewCategorical from './TrackOverviewCategorical';
 import * as event from '../events';
 
 export default class TrackView {
-  #subject;
   #property;
   #sparqlist;
   #ROOT;
@@ -18,15 +17,15 @@ export default class TrackView {
   #CHECKBOX_ALL_PROPERTIES;
   #COLLAPSE_BUTTON;
 
-  constructor(subject, property, container, positionRate) {
+  constructor(property, container, positionRate) {
     // console.log(subject, property, container)
 
     const isSelected = ConditionBuilder.isSelectedProperty(property.propertyId);
     const elm = document.createElement('div');
     container.insertAdjacentElement('beforeend', elm);
     this.#ROOT = elm;
-    this.#subject = subject;
     this.#property = property;
+    const subject = Records.getSubjectWithPropertyId(this.#property.propertyId);
     this.#sparqlist = property.data;
     elm.classList.add('track-view', '-preparing', 'collapse-view');
     if (isSelected) elm.classList.add('-allselected');
@@ -40,8 +39,8 @@ export default class TrackView {
     <div class="row -upper">
       <div class="left definition">
         <div class="collapsebutton" data-collapse="${property.propertyId}">
-          <h2 class="title _subject-color">${property.label}</h2>
           <input type="checkbox" class="mapping"${checked}>
+          <h2 class="title _subject-color">${property.label}</h2>
         </div>
       </div>
       <div class="right values">
@@ -160,7 +159,6 @@ export default class TrackView {
     // make overview
     new TrackOverviewCategorical(
       this.#OVERVIEW_CONTAINER,
-      this.#subject,
       this.#property,
       values
     );
@@ -172,7 +170,6 @@ export default class TrackView {
     ) {
       new HistogramRangeSelectorView(
         this.#SELECT_CONTAINER,
-        this.#subject,
         this.#property,
         values,
         this.#OVERVIEW_CONTAINER
@@ -180,7 +177,6 @@ export default class TrackView {
     } else {
       new ColumnSelectorView(
         this.#SELECT_CONTAINER,
-        this.#subject,
         this.#property,
         values
       );

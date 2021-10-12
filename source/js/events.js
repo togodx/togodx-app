@@ -45,3 +45,9 @@ export const allTracksCollapse = 'allTracksCollapse';
 
 // Statistics
 export const changeStatisticsViewMode = 'changeStatisticsViewMode';
+
+// Column selector
+export const changeColumnSelectorSorter = 'changeColumnSelectorSorter';
+
+// Collpase
+export const collapsed = 'collapsed';
