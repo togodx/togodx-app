@@ -1538,7 +1538,7 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   height: var(--height-track);
 }
 .track-view > .row > .left {
-  padding-bottom: 0.8rem;
+  padding-bottom: 0.2rem;
   border-right: solid 0.1rem var(--color-gray);
   flex-basis: var(--width-track-column-property);
   min-width: var(--width-track-column-property);
@@ -1609,16 +1609,23 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
       -ms-user-select: none;
           user-select: none;
 }
-.track-view > .row.-lower > .left > .specification {
-  padding: 0 1.2rem 1.2rem;
+.track-view > .row.-lower > .left > .specification, .track-view > .row.-lower > .left > .source {
+  margin: 0.8rem 1.2rem;
 }
-.track-view > .row.-lower > .left > .specification > dt {
+.track-view > .row.-lower > .left > .specification > dt, .track-view > .row.-lower > .left > .source > dt {
   font-size: 1rem;
 }
-.track-view > .row.-lower > .left > .specification > dd {
+.track-view > .row.-lower > .left > .specification > dd, .track-view > .row.-lower > .left > .source > dd {
   line-height: 1.2;
   margin-bottom: 0.4rem;
   word-break: break-all;
+}
+.track-view > .row.-lower > .left > .specification {
+  margin-top: 0;
+}
+.track-view > .row.-lower > .left > .source {
+  padding-top: 0.8rem;
+  border-top: solid 0.1rem var(--color-separator);
 }
 .track-view.-preparing {
   opacity: 1;

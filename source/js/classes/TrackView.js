@@ -56,13 +56,15 @@ export default class TrackView {
           <dd>${this.#attribute.description}</dd>
           <dt>API</dt>
           <dd><a href="${this.#attribute.api}" target="_blank">${this.#attribute.api}</a></dd>
-          <dt>Original data</dt>
-          <dd><a href="${this.#attribute.source.url}" target="_blank">${this.#attribute.source.label}</a></dd>
-          <dt>Version</dt>
-          <dd>${this.#attribute.source.version}</dd>
-          <dt>Last updated</dt>
-          <dd>${this.#attribute.source.updated}</dd>
         </dl>
+        ${this.#attribute.source.map(source => `<dl class="source">
+        <dt>Original data</dt>
+          <dd><a href="${source.url}" target="_blank">${source.label}</a></dd>
+          <dt>Version</dt>
+          <dd>${source.version}</dd>
+          <dt>Last updated</dt>
+          <dd>${source.updated}</dd>
+        </dl>`).join('')}
       </div>
       <div class="right selector"></div>
     </div>`;
