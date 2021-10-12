@@ -505,6 +505,25 @@ main {
   text-align: right;
 }
 
+.category-view {
+  display: flex;
+}
+.category-view > .title {
+  margin: 0;
+  width: var(--width-track-column-subject);
+  background-color: #BF3030;
+  color: white;
+  font-size: 1.2rem;
+  line-height: var(--width-track-column-subject);
+  -webkit-writing-mode: vertical-rl;
+      -ms-writing-mode: tb-rl;
+          writing-mode: vertical-rl;
+  text-align: center;
+}
+.category-view > .attributes {
+  width: calc(100% - var(--width-track-column-subject));
+}
+
 .close-button-view {
   width: 1.2rem;
   height: 1.2rem;
@@ -526,25 +545,6 @@ main {
 .close-button-view::after {
   -webkit-transform: rotate(-45deg);
           transform: rotate(-45deg);
-}
-
-.concept-view {
-  display: flex;
-}
-.concept-view > .title {
-  margin: 0;
-  width: var(--width-track-column-subject);
-  background-color: #BF3030;
-  color: white;
-  font-size: 1.2rem;
-  line-height: var(--width-track-column-subject);
-  -webkit-writing-mode: vertical-rl;
-      -ms-writing-mode: tb-rl;
-          writing-mode: vertical-rl;
-  text-align: center;
-}
-.concept-view > .properties {
-  width: calc(100% - var(--width-track-column-subject));
 }
 
 .collapse-view .collapsebutton {

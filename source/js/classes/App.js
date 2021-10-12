@@ -2,7 +2,7 @@ import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilderView from './ConditionBuilderView';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
-import ConceptView from './ConceptView';
+import CategoryView from './CategoryView';
 import ResultsTable from './ResultsTable';
 import ResultDetailModal from "./ResultDetailModal";
 import BalloonView from './BalloonView';
@@ -88,18 +88,18 @@ class App {
         // aggregate
         this.#backend = Object.freeze(backend);
 
-        this.#makeConceptViews();
+        this.#makeCategoryViews();
         this.#defineAllTracksCollapseButton();
       });
   }
 
   // private methods
 
-  #makeConceptViews() {
+  #makeCategoryViews() {
     const conceptsContainer = document.querySelector('#Properties > .concepts');
-    Records.subjects.forEach(subject => {
+    Records.categories.forEach(category => {
       const elm = document.createElement('section');
-      new ConceptView(subject, elm);
+      new CategoryView(category, elm);
       conceptsContainer.insertAdjacentElement('beforeend', elm);
     });
   }

@@ -8,8 +8,8 @@ import TrackOverviewCategorical from './TrackOverviewCategorical';
 import * as event from '../events';
 
 export default class TrackView {
+  #attribute;
   #property;
-  #sparqlist;
   #ROOT;
   #LOADING_VIEW;
   #SELECT_CONTAINER;
@@ -17,29 +17,29 @@ export default class TrackView {
   #CHECKBOX_ALL_PROPERTIES;
   #COLLAPSE_BUTTON;
 
-  constructor(property, container, positionRate) {
+  constructor(attributeId, container, positionRate) {
 
-    const isSelected = ConditionBuilder.isSelectedProperty(property.propertyId);
-    const elm = document.createElement('div');
-    container.insertAdjacentElement('beforeend', elm);
-    this.#ROOT = elm;
-    this.#property = property;
-    const category = Records.getCategoryWithAttribute(this.#property.propertyId);
-    this.#sparqlist = property.data;
-    elm.classList.add('track-view', '-preparing', 'collapse-view');
-    if (isSelected) elm.classList.add('-allselected');
-    elm.dataset.categoryId = category.id;
-    elm.dataset.propertyId = property.propertyId;
-    elm.dataset.collapse = property.propertyId;
+    // this.#attributeId = attributeId;
+    this.#attribute = Records.getAttribute(attributeId);
+    const isSelected = ConditionBuilder.isSelectedProperty(attributeId);
+    this.#ROOT = document.createElement('div');
+    container.insertAdjacentElement('beforeend', this.#ROOT);
+    // this.#property = property;
+    const category = Records.getCategoryWithAttribute(attributeId);
+    this.#ROOT.classList.add('track-view', '-preparing', 'collapse-view');
+    if (isSelected) this.#ROOT.classList.add('-allselected');
+    this.#ROOT.dataset.categoryId = category.id;
+    // this.#ROOT.dataset.propertyId = attributeId;
+    this.#ROOT.dataset.collapse = attributeId;
 
     // make html
     const checked = isSelected ? ' checked' : '';
-    elm.innerHTML = `
+    this.#ROOT.innerHTML = `
     <div class="row -upper">
       <div class="left definition">
-        <div class="collapsebutton" data-collapse="${property.propertyId}">
+        <div class="collapsebutton" data-collapse="${attributeId}">
           <input type="checkbox" class="mapping"${checked}>
-          <h2 class="title _category-color">${property.label}</h2>
+          <h2 class="title _category-color">${this.#attribute.label}</h2>
         </div>
       </div>
       <div class="right values">
@@ -49,55 +49,53 @@ export default class TrackView {
         </div>
       </div>
     </div>
-    <div class="row -lower collapsingcontent" data-collapse="${
-      property.propertyId
-    }">
+    <div class="row -lower collapsingcontent" data-collapse="${attributeId}">
       <div class="left">
         <dl class="specification">
           <dt>Description</dt>
-          <dd>${property.description}</dd>
+          <dd>${this.#attribute.description}</dd>
           <dt>API</dt>
-          <dd><a href="${property.data}" target="_blank">${property.data}</a></dd>
+          <dd><a href="${this.#attribute.api}" target="_blank">${this.#attribute.api}</a></dd>
           <dt>Original data</dt>
-          <dd><a href="${property.dataSourceUrl}" target="_blank">${property.dataSource}</a></dd>
+          <dd><a href="${this.#attribute.source.url}" target="_blank">${this.#attribute.source.label}</a></dd>
           <dt>Version</dt>
-          <dd>${property.dataSourceVersion}</dd>
+          <dd>${this.#attribute.source.version}</dd>
           <dt>Last updated</dt>
-          <dd>${property.updatedAt}</dd>
+          <dd>${this.#attribute.source.updated}</dd>
         </dl>
       </div>
       <div class="right selector"></div>
     </div>`;
-    const valuesContainer = elm.querySelector(':scope > .row.-upper > .values');
+    const valuesContainer = this.#ROOT.querySelector(':scope > .row.-upper > .values');
     this.#OVERVIEW_CONTAINER = valuesContainer.querySelector(
       ':scope > .overview > .inner'
     );
     this.#LOADING_VIEW = valuesContainer.querySelector(
       ':scope > .overview > .loading-view'
     );
-    this.#SELECT_CONTAINER = elm.querySelector(
+    this.#SELECT_CONTAINER = this.#ROOT.querySelector(
       ':scope > .row.-lower > .selector'
     );
-    this.#COLLAPSE_BUTTON = elm.querySelector(
+    this.#COLLAPSE_BUTTON = this.#ROOT.querySelector(
       ':scope > .row.-upper > .left > .collapsebutton'
     );
 
     // collapse
-    collapseView(elm);
+    collapseView(this.#ROOT);
 
     // select/deselect a property
-    this.#CHECKBOX_ALL_PROPERTIES = elm.querySelector(
+    this.#CHECKBOX_ALL_PROPERTIES = this.#ROOT.querySelector(
       ':scope > .row.-upper > .left > .collapsebutton > input.mapping'
     );
     this.#CHECKBOX_ALL_PROPERTIES.addEventListener('click', e => {
       e.stopPropagation();
       if (this.#CHECKBOX_ALL_PROPERTIES.checked) {
         // add
-        ConditionBuilder.addProperty(this.#property.propertyId);
+        ConditionBuilder.addProperty(attribute);
         this.#ROOT.classList.add('-allselected');
       } else {
         // remove
-        ConditionBuilder.removeProperty(this.#property.propertyId);
+        ConditionBuilder.removeProperty(attribute);
         this.#ROOT.classList.remove('-allselected');
       }
     });
@@ -106,13 +104,13 @@ export default class TrackView {
       if (e.detail.parentCategoryId !== undefined) return;
       switch (e.detail.action) {
         case 'add':
-          if (e.detail.propertyId === this.#property.propertyId) {
+          if (e.detail.propertyId === attribute) {
             this.#CHECKBOX_ALL_PROPERTIES.checked = true;
             this.#ROOT.classList.add('-allselected');
           }
           break;
         case 'remove':
-          if (e.detail.propertyId === this.#property.propertyId) {
+          if (e.detail.propertyId === attribute) {
             this.#CHECKBOX_ALL_PROPERTIES.checked = false;
             this.#ROOT.classList.remove('-allselected');
           }
@@ -133,13 +131,13 @@ export default class TrackView {
 
     DefaultEventEmitter.addEventListener(event.toggleErrorUserValues, e => {
       if (e.detail.mode === 'show') {
-        if (e.detail.propertyId !== this.#property.propertyId) return;
+        if (e.detail.propertyId !== attribute) return;
         this.#showError(e.detail.message, true);
       } else if (e.detail.mode === 'hide') this.#clearError();
     });
 
     // get property data
-    Records.fetchPropertyValues(this.#property.propertyId)
+    Records.fetchPropertyValues(attributeId)
       .then(values => this.#makeValues(values))
       .catch(error => {
         console.error(error);
@@ -153,33 +151,34 @@ export default class TrackView {
   // private methods
 
   #makeValues(values) {
+    console.log(values)
     this.#ROOT.classList.remove('-preparing');
 
     // make overview
     new TrackOverviewCategorical(
       this.#OVERVIEW_CONTAINER,
-      this.#property,
+      this.#attribute,
       values
     );
 
-    // make selector view
-    if (
-      this.#property.viewMethod &&
-      this.#property.viewMethod === 'histogram'
-    ) {
-      new HistogramRangeSelectorView(
-        this.#SELECT_CONTAINER,
-        this.#property,
-        values,
-        this.#OVERVIEW_CONTAINER
-      );
-    } else {
-      new ColumnSelectorView(
-        this.#SELECT_CONTAINER,
-        this.#property,
-        values
-      );
-    }
+    // // make selector view
+    // if (
+    //   this.#property.viewMethod &&
+    //   this.#property.viewMethod === 'histogram'
+    // ) {
+    //   new HistogramRangeSelectorView(
+    //     this.#SELECT_CONTAINER,
+    //     this.#property,
+    //     values,
+    //     this.#OVERVIEW_CONTAINER
+    //   );
+    // } else {
+    //   new ColumnSelectorView(
+    //     this.#SELECT_CONTAINER,
+    //     this.#property,
+    //     values
+    //   );
+    // }
   }
 
   #showError(error, inUserIDs = false) {
@@ -188,7 +187,7 @@ export default class TrackView {
       this.#OVERVIEW_CONTAINER.nextElementSibling?.classList.contains('error')
     )
       return;
-    const prop = this.#property.data;
+    const prop = this.#attribute.api;
 
     this.#OVERVIEW_CONTAINER.insertAdjacentHTML(
       'afterEnd',

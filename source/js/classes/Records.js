@@ -1,8 +1,9 @@
 import Color from "./Color";
+import Attribute from "./Attribute";
 
 class Records {
-  #subjects;
   #categories;
+  #attributes;
   #datasets;
   #properties;
   #fetchedCategoryIds;
@@ -26,18 +27,8 @@ class Records {
     }
     this.#categories = Object.freeze(categories);
 
-    // define subjects
-    for (let i = 0; i < subjects.length; i++) {
-      let hue = 360 - (360 * i / subjects.length) + 130;
-      hue -= hue > 360 ? 360 : 0;
-      const srgb = new Color('hsv', [hue, 45, 85]).to('srgb');
-      const srgbStrong = new Color('hsv', [hue, 65, 65]).to('srgb');
-      subjects[i].hue = hue;
-      subjects[i].color = srgb;
-      subjects[i].colorCSSValue = `rgb(${srgb.coords.map(channel => channel * 256).join(',')})`;
-      subjects[i].colorCSSStrongValue = `rgb(${srgbStrong.coords.map(channel => channel * 256).join(',')})`;
-    }
-    this.#subjects = Object.freeze(subjects);
+    // set attributes
+    this.#attributes = Object.keys(attributes).map(id => new Attribute(id, attributes[id]));
 
     // set properties
     this.#properties = [];
@@ -56,36 +47,12 @@ class Records {
     const styleElm = document.createElement('style');
     document.head.appendChild(styleElm);
     const styleSheet = styleElm.sheet;
-    // styleSheet.insertRule(`:root {
-    //   ${subjects.map(subject => `
-    //     --color-subject-${subject.subjectId}: ${subject.colorCSSValue};
-    //     --color-subject-${subject.subjectId}-strong: ${subject.colorCSSStrongValue};
-    //     `).join('')}
-    // }`);
     styleSheet.insertRule(`:root {
       ${categories.map(category => `
         --color-category-${category.id}: ${category.colorCSSValue};
         --color-category-${category.id}-strong: ${category.colorCSSStrongValue};
         `).join('')}
     }`);
-    // for (const subject of subjects) {
-    //   styleSheet.insertRule(`
-    //   ._subject-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-color {
-    //     color: var(--color-subject-${subject.subjectId}-strong);
-    //   }`);
-    //   styleSheet.insertRule(`
-    //   ._subject-background-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-background-color {
-    //     background-color: var(--color-subject-${subject.subjectId});
-    //   }`);
-    //   styleSheet.insertRule(`
-    //   ._subject-background-color-strong[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-background-color-strong {
-    //     background-color: var(--color-subject-${subject.subjectId}-strong);
-    //   }`);
-    //   styleSheet.insertRule(`
-    //   ._subject-border-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-border-color {
-    //     border-color: var(--color-subject-${subject.subjectId});
-    //   }`);
-    // }
     for (const category of categories) {
       styleSheet.insertRule(`
       ._category-color[data-category-id="${category.id}"], [data-category-id="${category.id}"] ._category-color {
@@ -139,6 +106,10 @@ class Records {
     return this.#categories.find(category => category.attributes.indexOf(attribute) !== -1);
   }
 
+  getAttribute(attributeId) {
+    return this.#attributes.find(attribute => attribute.id === attributeId);
+  }
+
   getProperty(propertyId) {
     const property = this.#properties.find(property => property.propertyId === propertyId);
     return property;
@@ -174,8 +145,8 @@ class Records {
 
   // public accessors
 
-  get subjects() {
-    return this.#subjects;
+  get categories() {
+    return this.#categories;
   }
 
   get properties() {
