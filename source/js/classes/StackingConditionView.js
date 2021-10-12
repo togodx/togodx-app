@@ -21,19 +21,19 @@ export default class StackingConditionView {
   constructor(container, type, condition, isRange = false) {
 
     this.#condition = condition;
-    const subject = Records.getSubjectWithPropertyId(condition.propertyId);
+    const category = Records.getCategoryWithAttribute(condition.propertyId);
     const property = Records.getProperty(condition.propertyId);
     // this.#isRange = isRange;
     
     // attributes
     this.#ROOT = document.createElement('div');
     this.#ROOT.classList.add('stacking-condition-view');
-    this.#ROOT.dataset.subjectId = subject.subjectId;
+    this.#ROOT.dataset.categoryId = category.id;
     this.#ROOT.dataset.propertyId = condition.propertyId;
     if (condition.value) this.#ROOT.dataset.categoryId = condition.value.categoryId;
     if (condition.parentCategoryId) this.#ROOT.dataset.parentCategoryId = condition.parentCategoryId;
     // make view
-    let label, ancestorLabels = [subject.subject];
+    let label, ancestorLabels = [category.label];
     switch(true) {
       case this.#condition instanceof KeyCondition: {
         if (condition.parentCategoryId) {
@@ -41,7 +41,7 @@ export default class StackingConditionView {
             const value = Records.getValue(condition.propertyId, condition.parentCategoryId);
             if (value) {
               const ancestors = Records.getAncestors(condition.propertyId, condition.parentCategoryId);
-              label = `<div class="label _subject-color">${value.label}</div>`;
+              label = `<div class="label _category-color">${value.label}</div>`;
               ancestorLabels.push(property.label, ...ancestors.map(ancestor => ancestor.label));
               this.#make(container, type, ancestorLabels, label);
             } else {
@@ -50,7 +50,7 @@ export default class StackingConditionView {
           }
           getValue();
         } else {
-          label = `<div class="label _subject-color">${property.label}</div>`;
+          label = `<div class="label _category-color">${property.label}</div>`;
           this.#make(container, type, ancestorLabels, label);
         }
       }
@@ -109,7 +109,7 @@ export default class StackingConditionView {
       if (value === undefined) {
         setTimeout(getValue, POLLING_DURATION);
       } else {
-        this.#LABELS.insertAdjacentHTML('beforeend', `<li class="label _subject-background-color" data-category-id="${value.categoryId}">${value.label}<div class="close-button-view"></div></li>`);
+        this.#LABELS.insertAdjacentHTML('beforeend', `<li class="label _category-background-color" data-category-id="${value.categoryId}">${value.label}<div class="close-button-view"></div></li>`);
         // attach event
         this.#LABELS.querySelector(':scope > .label:last-child').addEventListener('click', e => {
           e.stopPropagation();

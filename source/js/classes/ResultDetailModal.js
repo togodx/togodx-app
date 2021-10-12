@@ -101,7 +101,7 @@ export default class ResultDetailModal {
       </div>
       <div/>
     `;
-    header.classList.add('_subject-background-color');
+    header.classList.add('_category-background-color');
     header.lastElementChild.appendChild(this.#exit_button);
     header.addEventListener('mousedown', e => {
       const customEvent = new CustomEvent(event.dragElement, {

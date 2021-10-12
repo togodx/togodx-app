@@ -35,7 +35,7 @@ export default class TrackOverviewCategorical {
       // const selectedClass = selectedCategoryIds.values.indexOf(value.categoryId) !== -1 ? ' -selected' : ''; // TODO: 不要な処理かも？
       const selectedClass = '';
       return `
-        <li class="track-value-view _subject-background-color${selectedClass}" style="width: ${width}%;" data-category-id="${value.categoryId}">
+        <li class="track-value-view _category-background-color${selectedClass}" style="width: ${width}%;" data-category-id="${value.categoryId}">
           <div class="labels">
             <p>
               <span class="label">${value.label}</span>
@@ -57,7 +57,7 @@ export default class TrackOverviewCategorical {
       value.icon = value.pin.querySelector(':scope > .material-icons');
 
       // attach event: show tooltip
-      const label = `<span class="_subject-color" data-subject-id="${subject.subjectId}">${value.label}</span>`;
+      const label = `<span class="_category-color" data-subject-id="${subject.subjectId}">${value.label}</span>`;
       elm.addEventListener('mouseenter', () => {
         const values = [];
         const userValue = this.#userValues?.find(userValue => userValue.categoryId === value.categoryId);

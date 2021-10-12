@@ -53,7 +53,7 @@ export default class HistogramRangeSelectorView {
     const max = Math.max(...this.#items.map(item => item.count));
     const width = 100 / this.#items.length;
     overview.innerHTML = this.#items.map(item => `<div
-      class="bar _subject-background-color"
+      class="bar _category-background-color"
       data-category-id="${item.categoryId}"
       data-count="${item.count}"
       style="width: ${width}%; height: ${(item.count / max) * 100}%;"></div>`).join('');

@@ -4040,7 +4040,7 @@
 
       _classPrivateFieldSet(this, _condition, condition);
 
-      var subject = Records$1.getSubjectWithPropertyId(condition.propertyId);
+      var category = Records$1.getCategoryWithAttribute(condition.propertyId);
       var property = Records$1.getProperty(condition.propertyId); // this.#isRange = isRange;
       // attributes
 
@@ -4048,13 +4048,13 @@
 
       _classPrivateFieldGet(this, _ROOT$e).classList.add('stacking-condition-view');
 
-      _classPrivateFieldGet(this, _ROOT$e).dataset.subjectId = subject.subjectId;
+      _classPrivateFieldGet(this, _ROOT$e).dataset.categoryId = category.id;
       _classPrivateFieldGet(this, _ROOT$e).dataset.propertyId = condition.propertyId;
       if (condition.value) _classPrivateFieldGet(this, _ROOT$e).dataset.categoryId = condition.value.categoryId;
       if (condition.parentCategoryId) _classPrivateFieldGet(this, _ROOT$e).dataset.parentCategoryId = condition.parentCategoryId; // make view
 
       var _label,
-          _ancestorLabels = [subject.subject];
+          _ancestorLabels = [category.label];
 
       switch (true) {
         case _classPrivateFieldGet(this, _condition) instanceof KeyCondition:
@@ -4065,7 +4065,7 @@
 
                 if (value) {
                   var ancestors = Records$1.getAncestors(condition.propertyId, condition.parentCategoryId);
-                  _label = "<div class=\"label _subject-color\">".concat(value.label, "</div>");
+                  _label = "<div class=\"label _category-color\">".concat(value.label, "</div>");
 
                   _ancestorLabels.push.apply(_ancestorLabels, [property.label].concat(_toConsumableArray(ancestors.map(function (ancestor) {
                     return ancestor.label;
@@ -4079,7 +4079,7 @@
 
               getValue();
             } else {
-              _label = "<div class=\"label _subject-color\">".concat(property.label, "</div>");
+              _label = "<div class=\"label _category-color\">".concat(property.label, "</div>");
 
               _classPrivateMethodGet(this, _make, _make2).call(this, _container, type, _ancestorLabels, _label);
             }
@@ -4111,7 +4111,7 @@
           if (value === undefined) {
             setTimeout(getValue, POLLING_DURATION);
           } else {
-            _classPrivateFieldGet(_this2, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _subject-background-color\" data-category-id=\"".concat(value.categoryId, "\">").concat(value.label, "<div class=\"close-button-view\"></div></li>")); // attach event
+            _classPrivateFieldGet(_this2, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _category-background-color\" data-category-id=\"".concat(value.categoryId, "\">").concat(value.label, "<div class=\"close-button-view\"></div></li>")); // attach event
 
 
             _classPrivateFieldGet(_this2, _LABELS).querySelector(':scope > .label:last-child').addEventListener('click', function (e) {
@@ -5802,7 +5802,7 @@
       var width = 100 / _classPrivateFieldGet(this, _items).length;
 
       overview.innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
-        return "<div\n      class=\"bar _subject-background-color\"\n      data-category-id=\"".concat(item.categoryId, "\"\n      data-count=\"").concat(item.count, "\"\n      style=\"width: ").concat(width, "%; height: ").concat(item.count / max * 100, "%;\"></div>");
+        return "<div\n      class=\"bar _category-background-color\"\n      data-category-id=\"".concat(item.categoryId, "\"\n      data-count=\"").concat(item.count, "\"\n      style=\"width: ").concat(width, "%; height: ").concat(item.count / max * 100, "%;\"></div>");
       }).join('');
       var graph = histogram.querySelector(':scope > .graph');
       graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
@@ -5950,7 +5950,7 @@
       value.baseColor = colorTintByHue(subject.color, 360 * index / values.length); // const selectedClass = selectedCategoryIds.values.indexOf(value.categoryId) !== -1 ? ' -selected' : ''; // TODO: 不要な処理かも？
 
       var selectedClass = '';
-      return "\n        <li class=\"track-value-view _subject-background-color".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\">\n            <span class=\"material-icons\">location_on</span>\n          </div>\n        </li>");
+      return "\n        <li class=\"track-value-view _category-background-color".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\">\n            <span class=\"material-icons\">location_on</span>\n          </div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .track-value-view').forEach(function (elm, index) {
       // reference
@@ -5960,7 +5960,7 @@
       value.pin = elm.querySelector(':scope > .pin');
       value.icon = value.pin.querySelector(':scope > .material-icons'); // attach event: show tooltip
 
-      var label = "<span class=\"_subject-color\" data-subject-id=\"".concat(subject.subjectId, "\">").concat(value.label, "</span>");
+      var label = "<span class=\"_category-color\" data-subject-id=\"".concat(subject.subjectId, "\">").concat(value.label, "</span>");
       elm.addEventListener('mouseenter', function () {
         var _classPrivateFieldGet2;
 
@@ -6250,7 +6250,7 @@
     elm.dataset.collapse = property.propertyId; // make html
 
     var checked = isSelected ? ' checked' : '';
-    elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <input type=\"checkbox\" class=\"mapping\"").concat(checked, ">\n          <h2 class=\"title _subject-color\">").concat(property.label, "</h2>\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview _subject-background-color\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <dl class=\"specification\">\n          <dt>Description</dt>\n          <dd>").concat(property.description, "</dd>\n          <dt>API</dt>\n          <dd><a href=\"").concat(property.data, "\" target=\"_blank\">").concat(property.data, "</a></dd>\n          <dt>Original data</dt>\n          <dd><a href=\"").concat(property.dataSourceUrl, "\" target=\"_blank\">").concat(property.dataSource, "</a></dd>\n          <dt>Version</dt>\n          <dd>").concat(property.dataSourceVersion, "</dd>\n          <dt>Last updated</dt>\n          <dd>").concat(property.updatedAt, "</dd>\n        </dl>\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
+    elm.innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(property.propertyId, "\">\n          <input type=\"checkbox\" class=\"mapping\"").concat(checked, ">\n          <h2 class=\"title _category-color\">").concat(property.label, "</h2>\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview _category-background-color\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(property.propertyId, "\">\n      <div class=\"left\">\n        <dl class=\"specification\">\n          <dt>Description</dt>\n          <dd>").concat(property.description, "</dd>\n          <dt>API</dt>\n          <dd><a href=\"").concat(property.data, "\" target=\"_blank\">").concat(property.data, "</a></dd>\n          <dt>Original data</dt>\n          <dd><a href=\"").concat(property.dataSourceUrl, "\" target=\"_blank\">").concat(property.dataSource, "</a></dd>\n          <dt>Version</dt>\n          <dd>").concat(property.dataSourceVersion, "</dd>\n          <dt>Last updated</dt>\n          <dd>").concat(property.updatedAt, "</dd>\n        </dl>\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
     var valuesContainer = elm.querySelector(':scope > .row.-upper > .values');
 
     _classPrivateFieldSet(this, _OVERVIEW_CONTAINER, valuesContainer.querySelector(':scope > .overview > .inner'));
@@ -6375,7 +6375,7 @@
     _classCallCheck(this, ConceptView);
 
     elm.classList.add('concept-view');
-    elm.innerHTML = "\n    <h3 class=\"title _subject-background-color-strong\" data-subject-id=\"".concat(subject.subjectId, "\">\n      <span>").concat(subject.subject, "</span>\n    </h3>\n    <div class=\"properties\"></div>"); // make tracks
+    elm.innerHTML = "\n    <h3 class=\"title _category-background-color-strong\" data-subject-id=\"".concat(subject.subjectId, "\">\n      <span>").concat(subject.subject, "</span>\n    </h3>\n    <div class=\"properties\"></div>"); // make tracks
 
     var properties = subject.properties;
     var propertiesContainer = elm.querySelector(':scope > .properties');
@@ -6553,7 +6553,7 @@
         bar = document.createElement('div');
         bar.classList.add('bar');
         bar.dataset.categoryId = categoryId;
-        bar.innerHTML = "\n        <div class=\"wholebar\"></div>\n        <div class=\"hitbar _subject-background-color-strong\">\n          <div class=\"value\"></div>\n        </div>\n        <div class=\"label\">".concat(label, "</div>");
+        bar.innerHTML = "\n        <div class=\"wholebar\"></div>\n        <div class=\"hitbar _category-background-color-strong\">\n          <div class=\"value\"></div>\n        </div>\n        <div class=\"label\">".concat(label, "</div>");
 
         if (lastBar) {
           lastBar.after(bar);
@@ -6854,9 +6854,9 @@
     _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getDatasetLabel(tableData.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      "); // makte table sub header
 
     _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    ".concat(tableData.dxCondition.valuesConditions.map(function (valuesCondition) {
-      return "\n          <th>\n            <div class=\"inner _subject-background-color\" data-subject-id=\"".concat(valuesCondition.subjectId, "\">\n            <div class=\"togo-key-view\">").concat(valuesCondition.dataset, "</div>\n              <span>").concat(valuesCondition.label, "</span>\n            </div>\n          </th>");
+      return "\n          <th>\n            <div class=\"inner _category-background-color\" data-subject-id=\"".concat(valuesCondition.subjectId, "\">\n            <div class=\"togo-key-view\">").concat(valuesCondition.dataset, "</div>\n              <span>").concat(valuesCondition.label, "</span>\n            </div>\n          </th>");
     }).join(''), "\n    ").concat(tableData.dxCondition.keyConditions.map(function (keyCondition) {
-      return "\n          <th>\n            <div class=\"inner _subject-color\" data-subject-id=\"".concat(keyCondition.subjectId, "\">\n              <div class=\"togo-key-view\">").concat(keyCondition.dataset, "</div>\n              <span>").concat(keyCondition.label, "</span>\n            </div>\n          </th>");
+      return "\n          <th>\n            <div class=\"inner _category-color\" data-subject-id=\"".concat(keyCondition.subjectId, "\">\n              <div class=\"togo-key-view\">").concat(keyCondition.dataset, "</div>\n              <span>").concat(keyCondition.label, "</span>\n            </div>\n          </th>");
     }).join('')); // make stats
 
     var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _STATS).querySelectorAll(':scope > td')),
@@ -7289,7 +7289,7 @@
     var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(category.label, " / ").concat((_subCategory$label = subCategory === null || subCategory === void 0 ? void 0 : subCategory.label) !== null && _subCategory$label !== void 0 ? _subCategory$label : '--', "</span>");
     var header = document.createElement('header');
     header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div/>\n    ");
-    header.classList.add('_subject-background-color');
+    header.classList.add('_category-background-color');
     header.lastElementChild.appendChild(_classPrivateFieldGet(this, _exit_button));
     header.addEventListener('mousedown', function (e) {
       var customEvent = new CustomEvent(dragElement, {
@@ -7925,9 +7925,9 @@
       elm.dataset.status = 'load ids';
       elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condition\">\n        <p title=\"".concat(dxCondition.togoKey, "\">").concat(Records$1.getDatasetLabel(dxCondition.togoKey), "</p>\n      </div>\n      ").concat(_classPrivateFieldGet(this, _dxCondition).valuesConditions.map(function (valuesCondition) {
         var label = Records$1.getProperty(valuesCondition.propertyId).label;
-        return "<div class=\"condition _subject-background-color\" data-subject-id=\"".concat(valuesCondition.subjectId, "\">\n              <p title=\"").concat(label, "\">").concat(label, "</p>\n            </div>");
+        return "<div class=\"condition _category-background-color\" data-subject-id=\"".concat(valuesCondition.subjectId, "\">\n              <p title=\"").concat(label, "\">").concat(label, "</p>\n            </div>");
       }).join(''), "\n      ").concat(_classPrivateFieldGet(this, _dxCondition).keyConditions.map(function (keyCondition) {
-        return "<div class=\"condition _subject-color\" data-subject-id=\"".concat(keyCondition.subjectId, "\">\n              <p title=\"").concat(keyCondition.label, "\">").concat(keyCondition.label, "</p>\n            </div>");
+        return "<div class=\"condition _category-color\" data-subject-id=\"".concat(keyCondition.subjectId, "\">\n              <p title=\"").concat(keyCondition.label, "\">").concat(keyCondition.label, "</p>\n            </div>");
       }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting ID list</p>\n      <span class=\"material-icons-outlined -rotating\">autorenew</span>\n    </div>\n    <div class=\"-border\">\n    </div>\n    <div class=\"controller\">\n    </div>\n    "); // reference
 
       _classPrivateFieldSet(this, _ROOT$2, elm);

@@ -40,11 +40,11 @@ export default class TrackView {
       <div class="left definition">
         <div class="collapsebutton" data-collapse="${property.propertyId}">
           <input type="checkbox" class="mapping"${checked}>
-          <h2 class="title _subject-color">${property.label}</h2>
+          <h2 class="title _category-color">${property.label}</h2>
         </div>
       </div>
       <div class="right values">
-        <div class="overview _subject-background-color">
+        <div class="overview _category-background-color">
           <ul class="inner"></ul>
           <div class="loading-view -shown"></div>
         </div>

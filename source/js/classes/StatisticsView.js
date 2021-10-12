@@ -99,7 +99,7 @@ export default class StatisticsView {
         bar.dataset.categoryId = categoryId;
         bar.innerHTML = `
         <div class="wholebar"></div>
-        <div class="hitbar _subject-background-color-strong">
+        <div class="hitbar _category-background-color-strong">
           <div class="value"></div>
         </div>
         <div class="label">${label}</div>`;
