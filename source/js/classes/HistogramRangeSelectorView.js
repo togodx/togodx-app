@@ -20,13 +20,13 @@ export default class HistogramRangeSelectorView {
     // console.log(elm, subject, property, items)
 
     this.#property = property;
-    const subject = Records.getSubjectWithPropertyId(this.#property.propertyId);
+    const category = Records.getCategoryWithAttribute(this.#property.propertyId);
     this.#OVERVIEW_CONTAINER = overviewContainer;
     this.#items = items.map(item => Object.assign({}, item));
 
     // make container
     elm.innerHTML = `
-    <div class="histogram-range-selector-view" data-subject-id="${subject.subjectId}">
+    <div class="histogram-range-selector-view">
       <div class="selector">
         <div class="inner">
           <div class="overview"></div>
@@ -55,12 +55,11 @@ export default class HistogramRangeSelectorView {
     overview.innerHTML = this.#items.map(item => `<div
       class="bar _subject-background-color"
       data-category-id="${item.categoryId}"
-      data-subject-id="${subject.subjectId}"
       data-count="${item.count}"
       style="width: ${width}%; height: ${(item.count / max) * 100}%;"></div>`).join('');
     const graph = histogram.querySelector(':scope > .graph');
     graph.innerHTML = this.#items.map((item, index) => `<div class="bar" data-category-id="${item.categoryId}" data-count="${item.count}">
-      <div class="actual" style="background-color: rgb(${util.colorTintByHue(subject.color, 360 * index / this.#items.length).coords.map(cood => cood * 256).join(',')});"></div>
+      <div class="actual" style="background-color: rgb(${util.colorTintByHue(category.color, 360 * index / this.#items.length).coords.map(cood => cood * 256).join(',')});"></div>
       <p class="label">${item.label}</p>
     </div>`).join('');
 

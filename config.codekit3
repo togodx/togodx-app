@@ -73,6 +73,14 @@
       "oO" : 0,
       "oS" : 1
     },
+    "\/properties.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/build\/properties-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
     "\/source\/_include\/_layout.pug" : {
       "cB" : 0,
       "cOD" : 1,
@@ -569,6 +577,14 @@
       "oS" : 1,
       "pg" : 0,
       "sct" : 0
+    },
+    "\/source\/css\/object\/project\/attributes.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/build\/css\/object\/project\/attributes-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
     },
     "\/source\/css\/stanza.sass" : {
       "aP" : 1,

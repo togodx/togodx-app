@@ -95,9 +95,9 @@ export default class ColumnItemView {
 
   // public methods
 
-  update(subject, isLog10, max) {
+  update(color, isLog10, max) {
     const count = isLog10 ? Math.log10(this.#count) : this.#count;
-    this.#ROOT.style.backgroundColor = `rgb(${subject.color.mix(App.colorWhite, 1 - count / max).coords.map(cood => cood * 256).join(',')})`;
+    this.#ROOT.style.backgroundColor = `rgb(${color.mix(App.colorWhite, 1 - count / max).coords.map(cood => cood * 256).join(',')})`;
   }
 
   setUserValues(values) {

@@ -61,7 +61,7 @@ class App {
     new ResultsTable(document.querySelector('#ResultsTable'));
     new ResultDetailModal();
     new BalloonView();
-    const uploadUserIDsView = new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
+    new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
 
     // load config json
     Promise.all([
@@ -74,7 +74,7 @@ class App {
         return Promise.all(responces.map(responce => responce.json()))
       })
       .then(([subjects, templates, backend, attributes]) => {
-        Records.setSubjects(subjects);
+        Records.setSubjects(subjects, attributes);
         Records.setDatasets(attributes);
         ConditionBuilder.init();
 

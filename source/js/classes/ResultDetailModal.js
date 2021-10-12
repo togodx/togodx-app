@@ -80,7 +80,7 @@ export default class ResultDetailModal {
   }
 
   #header(keys, props) {
-    const subject = Records.getSubject(keys.subjectId);
+    const category = Records.getCategory(keys.subjectId);
     const isPrimaryKey = props.isPrimaryKey;
     const mainCategory = isPrimaryKey
       ? ''
@@ -90,7 +90,7 @@ export default class ResultDetailModal {
       : Records.getValue(keys.mainCategoryId, keys.subCategoryId);
     const path = isPrimaryKey
       ? keys.dataKey
-      : `<span class='path'>${subject.subject} / ${subCategory?.label ?? '--'}</span>`;
+      : `<span class='path'>${category.label} / ${subCategory?.label ?? '--'}</span>`;
     const header = document.createElement('header');
     header.innerHTML = `
       <div class='label'>

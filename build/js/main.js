@@ -2737,6 +2737,8 @@
 
   var _subjects = /*#__PURE__*/new WeakMap();
 
+  var _categories = /*#__PURE__*/new WeakMap();
+
   var _datasets = /*#__PURE__*/new WeakMap();
 
   var _properties$1 = /*#__PURE__*/new WeakMap();
@@ -2748,6 +2750,11 @@
       _classCallCheck(this, Records);
 
       _classPrivateFieldInitSpec(this, _subjects, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _categories, {
         writable: true,
         value: void 0
       });
@@ -2771,21 +2778,47 @@
 
     _createClass(Records, [{
       key: "setSubjects",
-      value: function setSubjects(subjects) {
+      value: function setSubjects(subjects, _ref) {
         var _this = this;
 
-        // define subjects
-        for (var i = 0; i < subjects.length; i++) {
-          var hue = 360 - 360 * i / subjects.length + 130;
+        var categories = _ref.categories;
+            _ref.attributes;
+            _ref.datasets;
+
+        // define categories
+        for (var i = 0; i < categories.length; i++) {
+          var hue = 360 - 360 * i / categories.length + 130;
           hue -= hue > 360 ? 360 : 0;
           var srgb = new h('hsv', [hue, 45, 85]).to('srgb');
           var srgbStrong = new h('hsv', [hue, 65, 65]).to('srgb');
-          subjects[i].hue = hue;
-          subjects[i].color = srgb;
-          subjects[i].colorCSSValue = "rgb(".concat(srgb.coords.map(function (channel) {
+          categories[i].hue = hue;
+          categories[i].color = srgb;
+          categories[i].colorCSSValue = "rgb(".concat(srgb.coords.map(function (channel) {
             return channel * 256;
           }).join(','), ")");
-          subjects[i].colorCSSStrongValue = "rgb(".concat(srgbStrong.coords.map(function (channel) {
+          categories[i].colorCSSStrongValue = "rgb(".concat(srgbStrong.coords.map(function (channel) {
+            return channel * 256;
+          }).join(','), ")");
+        }
+
+        _classPrivateFieldSet(this, _categories, Object.freeze(categories)); // define subjects
+
+
+        for (var _i = 0; _i < subjects.length; _i++) {
+          var _hue = 360 - 360 * _i / subjects.length + 130;
+
+          _hue -= _hue > 360 ? 360 : 0;
+
+          var _srgb = new h('hsv', [_hue, 45, 85]).to('srgb');
+
+          var _srgbStrong = new h('hsv', [_hue, 65, 65]).to('srgb');
+
+          subjects[_i].hue = _hue;
+          subjects[_i].color = _srgb;
+          subjects[_i].colorCSSValue = "rgb(".concat(_srgb.coords.map(function (channel) {
+            return channel * 256;
+          }).join(','), ")");
+          subjects[_i].colorCSSStrongValue = "rgb(".concat(_srgbStrong.coords.map(function (channel) {
             return channel * 256;
           }).join(','), ")");
         }
@@ -2834,10 +2867,10 @@
       }
     }, {
       key: "setDatasets",
-      value: function setDatasets(_ref) {
-        _ref.tracks;
-            _ref.attributes;
-            var datasets = _ref.datasets;
+      value: function setDatasets(_ref2) {
+        _ref2.tracks;
+            _ref2.attributes;
+            var datasets = _ref2.datasets;
 
         // TODO:
         _classPrivateFieldSet(this, _datasets, datasets);
@@ -2874,10 +2907,17 @@
         });
       }
     }, {
-      key: "getSubject",
-      value: function getSubject(subjectId) {
-        return _classPrivateFieldGet(this, _subjects).find(function (subject) {
-          return subject.subjectId === subjectId;
+      key: "getCategory",
+      value: function getCategory(id) {
+        return _classPrivateFieldGet(this, _categories).find(function (category) {
+          return category.id === id;
+        });
+      }
+    }, {
+      key: "getCategoryWithAttribute",
+      value: function getCategoryWithAttribute(attribute) {
+        return _classPrivateFieldGet(this, _categories).find(function (category) {
+          return category.attributes.indexOf(attribute) !== -1;
         });
       }
     }, {
@@ -4550,9 +4590,9 @@
     _createClass(ColumnItemView, [{
       key: "update",
       value: // public methods
-      function update(subject, isLog10, max) {
+      function update(color, isLog10, max) {
         var count = isLog10 ? Math.log10(_classPrivateFieldGet(this, _count)) : _classPrivateFieldGet(this, _count);
-        _classPrivateFieldGet(this, _ROOT$d).style.backgroundColor = "rgb(".concat(subject.color.mix(App$1.colorWhite, 1 - count / max).coords.map(function (cood) {
+        _classPrivateFieldGet(this, _ROOT$d).style.backgroundColor = "rgb(".concat(color.mix(App$1.colorWhite, 1 - count / max).coords.map(function (cood) {
           return cood * 256;
         }).join(','), ")");
       }
@@ -4996,28 +5036,26 @@
   }
 
   function _heatmap2() {
-    var _this5 = this;
-
     var isLog10 = App$1.viewModes.log10;
     var max = isLog10 && _classPrivateFieldGet(this, _max) > 1 ? Math.log10(_classPrivateFieldGet(this, _max)) : _classPrivateFieldGet(this, _max);
+    var category = Records$1.getCategoryWithAttribute(this.propertyId);
 
     _classPrivateFieldGet(this, _columnItemViews).forEach(function (columnItemView) {
-      var subject = Records$1.getSubjectWithPropertyId(_this5.propertyId);
-      columnItemView.update(subject, isLog10, max);
+      columnItemView.update(category.color, isLog10, max);
     });
   }
 
   function _getUserValues2(query) {
-    var _this6 = this;
+    var _this5 = this;
 
     return new Promise(function (resolve, reject) {
-      var values = _classPrivateFieldGet(_this6, _cachedUserValues).get(query);
+      var values = _classPrivateFieldGet(_this5, _cachedUserValues).get(query);
 
       if (values) {
         resolve(values);
       } else {
         axios.get(query).then(function (response) {
-          _classPrivateFieldGet(_this6, _cachedUserValues).set(query, response.data);
+          _classPrivateFieldGet(_this5, _cachedUserValues).set(query, response.data);
 
           resolve(response.data);
         });
@@ -5715,7 +5753,7 @@
       // console.log(elm, subject, property, items)
       _classPrivateFieldSet(this, _property$2, property);
 
-      var subject = Records$1.getSubjectWithPropertyId(_classPrivateFieldGet(this, _property$2).propertyId);
+      var category = Records$1.getCategoryWithAttribute(_classPrivateFieldGet(this, _property$2).propertyId);
 
       _classPrivateFieldSet(this, _OVERVIEW_CONTAINER$1, overviewContainer);
 
@@ -5724,7 +5762,7 @@
       })); // make container
 
 
-      elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\" data-subject-id=\"".concat(subject.subjectId, "\">\n      <div class=\"selector\">\n        <div class=\"inner\">\n          <div class=\"overview\"></div>\n          <div class=\"controller\"></div>\n          <div class=\"selectingarea\">\n            <div class=\"handle\" data-direction=\"start\"></div>\n            <div class=\"handle\" data-direction=\"end\"></div>\n          </div>\n        </div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ").concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>");
+      elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"selector\">\n        <div class=\"inner\">\n          <div class=\"overview\"></div>\n          <div class=\"controller\"></div>\n          <div class=\"selectingarea\">\n            <div class=\"handle\" data-direction=\"start\"></div>\n            <div class=\"handle\" data-direction=\"end\"></div>\n          </div>\n        </div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ".concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>");
 
       _classPrivateFieldSet(this, _ROOT$a, elm.querySelector(':scope > .histogram-range-selector-view'));
 
@@ -5741,11 +5779,11 @@
       var width = 100 / _classPrivateFieldGet(this, _items).length;
 
       overview.innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
-        return "<div\n      class=\"bar _subject-background-color\"\n      data-category-id=\"".concat(item.categoryId, "\"\n      data-subject-id=\"").concat(subject.subjectId, "\"\n      data-count=\"").concat(item.count, "\"\n      style=\"width: ").concat(width, "%; height: ").concat(item.count / max * 100, "%;\"></div>");
+        return "<div\n      class=\"bar _subject-background-color\"\n      data-category-id=\"".concat(item.categoryId, "\"\n      data-count=\"").concat(item.count, "\"\n      style=\"width: ").concat(width, "%; height: ").concat(item.count / max * 100, "%;\"></div>");
       }).join('');
       var graph = histogram.querySelector(':scope > .graph');
       graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
-        return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\">\n      <div class=\"actual\" style=\"background-color: rgb(").concat(colorTintByHue(subject.color, 360 * index / _classPrivateFieldGet(_this, _items).length).coords.map(function (cood) {
+        return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\">\n      <div class=\"actual\" style=\"background-color: rgb(").concat(colorTintByHue(category.color, 360 * index / _classPrivateFieldGet(_this, _items).length).coords.map(function (cood) {
           return cood * 256;
         }).join(','), ");\"></div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
       }).join(''); // reference
@@ -7221,11 +7259,11 @@
   function _header2(keys, props) {
     var _subCategory$label;
 
-    var subject = Records$1.getSubject(keys.subjectId);
+    var category = Records$1.getCategory(keys.subjectId);
     var isPrimaryKey = props.isPrimaryKey;
     var mainCategory = isPrimaryKey ? '' : Records$1.getProperty(keys.mainCategoryId);
     var subCategory = isPrimaryKey ? '' : Records$1.getValue(keys.mainCategoryId, keys.subCategoryId);
-    var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(subject.subject, " / ").concat((_subCategory$label = subCategory === null || subCategory === void 0 ? void 0 : subCategory.label) !== null && _subCategory$label !== void 0 ? _subCategory$label : '--', "</span>");
+    var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(category.label, " / ").concat((_subCategory$label = subCategory === null || subCategory === void 0 ? void 0 : subCategory.label) !== null && _subCategory$label !== void 0 ? _subCategory$label : '--', "</span>");
     var header = document.createElement('header');
     header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div/>\n    ");
     header.classList.add('_subject-background-color');
@@ -9124,7 +9162,7 @@
               backend = _ref2[2],
               attributes = _ref2[3];
 
-          Records$1.setSubjects(subjects);
+          Records$1.setSubjects(subjects, attributes);
           Records$1.setDatasets(attributes);
           ConditionBuilder$1.init(); // define primary keys
 

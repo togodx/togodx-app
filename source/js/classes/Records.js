@@ -2,6 +2,7 @@ import Color from "./Color";
 
 class Records {
   #subjects;
+  #categories;
   #datasets;
   #properties;
   #fetchedCategoryIds;
@@ -10,7 +11,20 @@ class Records {
 
   // public methods
 
-  setSubjects(subjects) {
+  setSubjects(subjects, {categories, attributes, datasets}) {
+
+    // define categories
+    for (let i = 0; i < categories.length; i++) {
+      let hue = 360 - (360 * i / categories.length) + 130;
+      hue -= hue > 360 ? 360 : 0;
+      const srgb = new Color('hsv', [hue, 45, 85]).to('srgb');
+      const srgbStrong = new Color('hsv', [hue, 65, 65]).to('srgb');
+      categories[i].hue = hue;
+      categories[i].color = srgb;
+      categories[i].colorCSSValue = `rgb(${srgb.coords.map(channel => channel * 256).join(',')})`;
+      categories[i].colorCSSStrongValue = `rgb(${srgbStrong.coords.map(channel => channel * 256).join(',')})`;
+    }
+    this.#categories = Object.freeze(categories);
 
     // define subjects
     for (let i = 0; i < subjects.length; i++) {
@@ -93,8 +107,12 @@ class Records {
     });
   }
 
-  getSubject(subjectId) {
-    return this.#subjects.find((subject) => subject.subjectId === subjectId);
+  getCategory(id) {
+    return this.#categories.find(category => category.id === id);
+  }
+
+  getCategoryWithAttribute(attribute) {
+    return this.#categories.find(category => category.attributes.indexOf(attribute) !== -1);
   }
 
   getSubjectWithPropertyId(propertyId) {
