@@ -153,7 +153,6 @@ export default class TrackView {
   // private methods
 
   #makeValues(values) {
-    console.log(values)
     this.#ROOT.classList.remove('-preparing');
 
     // make overview
@@ -163,7 +162,18 @@ export default class TrackView {
       values
     );
 
-    // // make selector view
+    // make selector view
+    switch (this.#attribute.datamodel) {
+      case 'classification':
+        new ColumnSelectorView(
+          this.#SELECT_CONTAINER,
+          this.#attribute,
+          values
+        );
+        break;
+      case 'distribution':
+        break;
+    }
     // if (
     //   this.#property.viewMethod &&
     //   this.#property.viewMethod === 'histogram'

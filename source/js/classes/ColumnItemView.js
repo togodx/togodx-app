@@ -50,14 +50,14 @@ export default class ColumnItemView {
     // even listener
     this.#INPUT_KEY.addEventListener('change', e => {
       if (e.target.checked) {
-        ConditionBuilder.addProperty(column.propertyId, categoryId);
+        ConditionBuilder.addProperty(column.attributeId, categoryId);
       } else {
-        ConditionBuilder.removeProperty(column.propertyId, categoryId);
+        ConditionBuilder.removeProperty(column.attributeId, categoryId);
       }
     });
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail}) => {
       if (detail.action === 'remove') {
-        if (column.propertyId === detail.propertyId) {
+        if (column.attributeId === detail.propertyId) {
           if (detail.parentCategoryId && categoryId === detail.parentCategoryId) {
             this.#INPUT_KEY.checked = detail.action === 'add';
           }
@@ -65,12 +65,12 @@ export default class ColumnItemView {
       }
     });
     DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail}) => {
-      if (column.propertyId === detail.propertyId && categoryId === detail.categoryId) {
+      if (column.attributeId === detail.propertyId && categoryId === detail.categoryId) {
         this.#INPUT_VALUE.checked = detail.action === 'add';
       }
     });
     DefaultEventEmitter.addEventListener(event.setUserValues, ({detail: {propertyId, values}}) => {
-      if (column.propertyId === propertyId) this.setUserValues(values);
+      if (column.attributeId === propertyId) this.setUserValues(values);
     });
     DefaultEventEmitter.addEventListener(event.clearUserValues, this.#clearUserValues.bind(this));
 

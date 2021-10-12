@@ -3,7 +3,7 @@ import ColumnView from "./ColumnView";
 
 export default class ColumnSelectorView {
 
-  #property;
+  #attribute;
   #items;
   #columnViews;
   #currentColumnViews;
@@ -12,9 +12,9 @@ export default class ColumnSelectorView {
   #LOADING_VIEW;
   #CONTAINED_VIEW;
 
-  constructor(elm, property, items) {
+  constructor(elm, attribute, items) {
 
-    this.#property = property;
+    this.#attribute = attribute;
     this.#items = {};
     this.#columnViews = [];
     this.#currentColumnViews = [];
@@ -58,7 +58,7 @@ export default class ColumnSelectorView {
       if (columnView) {
         resolve(columnView);
       } else {
-        Records.fetchPropertyValues(this.#property.propertyId, categoryId)
+        Records.fetchPropertyValues(this.#attribute.id, categoryId)
           .then(values => {
             this.#setItems(values, depth);
             const columnView = this.#makeCoumnView(values, depth, categoryId);
@@ -72,12 +72,7 @@ export default class ColumnSelectorView {
   }
 
   #makeCoumnView(values, depth, parentCategoryId) {
-    const columnView = new ColumnView(
-      this,
-      values,
-      depth,
-      parentCategoryId
-    );
+    const columnView = new ColumnView(this, values, depth, parentCategoryId);
     this.#columnViews.push(columnView);
     return columnView;
   }
@@ -140,16 +135,16 @@ export default class ColumnSelectorView {
 
   // accessors
 
-  get propertyId() {
-    return this.#property.propertyId;
+  get attributeId() {
+    return this.#attribute.id;
   }
 
-  get sparqlet() {
-    return this.#property.data;
+  get api() {
+    return this.#attribute.api;
   }
 
-  get primaryKey() {
-    return this.#property.primaryKey;
+  get dataset() {
+    return this.#attribute.dataset;
   }
 
   get isShowing() {
