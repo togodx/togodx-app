@@ -4068,8 +4068,8 @@
       _classPrivateFieldGet(this, _ROOT$d).classList.add('stacking-condition-view');
 
       _classPrivateFieldGet(this, _ROOT$d).dataset.categoryId = category.id;
-      _classPrivateFieldGet(this, _ROOT$d).dataset.propertyId = condition.propertyId;
-      if (condition.value) _classPrivateFieldGet(this, _ROOT$d).dataset.categoryId = condition.value.categoryId;
+      _classPrivateFieldGet(this, _ROOT$d).dataset.propertyId = condition.propertyId; // if (condition.value) this.#ROOT.dataset.categoryId = condition.value.categoryId;
+
       if (condition.parentCategoryId) _classPrivateFieldGet(this, _ROOT$d).dataset.parentCategoryId = condition.parentCategoryId; // make view
 
       var _label,
@@ -4575,7 +4575,7 @@
       if (hasChild) _classPrivateFieldGet(this, _ROOT$c).classList.add('-haschild');
       _classPrivateFieldGet(this, _ROOT$c).dataset.id = categoryId;
       _classPrivateFieldGet(this, _ROOT$c).dataset.count = count;
-      _classPrivateFieldGet(this, _ROOT$c).innerHTML = "\n    <td class=\"label\">\n      <label class=\"key\">\n        <input type=\"checkbox\" value=\"".concat(categoryId, "\"/>\n        ").concat(label, "\n      </label>\n      <label class=\"value\">\n        <input type=\"checkbox\" value=\"").concat(categoryId, "\"/>\n        ").concat(label, "\n      </label>\n    </td>\n    <td class=\"total\">").concat(count.toLocaleString(), "</td>\n    <td class=\"mapped\"></td>\n    <td class=\"pvalue\"></td>\n    <td class=\"drilldown\"></td>");
+      _classPrivateFieldGet(this, _ROOT$c).innerHTML = "\n    <td class=\"label\">\n      <label class=\"key\">\n        <input type=\"checkbox\" value=\"".concat(categoryId, "\"").concat(hasChild ? '' : ' disabled', "/>\n        ").concat(label, "\n      </label>\n      <label class=\"value\">\n        <input type=\"checkbox\" value=\"").concat(categoryId, "\"/>\n        ").concat(label, "\n      </label>\n    </td>\n    <td class=\"total\">").concat(count.toLocaleString(), "</td>\n    <td class=\"mapped\"></td>\n    <td class=\"pvalue\"></td>\n    <td class=\"drilldown\"></td>");
 
       _classPrivateFieldSet(this, _INPUT_VALUE, _classPrivateFieldGet(this, _ROOT$c).querySelector(':scope > td.label > label.value > input'));
 

@@ -30,7 +30,7 @@ export default class StackingConditionView {
     this.#ROOT.classList.add('stacking-condition-view');
     this.#ROOT.dataset.categoryId = category.id;
     this.#ROOT.dataset.propertyId = condition.propertyId;
-    if (condition.value) this.#ROOT.dataset.categoryId = condition.value.categoryId;
+    // if (condition.value) this.#ROOT.dataset.categoryId = condition.value.categoryId;
     if (condition.parentCategoryId) this.#ROOT.dataset.parentCategoryId = condition.parentCategoryId;
     // make view
     let label, ancestorLabels = [category.label];

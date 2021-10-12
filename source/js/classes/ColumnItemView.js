@@ -29,7 +29,7 @@ export default class ColumnItemView {
     this.#ROOT.innerHTML = `
     <td class="label">
       <label class="key">
-        <input type="checkbox" value="${categoryId}"/>
+        <input type="checkbox" value="${categoryId}"${hasChild ? '' : ' disabled'}/>
         ${label}
       </label>
       <label class="value">
