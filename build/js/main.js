@@ -2843,21 +2843,44 @@
 
         var styleElm = document.createElement('style');
         document.head.appendChild(styleElm);
-        var styleSheet = styleElm.sheet;
-        styleSheet.insertRule(":root {\n      ".concat(subjects.map(function (subject) {
-          return "\n        --color-subject-".concat(subject.subjectId, ": ").concat(subject.colorCSSValue, ";\n        --color-subject-").concat(subject.subjectId, "-strong: ").concat(subject.colorCSSStrongValue, ";\n        ");
-        }).join(''), "\n    }"));
+        var styleSheet = styleElm.sheet; // styleSheet.insertRule(`:root {
+        //   ${subjects.map(subject => `
+        //     --color-subject-${subject.subjectId}: ${subject.colorCSSValue};
+        //     --color-subject-${subject.subjectId}-strong: ${subject.colorCSSStrongValue};
+        //     `).join('')}
+        // }`);
 
-        var _iterator = _createForOfIteratorHelper(subjects),
+        styleSheet.insertRule(":root {\n      ".concat(categories.map(function (category) {
+          return "\n        --color-category-".concat(category.id, ": ").concat(category.colorCSSValue, ";\n        --color-category-").concat(category.id, "-strong: ").concat(category.colorCSSStrongValue, ";\n        ");
+        }).join(''), "\n    }")); // for (const subject of subjects) {
+        //   styleSheet.insertRule(`
+        //   ._subject-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-color {
+        //     color: var(--color-subject-${subject.subjectId}-strong);
+        //   }`);
+        //   styleSheet.insertRule(`
+        //   ._subject-background-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-background-color {
+        //     background-color: var(--color-subject-${subject.subjectId});
+        //   }`);
+        //   styleSheet.insertRule(`
+        //   ._subject-background-color-strong[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-background-color-strong {
+        //     background-color: var(--color-subject-${subject.subjectId}-strong);
+        //   }`);
+        //   styleSheet.insertRule(`
+        //   ._subject-border-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-border-color {
+        //     border-color: var(--color-subject-${subject.subjectId});
+        //   }`);
+        // }
+
+        var _iterator = _createForOfIteratorHelper(categories),
             _step;
 
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var subject = _step.value;
-            styleSheet.insertRule("\n      ._subject-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-color {\n        color: var(--color-subject-").concat(subject.subjectId, "-strong);\n      }"));
-            styleSheet.insertRule("\n      ._subject-background-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-background-color {\n        background-color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
-            styleSheet.insertRule("\n      ._subject-background-color-strong[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-background-color-strong {\n        background-color: var(--color-subject-").concat(subject.subjectId, "-strong);\n      }"));
-            styleSheet.insertRule("\n      ._subject-border-color[data-subject-id=\"".concat(subject.subjectId, "\"], [data-subject-id=\"").concat(subject.subjectId, "\"] ._subject-border-color {\n        border-color: var(--color-subject-").concat(subject.subjectId, ");\n      }"));
+            var category = _step.value;
+            styleSheet.insertRule("\n      ._category-color[data-category-id=\"".concat(category.id, "\"], [data-category-id=\"").concat(category.id, "\"] ._category-color {\n        color: var(--color-category-").concat(category.id, "-strong);\n      }"));
+            styleSheet.insertRule("\n      ._category-background-color[data-category-id=\"".concat(category.id, "\"], [data-category-id=\"").concat(category.id, "\"] ._category-background-color {\n        background-color: var(--color-category-").concat(category.id, ");\n      }"));
+            styleSheet.insertRule("\n      ._category-background-color-strong[data-category-id=\"".concat(category.id, "\"], [data-category-id=\"").concat(category.id, "\"] ._category-background-color-strong {\n        background-color: var(--color-category-").concat(category.id, "-strong);\n      }"));
+            styleSheet.insertRule("\n      ._category-border-color[data-category-id=\"".concat(category.id, "\"], [data-category-id=\"").concat(category.id, "\"] ._category-border-color {\n        border-color: var(--color-category-").concat(category.id, ");\n      }"));
           }
         } catch (err) {
           _iterator.e(err);

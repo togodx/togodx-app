@@ -56,28 +56,52 @@ class Records {
     const styleElm = document.createElement('style');
     document.head.appendChild(styleElm);
     const styleSheet = styleElm.sheet;
+    // styleSheet.insertRule(`:root {
+    //   ${subjects.map(subject => `
+    //     --color-subject-${subject.subjectId}: ${subject.colorCSSValue};
+    //     --color-subject-${subject.subjectId}-strong: ${subject.colorCSSStrongValue};
+    //     `).join('')}
+    // }`);
     styleSheet.insertRule(`:root {
-      ${subjects.map(subject => `
-        --color-subject-${subject.subjectId}: ${subject.colorCSSValue};
-        --color-subject-${subject.subjectId}-strong: ${subject.colorCSSStrongValue};
+      ${categories.map(category => `
+        --color-category-${category.id}: ${category.colorCSSValue};
+        --color-category-${category.id}-strong: ${category.colorCSSStrongValue};
         `).join('')}
     }`);
-    for (const subject of subjects) {
+    // for (const subject of subjects) {
+    //   styleSheet.insertRule(`
+    //   ._subject-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-color {
+    //     color: var(--color-subject-${subject.subjectId}-strong);
+    //   }`);
+    //   styleSheet.insertRule(`
+    //   ._subject-background-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-background-color {
+    //     background-color: var(--color-subject-${subject.subjectId});
+    //   }`);
+    //   styleSheet.insertRule(`
+    //   ._subject-background-color-strong[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-background-color-strong {
+    //     background-color: var(--color-subject-${subject.subjectId}-strong);
+    //   }`);
+    //   styleSheet.insertRule(`
+    //   ._subject-border-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-border-color {
+    //     border-color: var(--color-subject-${subject.subjectId});
+    //   }`);
+    // }
+    for (const category of categories) {
       styleSheet.insertRule(`
-      ._subject-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-color {
-        color: var(--color-subject-${subject.subjectId}-strong);
+      ._category-color[data-category-id="${category.id}"], [data-category-id="${category.id}"] ._category-color {
+        color: var(--color-category-${category.id}-strong);
       }`);
       styleSheet.insertRule(`
-      ._subject-background-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-background-color {
-        background-color: var(--color-subject-${subject.subjectId});
+      ._category-background-color[data-category-id="${category.id}"], [data-category-id="${category.id}"] ._category-background-color {
+        background-color: var(--color-category-${category.id});
       }`);
       styleSheet.insertRule(`
-      ._subject-background-color-strong[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-background-color-strong {
-        background-color: var(--color-subject-${subject.subjectId}-strong);
+      ._category-background-color-strong[data-category-id="${category.id}"], [data-category-id="${category.id}"] ._category-background-color-strong {
+        background-color: var(--color-category-${category.id}-strong);
       }`);
       styleSheet.insertRule(`
-      ._subject-border-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-border-color {
-        border-color: var(--color-subject-${subject.subjectId});
+      ._category-border-color[data-category-id="${category.id}"], [data-category-id="${category.id}"] ._category-border-color {
+        border-color: var(--color-category-${category.id});
       }`);
     }
   }
