@@ -111,9 +111,9 @@ export default class UploadUserIDsView {
     );
   }
 
-  #getProperty({propertyId, data, primaryKey}) {
+  #getProperty({propertyId, primaryKey}) {
     axios
-      .get(queryTemplates.dataFromUserIds(data, primaryKey), {
+      .get(queryTemplates.dataFromUserIds(propertyId), {
         cancelToken: this.#source.token,
       })
       .then(response => {

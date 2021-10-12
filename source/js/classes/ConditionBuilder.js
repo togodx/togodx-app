@@ -228,6 +228,7 @@ class ConditionBuilder {
   }
 
   #makeQueueOfGettingChildCategoryIds(condition) {
+    if (condition.togoKey) this.#togoKey = condition.togoKey;
     const queue = [];
     const addQueue = (propertyId, id) => {
       const ancestors = [id.categoryId];

@@ -3297,7 +3297,7 @@
           });
         }
 
-        return matchKeys && matchValues;
+        return dxCondition.togoKey === this.togoKey && matchKeys && matchValues;
       }
     }, {
       key: "togoKey",
@@ -3785,6 +3785,7 @@
   }
 
   function _makeQueueOfGettingChildCategoryIds2(condition) {
+    if (condition.togoKey) _classPrivateFieldSet(this, _togoKey, condition.togoKey);
     var queue = [];
 
     var addQueue = function addQueue(propertyId, id) {
@@ -4696,11 +4697,11 @@
 
   var ColumnSelectorSortManager$1 = new ColumnSelectorSortManager();
 
-  function dataFromUserIds(sparqlet, primaryKey) {
+  function dataFromUserIds(propertyId) {
     var _ConditionBuilder$use;
 
-    var categoryIds = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
-    return "".concat(App$1.locate, "?sparqlet=").concat(encodeURIComponent(sparqlet), "&primaryKey=").concat(encodeURIComponent(primaryKey), "&categoryIds=").concat(categoryIds, "&userKey=").concat(ConditionBuilder$1.currentTogoKey, "&userIds=").concat((_ConditionBuilder$use = ConditionBuilder$1.userIds) !== null && _ConditionBuilder$use !== void 0 ? _ConditionBuilder$use : '');
+    var categoryIds = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+    return "".concat(App$1.locate, "?attribute=").concat(propertyId, "&categoryIds=").concat(categoryIds, "&togokey=").concat(ConditionBuilder$1.currentTogoKey, "&queries=").concat((_ConditionBuilder$use = ConditionBuilder$1.userIds) !== null && _ConditionBuilder$use !== void 0 ? _ConditionBuilder$use : '');
   }
 
   var _depth = /*#__PURE__*/new WeakMap();
@@ -8193,7 +8194,7 @@
   function _get_queryIdsPayload() {
     var _ConditionBuilder$use;
 
-    return "togokey=".concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&filters=").concat(_classPrivateFieldGet(this, _dxCondition).queryFilters).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&inputIds=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : '');
+    return "togokey=".concat(_classPrivateFieldGet(this, _dxCondition).togoKey, "&filters=").concat(_classPrivateFieldGet(this, _dxCondition).queryFilters).concat(((_ConditionBuilder$use = ConditionBuilder$1.userIds) === null || _ConditionBuilder$use === void 0 ? void 0 : _ConditionBuilder$use.length) > 0 ? "&queries=".concat(encodeURIComponent(JSON.stringify(ConditionBuilder$1.userIds.split(',')))) : '');
   }
 
   function _getQueryIds2() {
@@ -8903,10 +8904,9 @@
   function _getProperty2(_ref) {
     var _this3 = this;
 
-    var propertyId = _ref.propertyId,
-        data = _ref.data,
-        primaryKey = _ref.primaryKey;
-    axios.get(dataFromUserIds(data, primaryKey), {
+    var propertyId = _ref.propertyId;
+        _ref.primaryKey;
+    axios.get(dataFromUserIds(propertyId), {
       cancelToken: _classPrivateFieldGet(this, _source).token
     }).then(function (response) {
       _classPrivateFieldGet(_this3, _BODY).classList.add('-showuserids');
