@@ -18,18 +18,17 @@ export default class TrackView {
   #COLLAPSE_BUTTON;
 
   constructor(property, container, positionRate) {
-    // console.log(subject, property, container)
 
     const isSelected = ConditionBuilder.isSelectedProperty(property.propertyId);
     const elm = document.createElement('div');
     container.insertAdjacentElement('beforeend', elm);
     this.#ROOT = elm;
     this.#property = property;
-    const subject = Records.getSubjectWithPropertyId(this.#property.propertyId);
+    const category = Records.getCategoryWithAttribute(this.#property.propertyId);
     this.#sparqlist = property.data;
     elm.classList.add('track-view', '-preparing', 'collapse-view');
     if (isSelected) elm.classList.add('-allselected');
-    elm.dataset.subjectId = subject.subjectId;
+    elm.dataset.categoryId = category.id;
     elm.dataset.propertyId = property.propertyId;
     elm.dataset.collapse = property.propertyId;
 

@@ -139,11 +139,6 @@ class Records {
     return this.#categories.find(category => category.attributes.indexOf(attribute) !== -1);
   }
 
-  getSubjectWithPropertyId(propertyId) {
-    const subject = this.#subjects.find(subject => subject.properties.some(property => property.propertyId === propertyId));
-    return subject;
-  }
-
   getProperty(propertyId) {
     const property = this.#properties.find(property => property.propertyId === propertyId);
     return property;

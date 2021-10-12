@@ -2944,17 +2944,6 @@
         });
       }
     }, {
-      key: "getSubjectWithPropertyId",
-      value: function getSubjectWithPropertyId(propertyId) {
-        var subject = _classPrivateFieldGet(this, _subjects).find(function (subject) {
-          return subject.properties.some(function (property) {
-            return property.propertyId === propertyId;
-          });
-        });
-
-        return subject;
-      }
-    }, {
       key: "getProperty",
       value: function getProperty(propertyId) {
         var property = _classPrivateFieldGet(this, _properties$1).find(function (property) {
@@ -5934,8 +5923,7 @@
       return Object.assign({}, value);
     }));
 
-    var subject = Records$1.getSubjectWithPropertyId(_classPrivateFieldGet(this, _property$1).propertyId);
-    ConditionBuilder$1.getSelectedCategoryIds(_classPrivateFieldGet(this, _property$1).propertyId); // make overview
+    var category = Records$1.getCategoryWithAttribute(_classPrivateFieldGet(this, _property$1).propertyId); // make overview
     // TODO: ヒストグラムは別処理
 
     var _sum = values.reduce(function (acc, value) {
@@ -5947,8 +5935,7 @@
     elm.innerHTML = _classPrivateFieldGet(this, _values).map(function (value, index) {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / _sum * 100;
-      value.baseColor = colorTintByHue(subject.color, 360 * index / values.length); // const selectedClass = selectedCategoryIds.values.indexOf(value.categoryId) !== -1 ? ' -selected' : ''; // TODO: 不要な処理かも？
-
+      value.baseColor = colorTintByHue(category.color, 360 * index / values.length);
       var selectedClass = '';
       return "\n        <li class=\"track-value-view _category-background-color".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\">\n            <span class=\"material-icons\">location_on</span>\n          </div>\n        </li>");
     }).join('');
@@ -5960,7 +5947,7 @@
       value.pin = elm.querySelector(':scope > .pin');
       value.icon = value.pin.querySelector(':scope > .material-icons'); // attach event: show tooltip
 
-      var label = "<span class=\"_category-color\" data-subject-id=\"".concat(subject.subjectId, "\">").concat(value.label, "</span>");
+      var label = "<span class=\"_category-color\" data-category-id=\"".concat(category.id, "\">").concat(value.label, "</span>");
       elm.addEventListener('mouseenter', function () {
         var _classPrivateFieldGet2;
 
@@ -6230,7 +6217,6 @@
       value: void 0
     });
 
-    // console.log(subject, property, container)
     var isSelected = ConditionBuilder$1.isSelectedProperty(property.propertyId);
     var elm = document.createElement('div');
     container.insertAdjacentElement('beforeend', elm);
@@ -6239,13 +6225,13 @@
 
     _classPrivateFieldSet(this, _property, property);
 
-    var subject = Records$1.getSubjectWithPropertyId(_classPrivateFieldGet(this, _property).propertyId);
+    var category = Records$1.getCategoryWithAttribute(_classPrivateFieldGet(this, _property).propertyId);
 
     _classPrivateFieldSet(this, _sparqlist, property.data);
 
     elm.classList.add('track-view', '-preparing', 'collapse-view');
     if (isSelected) elm.classList.add('-allselected');
-    elm.dataset.subjectId = subject.subjectId;
+    elm.dataset.categoryId = category.id;
     elm.dataset.propertyId = property.propertyId;
     elm.dataset.collapse = property.propertyId; // make html
 
