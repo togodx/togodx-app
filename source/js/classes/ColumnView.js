@@ -18,12 +18,7 @@ export default class ColumnView {
   #ROOT;
   #TBODY;
 
-  constructor(
-    selector,
-    values,
-    depth,
-    parentCategoryId
-  ) {
+  constructor(selector, values, depth, parentCategoryId) {
 
     // set members
     this.#depth = depth;
@@ -128,7 +123,6 @@ export default class ColumnView {
     const isLog10 = App.viewModes.log10;
     let max = isLog10 && this.#max > 1 ? Math.log10(this.#max) : this.#max;
     const category = Records.getCategoryWithAttribute(this.attributeId);
-    console.log(category)
     this.#columnItemViews.forEach(columnItemView => {
       columnItemView.update(category.color, isLog10, max);
     });

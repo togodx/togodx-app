@@ -172,25 +172,13 @@ export default class TrackView {
         );
         break;
       case 'distribution':
+        new HistogramRangeSelectorView(
+          this.#SELECT_CONTAINER,
+          this.#attribute,
+          values
+        );
         break;
     }
-    // if (
-    //   this.#property.viewMethod &&
-    //   this.#property.viewMethod === 'histogram'
-    // ) {
-    //   new HistogramRangeSelectorView(
-    //     this.#SELECT_CONTAINER,
-    //     this.#property,
-    //     values,
-    //     this.#OVERVIEW_CONTAINER
-    //   );
-    // } else {
-    //   new ColumnSelectorView(
-    //     this.#SELECT_CONTAINER,
-    //     this.#property,
-    //     values
-    //   );
-    // }
   }
 
   #showError(error, inUserIDs = false) {

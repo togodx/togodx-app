@@ -10,18 +10,16 @@ const NUM_OF_GRID = 4;
 export default class HistogramRangeSelectorView {
 
   #items;
-  #property;
+  #attribute;
   #selectorController;
   #OVERVIEW_CONTAINER;
   #ROOT;
   #GRIDS;
 
-  constructor(elm, property, items, overviewContainer) {
-    // console.log(elm, subject, property, items)
+  constructor(elm, attribute, items) {
 
-    this.#property = property;
-    const category = Records.getCategoryWithAttribute(this.#property.propertyId);
-    this.#OVERVIEW_CONTAINER = overviewContainer;
+    this.#attribute = attribute;
+    const category = Records.getCategoryWithAttribute(this.#attribute.id);
     this.#items = items.map(item => Object.assign({}, item));
 
     // make container
@@ -123,8 +121,8 @@ export default class HistogramRangeSelectorView {
     return this.#items;
   }
 
-  get propertyId() {
-    return this.#property.propertyId;
+  get attributeId() {
+    return this.#attribute.id;
   }
 
 }

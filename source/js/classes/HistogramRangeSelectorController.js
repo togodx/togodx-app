@@ -189,7 +189,7 @@ export default class HistogramRangeSelectorController {
     this.#target.update();
     // set condition
     ConditionBuilder.setPropertyValues(
-      this.#target.propertyId,
+      this.#target.attributeId,
       this.selectedItems.map(item => item.categoryId),
       false
     );
