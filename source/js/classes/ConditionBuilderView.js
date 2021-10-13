@@ -85,7 +85,7 @@ export default class ConditionBuilderView {
     // make options
     this.#TOGO_KEYS.innerHTML = Object.keys(datasets)
       .filter(key => datasets[key].target)
-      .map(key => `<option value="${key}" data-subject-id="hoge">${datasets[key].label}</option>`)
+      .map(key => `<option value="${key}">${datasets[key].label}</option>`)
       .join('');
     this.#TOGO_KEYS.disabled = false;
     this.#TOGO_KEYS.value = ConditionBuilder.currentTogoKey;

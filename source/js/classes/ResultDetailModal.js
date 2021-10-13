@@ -68,7 +68,7 @@ export default class ResultDetailModal {
   }
   // HTML elements
   #popup(detail) {
-    this.#ROOT.dataset.subjectId = detail.keys.subjectId;
+    this.#ROOT.dataset.catexxxgoryId = detail.keys.subjectId;
     const popup = document.createElement('div');
     popup.className = 'popup';
     popup.style.left = this.#popup_left;

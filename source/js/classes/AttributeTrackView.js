@@ -25,7 +25,7 @@ export default class AttributeTrackView {
     const category = Records.getCatexxxgoryWithAttribute(attributeId);
     this.#ROOT.classList.add('attribute-track-view', '-preparing', 'collapse-view');
     if (isSelected) this.#ROOT.classList.add('-allselected');
-    this.#ROOT.dataset.catexxgoryId = category.id;
+    this.#ROOT.dataset.catexxxgoryId = category.id;
     this.#ROOT.dataset.collapse = attributeId;
 
     // make html

@@ -4,7 +4,7 @@ export default class BaseCondition {
 
   _propertyId;
   #key;
-  #subjectId;
+  #catexxxgoryId;
   #dataset;
 
   constructor(propertyId) {
@@ -25,11 +25,11 @@ export default class BaseCondition {
     return this.#key;
   }
 
-  get subjectId() {
-    if (!this.#subjectId) {
-      this.#subjectId = this.key.subjectId;
+  get catexxxgoryId() {
+    if (!this.#catexxxgoryId) {
+      this.#catexxxgoryId = this.key.catexxxgoryId;
     }
-    return this.#subjectId;
+    return this.#catexxxgoryId;
   }
 
   get dataset() {

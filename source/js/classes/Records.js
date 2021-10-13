@@ -36,7 +36,7 @@ class Records {
     subjects.forEach(subject => {
       subject.properties.forEach(property => {
         this.#properties.push(Object.assign({
-          subjectId: subject.subjectId,
+          catexxxgoryId: subject.subjectId,
           values: []
         }, property));
         this.#fetchedCategoryIds[property.propertyId] = [];

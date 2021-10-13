@@ -118,11 +118,11 @@ export default class ResultsTable {
     this.#tableData = tableData;
     this.#intersctionObserver.unobserve(this.#TABLE_END);
     this.#header = [
-      ...tableData.dxCondition.valuesConditions.map(({subjectId, propertyId}) => {
-        return {subjectId, propertyId};
+      ...tableData.dxCondition.valuesConditions.map(({catexxxgoryId, propertyId}) => {
+        return {catexxxgoryId, propertyId};
       }),
-      ...tableData.dxCondition.keyConditions.map(({subjectId, propertyId}) => {
-        return {subjectId, propertyId};
+      ...tableData.dxCondition.keyConditions.map(({catexxxgoryId, propertyId}) => {
+        return {catexxxgoryId, propertyId};
       })
     ];
     this.#ROOT.classList.remove('-complete');
@@ -152,7 +152,7 @@ export default class ResultsTable {
         .map(
           valuesCondition => `
           <th>
-            <div class="inner _catexxxgory-background-color" data-subject-id="${valuesCondition.subjectId}">
+            <div class="inner _catexxxgory-background-color" data-catexxxgory-id="${valuesCondition.catexxxgoryId}">
             <div class="togo-key-view">${valuesCondition.dataset}</div>
               <span>${valuesCondition.label}</span>
             </div>
@@ -165,7 +165,7 @@ export default class ResultsTable {
         .map(
           keyCondition => `
           <th>
-            <div class="inner _catexxxgory-color" data-subject-id="${keyCondition.subjectId}">
+            <div class="inner _catexxxgory-color" data-catexxxgory-id="${keyCondition.catexxxgoryId}">
               <div class="togo-key-view">${keyCondition.dataset}</div>
               <span>${keyCondition.label}</span>
             </div>
@@ -216,7 +216,7 @@ export default class ResultsTable {
                     data-key="${tableData.togoKey}"
                     data-order="${[0, tableData.offset + index]}"
                     data-sub-order="0"
-                    data-subject-id="${tableData.subjectId}"
+                    data-subject-id="primary"
                     data-unique-entry-id="${row.id}">${row.id}
                   </div>
                   <span>${row.label}</span>
@@ -241,7 +241,7 @@ export default class ResultsTable {
                           data-sub-order="${attributeIndex}"
                           data-key="${column.propertyKey}"
                           data-subject-id="${
-                            this.#header[columnIndex].subjectId
+                            this.#header[columnIndex].catexxxgoryId
                           }"
                           data-main-category-id="${
                             this.#header[columnIndex].propertyId
