@@ -282,11 +282,11 @@ export default class ResultsTable {
     }
 
     // Naming needs improvement but hierarcy for Popup screen is like below
-    // Togo-key   (Uniprot)
-    //  → Subject  (Gene)
-    //    → Main-Category  (Expressed in tissues)
-    //      → Sub-Category  (Thyroid Gland)
-    //        → Unique-Entry (ENSG00000139304)
+    // Togo-key   (Uniprot)                        | primaryKey
+    //  → Subject  (Gene)                          | category
+    //    → Main-Category  (Expressed in tissues)  | attribute
+    //      → Sub-Category  (Thyroid Gland)        | 
+    //        → Unique-Entry (ENSG00000139304)     | categoryId ?
     rows.forEach((row, index) => {
       const actualIndex = tableData.offset + index;
       const tr = this.#TBODY.querySelector(`:scope > tr[data-index="${actualIndex}"]`);

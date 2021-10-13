@@ -6934,11 +6934,11 @@
 
       _classPrivateFieldGet(this, _intersctionObserver).observe(_classPrivateFieldGet(this, _TABLE_END));
     } // Naming needs improvement but hierarcy for Popup screen is like below
-    // Togo-key   (Uniprot)
-    //  → Subject  (Gene)
-    //    → Main-Category  (Expressed in tissues)
-    //      → Sub-Category  (Thyroid Gland)
-    //        → Unique-Entry (ENSG00000139304)
+    // Togo-key   (Uniprot)                        | primaryKey
+    //  → Subject  (Gene)                          | category
+    //    → Main-Category  (Expressed in tissues)  | attribute
+    //      → Sub-Category  (Thyroid Gland)        | 
+    //        → Unique-Entry (ENSG00000139304)     | categoryId ?
 
 
     rows.forEach(function (row, index) {
