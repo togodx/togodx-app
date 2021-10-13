@@ -58,7 +58,7 @@ export default class ColumnSelectorView {
       if (columnView) {
         resolve(columnView);
       } else {
-        Records.fetchPropertyValues(this.#attribute.id, categoryId)
+        Records.fetchAttributeValues(this.#attribute.id, categoryId)
           .then(values => {
             this.#setItems(values, depth);
             const columnView = this.#makeCoumnView(values, depth, categoryId);

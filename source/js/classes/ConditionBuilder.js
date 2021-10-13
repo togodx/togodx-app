@@ -260,7 +260,7 @@ class ConditionBuilder {
 
   #getChildCategoryIds(propertyId, categoryId) {
     return new Promise((resolve, reject) => {
-      Records.fetchPropertyValues(propertyId, categoryId)
+      Records.fetchAttributeValues(propertyId, categoryId)
         .then(values => {
           resolve();
         })

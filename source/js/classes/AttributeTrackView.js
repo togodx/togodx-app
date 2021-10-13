@@ -135,7 +135,7 @@ export default class AttributeTrackView {
     });
 
     // get property data
-    Records.fetchPropertyValues(attributeId)
+    Records.fetchAttributeValues(attributeId)
       .then(values => this.#makeValues(values))
       .catch(error => {
         console.error(error);

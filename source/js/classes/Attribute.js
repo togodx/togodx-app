@@ -2,11 +2,40 @@ export default class Attribute {
 
   #id;
   #obj;
+  #values;
 
   constructor(id, obj) {
     this.#id = id;
     this.#obj = obj;
+    this.#values = [];
   }
+
+
+  // public Methods
+
+  fetchValuesWithParentCategoryId(parentCategoryId) {
+    return new Promise((resolve, reject) => {
+      const values = this.#values.filter(value => value.parentCategoryId === parentCategoryId);
+      console.log(values)
+      if (values.length > 0) {
+        resolve(values);
+      } else {
+        fetch(`${this.api}${parentCategoryId ? `?categoryIds=${parentCategoryId}` : ''}`)
+        .then(responce => responce.json())
+        .then(values => {
+          console.log(values)
+          // set parent category id
+          if (parentCategoryId) values.forEach(value => value.parentCategoryId = parentCategoryId);
+          // set values
+          this.#values.push(...values);
+          resolve(values);
+        })
+        .catch(error => reject(error));
+      }
+    });
+  }
+
+  // accessors
 
   get id() {
     return this.#id;
@@ -34,6 +63,10 @@ export default class Attribute {
 
   get source() {
     return this.#obj.source;
+  }
+
+  get values() {
+    return this.#values;
   }
 
 }

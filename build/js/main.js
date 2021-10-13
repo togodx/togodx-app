@@ -2739,6 +2739,8 @@
 
   var _obj = /*#__PURE__*/new WeakMap();
 
+  var _values$1 = /*#__PURE__*/new WeakMap();
+
   var Attribute = /*#__PURE__*/function () {
     function Attribute(id, obj) {
       _classCallCheck(this, Attribute);
@@ -2753,12 +2755,56 @@
         value: void 0
       });
 
+      _classPrivateFieldInitSpec(this, _values$1, {
+        writable: true,
+        value: void 0
+      });
+
       _classPrivateFieldSet(this, _id, id);
 
       _classPrivateFieldSet(this, _obj, obj);
-    }
+
+      _classPrivateFieldSet(this, _values$1, []);
+    } // public Methods
+
 
     _createClass(Attribute, [{
+      key: "fetchValuesWithParentCategoryId",
+      value: function fetchValuesWithParentCategoryId(parentCategoryId) {
+        var _this = this;
+
+        return new Promise(function (resolve, reject) {
+          var values = _classPrivateFieldGet(_this, _values$1).filter(function (value) {
+            return value.parentCategoryId === parentCategoryId;
+          });
+
+          console.log(values);
+
+          if (values.length > 0) {
+            resolve(values);
+          } else {
+            fetch("".concat(_this.api).concat(parentCategoryId ? "?categoryIds=".concat(parentCategoryId) : '')).then(function (responce) {
+              return responce.json();
+            }).then(function (values) {
+              var _classPrivateFieldGet2;
+
+              console.log(values); // set parent category id
+
+              if (parentCategoryId) values.forEach(function (value) {
+                return value.parentCategoryId = parentCategoryId;
+              }); // set values
+
+              (_classPrivateFieldGet2 = _classPrivateFieldGet(_this, _values$1)).push.apply(_classPrivateFieldGet2, _toConsumableArray(values));
+
+              resolve(values);
+            }).catch(function (error) {
+              return reject(error);
+            });
+          }
+        });
+      } // accessors
+
+    }, {
       key: "id",
       get: function get() {
         return _classPrivateFieldGet(this, _id);
@@ -2793,6 +2839,11 @@
       get: function get() {
         return _classPrivateFieldGet(this, _obj).source;
       }
+    }, {
+      key: "values",
+      get: function get() {
+        return _classPrivateFieldGet(this, _values$1);
+      }
     }]);
 
     return Attribute;
@@ -2806,9 +2857,8 @@
 
   var _properties$1 = /*#__PURE__*/new WeakMap();
 
-  var _fetchedCategoryIds = /*#__PURE__*/new WeakMap();
-
   var Records = /*#__PURE__*/function () {
+    // #fetchedCategoryIds;
     function Records() {
       _classCallCheck(this, Records);
 
@@ -2828,11 +2878,6 @@
       });
 
       _classPrivateFieldInitSpec(this, _properties$1, {
-        writable: true,
-        value: void 0
-      });
-
-      _classPrivateFieldInitSpec(this, _fetchedCategoryIds, {
         writable: true,
         value: void 0
       });
@@ -2872,18 +2917,16 @@
         })); // set properties
 
 
-        _classPrivateFieldSet(this, _properties$1, []);
+        _classPrivateFieldSet(this, _properties$1, []); // this.#fetchedCategoryIds = {};
 
-        _classPrivateFieldSet(this, _fetchedCategoryIds, {});
 
         subjects.forEach(function (subject) {
           subject.properties.forEach(function (property) {
             _classPrivateFieldGet(_this, _properties$1).push(Object.assign({
               catexxxgoryId: subject.subjectId,
               values: []
-            }, property));
+            }, property)); // this.#fetchedCategoryIds[property.propertyId] = [];
 
-            _classPrivateFieldGet(_this, _fetchedCategoryIds)[property.propertyId] = [];
           });
         }); // make stylesheet
 
@@ -2922,35 +2965,10 @@
         _classPrivateFieldSet(this, _datasets, datasets);
       }
     }, {
-      key: "fetchPropertyValues",
-      value: function fetchPropertyValues(propertyId, categoryId) {
-        var property = this.getProperty(propertyId);
-        return new Promise(function (resolve, reject) {
-          if (categoryId && property.values.findIndex(function (value) {
-            return value.parentCategoryId === categoryId;
-          }) !== -1) {
-            resolve(property.values.filter(function (value) {
-              return value.parentCategoryId === categoryId;
-            }));
-          } else {
-            fetch("".concat(property.data).concat(categoryId ? "?categoryIds=".concat(categoryId) : '')).then(function (responce) {
-              return responce.json();
-            }).then(function (values) {
-              var _property$values;
-
-              // set parent category id
-              if (categoryId) values.forEach(function (value) {
-                return value.parentCategoryId = categoryId;
-              }); // set values
-
-              (_property$values = property.values).push.apply(_property$values, _toConsumableArray(values));
-
-              resolve(values);
-            }).catch(function (error) {
-              return reject(error);
-            });
-          }
-        });
+      key: "fetchAttributeValues",
+      value: function fetchAttributeValues(attributeId, categoryId) {
+        var attribute = this.getAttribute(attributeId);
+        return attribute.fetchValuesWithParentCategoryId(categoryId);
       }
     }, {
       key: "getCatexxxgory",
@@ -3919,7 +3937,7 @@
 
   function _getChildCategoryIds2(propertyId, categoryId) {
     return new Promise(function (resolve, reject) {
-      Records$1.fetchPropertyValues(propertyId, categoryId).then(function (values) {
+      Records$1.fetchAttributeValues(propertyId, categoryId).then(function (values) {
         resolve();
       }).catch(function (error) {
         reject(error);
@@ -4056,6 +4074,8 @@
         writable: true,
         value: void 0
       });
+
+      console.log(_container, type, condition);
 
       _classPrivateFieldSet(this, _condition, condition);
 
@@ -5321,7 +5341,7 @@
       if (columnView) {
         resolve(columnView);
       } else {
-        Records$1.fetchPropertyValues(_classPrivateFieldGet(_this2, _attribute$3).id, categoryId).then(function (values) {
+        Records$1.fetchAttributeValues(_classPrivateFieldGet(_this2, _attribute$3).id, categoryId).then(function (values) {
           _classPrivateMethodGet(_this2, _setItems, _setItems2).call(_this2, values, depth);
 
           var columnView = _classPrivateMethodGet(_this2, _makeCoumnView, _makeCoumnView2).call(_this2, values, depth, categoryId);
@@ -6319,7 +6339,7 @@
       } else if (e.detail.mode === 'hide') _classPrivateMethodGet(_this, _clearError, _clearError2).call(_this);
     }); // get property data
 
-    Records$1.fetchPropertyValues(attributeId).then(function (values) {
+    Records$1.fetchAttributeValues(attributeId).then(function (values) {
       return _classPrivateMethodGet(_this, _makeValues, _makeValues2).call(_this, values);
     }).catch(function (error) {
       console.error(error);

@@ -6,7 +6,7 @@ class Records {
   #attributes;
   #datasets;
   #properties;
-  #fetchedCategoryIds;
+  // #fetchedCategoryIds;
 
   constructor() {}
 
@@ -32,14 +32,14 @@ class Records {
 
     // set properties
     this.#properties = [];
-    this.#fetchedCategoryIds = {};
+    // this.#fetchedCategoryIds = {};
     subjects.forEach(subject => {
       subject.properties.forEach(property => {
         this.#properties.push(Object.assign({
           catexxxgoryId: subject.subjectId,
           values: []
         }, property));
-        this.#fetchedCategoryIds[property.propertyId] = [];
+        // this.#fetchedCategoryIds[property.propertyId] = [];
       });
     });
 
@@ -78,24 +78,9 @@ class Records {
     this.#datasets = datasets;
   }
 
-  fetchPropertyValues(propertyId, categoryId) {
-    const property = this.getProperty(propertyId);
-    return new Promise((resolve, reject) => {
-      if (categoryId && property.values.findIndex(value => value.parentCategoryId === categoryId) !== -1) {
-        resolve(property.values.filter(value => value.parentCategoryId === categoryId));
-      } else {
-        fetch(`${property.data}${categoryId ? `?categoryIds=${categoryId}` : ''}`)
-        .then(responce => responce.json())
-        .then(values => {
-          // set parent category id
-          if (categoryId) values.forEach(value => value.parentCategoryId = categoryId);
-          // set values
-          property.values.push(...values);
-          resolve(values);
-        })
-        .catch(error => reject(error));
-      }
-    });
+  fetchAttributeValues(attributeId, categoryId) {
+    const attribute = this.getAttribute(attributeId);
+    return attribute.fetchValuesWithParentCategoryId(categoryId);
   }
 
   getCatexxxgory(id) {
