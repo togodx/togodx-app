@@ -152,7 +152,7 @@ export default class ResultsTable {
         .map(
           valuesCondition => `
           <th>
-            <div class="inner _category-background-color" data-subject-id="${valuesCondition.subjectId}">
+            <div class="inner _catexxxgory-background-color" data-subject-id="${valuesCondition.subjectId}">
             <div class="togo-key-view">${valuesCondition.dataset}</div>
               <span>${valuesCondition.label}</span>
             </div>
@@ -165,7 +165,7 @@ export default class ResultsTable {
         .map(
           keyCondition => `
           <th>
-            <div class="inner _category-color" data-subject-id="${keyCondition.subjectId}">
+            <div class="inner _catexxxgory-color" data-subject-id="${keyCondition.subjectId}">
               <div class="togo-key-view">${keyCondition.dataset}</div>
               <span>${keyCondition.label}</span>
             </div>

@@ -1232,13 +1232,13 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   top: 0.1rem;
   right: 0.1rem;
 }
-.stacking-condition-view._category-background-color > .path {
+.stacking-condition-view._catexxxgory-background-color > .path {
   color: rgba(0, 0, 0, 0.5);
 }
-.stacking-condition-view._category-background-color > .path > li + li::before {
+.stacking-condition-view._catexxxgory-background-color > .path > li + li::before {
   border-left-color: rgba(0, 0, 0, 0.5);
 }
-.stacking-condition-view._category-background-color > .label {
+.stacking-condition-view._catexxxgory-background-color > .label {
   color: white;
 }
 
@@ -2011,7 +2011,7 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #ResultsTable > .body > table > thead > tr.header.subheader > th, #ResultsTable > .body > table > thead > tr.subheader.subheader > th {
   top: var(--thheight);
 }
-#ResultsTable > .body > table > thead > tr.header.subheader > th > .inner._category-color, #ResultsTable > .body > table > thead > tr.subheader.subheader > th > .inner._category-color {
+#ResultsTable > .body > table > thead > tr.header.subheader > th > .inner._catexxxgory-color, #ResultsTable > .body > table > thead > tr.subheader.subheader > th > .inner._catexxxgory-color {
   background-color: white;
 }
 #ResultsTable > .body > table > thead > tr.statistics > th.controller > .inner > label {

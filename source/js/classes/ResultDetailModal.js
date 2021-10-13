@@ -80,7 +80,7 @@ export default class ResultDetailModal {
   }
 
   #header(keys, props) {
-    const category = Records.getCategory(keys.subjectId);
+    const category = Records.getCatexxxgory(keys.subjectId);
     const isPrimaryKey = props.isPrimaryKey;
     const mainCategory = isPrimaryKey
       ? ''
@@ -101,7 +101,7 @@ export default class ResultDetailModal {
       </div>
       <div/>
     `;
-    header.classList.add('_category-background-color');
+    header.classList.add('_catexxxgory-background-color');
     header.lastElementChild.appendChild(this.#exit_button);
     header.addEventListener('mousedown', e => {
       const customEvent = new CustomEvent(event.dragElement, {

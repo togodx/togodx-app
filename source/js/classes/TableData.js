@@ -114,7 +114,7 @@ export default class TableData {
         this.#dxCondition.valuesConditions
           .map(valuesCondition => {
             const label = Records.getProperty(valuesCondition.propertyId).label;
-            return `<div class="condition _category-background-color" data-subject-id="${valuesCondition.subjectId}">
+            return `<div class="condition _catexxxgory-background-color" data-catexxxgory-id="${valuesCondition.subjectId}">
               <p title="${label}">${label}</p>
             </div>`
           })
@@ -123,7 +123,7 @@ export default class TableData {
       ${
         this.#dxCondition.keyConditions
           .map(keyCondition => {
-            return `<div class="condition _category-color" data-subject-id="${keyCondition.subjectId}">
+            return `<div class="condition _catexxxgory-color" data-catexxxgory-id="${keyCondition.subjectId}">
               <p title="${keyCondition.label}">${keyCondition.label}</p>
             </div>`;
           })

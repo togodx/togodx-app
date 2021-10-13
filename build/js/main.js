@@ -2798,7 +2798,7 @@
     return Attribute;
   }();
 
-  var _categories = /*#__PURE__*/new WeakMap();
+  var _catexxxgories = /*#__PURE__*/new WeakMap();
 
   var _attributes = /*#__PURE__*/new WeakMap();
 
@@ -2812,7 +2812,7 @@
     function Records() {
       _classCallCheck(this, Records);
 
-      _classPrivateFieldInitSpec(this, _categories, {
+      _classPrivateFieldInitSpec(this, _catexxxgories, {
         writable: true,
         value: void 0
       });
@@ -2864,7 +2864,7 @@
           }).join(','), ")");
         }
 
-        _classPrivateFieldSet(this, _categories, Object.freeze(categories)); // set attributes
+        _classPrivateFieldSet(this, _catexxxgories, Object.freeze(categories)); // set attributes
 
 
         _classPrivateFieldSet(this, _attributes, Object.keys(attributes).map(function (id) {
@@ -2890,8 +2890,8 @@
         var styleElm = document.createElement('style');
         document.head.appendChild(styleElm);
         var styleSheet = styleElm.sheet;
-        styleSheet.insertRule(":root {\n      ".concat(categories.map(function (category) {
-          return "\n        --color-category-".concat(category.id, ": ").concat(category.colorCSSValue, ";\n        --color-category-").concat(category.id, "-strong: ").concat(category.colorCSSStrongValue, ";\n        ");
+        styleSheet.insertRule(":root {\n      ".concat(categories.map(function (catexxxgory) {
+          return "\n        --color-catexxxgory-".concat(catexxxgory.id, ": ").concat(catexxxgory.colorCSSValue, ";\n        --color-catexxxgory-").concat(catexxxgory.id, "-strong: ").concat(catexxxgory.colorCSSStrongValue, ";\n        ");
         }).join(''), "\n    }"));
 
         var _iterator = _createForOfIteratorHelper(categories),
@@ -2899,11 +2899,11 @@
 
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var category = _step.value;
-            styleSheet.insertRule("\n      ._category-color[data-category-id=\"".concat(category.id, "\"], [data-category-id=\"").concat(category.id, "\"] ._category-color {\n        color: var(--color-category-").concat(category.id, "-strong);\n      }"));
-            styleSheet.insertRule("\n      ._category-background-color[data-category-id=\"".concat(category.id, "\"], [data-category-id=\"").concat(category.id, "\"] ._category-background-color {\n        background-color: var(--color-category-").concat(category.id, ");\n      }"));
-            styleSheet.insertRule("\n      ._category-background-color-strong[data-category-id=\"".concat(category.id, "\"], [data-category-id=\"").concat(category.id, "\"] ._category-background-color-strong {\n        background-color: var(--color-category-").concat(category.id, "-strong);\n      }"));
-            styleSheet.insertRule("\n      ._category-border-color[data-category-id=\"".concat(category.id, "\"], [data-category-id=\"").concat(category.id, "\"] ._category-border-color {\n        border-color: var(--color-category-").concat(category.id, ");\n      }"));
+            var catexxxgory = _step.value;
+            styleSheet.insertRule("\n      ._catexxxgory-color[data-catexxxgory-id=\"".concat(catexxxgory.id, "\"], [data-catexxxgory-id=\"").concat(catexxxgory.id, "\"] ._catexxxgory-color {\n        color: var(--color-catexxxgory-").concat(catexxxgory.id, "-strong);\n      }"));
+            styleSheet.insertRule("\n      ._catexxxgory-background-color[data-catexxxgory-id=\"".concat(catexxxgory.id, "\"], [data-catexxxgory-id=\"").concat(catexxxgory.id, "\"] ._catexxxgory-background-color {\n        background-color: var(--color-catexxxgory-").concat(catexxxgory.id, ");\n      }"));
+            styleSheet.insertRule("\n      ._catexxxgory-background-color-strong[data-catexxxgory-id=\"".concat(catexxxgory.id, "\"], [data-catexxxgory-id=\"").concat(catexxxgory.id, "\"] ._catexxxgory-background-color-strong {\n        background-color: var(--color-catexxxgory-").concat(catexxxgory.id, "-strong);\n      }"));
+            styleSheet.insertRule("\n      ._catexxxgory-border-color[data-catexxxgory-id=\"".concat(catexxxgory.id, "\"], [data-catexxxgory-id=\"").concat(catexxxgory.id, "\"] ._catexxxgory-border-color {\n        border-color: var(--color-catexxxgory-").concat(catexxxgory.id, ");\n      }"));
           }
         } catch (err) {
           _iterator.e(err);
@@ -2953,16 +2953,16 @@
         });
       }
     }, {
-      key: "getCategory",
-      value: function getCategory(id) {
-        return _classPrivateFieldGet(this, _categories).find(function (category) {
+      key: "getCatexxxgory",
+      value: function getCatexxxgory(id) {
+        return _classPrivateFieldGet(this, _catexxxgories).find(function (category) {
           return category.id === id;
         });
       }
     }, {
-      key: "getCategoryWithAttribute",
-      value: function getCategoryWithAttribute(attribute) {
-        return _classPrivateFieldGet(this, _categories).find(function (category) {
+      key: "getCatexxxgoryWithAttribute",
+      value: function getCatexxxgoryWithAttribute(attribute) {
+        return _classPrivateFieldGet(this, _catexxxgories).find(function (category) {
           return category.attributes.indexOf(attribute) !== -1;
         });
       }
@@ -3027,9 +3027,9 @@
       } // public accessors
 
     }, {
-      key: "categories",
+      key: "catexxxgories",
       get: function get() {
-        return _classPrivateFieldGet(this, _categories);
+        return _classPrivateFieldGet(this, _catexxxgories);
       }
     }, {
       key: "properties",
@@ -4059,7 +4059,7 @@
 
       _classPrivateFieldSet(this, _condition, condition);
 
-      var category = Records$1.getCategoryWithAttribute(condition.propertyId);
+      var category = Records$1.getCatexxxgoryWithAttribute(condition.propertyId);
       var property = Records$1.getProperty(condition.propertyId); // this.#isRange = isRange;
       // attributes
 
@@ -4067,7 +4067,7 @@
 
       _classPrivateFieldGet(this, _ROOT$e).classList.add('stacking-condition-view');
 
-      _classPrivateFieldGet(this, _ROOT$e).dataset.categoryId = category.id;
+      _classPrivateFieldGet(this, _ROOT$e).dataset.catexxxgoryId = category.id;
       _classPrivateFieldGet(this, _ROOT$e).dataset.propertyId = condition.propertyId; // if (condition.value) this.#ROOT.dataset.categoryId = condition.value.categoryId;
 
       if (condition.parentCategoryId) _classPrivateFieldGet(this, _ROOT$e).dataset.parentCategoryId = condition.parentCategoryId; // make view
@@ -4084,7 +4084,7 @@
 
                 if (value) {
                   var ancestors = Records$1.getAncestors(condition.propertyId, condition.parentCategoryId);
-                  _label = "<div class=\"label _category-color\">".concat(value.label, "</div>");
+                  _label = "<div class=\"label _catexxxgory-color\">".concat(value.label, "</div>");
 
                   _ancestorLabels.push.apply(_ancestorLabels, [property.label].concat(_toConsumableArray(ancestors.map(function (ancestor) {
                     return ancestor.label;
@@ -4098,7 +4098,7 @@
 
               getValue();
             } else {
-              _label = "<div class=\"label _category-color\">".concat(property.label, "</div>");
+              _label = "<div class=\"label _catexxxgory-color\">".concat(property.label, "</div>");
 
               _classPrivateMethodGet(this, _make, _make2).call(this, _container, type, _ancestorLabels, _label);
             }
@@ -4130,7 +4130,7 @@
           if (value === undefined) {
             setTimeout(getValue, POLLING_DURATION);
           } else {
-            _classPrivateFieldGet(_this2, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _category-background-color\" data-category-id=\"".concat(value.categoryId, "\">").concat(value.label, "<div class=\"close-button-view\"></div></li>")); // attach event
+            _classPrivateFieldGet(_this2, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _catexxxgory-background-color\" data-catexxxgory-id=\"".concat(value.categoryId, "\">").concat(value.label, "<div class=\"close-button-view\"></div></li>")); // attach event
 
 
             _classPrivateFieldGet(_this2, _LABELS).querySelector(':scope > .label:last-child').addEventListener('click', function (e) {
@@ -5080,7 +5080,7 @@
   function _heatmap2() {
     var isLog10 = App$1.viewModes.log10;
     var max = isLog10 && _classPrivateFieldGet(this, _max) > 1 ? Math.log10(_classPrivateFieldGet(this, _max)) : _classPrivateFieldGet(this, _max);
-    var category = Records$1.getCategoryWithAttribute(this.attributeId);
+    var category = Records$1.getCatexxxgoryWithAttribute(this.attributeId);
 
     _classPrivateFieldGet(this, _columnItemViews).forEach(function (columnItemView) {
       columnItemView.update(category.color, isLog10, max);
@@ -5794,7 +5794,7 @@
 
       _classPrivateFieldSet(this, _attribute$2, attribute);
 
-      var category = Records$1.getCategoryWithAttribute(_classPrivateFieldGet(this, _attribute$2).id);
+      var category = Records$1.getCatexxxgoryWithAttribute(_classPrivateFieldGet(this, _attribute$2).id);
 
       _classPrivateFieldSet(this, _items, items.map(function (item) {
         return Object.assign({}, item);
@@ -5818,7 +5818,7 @@
       var width = 100 / _classPrivateFieldGet(this, _items).length;
 
       overview.innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
-        return "<div\n      class=\"bar _category-background-color\"\n      data-category-id=\"".concat(item.categoryId, "\"\n      data-count=\"").concat(item.count, "\"\n      style=\"width: ").concat(width, "%; height: ").concat(item.count / max * 100, "%;\"></div>");
+        return "<div\n      class=\"bar _catexxxgory-background-color\"\n      data-category-id=\"".concat(item.categoryId, "\"\n      data-count=\"").concat(item.count, "\"\n      style=\"width: ").concat(width, "%; height: ").concat(item.count / max * 100, "%;\"></div>");
       }).join('');
       var graph = histogram.querySelector(':scope > .graph');
       graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
@@ -5950,7 +5950,7 @@
       return Object.assign({}, value);
     }));
 
-    var category = Records$1.getCategoryWithAttribute(_classPrivateFieldGet(this, _attribute$1).id); // make overview
+    var category = Records$1.getCatexxxgoryWithAttribute(_classPrivateFieldGet(this, _attribute$1).id); // make overview
     // TODO: ヒストグラムは別処理
 
     var _sum = values.reduce(function (acc, value) {
@@ -5964,7 +5964,7 @@
       value.width = value.count / _sum * 100;
       value.baseColor = colorTintByHue(category.color, 360 * index / values.length);
       var selectedClass = '';
-      return "\n        <li class=\"track-value-view _category-background-color".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\">\n            <span class=\"material-icons\">location_on</span>\n          </div>\n        </li>");
+      return "\n        <li class=\"track-value-view _catexxxgory-background-color".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\">\n            <span class=\"material-icons\">location_on</span>\n          </div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .track-value-view').forEach(function (elm, index) {
       // reference
@@ -5974,7 +5974,7 @@
       value.pin = elm.querySelector(':scope > .pin');
       value.icon = value.pin.querySelector(':scope > .material-icons'); // attach event: show tooltip
 
-      var label = "<span class=\"_category-color\" data-category-id=\"".concat(category.id, "\">").concat(value.label, "</span>");
+      var label = "<span class=\"_catexxxgory-color\" data-catexxxgory-id=\"".concat(category.id, "\">").concat(value.label, "</span>");
       elm.addEventListener('mouseenter', function () {
         var _classPrivateFieldGet2;
 
@@ -6232,16 +6232,16 @@
     _classPrivateFieldSet(this, _ROOT$8, document.createElement('div'));
 
     container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$8));
-    var category = Records$1.getCategoryWithAttribute(attributeId);
+    var category = Records$1.getCatexxxgoryWithAttribute(attributeId);
 
     _classPrivateFieldGet(this, _ROOT$8).classList.add('attribute-track-view', '-preparing', 'collapse-view');
 
     if (isSelected) _classPrivateFieldGet(this, _ROOT$8).classList.add('-allselected');
-    _classPrivateFieldGet(this, _ROOT$8).dataset.categoryId = category.id;
+    _classPrivateFieldGet(this, _ROOT$8).dataset.catexxgoryId = category.id;
     _classPrivateFieldGet(this, _ROOT$8).dataset.collapse = attributeId; // make html
 
     var checked = isSelected ? ' checked' : '';
-    _classPrivateFieldGet(this, _ROOT$8).innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(attributeId, "\">\n          <input type=\"checkbox\" class=\"mapping\"").concat(checked, ">\n          <h2 class=\"title _category-color\">").concat(_classPrivateFieldGet(this, _attribute).label, "</h2>\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview _category-background-color\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(attributeId, "\">\n      <div class=\"left\">\n        <dl class=\"specification\">\n          <dt>Description</dt>\n          <dd>").concat(_classPrivateFieldGet(this, _attribute).description, "</dd>\n          <dt>API</dt>\n          <dd><a href=\"").concat(_classPrivateFieldGet(this, _attribute).api, "\" target=\"_blank\">").concat(_classPrivateFieldGet(this, _attribute).api, "</a></dd>\n        </dl>\n        ").concat(_classPrivateFieldGet(this, _attribute).source.map(function (source) {
+    _classPrivateFieldGet(this, _ROOT$8).innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(attributeId, "\">\n          <input type=\"checkbox\" class=\"mapping\"").concat(checked, ">\n          <h2 class=\"title _catexxxgory-color\">").concat(_classPrivateFieldGet(this, _attribute).label, "</h2>\n        </div>\n      </div>\n      <div class=\"right values\">\n        <div class=\"overview _catexxxgory-background-color\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(attributeId, "\">\n      <div class=\"left\">\n        <dl class=\"specification\">\n          <dt>Description</dt>\n          <dd>").concat(_classPrivateFieldGet(this, _attribute).description, "</dd>\n          <dt>API</dt>\n          <dd><a href=\"").concat(_classPrivateFieldGet(this, _attribute).api, "\" target=\"_blank\">").concat(_classPrivateFieldGet(this, _attribute).api, "</a></dd>\n        </dl>\n        ").concat(_classPrivateFieldGet(this, _attribute).source.map(function (source) {
       return "<dl class=\"source\">\n        <dt>Original data</dt>\n          <dd><a href=\"".concat(source.url, "\" target=\"_blank\">").concat(source.label, "</a></dd>\n          <dt>Version</dt>\n          <dd>").concat(source.version, "</dd>\n          <dt>Last updated</dt>\n          <dd>").concat(source.updated, "</dd>\n        </dl>");
     }).join(''), "\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
 
@@ -6373,7 +6373,7 @@
     _classCallCheck(this, CategoryView);
 
     elm.classList.add('category-view');
-    elm.innerHTML = "\n    <h3 class=\"title _category-background-color-strong\" data-category-id=\"".concat(category.id, "\">\n      <span>").concat(category.label, "</span>\n    </h3>\n    <div class=\"attributes\"></div>"); // make tracks
+    elm.innerHTML = "\n    <h3 class=\"title _catexxxgory-background-color-strong\" data-catexxxgory-id=\"".concat(category.id, "\">\n      <span>").concat(category.label, "</span>\n    </h3>\n    <div class=\"attributes\"></div>"); // make tracks
 
     var attributes = category.attributes;
     var attributesContainer = elm.querySelector(':scope > .attributes');
@@ -6551,7 +6551,7 @@
         bar = document.createElement('div');
         bar.classList.add('bar');
         bar.dataset.categoryId = categoryId;
-        bar.innerHTML = "\n        <div class=\"wholebar\"></div>\n        <div class=\"hitbar _category-background-color-strong\">\n          <div class=\"value\"></div>\n        </div>\n        <div class=\"label\">".concat(label, "</div>");
+        bar.innerHTML = "\n        <div class=\"wholebar\"></div>\n        <div class=\"hitbar _catexxxgory-background-color-strong\">\n          <div class=\"value\"></div>\n        </div>\n        <div class=\"label\">".concat(label, "</div>");
 
         if (lastBar) {
           lastBar.after(bar);
@@ -6852,9 +6852,9 @@
     _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getDatasetLabel(tableData.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      "); // makte table sub header
 
     _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    ".concat(tableData.dxCondition.valuesConditions.map(function (valuesCondition) {
-      return "\n          <th>\n            <div class=\"inner _category-background-color\" data-subject-id=\"".concat(valuesCondition.subjectId, "\">\n            <div class=\"togo-key-view\">").concat(valuesCondition.dataset, "</div>\n              <span>").concat(valuesCondition.label, "</span>\n            </div>\n          </th>");
+      return "\n          <th>\n            <div class=\"inner _catexxxgory-background-color\" data-subject-id=\"".concat(valuesCondition.subjectId, "\">\n            <div class=\"togo-key-view\">").concat(valuesCondition.dataset, "</div>\n              <span>").concat(valuesCondition.label, "</span>\n            </div>\n          </th>");
     }).join(''), "\n    ").concat(tableData.dxCondition.keyConditions.map(function (keyCondition) {
-      return "\n          <th>\n            <div class=\"inner _category-color\" data-subject-id=\"".concat(keyCondition.subjectId, "\">\n              <div class=\"togo-key-view\">").concat(keyCondition.dataset, "</div>\n              <span>").concat(keyCondition.label, "</span>\n            </div>\n          </th>");
+      return "\n          <th>\n            <div class=\"inner _catexxxgory-color\" data-subject-id=\"".concat(keyCondition.subjectId, "\">\n              <div class=\"togo-key-view\">").concat(keyCondition.dataset, "</div>\n              <span>").concat(keyCondition.label, "</span>\n            </div>\n          </th>");
     }).join('')); // make stats
 
     var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _STATS).querySelectorAll(':scope > td')),
@@ -7280,14 +7280,14 @@
   function _header2(keys, props) {
     var _subCategory$label;
 
-    var category = Records$1.getCategory(keys.subjectId);
+    var category = Records$1.getCatexxxgory(keys.subjectId);
     var isPrimaryKey = props.isPrimaryKey;
     var mainCategory = isPrimaryKey ? '' : Records$1.getProperty(keys.mainCategoryId);
     var subCategory = isPrimaryKey ? '' : Records$1.getValue(keys.mainCategoryId, keys.subCategoryId);
     var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(category.label, " / ").concat((_subCategory$label = subCategory === null || subCategory === void 0 ? void 0 : subCategory.label) !== null && _subCategory$label !== void 0 ? _subCategory$label : '--', "</span>");
     var header = document.createElement('header');
     header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div/>\n    ");
-    header.classList.add('_category-background-color');
+    header.classList.add('_catexxxgory-background-color');
     header.lastElementChild.appendChild(_classPrivateFieldGet(this, _exit_button));
     header.addEventListener('mousedown', function (e) {
       var customEvent = new CustomEvent(dragElement, {
@@ -7923,9 +7923,9 @@
       elm.dataset.status = 'load ids';
       elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condition\">\n        <p title=\"".concat(dxCondition.togoKey, "\">").concat(Records$1.getDatasetLabel(dxCondition.togoKey), "</p>\n      </div>\n      ").concat(_classPrivateFieldGet(this, _dxCondition).valuesConditions.map(function (valuesCondition) {
         var label = Records$1.getProperty(valuesCondition.propertyId).label;
-        return "<div class=\"condition _category-background-color\" data-subject-id=\"".concat(valuesCondition.subjectId, "\">\n              <p title=\"").concat(label, "\">").concat(label, "</p>\n            </div>");
+        return "<div class=\"condition _catexxxgory-background-color\" data-catexxxgory-id=\"".concat(valuesCondition.subjectId, "\">\n              <p title=\"").concat(label, "\">").concat(label, "</p>\n            </div>");
       }).join(''), "\n      ").concat(_classPrivateFieldGet(this, _dxCondition).keyConditions.map(function (keyCondition) {
-        return "<div class=\"condition _category-color\" data-subject-id=\"".concat(keyCondition.subjectId, "\">\n              <p title=\"").concat(keyCondition.label, "\">").concat(keyCondition.label, "</p>\n            </div>");
+        return "<div class=\"condition _catexxxgory-color\" data-catexxxgory-id=\"".concat(keyCondition.subjectId, "\">\n              <p title=\"").concat(keyCondition.label, "\">").concat(keyCondition.label, "</p>\n            </div>");
       }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting ID list</p>\n      <span class=\"material-icons-outlined -rotating\">autorenew</span>\n    </div>\n    <div class=\"-border\">\n    </div>\n    <div class=\"controller\">\n    </div>\n    "); // reference
 
       _classPrivateFieldSet(this, _ROOT$2, elm);
@@ -9263,7 +9263,7 @@
 
   function _makeCategoryViews2() {
     var conceptsContainer = document.querySelector('#Properties > .concepts');
-    Records$1.categories.forEach(function (category) {
+    Records$1.catexxxgories.forEach(function (category) {
       var elm = document.createElement('section');
       new CategoryView(category, elm);
       conceptsContainer.insertAdjacentElement('beforeend', elm);

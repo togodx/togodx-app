@@ -22,10 +22,10 @@ export default class AttributeTrackView {
     const isSelected = ConditionBuilder.isSelectedProperty(attributeId);
     this.#ROOT = document.createElement('div');
     container.insertAdjacentElement('beforeend', this.#ROOT);
-    const category = Records.getCategoryWithAttribute(attributeId);
+    const category = Records.getCatexxxgoryWithAttribute(attributeId);
     this.#ROOT.classList.add('attribute-track-view', '-preparing', 'collapse-view');
     if (isSelected) this.#ROOT.classList.add('-allselected');
-    this.#ROOT.dataset.categoryId = category.id;
+    this.#ROOT.dataset.catexxgoryId = category.id;
     this.#ROOT.dataset.collapse = attributeId;
 
     // make html
@@ -35,11 +35,11 @@ export default class AttributeTrackView {
       <div class="left definition">
         <div class="collapsebutton" data-collapse="${attributeId}">
           <input type="checkbox" class="mapping"${checked}>
-          <h2 class="title _category-color">${this.#attribute.label}</h2>
+          <h2 class="title _catexxxgory-color">${this.#attribute.label}</h2>
         </div>
       </div>
       <div class="right values">
-        <div class="overview _category-background-color">
+        <div class="overview _catexxxgory-background-color">
           <ul class="inner"></ul>
           <div class="loading-view -shown"></div>
         </div>

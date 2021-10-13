@@ -19,7 +19,7 @@ export default class HistogramRangeSelectorView {
   constructor(elm, attribute, items) {
 
     this.#attribute = attribute;
-    const category = Records.getCategoryWithAttribute(this.#attribute.id);
+    const category = Records.getCatexxxgoryWithAttribute(this.#attribute.id);
     this.#items = items.map(item => Object.assign({}, item));
 
     // make container
@@ -51,7 +51,7 @@ export default class HistogramRangeSelectorView {
     const max = Math.max(...this.#items.map(item => item.count));
     const width = 100 / this.#items.length;
     overview.innerHTML = this.#items.map(item => `<div
-      class="bar _category-background-color"
+      class="bar _catexxxgory-background-color"
       data-category-id="${item.categoryId}"
       data-count="${item.count}"
       style="width: ${width}%; height: ${(item.count / max) * 100}%;"></div>`).join('');

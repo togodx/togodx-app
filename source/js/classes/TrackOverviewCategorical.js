@@ -21,7 +21,7 @@ export default class TrackOverviewCategorical {
     this.#ROOT = elm;
     this.#attribute = attribute;
     this.#values = values.map(value => Object.assign({}, value));
-    const category = Records.getCategoryWithAttribute(this.#attribute.id);
+    const category = Records.getCatexxxgoryWithAttribute(this.#attribute.id);
 
     // make overview
     // TODO: ヒストグラムは別処理
@@ -33,7 +33,7 @@ export default class TrackOverviewCategorical {
       value.baseColor = util.colorTintByHue(category.color, 360 * index / values.length);
       const selectedClass = '';
       return `
-        <li class="track-value-view _category-background-color${selectedClass}" style="width: ${width}%;" data-category-id="${value.categoryId}">
+        <li class="track-value-view _catexxxgory-background-color${selectedClass}" style="width: ${width}%;" data-category-id="${value.categoryId}">
           <div class="labels">
             <p>
               <span class="label">${value.label}</span>
@@ -55,7 +55,7 @@ export default class TrackOverviewCategorical {
       value.icon = value.pin.querySelector(':scope > .material-icons');
 
       // attach event: show tooltip
-      const label = `<span class="_category-color" data-category-id="${category.id}">${value.label}</span>`;
+      const label = `<span class="_catexxxgory-color" data-catexxxgory-id="${category.id}">${value.label}</span>`;
       elm.addEventListener('mouseenter', () => {
         const values = [];
         const userValue = this.#userValues?.find(userValue => userValue.categoryId === value.categoryId);

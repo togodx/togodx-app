@@ -97,7 +97,7 @@ class App {
 
   #makeCategoryViews() {
     const conceptsContainer = document.querySelector('#Properties > .concepts');
-    Records.categories.forEach(category => {
+    Records.catexxxgories.forEach(category => {
       const elm = document.createElement('section');
       new CategoryView(category, elm);
       conceptsContainer.insertAdjacentElement('beforeend', elm);
