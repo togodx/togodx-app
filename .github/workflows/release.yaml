@@ -1,0 +1,22 @@
+name: "TogoDX App release creation"
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-production:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - id: date
+        run: echo "::set-output name=date::$(TZ=Asia/Tokyo date +'%Y%m%d-%H%M%S')"
+
+      - uses: avakar/tag-and-release@v1
+        with:
+          tag_name: release-${{ steps.date.outputs.date }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
