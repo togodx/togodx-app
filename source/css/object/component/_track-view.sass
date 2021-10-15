@@ -1,0 +1,103 @@
+.track-view
+  margin-bottom: .1rem
+  font-size: 1.2rem
+  position: relative
+  > .row
+    display: flex
+    height: var(--height-track)
+    > .left
+      padding-bottom: .8rem
+      border-right: solid .1rem var(--color-gray)
+      flex-basis: var(--width-track-column-property)
+      min-width: var(--width-track-column-property)
+      background-color: white
+      transition: width var(--transition-instant),  opacity var(--transition-wipe)
+    > .right
+      flex-basis: calc(100% - var(--width-track-column-property))
+      max-width: calc(100% - var(--width-track-column-property))
+      transition: width var(--transition-instant)
+    &.-upper
+      > .left
+        position: relative
+        padding-top: 0
+        line-height: 1
+        overflow: hidden
+        > .collapsebutton
+          padding-left: 1.2rem
+          width: 100%
+          height: var(--height-track)
+          z-index: var(--z-track-collapse-button)
+          display: flex
+          align-items: center
+          &::before
+            top: .8rem
+            left: .2rem
+          > .title
+            margin: 0
+            width: calc(var(--width-track-column-property) - 1.6rem)
+            font-size: 1.4rem
+            font-weight: bold
+          > .mapping
+            display: none
+            margin-right: .4rem
+            [data-condition="key"] &
+              display: inherit
+      > .right
+        > .overview
+          height: var(--height-track)
+          list-style: none
+          white-space: nowrap
+          font-size: 0
+          position: relative
+          > .inner
+            margin: 0
+            padding: 0
+            &.-hidden
+              display: none
+          > .error
+            padding-left: .4rem
+            color: var(--color-error)
+            background-color: rgba(lightgrey, .8)
+            font-size: 1rem
+            line-height: 3rem
+    &.-lower
+      content-visibility: hidden
+      user-select: none
+      > .left
+        > .specification
+          padding: 0 1.2rem 1.2rem
+          > dt
+            font-size: 1rem
+          > dd
+            line-height: 1.2
+            margin-bottom: .4rem
+            word-break: break-all
+    > .selector
+      // height: 100%
+      // overflow: hidden
+  &.-preparing
+    opacity: 1
+    > .row
+      > .left
+        opacity: .5
+      &.-upper
+        > .right
+          > .overview
+            background-color: transparent !important
+  &.-allselected
+    &::after
+      content: ""
+      position: absolute
+      top: 0
+      left: 0
+      display: block
+      width: 100%
+      height: 100%
+      border: solid .1rem black
+      box-shadow: 0 0 0 .1rem rgba(white, .5) inset
+      pointer-events: none
+  &.-spread
+    > .row.-lower
+      content-visibility: visible
+      user-select: auto
+      

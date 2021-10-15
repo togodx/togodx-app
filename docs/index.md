@@ -13,7 +13,7 @@ Documentation of the implementation of TogoSite and the usage/examples for the H
 ## Togosite Human instance
 
 Avaialable at https://togosite-beta.integbio.jp/
-
+- [About](togo-human/about.md)
 - [Usage](togo-human/usage.md)
 - [Data sources](togo-human/data-sources.md)
 - [Examples](togo-human/examples.md)

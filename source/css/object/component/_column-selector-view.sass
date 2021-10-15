@@ -1,0 +1,145 @@
+.column-selector-view
+  height: 100%
+  position: relative
+  border-top: solid .1rem var(--color-gray)
+  > .columns
+    white-space: nowrap
+    overflow-x: hidden
+    height: 100%
+    > .inner
+      height: 100%
+      overflow-x: auto
+      > .column
+        display: inline-block
+        margin: 0 .1rem 0 0
+        padding: 0
+        list-style: none
+        max-height: 29.5rem
+        height: 100%
+        overflow-y: auto
+        vertical-align: top
+        > table
+          > thead, > tbody
+            > tr
+              > th, > td
+                padding: .2rem .4rem
+                vertical-align: middle
+                > label
+                  margin: 0
+                  cursor: pointer
+                  > input
+                    vertical-align: middle
+          > thead, > tbody
+            > tr
+              > .mapped, > .pvalue
+                display: none
+          > thead
+            color: white
+            > .header
+              background-color: var(--color-dark-gray)
+              > th
+                &.-sortable
+                  cursor: pointer
+                  transition: background-color var(--transition-instant)
+                  &:hover
+                    background-color: var(--color-lamp-black)
+                > .sorter
+                  display: inline-block
+                  width: 1.3rem
+                  height: 1.4rem
+                  position: relative
+                  top: -.1rem
+                  vertical-align: middle
+                  margin-left: .1rem
+                  pointer-events: none
+                  &::before, &::after
+                    content: ""
+                    position: absolute
+                    left: .3rem
+                    display: block
+                    width: 0
+                    height: 0
+                    border-style: solid
+                    opacity: .4
+                  &::before
+                    border-width: 0 .3rem .3rem .3rem
+                    border-color: transparent transparent white transparent
+                    top: .2rem
+                  &::after
+                    border-width: .3rem .3rem 0 .3rem
+                    border-color: white transparent transparent transparent
+                    bottom: .2rem
+                &.label
+                  body[data-sort-column="label"][data-sort-direction="asc"] &, body[data-sort-column="label"][data-sort-direction="desc"] &
+                    background-color: var(--color-lamp-black)
+                  body[data-sort-column="label"][data-sort-direction="asc"] &
+                    > .sorter::before
+                      opacity: 1
+                  body[data-sort-column="label"][data-sort-direction="desc"] &
+                    > .sorter::after
+                      opacity: 1
+                &.total
+                  body[data-sort-column="total"][data-sort-direction="asc"] &, body[data-sort-column="total"][data-sort-direction="desc"] &
+                    background-color: var(--color-lamp-black)
+                  body[data-sort-column="total"][data-sort-direction="asc"] &
+                    > .sorter::before
+                      opacity: 1
+                  body[data-sort-column="total"][data-sort-direction="desc"] &
+                    > .sorter::after
+                      opacity: 1
+          > tbody
+            > tr
+              > .label
+                display: relative
+                > label.value
+                  [data-condition="key"] &
+                    display: none
+                > label.key
+                  [data-condition="value"] &
+                    display: none
+              > .total, > .mapped, > .pvalue
+                text-align: right
+              &.-haschild
+                > .drilldown
+                  position: relative
+                  cursor: pointer
+                  width: 1.6rem
+                  &::before, &::after
+                    content: ""
+                    position: absolute
+                    display: block
+                  &::before
+                    width: 1rem
+                    height: 1rem
+                    top: .5rem
+                    right: .3rem
+                    border-radius: 100%
+                  &::after
+                    border-style: solid
+                    border-width: .3rem 0 .3rem .4rem
+                    border-color: transparent transparent transparent var(--color-lamp-black)
+                    top: .7rem
+                    right: .5rem
+                  &:hover
+                    &::before
+                      background-color: var(--color-lamp-black)
+                    &::after
+                      border-color: transparent transparent transparent white
+                &.-selected
+                  > .drilldown
+                    &::before
+                      background-color: var(--color-lamp-black)
+                    &::after
+                      border-color: transparent transparent transparent white
+          body.-showuserids &
+            > thead, > tbody
+              > tr
+                > .mapped, > .pvalue
+                  display: table-cell
+            > tbody
+              > tr
+                opacity: .25
+                &.-pinsticking
+                  opacity: 1
+  > .loading-view
+    background-color: rgba(#CCC, .5)
