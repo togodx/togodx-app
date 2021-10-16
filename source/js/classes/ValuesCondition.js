@@ -30,6 +30,7 @@ export default class ValuesCondition extends BaseCondition {
     this.#categoryIds.forEach(categoryId => {
       const id = {categoryId};
       const ancestors = Records.getAncestors(this.propertyId, categoryId).map(ancestor => ancestor.categoryId);
+      console.log(ancestors)
       if (ancestors.length > 0) id.ancestors = ancestors;
       values.ids.push(id);
     })

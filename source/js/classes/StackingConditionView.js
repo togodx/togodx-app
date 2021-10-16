@@ -3,7 +3,7 @@ import Records from "./Records";
 import KeyCondition from "./KeyCondition";
 import ValuesCondition from "./ValuesCondition";
 
-const POLLING_DURATION = 100;
+const POLLING_DURATION = 1000;
 
 export default class StackingConditionView {
 
@@ -24,6 +24,9 @@ export default class StackingConditionView {
     this.#condition = condition;
     const category = Records.getCatexxxgoryWithAttribute(condition.propertyId);
     const property = Records.getProperty(condition.propertyId);
+    console.log(property)
+    const attribute = Records.getAttribute(condition.propertyId);
+    console.log(attribute)
     // this.#isRange = isRange;
     
     // attributes
@@ -31,7 +34,6 @@ export default class StackingConditionView {
     this.#ROOT.classList.add('stacking-condition-view');
     this.#ROOT.dataset.catexxxgoryId = category.id;
     this.#ROOT.dataset.propertyId = condition.propertyId;
-    // if (condition.value) this.#ROOT.dataset.categoryId = condition.value.categoryId;
     if (condition.parentCategoryId) this.#ROOT.dataset.parentCategoryId = condition.parentCategoryId;
     // make view
     let label, ancestorLabels = [category.label];
@@ -43,7 +45,7 @@ export default class StackingConditionView {
             if (value) {
               const ancestors = Records.getAncestors(condition.propertyId, condition.parentCategoryId);
               label = `<div class="label _catexxxgory-color">${value.label}</div>`;
-              ancestorLabels.push(property.label, ...ancestors.map(ancestor => ancestor.label));
+              ancestorLabels.push(attribute.label, ...ancestors.map(ancestor => ancestor.label));
               this.#make(container, type, ancestorLabels, label);
             } else {
               setTimeout(getValue, POLLING_DURATION);
@@ -51,14 +53,14 @@ export default class StackingConditionView {
           }
           getValue();
         } else {
-          label = `<div class="label _catexxxgory-color">${property.label}</div>`;
+          label = `<div class="label _catexxxgory-color">${attribute.label}</div>`;
           this.#make(container, type, ancestorLabels, label);
         }
       }
         break;
       case this.#condition instanceof ValuesCondition:
         label = `<ul class="labels"></ul>`;
-        ancestorLabels.push(property.label);
+        ancestorLabels.push(attribute.label);
         this.#make(container, type, ancestorLabels, label);
         break;
     }
@@ -81,6 +83,7 @@ export default class StackingConditionView {
     if (this.#condition instanceof ValuesCondition) {
       this.#LABELS = this.#ROOT.querySelector(':scope > .labels');
       for (const categoryId of this.#condition.categoryIds) {
+        console.log(categoryId);
         this.addValue(categoryId);
       }
     }
@@ -107,6 +110,7 @@ export default class StackingConditionView {
   addValue(categoryId) {
     const getValue = () => {
       const value = Records.getValue(this.#condition.propertyId, categoryId);
+      console.log(value)
       if (value === undefined) {
         setTimeout(getValue, POLLING_DURATION);
       } else {

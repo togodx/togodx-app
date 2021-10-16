@@ -56,13 +56,16 @@ class ConditionBuilder {
   }
 
   addPropertyValue(propertyId, categoryId, ancestors = [], isFinal = true) {
+    // console.log(propertyId, categoryId, ancestors)
     // find value of same property
     const sameValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
+    console.log(sameValuesCondition)
     // store
     if (sameValuesCondition) {
       sameValuesCondition.addCategoryId(categoryId);
     } else {
       const valuesCondition = new ValuesCondition(propertyId, [categoryId]);
+      console.log(valuesCondition)
       this.#valuesConditions.push(valuesCondition);
     }
     // evaluate
@@ -217,7 +220,9 @@ class ConditionBuilder {
       keys: JSON.parse(params.get('keys')) ?? [],
       values: JSON.parse(params.get('values')) ?? []
     }
+    console.log(condition);
 
+    console.log(isFirst);
     if (isFirst) {
       // get child category ids
       this.#makeQueueOfGettingChildCategoryIds(condition);
@@ -228,6 +233,7 @@ class ConditionBuilder {
   }
 
   #makeQueueOfGettingChildCategoryIds(condition) {
+    console.log(condition)
     if (condition.togoKey) this.#togoKey = condition.togoKey;
     const queue = [];
     const addQueue = (propertyId, id) => {
@@ -243,8 +249,10 @@ class ConditionBuilder {
       if (id) addQueue(propertyId, id);
     });
     condition.values.forEach(({propertyId, ids}) => {
+      console.log(propertyId, ids)
       ids.forEach(id => addQueue(propertyId, id));
     });
+    console.log(...queue)
     this.#progressQueueOfGettingChildCategoryIds(condition, queue);
   }
 

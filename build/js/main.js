@@ -2778,8 +2778,6 @@
             return value.parentCategoryId === parentCategoryId;
           });
 
-          console.log(values);
-
           if (values.length > 0) {
             resolve(values);
           } else {
@@ -2788,8 +2786,7 @@
             }).then(function (values) {
               var _classPrivateFieldGet2;
 
-              console.log(values); // set parent category id
-
+              // set parent category id
               if (parentCategoryId) values.forEach(function (value) {
                 return value.parentCategoryId = parentCategoryId;
               }); // set values
@@ -2801,6 +2798,13 @@
               return reject(error);
             });
           }
+        });
+      }
+    }, {
+      key: "getValue",
+      value: function getValue(categoryId) {
+        return _classPrivateFieldGet(this, _values$1).find(function (value) {
+          return value.categoryId === categoryId;
         });
       } // accessors
 
@@ -3002,12 +3006,11 @@
       }
     }, {
       key: "getValue",
-      value: function getValue(propertyId, categoryId) {
-        var property = this.getProperty(propertyId);
-        var value = property.values.find(function (value) {
-          return value.categoryId === categoryId;
-        });
-        return value;
+      value: function getValue(attributeId, categoryId) {
+        var attribute = this.getAttribute(attributeId);
+        return attribute.getValue(categoryId); // const property = this.getProperty(propertyId);
+        // const value = property.values.find(value => value.categoryId === categoryId);
+        // return value;
       }
     }, {
       key: "getValuesWithParentCategoryId",
@@ -3019,16 +3022,17 @@
       }
     }, {
       key: "getAncestors",
-      value: function getAncestors(propertyId, categoryId) {
-        var property = this.getProperty(propertyId);
+      value: function getAncestors(attributeId, categoryId) {
+        var attribute = this.getProperty(attributeId);
         var ancestors = [];
         var parent;
+        console.log(attribute);
 
         do {
           var _parent;
 
           // find ancestors
-          parent = property.values.find(function (value) {
+          parent = attribute.values.find(function (value) {
             return value.categoryId === categoryId;
           });
           if (parent) ancestors.unshift(parent);
@@ -3036,7 +3040,16 @@
         } while (parent);
 
         ancestors.pop();
-        return ancestors;
+        return ancestors; // const property = this.getProperty(attributeId);
+        // const ancestors = [];
+        // let parent;
+        // do { // find ancestors
+        //   parent = property.values.find(value => value.categoryId === categoryId);
+        //   if (parent) ancestors.unshift(parent);
+        //   categoryId = parent?.parentCategoryId;
+        // } while (parent);
+        // ancestors.pop();
+        // return ancestors;
       }
     }, {
       key: "getDatasetLabel",
@@ -3291,6 +3304,7 @@
           var ancestors = Records$1.getAncestors(_this2.propertyId, categoryId).map(function (ancestor) {
             return ancestor.categoryId;
           });
+          console.log(ancestors);
           if (ancestors.length > 0) id.ancestors = ancestors;
           values.ids.push(id);
         });
@@ -3629,16 +3643,19 @@
       value: function addPropertyValue(propertyId, categoryId) {
         var isFinal = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 
+        // console.log(propertyId, categoryId, ancestors)
         // find value of same property
         var sameValuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
           return valuesCondition.propertyId === propertyId;
-        }); // store
+        });
 
+        console.log(sameValuesCondition); // store
 
         if (sameValuesCondition) {
           sameValuesCondition.addCategoryId(categoryId);
         } else {
           var valuesCondition = new ValuesCondition(propertyId, [categoryId]);
+          console.log(valuesCondition);
 
           _classPrivateFieldGet(this, _valuesConditions).push(valuesCondition);
         } // evaluate
@@ -3875,6 +3892,8 @@
       keys: (_JSON$parse = JSON.parse(params.get('keys'))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
       values: (_JSON$parse2 = JSON.parse(params.get('values'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
     };
+    console.log(condition);
+    console.log(isFirst);
 
     if (isFirst) {
       // get child category ids
@@ -3885,6 +3904,9 @@
   }
 
   function _makeQueueOfGettingChildCategoryIds2(condition) {
+    var _console;
+
+    console.log(condition);
     if (condition.togoKey) _classPrivateFieldSet(this, _togoKey, condition.togoKey);
     var queue = [];
 
@@ -3911,10 +3933,13 @@
     condition.values.forEach(function (_ref3) {
       var propertyId = _ref3.propertyId,
           ids = _ref3.ids;
+      console.log(propertyId, ids);
       ids.forEach(function (id) {
         return addQueue(propertyId, id);
       });
     });
+
+    (_console = console).log.apply(_console, queue);
 
     _classPrivateMethodGet(this, _progressQueueOfGettingChildCategoryIds, _progressQueueOfGettingChildCategoryIds2).call(this, condition, queue);
   }
@@ -4034,7 +4059,7 @@
 
   var ConditionBuilder$1 = new ConditionBuilder();
 
-  var POLLING_DURATION = 100;
+  var POLLING_DURATION = 1000;
 
   var _condition = /*#__PURE__*/new WeakMap();
 
@@ -4080,7 +4105,10 @@
       _classPrivateFieldSet(this, _condition, condition);
 
       var category = Records$1.getCatexxxgoryWithAttribute(condition.propertyId);
-      var property = Records$1.getProperty(condition.propertyId); // this.#isRange = isRange;
+      var property = Records$1.getProperty(condition.propertyId);
+      console.log(property);
+      var attribute = Records$1.getAttribute(condition.propertyId);
+      console.log(attribute); // this.#isRange = isRange;
       // attributes
 
       _classPrivateFieldSet(this, _ROOT$e, document.createElement('div'));
@@ -4088,8 +4116,7 @@
       _classPrivateFieldGet(this, _ROOT$e).classList.add('stacking-condition-view');
 
       _classPrivateFieldGet(this, _ROOT$e).dataset.catexxxgoryId = category.id;
-      _classPrivateFieldGet(this, _ROOT$e).dataset.propertyId = condition.propertyId; // if (condition.value) this.#ROOT.dataset.categoryId = condition.value.categoryId;
-
+      _classPrivateFieldGet(this, _ROOT$e).dataset.propertyId = condition.propertyId;
       if (condition.parentCategoryId) _classPrivateFieldGet(this, _ROOT$e).dataset.parentCategoryId = condition.parentCategoryId; // make view
 
       var _label,
@@ -4106,7 +4133,7 @@
                   var ancestors = Records$1.getAncestors(condition.propertyId, condition.parentCategoryId);
                   _label = "<div class=\"label _catexxxgory-color\">".concat(value.label, "</div>");
 
-                  _ancestorLabels.push.apply(_ancestorLabels, [property.label].concat(_toConsumableArray(ancestors.map(function (ancestor) {
+                  _ancestorLabels.push.apply(_ancestorLabels, [attribute.label].concat(_toConsumableArray(ancestors.map(function (ancestor) {
                     return ancestor.label;
                   }))));
 
@@ -4118,7 +4145,7 @@
 
               getValue();
             } else {
-              _label = "<div class=\"label _catexxxgory-color\">".concat(property.label, "</div>");
+              _label = "<div class=\"label _catexxxgory-color\">".concat(attribute.label, "</div>");
 
               _classPrivateMethodGet(this, _make, _make2).call(this, _container, type, _ancestorLabels, _label);
             }
@@ -4128,7 +4155,7 @@
         case _classPrivateFieldGet(this, _condition) instanceof ValuesCondition:
           _label = "<ul class=\"labels\"></ul>";
 
-          _ancestorLabels.push(property.label);
+          _ancestorLabels.push(attribute.label);
 
           _classPrivateMethodGet(this, _make, _make2).call(this, _container, type, _ancestorLabels, _label);
 
@@ -4146,6 +4173,7 @@
 
         var getValue = function getValue() {
           var value = Records$1.getValue(_classPrivateFieldGet(_this2, _condition).propertyId, categoryId);
+          console.log(value);
 
           if (value === undefined) {
             setTimeout(getValue, POLLING_DURATION);
@@ -4213,6 +4241,7 @@
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var categoryId = _step.value;
+          console.log(categoryId);
           this.addValue(categoryId);
         }
       } catch (err) {
@@ -4949,6 +4978,7 @@
 
           // find ancestors
           parentCategoryId = (_column = column) === null || _column === void 0 ? void 0 : _column.dataset.parentCategoryId;
+          console.log(parentCategoryId);
 
           if (parentCategoryId) {
             ancestors.unshift(parentCategoryId);
@@ -4958,6 +4988,7 @@
 
         if (checkbox.checked) {
           // add
+          console.log(ancestors);
           ConditionBuilder$1.addPropertyValue(this.attributeId, checkbox.value, ancestors);
         } else {
           // remove

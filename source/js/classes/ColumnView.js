@@ -174,12 +174,14 @@ export default class ColumnView {
     let column = checkbox.closest('.column');
     do { // find ancestors
       parentCategoryId = column?.dataset.parentCategoryId;
+      console.log(parentCategoryId)
       if (parentCategoryId) {
         ancestors.unshift(parentCategoryId);
         column = column.previousElementSibling;
       }
     } while (parentCategoryId);
     if (checkbox.checked) { // add
+      console.log(ancestors)
       ConditionBuilder.addPropertyValue(
         this.attributeId,
         checkbox.value,

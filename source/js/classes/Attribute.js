@@ -16,14 +16,12 @@ export default class Attribute {
   fetchValuesWithParentCategoryId(parentCategoryId) {
     return new Promise((resolve, reject) => {
       const values = this.#values.filter(value => value.parentCategoryId === parentCategoryId);
-      console.log(values)
       if (values.length > 0) {
         resolve(values);
       } else {
         fetch(`${this.api}${parentCategoryId ? `?categoryIds=${parentCategoryId}` : ''}`)
         .then(responce => responce.json())
         .then(values => {
-          console.log(values)
           // set parent category id
           if (parentCategoryId) values.forEach(value => value.parentCategoryId = parentCategoryId);
           // set values
@@ -33,6 +31,10 @@ export default class Attribute {
         .catch(error => reject(error));
       }
     });
+  }
+
+  getValue(categoryId) {
+    return this.#values.find(value => value.categoryId === categoryId);
   }
 
   // accessors
