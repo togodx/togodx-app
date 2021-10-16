@@ -2242,28 +2242,7 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 }
 
 #UploadUserIDsView {
-  pointer-events: none;
   position: relative;
-}
-#UploadUserIDsView::before {
-  content: "Under maintenance";
-  display: block;
-  position: absolute;
-  text-align: center;
-  top: 3rem;
-  background-color: white;
-  padding: 0 8px;
-  line-height: 20px;
-  border-radius: 12px;
-  opacity: 1 !important;
-  left: 50%;
-  -webkit-transform: translateX(-50%);
-          transform: translateX(-50%);
-  white-space: nowrap;
-  z-index: 100;
-}
-#UploadUserIDsView > * {
-  opacity: 0.2;
 }
 #UploadUserIDsView > textarea {
   width: 100%;
