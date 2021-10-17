@@ -6341,9 +6341,13 @@
 
   var _draw = /*#__PURE__*/new WeakSet();
 
+  var _failedFetchTableDataIds = /*#__PURE__*/new WeakSet();
+
   var StatisticsView = /*#__PURE__*/function () {
     function StatisticsView(statisticsRootNode, elm, tableData, index, condition) {
       _classCallCheck(this, StatisticsView);
+
+      _classPrivateMethodInitSpec(this, _failedFetchTableDataIds);
 
       _classPrivateMethodInitSpec(this, _draw);
 
@@ -6411,6 +6415,7 @@
 
       DefaultEventEmitter$1.addEventListener(addNextRows, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
       DefaultEventEmitter$1.addEventListener(changeStatisticsViewMode, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+      DefaultEventEmitter$1.addEventListener(failedFetchTableDataIds, _classPrivateMethodGet(this, _failedFetchTableDataIds, _failedFetchTableDataIds2).bind(this));
     }
 
     _createClass(StatisticsView, [{
@@ -6418,6 +6423,7 @@
       value: function destroy() {
         DefaultEventEmitter$1.removeEventListener(addNextRows, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
         DefaultEventEmitter$1.removeEventListener(changeStatisticsViewMode, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+        DefaultEventEmitter$1.removeEventListener(failedFetchTableDataIds, _classPrivateMethodGet(this, _failedFetchTableDataIds, _failedFetchTableDataIds2).bind(this));
       }
       /**
        * @param {TableData} detail.tableData
@@ -6531,6 +6537,10 @@
 
       _classPrivateFieldGet(this, _ROOT$7).querySelector(':scope > .loading-view').classList.remove('-shown');
     }
+  }
+
+  function _failedFetchTableDataIds2() {
+    _classPrivateFieldGet(this, _ROOT$7).querySelector(':scope > .loading-view').classList.remove('-shown');
   }
 
   var _intersctionObserver = /*#__PURE__*/new WeakMap();
