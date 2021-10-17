@@ -45,11 +45,13 @@ export default class StatisticsView {
     // event listener
     DefaultEventEmitter.addEventListener(event.addNextRows, this.#draw.bind(this));
     DefaultEventEmitter.addEventListener(event.changeStatisticsViewMode, this.#draw.bind(this));
+    DefaultEventEmitter.addEventListener(event.failedFetchTableDataIds, this.#failedFetchTableDataIds.bind(this));
   }
 
   destroy() {
     DefaultEventEmitter.removeEventListener(event.addNextRows, this.#draw.bind(this));
     DefaultEventEmitter.removeEventListener(event.changeStatisticsViewMode, this.#draw.bind(this));
+    DefaultEventEmitter.removeEventListener(event.failedFetchTableDataIds, this.#failedFetchTableDataIds.bind(this));
   }
 
   /**
@@ -135,6 +137,10 @@ export default class StatisticsView {
       this.#ROOT.querySelector(':scope > .loading-view').classList.remove('-shown');
     }
 
+  }
+
+  #failedFetchTableDataIds() {
+    this.#ROOT.querySelector(':scope > .loading-view').classList.remove('-shown');
   }
 
 }
