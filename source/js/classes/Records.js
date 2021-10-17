@@ -103,10 +103,6 @@ class Records {
   getValue(attributeId, categoryId) {
     const attribute = this.getAttribute(attributeId);
     return attribute.getValue(categoryId);
-
-    // const property = this.getProperty(propertyId);
-    // const value = property.values.find(value => value.categoryId === categoryId);
-    // return value;
   }
 
   getValuesWithParentCategoryId(attributeId, parentCategoryId) {
@@ -126,19 +122,6 @@ class Records {
     } while (parent);
     ancestors.pop();
     return ancestors;
-
-
-
-    // const property = this.getProperty(attributeId);
-    // const ancestors = [];
-    // let parent;
-    // do { // find ancestors
-    //   parent = property.values.find(value => value.categoryId === categoryId);
-    //   if (parent) ancestors.unshift(parent);
-    //   categoryId = parent?.parentCategoryId;
-    // } while (parent);
-    // ancestors.pop();
-    // return ancestors;
   }
 
   getDatasetLabel(dataset) {

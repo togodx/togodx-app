@@ -84,7 +84,7 @@ export default class ResultDetailModal {
     const isPrimaryKey = props.isPrimaryKey;
     const mainCategory = isPrimaryKey
       ? ''
-      : Records.getProperty(keys.mainCategoryId);
+      : Records.getAttribute(keys.mainCategoryId);
     const subCategory = isPrimaryKey
       ? ''
       : Records.getValue(keys.mainCategoryId, keys.subCategoryId);

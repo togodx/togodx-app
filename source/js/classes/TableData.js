@@ -113,7 +113,7 @@ export default class TableData {
       ${
         this.#dxCondition.valuesConditions
           .map(valuesCondition => {
-            const label = Records.getProperty(valuesCondition.propertyId).label;
+            const label = Records.getAttribute(valuesCondition.propertyId).label;
             return `<div class="condition _catexxxgory-background-color" data-catexxxgory-id="${valuesCondition.catexxxgoryId}">
               <p title="${label}">${label}</p>
             </div>`

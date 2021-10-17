@@ -3008,9 +3008,7 @@
       key: "getValue",
       value: function getValue(attributeId, categoryId) {
         var attribute = this.getAttribute(attributeId);
-        return attribute.getValue(categoryId); // const property = this.getProperty(propertyId);
-        // const value = property.values.find(value => value.categoryId === categoryId);
-        // return value;
+        return attribute.getValue(categoryId);
       }
     }, {
       key: "getValuesWithParentCategoryId",
@@ -3040,16 +3038,7 @@
         } while (parent);
 
         ancestors.pop();
-        return ancestors; // const property = this.getProperty(attributeId);
-        // const ancestors = [];
-        // let parent;
-        // do { // find ancestors
-        //   parent = property.values.find(value => value.categoryId === categoryId);
-        //   if (parent) ancestors.unshift(parent);
-        //   categoryId = parent?.parentCategoryId;
-        // } while (parent);
-        // ancestors.pop();
-        // return ancestors;
+        return ancestors;
       }
     }, {
       key: "getDatasetLabel",
@@ -6485,7 +6474,7 @@
       _classPrivateFieldSet(this, _ROOT$7, elm);
 
       elm.classList.add('statistics-view');
-      elm.dataset.catexxxgoryId = Records$1.getProperty(_classPrivateFieldGet(this, _propertyId)).catexxxgoryId; // make HTML
+      elm.dataset.catexxxgoryId = Records$1.getAttribute(_classPrivateFieldGet(this, _propertyId)).catexxxgoryId; // make HTML
 
       elm.innerHTML = "\n    <div class=\"statistics\">\n      <div class=\"bars\"></div>\n    </div>\n    <div class=\"loading-view -shown\"></div>\n    "; // display order of bar chart
 
@@ -7315,7 +7304,7 @@
 
     var category = Records$1.getCatexxxgory(keys.subjectId);
     var isPrimaryKey = props.isPrimaryKey;
-    var mainCategory = isPrimaryKey ? '' : Records$1.getProperty(keys.mainCategoryId);
+    var mainCategory = isPrimaryKey ? '' : Records$1.getAttribute(keys.mainCategoryId);
     var subCategory = isPrimaryKey ? '' : Records$1.getValue(keys.mainCategoryId, keys.subCategoryId);
     var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(category.label, " / ").concat((_subCategory$label = subCategory === null || subCategory === void 0 ? void 0 : subCategory.label) !== null && _subCategory$label !== void 0 ? _subCategory$label : '--', "</span>");
     var header = document.createElement('header');
@@ -7955,7 +7944,7 @@
       elm.classList.add('table-data-controller-view');
       elm.dataset.status = 'load ids';
       elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condition\">\n        <p title=\"".concat(dxCondition.togoKey, "\">").concat(Records$1.getDatasetLabel(dxCondition.togoKey), "</p>\n      </div>\n      ").concat(_classPrivateFieldGet(this, _dxCondition).valuesConditions.map(function (valuesCondition) {
-        var label = Records$1.getProperty(valuesCondition.propertyId).label;
+        var label = Records$1.getAttribute(valuesCondition.propertyId).label;
         return "<div class=\"condition _catexxxgory-background-color\" data-catexxxgory-id=\"".concat(valuesCondition.catexxxgoryId, "\">\n              <p title=\"").concat(label, "\">").concat(label, "</p>\n            </div>");
       }).join(''), "\n      ").concat(_classPrivateFieldGet(this, _dxCondition).keyConditions.map(function (keyCondition) {
         return "<div class=\"condition _catexxxgory-color\" data-catexxxgory-id=\"".concat(keyCondition.catexxxgoryId, "\">\n              <p title=\"").concat(keyCondition.label, "\">").concat(keyCondition.label, "</p>\n            </div>");
