@@ -95,11 +95,6 @@ class Records {
     return this.#attributes.find(attribute => attribute.id === attributeId);
   }
 
-  getProperty(propertyId) {
-    const property = this.#properties.find(property => property.propertyId === propertyId);
-    return property;
-  }
-
   getValue(attributeId, categoryId) {
     const attribute = this.getAttribute(attributeId);
     return attribute.getValue(categoryId);

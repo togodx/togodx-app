@@ -19,9 +19,7 @@ export default class BaseCondition {
   }
 
   get key() {
-    if (!this.#key) {
-      this.#key = Records.getProperty(this._propertyId);
-    }
+    if (!this.#key) this.#key = Records.getAttribute(this._propertyId);
     return this.#key;
   }
 
@@ -34,7 +32,7 @@ export default class BaseCondition {
 
   get dataset() {
     if (!this.#dataset) {
-      this.#dataset = this.key.primaryKey;
+      this.#dataset = this.key.dataset;
     }
     return this.#dataset;
   }

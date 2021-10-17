@@ -2996,15 +2996,6 @@
         });
       }
     }, {
-      key: "getProperty",
-      value: function getProperty(propertyId) {
-        var property = _classPrivateFieldGet(this, _properties$1).find(function (property) {
-          return property.propertyId === propertyId;
-        });
-
-        return property;
-      }
-    }, {
       key: "getValue",
       value: function getValue(attributeId, categoryId) {
         var attribute = this.getAttribute(attributeId);
@@ -3102,10 +3093,7 @@
     }, {
       key: "key",
       get: function get() {
-        if (!_classPrivateFieldGet(this, _key)) {
-          _classPrivateFieldSet(this, _key, Records$1.getProperty(this._propertyId));
-        }
-
+        if (!_classPrivateFieldGet(this, _key)) _classPrivateFieldSet(this, _key, Records$1.getAttribute(this._propertyId));
         return _classPrivateFieldGet(this, _key);
       }
     }, {
@@ -3121,7 +3109,7 @@
       key: "dataset",
       get: function get() {
         if (!_classPrivateFieldGet(this, _dataset)) {
-          _classPrivateFieldSet(this, _dataset, this.key.primaryKey);
+          _classPrivateFieldSet(this, _dataset, this.key.dataset);
         }
 
         return _classPrivateFieldGet(this, _dataset);
