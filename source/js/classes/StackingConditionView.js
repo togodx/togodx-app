@@ -19,14 +19,10 @@ export default class StackingConditionView {
    * @param {keyCondition, valuesCondition} condition 
    */
   constructor(container, type, condition, isRange = false) {
-    console.log(container, type, condition)
 
     this.#condition = condition;
     const category = Records.getCatexxxgoryWithAttribute(condition.propertyId);
-    const property = Records.getProperty(condition.propertyId);
-    console.log(property)
     const attribute = Records.getAttribute(condition.propertyId);
-    console.log(attribute)
     // this.#isRange = isRange;
     
     // attributes

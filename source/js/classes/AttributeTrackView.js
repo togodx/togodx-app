@@ -89,11 +89,11 @@ export default class AttributeTrackView {
       e.stopPropagation();
       if (this.#CHECKBOX_ALL_PROPERTIES.checked) {
         // add
-        ConditionBuilder.addProperty(attribute);
+        ConditionBuilder.addProperty(attributeId);
         this.#ROOT.classList.add('-allselected');
       } else {
         // remove
-        ConditionBuilder.removeProperty(attribute);
+        ConditionBuilder.removeProperty(attributeId);
         this.#ROOT.classList.remove('-allselected');
       }
     });
@@ -102,13 +102,13 @@ export default class AttributeTrackView {
       if (e.detail.parentCategoryId !== undefined) return;
       switch (e.detail.action) {
         case 'add':
-          if (e.detail.propertyId === attribute) {
+          if (e.detail.propertyId === attributeId) {
             this.#CHECKBOX_ALL_PROPERTIES.checked = true;
             this.#ROOT.classList.add('-allselected');
           }
           break;
         case 'remove':
-          if (e.detail.propertyId === attribute) {
+          if (e.detail.propertyId === attributeId) {
             this.#CHECKBOX_ALL_PROPERTIES.checked = false;
             this.#ROOT.classList.remove('-allselected');
           }
@@ -129,7 +129,7 @@ export default class AttributeTrackView {
 
     DefaultEventEmitter.addEventListener(event.toggleErrorUserValues, e => {
       if (e.detail.mode === 'show') {
-        if (e.detail.propertyId !== attribute) return;
+        if (e.detail.propertyId !== attributeId) return;
         this.#showError(e.detail.message, true);
       } else if (e.detail.mode === 'hide') this.#clearError();
     });

@@ -3646,15 +3646,13 @@
         // find value of same property
         var sameValuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
           return valuesCondition.propertyId === propertyId;
-        });
+        }); // store
 
-        console.log(sameValuesCondition); // store
 
         if (sameValuesCondition) {
           sameValuesCondition.addCategoryId(categoryId);
         } else {
           var valuesCondition = new ValuesCondition(propertyId, [categoryId]);
-          console.log(valuesCondition);
 
           _classPrivateFieldGet(this, _valuesConditions).push(valuesCondition);
         } // evaluate
@@ -3891,8 +3889,6 @@
       keys: (_JSON$parse = JSON.parse(params.get('keys'))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
       values: (_JSON$parse2 = JSON.parse(params.get('values'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
     };
-    console.log(condition);
-    console.log(isFirst);
 
     if (isFirst) {
       // get child category ids
@@ -3905,7 +3901,6 @@
   function _makeQueueOfGettingChildCategoryIds2(condition) {
     var _console;
 
-    console.log(condition);
     if (condition.togoKey) _classPrivateFieldSet(this, _togoKey, condition.togoKey);
     var queue = [];
 
@@ -4099,15 +4094,10 @@
         value: void 0
       });
 
-      console.log(_container, type, condition);
-
       _classPrivateFieldSet(this, _condition, condition);
 
       var category = Records$1.getCatexxxgoryWithAttribute(condition.propertyId);
-      var property = Records$1.getProperty(condition.propertyId);
-      console.log(property);
-      var attribute = Records$1.getAttribute(condition.propertyId);
-      console.log(attribute); // this.#isRange = isRange;
+      var attribute = Records$1.getAttribute(condition.propertyId); // this.#isRange = isRange;
       // attributes
 
       _classPrivateFieldSet(this, _ROOT$e, document.createElement('div'));
@@ -6315,12 +6305,12 @@
 
       if (_classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked) {
         // add
-        ConditionBuilder$1.addProperty(attribute);
+        ConditionBuilder$1.addProperty(attributeId);
 
         _classPrivateFieldGet(_this, _ROOT$8).classList.add('-allselected');
       } else {
         // remove
-        ConditionBuilder$1.removeProperty(attribute);
+        ConditionBuilder$1.removeProperty(attributeId);
 
         _classPrivateFieldGet(_this, _ROOT$8).classList.remove('-allselected');
       }
@@ -6332,7 +6322,7 @@
 
       switch (e.detail.action) {
         case 'add':
-          if (e.detail.propertyId === attribute) {
+          if (e.detail.propertyId === attributeId) {
             _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = true;
 
             _classPrivateFieldGet(_this, _ROOT$8).classList.add('-allselected');
@@ -6341,7 +6331,7 @@
           break;
 
         case 'remove':
-          if (e.detail.propertyId === attribute) {
+          if (e.detail.propertyId === attributeId) {
             _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = false;
 
             _classPrivateFieldGet(_this, _ROOT$8).classList.remove('-allselected');
@@ -6363,7 +6353,7 @@
     });
     DefaultEventEmitter$1.addEventListener(toggleErrorUserValues, function (e) {
       if (e.detail.mode === 'show') {
-        if (e.detail.propertyId !== attribute) return;
+        if (e.detail.propertyId !== attributeId) return;
 
         _classPrivateMethodGet(_this, _showError, _showError2).call(_this, e.detail.message, true);
       } else if (e.detail.mode === 'hide') _classPrivateMethodGet(_this, _clearError, _clearError2).call(_this);
