@@ -115,10 +115,9 @@ class Records {
   }
 
   getAncestors(attributeId, categoryId) {
-    const attribute = this.getProperty(attributeId);
+    const attribute = this.getAttribute(attributeId);
     const ancestors = [];
     let parent;
-    console.log(attribute)
     do { // find ancestors
       parent = attribute.values.find(value => value.categoryId === categoryId);
       if (parent) ancestors.unshift(parent);

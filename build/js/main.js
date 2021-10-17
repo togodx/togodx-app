@@ -3023,10 +3023,9 @@
     }, {
       key: "getAncestors",
       value: function getAncestors(attributeId, categoryId) {
-        var attribute = this.getProperty(attributeId);
+        var attribute = this.getAttribute(attributeId);
         var ancestors = [];
         var parent;
-        console.log(attribute);
 
         do {
           var _parent;
