@@ -35,7 +35,7 @@ export default class StatisticsView {
     if (condition.parentCategoryId) {
       this.#referenceValues = Records.getValuesWithParentCategoryId(this.#propertyId, condition.parentCategoryId);
     } else {
-      this.#referenceValues = Records.getProperty(this.#propertyId).values;
+      this.#referenceValues = Records.getAttribute(this.#propertyId).values;
     }
 
     // references

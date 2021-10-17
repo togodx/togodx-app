@@ -79,7 +79,6 @@ export default class StackingConditionView {
     if (this.#condition instanceof ValuesCondition) {
       this.#LABELS = this.#ROOT.querySelector(':scope > .labels');
       for (const categoryId of this.#condition.categoryIds) {
-        console.log(categoryId);
         this.addValue(categoryId);
       }
     }
@@ -106,7 +105,6 @@ export default class StackingConditionView {
   addValue(categoryId) {
     const getValue = () => {
       const value = Records.getValue(this.#condition.propertyId, categoryId);
-      console.log(value)
       if (value === undefined) {
         setTimeout(getValue, POLLING_DURATION);
       } else {

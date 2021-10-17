@@ -3014,9 +3014,10 @@
       }
     }, {
       key: "getValuesWithParentCategoryId",
-      value: function getValuesWithParentCategoryId(propertyId, parentCategoryId) {
-        var property = this.getProperty(propertyId);
-        return property.values.filter(function (value) {
+      value: function getValuesWithParentCategoryId(attributeId, parentCategoryId) {
+        var attribute = this.getAttribute(attributeId);
+        console.log(attribute);
+        return attribute.values.filter(function (value) {
           return value.parentCategoryId === parentCategoryId;
         });
       }
@@ -3303,7 +3304,6 @@
           var ancestors = Records$1.getAncestors(_this2.propertyId, categoryId).map(function (ancestor) {
             return ancestor.categoryId;
           });
-          console.log(ancestors);
           if (ancestors.length > 0) id.ancestors = ancestors;
           values.ids.push(id);
         });
@@ -3754,7 +3754,7 @@
         });
 
         if (oldValuesCondition) {
-          var originalValues = Records$1.getProperty(propertyId).values;
+          var originalValues = Records$1.getAttribute(propertyId).values;
           originalValues.forEach(function (originalValue) {
             var indexInNew = categoryIds.indexOf(originalValue.categoryId);
             var indexInOld = oldValuesCondition.categoryIds.indexOf(originalValue.categoryId);
@@ -3899,8 +3899,6 @@
   }
 
   function _makeQueueOfGettingChildCategoryIds2(condition) {
-    var _console;
-
     if (condition.togoKey) _classPrivateFieldSet(this, _togoKey, condition.togoKey);
     var queue = [];
 
@@ -3927,13 +3925,10 @@
     condition.values.forEach(function (_ref3) {
       var propertyId = _ref3.propertyId,
           ids = _ref3.ids;
-      console.log(propertyId, ids);
       ids.forEach(function (id) {
         return addQueue(propertyId, id);
       });
     });
-
-    (_console = console).log.apply(_console, queue);
 
     _classPrivateMethodGet(this, _progressQueueOfGettingChildCategoryIds, _progressQueueOfGettingChildCategoryIds2).call(this, condition, queue);
   }
@@ -4162,7 +4157,6 @@
 
         var getValue = function getValue() {
           var value = Records$1.getValue(_classPrivateFieldGet(_this2, _condition).propertyId, categoryId);
-          console.log(value);
 
           if (value === undefined) {
             setTimeout(getValue, POLLING_DURATION);
@@ -4230,7 +4224,6 @@
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var categoryId = _step.value;
-          console.log(categoryId);
           this.addValue(categoryId);
         }
       } catch (err) {
@@ -6499,7 +6492,7 @@
       if (condition.parentCategoryId) {
         _classPrivateFieldSet(this, _referenceValues, Records$1.getValuesWithParentCategoryId(_classPrivateFieldGet(this, _propertyId), condition.parentCategoryId));
       } else {
-        _classPrivateFieldSet(this, _referenceValues, Records$1.getProperty(_classPrivateFieldGet(this, _propertyId)).values);
+        _classPrivateFieldSet(this, _referenceValues, Records$1.getAttribute(_classPrivateFieldGet(this, _propertyId)).values);
       } // references
 
 

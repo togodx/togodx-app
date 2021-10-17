@@ -118,7 +118,7 @@ class ConditionBuilder {
     // console.log(propertyId, categoryIds, isFinal)
     const oldValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
     if (oldValuesCondition) {
-      const originalValues = Records.getProperty(propertyId).values;
+      const originalValues = Records.getAttribute(propertyId).values;
       originalValues.forEach(originalValue => {
         const indexInNew = categoryIds.indexOf(originalValue.categoryId);
         const indexInOld = oldValuesCondition.categoryIds.indexOf(originalValue.categoryId);
@@ -244,10 +244,8 @@ class ConditionBuilder {
       if (id) addQueue(propertyId, id);
     });
     condition.values.forEach(({propertyId, ids}) => {
-      console.log(propertyId, ids)
       ids.forEach(id => addQueue(propertyId, id));
     });
-    console.log(...queue)
     this.#progressQueueOfGettingChildCategoryIds(condition, queue);
   }
 

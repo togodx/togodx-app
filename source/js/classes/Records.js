@@ -109,9 +109,10 @@ class Records {
     // return value;
   }
 
-  getValuesWithParentCategoryId(propertyId, parentCategoryId) {
-    const property = this.getProperty(propertyId);
-    return property.values.filter(value => value.parentCategoryId === parentCategoryId);
+  getValuesWithParentCategoryId(attributeId, parentCategoryId) {
+    const attribute = this.getAttribute(attributeId);
+    console.log(attribute)
+    return attribute.values.filter(value => value.parentCategoryId === parentCategoryId);
   }
 
   getAncestors(attributeId, categoryId) {
