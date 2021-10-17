@@ -1,0 +1,35 @@
+name: "Deployment: dx-server-dev"
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy-dx-server-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout config repo"
+        uses: actions/checkout@v2
+        with:
+          repository: togodx/togodx-config-human
+          fetch-depth: 1
+
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          path: app
+
+      - name: "Copy config.dx-server.json"
+        run: |
+          cp -f ./config/config.dx-server.json ./app/build/config.json
+
+      - name: "Upload to S3 bucket: togodx-dev-production"
+        uses: opspresso/action-s3-sync@master
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: "ap-northeast-1"
+          FROM_PATH: "./app/build"
+          DEST_PATH: "s3://togodx-dx-server-dev/"
+          OPTIONS: "--delete --acl public-read --exclude 'README.md'"
