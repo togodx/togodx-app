@@ -274,11 +274,11 @@ export default class TableData {
       false
     );
     // attribute (classification/distribution)
-    Records.properties.forEach(({propertyId}) => {
-      const valuesCondition = this.#dxCondition.valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
+    Records.attributes.forEach(({id}) => {
+      const valuesCondition = this.#dxCondition.valuesConditions.find(valuesCondition => valuesCondition.propertyId === id);
       const categoryIds = [];
       if (valuesCondition) categoryIds.push(...valuesCondition.categoryIds);
-      ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
+      ConditionBuilder.setPropertyValues(id, categoryIds, false);
     });
   }
 

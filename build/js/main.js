@@ -3005,7 +3005,6 @@
       key: "getValuesWithParentCategoryId",
       value: function getValuesWithParentCategoryId(attributeId, parentCategoryId) {
         var attribute = this.getAttribute(attributeId);
-        console.log(attribute);
         return attribute.values.filter(function (value) {
           return value.parentCategoryId === parentCategoryId;
         });
@@ -4144,7 +4143,7 @@
           if (value === undefined) {
             setTimeout(getValue, POLLING_DURATION);
           } else {
-            _classPrivateFieldGet(_this2, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _catexxxgory-background-color\" data-catexxxgory-id=\"".concat(value.categoryId, "\">").concat(value.label, "<div class=\"close-button-view\"></div></li>")); // attach event
+            _classPrivateFieldGet(_this2, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _catexxxgory-background-color\" data-category-id=\"".concat(value.categoryId, "\">").concat(value.label, "<div class=\"close-button-view\"></div></li>")); // attach event
 
 
             _classPrivateFieldGet(_this2, _LABELS).querySelector(':scope > .label:last-child').addEventListener('click', function (e) {
@@ -8127,16 +8126,16 @@
       };
     }), false); // attribute (classification/distribution)
 
-    Records$1.properties.forEach(function (_ref2) {
-      var propertyId = _ref2.propertyId;
+    Records$1.attributes.forEach(function (_ref2) {
+      var id = _ref2.id;
 
       var valuesCondition = _classPrivateFieldGet(_this3, _dxCondition).valuesConditions.find(function (valuesCondition) {
-        return valuesCondition.propertyId === propertyId;
+        return valuesCondition.propertyId === id;
       });
 
       var categoryIds = [];
       if (valuesCondition) categoryIds.push.apply(categoryIds, _toConsumableArray(valuesCondition.categoryIds));
-      ConditionBuilder$1.setPropertyValues(propertyId, categoryIds, false);
+      ConditionBuilder$1.setPropertyValues(id, categoryIds, false);
     });
   }
 
