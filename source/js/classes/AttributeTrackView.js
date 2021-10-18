@@ -22,7 +22,7 @@ export default class AttributeTrackView {
     const isSelected = ConditionBuilder.isSelectedProperty(attributeId);
     this.#ROOT = document.createElement('div');
     container.insertAdjacentElement('beforeend', this.#ROOT);
-    const category = Records.getCatexxxgoryWithAttribute(attributeId);
+    const category = Records.getCatexxxgoryWithAttributeId(attributeId);
     this.#ROOT.classList.add('attribute-track-view', '-preparing', 'collapse-view');
     if (isSelected) this.#ROOT.classList.add('-allselected');
     this.#ROOT.dataset.catexxxgoryId = category.id;

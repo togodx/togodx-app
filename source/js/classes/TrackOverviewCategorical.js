@@ -21,7 +21,7 @@ export default class TrackOverviewCategorical {
     this.#ROOT = elm;
     this.#attribute = attribute;
     this.#values = values.map(value => Object.assign({}, value));
-    const category = Records.getCatexxxgoryWithAttribute(this.#attribute.id);
+    const category = Records.getCatexxxgoryWithAttributeId(this.#attribute.id);
 
     // make overview
     // TODO: ヒストグラムは別処理

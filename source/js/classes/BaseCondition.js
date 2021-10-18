@@ -3,7 +3,7 @@ import Records from "./Records";
 export default class BaseCondition {
 
   _propertyId;
-  #key;
+  #key; // <Attribute>
   #catexxxgoryId;
   #dataset;
 
@@ -25,7 +25,7 @@ export default class BaseCondition {
 
   get catexxxgoryId() {
     if (!this.#catexxxgoryId) {
-      this.#catexxxgoryId = this.key.catexxxgoryId;
+      this.#catexxxgoryId = Records.getCatexxxgoryWithAttributeId(this.key.id).id;
     }
     return this.#catexxxgoryId;
   }

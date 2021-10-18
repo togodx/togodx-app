@@ -19,7 +19,7 @@ export default class HistogramRangeSelectorView {
   constructor(elm, attribute, items) {
 
     this.#attribute = attribute;
-    const category = Records.getCatexxxgoryWithAttribute(this.#attribute.id);
+    const category = Records.getCatexxxgoryWithAttributeId(this.#attribute.id);
     this.#items = items.map(item => Object.assign({}, item));
 
     // make container

@@ -87,8 +87,8 @@ class Records {
     return this.#catexxxgories.find(category => category.id === id);
   }
 
-  getCatexxxgoryWithAttribute(attribute) {
-    return this.#catexxxgories.find(category => category.attributes.indexOf(attribute) !== -1);
+  getCatexxxgoryWithAttributeId(attributeId) {
+    return this.#catexxxgories.find(category => category.attributes.indexOf(attributeId) !== -1);
   }
 
   getAttribute(attributeId) {
@@ -129,9 +129,14 @@ class Records {
     return this.#catexxxgories;
   }
 
+  get attributes() {
+    return this.#attributes;
+  }
+
   get properties() {
     return this.#properties;
   }
+  
 }
 
 export default new Records();

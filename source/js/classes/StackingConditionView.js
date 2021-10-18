@@ -21,7 +21,7 @@ export default class StackingConditionView {
   constructor(container, type, condition, isRange = false) {
 
     this.#condition = condition;
-    const category = Records.getCatexxxgoryWithAttribute(condition.propertyId);
+    const category = Records.getCatexxxgoryWithAttributeId(condition.propertyId);
     const attribute = Records.getAttribute(condition.propertyId);
     // this.#isRange = isRange;
     

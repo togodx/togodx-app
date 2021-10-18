@@ -2982,10 +2982,10 @@
         });
       }
     }, {
-      key: "getCatexxxgoryWithAttribute",
-      value: function getCatexxxgoryWithAttribute(attribute) {
+      key: "getCatexxxgoryWithAttributeId",
+      value: function getCatexxxgoryWithAttributeId(attributeId) {
         return _classPrivateFieldGet(this, _catexxxgories).find(function (category) {
-          return category.attributes.indexOf(attribute) !== -1;
+          return category.attributes.indexOf(attributeId) !== -1;
         });
       }
     }, {
@@ -3043,6 +3043,11 @@
         return _classPrivateFieldGet(this, _catexxxgories);
       }
     }, {
+      key: "attributes",
+      get: function get() {
+        return _classPrivateFieldGet(this, _attributes);
+      }
+    }, {
       key: "properties",
       get: function get() {
         return _classPrivateFieldGet(this, _properties$1);
@@ -3061,6 +3066,7 @@
   var _dataset = /*#__PURE__*/new WeakMap();
 
   var BaseCondition = /*#__PURE__*/function () {
+    // <Attribute>
     function BaseCondition(propertyId) {
       _classCallCheck(this, BaseCondition);
 
@@ -3100,7 +3106,7 @@
       key: "catexxxgoryId",
       get: function get() {
         if (!_classPrivateFieldGet(this, _catexxxgoryId)) {
-          _classPrivateFieldSet(this, _catexxxgoryId, this.key.catexxxgoryId);
+          _classPrivateFieldSet(this, _catexxxgoryId, Records$1.getCatexxxgoryWithAttributeId(this.key.id).id);
         }
 
         return _classPrivateFieldGet(this, _catexxxgoryId);
@@ -3952,19 +3958,19 @@
 
     var _classPrivateMethodGe = _classPrivateMethodGet(this, _getCondtionsFromHierarchicConditions, _getCondtionsFromHierarchicConditions2).call(this, keys, values),
         _classPrivateMethodGe2 = _slicedToArray(_classPrivateMethodGe, 2),
-        properties = _classPrivateMethodGe2[0],
-        attributes = _classPrivateMethodGe2[1];
+        keys2 = _classPrivateMethodGe2[0],
+        values2 = _classPrivateMethodGe2[1];
 
-    this.setProperties(properties, false);
-    Records$1.properties.forEach(function (_ref5) {
-      var propertyId = _ref5.propertyId;
-      var property = attributes.find(function (property) {
-        return property.propertyId === propertyId;
+    this.setProperties(keys2, false);
+    Records$1.attributes.forEach(function (_ref5) {
+      var id = _ref5.id;
+      var property = values2.find(function (property) {
+        return property.propertyId === id;
       });
       var categoryIds = [];
       if (property) categoryIds.push.apply(categoryIds, _toConsumableArray(property.categoryIds));
 
-      _this4.setPropertyValues(propertyId, categoryIds, false);
+      _this4.setPropertyValues(id, categoryIds, false);
     });
     this.finish(false); // dispatch event
 
@@ -4002,7 +4008,7 @@
 
   function _getCondtionsFromHierarchicConditions2(keys, values) {
     // restore conditions
-    var properties = keys.map(function (_ref6) {
+    var keys2 = keys.map(function (_ref6) {
       var propertyId = _ref6.propertyId,
           id = _ref6.id;
       return {
@@ -4010,7 +4016,7 @@
         parentCategoryId: id === null || id === void 0 ? void 0 : id.categoryId
       };
     });
-    var attributes = values.map(function (_ref7) {
+    var values2 = values.map(function (_ref7) {
       var propertyId = _ref7.propertyId,
           ids = _ref7.ids;
       return {
@@ -4020,7 +4026,7 @@
         })
       };
     });
-    return [properties, attributes];
+    return [keys2, values2];
   }
 
   var ConditionBuilder$1 = new ConditionBuilder();
@@ -4068,7 +4074,7 @@
 
       _classPrivateFieldSet(this, _condition, condition);
 
-      var category = Records$1.getCatexxxgoryWithAttribute(condition.propertyId);
+      var category = Records$1.getCatexxxgoryWithAttributeId(condition.propertyId);
       var attribute = Records$1.getAttribute(condition.propertyId); // this.#isRange = isRange;
       // attributes
 
@@ -5090,7 +5096,7 @@
   function _heatmap2() {
     var isLog10 = App$1.viewModes.log10;
     var max = isLog10 && _classPrivateFieldGet(this, _max) > 1 ? Math.log10(_classPrivateFieldGet(this, _max)) : _classPrivateFieldGet(this, _max);
-    var category = Records$1.getCatexxxgoryWithAttribute(this.attributeId);
+    var category = Records$1.getCatexxxgoryWithAttributeId(this.attributeId);
 
     _classPrivateFieldGet(this, _columnItemViews).forEach(function (columnItemView) {
       columnItemView.update(category.color, isLog10, max);
@@ -5804,7 +5810,7 @@
 
       _classPrivateFieldSet(this, _attribute$2, attribute);
 
-      var category = Records$1.getCatexxxgoryWithAttribute(_classPrivateFieldGet(this, _attribute$2).id);
+      var category = Records$1.getCatexxxgoryWithAttributeId(_classPrivateFieldGet(this, _attribute$2).id);
 
       _classPrivateFieldSet(this, _items, items.map(function (item) {
         return Object.assign({}, item);
@@ -5960,7 +5966,7 @@
       return Object.assign({}, value);
     }));
 
-    var category = Records$1.getCatexxxgoryWithAttribute(_classPrivateFieldGet(this, _attribute$1).id); // make overview
+    var category = Records$1.getCatexxxgoryWithAttributeId(_classPrivateFieldGet(this, _attribute$1).id); // make overview
     // TODO: ヒストグラムは別処理
 
     var _sum = values.reduce(function (acc, value) {
@@ -6242,7 +6248,7 @@
     _classPrivateFieldSet(this, _ROOT$8, document.createElement('div'));
 
     container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$8));
-    var category = Records$1.getCatexxxgoryWithAttribute(attributeId);
+    var category = Records$1.getCatexxxgoryWithAttributeId(attributeId);
 
     _classPrivateFieldGet(this, _ROOT$8).classList.add('attribute-track-view', '-preparing', 'collapse-view');
 
@@ -6462,7 +6468,7 @@
       _classPrivateFieldSet(this, _ROOT$7, elm);
 
       elm.classList.add('statistics-view');
-      elm.dataset.catexxxgoryId = Records$1.getAttribute(_classPrivateFieldGet(this, _propertyId)).catexxxgoryId; // make HTML
+      elm.dataset.catexxxgoryId = condition.catexxxgoryId; // make HTML
 
       elm.innerHTML = "\n    <div class=\"statistics\">\n      <div class=\"bars\"></div>\n    </div>\n    <div class=\"loading-view -shown\"></div>\n    "; // display order of bar chart
 

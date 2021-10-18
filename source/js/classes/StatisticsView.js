@@ -21,7 +21,7 @@ export default class StatisticsView {
     this.#ROOT = elm;
 
     elm.classList.add('statistics-view');
-    elm.dataset.catexxxgoryId = Records.getAttribute(this.#propertyId).catexxxgoryId;
+    elm.dataset.catexxxgoryId = condition.catexxxgoryId;
 
     // make HTML
     elm.innerHTML = `

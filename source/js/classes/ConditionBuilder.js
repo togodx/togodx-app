@@ -278,13 +278,13 @@ class ConditionBuilder {
     // restore conditions
     this.#togoKey = togoKey;
     // this.#userIds = userIds;
-    const [properties, attributes] = this.#getCondtionsFromHierarchicConditions(keys, values);
-    this.setProperties(properties, false);
-    Records.properties.forEach(({propertyId}) => {
-      const property = attributes.find(property => property.propertyId === propertyId);
+    const [keys2, values2] = this.#getCondtionsFromHierarchicConditions(keys, values);
+    this.setProperties(keys2, false);
+    Records.attributes.forEach(({id}) => {
+      const property = values2.find(property => property.propertyId === id);
       const categoryIds = [];
       if (property) categoryIds.push(...property.categoryIds);
-      this.setPropertyValues(propertyId, categoryIds, false);
+      this.setPropertyValues(id, categoryIds, false);
     });
     this.finish(false);
 
@@ -310,19 +310,19 @@ class ConditionBuilder {
 
   #getCondtionsFromHierarchicConditions(keys, values) {
     // restore conditions
-    const properties = keys.map(({propertyId, id}) => {
+    const keys2 = keys.map(({propertyId, id}) => {
       return {
         propertyId,
         parentCategoryId: id?.categoryId
       }
     });
-    const attributes = values.map(({propertyId, ids}) => {
+    const values2 = values.map(({propertyId, ids}) => {
       return {
         propertyId,
         categoryIds: ids.map(id => id.categoryId)
       }
     });
-    return [properties, attributes];
+    return [keys2, values2];
   }
 
 }
