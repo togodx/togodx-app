@@ -21,15 +21,15 @@ export default class StackingConditionView {
   constructor(container, type, condition, isRange = false) {
 
     this.#condition = condition;
-    const category = Records.getCatexxxgoryWithAttributeId(condition.propertyId);
-    const attribute = Records.getAttribute(condition.propertyId);
+    const category = Records.getCatexxxgoryWithAttributeId(condition.attributeId);
+    const attribute = Records.getAttribute(condition.attributeId);
     // this.#isRange = isRange;
     
     // attributes
     this.#ROOT = document.createElement('div');
     this.#ROOT.classList.add('stacking-condition-view');
     this.#ROOT.dataset.catexxxgoryId = category.id;
-    this.#ROOT.dataset.propertyId = condition.propertyId;
+    this.#ROOT.dataset.propertyId = condition.attributeId;
     if (condition.parentCategoryId) this.#ROOT.dataset.parentCategoryId = condition.parentCategoryId;
     // make view
     let label, ancestorLabels = [category.label];
@@ -37,9 +37,9 @@ export default class StackingConditionView {
       case this.#condition instanceof KeyCondition: {
         if (condition.parentCategoryId) {
           const getValue = () => {
-            const value = Records.getValue(condition.propertyId, condition.parentCategoryId);
+            const value = Records.getValue(condition.attributeId, condition.parentCategoryId);
             if (value) {
-              const ancestors = Records.getAncestors(condition.propertyId, condition.parentCategoryId);
+              const ancestors = Records.getAncestors(condition.attributeId, condition.parentCategoryId);
               label = `<div class="label _catexxxgory-color">${value.label}</div>`;
               ancestorLabels.push(attribute.label, ...ancestors.map(ancestor => ancestor.label));
               this.#make(container, type, ancestorLabels, label);
@@ -88,11 +88,11 @@ export default class StackingConditionView {
       switch (true) {
         case this.#condition instanceof KeyCondition:
           // notify
-          ConditionBuilder.removeProperty(this.#condition.propertyId, this.#condition.parentCategoryId);
+          ConditionBuilder.removeProperty(this.#condition.attributeId, this.#condition.parentCategoryId);
           break;
         case this.#condition instanceof ValuesCondition:
           for (const label of this.#LABELS.querySelectorAll(':scope > .label')) {
-            ConditionBuilder.removePropertyValue(this.#condition.propertyId, label.dataset.categoryId);
+            ConditionBuilder.removePropertyValue(this.#condition.attributeId, label.dataset.categoryId);
           }
           break;
       }
@@ -104,7 +104,7 @@ export default class StackingConditionView {
 
   addValue(categoryId) {
     const getValue = () => {
-      const value = Records.getValue(this.#condition.propertyId, categoryId);
+      const value = Records.getValue(this.#condition.attributeId, categoryId);
       if (value === undefined) {
         setTimeout(getValue, POLLING_DURATION);
       } else {
@@ -112,23 +112,23 @@ export default class StackingConditionView {
         // attach event
         this.#LABELS.querySelector(':scope > .label:last-child').addEventListener('click', e => {
           e.stopPropagation();
-          ConditionBuilder.removePropertyValue(this.#condition.propertyId, e.target.parentNode.dataset.categoryId);
+          ConditionBuilder.removePropertyValue(this.#condition.attributeId, e.target.parentNode.dataset.categoryId);
         });
       }
     }
     getValue();
   }
 
-  removeProperty(propertyId, parentCategoryId) {
+  removeProperty(attributeId, parentCategoryId) {
     const isMatch =
-      (propertyId === this.#condition.propertyId) &&
+      (attributeId === this.#condition.attributeId) &&
       (parentCategoryId ? parentCategoryId === this.#condition.parentCategoryId : true);
     if (isMatch) this.#ROOT.parentNode.removeChild(this.#ROOT);
     return isMatch;
   }
 
-  removePropertyValue(propertyId, categoryId) {
-    if (propertyId === this.#condition.propertyId) {
+  removePropertyValue(attributeId, categoryId) {
+    if (attributeId === this.#condition.attributeId) {
       this.#LABELS.removeChild(this.#LABELS.querySelector(`:scope > [data-category-id="${categoryId}"`));
       if (this.#LABELS.childNodes.length === 0) {
         this.#ROOT.parentNode.removeChild(this.#ROOT);
@@ -141,8 +141,8 @@ export default class StackingConditionView {
     }
   }
 
-  sameProperty(propertyId) {
-    return propertyId === this.#condition.propertyId;
+  sameProperty(attributeId) {
+    return attributeId === this.#condition.attributeId;
   }
 
 }

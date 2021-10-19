@@ -2,24 +2,24 @@ import Records from "./Records";
 
 export default class BaseCondition {
 
-  _propertyId;
+  _attributeId;
   #key; // <Attribute>
   #catexxxgoryId;
   #dataset;
 
-  constructor(propertyId) {
-    this._propertyId = propertyId;
+  constructor(attributeId) {
+    this._attributeId = attributeId;
   }
 
 
   // accessor
 
-  get propertyId() {
-    return this._propertyId;
+  get attributeId() {
+    return this._attributeId;
   }
 
   get key() {
-    if (!this.#key) this.#key = Records.getAttribute(this._propertyId);
+    if (!this.#key) this.#key = Records.getAttribute(this._attributeId);
     return this.#key;
   }
 

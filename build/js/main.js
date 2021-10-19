@@ -3031,10 +3031,10 @@
 
   var BaseCondition = /*#__PURE__*/function () {
     // <Attribute>
-    function BaseCondition(propertyId) {
+    function BaseCondition(attributeId) {
       _classCallCheck(this, BaseCondition);
 
-      _defineProperty(this, "_propertyId", void 0);
+      _defineProperty(this, "_attributeId", void 0);
 
       _classPrivateFieldInitSpec(this, _key, {
         writable: true,
@@ -3051,19 +3051,19 @@
         value: void 0
       });
 
-      this._propertyId = propertyId;
+      this._attributeId = attributeId;
     } // accessor
 
 
     _createClass(BaseCondition, [{
-      key: "propertyId",
+      key: "attributeId",
       get: function get() {
-        return this._propertyId;
+        return this._attributeId;
       }
     }, {
       key: "key",
       get: function get() {
-        if (!_classPrivateFieldGet(this, _key)) _classPrivateFieldSet(this, _key, Records$1.getAttribute(this._propertyId));
+        if (!_classPrivateFieldGet(this, _key)) _classPrivateFieldSet(this, _key, Records$1.getAttribute(this._attributeId));
         return _classPrivateFieldGet(this, _key);
       }
     }, {
@@ -3098,12 +3098,12 @@
 
     var _super = _createSuper(KeyCondition);
 
-    function KeyCondition(propertyId, parentCategoryId) {
+    function KeyCondition(attributeId, parentCategoryId) {
       var _this;
 
       _classCallCheck(this, KeyCondition);
 
-      _this = _super.call(this, propertyId);
+      _this = _super.call(this, attributeId);
 
       _classPrivateFieldInitSpec(_assertThisInitialized(_this), _parentCategoryId$1, {
         writable: true,
@@ -3122,7 +3122,7 @@
 
     /**
      * 
-     * @param {String} propertyId 
+     * @param {String} attributeId 
      * @param {String} parentCategoryId 
      * @return {Boolean}
      */
@@ -3130,8 +3130,8 @@
 
     _createClass(KeyCondition, [{
       key: "isSameCondition",
-      value: function isSameCondition(propertyId, parentCategoryId) {
-        if (propertyId === this._propertyId) {
+      value: function isSameCondition(attributeId, parentCategoryId) {
+        if (attributeId === this._attributeId) {
           if (parentCategoryId) {
             return parentCategoryId === _classPrivateFieldGet(this, _parentCategoryId$1);
           } else {
@@ -3145,13 +3145,13 @@
       key: "getURLParameter",
       value: function getURLParameter() {
         var key = {
-          propertyId: this.propertyId
+          propertyId: this._attributeId
         };
 
         if (_classPrivateFieldGet(this, _parentCategoryId$1)) {
           key.id = {
             categoryId: _classPrivateFieldGet(this, _parentCategoryId$1),
-            ancestors: Records$1.getAncestors(this.propertyId, _classPrivateFieldGet(this, _parentCategoryId$1)).map(function (ancestor) {
+            ancestors: Records$1.getAncestors(this._attributeId, _classPrivateFieldGet(this, _parentCategoryId$1)).map(function (ancestor) {
               return ancestor.categoryId;
             })
           };
@@ -3178,7 +3178,7 @@
       key: "value",
       get: function get() {
         if (!_classPrivateFieldGet(this, _value)) {
-          _classPrivateFieldSet(this, _value, Records$1.getValue(this._propertyId, _classPrivateFieldGet(this, _parentCategoryId$1)));
+          _classPrivateFieldSet(this, _value, Records$1.getValue(this._attributeId, _classPrivateFieldGet(this, _parentCategoryId$1)));
         }
 
         return _classPrivateFieldGet(this, _value);
@@ -3187,7 +3187,7 @@
       key: "query",
       get: function get() {
         var query = {
-          attribute: this._propertyId
+          attribute: this._attributeId
         };
         if (_classPrivateFieldGet(this, _parentCategoryId$1)) query.node = _classPrivateFieldGet(this, _parentCategoryId$1);
         return query;
@@ -3204,12 +3204,12 @@
 
     var _super = _createSuper(ValuesCondition);
 
-    function ValuesCondition(propertyId, categoryIds) {
+    function ValuesCondition(attributeId, categoryIds) {
       var _this;
 
       _classCallCheck(this, ValuesCondition);
 
-      _this = _super.call(this, propertyId);
+      _this = _super.call(this, attributeId);
 
       _classPrivateFieldInitSpec(_assertThisInitialized(_this), _categoryIds, {
         writable: true,
@@ -3240,7 +3240,7 @@
         var _this2 = this;
 
         var values = {
-          propertyId: this.propertyId,
+          propertyId: this._attributeId,
           ids: []
         };
 
@@ -3248,7 +3248,7 @@
           var id = {
             categoryId: categoryId
           };
-          var ancestors = Records$1.getAncestors(_this2.propertyId, categoryId).map(function (ancestor) {
+          var ancestors = Records$1.getAncestors(_this2._attributeId, categoryId).map(function (ancestor) {
             return ancestor.categoryId;
           });
           if (ancestors.length > 0) id.ancestors = ancestors;
@@ -3272,7 +3272,7 @@
       key: "query",
       get: function get() {
         return {
-          attribute: this.propertyId,
+          attribute: this._attributeId,
           nodes: this.categoryIds
         };
       }
@@ -4038,8 +4038,8 @@
 
       _classPrivateFieldSet(this, _condition, condition);
 
-      var category = Records$1.getCatexxxgoryWithAttributeId(condition.propertyId);
-      var attribute = Records$1.getAttribute(condition.propertyId); // this.#isRange = isRange;
+      var category = Records$1.getCatexxxgoryWithAttributeId(condition.attributeId);
+      var attribute = Records$1.getAttribute(condition.attributeId); // this.#isRange = isRange;
       // attributes
 
       _classPrivateFieldSet(this, _ROOT$e, document.createElement('div'));
@@ -4047,7 +4047,7 @@
       _classPrivateFieldGet(this, _ROOT$e).classList.add('stacking-condition-view');
 
       _classPrivateFieldGet(this, _ROOT$e).dataset.catexxxgoryId = category.id;
-      _classPrivateFieldGet(this, _ROOT$e).dataset.propertyId = condition.propertyId;
+      _classPrivateFieldGet(this, _ROOT$e).dataset.propertyId = condition.attributeId;
       if (condition.parentCategoryId) _classPrivateFieldGet(this, _ROOT$e).dataset.parentCategoryId = condition.parentCategoryId; // make view
 
       var _label,
@@ -4058,10 +4058,10 @@
           {
             if (condition.parentCategoryId) {
               var getValue = function getValue() {
-                var value = Records$1.getValue(condition.propertyId, condition.parentCategoryId);
+                var value = Records$1.getValue(condition.attributeId, condition.parentCategoryId);
 
                 if (value) {
-                  var ancestors = Records$1.getAncestors(condition.propertyId, condition.parentCategoryId);
+                  var ancestors = Records$1.getAncestors(condition.attributeId, condition.parentCategoryId);
                   _label = "<div class=\"label _catexxxgory-color\">".concat(value.label, "</div>");
 
                   _ancestorLabels.push.apply(_ancestorLabels, [attribute.label].concat(_toConsumableArray(ancestors.map(function (ancestor) {
@@ -4103,7 +4103,7 @@
         var _this2 = this;
 
         var getValue = function getValue() {
-          var value = Records$1.getValue(_classPrivateFieldGet(_this2, _condition).propertyId, categoryId);
+          var value = Records$1.getValue(_classPrivateFieldGet(_this2, _condition).attributeId, categoryId);
 
           if (value === undefined) {
             setTimeout(getValue, POLLING_DURATION);
@@ -4113,7 +4113,7 @@
 
             _classPrivateFieldGet(_this2, _LABELS).querySelector(':scope > .label:last-child').addEventListener('click', function (e) {
               e.stopPropagation();
-              ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this2, _condition).propertyId, e.target.parentNode.dataset.categoryId);
+              ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this2, _condition).attributeId, e.target.parentNode.dataset.categoryId);
             });
           }
         };
@@ -4122,15 +4122,15 @@
       }
     }, {
       key: "removeProperty",
-      value: function removeProperty(propertyId, parentCategoryId) {
-        var isMatch = propertyId === _classPrivateFieldGet(this, _condition).propertyId && (parentCategoryId ? parentCategoryId === _classPrivateFieldGet(this, _condition).parentCategoryId : true);
+      value: function removeProperty(attributeId, parentCategoryId) {
+        var isMatch = attributeId === _classPrivateFieldGet(this, _condition).attributeId && (parentCategoryId ? parentCategoryId === _classPrivateFieldGet(this, _condition).parentCategoryId : true);
         if (isMatch) _classPrivateFieldGet(this, _ROOT$e).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$e));
         return isMatch;
       }
     }, {
       key: "removePropertyValue",
-      value: function removePropertyValue(propertyId, categoryId) {
-        if (propertyId === _classPrivateFieldGet(this, _condition).propertyId) {
+      value: function removePropertyValue(attributeId, categoryId) {
+        if (attributeId === _classPrivateFieldGet(this, _condition).attributeId) {
           _classPrivateFieldGet(this, _LABELS).removeChild(_classPrivateFieldGet(this, _LABELS).querySelector(":scope > [data-category-id=\"".concat(categoryId, "\"")));
 
           if (_classPrivateFieldGet(this, _LABELS).childNodes.length === 0) {
@@ -4146,8 +4146,8 @@
       }
     }, {
       key: "sameProperty",
-      value: function sameProperty(propertyId) {
-        return propertyId === _classPrivateFieldGet(this, _condition).propertyId;
+      value: function sameProperty(attributeId) {
+        return attributeId === _classPrivateFieldGet(this, _condition).attributeId;
       }
     }]);
 
@@ -4185,7 +4185,7 @@
       switch (true) {
         case _classPrivateFieldGet(_this3, _condition) instanceof KeyCondition:
           // notify
-          ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this3, _condition).propertyId, _classPrivateFieldGet(_this3, _condition).parentCategoryId);
+          ConditionBuilder$1.removeProperty(_classPrivateFieldGet(_this3, _condition).attributeId, _classPrivateFieldGet(_this3, _condition).parentCategoryId);
           break;
 
         case _classPrivateFieldGet(_this3, _condition) instanceof ValuesCondition:
@@ -4195,7 +4195,7 @@
           try {
             for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
               var _label2 = _step2.value;
-              ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _condition).propertyId, _label2.dataset.categoryId);
+              ConditionBuilder$1.removePropertyValue(_classPrivateFieldGet(_this3, _condition).attributeId, _label2.dataset.categoryId);
             }
           } catch (err) {
             _iterator2.e(err);
@@ -8955,7 +8955,6 @@
     var _this3 = this;
 
     var id = _ref.id;
-        _ref.primaryKey;
     axios.get(dataFromUserIds(id), {
       cancelToken: _classPrivateFieldGet(this, _source).token
     }).then(function (response) {

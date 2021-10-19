@@ -6,8 +6,8 @@ export default class KeyCondition extends BaseCondition {
   #parentCategoryId;
   #value;
 
-  constructor(propertyId, parentCategoryId) {
-    super(propertyId);
+  constructor(attributeId, parentCategoryId) {
+    super(attributeId);
     this.#parentCategoryId = parentCategoryId;
   }
 
@@ -16,12 +16,12 @@ export default class KeyCondition extends BaseCondition {
   
   /**
    * 
-   * @param {String} propertyId 
+   * @param {String} attributeId 
    * @param {String} parentCategoryId 
    * @return {Boolean}
    */
-  isSameCondition(propertyId, parentCategoryId) {
-    if (propertyId === this._propertyId) {
+  isSameCondition(attributeId, parentCategoryId) {
+    if (attributeId === this._attributeId) {
       if (parentCategoryId) {
         return parentCategoryId === this.#parentCategoryId;
       } else {
@@ -34,12 +34,12 @@ export default class KeyCondition extends BaseCondition {
 
   getURLParameter() {
     const key = {
-      propertyId: this.propertyId
+      propertyId: this._attributeId
     };
     if (this.#parentCategoryId) {
       key.id = {
         categoryId: this.#parentCategoryId,
-        ancestors: Records.getAncestors(this.propertyId, this.#parentCategoryId).map(ancestor => ancestor.categoryId)
+        ancestors: Records.getAncestors(this._attributeId, this.#parentCategoryId).map(ancestor => ancestor.categoryId)
       }
     }
     return key;
@@ -63,14 +63,14 @@ export default class KeyCondition extends BaseCondition {
 
   get value() {
     if (!this.#value) {
-      this.#value = Records.getValue(this._propertyId, this.#parentCategoryId);
+      this.#value = Records.getValue(this._attributeId, this.#parentCategoryId);
     }
     return this.#value;
   }
 
   get query() {
     const query = {
-      attribute: this._propertyId
+      attribute: this._attributeId
     };
     if (this.#parentCategoryId) query.node = this.#parentCategoryId;
     return query;
