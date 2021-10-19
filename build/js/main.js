@@ -3642,15 +3642,16 @@
         });
 
         if (index === -1) return;
-        _classPrivateFieldGet(this, _keyConditions).splice(index, 1)[0]; // post processing (permalink, evaluate)
+
+        var keyCondition = _classPrivateFieldGet(this, _keyConditions).splice(index, 1)[0]; // post processing (permalink, evaluate)
+
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
         var customEvent = new CustomEvent(mutatePropertyCondition, {
           detail: {
             action: 'remove',
-            propertyId: propertyId,
-            parentCategoryId: parentCategoryId
+            keyCondition: keyCondition
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
@@ -4137,8 +4138,8 @@
       }
     }, {
       key: "removeProperty",
-      value: function removeProperty(attributeId, parentCategoryId) {
-        var isMatch = attributeId === _classPrivateFieldGet(this, _condition).attributeId && (parentCategoryId ? parentCategoryId === _classPrivateFieldGet(this, _condition).parentCategoryId : true);
+      value: function removeProperty(keyCondition) {
+        var isMatch = keyCondition.attributeId === _classPrivateFieldGet(this, _condition).attributeId && (keyCondition.parentCategoryId ? keyCondition.parentCategoryId === _classPrivateFieldGet(this, _condition).parentCategoryId : true);
         if (isMatch) _classPrivateFieldGet(this, _ROOT$e).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$e));
         return isMatch;
       }
@@ -4351,17 +4352,19 @@
       DefaultEventEmitter$1.dispatchEvent(customEvent);
     }); // event listeners
 
-    DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
-      console.log(e.detail);
+    DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (_ref) {
+      var _ref$detail = _ref.detail,
+          action = _ref$detail.action,
+          keyCondition = _ref$detail.keyCondition;
 
-      switch (e.detail.action) {
+      switch (action) {
         case 'add':
-          _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, e.detail.keyCondition);
+          _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, keyCondition);
 
           break;
 
         case 'remove':
-          _classPrivateMethodGet(_this, _removeProperty, _removeProperty2).call(_this, e.detail.propertyId, e.detail.parentCategoryId);
+          _classPrivateMethodGet(_this, _removeProperty, _removeProperty2).call(_this, keyCondition);
 
           break;
       }
@@ -4386,10 +4389,10 @@
   } // private methods
   ;
 
-  function _defineTogoKeys2(_ref) {
+  function _defineTogoKeys2(_ref2) {
     var _this2 = this;
 
-    var datasets = _ref.detail.datasets;
+    var datasets = _ref2.detail.datasets;
 
     _classPrivateFieldSet(this, _isDefined, true);
 
@@ -4433,10 +4436,10 @@
     _classPrivateFieldGet(this, _properties).push(new StackingConditionView(_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER), 'key', keyCondition));
   }
 
-  function _removeProperty2(propertyId, parentCategoryId) {
+  function _removeProperty2(keyCondition) {
     // remove from array
     var index = _classPrivateFieldGet(this, _properties).findIndex(function (stackingConditionView) {
-      return stackingConditionView.removeProperty(propertyId, parentCategoryId);
+      return stackingConditionView.removeProperty(keyCondition);
     });
 
     _classPrivateFieldGet(this, _properties).splice(index, 1); // modifier
@@ -4588,12 +4591,14 @@
       });
 
       DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (_ref2) {
-        var detail = _ref2.detail;
+        var _ref2$detail = _ref2.detail,
+            action = _ref2$detail.action,
+            keyCondition = _ref2$detail.keyCondition;
 
-        if (detail.action === 'remove') {
-          if (column.attributeId === detail.propertyId) {
-            if (detail.parentCategoryId && categoryId === detail.parentCategoryId) {
-              _classPrivateFieldGet(_this, _INPUT_KEY).checked = detail.action === 'add';
+        if (action === 'remove') {
+          if (column.attributeId === keyCondition.attributeId) {
+            if (keyCondition.parentCategoryId && categoryId === keyCondition.parentCategoryId) {
+              _classPrivateFieldGet(_this, _INPUT_KEY).checked = action === 'add';
             }
           }
         }
@@ -6272,12 +6277,15 @@
     }); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
-      if (e.detail.parentCategoryId !== undefined) return;
+    DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (_ref) {
+      var _ref$detail = _ref.detail,
+          action = _ref$detail.action,
+          keyCondition = _ref$detail.keyCondition;
+      if (keyCondition.parentCategoryId !== undefined) return;
 
-      switch (e.detail.action) {
+      switch (action) {
         case 'add':
-          if (e.detail.propertyId === attributeId) {
+          if (keyCondition.attributeId === attributeId) {
             _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = true;
 
             _classPrivateFieldGet(_this, _ROOT$8).classList.add('-allselected');
@@ -6286,7 +6294,7 @@
           break;
 
         case 'remove':
-          if (e.detail.propertyId === attributeId) {
+          if (keyCondition.attributeId === attributeId) {
             _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = false;
 
             _classPrivateFieldGet(_this, _ROOT$8).classList.remove('-allselected');

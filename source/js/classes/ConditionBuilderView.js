@@ -49,14 +49,13 @@ export default class ConditionBuilderView {
     });
 
     // event listeners
-    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, e => {
-      console.log(e.detail)
-      switch (e.detail.action) {
+    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail: {action, keyCondition}}) => {
+      switch (action) {
         case 'add':
-          this.#addProperty(e.detail.keyCondition);
+          this.#addProperty(keyCondition);
           break;
         case 'remove':
-          this.#removeProperty(e.detail.propertyId, e.detail.parentCategoryId);
+          this.#removeProperty(keyCondition);
           break;
       }
     });
@@ -112,9 +111,9 @@ export default class ConditionBuilderView {
     this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'key', keyCondition));
   }
   
-  #removeProperty(propertyId, parentCategoryId) {
+  #removeProperty(keyCondition) {
     // remove from array
-    const index = this.#properties.findIndex(stackingConditionView => stackingConditionView.removeProperty(propertyId, parentCategoryId));
+    const index = this.#properties.findIndex(stackingConditionView => stackingConditionView.removeProperty(keyCondition));
     this.#properties.splice(index, 1);
     // modifier
     if (this.#properties.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');

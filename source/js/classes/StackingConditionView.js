@@ -119,10 +119,10 @@ export default class StackingConditionView {
     getValue();
   }
 
-  removeProperty(attributeId, parentCategoryId) {
+  removeProperty(keyCondition) {
     const isMatch =
-      (attributeId === this.#condition.attributeId) &&
-      (parentCategoryId ? parentCategoryId === this.#condition.parentCategoryId : true);
+      (keyCondition.attributeId === this.#condition.attributeId) &&
+      (keyCondition.parentCategoryId ? keyCondition.parentCategoryId === this.#condition.parentCategoryId : true);
     if (isMatch) this.#ROOT.parentNode.removeChild(this.#ROOT);
     return isMatch;
   }

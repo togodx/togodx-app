@@ -77,11 +77,11 @@ class ConditionBuilder {
     // remove from store
     const index = this.#keyConditions.findIndex(keyCondition => keyCondition.isSameCondition(propertyId, parentCategoryId));
     if (index === -1) return;
-    this.#keyConditions.splice(index, 1)[0];
+    const keyCondition = this.#keyConditions.splice(index, 1)[0];
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {action: 'remove', propertyId, parentCategoryId}});
+    const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {action: 'remove', keyCondition}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 

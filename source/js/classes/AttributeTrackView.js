@@ -98,17 +98,17 @@ export default class AttributeTrackView {
       }
     });
     // event listener
-    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, e => {
-      if (e.detail.parentCategoryId !== undefined) return;
-      switch (e.detail.action) {
+    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail: {action, keyCondition}}) => {
+      if (keyCondition.parentCategoryId !== undefined) return;
+      switch (action) {
         case 'add':
-          if (e.detail.propertyId === attributeId) {
+          if (keyCondition.attributeId === attributeId) {
             this.#CHECKBOX_ALL_PROPERTIES.checked = true;
             this.#ROOT.classList.add('-allselected');
           }
           break;
         case 'remove':
-          if (e.detail.propertyId === attributeId) {
+          if (keyCondition.attributeId === attributeId) {
             this.#CHECKBOX_ALL_PROPERTIES.checked = false;
             this.#ROOT.classList.remove('-allselected');
           }

@@ -55,11 +55,11 @@ export default class ColumnItemView {
         ConditionBuilder.removeProperty(column.attributeId, categoryId);
       }
     });
-    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail}) => {
-      if (detail.action === 'remove') {
-        if (column.attributeId === detail.propertyId) {
-          if (detail.parentCategoryId && categoryId === detail.parentCategoryId) {
-            this.#INPUT_KEY.checked = detail.action === 'add';
+    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail: {action, keyCondition}}) => {
+      if (action === 'remove') {
+        if (column.attributeId === keyCondition.attributeId) {
+          if (keyCondition.parentCategoryId && categoryId === keyCondition.parentCategoryId) {
+            this.#INPUT_KEY.checked = action === 'add';
           }
         }
       }
