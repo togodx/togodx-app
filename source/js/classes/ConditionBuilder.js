@@ -55,21 +55,21 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  addPropertyValue(propertyId, categoryId, ancestors = [], isFinal = true) {
-    // console.log(propertyId, categoryId, ancestors)
+  addPropertyValue(attributeId, categoryId, ancestors = [], isFinal = true) {
+    // console.log(attributeId, categoryId, ancestors)
     // find value of same property
-    const sameValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
+    const sameValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.attributeId === attributeId);
     // store
     if (sameValuesCondition) {
       sameValuesCondition.addCategoryId(categoryId);
     } else {
-      const valuesCondition = new ValuesCondition(propertyId, [categoryId]);
+      const valuesCondition = new ValuesCondition(attributeId, [categoryId]);
       this.#valuesConditions.push(valuesCondition);
     }
     // evaluate
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {action: 'add', propertyId, categoryId}});
+    const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {action: 'add', attributeId, categoryId}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
@@ -85,10 +85,10 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  removePropertyValue(propertyId, categoryId, isFinal = true) {
+  removePropertyValue(attributeId, categoryId, isFinal = true) {
     // remove from store
     const index = this.#valuesConditions.findIndex(valuesCondition => {
-      if (valuesCondition.propertyId === propertyId) {
+      if (valuesCondition.attributeId === attributeId) {
         valuesCondition.removeCategoryId(categoryId);
         return valuesCondition.categoryIds.length === 0;
       } else {
@@ -99,7 +99,7 @@ class ConditionBuilder {
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {action: 'remove', propertyId, categoryId}});
+    const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {action: 'remove', attributeId, categoryId}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 

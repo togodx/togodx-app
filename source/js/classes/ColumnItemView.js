@@ -65,7 +65,7 @@ export default class ColumnItemView {
       }
     });
     DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail}) => {
-      if (column.attributeId === detail.propertyId && categoryId === detail.categoryId) {
+      if (column.attributeId === detail.attributeId && categoryId === detail.categoryId) {
         this.#INPUT_VALUE.checked = detail.action === 'add';
       }
     });

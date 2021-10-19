@@ -59,13 +59,13 @@ export default class ConditionBuilderView {
           break;
       }
     });
-    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, e => {
-      switch (e.detail.action) {
+    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail: {action, attributeId, categoryId}}) => {
+      switch (action) {
         case 'add':
-          this.#addPropertyValue(e.detail.propertyId, e.detail.categoryId);
+          this.#addPropertyValue(attributeId, categoryId);
           break;
         case 'remove':
-          this.#removePropertyValue(e.detail.propertyId, e.detail.categoryId);
+          this.#removePropertyValue(attributeId, categoryId);
           break;
       }
     });

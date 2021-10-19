@@ -102,8 +102,8 @@ export default class TrackOverviewCategorical {
     });
 
     // event listener
-    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail: {action, propertyId, categoryId}}) => {
-      if (this.#attribute.id === propertyId) {
+    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail: {action, attributeId, categoryId}}) => {
+      if (this.#attribute.id === attributeId) {
         this.#values.forEach(value => {
           if (value.categoryId === categoryId) {
             switch (action) {

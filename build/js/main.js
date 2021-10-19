@@ -3601,20 +3601,20 @@
       }
     }, {
       key: "addPropertyValue",
-      value: function addPropertyValue(propertyId, categoryId) {
+      value: function addPropertyValue(attributeId, categoryId) {
         var isFinal = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 
-        // console.log(propertyId, categoryId, ancestors)
+        // console.log(attributeId, categoryId, ancestors)
         // find value of same property
         var sameValuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
-          return valuesCondition.propertyId === propertyId;
+          return valuesCondition.attributeId === attributeId;
         }); // store
 
 
         if (sameValuesCondition) {
           sameValuesCondition.addCategoryId(categoryId);
         } else {
-          var valuesCondition = new ValuesCondition(propertyId, [categoryId]);
+          var valuesCondition = new ValuesCondition(attributeId, [categoryId]);
 
           _classPrivateFieldGet(this, _valuesConditions).push(valuesCondition);
         } // evaluate
@@ -3625,7 +3625,7 @@
         var customEvent = new CustomEvent(mutatePropertyValueCondition, {
           detail: {
             action: 'add',
-            propertyId: propertyId,
+            attributeId: attributeId,
             categoryId: categoryId
           }
         });
@@ -3658,12 +3658,12 @@
       }
     }, {
       key: "removePropertyValue",
-      value: function removePropertyValue(propertyId, categoryId) {
+      value: function removePropertyValue(attributeId, categoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
         // remove from store
         var index = _classPrivateFieldGet(this, _valuesConditions).findIndex(function (valuesCondition) {
-          if (valuesCondition.propertyId === propertyId) {
+          if (valuesCondition.attributeId === attributeId) {
             valuesCondition.removeCategoryId(categoryId);
             return valuesCondition.categoryIds.length === 0;
           } else {
@@ -3678,7 +3678,7 @@
         var customEvent = new CustomEvent(mutatePropertyValueCondition, {
           detail: {
             action: 'remove',
-            propertyId: propertyId,
+            attributeId: attributeId,
             categoryId: categoryId
           }
         });
@@ -4369,15 +4369,20 @@
           break;
       }
     });
-    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (e) {
-      switch (e.detail.action) {
+    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref2) {
+      var _ref2$detail = _ref2.detail,
+          action = _ref2$detail.action,
+          attributeId = _ref2$detail.attributeId,
+          categoryId = _ref2$detail.categoryId;
+
+      switch (action) {
         case 'add':
-          _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, e.detail.propertyId, e.detail.categoryId);
+          _classPrivateMethodGet(_this, _addPropertyValue, _addPropertyValue2).call(_this, attributeId, categoryId);
 
           break;
 
         case 'remove':
-          _classPrivateMethodGet(_this, _removePropertyValue, _removePropertyValue2).call(_this, e.detail.propertyId, e.detail.categoryId);
+          _classPrivateMethodGet(_this, _removePropertyValue, _removePropertyValue2).call(_this, attributeId, categoryId);
 
           break;
       }
@@ -4389,10 +4394,10 @@
   } // private methods
   ;
 
-  function _defineTogoKeys2(_ref2) {
+  function _defineTogoKeys2(_ref3) {
     var _this2 = this;
 
-    var datasets = _ref2.detail.datasets;
+    var datasets = _ref3.detail.datasets;
 
     _classPrivateFieldSet(this, _isDefined, true);
 
@@ -4606,7 +4611,7 @@
       DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref3) {
         var detail = _ref3.detail;
 
-        if (column.attributeId === detail.propertyId && categoryId === detail.categoryId) {
+        if (column.attributeId === detail.attributeId && categoryId === detail.categoryId) {
           _classPrivateFieldGet(_this, _INPUT_VALUE).checked = detail.action === 'add';
         }
       });
@@ -6032,10 +6037,10 @@
     DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref) {
       var _ref$detail = _ref.detail,
           action = _ref$detail.action,
-          propertyId = _ref$detail.propertyId,
+          attributeId = _ref$detail.attributeId,
           categoryId = _ref$detail.categoryId;
 
-      if (_classPrivateFieldGet(_this, _attribute$1).id === propertyId) {
+      if (_classPrivateFieldGet(_this, _attribute$1).id === attributeId) {
         _classPrivateFieldGet(_this, _values).forEach(function (value) {
           if (value.categoryId === categoryId) {
             switch (action) {
