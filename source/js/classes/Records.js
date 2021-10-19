@@ -5,14 +5,12 @@ class Records {
   #catexxxgories;
   #attributes;
   #datasets;
-  #properties;
-  // #fetchedCategoryIds;
 
   constructor() {}
 
   // public methods
 
-  setSubjects(subjects, {categories, attributes, datasets}) {
+  setAttributes({categories, attributes, datasets}) {
 
     // define categories
     for (let i = 0; i < categories.length; i++) {
@@ -29,19 +27,6 @@ class Records {
 
     // set attributes
     this.#attributes = Object.keys(attributes).map(id => new Attribute(id, attributes[id]));
-
-    // set properties
-    this.#properties = [];
-    // this.#fetchedCategoryIds = {};
-    subjects.forEach(subject => {
-      subject.properties.forEach(property => {
-        this.#properties.push(Object.assign({
-          catexxxgoryId: subject.subjectId,
-          values: []
-        }, property));
-        // this.#fetchedCategoryIds[property.propertyId] = [];
-      });
-    });
 
     // make stylesheet
     const styleElm = document.createElement('style');
@@ -71,10 +56,8 @@ class Records {
         border-color: var(--color-catexxxgory-${catexxxgory.id});
       }`);
     }
-  }
 
-  setDatasets({tracks, attributes, datasets}) {
-    // TODO:
+    // set datasets
     this.#datasets = datasets;
   }
 
@@ -130,10 +113,6 @@ class Records {
 
   get attributes() {
     return this.#attributes;
-  }
-
-  get properties() {
-    return this.#properties;
   }
   
 }

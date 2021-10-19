@@ -2859,10 +2859,7 @@
 
   var _datasets = /*#__PURE__*/new WeakMap();
 
-  var _properties$1 = /*#__PURE__*/new WeakMap();
-
   var Records = /*#__PURE__*/function () {
-    // #fetchedCategoryIds;
     function Records() {
       _classCallCheck(this, Records);
 
@@ -2880,22 +2877,15 @@
         writable: true,
         value: void 0
       });
-
-      _classPrivateFieldInitSpec(this, _properties$1, {
-        writable: true,
-        value: void 0
-      });
     } // public methods
 
 
     _createClass(Records, [{
-      key: "setSubjects",
-      value: function setSubjects(subjects, _ref) {
-        var _this = this;
-
+      key: "setAttributes",
+      value: function setAttributes(_ref) {
         var categories = _ref.categories,
-            attributes = _ref.attributes;
-            _ref.datasets;
+            attributes = _ref.attributes,
+            datasets = _ref.datasets;
 
         // define categories
         for (var i = 0; i < categories.length; i++) {
@@ -2918,21 +2908,8 @@
 
         _classPrivateFieldSet(this, _attributes, Object.keys(attributes).map(function (id) {
           return new Attribute(id, attributes[id]);
-        })); // set properties
+        })); // make stylesheet
 
-
-        _classPrivateFieldSet(this, _properties$1, []); // this.#fetchedCategoryIds = {};
-
-
-        subjects.forEach(function (subject) {
-          subject.properties.forEach(function (property) {
-            _classPrivateFieldGet(_this, _properties$1).push(Object.assign({
-              catexxxgoryId: subject.subjectId,
-              values: []
-            }, property)); // this.#fetchedCategoryIds[property.propertyId] = [];
-
-          });
-        }); // make stylesheet
 
         var styleElm = document.createElement('style');
         document.head.appendChild(styleElm);
@@ -2951,21 +2928,14 @@
             styleSheet.insertRule("\n      ._catexxxgory-background-color[data-catexxxgory-id=\"".concat(catexxxgory.id, "\"], [data-catexxxgory-id=\"").concat(catexxxgory.id, "\"] ._catexxxgory-background-color {\n        background-color: var(--color-catexxxgory-").concat(catexxxgory.id, ");\n      }"));
             styleSheet.insertRule("\n      ._catexxxgory-background-color-strong[data-catexxxgory-id=\"".concat(catexxxgory.id, "\"], [data-catexxxgory-id=\"").concat(catexxxgory.id, "\"] ._catexxxgory-background-color-strong {\n        background-color: var(--color-catexxxgory-").concat(catexxxgory.id, "-strong);\n      }"));
             styleSheet.insertRule("\n      ._catexxxgory-border-color[data-catexxxgory-id=\"".concat(catexxxgory.id, "\"], [data-catexxxgory-id=\"").concat(catexxxgory.id, "\"] ._catexxxgory-border-color {\n        border-color: var(--color-catexxxgory-").concat(catexxxgory.id, ");\n      }"));
-          }
+          } // set datasets
+
         } catch (err) {
           _iterator.e(err);
         } finally {
           _iterator.f();
         }
-      }
-    }, {
-      key: "setDatasets",
-      value: function setDatasets(_ref2) {
-        _ref2.tracks;
-            _ref2.attributes;
-            var datasets = _ref2.datasets;
 
-        // TODO:
         _classPrivateFieldSet(this, _datasets, datasets);
       }
     }, {
@@ -3045,11 +3015,6 @@
       key: "attributes",
       get: function get() {
         return _classPrivateFieldGet(this, _attributes);
-      }
-    }, {
-      key: "properties",
-      get: function get() {
-        return _classPrivateFieldGet(this, _properties$1);
       }
     }]);
 
@@ -9188,19 +9153,17 @@
         new BalloonView();
         new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
 
-        Promise.all([fetch(config.PROPERTIES), fetch(config.TEMPLATES), fetch(config.BACKEND), fetch(config.ATTRIBUTES)]).then(function (responces) {
+        Promise.all([fetch(config.TEMPLATES), fetch(config.BACKEND), fetch(config.ATTRIBUTES)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
           }));
         }).then(function (_ref) {
-          var _ref2 = _slicedToArray(_ref, 4),
-              subjects = _ref2[0],
-              templates = _ref2[1],
-              backend = _ref2[2],
-              attributes = _ref2[3];
+          var _ref2 = _slicedToArray(_ref, 3),
+              templates = _ref2[0],
+              backend = _ref2[1],
+              attributes = _ref2[2];
 
-          Records$1.setSubjects(subjects, attributes);
-          Records$1.setDatasets(attributes);
+          Records$1.setAttributes(attributes);
           ConditionBuilder$1.init(); // define primary keys
 
           var customEvent = new CustomEvent(defineTogoKey, {

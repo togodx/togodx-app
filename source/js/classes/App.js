@@ -65,7 +65,6 @@ class App {
 
     // load config json
     Promise.all([
-      fetch(config.PROPERTIES),
       fetch(config.TEMPLATES),
       fetch(config.BACKEND),
       fetch(config.ATTRIBUTES)
@@ -73,9 +72,8 @@ class App {
       .then(responces => {
         return Promise.all(responces.map(responce => responce.json()))
       })
-      .then(([subjects, templates, backend, attributes]) => {
-        Records.setSubjects(subjects, attributes);
-        Records.setDatasets(attributes);
+      .then(([templates, backend, attributes]) => {
+        Records.setAttributes(attributes);
         ConditionBuilder.init();
 
         // define primary keys
