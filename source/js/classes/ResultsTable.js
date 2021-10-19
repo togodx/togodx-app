@@ -118,11 +118,11 @@ export default class ResultsTable {
     this.#tableData = tableData;
     this.#intersctionObserver.unobserve(this.#TABLE_END);
     this.#header = [
-      ...tableData.dxCondition.valuesConditions.map(({catexxxgoryId, propertyId}) => {
-        return {catexxxgoryId, propertyId};
+      ...tableData.dxCondition.valuesConditions.map(({catexxxgoryId, attributeId}) => {
+        return {catexxxgoryId, attributeId};
       }),
-      ...tableData.dxCondition.keyConditions.map(({catexxxgoryId, propertyId}) => {
-        return {catexxxgoryId, propertyId};
+      ...tableData.dxCondition.keyConditions.map(({catexxxgoryId, attributeId}) => {
+        return {catexxxgoryId, attributeId};
       })
     ];
     this.#ROOT.classList.remove('-complete');
@@ -244,7 +244,7 @@ export default class ResultsTable {
                             this.#header[columnIndex].catexxxgoryId
                           }"
                           data-main-category-id="${
-                            this.#header[columnIndex].propertyId
+                            this.#header[columnIndex].attributeId
                           }"
                           data-sub-category-id="${
                             attribute.attribute.categoryId

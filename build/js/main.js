@@ -6814,17 +6814,17 @@
 
     _classPrivateFieldSet(this, _header$1, [].concat(_toConsumableArray(tableData.dxCondition.valuesConditions.map(function (_ref) {
       var catexxxgoryId = _ref.catexxxgoryId,
-          propertyId = _ref.propertyId;
+          attributeId = _ref.attributeId;
       return {
         catexxxgoryId: catexxxgoryId,
-        propertyId: propertyId
+        attributeId: attributeId
       };
     })), _toConsumableArray(tableData.dxCondition.keyConditions.map(function (_ref2) {
       var catexxxgoryId = _ref2.catexxxgoryId,
-          propertyId = _ref2.propertyId;
+          attributeId = _ref2.attributeId;
       return {
         catexxxgoryId: catexxxgoryId,
-        propertyId: propertyId
+        attributeId: attributeId
       };
     }))));
 
@@ -6902,7 +6902,7 @@
         if (column) {
           return "\n                  <td><div class=\"inner\"><ul>".concat(column.attributes.map(function (attribute, attributeIndex) {
             if (!attribute.attribute) console.error(attribute);
-            return "\n                      <li>\n                        <div\n                          class=\"togo-key-view\"\n                          data-order=\"".concat([columnIndex + 1, tableData.offset + index], "\"\n                          data-sub-order=\"").concat(attributeIndex, "\"\n                          data-key=\"").concat(column.propertyKey, "\"\n                          data-subject-id=\"").concat(_classPrivateFieldGet(_this3, _header$1)[columnIndex].catexxxgoryId, "\"\n                          data-main-category-id=\"").concat(_classPrivateFieldGet(_this3, _header$1)[columnIndex].propertyId, "\"\n                          data-sub-category-id=\"").concat(attribute.attribute.categoryId ? attribute.attribute.categoryId : attribute.attribute.categoryIds, "\"\n                          data-unique-entry-id=\"").concat(attribute.id, "\"\n                          >").concat(attribute.id, "</div>\n                        <span>").concat(attribute.attribute ? attribute.attribute.label : attribute, "</span>\n                      </li>");
+            return "\n                      <li>\n                        <div\n                          class=\"togo-key-view\"\n                          data-order=\"".concat([columnIndex + 1, tableData.offset + index], "\"\n                          data-sub-order=\"").concat(attributeIndex, "\"\n                          data-key=\"").concat(column.propertyKey, "\"\n                          data-subject-id=\"").concat(_classPrivateFieldGet(_this3, _header$1)[columnIndex].catexxxgoryId, "\"\n                          data-main-category-id=\"").concat(_classPrivateFieldGet(_this3, _header$1)[columnIndex].attributeId, "\"\n                          data-sub-category-id=\"").concat(attribute.attribute.categoryId ? attribute.attribute.categoryId : attribute.attribute.categoryIds, "\"\n                          data-unique-entry-id=\"").concat(attribute.id, "\"\n                          >").concat(attribute.id, "</div>\n                        <span>").concat(attribute.attribute ? attribute.attribute.label : attribute, "</span>\n                      </li>");
           }).join(''), "</ul></div></td>");
         } else {
           return "<td><div class=\"inner -empty\"></div></td>";
