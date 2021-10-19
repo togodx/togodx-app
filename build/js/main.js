@@ -3337,7 +3337,7 @@
         if (this.keyConditions.length === dxCondition.keyConditions.length) {
           matchKeys = this.keyConditions.every(function (keyCondition) {
             return dxCondition.keyConditions.findIndex(function (newKeyCondition) {
-              return keyCondition.propertyId === newKeyCondition.propertyId && keyCondition.parentCategoryId === newKeyCondition.parentCategoryId;
+              return keyCondition.attributeId === newKeyCondition.attributeId && keyCondition.parentCategoryId === newKeyCondition.parentCategoryId;
             }) !== -1;
           });
         } // values
@@ -3348,7 +3348,7 @@
         if (this.valuesConditions.length === dxCondition.valuesConditions.length) {
           matchValues = this.valuesConditions.every(function (valuesCondition) {
             return dxCondition.valuesConditions.findIndex(function (newValuesCondition) {
-              return valuesCondition.propertyId === newValuesCondition.propertyId && valuesCondition.categoryIds.length === newValuesCondition.categoryIds.length && valuesCondition.categoryIds.every(function (categoryId) {
+              return valuesCondition.attributeId === newValuesCondition.attributeId && valuesCondition.categoryIds.length === newValuesCondition.categoryIds.length && valuesCondition.categoryIds.every(function (categoryId) {
                 return newValuesCondition.categoryIds.findIndex(function (newCategoryId) {
                   return categoryId === newCategoryId;
                 }) !== -1;
@@ -3396,13 +3396,13 @@
 
   function _copyKeyConditions2(keyConditions) {
     return keyConditions.map(function (keyCondition) {
-      return new KeyCondition(keyCondition.propertyId, keyCondition.parentCategoryId);
+      return new KeyCondition(keyCondition.attributeId, keyCondition.parentCategoryId);
     });
   }
 
   function _copyValuesConditions2(valuesConditions) {
     return valuesConditions.map(function (valuesCondition) {
-      return new ValuesCondition(valuesCondition.propertyId, _toConsumableArray(valuesCondition.categoryIds));
+      return new ValuesCondition(valuesCondition.attributeId, _toConsumableArray(valuesCondition.categoryIds));
     });
   }
 
@@ -4907,7 +4907,6 @@
 
           // find ancestors
           parentCategoryId = (_column = column) === null || _column === void 0 ? void 0 : _column.dataset.parentCategoryId;
-          console.log(parentCategoryId);
 
           if (parentCategoryId) {
             ancestors.unshift(parentCategoryId);
@@ -4917,7 +4916,6 @@
 
         if (checkbox.checked) {
           // add
-          console.log(ancestors);
           ConditionBuilder$1.addPropertyValue(this.attributeId, checkbox.value, ancestors);
         } else {
           // remove
@@ -6366,7 +6364,7 @@
 
   var _index = /*#__PURE__*/new WeakMap();
 
-  var _propertyId = /*#__PURE__*/new WeakMap();
+  var _attributeId = /*#__PURE__*/new WeakMap();
 
   var _tableData$2 = /*#__PURE__*/new WeakMap();
 
@@ -6395,7 +6393,7 @@
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _propertyId, {
+      _classPrivateFieldInitSpec(this, _attributeId, {
         writable: true,
         value: void 0
       });
@@ -6427,7 +6425,7 @@
 
       _classPrivateFieldSet(this, _index, index);
 
-      _classPrivateFieldSet(this, _propertyId, condition.propertyId);
+      _classPrivateFieldSet(this, _attributeId, condition.attributeId);
 
       _classPrivateFieldSet(this, _tableData$2, tableData);
 
@@ -6441,9 +6439,9 @@
       elm.innerHTML = "\n    <div class=\"statistics\">\n      <div class=\"bars\"></div>\n    </div>\n    <div class=\"loading-view -shown\"></div>\n    "; // display order of bar chart
 
       if (condition.parentCategoryId) {
-        _classPrivateFieldSet(this, _referenceValues, Records$1.getValuesWithParentCategoryId(_classPrivateFieldGet(this, _propertyId), condition.parentCategoryId));
+        _classPrivateFieldSet(this, _referenceValues, Records$1.getValuesWithParentCategoryId(_classPrivateFieldGet(this, _attributeId), condition.parentCategoryId));
       } else {
-        _classPrivateFieldSet(this, _referenceValues, Records$1.getAttribute(_classPrivateFieldGet(this, _propertyId)).values);
+        _classPrivateFieldSet(this, _referenceValues, Records$1.getAttribute(_classPrivateFieldGet(this, _attributeId)).values);
       } // references
 
 
@@ -7912,7 +7910,7 @@
       elm.classList.add('table-data-controller-view');
       elm.dataset.status = 'load ids';
       elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condition\">\n        <p title=\"".concat(dxCondition.togoKey, "\">").concat(Records$1.getDatasetLabel(dxCondition.togoKey), "</p>\n      </div>\n      ").concat(_classPrivateFieldGet(this, _dxCondition).valuesConditions.map(function (valuesCondition) {
-        var label = Records$1.getAttribute(valuesCondition.propertyId).label;
+        var label = Records$1.getAttribute(valuesCondition.attributeId).label;
         return "<div class=\"condition _catexxxgory-background-color\" data-catexxxgory-id=\"".concat(valuesCondition.catexxxgoryId, "\">\n              <p title=\"").concat(label, "\">").concat(label, "</p>\n            </div>");
       }).join(''), "\n      ").concat(_classPrivateFieldGet(this, _dxCondition).keyConditions.map(function (keyCondition) {
         return "<div class=\"condition _catexxxgory-color\" data-catexxxgory-id=\"".concat(keyCondition.catexxxgoryId, "\">\n              <p title=\"").concat(keyCondition.label, "\">").concat(keyCondition.label, "</p>\n            </div>");
@@ -8096,7 +8094,7 @@
 
     ConditionBuilder$1.setProperties(_classPrivateFieldGet(this, _dxCondition).keyConditions.map(function (keyCondition) {
       return {
-        propertyId: keyCondition.propertyId,
+        propertyId: keyCondition.attributeId,
         parentCategoryId: keyCondition.parentCategoryId
       };
     }), false); // attribute (classification/distribution)
@@ -8105,7 +8103,7 @@
       var id = _ref2.id;
 
       var valuesCondition = _classPrivateFieldGet(_this3, _dxCondition).valuesConditions.find(function (valuesCondition) {
-        return valuesCondition.propertyId === id;
+        return valuesCondition.attributeId === id;
       });
 
       var categoryIds = [];

@@ -113,7 +113,7 @@ export default class TableData {
       ${
         this.#dxCondition.valuesConditions
           .map(valuesCondition => {
-            const label = Records.getAttribute(valuesCondition.propertyId).label;
+            const label = Records.getAttribute(valuesCondition.attributeId).label;
             return `<div class="condition _catexxxgory-background-color" data-catexxxgory-id="${valuesCondition.catexxxgoryId}">
               <p title="${label}">${label}</p>
             </div>`
@@ -267,7 +267,7 @@ export default class TableData {
     ConditionBuilder.setProperties(
       this.#dxCondition.keyConditions.map(keyCondition => {
         return {
-          propertyId: keyCondition.propertyId,
+          propertyId: keyCondition.attributeId,
           parentCategoryId: keyCondition.parentCategoryId,
         }
       }),
@@ -275,7 +275,7 @@ export default class TableData {
     );
     // attribute (classification/distribution)
     Records.attributes.forEach(({id}) => {
-      const valuesCondition = this.#dxCondition.valuesConditions.find(valuesCondition => valuesCondition.propertyId === id);
+      const valuesCondition = this.#dxCondition.valuesConditions.find(valuesCondition => valuesCondition.attributeId === id);
       const categoryIds = [];
       if (valuesCondition) categoryIds.push(...valuesCondition.categoryIds);
       ConditionBuilder.setPropertyValues(id, categoryIds, false);

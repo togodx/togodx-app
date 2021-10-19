@@ -5,7 +5,7 @@ import * as event from '../events';
 export default class StatisticsView {
 
   #index;
-  #propertyId;
+  #attributeId;
   #tableData;
   #referenceValues;
   #BARS;
@@ -15,7 +15,7 @@ export default class StatisticsView {
   constructor(statisticsRootNode, elm, tableData, index, condition) {
 
     this.#index = index;
-    this.#propertyId = condition.propertyId;
+    this.#attributeId = condition.attributeId;
     this.#tableData = tableData;
     this.#ROOT_NODE = statisticsRootNode;
     this.#ROOT = elm;
@@ -33,9 +33,9 @@ export default class StatisticsView {
 
     // display order of bar chart
     if (condition.parentCategoryId) {
-      this.#referenceValues = Records.getValuesWithParentCategoryId(this.#propertyId, condition.parentCategoryId);
+      this.#referenceValues = Records.getValuesWithParentCategoryId(this.#attributeId, condition.parentCategoryId);
     } else {
-      this.#referenceValues = Records.getAttribute(this.#propertyId).values;
+      this.#referenceValues = Records.getAttribute(this.#attributeId).values;
     }
 
     // references
