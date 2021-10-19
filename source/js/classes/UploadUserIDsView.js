@@ -93,8 +93,9 @@ export default class UploadUserIDsView {
   #fetch() {
     if (this.#USER_IDS.value === '') return;
     this.#prepareProgressIndicator();
-    Records.properties.forEach(property => {
-      this.#getProperty(property);
+    Records.attributes.forEach(attribute => {
+      // TODO: この処理は Attribute に移行
+      this.#getProperty(attribute);
     });
   }
 
@@ -107,13 +108,13 @@ export default class UploadUserIDsView {
     this.#ROOT.dataset.status = '';
     this.#progressIndicator.setIndicator(
       'In progress',
-      Records.properties.length
+      Records.attributes.length
     );
   }
 
-  #getProperty({propertyId, primaryKey}) {
+  #getProperty({id, primaryKey}) {
     axios
-      .get(queryTemplates.dataFromUserIds(propertyId), {
+      .get(queryTemplates.dataFromUserIds(id), {
         cancelToken: this.#source.token,
       })
       .then(response => {
@@ -123,7 +124,7 @@ export default class UploadUserIDsView {
         // dispatch event
         const customEvent = new CustomEvent(event.setUserValues, {
           detail: {
-            propertyId,
+            propertyId: id,
             values: response.data,
           },
         });
@@ -134,7 +135,7 @@ export default class UploadUserIDsView {
         const customEvent = new CustomEvent(event.toggleErrorUserValues, {
           detail: {
             mode: 'show',
-            propertyId,
+            propertyId: id,
             message: 'Failed to map this ID',
           },
         });
@@ -143,7 +144,7 @@ export default class UploadUserIDsView {
         this.#errorCount++;
       })
       .then(() => {
-        if (this.#offset >= Records.properties.length) {
+        if (this.#offset >= Records.attributes.length) {
           this.#complete(this.#errorCount > 0);
         }
       });

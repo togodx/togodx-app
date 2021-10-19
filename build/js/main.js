@@ -4792,11 +4792,11 @@
 
   var ColumnSelectorSortManager$1 = new ColumnSelectorSortManager();
 
-  function dataFromUserIds(propertyId) {
+  function dataFromUserIds(attributeId) {
     var _ConditionBuilder$use;
 
     var categoryIds = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-    return "".concat(App$1.locate, "?attribute=").concat(propertyId, "&categoryIds=").concat(categoryIds, "&togokey=").concat(ConditionBuilder$1.currentTogoKey, "&queries=").concat((_ConditionBuilder$use = ConditionBuilder$1.userIds) !== null && _ConditionBuilder$use !== void 0 ? _ConditionBuilder$use : '');
+    return "".concat(App$1.locate, "?attribute=").concat(attributeId, "&categoryIds=").concat(categoryIds, "&togokey=").concat(ConditionBuilder$1.currentTogoKey, "&queries=").concat((_ConditionBuilder$use = ConditionBuilder$1.userIds) !== null && _ConditionBuilder$use !== void 0 ? _ConditionBuilder$use : '');
   }
 
   var _depth = /*#__PURE__*/new WeakMap();
@@ -8957,8 +8957,9 @@
 
     _classPrivateMethodGet(this, _prepareProgressIndicator, _prepareProgressIndicator2).call(this);
 
-    Records$1.properties.forEach(function (property) {
-      _classPrivateMethodGet(_this2, _getProperty, _getProperty2).call(_this2, property);
+    Records$1.attributes.forEach(function (attribute) {
+      // TODO: この処理は Attribute に移行
+      _classPrivateMethodGet(_this2, _getProperty, _getProperty2).call(_this2, attribute);
     });
   }
 
@@ -8972,15 +8973,15 @@
 
     _classPrivateFieldGet(this, _ROOT).dataset.status = '';
 
-    _classPrivateFieldGet(this, _progressIndicator).setIndicator('In progress', Records$1.properties.length);
+    _classPrivateFieldGet(this, _progressIndicator).setIndicator('In progress', Records$1.attributes.length);
   }
 
   function _getProperty2(_ref) {
     var _this3 = this;
 
-    var propertyId = _ref.propertyId;
+    var id = _ref.id;
         _ref.primaryKey;
-    axios.get(dataFromUserIds(propertyId), {
+    axios.get(dataFromUserIds(id), {
       cancelToken: _classPrivateFieldGet(this, _source).token
     }).then(function (response) {
       _classPrivateFieldGet(_this3, _BODY).classList.add('-showuserids');
@@ -8990,7 +8991,7 @@
 
       var customEvent = new CustomEvent(setUserValues, {
         detail: {
-          propertyId: propertyId,
+          propertyId: id,
           values: response.data
         }
       });
@@ -9001,7 +9002,7 @@
       var customEvent = new CustomEvent(toggleErrorUserValues, {
         detail: {
           mode: 'show',
-          propertyId: propertyId,
+          propertyId: id,
           message: 'Failed to map this ID'
         }
       });
@@ -9011,7 +9012,7 @@
 
       _classPrivateFieldSet(_this3, _errorCount, (+_classPrivateFieldGet(_this3, _errorCount)) + 1);
     }).then(function () {
-      if (_classPrivateFieldGet(_this3, _offset) >= Records$1.properties.length) {
+      if (_classPrivateFieldGet(_this3, _offset) >= Records$1.attributes.length) {
         _classPrivateMethodGet(_this3, _complete, _complete2).call(_this3, _classPrivateFieldGet(_this3, _errorCount) > 0);
       }
     });
