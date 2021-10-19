@@ -44,14 +44,14 @@ class ConditionBuilder {
     this.#postProcessing();
   }
 
-  addProperty(propertyId, parentCategoryId, isFinal = true) {
+  addProperty(attributeId, parentCategoryId, isFinal = true) {
     // store
-    const keyCondiiton = new KeyCondition(propertyId, parentCategoryId);
-    this.#keyConditions.push(keyCondiiton);
+    const keyCondition = new KeyCondition(attributeId, parentCategoryId);
+    this.#keyConditions.push(keyCondition);
     // evaluate
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {action: 'add', propertyId, parentCategoryId}});
+    const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {action: 'add', keyCondition}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 

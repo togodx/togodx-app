@@ -5,6 +5,7 @@ export default class KeyCondition extends BaseCondition {
 
   #parentCategoryId;
   #value;
+  #ancestors;
 
   constructor(attributeId, parentCategoryId) {
     super(attributeId);
@@ -31,6 +32,7 @@ export default class KeyCondition extends BaseCondition {
       return false;
     }
   }
+  
 
   getURLParameter() {
     const key = {
@@ -39,7 +41,7 @@ export default class KeyCondition extends BaseCondition {
     if (this.#parentCategoryId) {
       key.id = {
         categoryId: this.#parentCategoryId,
-        ancestors: Records.getAncestors(this._attributeId, this.#parentCategoryId).map(ancestor => ancestor.categoryId)
+        ancestors: this.ancestors
       }
     }
     return key;
@@ -48,9 +50,15 @@ export default class KeyCondition extends BaseCondition {
 
   // accessor
 
-
   get parentCategoryId() {
     return this.#parentCategoryId;
+  }
+
+  get ancestors() {
+    if (!this.#ancestors) {
+      this.#ancestors = Records.getAncestors(this._attributeId, this.#parentCategoryId).map(ancestor => ancestor.categoryId);
+    }
+    return this.#ancestors;
   }
 
   get label() {

@@ -3093,6 +3093,8 @@
 
   var _value = /*#__PURE__*/new WeakMap();
 
+  var _ancestors = /*#__PURE__*/new WeakMap();
+
   var KeyCondition = /*#__PURE__*/function (_BaseCondition) {
     _inherits(KeyCondition, _BaseCondition);
 
@@ -3111,6 +3113,11 @@
       });
 
       _classPrivateFieldInitSpec(_assertThisInitialized(_this), _value, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(_assertThisInitialized(_this), _ancestors, {
         writable: true,
         value: void 0
       });
@@ -3151,9 +3158,7 @@
         if (_classPrivateFieldGet(this, _parentCategoryId$1)) {
           key.id = {
             categoryId: _classPrivateFieldGet(this, _parentCategoryId$1),
-            ancestors: Records$1.getAncestors(this._attributeId, _classPrivateFieldGet(this, _parentCategoryId$1)).map(function (ancestor) {
-              return ancestor.categoryId;
-            })
+            ancestors: this.ancestors
           };
         }
 
@@ -3164,6 +3169,17 @@
       key: "parentCategoryId",
       get: function get() {
         return _classPrivateFieldGet(this, _parentCategoryId$1);
+      }
+    }, {
+      key: "ancestors",
+      get: function get() {
+        if (!_classPrivateFieldGet(this, _ancestors)) {
+          _classPrivateFieldSet(this, _ancestors, Records$1.getAncestors(this._attributeId, _classPrivateFieldGet(this, _parentCategoryId$1)).map(function (ancestor) {
+            return ancestor.categoryId;
+          }));
+        }
+
+        return _classPrivateFieldGet(this, _ancestors);
       }
     }, {
       key: "label",
@@ -3565,12 +3581,12 @@
       }
     }, {
       key: "addProperty",
-      value: function addProperty(propertyId, parentCategoryId) {
+      value: function addProperty(attributeId, parentCategoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
         // store
-        var keyCondiiton = new KeyCondition(propertyId, parentCategoryId);
+        var keyCondition = new KeyCondition(attributeId, parentCategoryId);
 
-        _classPrivateFieldGet(this, _keyConditions).push(keyCondiiton); // evaluate
+        _classPrivateFieldGet(this, _keyConditions).push(keyCondition); // evaluate
 
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
@@ -3578,8 +3594,7 @@
         var customEvent = new CustomEvent(mutatePropertyCondition, {
           detail: {
             action: 'add',
-            propertyId: propertyId,
-            parentCategoryId: parentCategoryId
+            keyCondition: keyCondition
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
@@ -4036,9 +4051,9 @@
         value: void 0
       });
 
-      _classPrivateFieldSet(this, _condition, condition);
+      _classPrivateFieldSet(this, _condition, condition); // const category = Records.getCatexxxgoryWithAttributeId(condition.attributeId);
 
-      var category = Records$1.getCatexxxgoryWithAttributeId(condition.attributeId);
+
       var attribute = Records$1.getAttribute(condition.attributeId); // this.#isRange = isRange;
       // attributes
 
@@ -4046,25 +4061,25 @@
 
       _classPrivateFieldGet(this, _ROOT$e).classList.add('stacking-condition-view');
 
-      _classPrivateFieldGet(this, _ROOT$e).dataset.catexxxgoryId = category.id;
+      _classPrivateFieldGet(this, _ROOT$e).dataset.catexxxgoryId = condition.catexxxgoryId;
       _classPrivateFieldGet(this, _ROOT$e).dataset.propertyId = condition.attributeId;
       if (condition.parentCategoryId) _classPrivateFieldGet(this, _ROOT$e).dataset.parentCategoryId = condition.parentCategoryId; // make view
 
       var _label,
-          _ancestorLabels = [category.label];
+          _ancestorLabels = [Records$1.getCatexxxgory(condition.catexxxgoryId).label];
 
       switch (true) {
         case _classPrivateFieldGet(this, _condition) instanceof KeyCondition:
           {
             if (condition.parentCategoryId) {
               var getValue = function getValue() {
-                var value = Records$1.getValue(condition.attributeId, condition.parentCategoryId);
+                var value = condition.value;
 
                 if (value) {
-                  var ancestors = Records$1.getAncestors(condition.attributeId, condition.parentCategoryId);
+                  // const ancestors = Records.getAncestors(condition.attributeId, condition.parentCategoryId);
                   _label = "<div class=\"label _catexxxgory-color\">".concat(value.label, "</div>");
 
-                  _ancestorLabels.push.apply(_ancestorLabels, [attribute.label].concat(_toConsumableArray(ancestors.map(function (ancestor) {
+                  _ancestorLabels.push.apply(_ancestorLabels, [attribute.label].concat(_toConsumableArray(condition.ancestors.map(function (ancestor) {
                     return ancestor.label;
                   }))));
 
@@ -4337,9 +4352,11 @@
     }); // event listeners
 
     DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (e) {
+      console.log(e.detail);
+
       switch (e.detail.action) {
         case 'add':
-          _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, e.detail.propertyId, e.detail.parentCategoryId);
+          _classPrivateMethodGet(_this, _addProperty, _addProperty2).call(_this, e.detail.keyCondition);
 
           break;
 
@@ -4408,12 +4425,12 @@
     _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));
   }
 
-  function _addProperty2(propertyId, parentCategoryId) {
+  function _addProperty2(keyCondition) {
     // modifier
     _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.remove('-empty'); // make view
 
 
-    _classPrivateFieldGet(this, _properties).push(new StackingConditionView(_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER), 'key', new KeyCondition(propertyId, parentCategoryId)));
+    _classPrivateFieldGet(this, _properties).push(new StackingConditionView(_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER), 'key', keyCondition));
   }
 
   function _removeProperty2(propertyId, parentCategoryId) {

@@ -50,9 +50,10 @@ export default class ConditionBuilderView {
 
     // event listeners
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, e => {
+      console.log(e.detail)
       switch (e.detail.action) {
         case 'add':
-          this.#addProperty(e.detail.propertyId, e.detail.parentCategoryId);
+          this.#addProperty(e.detail.keyCondition);
           break;
         case 'remove':
           this.#removeProperty(e.detail.propertyId, e.detail.parentCategoryId);
@@ -104,11 +105,11 @@ export default class ConditionBuilderView {
     this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }
 
-  #addProperty(propertyId, parentCategoryId) {
+  #addProperty(keyCondition) {
     // modifier
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
-    this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'key', new KeyCondition(propertyId, parentCategoryId)));
+    this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'key', keyCondition));
   }
   
   #removeProperty(propertyId, parentCategoryId) {
