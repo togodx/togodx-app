@@ -3634,12 +3634,12 @@
       }
     }, {
       key: "removeProperty",
-      value: function removeProperty(propertyId, parentCategoryId) {
+      value: function removeProperty(attributeId, parentCategoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
         // remove from store
         var index = _classPrivateFieldGet(this, _keyConditions).findIndex(function (keyCondition) {
-          return keyCondition.isSameCondition(propertyId, parentCategoryId);
+          return keyCondition.isSameCondition(attributeId, parentCategoryId);
         });
 
         if (index === -1) return;
@@ -3694,40 +3694,40 @@
 
         // delete existing properties
         while (_classPrivateFieldGet(this, _keyConditions).length > 0) {
-          this.removeProperty(_classPrivateFieldGet(this, _keyConditions)[0].propertyId, _classPrivateFieldGet(this, _keyConditions)[0].parentCategoryId, false);
+          this.removeProperty(_classPrivateFieldGet(this, _keyConditions)[0].attributeId, _classPrivateFieldGet(this, _keyConditions)[0].parentCategoryId, false);
         }
 
         conditions.forEach(function (_ref) {
-          var propertyId = _ref.propertyId,
+          var attributeId = _ref.attributeId,
               parentCategoryId = _ref.parentCategoryId;
-          return _this.addProperty(propertyId, parentCategoryId, false);
+          return _this.addProperty(attributeId, parentCategoryId, false);
         }); // post processing (permalink, evaluate)
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
     }, {
       key: "setPropertyValues",
-      value: function setPropertyValues(propertyId, categoryIds) {
+      value: function setPropertyValues(attributeId, categoryIds) {
         var _this2 = this;
 
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
         var oldValuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
-          return valuesCondition.propertyId === propertyId;
+          return valuesCondition.attributeId === attributeId;
         });
 
         if (oldValuesCondition) {
-          var originalValues = Records$1.getAttribute(propertyId).values;
+          var originalValues = Records$1.getAttribute(attributeId).values;
           originalValues.forEach(function (originalValue) {
             var indexInNew = categoryIds.indexOf(originalValue.categoryId);
             var indexInOld = oldValuesCondition.categoryIds.indexOf(originalValue.categoryId);
 
             if (indexInNew !== -1) {
               // if new value does not exist in old values, add property value
-              if (indexInOld === -1) _this2.addPropertyValue(propertyId, originalValue.categoryId, [], false);
+              if (indexInOld === -1) _this2.addPropertyValue(attributeId, originalValue.categoryId, [], false);
             } else {
               // if extra value exists in old values, remove property value
-              if (indexInOld !== -1) _this2.removePropertyValue(propertyId, originalValue.categoryId, false);
+              if (indexInOld !== -1) _this2.removePropertyValue(attributeId, originalValue.categoryId, false);
             }
           });
         } else {
@@ -3737,7 +3737,7 @@
           try {
             for (_iterator.s(); !(_step = _iterator.n()).done;) {
               var categoryId = _step.value;
-              this.addPropertyValue(propertyId, categoryId, [], false);
+              this.addPropertyValue(attributeId, categoryId, [], false);
             }
           } catch (err) {
             _iterator.e(err);
@@ -3852,6 +3852,15 @@
       keys: (_JSON$parse = JSON.parse(params.get('keys'))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
       values: (_JSON$parse2 = JSON.parse(params.get('values'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
     };
+    condition.keys.forEach(function (key) {
+      // TODO: URL parameter の変更が終了したらこの処理は不要
+      key.attributeId = key.propertyId;
+      delete key.propertyId;
+    });
+    condition.values.forEach(function (key) {
+      key.attributeId = key.propertyId;
+      delete key.propertyId;
+    });
 
     if (isFirst) {
       // get child category ids
@@ -3865,15 +3874,15 @@
     if (condition.togoKey) _classPrivateFieldSet(this, _togoKey, condition.togoKey);
     var queue = [];
 
-    var addQueue = function addQueue(propertyId, id) {
+    var addQueue = function addQueue(attributeId, id) {
       var ancestors = [id.categoryId];
       if (id.ancestors) ancestors.push.apply(ancestors, _toConsumableArray(id.ancestors));
       ancestors.forEach(function (categoryId) {
         if (queue.findIndex(function (task) {
-          return task.propertyId === propertyId && task.categoryId === categoryId;
+          return task.attributeId === attributeId && task.categoryId === categoryId;
         }) === -1) {
           queue.push({
-            propertyId: propertyId,
+            attributeId: attributeId,
             categoryId: categoryId
           });
         }
@@ -3881,15 +3890,15 @@
     };
 
     condition.keys.forEach(function (_ref2) {
-      var propertyId = _ref2.propertyId,
+      var attributeId = _ref2.attributeId,
           id = _ref2.id;
-      if (id) addQueue(propertyId, id);
+      if (id) addQueue(attributeId, id);
     });
     condition.values.forEach(function (_ref3) {
-      var propertyId = _ref3.propertyId,
+      var attributeId = _ref3.attributeId,
           ids = _ref3.ids;
       ids.forEach(function (id) {
-        if (id.ancestors) addQueue(propertyId, id);
+        if (id.ancestors) addQueue(attributeId, id);
       });
     });
 
@@ -3901,10 +3910,10 @@
 
     if (queue.length > 0) {
       var _queue$shift = queue.shift(),
-          propertyId = _queue$shift.propertyId,
+          attributeId = _queue$shift.attributeId,
           categoryId = _queue$shift.categoryId;
 
-      _classPrivateMethodGet(this, _getChildCategoryIds, _getChildCategoryIds2).call(this, propertyId, categoryId).then(function () {
+      _classPrivateMethodGet(this, _getChildCategoryIds, _getChildCategoryIds2).call(this, attributeId, categoryId).then(function () {
         return _classPrivateMethodGet(_this3, _progressQueueOfGettingChildCategoryIds, _progressQueueOfGettingChildCategoryIds2).call(_this3, condition, queue);
       });
     } else {
@@ -3944,11 +3953,11 @@
     this.setProperties(keys2, false);
     Records$1.attributes.forEach(function (_ref5) {
       var id = _ref5.id;
-      var property = values2.find(function (property) {
-        return property.propertyId === id;
+      var attribute = values2.find(function (attribute) {
+        return attribute.attributeId === id;
       });
       var categoryIds = [];
-      if (property) categoryIds.push.apply(categoryIds, _toConsumableArray(property.categoryIds));
+      if (attribute) categoryIds.push.apply(categoryIds, _toConsumableArray(attribute.categoryIds));
 
       _this4.setPropertyValues(id, categoryIds, false);
     });
@@ -3989,18 +3998,18 @@
   function _getCondtionsFromHierarchicConditions2(keys, values) {
     // restore conditions
     var keys2 = keys.map(function (_ref6) {
-      var propertyId = _ref6.propertyId,
+      var attributeId = _ref6.attributeId,
           id = _ref6.id;
       return {
-        propertyId: propertyId,
+        attributeId: attributeId,
         parentCategoryId: id === null || id === void 0 ? void 0 : id.categoryId
       };
     });
     var values2 = values.map(function (_ref7) {
-      var propertyId = _ref7.propertyId,
+      var attributeId = _ref7.attributeId,
           ids = _ref7.ids;
       return {
-        propertyId: propertyId,
+        attributeId: attributeId,
         categoryIds: ids.map(function (id) {
           return id.categoryId;
         })
@@ -8122,7 +8131,7 @@
 
     ConditionBuilder$1.setProperties(_classPrivateFieldGet(this, _dxCondition).keyConditions.map(function (keyCondition) {
       return {
-        propertyId: keyCondition.attributeId,
+        attributeId: keyCondition.attributeId,
         parentCategoryId: keyCondition.parentCategoryId
       };
     }), false); // attribute (classification/distribution)

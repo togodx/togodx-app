@@ -73,9 +73,9 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  removeProperty(propertyId, parentCategoryId, isFinal = true) {
+  removeProperty(attributeId, parentCategoryId, isFinal = true) {
     // remove from store
-    const index = this.#keyConditions.findIndex(keyCondition => keyCondition.isSameCondition(propertyId, parentCategoryId));
+    const index = this.#keyConditions.findIndex(keyCondition => keyCondition.isSameCondition(attributeId, parentCategoryId));
     if (index === -1) return;
     const keyCondition = this.#keyConditions.splice(index, 1)[0];
     // post processing (permalink, evaluate)
@@ -106,32 +106,32 @@ class ConditionBuilder {
   setProperties(conditions, isFinal = true) {
     // delete existing properties
     while (this.#keyConditions.length > 0) {
-      this.removeProperty(this.#keyConditions[0].propertyId, this.#keyConditions[0].parentCategoryId, false);
+      this.removeProperty(this.#keyConditions[0].attributeId, this.#keyConditions[0].parentCategoryId, false);
     };
     // set new properties
-    conditions.forEach(({propertyId, parentCategoryId}) => this.addProperty(propertyId, parentCategoryId, false));
+    conditions.forEach(({attributeId, parentCategoryId}) => this.addProperty(attributeId, parentCategoryId, false));
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
   }
 
-  setPropertyValues(propertyId, categoryIds, isFinal = true) {
-    const oldValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
+  setPropertyValues(attributeId, categoryIds, isFinal = true) {
+    const oldValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.attributeId === attributeId);
     if (oldValuesCondition) {
-      const originalValues = Records.getAttribute(propertyId).values;
+      const originalValues = Records.getAttribute(attributeId).values;
       originalValues.forEach(originalValue => {
         const indexInNew = categoryIds.indexOf(originalValue.categoryId);
         const indexInOld = oldValuesCondition.categoryIds.indexOf(originalValue.categoryId);
         if (indexInNew !== -1) {
           // if new value does not exist in old values, add property value
-          if (indexInOld === -1) this.addPropertyValue(propertyId, originalValue.categoryId, [], false);
+          if (indexInOld === -1) this.addPropertyValue(attributeId, originalValue.categoryId, [], false);
         } else {
           // if extra value exists in old values, remove property value
-          if (indexInOld !== -1) this.removePropertyValue(propertyId, originalValue.categoryId, false);
+          if (indexInOld !== -1) this.removePropertyValue(attributeId, originalValue.categoryId, false);
         }
       });
     } else {
       for (const categoryId of categoryIds) {
-        this.addPropertyValue(propertyId, categoryId, [], false);
+        this.addPropertyValue(attributeId, categoryId, [], false);
       }
     }
     // post processing (permalink, evaluate)
@@ -217,6 +217,14 @@ class ConditionBuilder {
       keys: JSON.parse(params.get('keys')) ?? [],
       values: JSON.parse(params.get('values')) ?? []
     }
+    condition.keys.forEach(key => { // TODO: URL parameter の変更が終了したらこの処理は不要
+      key.attributeId = key.propertyId;
+      delete key.propertyId;
+    });
+    condition.values.forEach(key => {
+      key.attributeId = key.propertyId;
+      delete key.propertyId;
+    });
     
     if (isFirst) {
       // get child category ids
@@ -230,21 +238,21 @@ class ConditionBuilder {
   #makeQueueOfGettingChildCategoryIds(condition) {
     if (condition.togoKey) this.#togoKey = condition.togoKey;
     const queue = [];
-    const addQueue = (propertyId, id) => {
+    const addQueue = (attributeId, id) => {
       const ancestors = [id.categoryId];
       if (id.ancestors) ancestors.push(...id.ancestors);
       ancestors.forEach(categoryId => {
-        if (queue.findIndex(task => task.propertyId === propertyId && task.categoryId === categoryId) === -1) {
-          queue.push({propertyId, categoryId});
+        if (queue.findIndex(task => task.attributeId === attributeId && task.categoryId === categoryId) === -1) {
+          queue.push({attributeId, categoryId});
         }
       });
     };
-    condition.keys.forEach(({propertyId, id}) => {
-      if (id) addQueue(propertyId, id);
+    condition.keys.forEach(({attributeId, id}) => {
+      if (id) addQueue(attributeId, id);
     });
-    condition.values.forEach(({propertyId, ids}) => {
+    condition.values.forEach(({attributeId, ids}) => {
       ids.forEach(id => {
-        if (id.ancestors) addQueue(propertyId, id);
+        if (id.ancestors) addQueue(attributeId, id);
       });
     });
     this.#progressQueueOfGettingChildCategoryIds(condition, queue);
@@ -252,8 +260,8 @@ class ConditionBuilder {
 
   #progressQueueOfGettingChildCategoryIds(condition, queue) {
     if (queue.length > 0) {
-      const {propertyId, categoryId} = queue.shift();
-      this.#getChildCategoryIds(propertyId, categoryId)
+      const {attributeId, categoryId} = queue.shift();
+      this.#getChildCategoryIds(attributeId, categoryId)
         .then(() => this.#progressQueueOfGettingChildCategoryIds(condition, queue));
     } else {
       this.#restoreConditions(condition);
@@ -282,9 +290,9 @@ class ConditionBuilder {
     const [keys2, values2] = this.#getCondtionsFromHierarchicConditions(keys, values);
     this.setProperties(keys2, false);
     Records.attributes.forEach(({id}) => {
-      const property = values2.find(property => property.propertyId === id);
+      const attribute = values2.find(attribute => attribute.attributeId === id);
       const categoryIds = [];
-      if (property) categoryIds.push(...property.categoryIds);
+      if (attribute) categoryIds.push(...attribute.categoryIds);
       this.setPropertyValues(id, categoryIds, false);
     });
     this.finish(false);
@@ -311,15 +319,15 @@ class ConditionBuilder {
 
   #getCondtionsFromHierarchicConditions(keys, values) {
     // restore conditions
-    const keys2 = keys.map(({propertyId, id}) => {
+    const keys2 = keys.map(({attributeId, id}) => {
       return {
-        propertyId,
+        attributeId,
         parentCategoryId: id?.categoryId
       }
     });
-    const values2 = values.map(({propertyId, ids}) => {
+    const values2 = values.map(({attributeId, ids}) => {
       return {
-        propertyId,
+        attributeId,
         categoryIds: ids.map(id => id.categoryId)
       }
     });

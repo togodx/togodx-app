@@ -267,7 +267,7 @@ export default class TableData {
     ConditionBuilder.setProperties(
       this.#dxCondition.keyConditions.map(keyCondition => {
         return {
-          propertyId: keyCondition.attributeId,
+          attributeId: keyCondition.attributeId,
           parentCategoryId: keyCondition.parentCategoryId,
         }
       }),
