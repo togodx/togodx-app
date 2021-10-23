@@ -3912,9 +3912,9 @@
     }
   }
 
-  function _getChildCategoryIds2(propertyId, categoryId) {
+  function _getChildCategoryIds2(attributeId, categoryId) {
     return new Promise(function (resolve, reject) {
-      Records$1.fetchAttributeValues(propertyId, categoryId).then(function (values) {
+      Records$1.fetchAttributeValues(attributeId, categoryId).then(function (values) {
         resolve();
       }).catch(function (error) {
         reject(error);
@@ -3967,19 +3967,19 @@
   function _clearConditinos2() {
     while (_classPrivateFieldGet(this, _keyConditions).length > 0) {
       var _classPrivateFieldGet2 = _classPrivateFieldGet(this, _keyConditions)[0],
-          propertyId = _classPrivateFieldGet2.propertyId,
+          attributeId = _classPrivateFieldGet2.attributeId,
           parentCategoryId = _classPrivateFieldGet2.parentCategoryId;
 
-      this.removeProperty(propertyId, parentCategoryId, false);
+      this.removeProperty(attributeId, parentCategoryId, false);
     }
 
     while (_classPrivateFieldGet(this, _valuesConditions).length > 0) {
       var _classPrivateFieldGet3 = _classPrivateFieldGet(this, _valuesConditions)[0],
-          _propertyId = _classPrivateFieldGet3.propertyId,
+          _attributeId = _classPrivateFieldGet3.attributeId,
           categoryIds = _classPrivateFieldGet3.categoryIds;
 
       while (categoryIds.length > 0) {
-        this.removePropertyValue(_propertyId, categoryIds[0], false);
+        this.removePropertyValue(_attributeId, categoryIds[0], false);
       }
     }
 

@@ -263,9 +263,9 @@ class ConditionBuilder {
     }
   }
 
-  #getChildCategoryIds(propertyId, categoryId) {
+  #getChildCategoryIds(attributeId, categoryId) {
     return new Promise((resolve, reject) => {
-      Records.fetchAttributeValues(propertyId, categoryId)
+      Records.fetchAttributeValues(attributeId, categoryId)
         .then(values => {
           resolve();
         })
@@ -300,13 +300,13 @@ class ConditionBuilder {
 
   #clearConditinos() {
     while (this.#keyConditions.length > 0) {
-      const {propertyId, parentCategoryId} = this.#keyConditions[0];
-      this.removeProperty(propertyId, parentCategoryId, false);
+      const {attributeId, parentCategoryId} = this.#keyConditions[0];
+      this.removeProperty(attributeId, parentCategoryId, false);
     };
     while (this.#valuesConditions.length > 0) {
-      const {propertyId, categoryIds} = this.#valuesConditions[0];
+      const {attributeId, categoryIds} = this.#valuesConditions[0];
       while (categoryIds.length > 0) {
-        this.removePropertyValue(propertyId, categoryIds[0], false);
+        this.removePropertyValue(attributeId, categoryIds[0], false);
       }
     };
     this.#postProcessing();
