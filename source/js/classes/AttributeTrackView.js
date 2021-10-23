@@ -126,7 +126,7 @@ export default class AttributeTrackView {
 
     DefaultEventEmitter.addEventListener(event.toggleErrorUserValues, e => {
       if (e.detail.mode === 'show') {
-        if (e.detail.propertyId !== attributeId) return;
+        if (e.detail.attributeId !== attributeId) return;
         this.#showError(e.detail.message, true);
       } else if (e.detail.mode === 'hide') this.#clearError();
     });

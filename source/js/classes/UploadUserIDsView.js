@@ -124,7 +124,7 @@ export default class UploadUserIDsView {
         // dispatch event
         const customEvent = new CustomEvent(event.setUserValues, {
           detail: {
-            propertyId: id,
+            attributeId: id,
             values: response.data,
           },
         });
@@ -135,7 +135,7 @@ export default class UploadUserIDsView {
         const customEvent = new CustomEvent(event.toggleErrorUserValues, {
           detail: {
             mode: 'show',
-            propertyId: id,
+            attributeId: id,
             message: 'Failed to map this ID',
           },
         });

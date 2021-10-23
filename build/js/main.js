@@ -6092,7 +6092,7 @@
   }
 
   function _plotUserIdValues2(detail) {
-    if (_classPrivateFieldGet(this, _attribute$1).id === detail.propertyId) {
+    if (_classPrivateFieldGet(this, _attribute$1).id === detail.attributeId) {
       _classPrivateFieldGet(this, _ROOT$9).classList.add('-pinsticking');
 
       _classPrivateFieldSet(this, _userValues, detail.values); // mapping
@@ -6315,7 +6315,7 @@
     });
     DefaultEventEmitter$1.addEventListener(toggleErrorUserValues, function (e) {
       if (e.detail.mode === 'show') {
-        if (e.detail.propertyId !== attributeId) return;
+        if (e.detail.attributeId !== attributeId) return;
 
         _classPrivateMethodGet(_this, _showError, _showError2).call(_this, e.detail.message, true);
       } else if (e.detail.mode === 'hide') _classPrivateMethodGet(_this, _clearError, _clearError2).call(_this);
@@ -8985,7 +8985,7 @@
 
       var customEvent = new CustomEvent(setUserValues, {
         detail: {
-          propertyId: id,
+          attributeId: id,
           values: response.data
         }
       });
@@ -8996,7 +8996,7 @@
       var customEvent = new CustomEvent(toggleErrorUserValues, {
         detail: {
           mode: 'show',
-          propertyId: id,
+          attributeId: id,
           message: 'Failed to map this ID'
         }
       });

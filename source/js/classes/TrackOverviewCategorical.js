@@ -142,7 +142,7 @@ export default class TrackOverviewCategorical {
   }
 
   #plotUserIdValues(detail) {
-    if (this.#attribute.id === detail.propertyId) {
+    if (this.#attribute.id === detail.attributeId) {
 
       this.#ROOT.classList.add('-pinsticking');
       this.#userValues = detail.values;
