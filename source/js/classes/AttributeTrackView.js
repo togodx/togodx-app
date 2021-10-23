@@ -19,22 +19,19 @@ export default class AttributeTrackView {
   constructor(attributeId, container, positionRate) {
 
     this.#attribute = Records.getAttribute(attributeId);
-    const isSelected = ConditionBuilder.isSelectedProperty(attributeId);
     this.#ROOT = document.createElement('div');
     container.insertAdjacentElement('beforeend', this.#ROOT);
     const category = Records.getCatexxxgoryWithAttributeId(attributeId);
     this.#ROOT.classList.add('attribute-track-view', '-preparing', 'collapse-view');
-    if (isSelected) this.#ROOT.classList.add('-allselected');
     this.#ROOT.dataset.catexxxgoryId = category.id;
     this.#ROOT.dataset.collapse = attributeId;
 
     // make html
-    const checked = isSelected ? ' checked' : '';
     this.#ROOT.innerHTML = `
     <div class="row -upper">
       <div class="left definition">
         <div class="collapsebutton" data-collapse="${attributeId}">
-          <input type="checkbox" class="mapping"${checked}>
+          <input type="checkbox" class="mapping">
           <h2 class="title _catexxxgory-color">${this.#attribute.label}</h2>
         </div>
       </div>

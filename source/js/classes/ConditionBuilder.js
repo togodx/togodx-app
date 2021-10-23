@@ -152,11 +152,6 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  isSelectedProperty(propertyId, parentCategoryId) {
-    const keyCondiiton = this.#keyConditions.find(keyCondiiton => keyCondiiton.propertyId === propertyId && keyCondiiton.parentCategoryId === parentCategoryId);
-    return keyCondiiton !== undefined;
-  }
-
   getSelectedCategoryIds(propertyId) {
     const categoryIds = {
       keys: [],
