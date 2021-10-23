@@ -3153,7 +3153,8 @@
       key: "getURLParameter",
       value: function getURLParameter() {
         var key = {
-          propertyId: this._attributeId
+          propertyId: this._attributeId // TODO:
+
         };
 
         if (_classPrivateFieldGet(this, _parentCategoryId$1)) {
@@ -3258,6 +3259,7 @@
 
         var values = {
           propertyId: this._attributeId,
+          // TODO:
           ids: []
         };
 
@@ -4451,13 +4453,13 @@
     if (_classPrivateFieldGet(this, _properties).length === 0) _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.add('-empty');
   }
 
-  function _addPropertyValue2(propertyId, categoryId) {
+  function _addPropertyValue2(attributeId, categoryId) {
     // modifier
-    _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.remove('-empty'); // find a condition view has same property id
+    _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.remove('-empty'); // find a condition view has same attribute id
 
 
     var stackingConditionView = _classPrivateFieldGet(this, _propertyValues).find(function (stackingConditionView) {
-      return stackingConditionView.sameProperty(propertyId);
+      return stackingConditionView.sameProperty(attributeId);
     });
 
     if (stackingConditionView) {
@@ -4465,14 +4467,14 @@
       stackingConditionView.addValue(categoryId);
     } else {
       // otherwise, make new condition view
-      _classPrivateFieldGet(this, _propertyValues).push(new StackingConditionView(_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER), 'value', new ValuesCondition(propertyId, [categoryId])));
+      _classPrivateFieldGet(this, _propertyValues).push(new StackingConditionView(_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER), 'value', new ValuesCondition(attributeId, [categoryId])));
     }
   }
 
-  function _removePropertyValue2(propertyId, categoryId) {
+  function _removePropertyValue2(attributeId, categoryId) {
     // remove from array
     var index = _classPrivateFieldGet(this, _propertyValues).findIndex(function (stackingConditionView) {
-      return stackingConditionView.removePropertyValue(propertyId, categoryId);
+      return stackingConditionView.removePropertyValue(attributeId, categoryId);
     });
 
     if (index !== -1) _classPrivateFieldGet(this, _propertyValues).splice(index, 1); // modifier

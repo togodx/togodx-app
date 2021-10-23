@@ -119,23 +119,23 @@ export default class ConditionBuilderView {
     if (this.#properties.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
-  #addPropertyValue(propertyId, categoryId) {
+  #addPropertyValue(attributeId, categoryId) {
     // modifier
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
-    // find a condition view has same property id
-    const stackingConditionView = this.#propertyValues.find(stackingConditionView => stackingConditionView.sameProperty(propertyId));
+    // find a condition view has same attribute id
+    const stackingConditionView = this.#propertyValues.find(stackingConditionView => stackingConditionView.sameProperty(attributeId));
     if (stackingConditionView) {
       // if it exists, add new categoryId
       stackingConditionView.addValue(categoryId);
     } else {
       // otherwise, make new condition view
-      this.#propertyValues.push(new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', new ValuesCondition(propertyId, [categoryId])));
+      this.#propertyValues.push(new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', new ValuesCondition(attributeId, [categoryId])));
     }
   }
 
-  #removePropertyValue(propertyId, categoryId) {
+  #removePropertyValue(attributeId, categoryId) {
     // remove from array
-    const index = this.#propertyValues.findIndex(stackingConditionView => stackingConditionView.removePropertyValue(propertyId, categoryId));
+    const index = this.#propertyValues.findIndex(stackingConditionView => stackingConditionView.removePropertyValue(attributeId, categoryId));
     if (index !== -1) this.#propertyValues.splice(index, 1);
     // modifier
     if (this.#propertyValues.length === 0) this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.add('-empty');

@@ -36,7 +36,7 @@ export default class KeyCondition extends BaseCondition {
 
   getURLParameter() {
     const key = {
-      propertyId: this._attributeId
+      propertyId: this._attributeId // TODO:
     };
     if (this.#parentCategoryId) {
       key.id = {
