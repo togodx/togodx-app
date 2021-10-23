@@ -28,7 +28,10 @@ export default class Attribute {
           this.#values.push(...values);
           resolve(values);
         })
-        .catch(error => reject(error));
+        .catch(error => {
+          console.error(this, error);
+          reject(error);
+        });
       }
     });
   }

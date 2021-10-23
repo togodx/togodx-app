@@ -2795,7 +2795,8 @@
 
               resolve(values);
             }).catch(function (error) {
-              return reject(error);
+              console.error(_this, error);
+              reject(error);
             });
           }
         });
@@ -3711,7 +3712,6 @@
 
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
-        // console.log(propertyId, categoryIds, isFinal)
         var oldValuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
           return valuesCondition.propertyId === propertyId;
         });
@@ -3889,7 +3889,7 @@
       var propertyId = _ref3.propertyId,
           ids = _ref3.ids;
       ids.forEach(function (id) {
-        return addQueue(propertyId, id);
+        if (id.ancestors) addQueue(propertyId, id);
       });
     });
 
@@ -6330,8 +6330,6 @@
     Records$1.fetchAttributeValues(attributeId).then(function (values) {
       return _classPrivateMethodGet(_this, _makeValues, _makeValues2).call(_this, values);
     }).catch(function (error) {
-      console.error(error);
-
       _classPrivateMethodGet(_this, _showError, _showError2).call(_this, error);
     }).finally(function () {
       _classPrivateFieldGet(_this, _LOADING_VIEW$1).classList.remove('-shown');

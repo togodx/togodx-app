@@ -115,7 +115,6 @@ class ConditionBuilder {
   }
 
   setPropertyValues(propertyId, categoryIds, isFinal = true) {
-    // console.log(propertyId, categoryIds, isFinal)
     const oldValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
     if (oldValuesCondition) {
       const originalValues = Records.getAttribute(propertyId).values;
@@ -185,7 +184,7 @@ class ConditionBuilder {
   // private methods
 
   #postProcessing(dontLeaveInHistory = true) {
-
+    
     if (!this.#isRestoredConditinoFromURLParameters) return;
 
     // evaluate if search is possible
@@ -198,7 +197,7 @@ class ConditionBuilder {
     // get hierarchic conditions
     const keys = this.#keyConditions.map(keyCondiiton => keyCondiiton.getURLParameter());
     const values = this.#valuesConditions.map(valuesCondition => valuesCondition.getURLParameter());
-
+    
     // generate permalink
     const params = new URL(location).searchParams;
     params.set('togoKey', this.#togoKey);
@@ -218,7 +217,7 @@ class ConditionBuilder {
       keys: JSON.parse(params.get('keys')) ?? [],
       values: JSON.parse(params.get('values')) ?? []
     }
-
+    
     if (isFirst) {
       // get child category ids
       this.#makeQueueOfGettingChildCategoryIds(condition);
@@ -244,7 +243,9 @@ class ConditionBuilder {
       if (id) addQueue(propertyId, id);
     });
     condition.values.forEach(({propertyId, ids}) => {
-      ids.forEach(id => addQueue(propertyId, id));
+      ids.forEach(id => {
+        if (id.ancestors) addQueue(propertyId, id);
+      });
     });
     this.#progressQueueOfGettingChildCategoryIds(condition, queue);
   }

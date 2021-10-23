@@ -138,7 +138,6 @@ export default class AttributeTrackView {
     Records.fetchAttributeValues(attributeId)
       .then(values => this.#makeValues(values))
       .catch(error => {
-        console.error(error);
         this.#showError(error);
       })
       .finally(() => {
