@@ -3686,8 +3686,8 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
-      key: "setProperties",
-      value: function setProperties(conditions) {
+      key: "setAttributes",
+      value: function setAttributes(conditions) {
         var _this = this;
 
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
@@ -3706,8 +3706,8 @@
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
     }, {
-      key: "setPropertyValues",
-      value: function setPropertyValues(attributeId, categoryIds) {
+      key: "setAttributeValues",
+      value: function setAttributeValues(attributeId, categoryIds) {
         var _this2 = this;
 
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
@@ -3943,7 +3943,7 @@
         keys2 = _classPrivateMethodGe2[0],
         values2 = _classPrivateMethodGe2[1];
 
-    this.setProperties(keys2, false);
+    this.setAttributes(keys2, false);
     Records$1.attributes.forEach(function (_ref5) {
       var id = _ref5.id;
       var attribute = values2.find(function (attribute) {
@@ -3952,7 +3952,7 @@
       var categoryIds = [];
       if (attribute) categoryIds.push.apply(categoryIds, _toConsumableArray(attribute.categoryIds));
 
-      _this4.setPropertyValues(id, categoryIds, false);
+      _this4.setAttributeValues(id, categoryIds, false);
     });
     this.finish(false); // dispatch event
 
@@ -4161,8 +4161,8 @@
         }
       }
     }, {
-      key: "sameProperty",
-      value: function sameProperty(attributeId) {
+      key: "sameAttribute",
+      value: function sameAttribute(attributeId) {
         return attributeId === _classPrivateFieldGet(this, _condition).attributeId;
       }
     }]);
@@ -4459,7 +4459,7 @@
 
 
     var stackingConditionView = _classPrivateFieldGet(this, _propertyValues).find(function (stackingConditionView) {
-      return stackingConditionView.sameProperty(attributeId);
+      return stackingConditionView.sameAttribute(attributeId);
     });
 
     if (stackingConditionView) {
@@ -5699,7 +5699,7 @@
     _classPrivateFieldGet(this, _target).update(); // set condition
 
 
-    ConditionBuilder$1.setPropertyValues(_classPrivateFieldGet(this, _target).attributeId, this.selectedItems.map(function (item) {
+    ConditionBuilder$1.setAttributeValues(_classPrivateFieldGet(this, _target).attributeId, this.selectedItems.map(function (item) {
       return item.categoryId;
     }), false);
   }
@@ -8116,7 +8116,7 @@
 
     e.stopPropagation(); // property (attribute)
 
-    ConditionBuilder$1.setProperties(_classPrivateFieldGet(this, _dxCondition).keyConditions.map(function (keyCondition) {
+    ConditionBuilder$1.setAttributes(_classPrivateFieldGet(this, _dxCondition).keyConditions.map(function (keyCondition) {
       return {
         attributeId: keyCondition.attributeId,
         parentCategoryId: keyCondition.parentCategoryId
@@ -8132,7 +8132,7 @@
 
       var categoryIds = [];
       if (valuesCondition) categoryIds.push.apply(categoryIds, _toConsumableArray(valuesCondition.categoryIds));
-      ConditionBuilder$1.setPropertyValues(id, categoryIds, false);
+      ConditionBuilder$1.setAttributeValues(id, categoryIds, false);
     });
   }
 
@@ -8807,7 +8807,7 @@
 
   var _prepareProgressIndicator = /*#__PURE__*/new WeakSet();
 
-  var _getProperty = /*#__PURE__*/new WeakSet();
+  var _getAttribute = /*#__PURE__*/new WeakSet();
 
   var _handleProp = /*#__PURE__*/new WeakSet();
 
@@ -8834,7 +8834,7 @@
 
     _classPrivateMethodInitSpec(this, _handleProp);
 
-    _classPrivateMethodInitSpec(this, _getProperty);
+    _classPrivateMethodInitSpec(this, _getAttribute);
 
     _classPrivateMethodInitSpec(this, _prepareProgressIndicator);
 
@@ -8956,7 +8956,7 @@
 
     Records$1.attributes.forEach(function (attribute) {
       // TODO: この処理は Attribute に移行
-      _classPrivateMethodGet(_this2, _getProperty, _getProperty2).call(_this2, attribute);
+      _classPrivateMethodGet(_this2, _getAttribute, _getAttribute2).call(_this2, attribute);
     });
   }
 
@@ -8973,7 +8973,7 @@
     _classPrivateFieldGet(this, _progressIndicator).setIndicator('In progress', Records$1.attributes.length);
   }
 
-  function _getProperty2(_ref) {
+  function _getAttribute2(_ref) {
     var _this3 = this;
 
     var id = _ref.id;

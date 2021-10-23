@@ -95,7 +95,7 @@ export default class UploadUserIDsView {
     this.#prepareProgressIndicator();
     Records.attributes.forEach(attribute => {
       // TODO: この処理は Attribute に移行
-      this.#getProperty(attribute);
+      this.#getAttribute(attribute);
     });
   }
 
@@ -112,7 +112,7 @@ export default class UploadUserIDsView {
     );
   }
 
-  #getProperty({id}) {
+  #getAttribute({id}) {
     axios
       .get(queryTemplates.dataFromUserIds(id), {
         cancelToken: this.#source.token,

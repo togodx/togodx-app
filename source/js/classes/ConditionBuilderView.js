@@ -123,7 +123,7 @@ export default class ConditionBuilderView {
     // modifier
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // find a condition view has same attribute id
-    const stackingConditionView = this.#propertyValues.find(stackingConditionView => stackingConditionView.sameProperty(attributeId));
+    const stackingConditionView = this.#propertyValues.find(stackingConditionView => stackingConditionView.sameAttribute(attributeId));
     if (stackingConditionView) {
       // if it exists, add new categoryId
       stackingConditionView.addValue(categoryId);

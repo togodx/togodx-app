@@ -264,7 +264,7 @@ export default class TableData {
   #dataButtonEdit(e) {
     e.stopPropagation();
     // property (attribute)
-    ConditionBuilder.setProperties(
+    ConditionBuilder.setAttributes(
       this.#dxCondition.keyConditions.map(keyCondition => {
         return {
           attributeId: keyCondition.attributeId,
@@ -278,7 +278,7 @@ export default class TableData {
       const valuesCondition = this.#dxCondition.valuesConditions.find(valuesCondition => valuesCondition.attributeId === id);
       const categoryIds = [];
       if (valuesCondition) categoryIds.push(...valuesCondition.categoryIds);
-      ConditionBuilder.setPropertyValues(id, categoryIds, false);
+      ConditionBuilder.setAttributeValues(id, categoryIds, false);
     });
   }
 

@@ -141,7 +141,7 @@ export default class StackingConditionView {
     }
   }
 
-  sameProperty(attributeId) {
+  sameAttribute(attributeId) {
     return attributeId === this.#condition.attributeId;
   }
 

@@ -103,7 +103,7 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  setProperties(conditions, isFinal = true) {
+  setAttributes(conditions, isFinal = true) {
     // delete existing properties
     while (this.#keyConditions.length > 0) {
       this.removeAttrubute(this.#keyConditions[0].attributeId, this.#keyConditions[0].parentCategoryId, false);
@@ -114,7 +114,7 @@ class ConditionBuilder {
     if (isFinal) this.#postProcessing();
   }
 
-  setPropertyValues(attributeId, categoryIds, isFinal = true) {
+  setAttributeValues(attributeId, categoryIds, isFinal = true) {
     const oldValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.attributeId === attributeId);
     if (oldValuesCondition) {
       const originalValues = Records.getAttribute(attributeId).values;
@@ -286,12 +286,12 @@ class ConditionBuilder {
     this.#togoKey = togoKey;
     // this.#userIds = userIds;
     const [keys2, values2] = this.#getCondtionsFromHierarchicConditions(keys, values);
-    this.setProperties(keys2, false);
+    this.setAttributes(keys2, false);
     Records.attributes.forEach(({id}) => {
       const attribute = values2.find(attribute => attribute.attributeId === id);
       const categoryIds = [];
       if (attribute) categoryIds.push(...attribute.categoryIds);
-      this.setPropertyValues(id, categoryIds, false);
+      this.setAttributeValues(id, categoryIds, false);
     });
     this.finish(false);
 
