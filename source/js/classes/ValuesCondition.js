@@ -24,7 +24,7 @@ export default class ValuesCondition extends BaseCondition {
 
   getURLParameter() {
     const values = {
-      propertyId: this._attributeId, // TODO:
+      attributeId: this._attributeId,
       ids: []
     }
     this.#categoryIds.forEach(categoryId => {

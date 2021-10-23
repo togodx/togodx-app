@@ -196,7 +196,6 @@ class ConditionBuilder {
     // generate permalink
     const params = new URL(location).searchParams;
     params.set('togoKey', this.#togoKey);
-    // params.set('userIds', this.userIds ? this.userIds : '');
     params.set('keys', JSON.stringify(keys));
     params.set('values', JSON.stringify(values));
     if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
@@ -208,17 +207,21 @@ class ConditionBuilder {
     const params = new URL(location).searchParams;
     const condition = {
       togoKey: params.get('togoKey'),
-      // userIds: (params.get('userIds') ?? '').split(',').filter(id => id !== ''),
       keys: JSON.parse(params.get('keys')) ?? [],
       values: JSON.parse(params.get('values')) ?? []
     }
-    condition.keys.forEach(key => { // TODO: URL parameter の変更が終了したらこの処理は不要
-      key.attributeId = key.propertyId;
-      delete key.propertyId;
+    // in older versions, 'attributeId' is 'propertyId', so convert them
+    condition.keys.forEach(key => {
+      if (key.propertyId) {
+        key.attributeId = key.propertyId;
+        delete key.propertyId;
+      }
     });
     condition.values.forEach(key => {
-      key.attributeId = key.propertyId;
-      delete key.propertyId;
+      if (key.propertyId) {
+        key.attributeId = key.propertyId;
+        delete key.propertyId;
+      }
     });
     
     if (isFirst) {

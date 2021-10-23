@@ -3153,8 +3153,7 @@
       key: "getURLParameter",
       value: function getURLParameter() {
         var key = {
-          propertyId: this._attributeId // TODO:
-
+          attributeId: this._attributeId
         };
 
         if (_classPrivateFieldGet(this, _parentCategoryId$1)) {
@@ -3258,8 +3257,7 @@
         var _this2 = this;
 
         var values = {
-          propertyId: this._attributeId,
-          // TODO:
+          attributeId: this._attributeId,
           ids: []
         };
 
@@ -3826,8 +3824,7 @@
 
 
     var params = new URL(location).searchParams;
-    params.set('togoKey', _classPrivateFieldGet(this, _togoKey)); // params.set('userIds', this.userIds ? this.userIds : '');
-
+    params.set('togoKey', _classPrivateFieldGet(this, _togoKey));
     params.set('keys', JSON.stringify(keys));
     params.set('values', JSON.stringify(values));
     if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
@@ -3841,18 +3838,21 @@
     var params = new URL(location).searchParams;
     var condition = {
       togoKey: params.get('togoKey'),
-      // userIds: (params.get('userIds') ?? '').split(',').filter(id => id !== ''),
       keys: (_JSON$parse = JSON.parse(params.get('keys'))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
       values: (_JSON$parse2 = JSON.parse(params.get('values'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
-    };
+    }; // in older versions, 'attributeId' is 'propertyId', so convert them
+
     condition.keys.forEach(function (key) {
-      // TODO: URL parameter の変更が終了したらこの処理は不要
-      key.attributeId = key.propertyId;
-      delete key.propertyId;
+      if (key.propertyId) {
+        key.attributeId = key.propertyId;
+        delete key.propertyId;
+      }
     });
     condition.values.forEach(function (key) {
-      key.attributeId = key.propertyId;
-      delete key.propertyId;
+      if (key.propertyId) {
+        key.attributeId = key.propertyId;
+        delete key.propertyId;
+      }
     });
 
     if (isFirst) {
