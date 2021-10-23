@@ -21,7 +21,6 @@ export default class StackingConditionView {
   constructor(container, type, condition, isRange = false) {
 
     this.#condition = condition;
-    // const category = Records.getCatexxxgoryWithAttributeId(condition.attributeId);
     const attribute = Records.getAttribute(condition.attributeId);
     // this.#isRange = isRange;
     
@@ -29,7 +28,7 @@ export default class StackingConditionView {
     this.#ROOT = document.createElement('div');
     this.#ROOT.classList.add('stacking-condition-view');
     this.#ROOT.dataset.catexxxgoryId = condition.catexxxgoryId;
-    this.#ROOT.dataset.propertyId = condition.attributeId;
+    this.#ROOT.dataset.attributeId = condition.attributeId;
     if (condition.parentCategoryId) this.#ROOT.dataset.parentCategoryId = condition.parentCategoryId;
     // make view
     let label, ancestorLabels = [Records.getCatexxxgory(condition.catexxxgoryId).label];
@@ -39,9 +38,10 @@ export default class StackingConditionView {
           const getValue = () => {
             const value = condition.value;
             if (value) {
-              // const ancestors = Records.getAncestors(condition.attributeId, condition.parentCategoryId);
               label = `<div class="label _catexxxgory-color">${value.label}</div>`;
-              ancestorLabels.push(attribute.label, ...condition.ancestors.map(ancestor => ancestor.label));
+              ancestorLabels.push(attribute.label, ...condition.ancestors.map(ancestor => {
+                return Records.getValue(condition.attributeId, ancestor).label;
+              }));
               this.#make(container, type, ancestorLabels, label);
             } else {
               setTimeout(getValue, POLLING_DURATION);

@@ -4052,8 +4052,7 @@
         value: void 0
       });
 
-      _classPrivateFieldSet(this, _condition, condition); // const category = Records.getCatexxxgoryWithAttributeId(condition.attributeId);
-
+      _classPrivateFieldSet(this, _condition, condition);
 
       var attribute = Records$1.getAttribute(condition.attributeId); // this.#isRange = isRange;
       // attributes
@@ -4063,7 +4062,7 @@
       _classPrivateFieldGet(this, _ROOT$e).classList.add('stacking-condition-view');
 
       _classPrivateFieldGet(this, _ROOT$e).dataset.catexxxgoryId = condition.catexxxgoryId;
-      _classPrivateFieldGet(this, _ROOT$e).dataset.propertyId = condition.attributeId;
+      _classPrivateFieldGet(this, _ROOT$e).dataset.attributeId = condition.attributeId;
       if (condition.parentCategoryId) _classPrivateFieldGet(this, _ROOT$e).dataset.parentCategoryId = condition.parentCategoryId; // make view
 
       var _label,
@@ -4077,11 +4076,10 @@
                 var value = condition.value;
 
                 if (value) {
-                  // const ancestors = Records.getAncestors(condition.attributeId, condition.parentCategoryId);
                   _label = "<div class=\"label _catexxxgory-color\">".concat(value.label, "</div>");
 
                   _ancestorLabels.push.apply(_ancestorLabels, [attribute.label].concat(_toConsumableArray(condition.ancestors.map(function (ancestor) {
-                    return ancestor.label;
+                    return Records$1.getValue(condition.attributeId, ancestor).label;
                   }))));
 
                   _classPrivateMethodGet(_this, _make, _make2).call(_this, _container, type, _ancestorLabels, _label);
