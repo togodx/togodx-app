@@ -25,14 +25,6 @@
       "oAP" : "\/build\/.github\/workflows\/release.yaml",
       "oF" : 0
     },
-    "\/attributes.json" : {
-      "ft" : 524288,
-      "oA" : 1,
-      "oAP" : "\/build\/attributes-min.json",
-      "oF" : 0,
-      "oO" : 0,
-      "oS" : 1
-    },
     "\/build" : {
       "ft" : 65536,
       "oA" : 1,
@@ -93,14 +85,6 @@
       "ft" : 524288,
       "oA" : 1,
       "oAP" : "\/build\/package-min.json",
-      "oF" : 0,
-      "oO" : 0,
-      "oS" : 1
-    },
-    "\/properties.json" : {
-      "ft" : 524288,
-      "oA" : 1,
-      "oAP" : "\/build\/properties-min.json",
       "oF" : 0,
       "oO" : 0,
       "oS" : 1
