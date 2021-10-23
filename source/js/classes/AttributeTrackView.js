@@ -95,7 +95,7 @@ export default class AttributeTrackView {
       }
     });
     // event listener
-    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail: {action, keyCondition}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateAttributeCondition, ({detail: {action, keyCondition}}) => {
       if (keyCondition.parentCategoryId !== undefined) return;
       switch (action) {
         case 'add':

@@ -55,7 +55,7 @@ export default class ColumnItemView {
         ConditionBuilder.removeAttrubute(column.attributeId, categoryId);
       }
     });
-    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail: {action, keyCondition}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateAttributeCondition, ({detail: {action, keyCondition}}) => {
       if (action === 'remove') {
         if (column.attributeId === keyCondition.attributeId) {
           if (keyCondition.parentCategoryId && categoryId === keyCondition.parentCategoryId) {
@@ -64,7 +64,7 @@ export default class ColumnItemView {
         }
       }
     });
-    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail}) => {
+    DefaultEventEmitter.addEventListener(event.mutateAttributeValueCondition, ({detail}) => {
       if (column.attributeId === detail.attributeId && categoryId === detail.categoryId) {
         this.#INPUT_VALUE.checked = detail.action === 'add';
       }

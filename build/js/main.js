@@ -3432,8 +3432,8 @@
 
   var changeViewModes = 'changeViewModes'; // Condition
 
-  var mutatePropertyCondition = 'mutatePropertyCondition';
-  var mutatePropertyValueCondition = 'mutatePropertyValueCondition';
+  var mutateAttributeCondition = 'mutateAttributeCondition';
+  var mutateAttributeValueCondition = 'mutateAttributeValueCondition';
   var mutateEstablishConditions = 'mutateEstablishConditions';
   var completeQueryParameter = 'completeQueryParameter';
   var restoreParameters = 'restoreParameters';
@@ -3454,8 +3454,8 @@
   var deleteTableData = 'deleteTableData';
   var highlightCol = 'highlightCol'; // Track
 
-  var enterPropertyValueItemView = 'enterPropertyValueItemView';
-  var leavePropertyValueItemView = 'leavePropertyValueItemView';
+  var enterAttributeValueItemView = 'enterAttributeValueItemView';
+  var leaveAttributeValueItemView = 'leaveAttributeValueItemView';
   var allTracksCollapse = 'allTracksCollapse'; // Statistics
 
   var changeStatisticsViewMode = 'changeStatisticsViewMode'; // Column selector
@@ -3592,7 +3592,7 @@
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
-        var customEvent = new CustomEvent(mutatePropertyCondition, {
+        var customEvent = new CustomEvent(mutateAttributeCondition, {
           detail: {
             action: 'add',
             keyCondition: keyCondition
@@ -3623,7 +3623,7 @@
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
-        var customEvent = new CustomEvent(mutatePropertyValueCondition, {
+        var customEvent = new CustomEvent(mutateAttributeValueCondition, {
           detail: {
             action: 'add',
             attributeId: attributeId,
@@ -3649,7 +3649,7 @@
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
-        var customEvent = new CustomEvent(mutatePropertyCondition, {
+        var customEvent = new CustomEvent(mutateAttributeCondition, {
           detail: {
             action: 'remove',
             keyCondition: keyCondition
@@ -3676,7 +3676,7 @@
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
-        var customEvent = new CustomEvent(mutatePropertyValueCondition, {
+        var customEvent = new CustomEvent(mutateAttributeValueCondition, {
           detail: {
             action: 'remove',
             attributeId: attributeId,
@@ -4352,7 +4352,7 @@
       DefaultEventEmitter$1.dispatchEvent(customEvent);
     }); // event listeners
 
-    DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (_ref) {
+    DefaultEventEmitter$1.addEventListener(mutateAttributeCondition, function (_ref) {
       var _ref$detail = _ref.detail,
           action = _ref$detail.action,
           keyCondition = _ref$detail.keyCondition;
@@ -4369,7 +4369,7 @@
           break;
       }
     });
-    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref2) {
+    DefaultEventEmitter$1.addEventListener(mutateAttributeValueCondition, function (_ref2) {
       var _ref2$detail = _ref2.detail,
           action = _ref2$detail.action,
           attributeId = _ref2$detail.attributeId,
@@ -4595,7 +4595,7 @@
         }
       });
 
-      DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (_ref2) {
+      DefaultEventEmitter$1.addEventListener(mutateAttributeCondition, function (_ref2) {
         var _ref2$detail = _ref2.detail,
             action = _ref2$detail.action,
             keyCondition = _ref2$detail.keyCondition;
@@ -4608,7 +4608,7 @@
           }
         }
       });
-      DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref3) {
+      DefaultEventEmitter$1.addEventListener(mutateAttributeValueCondition, function (_ref3) {
         var detail = _ref3.detail;
 
         if (column.attributeId === detail.attributeId && categoryId === detail.categoryId) {
@@ -6009,7 +6009,7 @@
           });
         }
 
-        var customEvent = new CustomEvent(enterPropertyValueItemView, {
+        var customEvent = new CustomEvent(enterAttributeValueItemView, {
           detail: {
             label: label,
             values: values,
@@ -6019,7 +6019,7 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       });
       elm.addEventListener('mouseleave', function () {
-        var customEvent = new CustomEvent(leavePropertyValueItemView);
+        var customEvent = new CustomEvent(leaveAttributeValueItemView);
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }); // attach event: select/deselect a value
 
@@ -6034,7 +6034,7 @@
       });
     }); // event listener
 
-    DefaultEventEmitter$1.addEventListener(mutatePropertyValueCondition, function (_ref) {
+    DefaultEventEmitter$1.addEventListener(mutateAttributeValueCondition, function (_ref) {
       var _ref$detail = _ref.detail,
           action = _ref$detail.action,
           attributeId = _ref$detail.attributeId,
@@ -6278,7 +6278,7 @@
     }); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener(mutatePropertyCondition, function (_ref) {
+    DefaultEventEmitter$1.addEventListener(mutateAttributeCondition, function (_ref) {
       var _ref$detail = _ref.detail,
           action = _ref$detail.action,
           keyCondition = _ref$detail.keyCondition;
@@ -7467,7 +7467,7 @@
     _classPrivateFieldSet(this, _CONTAINER, _classPrivateFieldGet(this, _ROOT$4).querySelector(':scope > .container')); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener(enterPropertyValueItemView, function (_ref) {
+    DefaultEventEmitter$1.addEventListener(enterAttributeValueItemView, function (_ref) {
       var _ref$detail = _ref.detail,
           elm = _ref$detail.elm,
           label = _ref$detail.label,
@@ -7492,7 +7492,7 @@
 
       _classPrivateFieldGet(_this, _ROOT$4).classList.add('-showing');
     });
-    DefaultEventEmitter$1.addEventListener(leavePropertyValueItemView, function () {
+    DefaultEventEmitter$1.addEventListener(leaveAttributeValueItemView, function () {
       _classPrivateFieldGet(_this, _ROOT$4).classList.remove('-showing');
     });
   };

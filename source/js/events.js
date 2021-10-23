@@ -10,8 +10,8 @@ export const toggleErrorUserValues = 'toggleErrorUserValues';
 export const changeViewModes = 'changeViewModes';
 
 // Condition
-export const mutatePropertyCondition = 'mutatePropertyCondition';
-export const mutatePropertyValueCondition = 'mutatePropertyValueCondition';
+export const mutateAttributeCondition = 'mutateAttributeCondition';
+export const mutateAttributeValueCondition = 'mutateAttributeValueCondition';
 export const mutateEstablishConditions = 'mutateEstablishConditions';
 export const completeQueryParameter = 'completeQueryParameter';
 export const restoreParameters = 'restoreParameters';
@@ -39,8 +39,8 @@ export const deleteTableData = 'deleteTableData';
 export const highlightCol = 'highlightCol';
 
 // Track
-export const enterPropertyValueItemView = 'enterPropertyValueItemView';
-export const leavePropertyValueItemView = 'leavePropertyValueItemView';
+export const enterAttributeValueItemView = 'enterAttributeValueItemView';
+export const leaveAttributeValueItemView = 'leaveAttributeValueItemView';
 export const allTracksCollapse = 'allTracksCollapse';
 
 // Statistics

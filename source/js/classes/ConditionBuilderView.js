@@ -49,7 +49,7 @@ export default class ConditionBuilderView {
     });
 
     // event listeners
-    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail: {action, keyCondition}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateAttributeCondition, ({detail: {action, keyCondition}}) => {
       switch (action) {
         case 'add':
           this.#addAttrubute(keyCondition);
@@ -59,7 +59,7 @@ export default class ConditionBuilderView {
           break;
       }
     });
-    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail: {action, attributeId, categoryId}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateAttributeValueCondition, ({detail: {action, attributeId, categoryId}}) => {
       switch (action) {
         case 'add':
           this.#addAttrubuteValue(attributeId, categoryId);

@@ -78,11 +78,11 @@ export default class TrackOverviewCategorical {
             value: value.count.toLocaleString()
           });
         }
-        const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {label, values, elm}});
+        const customEvent = new CustomEvent(event.enterAttributeValueItemView, {detail: {label, values, elm}});
         DefaultEventEmitter.dispatchEvent(customEvent);
       });
       elm.addEventListener('mouseleave', () => {
-        const customEvent = new CustomEvent(event.leavePropertyValueItemView);
+        const customEvent = new CustomEvent(event.leaveAttributeValueItemView);
         DefaultEventEmitter.dispatchEvent(customEvent);
       });
 
@@ -102,7 +102,7 @@ export default class TrackOverviewCategorical {
     });
 
     // event listener
-    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail: {action, attributeId, categoryId}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateAttributeValueCondition, ({detail: {action, attributeId, categoryId}}) => {
       if (this.#attribute.id === attributeId) {
         this.#values.forEach(value => {
           if (value.categoryId === categoryId) {

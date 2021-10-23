@@ -51,7 +51,7 @@ class ConditionBuilder {
     // evaluate
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {action: 'add', keyCondition}});
+    const customEvent = new CustomEvent(event.mutateAttributeCondition, {detail: {action: 'add', keyCondition}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
@@ -69,7 +69,7 @@ class ConditionBuilder {
     // evaluate
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {action: 'add', attributeId, categoryId}});
+    const customEvent = new CustomEvent(event.mutateAttributeValueCondition, {detail: {action: 'add', attributeId, categoryId}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
@@ -81,7 +81,7 @@ class ConditionBuilder {
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutatePropertyCondition, {detail: {action: 'remove', keyCondition}});
+    const customEvent = new CustomEvent(event.mutateAttributeCondition, {detail: {action: 'remove', keyCondition}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
@@ -99,7 +99,7 @@ class ConditionBuilder {
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutatePropertyValueCondition, {detail: {action: 'remove', attributeId, categoryId}});
+    const customEvent = new CustomEvent(event.mutateAttributeValueCondition, {detail: {action: 'remove', attributeId, categoryId}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
