@@ -69,8 +69,8 @@ export default class ColumnItemView {
         this.#INPUT_VALUE.checked = detail.action === 'add';
       }
     });
-    DefaultEventEmitter.addEventListener(event.setUserValues, ({detail: {propertyId, values}}) => {
-      if (column.attributeId === propertyId) this.setUserValues(values);
+    DefaultEventEmitter.addEventListener(event.setUserValues, ({detail: {attributeId, values}}) => {
+      if (column.attributeId === attributeId) this.setUserValues(values);
     });
     DefaultEventEmitter.addEventListener(event.clearUserValues, this.#clearUserValues.bind(this));
 

@@ -4615,9 +4615,9 @@
       });
       DefaultEventEmitter$1.addEventListener(setUserValues, function (_ref4) {
         var _ref4$detail = _ref4.detail,
-            propertyId = _ref4$detail.propertyId,
+            attributeId = _ref4$detail.attributeId,
             values = _ref4$detail.values;
-        if (column.attributeId === propertyId) _this.setUserValues(values);
+        if (column.attributeId === attributeId) _this.setUserValues(values);
       });
       DefaultEventEmitter$1.addEventListener(clearUserValues, _classPrivateMethodGet(this, _clearUserValues, _clearUserValues2).bind(this)); // select/deselect a item (attribute) > label
 
