@@ -152,13 +152,13 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  getSelectedCategoryIds(propertyId) {
+  getSelectedCategoryIds(attributeId) {
     const categoryIds = {
       keys: [],
       values: []
     };
-    const keyConditions = this.#keyConditions.filter(keyCondition => keyCondition.propertyId === propertyId);
-    const valuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
+    const keyConditions = this.#keyConditions.filter(keyCondition => keyCondition.attributeId === attributeId);
+    const valuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.attributeId === attributeId);
     if (keyConditions) categoryIds.keys.push(...keyConditions.map(keyCondiiton => keyCondiiton.parentCategoryId));
     if (valuesCondition) categoryIds.values.push(...valuesCondition.categoryIds);
     return categoryIds;

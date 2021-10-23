@@ -3765,7 +3765,7 @@
       }
     }, {
       key: "getSelectedCategoryIds",
-      value: function getSelectedCategoryIds(propertyId) {
+      value: function getSelectedCategoryIds(attributeId) {
         var _categoryIds$keys, _categoryIds$values;
 
         var categoryIds = {
@@ -3774,11 +3774,11 @@
         };
 
         var keyConditions = _classPrivateFieldGet(this, _keyConditions).filter(function (keyCondition) {
-          return keyCondition.propertyId === propertyId;
+          return keyCondition.attributeId === attributeId;
         });
 
         var valuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
-          return valuesCondition.propertyId === propertyId;
+          return valuesCondition.attributeId === attributeId;
         });
 
         if (keyConditions) (_categoryIds$keys = categoryIds.keys).push.apply(_categoryIds$keys, _toConsumableArray(keyConditions.map(function (keyCondiiton) {
