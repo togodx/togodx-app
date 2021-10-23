@@ -52,20 +52,20 @@ export default class ConditionBuilderView {
     DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail: {action, keyCondition}}) => {
       switch (action) {
         case 'add':
-          this.#addProperty(keyCondition);
+          this.#addAttrubute(keyCondition);
           break;
         case 'remove':
-          this.#removeProperty(keyCondition);
+          this.#removeAttrubute(keyCondition);
           break;
       }
     });
     DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail: {action, attributeId, categoryId}}) => {
       switch (action) {
         case 'add':
-          this.#addPropertyValue(attributeId, categoryId);
+          this.#addAttrubuteValue(attributeId, categoryId);
           break;
         case 'remove':
-          this.#removePropertyValue(attributeId, categoryId);
+          this.#removeAttrubuteValue(attributeId, categoryId);
           break;
       }
     });
@@ -104,22 +104,22 @@ export default class ConditionBuilderView {
     this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }
 
-  #addProperty(keyCondition) {
+  #addAttrubute(keyCondition) {
     // modifier
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
     this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'key', keyCondition));
   }
   
-  #removeProperty(keyCondition) {
+  #removeAttrubute(keyCondition) {
     // remove from array
-    const index = this.#properties.findIndex(stackingConditionView => stackingConditionView.removeProperty(keyCondition));
+    const index = this.#properties.findIndex(stackingConditionView => stackingConditionView.removeAttrubute(keyCondition));
     this.#properties.splice(index, 1);
     // modifier
     if (this.#properties.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
-  #addPropertyValue(attributeId, categoryId) {
+  #addAttrubuteValue(attributeId, categoryId) {
     // modifier
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // find a condition view has same attribute id
@@ -133,9 +133,9 @@ export default class ConditionBuilderView {
     }
   }
 
-  #removePropertyValue(attributeId, categoryId) {
+  #removeAttrubuteValue(attributeId, categoryId) {
     // remove from array
-    const index = this.#propertyValues.findIndex(stackingConditionView => stackingConditionView.removePropertyValue(attributeId, categoryId));
+    const index = this.#propertyValues.findIndex(stackingConditionView => stackingConditionView.removeAttrubuteValue(attributeId, categoryId));
     if (index !== -1) this.#propertyValues.splice(index, 1);
     // modifier
     if (this.#propertyValues.length === 0) this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.add('-empty');

@@ -90,10 +90,10 @@ export default class TrackOverviewCategorical {
       elm.addEventListener('click', () => {
         if (elm.classList.contains('-selected')) {
           elm.classList.remove('-selected');
-          ConditionBuilder.removePropertyValue(this.#attribute.id, value.categoryId);
+          ConditionBuilder.removeAttrubuteValue(this.#attribute.id, value.categoryId);
         } else {
           elm.classList.add('-selected');
-          ConditionBuilder.addPropertyValue(
+          ConditionBuilder.addAttrubuteValue(
             this.#attribute.id,
             value.categoryId
           );

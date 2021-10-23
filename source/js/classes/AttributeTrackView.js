@@ -86,11 +86,11 @@ export default class AttributeTrackView {
       e.stopPropagation();
       if (this.#CHECKBOX_ALL_PROPERTIES.checked) {
         // add
-        ConditionBuilder.addProperty(attributeId);
+        ConditionBuilder.addAttrubute(attributeId);
         this.#ROOT.classList.add('-allselected');
       } else {
         // remove
-        ConditionBuilder.removeProperty(attributeId);
+        ConditionBuilder.removeAttrubute(attributeId);
         this.#ROOT.classList.remove('-allselected');
       }
     });
