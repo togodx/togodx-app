@@ -44,7 +44,7 @@ class ConditionBuilder {
     this.#postProcessing();
   }
 
-  addAttrubute(attributeId, parentCategoryId, isFinal = true) {
+  addAttribute(attributeId, parentCategoryId, isFinal = true) {
     // store
     const keyCondition = new KeyCondition(attributeId, parentCategoryId);
     this.#keyConditions.push(keyCondition);
@@ -55,7 +55,7 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  addAttrubuteValue(attributeId, categoryId, ancestors = [], isFinal = true) {
+  addAttributeValue(attributeId, categoryId, ancestors = [], isFinal = true) {
     // console.log(attributeId, categoryId, ancestors)
     // find value of same property
     const sameValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.attributeId === attributeId);
@@ -73,7 +73,7 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  removeAttrubute(attributeId, parentCategoryId, isFinal = true) {
+  removeAttribute(attributeId, parentCategoryId, isFinal = true) {
     // remove from store
     const index = this.#keyConditions.findIndex(keyCondition => keyCondition.isSameCondition(attributeId, parentCategoryId));
     if (index === -1) return;
@@ -85,7 +85,7 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  removeAttrubuteValue(attributeId, categoryId, isFinal = true) {
+  removeAttributeValue(attributeId, categoryId, isFinal = true) {
     // remove from store
     const index = this.#valuesConditions.findIndex(valuesCondition => {
       if (valuesCondition.attributeId === attributeId) {
@@ -106,10 +106,10 @@ class ConditionBuilder {
   setAttributes(conditions, isFinal = true) {
     // delete existing properties
     while (this.#keyConditions.length > 0) {
-      this.removeAttrubute(this.#keyConditions[0].attributeId, this.#keyConditions[0].parentCategoryId, false);
+      this.removeAttribute(this.#keyConditions[0].attributeId, this.#keyConditions[0].parentCategoryId, false);
     };
     // set new properties
-    conditions.forEach(({attributeId, parentCategoryId}) => this.addAttrubute(attributeId, parentCategoryId, false));
+    conditions.forEach(({attributeId, parentCategoryId}) => this.addAttribute(attributeId, parentCategoryId, false));
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
   }
@@ -123,15 +123,15 @@ class ConditionBuilder {
         const indexInOld = oldValuesCondition.categoryIds.indexOf(originalValue.categoryId);
         if (indexInNew !== -1) {
           // if new value does not exist in old values, add property value
-          if (indexInOld === -1) this.addAttrubuteValue(attributeId, originalValue.categoryId, [], false);
+          if (indexInOld === -1) this.addAttributeValue(attributeId, originalValue.categoryId, [], false);
         } else {
           // if extra value exists in old values, remove property value
-          if (indexInOld !== -1) this.removeAttrubuteValue(attributeId, originalValue.categoryId, false);
+          if (indexInOld !== -1) this.removeAttributeValue(attributeId, originalValue.categoryId, false);
         }
       });
     } else {
       for (const categoryId of categoryIds) {
-        this.addAttrubuteValue(attributeId, categoryId, [], false);
+        this.addAttributeValue(attributeId, categoryId, [], false);
       }
     }
     // post processing (permalink, evaluate)
@@ -304,12 +304,12 @@ class ConditionBuilder {
   #clearConditinos() {
     while (this.#keyConditions.length > 0) {
       const {attributeId, parentCategoryId} = this.#keyConditions[0];
-      this.removeAttrubute(attributeId, parentCategoryId, false);
+      this.removeAttribute(attributeId, parentCategoryId, false);
     };
     while (this.#valuesConditions.length > 0) {
       const {attributeId, categoryIds} = this.#valuesConditions[0];
       while (categoryIds.length > 0) {
-        this.removeAttrubuteValue(attributeId, categoryIds[0], false);
+        this.removeAttributeValue(attributeId, categoryIds[0], false);
       }
     };
     this.#postProcessing();

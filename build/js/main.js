@@ -3581,8 +3581,8 @@
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
     }, {
-      key: "addAttrubute",
-      value: function addAttrubute(attributeId, parentCategoryId) {
+      key: "addAttribute",
+      value: function addAttribute(attributeId, parentCategoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
         // store
         var keyCondition = new KeyCondition(attributeId, parentCategoryId);
@@ -3601,8 +3601,8 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
-      key: "addAttrubuteValue",
-      value: function addAttrubuteValue(attributeId, categoryId) {
+      key: "addAttributeValue",
+      value: function addAttributeValue(attributeId, categoryId) {
         var isFinal = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 
         // console.log(attributeId, categoryId, ancestors)
@@ -3633,8 +3633,8 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
-      key: "removeAttrubute",
-      value: function removeAttrubute(attributeId, parentCategoryId) {
+      key: "removeAttribute",
+      value: function removeAttribute(attributeId, parentCategoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
         // remove from store
@@ -3658,8 +3658,8 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
-      key: "removeAttrubuteValue",
-      value: function removeAttrubuteValue(attributeId, categoryId) {
+      key: "removeAttributeValue",
+      value: function removeAttributeValue(attributeId, categoryId) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
         // remove from store
@@ -3694,13 +3694,13 @@
 
         // delete existing properties
         while (_classPrivateFieldGet(this, _keyConditions).length > 0) {
-          this.removeAttrubute(_classPrivateFieldGet(this, _keyConditions)[0].attributeId, _classPrivateFieldGet(this, _keyConditions)[0].parentCategoryId, false);
+          this.removeAttribute(_classPrivateFieldGet(this, _keyConditions)[0].attributeId, _classPrivateFieldGet(this, _keyConditions)[0].parentCategoryId, false);
         }
 
         conditions.forEach(function (_ref) {
           var attributeId = _ref.attributeId,
               parentCategoryId = _ref.parentCategoryId;
-          return _this.addAttrubute(attributeId, parentCategoryId, false);
+          return _this.addAttribute(attributeId, parentCategoryId, false);
         }); // post processing (permalink, evaluate)
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
@@ -3724,10 +3724,10 @@
 
             if (indexInNew !== -1) {
               // if new value does not exist in old values, add property value
-              if (indexInOld === -1) _this2.addAttrubuteValue(attributeId, originalValue.categoryId, [], false);
+              if (indexInOld === -1) _this2.addAttributeValue(attributeId, originalValue.categoryId, [], false);
             } else {
               // if extra value exists in old values, remove property value
-              if (indexInOld !== -1) _this2.removeAttrubuteValue(attributeId, originalValue.categoryId, false);
+              if (indexInOld !== -1) _this2.removeAttributeValue(attributeId, originalValue.categoryId, false);
             }
           });
         } else {
@@ -3737,7 +3737,7 @@
           try {
             for (_iterator.s(); !(_step = _iterator.n()).done;) {
               var categoryId = _step.value;
-              this.addAttrubuteValue(attributeId, categoryId, [], false);
+              this.addAttributeValue(attributeId, categoryId, [], false);
             }
           } catch (err) {
             _iterator.e(err);
@@ -3972,7 +3972,7 @@
           attributeId = _classPrivateFieldGet2.attributeId,
           parentCategoryId = _classPrivateFieldGet2.parentCategoryId;
 
-      this.removeAttrubute(attributeId, parentCategoryId, false);
+      this.removeAttribute(attributeId, parentCategoryId, false);
     }
 
     while (_classPrivateFieldGet(this, _valuesConditions).length > 0) {
@@ -3981,7 +3981,7 @@
           categoryIds = _classPrivateFieldGet3.categoryIds;
 
       while (categoryIds.length > 0) {
-        this.removeAttrubuteValue(_attributeId, categoryIds[0], false);
+        this.removeAttributeValue(_attributeId, categoryIds[0], false);
       }
     }
 
@@ -4129,7 +4129,7 @@
 
             _classPrivateFieldGet(_this2, _LABELS).querySelector(':scope > .label:last-child').addEventListener('click', function (e) {
               e.stopPropagation();
-              ConditionBuilder$1.removeAttrubuteValue(_classPrivateFieldGet(_this2, _condition).attributeId, e.target.parentNode.dataset.categoryId);
+              ConditionBuilder$1.removeAttributeValue(_classPrivateFieldGet(_this2, _condition).attributeId, e.target.parentNode.dataset.categoryId);
             });
           }
         };
@@ -4137,15 +4137,15 @@
         getValue();
       }
     }, {
-      key: "removeAttrubute",
-      value: function removeAttrubute(keyCondition) {
+      key: "removeAttribute",
+      value: function removeAttribute(keyCondition) {
         var isMatch = keyCondition.attributeId === _classPrivateFieldGet(this, _condition).attributeId && (keyCondition.parentCategoryId ? keyCondition.parentCategoryId === _classPrivateFieldGet(this, _condition).parentCategoryId : true);
         if (isMatch) _classPrivateFieldGet(this, _ROOT$e).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$e));
         return isMatch;
       }
     }, {
-      key: "removeAttrubuteValue",
-      value: function removeAttrubuteValue(attributeId, categoryId) {
+      key: "removeAttributeValue",
+      value: function removeAttributeValue(attributeId, categoryId) {
         if (attributeId === _classPrivateFieldGet(this, _condition).attributeId) {
           _classPrivateFieldGet(this, _LABELS).removeChild(_classPrivateFieldGet(this, _LABELS).querySelector(":scope > [data-category-id=\"".concat(categoryId, "\"")));
 
@@ -4201,7 +4201,7 @@
       switch (true) {
         case _classPrivateFieldGet(_this3, _condition) instanceof KeyCondition:
           // notify
-          ConditionBuilder$1.removeAttrubute(_classPrivateFieldGet(_this3, _condition).attributeId, _classPrivateFieldGet(_this3, _condition).parentCategoryId);
+          ConditionBuilder$1.removeAttribute(_classPrivateFieldGet(_this3, _condition).attributeId, _classPrivateFieldGet(_this3, _condition).parentCategoryId);
           break;
 
         case _classPrivateFieldGet(_this3, _condition) instanceof ValuesCondition:
@@ -4211,7 +4211,7 @@
           try {
             for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
               var _label2 = _step2.value;
-              ConditionBuilder$1.removeAttrubuteValue(_classPrivateFieldGet(_this3, _condition).attributeId, _label2.dataset.categoryId);
+              ConditionBuilder$1.removeAttributeValue(_classPrivateFieldGet(_this3, _condition).attributeId, _label2.dataset.categoryId);
             }
           } catch (err) {
             _iterator2.e(err);
@@ -4244,26 +4244,26 @@
 
   var _defineTogoKeys = /*#__PURE__*/new WeakSet();
 
-  var _addAttrubute = /*#__PURE__*/new WeakSet();
+  var _addAttribute = /*#__PURE__*/new WeakSet();
 
-  var _removeAttrubute = /*#__PURE__*/new WeakSet();
+  var _removeAttribute = /*#__PURE__*/new WeakSet();
 
-  var _addAttrubuteValue = /*#__PURE__*/new WeakSet();
+  var _addAttributeValue = /*#__PURE__*/new WeakSet();
 
-  var _removeAttrubuteValue = /*#__PURE__*/new WeakSet();
+  var _removeAttributeValue = /*#__PURE__*/new WeakSet();
 
   var ConditionBuilderView = function ConditionBuilderView(elm) {
     var _this = this;
 
     _classCallCheck(this, ConditionBuilderView);
 
-    _classPrivateMethodInitSpec(this, _removeAttrubuteValue);
+    _classPrivateMethodInitSpec(this, _removeAttributeValue);
 
-    _classPrivateMethodInitSpec(this, _addAttrubuteValue);
+    _classPrivateMethodInitSpec(this, _addAttributeValue);
 
-    _classPrivateMethodInitSpec(this, _removeAttrubute);
+    _classPrivateMethodInitSpec(this, _removeAttribute);
 
-    _classPrivateMethodInitSpec(this, _addAttrubute);
+    _classPrivateMethodInitSpec(this, _addAttribute);
 
     _classPrivateMethodInitSpec(this, _defineTogoKeys);
 
@@ -4359,12 +4359,12 @@
 
       switch (action) {
         case 'add':
-          _classPrivateMethodGet(_this, _addAttrubute, _addAttrubute2).call(_this, keyCondition);
+          _classPrivateMethodGet(_this, _addAttribute, _addAttribute2).call(_this, keyCondition);
 
           break;
 
         case 'remove':
-          _classPrivateMethodGet(_this, _removeAttrubute, _removeAttrubute2).call(_this, keyCondition);
+          _classPrivateMethodGet(_this, _removeAttribute, _removeAttribute2).call(_this, keyCondition);
 
           break;
       }
@@ -4377,12 +4377,12 @@
 
       switch (action) {
         case 'add':
-          _classPrivateMethodGet(_this, _addAttrubuteValue, _addAttrubuteValue2).call(_this, attributeId, categoryId);
+          _classPrivateMethodGet(_this, _addAttributeValue, _addAttributeValue2).call(_this, attributeId, categoryId);
 
           break;
 
         case 'remove':
-          _classPrivateMethodGet(_this, _removeAttrubuteValue, _removeAttrubuteValue2).call(_this, attributeId, categoryId);
+          _classPrivateMethodGet(_this, _removeAttributeValue, _removeAttributeValue2).call(_this, attributeId, categoryId);
 
           break;
       }
@@ -4433,7 +4433,7 @@
     _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));
   }
 
-  function _addAttrubute2(keyCondition) {
+  function _addAttribute2(keyCondition) {
     // modifier
     _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.remove('-empty'); // make view
 
@@ -4441,10 +4441,10 @@
     _classPrivateFieldGet(this, _properties).push(new StackingConditionView(_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER), 'key', keyCondition));
   }
 
-  function _removeAttrubute2(keyCondition) {
+  function _removeAttribute2(keyCondition) {
     // remove from array
     var index = _classPrivateFieldGet(this, _properties).findIndex(function (stackingConditionView) {
-      return stackingConditionView.removeAttrubute(keyCondition);
+      return stackingConditionView.removeAttribute(keyCondition);
     });
 
     _classPrivateFieldGet(this, _properties).splice(index, 1); // modifier
@@ -4453,7 +4453,7 @@
     if (_classPrivateFieldGet(this, _properties).length === 0) _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.add('-empty');
   }
 
-  function _addAttrubuteValue2(attributeId, categoryId) {
+  function _addAttributeValue2(attributeId, categoryId) {
     // modifier
     _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.remove('-empty'); // find a condition view has same attribute id
 
@@ -4471,10 +4471,10 @@
     }
   }
 
-  function _removeAttrubuteValue2(attributeId, categoryId) {
+  function _removeAttributeValue2(attributeId, categoryId) {
     // remove from array
     var index = _classPrivateFieldGet(this, _propertyValues).findIndex(function (stackingConditionView) {
-      return stackingConditionView.removeAttrubuteValue(attributeId, categoryId);
+      return stackingConditionView.removeAttributeValue(attributeId, categoryId);
     });
 
     if (index !== -1) _classPrivateFieldGet(this, _propertyValues).splice(index, 1); // modifier
@@ -4589,9 +4589,9 @@
 
       _classPrivateFieldGet(this, _INPUT_KEY).addEventListener('change', function (e) {
         if (e.target.checked) {
-          ConditionBuilder$1.addAttrubute(column.attributeId, categoryId);
+          ConditionBuilder$1.addAttribute(column.attributeId, categoryId);
         } else {
-          ConditionBuilder$1.removeAttrubute(column.attributeId, categoryId);
+          ConditionBuilder$1.removeAttribute(column.attributeId, categoryId);
         }
       });
 
@@ -4943,10 +4943,10 @@
 
         if (checkbox.checked) {
           // add
-          ConditionBuilder$1.addAttrubuteValue(this.attributeId, checkbox.value, ancestors);
+          ConditionBuilder$1.addAttributeValue(this.attributeId, checkbox.value, ancestors);
         } else {
           // remove
-          ConditionBuilder$1.removeAttrubuteValue(this.attributeId, checkbox.value);
+          ConditionBuilder$1.removeAttributeValue(this.attributeId, checkbox.value);
         }
       } // checkKey(e) {
       // }
@@ -6026,10 +6026,10 @@
       elm.addEventListener('click', function () {
         if (elm.classList.contains('-selected')) {
           elm.classList.remove('-selected');
-          ConditionBuilder$1.removeAttrubuteValue(_classPrivateFieldGet(_this, _attribute$1).id, value.categoryId);
+          ConditionBuilder$1.removeAttributeValue(_classPrivateFieldGet(_this, _attribute$1).id, value.categoryId);
         } else {
           elm.classList.add('-selected');
-          ConditionBuilder$1.addAttrubuteValue(_classPrivateFieldGet(_this, _attribute$1).id, value.categoryId);
+          ConditionBuilder$1.addAttributeValue(_classPrivateFieldGet(_this, _attribute$1).id, value.categoryId);
         }
       });
     }); // event listener
@@ -6266,12 +6266,12 @@
 
       if (_classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked) {
         // add
-        ConditionBuilder$1.addAttrubute(attributeId);
+        ConditionBuilder$1.addAttribute(attributeId);
 
         _classPrivateFieldGet(_this, _ROOT$8).classList.add('-allselected');
       } else {
         // remove
-        ConditionBuilder$1.removeAttrubute(attributeId);
+        ConditionBuilder$1.removeAttribute(attributeId);
 
         _classPrivateFieldGet(_this, _ROOT$8).classList.remove('-allselected');
       }

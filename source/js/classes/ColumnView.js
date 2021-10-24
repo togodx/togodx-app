@@ -180,13 +180,13 @@ export default class ColumnView {
       }
     } while (parentCategoryId);
     if (checkbox.checked) { // add
-      ConditionBuilder.addAttrubuteValue(
+      ConditionBuilder.addAttributeValue(
         this.attributeId,
         checkbox.value,
         ancestors
       );
     } else { // remove
-      ConditionBuilder.removeAttrubuteValue(this.attributeId, checkbox.value);
+      ConditionBuilder.removeAttributeValue(this.attributeId, checkbox.value);
     }
   }
 

@@ -88,11 +88,11 @@ export default class StackingConditionView {
       switch (true) {
         case this.#condition instanceof KeyCondition:
           // notify
-          ConditionBuilder.removeAttrubute(this.#condition.attributeId, this.#condition.parentCategoryId);
+          ConditionBuilder.removeAttribute(this.#condition.attributeId, this.#condition.parentCategoryId);
           break;
         case this.#condition instanceof ValuesCondition:
           for (const label of this.#LABELS.querySelectorAll(':scope > .label')) {
-            ConditionBuilder.removeAttrubuteValue(this.#condition.attributeId, label.dataset.categoryId);
+            ConditionBuilder.removeAttributeValue(this.#condition.attributeId, label.dataset.categoryId);
           }
           break;
       }
@@ -112,14 +112,14 @@ export default class StackingConditionView {
         // attach event
         this.#LABELS.querySelector(':scope > .label:last-child').addEventListener('click', e => {
           e.stopPropagation();
-          ConditionBuilder.removeAttrubuteValue(this.#condition.attributeId, e.target.parentNode.dataset.categoryId);
+          ConditionBuilder.removeAttributeValue(this.#condition.attributeId, e.target.parentNode.dataset.categoryId);
         });
       }
     }
     getValue();
   }
 
-  removeAttrubute(keyCondition) {
+  removeAttribute(keyCondition) {
     const isMatch =
       (keyCondition.attributeId === this.#condition.attributeId) &&
       (keyCondition.parentCategoryId ? keyCondition.parentCategoryId === this.#condition.parentCategoryId : true);
@@ -127,7 +127,7 @@ export default class StackingConditionView {
     return isMatch;
   }
 
-  removeAttrubuteValue(attributeId, categoryId) {
+  removeAttributeValue(attributeId, categoryId) {
     if (attributeId === this.#condition.attributeId) {
       this.#LABELS.removeChild(this.#LABELS.querySelector(`:scope > [data-category-id="${categoryId}"`));
       if (this.#LABELS.childNodes.length === 0) {
