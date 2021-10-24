@@ -1547,7 +1547,6 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   border-radius: 0.2rem;
   font-weight: normal;
   font-size: 1.2rem;
-  cursor: pointer;
 }
 
 .track-value-view {
@@ -2055,9 +2054,11 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   max-height: 10.2rem;
   overflow-y: auto;
 }
+#ResultsTable > .body > table > tbody > tr > td > .inner > ul .togo-key-view {
+  cursor: pointer;
+}
 #ResultsTable > .body > table > tbody > tr > td > .inner > ul .togo-key-view:hover, #ResultsTable > .body > table > tbody > tr > td > .inner > ul .togo-key-view.-selected {
-  background-color: var(--color-light-gray);
-  color: var(--color-black);
+  background-color: var(--color-lamp-black);
 }
 #ResultsTable > .body > table > tbody > tr > td > .inner > ul > li + li {
   -webkit-margin-before: 0.2rem;
@@ -2117,32 +2118,39 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   align-items: center;
   height: var(--height-header);
   width: 100%;
-  color: white;
   line-height: 1.6rem;
   border-top-left-radius: inherit;
   border-top-right-radius: inherit;
   padding: calc((var(--height-header) - 1.6rem) * 0.5) var(--padding-side);
 }
+#ResultDetailModal.backdrop > .popup > header.-primary {
+  background-color: var(--color-gray);
+}
 #ResultDetailModal.backdrop > .popup > header > div {
   display: flex;
   align-items: center;
-}
-#ResultDetailModal.backdrop > .popup > header > div.label {
-  align-items: baseline;
-  font-weight: bold;
-  flex-grow: 1;
-  font-size: 1.4rem;
-}
-#ResultDetailModal.backdrop > .popup > header > div.label > * {
-  margin-right: 1rem !important;
-}
-#ResultDetailModal.backdrop > .popup > header > div.label > .path {
-  color: var(--color-lamp-black);
 }
 #ResultDetailModal.backdrop > .popup > header > div > .close-button-view {
   margin-left: 0.5rem;
   margin-right: -0.4rem;
   position: relative;
+}
+#ResultDetailModal.backdrop > .popup > header > .label {
+  align-items: baseline;
+  flex-grow: 1;
+  font-size: 1.4rem;
+}
+#ResultDetailModal.backdrop > .popup > header > .label > * {
+  margin-right: 1rem !important;
+}
+#ResultDetailModal.backdrop > .popup > header > .label > .category {
+  color: white;
+  padding: 0 0.8rem;
+  border-radius: 0.2rem;
+  font-weight: bold;
+}
+#ResultDetailModal.backdrop > .popup > header > .label > .attribute {
+  font-weight: bold;
 }
 #ResultDetailModal.backdrop > .popup > .container {
   height: 100%;

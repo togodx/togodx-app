@@ -153,7 +153,7 @@ export default class ResultsTable {
           valuesCondition => `
           <th>
             <div class="inner _catexxxgory-background-color" data-catexxxgory-id="${valuesCondition.catexxxgoryId}">
-            <div class="togo-key-view">${valuesCondition.dataset}</div>
+              <div class="togo-key-view">${Records.getDatasetLabel(valuesCondition.dataset)}</div>
               <span>${valuesCondition.label}</span>
             </div>
           </th>`
@@ -166,7 +166,7 @@ export default class ResultsTable {
           keyCondition => `
           <th>
             <div class="inner _catexxxgory-color" data-catexxxgory-id="${keyCondition.catexxxgoryId}">
-              <div class="togo-key-view">${keyCondition.dataset}</div>
+              <div class="togo-key-view">${Records.getDatasetLabel(keyCondition.dataset)}</div>
               <span>${keyCondition.label}</span>
             </div>
           </th>`

@@ -6864,9 +6864,9 @@
     _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getDatasetLabel(tableData.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      "); // makte table sub header
 
     _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    ".concat(tableData.dxCondition.valuesConditions.map(function (valuesCondition) {
-      return "\n          <th>\n            <div class=\"inner _catexxxgory-background-color\" data-catexxxgory-id=\"".concat(valuesCondition.catexxxgoryId, "\">\n            <div class=\"togo-key-view\">").concat(valuesCondition.dataset, "</div>\n              <span>").concat(valuesCondition.label, "</span>\n            </div>\n          </th>");
+      return "\n          <th>\n            <div class=\"inner _catexxxgory-background-color\" data-catexxxgory-id=\"".concat(valuesCondition.catexxxgoryId, "\">\n              <div class=\"togo-key-view\">").concat(Records$1.getDatasetLabel(valuesCondition.dataset), "</div>\n              <span>").concat(valuesCondition.label, "</span>\n            </div>\n          </th>");
     }).join(''), "\n    ").concat(tableData.dxCondition.keyConditions.map(function (keyCondition) {
-      return "\n          <th>\n            <div class=\"inner _catexxxgory-color\" data-catexxxgory-id=\"".concat(keyCondition.catexxxgoryId, "\">\n              <div class=\"togo-key-view\">").concat(keyCondition.dataset, "</div>\n              <span>").concat(keyCondition.label, "</span>\n            </div>\n          </th>");
+      return "\n          <th>\n            <div class=\"inner _catexxxgory-color\" data-catexxxgory-id=\"".concat(keyCondition.catexxxgoryId, "\">\n              <div class=\"togo-key-view\">").concat(Records$1.getDatasetLabel(keyCondition.dataset), "</div>\n              <span>").concat(keyCondition.label, "</span>\n            </div>\n          </th>");
     }).join('')); // make stats
 
     var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _STATS).querySelectorAll(':scope > td')),
@@ -7290,15 +7290,17 @@
   }
 
   function _header2(keys, props) {
-    var _subCategory$label;
-
     var category = Records$1.getCatexxxgory(keys.subjectId);
+    var attribute = Records$1.getAttribute(keys.mainCategoryId);
     var isPrimaryKey = props.isPrimaryKey;
     var mainCategory = isPrimaryKey ? '' : Records$1.getAttribute(keys.mainCategoryId);
+    var categoryLabel = isPrimaryKey ? keys.dataKey : "<span class=\"category _catexxxgory-background-color-strong\">".concat(category.label, "</span>");
+    var attributeLable = "<span class=\"attribute\">".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, "</span>"); // for continuous value (distribution), do not output label
+
     var subCategory = isPrimaryKey ? '' : Records$1.getValue(keys.mainCategoryId, keys.subCategoryId);
-    var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(category.label, " / ").concat((_subCategory$label = subCategory === null || subCategory === void 0 ? void 0 : subCategory.label) !== null && _subCategory$label !== void 0 ? _subCategory$label : '--', "</span>");
+    var valueLabel = attribute.datamodel !== 'distribution' && subCategory !== null && subCategory !== void 0 && subCategory.label ? "<span class=\"value\">".concat(subCategory.label, "</span>") : '';
     var header = document.createElement('header');
-    header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div/>\n    ");
+    header.innerHTML = "\n      <div class=\"label\">\n        ".concat(categoryLabel, "\n        ").concat(attributeLable, "\n        ").concat(valueLabel, "\n      </div>\n      <div/>\n    ");
     header.classList.add('_catexxxgory-background-color');
     header.lastElementChild.appendChild(_classPrivateFieldGet(this, _exit_button));
     header.addEventListener('mousedown', function (e) {
