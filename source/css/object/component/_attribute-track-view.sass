@@ -1,4 +1,4 @@
-.track-view
+.attribute-track-view
   margin-bottom: .1rem
   font-size: 1.2rem
   position: relative
@@ -6,7 +6,7 @@
     display: flex
     height: var(--height-track)
     > .left
-      padding-bottom: .8rem
+      padding-bottom: .2rem
       border-right: solid .1rem var(--color-gray)
       flex-basis: var(--width-track-column-property)
       min-width: var(--width-track-column-property)
@@ -64,17 +64,19 @@
       content-visibility: hidden
       user-select: none
       > .left
-        > .specification
-          padding: 0 1.2rem 1.2rem
+        > .specification, > .source
+          margin: .8rem 1.2rem
           > dt
             font-size: 1rem
           > dd
             line-height: 1.2
             margin-bottom: .4rem
             word-break: break-all
-    > .selector
-      // height: 100%
-      // overflow: hidden
+        > .specification
+          margin-top: 0
+        > .source
+          padding-top: .8rem
+          border-top: solid .1rem var(--color-separator)
   &.-preparing
     opacity: 1
     > .row

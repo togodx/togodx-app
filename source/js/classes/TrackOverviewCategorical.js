@@ -11,18 +11,17 @@ const RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
 
 export default class TrackOverviewCategorical {
 
-  #property;
+  #attribute;
   #values;
   #userValues;
   #ROOT;
 
-  constructor(elm, property, values) {
+  constructor(elm, attribute, values) {
 
     this.#ROOT = elm;
-    this.#property = property;
+    this.#attribute = attribute;
     this.#values = values.map(value => Object.assign({}, value));
-    const subject = Records.getSubjectWithPropertyId(this.#property.propertyId);
-    const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.#property.propertyId);
+    const category = Records.getCatexxxgoryWithAttributeId(this.#attribute.id);
 
     // make overview
     // TODO: ヒストグラムは別処理
@@ -31,11 +30,10 @@ export default class TrackOverviewCategorical {
     elm.innerHTML = this.#values.map((value, index) => {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / sum * 100;
-      value.baseColor = util.colorTintByHue(subject.color, 360 * index / values.length);
-      // const selectedClass = selectedCategoryIds.values.indexOf(value.categoryId) !== -1 ? ' -selected' : ''; // TODO: 不要な処理かも？
+      value.baseColor = util.colorTintByHue(category.color, 360 * index / values.length);
       const selectedClass = '';
       return `
-        <li class="track-value-view _subject-background-color${selectedClass}" style="width: ${width}%;" data-category-id="${value.categoryId}">
+        <li class="track-value-view _catexxxgory-background-color${selectedClass}" style="width: ${width}%;" data-category-id="${value.categoryId}">
           <div class="labels">
             <p>
               <span class="label">${value.label}</span>
@@ -57,7 +55,7 @@ export default class TrackOverviewCategorical {
       value.icon = value.pin.querySelector(':scope > .material-icons');
 
       // attach event: show tooltip
-      const label = `<span class="_subject-color" data-subject-id="${subject.subjectId}">${value.label}</span>`;
+      const label = `<span class="_catexxxgory-color" data-catexxxgory-id="${category.id}">${value.label}</span>`;
       elm.addEventListener('mouseenter', () => {
         const values = [];
         const userValue = this.#userValues?.find(userValue => userValue.categoryId === value.categoryId);
@@ -80,11 +78,11 @@ export default class TrackOverviewCategorical {
             value: value.count.toLocaleString()
           });
         }
-        const customEvent = new CustomEvent(event.enterPropertyValueItemView, {detail: {label, values, elm}});
+        const customEvent = new CustomEvent(event.enterAttributeValueItemView, {detail: {label, values, elm}});
         DefaultEventEmitter.dispatchEvent(customEvent);
       });
       elm.addEventListener('mouseleave', () => {
-        const customEvent = new CustomEvent(event.leavePropertyValueItemView);
+        const customEvent = new CustomEvent(event.leaveAttributeValueItemView);
         DefaultEventEmitter.dispatchEvent(customEvent);
       });
 
@@ -92,11 +90,11 @@ export default class TrackOverviewCategorical {
       elm.addEventListener('click', () => {
         if (elm.classList.contains('-selected')) {
           elm.classList.remove('-selected');
-          ConditionBuilder.removePropertyValue(this.#property.propertyId, value.categoryId);
+          ConditionBuilder.removeAttributeValue(this.#attribute.id, value.categoryId);
         } else {
           elm.classList.add('-selected');
-          ConditionBuilder.addPropertyValue(
-            this.#property.propertyId,
+          ConditionBuilder.addAttributeValue(
+            this.#attribute.id,
             value.categoryId
           );
         }
@@ -104,8 +102,8 @@ export default class TrackOverviewCategorical {
     });
 
     // event listener
-    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail: {action, propertyId, categoryId}}) => {
-      if (this.#property.propertyId === propertyId) {
+    DefaultEventEmitter.addEventListener(event.mutateAttributeValueCondition, ({detail: {action, attributeId, categoryId}}) => {
+      if (this.#attribute.id === attributeId) {
         this.#values.forEach(value => {
           if (value.categoryId === categoryId) {
             switch (action) {
@@ -129,15 +127,12 @@ export default class TrackOverviewCategorical {
 
   #update(viewModes) {
     
-    // const isArea = viewModes.area;
     const isLog10 = viewModes.log10;
     const sum = this.#values.reduce((acc, value) => acc + (isLog10 ? value.countLog10 : value.count), 0);
     let max = Math.max(...this.#values.map(value => value.count));
     max = isLog10 ? Math.log10(max) : max;
-    // const fixedWidth = isArea ? 0 : 100 / this.#values.length;
     let left = 0;
     this.#values.forEach(value => {
-      // const width = isArea ? (isLog10 ? Math.log10(value.count) : value.count) / sum * 100 : fixedWidth;
       const width = (isLog10 ? (value.count === 0 ? 0 : Math.log10(value.count)) : value.count) / sum * 100;
       value.elm.style.backgroundColor = `rgb(${value.baseColor.mix(App.colorSilver, 1 - (isLog10 ? value.countLog10 : value.count) / max).coords.map(cood => cood * 256).join(',')})`;
       value.elm.style.width = width + '%';
@@ -147,17 +142,10 @@ export default class TrackOverviewCategorical {
   }
 
   #plotUserIdValues(detail) {
-    if (this.#property.propertyId === detail.propertyId) {
+    if (this.#attribute.id === detail.attributeId) {
 
       this.#ROOT.classList.add('-pinsticking');
       this.#userValues = detail.values;
-
-      // calculate min value
-      // let maxPValue;
-      // if (detail.values[0]?.pValue) {
-      //   const minPValue = Math.min(...detail.values.map(value => value.pValue));
-      //   maxPValue = 1 - Math.log10(minPValue);
-      // }
 
       // mapping
       this.#values.forEach(value => {
@@ -169,7 +157,6 @@ export default class TrackOverviewCategorical {
           ratio = userValue.hit_count / value.count;
           ratio = ratio > 1 ? 1 : ratio;
           if (userValue.pValue) {
-            // ratio = (1 - Math.log10(userValue.pValue)) / maxPValue;
             switch (true) {
               case userValue.pValue < 0.001:
                 pValueGreaterThan = '<0.001';
@@ -191,8 +178,6 @@ export default class TrackOverviewCategorical {
                 break;
             }
           } else {
-            // ratio = userValue.count / value.count;
-            // ratio = ratio > 1 ? 1 : ratio;
             pValueGreaterThan = 1;
           }
           const size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;

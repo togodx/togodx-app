@@ -5,8 +5,8 @@ export default class ValuesCondition extends BaseCondition {
 
   #categoryIds;
 
-  constructor(propertyId, categoryIds) {
-    super(propertyId);
+  constructor(attributeId, categoryIds) {
+    super(attributeId);
     this.#categoryIds = categoryIds;
   }
 
@@ -24,12 +24,12 @@ export default class ValuesCondition extends BaseCondition {
 
   getURLParameter() {
     const values = {
-      propertyId: this.propertyId,
+      attributeId: this._attributeId,
       ids: []
     }
     this.#categoryIds.forEach(categoryId => {
       const id = {categoryId};
-      const ancestors = Records.getAncestors(this.propertyId, categoryId).map(ancestor => ancestor.categoryId);
+      const ancestors = Records.getAncestors(this._attributeId, categoryId).map(ancestor => ancestor.categoryId);
       if (ancestors.length > 0) id.ancestors = ancestors;
       values.ids.push(id);
     })
@@ -49,7 +49,7 @@ export default class ValuesCondition extends BaseCondition {
 
   get query() {
     return {
-      attribute: this.propertyId,
+      attribute: this._attributeId,
       nodes: this.categoryIds
     }
   }

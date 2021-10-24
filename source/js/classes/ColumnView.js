@@ -18,12 +18,7 @@ export default class ColumnView {
   #ROOT;
   #TBODY;
 
-  constructor(
-    selector,
-    values,
-    depth,
-    parentCategoryId
-  ) {
+  constructor(selector, values, depth, parentCategoryId) {
 
     // set members
     this.#depth = depth;
@@ -64,7 +59,7 @@ export default class ColumnView {
       <tbody></tbody>
     </table>`;
     this.#TBODY = this.#ROOT.querySelector(':scope > table > tbody');
-    const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.propertyId);
+    const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.attributeId);
     this.#columnItemViews = values.map((value, index) => {
       this.#max = Math.max(this.#max, value.count);
       // add item
@@ -127,9 +122,9 @@ export default class ColumnView {
   #heatmap() {
     const isLog10 = App.viewModes.log10;
     let max = isLog10 && this.#max > 1 ? Math.log10(this.#max) : this.#max;
+    const category = Records.getCatexxxgoryWithAttributeId(this.attributeId);
     this.#columnItemViews.forEach(columnItemView => {
-      const subject = Records.getSubjectWithPropertyId(this.propertyId);
-      columnItemView.update(subject, isLog10, max);
+      columnItemView.update(category.color, isLog10, max);
     });
   }
 
@@ -159,8 +154,8 @@ export default class ColumnView {
     if (document.body.classList.contains('-showuserids') && ConditionBuilder.userIds) {
       this.#getUserValues(
         queryTemplates.dataFromUserIds(
-          this.#selector.sparqlet,
-          this.#selector.primaryKey,
+          this.#selector.api,
+          this.#selector.dataset,
           this.#parentCategoryId
           )
         )
@@ -185,13 +180,13 @@ export default class ColumnView {
       }
     } while (parentCategoryId);
     if (checkbox.checked) { // add
-      ConditionBuilder.addPropertyValue(
-        this.propertyId,
+      ConditionBuilder.addAttributeValue(
+        this.attributeId,
         checkbox.value,
         ancestors
       );
     } else { // remove
-      ConditionBuilder.removePropertyValue(this.propertyId, checkbox.value);
+      ConditionBuilder.removeAttributeValue(this.attributeId, checkbox.value);
     }
   }
 
@@ -215,8 +210,8 @@ export default class ColumnView {
     return this.#depth;
   }
 
-  get propertyId() {
-    return this.#selector.propertyId;
+  get attributeId() {
+    return this.#selector.attributeId;
   }
 
   get parentCategoryId() {
