@@ -7290,15 +7290,13 @@
   }
 
   function _header2(keys, props) {
-    var _subCategory$label;
-
     var category = Records$1.getCatexxxgory(keys.subjectId);
     var isPrimaryKey = props.isPrimaryKey;
     var mainCategory = isPrimaryKey ? '' : Records$1.getAttribute(keys.mainCategoryId);
     var subCategory = isPrimaryKey ? '' : Records$1.getValue(keys.mainCategoryId, keys.subCategoryId);
-    var path = isPrimaryKey ? keys.dataKey : "<span class='path'>".concat(category.label, " / ").concat((_subCategory$label = subCategory === null || subCategory === void 0 ? void 0 : subCategory.label) !== null && _subCategory$label !== void 0 ? _subCategory$label : '--', "</span>");
+    var path = isPrimaryKey ? keys.dataKey : "\n        <span class=\"category _catexxxgory-background-color-strong\">".concat(category.label, "</span>\n        ").concat(subCategory !== null && subCategory !== void 0 && subCategory.label ? "<span class=\"value\">".concat(subCategory.label, "</span>") : '', "\n      ");
     var header = document.createElement('header');
-    header.innerHTML = "\n      <div class='label'>\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div/>\n    ");
+    header.innerHTML = "\n      <div class=\"label\">\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div/>\n    ");
     header.classList.add('_catexxxgory-background-color');
     header.lastElementChild.appendChild(_classPrivateFieldGet(this, _exit_button));
     header.addEventListener('mousedown', function (e) {

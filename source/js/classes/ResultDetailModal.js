@@ -90,10 +90,13 @@ export default class ResultDetailModal {
       : Records.getValue(keys.mainCategoryId, keys.subCategoryId);
     const path = isPrimaryKey
       ? keys.dataKey
-      : `<span class='path'>${category.label} / ${subCategory?.label ?? '--'}</span>`;
+      : `
+        <span class="category _catexxxgory-background-color-strong">${category.label}</span>
+        ${subCategory?.label ? `<span class="value">${subCategory.label}</span>` : ''}
+      `;
     const header = document.createElement('header');
     header.innerHTML = `
-      <div class='label'>
+      <div class="label">
         <strong>${
           isPrimaryKey ? keys.uniqueEntryId : mainCategory.label
         } </strong>

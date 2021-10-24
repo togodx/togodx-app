@@ -2117,7 +2117,6 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   align-items: center;
   height: var(--height-header);
   width: 100%;
-  color: white;
   line-height: 1.6rem;
   border-top-left-radius: inherit;
   border-top-right-radius: inherit;
@@ -2130,22 +2129,24 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   display: flex;
   align-items: center;
 }
-#ResultDetailModal.backdrop > .popup > header > div.label {
-  align-items: baseline;
-  font-weight: bold;
-  flex-grow: 1;
-  font-size: 1.4rem;
-}
-#ResultDetailModal.backdrop > .popup > header > div.label > * {
-  margin-right: 1rem !important;
-}
-#ResultDetailModal.backdrop > .popup > header > div.label > .path {
-  color: var(--color-lamp-black);
-}
 #ResultDetailModal.backdrop > .popup > header > div > .close-button-view {
   margin-left: 0.5rem;
   margin-right: -0.4rem;
   position: relative;
+}
+#ResultDetailModal.backdrop > .popup > header > .label {
+  align-items: baseline;
+  flex-grow: 1;
+  font-size: 1.4rem;
+}
+#ResultDetailModal.backdrop > .popup > header > .label > * {
+  margin-right: 1rem !important;
+}
+#ResultDetailModal.backdrop > .popup > header > .label > .category {
+  color: white;
+  padding: 0 0.8rem;
+  border-radius: 0.2rem;
+  font-weight: bold;
 }
 #ResultDetailModal.backdrop > .popup > .container {
   height: 100%;
