@@ -2148,6 +2148,9 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   border-radius: 0.2rem;
   font-weight: bold;
 }
+#ResultDetailModal.backdrop > .popup > header > .label > .attribute {
+  font-weight: bold;
+}
 #ResultDetailModal.backdrop > .popup > .container {
   height: 100%;
   width: 100%;

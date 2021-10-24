@@ -7294,11 +7294,13 @@
     var attribute = Records$1.getAttribute(keys.mainCategoryId);
     var isPrimaryKey = props.isPrimaryKey;
     var mainCategory = isPrimaryKey ? '' : Records$1.getAttribute(keys.mainCategoryId);
-    var subCategory = isPrimaryKey ? '' : Records$1.getValue(keys.mainCategoryId, keys.subCategoryId); // for continuous value (distribution), do not output label
+    var categoryLabel = isPrimaryKey ? keys.dataKey : "<span class=\"category _catexxxgory-background-color-strong\">".concat(category.label, "</span>");
+    var attributeLable = "<span class=\"attribute\">".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, "</span>"); // for continuous value (distribution), do not output label
 
-    var path = isPrimaryKey ? keys.dataKey : "\n        <span class=\"category _catexxxgory-background-color-strong\">".concat(category.label, "</span>\n        ").concat(attribute.datamodel !== 'distribution' && subCategory !== null && subCategory !== void 0 && subCategory.label ? "<span class=\"value\">".concat(subCategory.label, "</span>") : '', "\n      ");
+    var subCategory = isPrimaryKey ? '' : Records$1.getValue(keys.mainCategoryId, keys.subCategoryId);
+    var valueLabel = attribute.datamodel !== 'distribution' && subCategory !== null && subCategory !== void 0 && subCategory.label ? "<span class=\"value\">".concat(subCategory.label, "</span>") : '';
     var header = document.createElement('header');
-    header.innerHTML = "\n      <div class=\"label\">\n        <strong>".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, " </strong>\n        ").concat(path, "\n      </div>\n      <div/>\n    ");
+    header.innerHTML = "\n      <div class=\"label\">\n        ".concat(categoryLabel, "\n        ").concat(attributeLable, "\n        ").concat(valueLabel, "\n      </div>\n      <div/>\n    ");
     header.classList.add('_catexxxgory-background-color');
     header.lastElementChild.appendChild(_classPrivateFieldGet(this, _exit_button));
     header.addEventListener('mousedown', function (e) {
