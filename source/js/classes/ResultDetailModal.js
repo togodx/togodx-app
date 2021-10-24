@@ -81,6 +81,7 @@ export default class ResultDetailModal {
 
   #header(keys, props) {
     const category = Records.getCatexxxgory(keys.subjectId);
+    const attribute = Records.getAttribute(keys.mainCategoryId);
     const isPrimaryKey = props.isPrimaryKey;
     const mainCategory = isPrimaryKey
       ? ''
@@ -88,11 +89,12 @@ export default class ResultDetailModal {
     const subCategory = isPrimaryKey
       ? ''
       : Records.getValue(keys.mainCategoryId, keys.subCategoryId);
+    // for continuous value (distribution), do not output label
     const path = isPrimaryKey
       ? keys.dataKey
       : `
         <span class="category _catexxxgory-background-color-strong">${category.label}</span>
-        ${subCategory?.label ? `<span class="value">${subCategory.label}</span>` : ''}
+        ${attribute.datamodel !== 'distribution' && subCategory?.label ? `<span class="value">${subCategory.label}</span>` : ''}
       `;
     const header = document.createElement('header');
     header.innerHTML = `
