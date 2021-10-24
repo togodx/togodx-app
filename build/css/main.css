@@ -1547,7 +1547,6 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   border-radius: 0.2rem;
   font-weight: normal;
   font-size: 1.2rem;
-  cursor: pointer;
 }
 
 .track-value-view {
@@ -2055,9 +2054,11 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   max-height: 10.2rem;
   overflow-y: auto;
 }
+#ResultsTable > .body > table > tbody > tr > td > .inner > ul .togo-key-view {
+  cursor: pointer;
+}
 #ResultsTable > .body > table > tbody > tr > td > .inner > ul .togo-key-view:hover, #ResultsTable > .body > table > tbody > tr > td > .inner > ul .togo-key-view.-selected {
-  background-color: var(--color-light-gray);
-  color: var(--color-black);
+  background-color: var(--color-lamp-black);
 }
 #ResultsTable > .body > table > tbody > tr > td > .inner > ul > li + li {
   -webkit-margin-before: 0.2rem;
