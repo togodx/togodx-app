@@ -9,6 +9,22 @@
   ],
   "creatorBuild" : "34214",
   "files" : {
+    "\/.github\/workflows\/deploy.dx-server.dev.yaml" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/build\/.github\/workflows\/deploy.dx-server.dev.yaml",
+      "oF" : 0
+    },
+    "\/.github\/workflows\/release.yaml" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/build\/.github\/workflows\/release.yaml",
+      "oF" : 0
+    },
     "\/build" : {
       "ft" : 65536,
       "oA" : 1,
@@ -135,6 +151,21 @@
       "pg" : 0,
       "sct" : 0
     },
+    "\/source\/css\/object\/component\/_attribute-track-view.sass" : {
+      "aP" : 1,
+      "bl" : 0,
+      "co" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 2,
+      "ma" : 1,
+      "oA" : 1,
+      "oAP" : "\/build\/css\/object\/component\/_attribute-track-view.css",
+      "oF" : 0,
+      "oS" : 1,
+      "pg" : 0,
+      "sct" : 0
+    },
     "\/source\/css\/object\/component\/_balloon-view.sass" : {
       "aP" : 1,
       "bl" : 0,
@@ -145,6 +176,21 @@
       "ma" : 1,
       "oA" : 1,
       "oAP" : "\/build\/css\/object\/component\/_balloon-view.css",
+      "oF" : 0,
+      "oS" : 1,
+      "pg" : 0,
+      "sct" : 0
+    },
+    "\/source\/css\/object\/component\/_category-view.sass" : {
+      "aP" : 1,
+      "bl" : 0,
+      "co" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 2,
+      "ma" : 1,
+      "oA" : 1,
+      "oAP" : "\/build\/css\/object\/component\/_category-view.css",
       "oF" : 0,
       "oS" : 1,
       "pg" : 0,
@@ -190,21 +236,6 @@
       "ma" : 1,
       "oA" : 1,
       "oAP" : "\/build\/css\/object\/component\/_column-selector-view.css",
-      "oF" : 0,
-      "oS" : 1,
-      "pg" : 0,
-      "sct" : 0
-    },
-    "\/source\/css\/object\/component\/_concept-view.sass" : {
-      "aP" : 1,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 2,
-      "ma" : 1,
-      "oA" : 1,
-      "oAP" : "\/build\/css\/object\/component\/_concept-view.css",
       "oF" : 0,
       "oS" : 1,
       "pg" : 0,
@@ -370,21 +401,6 @@
       "ma" : 1,
       "oA" : 1,
       "oAP" : "\/build\/css\/object\/component\/_track-value-view.css",
-      "oF" : 0,
-      "oS" : 1,
-      "pg" : 0,
-      "sct" : 0
-    },
-    "\/source\/css\/object\/component\/_track-view.sass" : {
-      "aP" : 1,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 2,
-      "ma" : 1,
-      "oA" : 1,
-      "oAP" : "\/build\/css\/object\/component\/_track-view.css",
       "oF" : 0,
       "oS" : 1,
       "pg" : 0,
@@ -614,6 +630,28 @@
       "sC" : 3,
       "tS" : 1
     },
+    "\/source\/js\/classes\/Attribute.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/classes\/Attribute.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
+    "\/source\/js\/classes\/AttributeTrackView.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/classes\/AttributeTrackView.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
     "\/source\/js\/classes\/BalloonView.js" : {
       "bF" : 4,
       "ft" : 64,
@@ -632,6 +670,17 @@
       "mi" : 0,
       "oA" : 1,
       "oAP" : "\/build\/js\/classes\/BaseCondition.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
+    "\/source\/js\/classes\/CategoryView.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/classes\/CategoryView.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 1
@@ -687,17 +736,6 @@
       "mi" : 0,
       "oA" : 1,
       "oAP" : "\/build\/js\/classes\/ColumnView.js",
-      "oF" : 0,
-      "sC" : 3,
-      "tS" : 1
-    },
-    "\/source\/js\/classes\/ConceptView.js" : {
-      "bF" : 4,
-      "ft" : 64,
-      "ma" : 1,
-      "mi" : 0,
-      "oA" : 1,
-      "oAP" : "\/build\/js\/classes\/ConceptView.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 1
@@ -885,17 +923,6 @@
       "mi" : 0,
       "oA" : 1,
       "oAP" : "\/build\/js\/classes\/TrackOverviewCategorical.js",
-      "oF" : 0,
-      "sC" : 3,
-      "tS" : 1
-    },
-    "\/source\/js\/classes\/TrackView.js" : {
-      "bF" : 4,
-      "ft" : 64,
-      "ma" : 1,
-      "mi" : 0,
-      "oA" : 1,
-      "oAP" : "\/build\/js\/classes\/TrackView.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 1

@@ -68,7 +68,7 @@ export default class ResultDetailModal {
   }
   // HTML elements
   #popup(detail) {
-    this.#ROOT.dataset.subjectId = detail.keys.subjectId;
+    this.#ROOT.dataset.catexxxgoryId = detail.keys.subjectId;
     const popup = document.createElement('div');
     popup.className = 'popup';
     popup.style.left = this.#popup_left;
@@ -80,17 +80,17 @@ export default class ResultDetailModal {
   }
 
   #header(keys, props) {
-    const subject = Records.getSubject(keys.subjectId);
+    const category = Records.getCatexxxgory(keys.subjectId);
     const isPrimaryKey = props.isPrimaryKey;
     const mainCategory = isPrimaryKey
       ? ''
-      : Records.getProperty(keys.mainCategoryId);
+      : Records.getAttribute(keys.mainCategoryId);
     const subCategory = isPrimaryKey
       ? ''
       : Records.getValue(keys.mainCategoryId, keys.subCategoryId);
     const path = isPrimaryKey
       ? keys.dataKey
-      : `<span class='path'>${subject.subject} / ${subCategory?.label ?? '--'}</span>`;
+      : `<span class='path'>${category.label} / ${subCategory?.label ?? '--'}</span>`;
     const header = document.createElement('header');
     header.innerHTML = `
       <div class='label'>
@@ -101,7 +101,7 @@ export default class ResultDetailModal {
       </div>
       <div/>
     `;
-    header.classList.add('_subject-background-color');
+    header.classList.add('_catexxxgory-background-color');
     header.lastElementChild.appendChild(this.#exit_button);
     header.addEventListener('mousedown', e => {
       const customEvent = new CustomEvent(event.dragElement, {

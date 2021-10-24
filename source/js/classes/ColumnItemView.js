@@ -29,7 +29,7 @@ export default class ColumnItemView {
     this.#ROOT.innerHTML = `
     <td class="label">
       <label class="key">
-        <input type="checkbox" value="${categoryId}"/>
+        <input type="checkbox" value="${categoryId}"${hasChild ? '' : ' disabled'}/>
         ${label}
       </label>
       <label class="value">
@@ -50,27 +50,27 @@ export default class ColumnItemView {
     // even listener
     this.#INPUT_KEY.addEventListener('change', e => {
       if (e.target.checked) {
-        ConditionBuilder.addProperty(column.propertyId, categoryId);
+        ConditionBuilder.addAttrubute(column.attributeId, categoryId);
       } else {
-        ConditionBuilder.removeProperty(column.propertyId, categoryId);
+        ConditionBuilder.removeAttrubute(column.attributeId, categoryId);
       }
     });
-    DefaultEventEmitter.addEventListener(event.mutatePropertyCondition, ({detail}) => {
-      if (detail.action === 'remove') {
-        if (column.propertyId === detail.propertyId) {
-          if (detail.parentCategoryId && categoryId === detail.parentCategoryId) {
-            this.#INPUT_KEY.checked = detail.action === 'add';
+    DefaultEventEmitter.addEventListener(event.mutateAttributeCondition, ({detail: {action, keyCondition}}) => {
+      if (action === 'remove') {
+        if (column.attributeId === keyCondition.attributeId) {
+          if (keyCondition.parentCategoryId && categoryId === keyCondition.parentCategoryId) {
+            this.#INPUT_KEY.checked = action === 'add';
           }
         }
       }
     });
-    DefaultEventEmitter.addEventListener(event.mutatePropertyValueCondition, ({detail}) => {
-      if (column.propertyId === detail.propertyId && categoryId === detail.categoryId) {
+    DefaultEventEmitter.addEventListener(event.mutateAttributeValueCondition, ({detail}) => {
+      if (column.attributeId === detail.attributeId && categoryId === detail.categoryId) {
         this.#INPUT_VALUE.checked = detail.action === 'add';
       }
     });
-    DefaultEventEmitter.addEventListener(event.setUserValues, ({detail: {propertyId, values}}) => {
-      if (column.propertyId === propertyId) this.setUserValues(values);
+    DefaultEventEmitter.addEventListener(event.setUserValues, ({detail: {attributeId, values}}) => {
+      if (column.attributeId === attributeId) this.setUserValues(values);
     });
     DefaultEventEmitter.addEventListener(event.clearUserValues, this.#clearUserValues.bind(this));
 
@@ -95,9 +95,9 @@ export default class ColumnItemView {
 
   // public methods
 
-  update(subject, isLog10, max) {
+  update(color, isLog10, max) {
     const count = isLog10 ? Math.log10(this.#count) : this.#count;
-    this.#ROOT.style.backgroundColor = `rgb(${subject.color.mix(App.colorWhite, 1 - count / max).coords.map(cood => cood * 256).join(',')})`;
+    this.#ROOT.style.backgroundColor = `rgb(${color.mix(App.colorWhite, 1 - count / max).coords.map(cood => cood * 256).join(',')})`;
   }
 
   setUserValues(values) {

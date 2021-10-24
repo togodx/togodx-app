@@ -10,23 +10,21 @@ const NUM_OF_GRID = 4;
 export default class HistogramRangeSelectorView {
 
   #items;
-  #property;
+  #attribute;
   #selectorController;
   #OVERVIEW_CONTAINER;
   #ROOT;
   #GRIDS;
 
-  constructor(elm, property, items, overviewContainer) {
-    // console.log(elm, subject, property, items)
+  constructor(elm, attribute, items) {
 
-    this.#property = property;
-    const subject = Records.getSubjectWithPropertyId(this.#property.propertyId);
-    this.#OVERVIEW_CONTAINER = overviewContainer;
+    this.#attribute = attribute;
+    const category = Records.getCatexxxgoryWithAttributeId(this.#attribute.id);
     this.#items = items.map(item => Object.assign({}, item));
 
     // make container
     elm.innerHTML = `
-    <div class="histogram-range-selector-view" data-subject-id="${subject.subjectId}">
+    <div class="histogram-range-selector-view">
       <div class="selector">
         <div class="inner">
           <div class="overview"></div>
@@ -53,14 +51,13 @@ export default class HistogramRangeSelectorView {
     const max = Math.max(...this.#items.map(item => item.count));
     const width = 100 / this.#items.length;
     overview.innerHTML = this.#items.map(item => `<div
-      class="bar _subject-background-color"
+      class="bar _catexxxgory-background-color"
       data-category-id="${item.categoryId}"
-      data-subject-id="${subject.subjectId}"
       data-count="${item.count}"
       style="width: ${width}%; height: ${(item.count / max) * 100}%;"></div>`).join('');
     const graph = histogram.querySelector(':scope > .graph');
     graph.innerHTML = this.#items.map((item, index) => `<div class="bar" data-category-id="${item.categoryId}" data-count="${item.count}">
-      <div class="actual" style="background-color: rgb(${util.colorTintByHue(subject.color, 360 * index / this.#items.length).coords.map(cood => cood * 256).join(',')});"></div>
+      <div class="actual" style="background-color: rgb(${util.colorTintByHue(category.color, 360 * index / this.#items.length).coords.map(cood => cood * 256).join(',')});"></div>
       <p class="label">${item.label}</p>
     </div>`).join('');
 
@@ -124,8 +121,8 @@ export default class HistogramRangeSelectorView {
     return this.#items;
   }
 
-  get propertyId() {
-    return this.#property.propertyId;
+  get attributeId() {
+    return this.#attribute.id;
   }
 
 }

@@ -28,7 +28,7 @@ export default class DXCondition {
       matchKeys = this.keyConditions.every(keyCondition => {
         return dxCondition.keyConditions.findIndex(newKeyCondition => {
           return (
-            keyCondition.propertyId === newKeyCondition.propertyId &&
+            keyCondition.attributeId === newKeyCondition.attributeId &&
             keyCondition.parentCategoryId === newKeyCondition.parentCategoryId
           );
         }) !== -1;
@@ -40,7 +40,7 @@ export default class DXCondition {
       matchValues = this.valuesConditions.every(valuesCondition => {
         return dxCondition.valuesConditions.findIndex(newValuesCondition => {
           return (
-            valuesCondition.propertyId === newValuesCondition.propertyId &&
+            valuesCondition.attributeId === newValuesCondition.attributeId &&
             (
               valuesCondition.categoryIds.length === newValuesCondition.categoryIds.length &&
               valuesCondition.categoryIds.every(categoryId => {
@@ -55,11 +55,11 @@ export default class DXCondition {
   }
 
   #copyKeyConditions(keyConditions) {
-    return keyConditions.map(keyCondition => new KeyCondition(keyCondition.propertyId, keyCondition.parentCategoryId));
+    return keyConditions.map(keyCondition => new KeyCondition(keyCondition.attributeId, keyCondition.parentCategoryId));
   }
 
   #copyValuesConditions(valuesConditions) {
-    return valuesConditions.map(valuesCondition => new ValuesCondition(valuesCondition.propertyId, [...valuesCondition.categoryIds]));
+    return valuesConditions.map(valuesCondition => new ValuesCondition(valuesCondition.attributeId, [...valuesCondition.categoryIds]));
   }
 
 
