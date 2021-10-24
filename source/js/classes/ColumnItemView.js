@@ -50,9 +50,9 @@ export default class ColumnItemView {
     // even listener
     this.#INPUT_KEY.addEventListener('change', e => {
       if (e.target.checked) {
-        ConditionBuilder.addAttrubute(column.attributeId, categoryId);
+        ConditionBuilder.addAttribute(column.attributeId, categoryId);
       } else {
-        ConditionBuilder.removeAttrubute(column.attributeId, categoryId);
+        ConditionBuilder.removeAttribute(column.attributeId, categoryId);
       }
     });
     DefaultEventEmitter.addEventListener(event.mutateAttributeCondition, ({detail: {action, keyCondition}}) => {
