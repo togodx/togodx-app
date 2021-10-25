@@ -195,7 +195,7 @@ export default class ResultsTable {
     });
   }
 
-  #addTableRows({done, rows, tableData}) {
+  #addTableRows({done, offset, rows, tableData}) {
 
     this.#tableData = tableData;
 
@@ -206,7 +206,7 @@ export default class ResultsTable {
         .map((row, index) => {
           return `
           <tr
-            data-index="${tableData.offset + index}"
+            data-index="${offset + index}"
             data-togo-id="${row.id}">
             <td>
               <div class="inner">
@@ -288,7 +288,7 @@ export default class ResultsTable {
     //      → Sub-Category  (Thyroid Gland)        | 
     //        → Unique-Entry (ENSG00000139304)     | categoryId ?
     rows.forEach((row, index) => {
-      const actualIndex = tableData.offset + index;
+      const actualIndex = offset + index;
       const tr = this.#TBODY.querySelector(`:scope > tr[data-index="${actualIndex}"]`);
       const uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(uniqueEntry => {

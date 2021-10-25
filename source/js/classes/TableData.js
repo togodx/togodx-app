@@ -467,6 +467,7 @@ export default class TableData {
     axios
       .get(this.#propertiesPayload, {cancelToken: this.#source.token})
       .then(response => {
+        const offset = this.offset;
         this.#rows.push(...response.data);
         this.#isCompleted = this.offset >= this.#queryIds.length;
         this.#progressIndicator.updateProgressBar({
@@ -478,6 +479,7 @@ export default class TableData {
         const customEvent2 = new CustomEvent(event.addNextRows, {
           detail: {
             tableData: this,
+            offset,
             rows: response.data,
             done: this.#isCompleted,
           },
