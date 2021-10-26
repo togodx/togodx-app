@@ -94,7 +94,7 @@ export default class ResultDetailModal {
     const subCategory = isPrimaryKey
       ? ''
       : Records.getValue(keys.mainCategoryId, keys.subCategoryId);
-    const valueLabel = attribute.datamodel !== 'distribution' && subCategory?.label
+    const valueLabel = attribute?.datamodel !== 'distribution' && subCategory?.label
       ? `<span class="value">${subCategory.label}</span>`
       : '';
     const header = document.createElement('header');
