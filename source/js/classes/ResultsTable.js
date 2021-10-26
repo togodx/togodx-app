@@ -214,7 +214,7 @@ export default class ResultsTable {
                   <div
                     class="togo-key-view primarykey"
                     data-key="${tableData.togoKey}"
-                    data-order="${[0, tableData.offset + index]}"
+                    data-order="${[0, offset + index]}"
                     data-sub-order="0"
                     data-subject-id="primary"
                     data-unique-entry-id="${row.id}">${row.id}
@@ -236,7 +236,7 @@ export default class ResultsTable {
                           class="togo-key-view"
                           data-order="${[
                             columnIndex + 1,
-                            tableData.offset + index,
+                            offset + index,
                           ]}"
                           data-sub-order="${attributeIndex}"
                           data-key="${column.propertyKey}"
