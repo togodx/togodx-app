@@ -126,8 +126,6 @@ export default class ProgressIndicator {
    * @param { {offset: number, startTime: number} } progressInfo
    */
   updateProgressBar({offset = 0, startTime}) {
-    // console.log(`current offset: ${offset}`);
-    // console.log(`current total: ${this.#total}`);
     this.#updateBarWidth(offset);
     if (this.#mode === MODE.SIMPLE || !startTime) return;
 

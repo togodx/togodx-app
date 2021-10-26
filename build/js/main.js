@@ -6948,8 +6948,6 @@
   }
 
   function _failed2(tableData) {
-    console.log(tableData);
-
     _classPrivateFieldGet(this, _ROOT$6).classList.add('-complete');
 
     _classPrivateFieldGet(this, _LOADING_VIEW).classList.remove('-shown');
@@ -7054,8 +7052,6 @@
     function elementDrag(e) {
       var dx = e.clientX - x;
       var dy = e.clientY - y;
-      console.log('x,y = ' + e.clientX + ',' + e.clientY);
-      console.log('dx, dy =' + dx + ',' + dy);
       var container = view.container;
       container.style.top = "".concat(container.offsetTop + dy, "px");
       container.style.left = "".concat(container.offsetLeft + dx, "px");
@@ -7605,8 +7601,6 @@
             offset = _ref$offset === void 0 ? 0 : _ref$offset,
             startTime = _ref.startTime;
 
-        // console.log(`current offset: ${offset}`);
-        // console.log(`current total: ${this.#total}`);
         _classPrivateMethodGet(this, _updateBarWidth, _updateBarWidth2).call(this, offset);
 
         if (_classPrivateFieldGet(this, _mode) === MODE.SIMPLE || !startTime) return;

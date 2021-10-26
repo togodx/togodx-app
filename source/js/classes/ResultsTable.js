@@ -316,7 +316,6 @@ export default class ResultsTable {
   }
 
   #failed(tableData) {
-    console.log(tableData);
     this.#ROOT.classList.add('-complete');
     this.#LOADING_VIEW.classList.remove('-shown');
   }
