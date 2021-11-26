@@ -2,7 +2,7 @@ import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilderView from './ConditionBuilderView';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
-import ConceptView from './ConceptView';
+import CategoryView from './CategoryView';
 import ResultsTable from './ResultsTable';
 import ResultDetailModal from "./ResultDetailModal";
 import BalloonView from './BalloonView';
@@ -61,11 +61,10 @@ class App {
     new ResultsTable(document.querySelector('#ResultsTable'));
     new ResultDetailModal();
     new BalloonView();
-    const uploadUserIDsView = new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
+    new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
 
     // load config json
     Promise.all([
-      fetch(config.PROPERTIES),
       fetch(config.TEMPLATES),
       fetch(config.BACKEND),
       fetch(config.ATTRIBUTES)
@@ -73,9 +72,8 @@ class App {
       .then(responces => {
         return Promise.all(responces.map(responce => responce.json()))
       })
-      .then(([subjects, templates, backend, attributes]) => {
-        Records.setSubjects(subjects);
-        Records.setDatasets(attributes);
+      .then(([templates, backend, attributes]) => {
+        Records.setAttributes(attributes);
         ConditionBuilder.init();
 
         // define primary keys
@@ -88,18 +86,18 @@ class App {
         // aggregate
         this.#backend = Object.freeze(backend);
 
-        this.#makeConceptViews();
+        this.#makeCategoryViews();
         this.#defineAllTracksCollapseButton();
       });
   }
 
   // private methods
 
-  #makeConceptViews() {
+  #makeCategoryViews() {
     const conceptsContainer = document.querySelector('#Properties > .concepts');
-    Records.subjects.forEach(subject => {
+    Records.catexxxgories.forEach(category => {
       const elm = document.createElement('section');
-      new ConceptView(subject, elm);
+      new CategoryView(category, elm);
       conceptsContainer.insertAdjacentElement('beforeend', elm);
     });
   }

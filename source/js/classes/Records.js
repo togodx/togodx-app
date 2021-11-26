@@ -1,129 +1,99 @@
 import Color from "./Color";
+import Attribute from "./Attribute";
 
 class Records {
-  #subjects;
+  #catexxxgories;
+  #attributes;
   #datasets;
-  #properties;
-  #fetchedCategoryIds;
 
   constructor() {}
 
   // public methods
 
-  setSubjects(subjects) {
+  setAttributes({categories, attributes, datasets}) {
 
-    // define subjects
-    for (let i = 0; i < subjects.length; i++) {
-      let hue = 360 - (360 * i / subjects.length) + 130;
+    // define categories
+    for (let i = 0; i < categories.length; i++) {
+      let hue = 360 - (360 * i / categories.length) + 130;
       hue -= hue > 360 ? 360 : 0;
       const srgb = new Color('hsv', [hue, 45, 85]).to('srgb');
       const srgbStrong = new Color('hsv', [hue, 65, 65]).to('srgb');
-      subjects[i].hue = hue;
-      subjects[i].color = srgb;
-      subjects[i].colorCSSValue = `rgb(${srgb.coords.map(channel => channel * 256).join(',')})`;
-      subjects[i].colorCSSStrongValue = `rgb(${srgbStrong.coords.map(channel => channel * 256).join(',')})`;
+      categories[i].hue = hue;
+      categories[i].color = srgb;
+      categories[i].colorCSSValue = `rgb(${srgb.coords.map(channel => channel * 256).join(',')})`;
+      categories[i].colorCSSStrongValue = `rgb(${srgbStrong.coords.map(channel => channel * 256).join(',')})`;
     }
-    this.#subjects = Object.freeze(subjects);
+    this.#catexxxgories = Object.freeze(categories);
 
-    // set properties
-    this.#properties = [];
-    this.#fetchedCategoryIds = {};
-    subjects.forEach(subject => {
-      subject.properties.forEach(property => {
-        this.#properties.push(Object.assign({
-          subjectId: subject.subjectId,
-          values: []
-        }, property));
-        this.#fetchedCategoryIds[property.propertyId] = [];
-      });
-    });
+    // set attributes
+    this.#attributes = Object.keys(attributes).map(id => new Attribute(id, attributes[id]));
 
     // make stylesheet
     const styleElm = document.createElement('style');
     document.head.appendChild(styleElm);
     const styleSheet = styleElm.sheet;
     styleSheet.insertRule(`:root {
-      ${subjects.map(subject => `
-        --color-subject-${subject.subjectId}: ${subject.colorCSSValue};
-        --color-subject-${subject.subjectId}-strong: ${subject.colorCSSStrongValue};
+      ${categories.map(catexxxgory => `
+        --color-catexxxgory-${catexxxgory.id}: ${catexxxgory.colorCSSValue};
+        --color-catexxxgory-${catexxxgory.id}-strong: ${catexxxgory.colorCSSStrongValue};
         `).join('')}
     }`);
-    for (const subject of subjects) {
+    for (const catexxxgory of categories) {
       styleSheet.insertRule(`
-      ._subject-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-color {
-        color: var(--color-subject-${subject.subjectId}-strong);
+      ._catexxxgory-color[data-catexxxgory-id="${catexxxgory.id}"], [data-catexxxgory-id="${catexxxgory.id}"] ._catexxxgory-color {
+        color: var(--color-catexxxgory-${catexxxgory.id}-strong);
       }`);
       styleSheet.insertRule(`
-      ._subject-background-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-background-color {
-        background-color: var(--color-subject-${subject.subjectId});
+      ._catexxxgory-background-color[data-catexxxgory-id="${catexxxgory.id}"], [data-catexxxgory-id="${catexxxgory.id}"] ._catexxxgory-background-color {
+        background-color: var(--color-catexxxgory-${catexxxgory.id});
       }`);
       styleSheet.insertRule(`
-      ._subject-background-color-strong[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-background-color-strong {
-        background-color: var(--color-subject-${subject.subjectId}-strong);
+      ._catexxxgory-background-color-strong[data-catexxxgory-id="${catexxxgory.id}"], [data-catexxxgory-id="${catexxxgory.id}"] ._catexxxgory-background-color-strong {
+        background-color: var(--color-catexxxgory-${catexxxgory.id}-strong);
       }`);
       styleSheet.insertRule(`
-      ._subject-border-color[data-subject-id="${subject.subjectId}"], [data-subject-id="${subject.subjectId}"] ._subject-border-color {
-        border-color: var(--color-subject-${subject.subjectId});
+      ._catexxxgory-border-color[data-catexxxgory-id="${catexxxgory.id}"], [data-catexxxgory-id="${catexxxgory.id}"] ._catexxxgory-border-color {
+        border-color: var(--color-catexxxgory-${catexxxgory.id});
       }`);
     }
-  }
 
-  setDatasets({tracks, attributes, datasets}) {
-    // TODO:
+    // set datasets
     this.#datasets = datasets;
   }
 
-  fetchPropertyValues(propertyId, categoryId) {
-    const property = this.getProperty(propertyId);
-    return new Promise((resolve, reject) => {
-      if (categoryId && property.values.findIndex(value => value.parentCategoryId === categoryId) !== -1) {
-        resolve(property.values.filter(value => value.parentCategoryId === categoryId));
-      } else {
-        fetch(`${property.data}${categoryId ? `?categoryIds=${categoryId}` : ''}`)
-        .then(responce => responce.json())
-        .then(values => {
-          // set parent category id
-          if (categoryId) values.forEach(value => value.parentCategoryId = categoryId);
-          // set values
-          property.values.push(...values);
-          resolve(values);
-        })
-        .catch(error => reject(error));
-      }
-    });
+  fetchAttributeValues(attributeId, categoryId) {
+    const attribute = this.getAttribute(attributeId);
+    return attribute.fetchValuesWithParentCategoryId(categoryId);
   }
 
-  getSubject(subjectId) {
-    return this.#subjects.find((subject) => subject.subjectId === subjectId);
+  getCatexxxgory(id) {
+    return this.#catexxxgories.find(category => category.id === id);
   }
 
-  getSubjectWithPropertyId(propertyId) {
-    const subject = this.#subjects.find(subject => subject.properties.some(property => property.propertyId === propertyId));
-    return subject;
+  getCatexxxgoryWithAttributeId(attributeId) {
+    return this.#catexxxgories.find(category => category.attributes.indexOf(attributeId) !== -1);
   }
 
-  getProperty(propertyId) {
-    const property = this.#properties.find(property => property.propertyId === propertyId);
-    return property;
+  getAttribute(attributeId) {
+    return this.#attributes.find(attribute => attribute.id === attributeId);
   }
 
-  getValue(propertyId, categoryId) {
-    const property = this.getProperty(propertyId);
-    const value = property.values.find(value => value.categoryId === categoryId);
-    return value;
+  getValue(attributeId, categoryId) {
+    const attribute = this.getAttribute(attributeId);
+    return attribute.getValue(categoryId);
   }
 
-  getValuesWithParentCategoryId(propertyId, parentCategoryId) {
-    const property = this.getProperty(propertyId);
-    return property.values.filter(value => value.parentCategoryId === parentCategoryId);
+  getValuesWithParentCategoryId(attributeId, parentCategoryId) {
+    const attribute = this.getAttribute(attributeId);
+    return attribute.values.filter(value => value.parentCategoryId === parentCategoryId);
   }
 
-  getAncestors(propertyId, categoryId) {
-    const property = this.getProperty(propertyId);
+  getAncestors(attributeId, categoryId) {
+    const attribute = this.getAttribute(attributeId);
     const ancestors = [];
     let parent;
     do { // find ancestors
-      parent = property.values.find(value => value.categoryId === categoryId);
+      parent = attribute.values.find(value => value.categoryId === categoryId);
       if (parent) ancestors.unshift(parent);
       categoryId = parent?.parentCategoryId;
     } while (parent);
@@ -137,13 +107,14 @@ class Records {
 
   // public accessors
 
-  get subjects() {
-    return this.#subjects;
+  get catexxxgories() {
+    return this.#catexxxgories;
   }
 
-  get properties() {
-    return this.#properties;
+  get attributes() {
+    return this.#attributes;
   }
+  
 }
 
 export default new Records();

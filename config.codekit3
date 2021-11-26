@@ -7,15 +7,23 @@
       "uuidString" : "7991C1D7-6492-458D-9C02-BC735FAAC5AC"
     }
   ],
-  "creatorBuild" : "34214",
+  "creatorBuild" : "34264",
   "files" : {
-    "\/attributes.json" : {
-      "ft" : 524288,
-      "oA" : 1,
-      "oAP" : "\/build\/attributes-min.json",
-      "oF" : 0,
-      "oO" : 0,
-      "oS" : 1
+    "\/.github\/workflows\/deploy.dx-server.dev.yaml" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/build\/.github\/workflows\/deploy.dx-server.dev.yaml",
+      "oF" : 0
+    },
+    "\/.github\/workflows\/release.yaml" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/build\/.github\/workflows\/release.yaml",
+      "oF" : 0
     },
     "\/build" : {
       "ft" : 65536,
@@ -41,12 +49,6 @@
       "pME" : 1,
       "rFN" : 0,
       "uCM" : 0
-    },
-    "\/frontend\/node_modules" : {
-      "ft" : 65536,
-      "oA" : 2,
-      "oAP" : "\/build\/frontend\/node_modules",
-      "oF" : 0
     },
     "\/node_modules" : {
       "ft" : 65536,
@@ -77,14 +79,6 @@
       "ft" : 524288,
       "oA" : 1,
       "oAP" : "\/build\/package-min.json",
-      "oF" : 0,
-      "oO" : 0,
-      "oS" : 1
-    },
-    "\/properties.json" : {
-      "ft" : 524288,
-      "oA" : 1,
-      "oAP" : "\/build\/properties-min.json",
       "oF" : 0,
       "oO" : 0,
       "oS" : 1
@@ -236,21 +230,6 @@
       "ma" : 1,
       "oA" : 1,
       "oAP" : "\/build\/css\/object\/component\/_column-selector-view.css",
-      "oF" : 0,
-      "oS" : 1,
-      "pg" : 0,
-      "sct" : 0
-    },
-    "\/source\/css\/object\/component\/_concept-view.sass" : {
-      "aP" : 1,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 2,
-      "ma" : 1,
-      "oA" : 1,
-      "oAP" : "\/build\/css\/object\/component\/_concept-view.css",
       "oF" : 0,
       "oS" : 1,
       "pg" : 0,
@@ -416,21 +395,6 @@
       "ma" : 1,
       "oA" : 1,
       "oAP" : "\/build\/css\/object\/component\/_track-value-view.css",
-      "oF" : 0,
-      "oS" : 1,
-      "pg" : 0,
-      "sct" : 0
-    },
-    "\/source\/css\/object\/component\/_track-view.sass" : {
-      "aP" : 1,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 2,
-      "ma" : 1,
-      "oA" : 1,
-      "oAP" : "\/build\/css\/object\/component\/_track-view.css",
       "oF" : 0,
       "oS" : 1,
       "pg" : 0,
@@ -665,7 +629,7 @@
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
-      "oA" : 0,
+      "oA" : 1,
       "oAP" : "\/build\/js\/classes\/Attribute.js",
       "oF" : 0,
       "sC" : 3,
@@ -2205,6 +2169,9 @@
       },
       "no-unused-labels" : {
         "active" : 1
+      },
+      "no-unused-private-class-members" : {
+        "active" : 0
       },
       "no-unused-vars" : {
         "active" : 1,

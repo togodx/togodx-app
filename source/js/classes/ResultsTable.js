@@ -118,11 +118,11 @@ export default class ResultsTable {
     this.#tableData = tableData;
     this.#intersctionObserver.unobserve(this.#TABLE_END);
     this.#header = [
-      ...tableData.dxCondition.valuesConditions.map(({subjectId, propertyId}) => {
-        return {subjectId, propertyId};
+      ...tableData.dxCondition.valuesConditions.map(({catexxxgoryId, attributeId}) => {
+        return {catexxxgoryId, attributeId};
       }),
-      ...tableData.dxCondition.keyConditions.map(({subjectId, propertyId}) => {
-        return {subjectId, propertyId};
+      ...tableData.dxCondition.keyConditions.map(({catexxxgoryId, attributeId}) => {
+        return {catexxxgoryId, attributeId};
       })
     ];
     this.#ROOT.classList.remove('-complete');
@@ -152,8 +152,8 @@ export default class ResultsTable {
         .map(
           valuesCondition => `
           <th>
-            <div class="inner _subject-background-color" data-subject-id="${valuesCondition.subjectId}">
-            <div class="togo-key-view">${valuesCondition.dataset}</div>
+            <div class="inner _catexxxgory-background-color" data-catexxxgory-id="${valuesCondition.catexxxgoryId}">
+              <div class="togo-key-view">${Records.getDatasetLabel(valuesCondition.dataset)}</div>
               <span>${valuesCondition.label}</span>
             </div>
           </th>`
@@ -165,8 +165,8 @@ export default class ResultsTable {
         .map(
           keyCondition => `
           <th>
-            <div class="inner _subject-color" data-subject-id="${keyCondition.subjectId}">
-              <div class="togo-key-view">${keyCondition.dataset}</div>
+            <div class="inner _catexxxgory-color" data-catexxxgory-id="${keyCondition.catexxxgoryId}">
+              <div class="togo-key-view">${Records.getDatasetLabel(keyCondition.dataset)}</div>
               <span>${keyCondition.label}</span>
             </div>
           </th>`
@@ -195,7 +195,7 @@ export default class ResultsTable {
     });
   }
 
-  #addTableRows({done, rows, tableData}) {
+  #addTableRows({done, offset, rows, tableData}) {
 
     this.#tableData = tableData;
 
@@ -206,7 +206,7 @@ export default class ResultsTable {
         .map((row, index) => {
           return `
           <tr
-            data-index="${tableData.offset + index}"
+            data-index="${offset + index}"
             data-togo-id="${row.id}">
             <td>
               <div class="inner">
@@ -214,9 +214,9 @@ export default class ResultsTable {
                   <div
                     class="togo-key-view primarykey"
                     data-key="${tableData.togoKey}"
-                    data-order="${[0, tableData.offset + index]}"
+                    data-order="${[0, offset + index]}"
                     data-sub-order="0"
-                    data-subject-id="${tableData.subjectId}"
+                    data-subject-id="primary"
                     data-unique-entry-id="${row.id}">${row.id}
                   </div>
                   <span>${row.label}</span>
@@ -236,15 +236,15 @@ export default class ResultsTable {
                           class="togo-key-view"
                           data-order="${[
                             columnIndex + 1,
-                            tableData.offset + index,
+                            offset + index,
                           ]}"
                           data-sub-order="${attributeIndex}"
                           data-key="${column.propertyKey}"
                           data-subject-id="${
-                            this.#header[columnIndex].subjectId
+                            this.#header[columnIndex].catexxxgoryId
                           }"
                           data-main-category-id="${
-                            this.#header[columnIndex].propertyId
+                            this.#header[columnIndex].attributeId
                           }"
                           data-sub-category-id="${
                             attribute.attribute.categoryId
@@ -282,13 +282,13 @@ export default class ResultsTable {
     }
 
     // Naming needs improvement but hierarcy for Popup screen is like below
-    // Togo-key   (Uniprot)
-    //  → Subject  (Gene)
-    //    → Main-Category  (Expressed in tissues)
-    //      → Sub-Category  (Thyroid Gland)
-    //        → Unique-Entry (ENSG00000139304)
+    // Togo-key   (Uniprot)                        | primaryKey
+    //  → Subject  (Gene)                          | category
+    //    → Main-Category  (Expressed in tissues)  | attribute
+    //      → Sub-Category  (Thyroid Gland)        | 
+    //        → Unique-Entry (ENSG00000139304)     | categoryId ?
     rows.forEach((row, index) => {
-      const actualIndex = tableData.offset + index;
+      const actualIndex = offset + index;
       const tr = this.#TBODY.querySelector(`:scope > tr[data-index="${actualIndex}"]`);
       const uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(uniqueEntry => {
@@ -316,7 +316,6 @@ export default class ResultsTable {
   }
 
   #failed(tableData) {
-    console.log(tableData);
     this.#ROOT.classList.add('-complete');
     this.#LOADING_VIEW.classList.remove('-shown');
   }

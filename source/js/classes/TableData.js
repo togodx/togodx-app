@@ -5,7 +5,7 @@ import Records from './Records';
 import * as event from '../events';
 import ProgressIndicator from './ProgressIndicator';
 
-const LIMIT = 100;
+const LIMIT = 10;
 const downloadUrls = new Map();
 const timeOutError = 'ECONNABORTED';
 
@@ -113,8 +113,8 @@ export default class TableData {
       ${
         this.#dxCondition.valuesConditions
           .map(valuesCondition => {
-            const label = Records.getProperty(valuesCondition.propertyId).label;
-            return `<div class="condition _subject-background-color" data-subject-id="${valuesCondition.subjectId}">
+            const label = Records.getAttribute(valuesCondition.attributeId).label;
+            return `<div class="condition _catexxxgory-background-color" data-catexxxgory-id="${valuesCondition.catexxxgoryId}">
               <p title="${label}">${label}</p>
             </div>`
           })
@@ -123,7 +123,7 @@ export default class TableData {
       ${
         this.#dxCondition.keyConditions
           .map(keyCondition => {
-            return `<div class="condition _subject-color" data-subject-id="${keyCondition.subjectId}">
+            return `<div class="condition _catexxxgory-color" data-catexxxgory-id="${keyCondition.catexxxgoryId}">
               <p title="${keyCondition.label}">${keyCondition.label}</p>
             </div>`;
           })
@@ -264,21 +264,21 @@ export default class TableData {
   #dataButtonEdit(e) {
     e.stopPropagation();
     // property (attribute)
-    ConditionBuilder.setProperties(
+    ConditionBuilder.setAttributes(
       this.#dxCondition.keyConditions.map(keyCondition => {
         return {
-          propertyId: keyCondition.propertyId,
+          attributeId: keyCondition.attributeId,
           parentCategoryId: keyCondition.parentCategoryId,
         }
       }),
       false
     );
     // attribute (classification/distribution)
-    Records.properties.forEach(({propertyId}) => {
-      const valuesCondition = this.#dxCondition.valuesConditions.find(valuesCondition => valuesCondition.propertyId === propertyId);
+    Records.attributes.forEach(({id}) => {
+      const valuesCondition = this.#dxCondition.valuesConditions.find(valuesCondition => valuesCondition.attributeId === id);
       const categoryIds = [];
       if (valuesCondition) categoryIds.push(...valuesCondition.categoryIds);
-      ConditionBuilder.setPropertyValues(propertyId, categoryIds, false);
+      ConditionBuilder.setAttributeValues(id, categoryIds, false);
     });
   }
 
@@ -467,6 +467,7 @@ export default class TableData {
     axios
       .get(this.#propertiesPayload, {cancelToken: this.#source.token})
       .then(response => {
+        const offset = this.offset;
         this.#rows.push(...response.data);
         this.#isCompleted = this.offset >= this.#queryIds.length;
         this.#progressIndicator.updateProgressBar({
@@ -478,6 +479,7 @@ export default class TableData {
         const customEvent2 = new CustomEvent(event.addNextRows, {
           detail: {
             tableData: this,
+            offset,
             rows: response.data,
             done: this.#isCompleted,
           },

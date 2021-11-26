@@ -5,7 +5,7 @@ import * as event from '../events';
 export default class StatisticsView {
 
   #index;
-  #propertyId;
+  #attributeId;
   #tableData;
   #referenceValues;
   #BARS;
@@ -15,13 +15,13 @@ export default class StatisticsView {
   constructor(statisticsRootNode, elm, tableData, index, condition) {
 
     this.#index = index;
-    this.#propertyId = condition.propertyId;
+    this.#attributeId = condition.attributeId;
     this.#tableData = tableData;
     this.#ROOT_NODE = statisticsRootNode;
     this.#ROOT = elm;
 
     elm.classList.add('statistics-view');
-    elm.dataset.subjectId = Records.getProperty(this.#propertyId).subjectId;
+    elm.dataset.catexxxgoryId = condition.catexxxgoryId;
 
     // make HTML
     elm.innerHTML = `
@@ -33,9 +33,9 @@ export default class StatisticsView {
 
     // display order of bar chart
     if (condition.parentCategoryId) {
-      this.#referenceValues = Records.getValuesWithParentCategoryId(this.#propertyId, condition.parentCategoryId);
+      this.#referenceValues = Records.getValuesWithParentCategoryId(this.#attributeId, condition.parentCategoryId);
     } else {
-      this.#referenceValues = Records.getProperty(this.#propertyId).values;
+      this.#referenceValues = Records.getAttribute(this.#attributeId).values;
     }
 
     // references
@@ -101,7 +101,7 @@ export default class StatisticsView {
         bar.dataset.categoryId = categoryId;
         bar.innerHTML = `
         <div class="wholebar"></div>
-        <div class="hitbar _subject-background-color-strong">
+        <div class="hitbar _catexxxgory-background-color-strong">
           <div class="value"></div>
         </div>
         <div class="label">${label}</div>`;

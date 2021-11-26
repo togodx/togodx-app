@@ -2,39 +2,37 @@ import Records from "./Records";
 
 export default class BaseCondition {
 
-  _propertyId;
-  #key;
-  #subjectId;
+  _attributeId;
+  #key; // <Attribute>
+  #catexxxgoryId;
   #dataset;
 
-  constructor(propertyId) {
-    this._propertyId = propertyId;
+  constructor(attributeId) {
+    this._attributeId = attributeId;
   }
 
 
   // accessor
 
-  get propertyId() {
-    return this._propertyId;
+  get attributeId() {
+    return this._attributeId;
   }
 
   get key() {
-    if (!this.#key) {
-      this.#key = Records.getProperty(this._propertyId);
-    }
+    if (!this.#key) this.#key = Records.getAttribute(this._attributeId);
     return this.#key;
   }
 
-  get subjectId() {
-    if (!this.#subjectId) {
-      this.#subjectId = this.key.subjectId;
+  get catexxxgoryId() {
+    if (!this.#catexxxgoryId) {
+      this.#catexxxgoryId = Records.getCatexxxgoryWithAttributeId(this.key.id).id;
     }
-    return this.#subjectId;
+    return this.#catexxxgoryId;
   }
 
   get dataset() {
     if (!this.#dataset) {
-      this.#dataset = this.key.primaryKey;
+      this.#dataset = this.key.dataset;
     }
     return this.#dataset;
   }
