@@ -7,7 +7,7 @@
       "uuidString" : "7991C1D7-6492-458D-9C02-BC735FAAC5AC"
     }
   ],
-  "creatorBuild" : "34214",
+  "creatorBuild" : "34264",
   "files" : {
     "\/.github\/workflows\/deploy.dx-server.dev.yaml" : {
       "cB" : 0,
@@ -49,12 +49,6 @@
       "pME" : 1,
       "rFN" : 0,
       "uCM" : 0
-    },
-    "\/frontend\/node_modules" : {
-      "ft" : 65536,
-      "oA" : 2,
-      "oAP" : "\/build\/frontend\/node_modules",
-      "oF" : 0
     },
     "\/node_modules" : {
       "ft" : 65536,
@@ -2175,6 +2169,9 @@
       },
       "no-unused-labels" : {
         "active" : 1
+      },
+      "no-unused-private-class-members" : {
+        "active" : 0
       },
       "no-unused-vars" : {
         "active" : 1,

@@ -1,6 +1,44 @@
 (function () {
   'use strict';
 
+  function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(object);
+
+      if (enumerableOnly) {
+        symbols = symbols.filter(function (sym) {
+          return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+        });
+      }
+
+      keys.push.apply(keys, symbols);
+    }
+
+    return keys;
+  }
+
+  function _objectSpread2(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i] != null ? arguments[i] : {};
+
+      if (i % 2) {
+        ownKeys(Object(source), true).forEach(function (key) {
+          _defineProperty(target, key, source[key]);
+        });
+      } else if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+      } else {
+        ownKeys(Object(source)).forEach(function (key) {
+          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+      }
+    }
+
+    return target;
+  }
+
   function _typeof(obj) {
     "@babel/helpers - typeof";
 
@@ -52,40 +90,6 @@
     }
 
     return obj;
-  }
-
-  function ownKeys(object, enumerableOnly) {
-    var keys = Object.keys(object);
-
-    if (Object.getOwnPropertySymbols) {
-      var symbols = Object.getOwnPropertySymbols(object);
-      if (enumerableOnly) symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      });
-      keys.push.apply(keys, symbols);
-    }
-
-    return keys;
-  }
-
-  function _objectSpread2(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i] != null ? arguments[i] : {};
-
-      if (i % 2) {
-        ownKeys(Object(source), true).forEach(function (key) {
-          _defineProperty(target, key, source[key]);
-        });
-      } else if (Object.getOwnPropertyDescriptors) {
-        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-      } else {
-        ownKeys(Object(source)).forEach(function (key) {
-          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-        });
-      }
-    }
-
-    return target;
   }
 
   function _inherits(subClass, superClass) {
@@ -234,6 +238,8 @@
   function _possibleConstructorReturn(self, call) {
     if (call && (typeof call === "object" || typeof call === "function")) {
       return call;
+    } else if (call !== void 0) {
+      throw new TypeError("Derived constructors may only return object or undefined");
     }
 
     return _assertThisInitialized(self);
@@ -275,18 +281,21 @@
   }
 
   function _iterableToArray(iter) {
-    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
   }
 
   function _iterableToArrayLimit(arr, i) {
-    if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+    var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+
+    if (_i == null) return;
     var _arr = [];
     var _n = true;
     var _d = false;
-    var _e = undefined;
+
+    var _s, _e;
 
     try {
-      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
         _arr.push(_s.value);
 
         if (i && _arr.length === i) break;
@@ -331,9 +340,9 @@
   }
 
   function _createForOfIteratorHelper(o, allowArrayLike) {
-    var it;
+    var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
 
-    if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+    if (!it) {
       if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
         if (it) o = it;
         var i = 0;
@@ -366,7 +375,7 @@
         err;
     return {
       s: function () {
-        it = o[Symbol.iterator]();
+        it = it.call(o);
       },
       n: function () {
         var step = it.next();
@@ -437,6 +446,24 @@
     return fn;
   }
 
+  function _checkPrivateRedeclaration(obj, privateCollection) {
+    if (privateCollection.has(obj)) {
+      throw new TypeError("Cannot initialize the same private elements twice on an object");
+    }
+  }
+
+  function _classPrivateFieldInitSpec(obj, privateMap, value) {
+    _checkPrivateRedeclaration(obj, privateMap);
+
+    privateMap.set(obj, value);
+  }
+
+  function _classPrivateMethodInitSpec(obj, privateSet) {
+    _checkPrivateRedeclaration(obj, privateSet);
+
+    privateSet.add(obj);
+  }
+
   var DefaultEventEmitter = /*#__PURE__*/function (_EventTarget) {
     _inherits(DefaultEventEmitter, _EventTarget);
 
@@ -452,6 +479,15 @@
   }( /*#__PURE__*/_wrapNativeSuper(EventTarget));
 
   var DefaultEventEmitter$1 = new DefaultEventEmitter();
+
+  var _excluded = ["method"],
+      _excluded2 = ["format"],
+      _excluded3 = ["format"],
+      _excluded4 = ["inGamut", "commas", "format"],
+      _excluded5 = ["precision", "commas", "format", "inGamut"],
+      _excluded6 = ["format", "commas", "inGamut"],
+      _excluded7 = ["format"],
+      _excluded8 = ["maxDeltaE", "deltaEMethod", "steps", "maxSteps"];
 
   function t(t, e) {
     var r = t.length;
@@ -676,7 +712,7 @@
         var _r5 = r,
             _r5$method = _r5.method,
             a = _r5$method === void 0 ? h.defaults.deltaE : _r5$method,
-            s = _objectWithoutProperties(_r5, ["method"]);
+            s = _objectWithoutProperties(_r5, _excluded);
 
         return t = h.get(t), this["deltaE" + a] ? this["deltaE" + a](t, s) : this.deltaE76(t);
       }
@@ -1327,7 +1363,7 @@
       toString: function toString() {
         var _ref9 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
             t = _ref9.format,
-            e = _objectWithoutProperties(_ref9, ["format"]);
+            e = _objectWithoutProperties(_ref9, _excluded2);
 
         return t || (t = function t(_t19, e) {
           return 0 === e ? _t19 + "%" : _t19;
@@ -1393,7 +1429,7 @@
       toString: function toString() {
         var _ref10 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
             t = _ref10.format,
-            e = _objectWithoutProperties(_ref10, ["format"]);
+            e = _objectWithoutProperties(_ref10, _excluded3);
 
         return t || (t = function t(_t23, e) {
           return 0 === e ? _t23 + "%" : _t23;
@@ -1469,7 +1505,7 @@
             e = _ref12.commas,
             _ref12$format = _ref12.format,
             r = _ref12$format === void 0 ? "%" : _ref12$format,
-            a = _objectWithoutProperties(_ref12, ["inGamut", "commas", "format"]);
+            a = _objectWithoutProperties(_ref12, _excluded4);
 
         if (255 === r) r = function r(t) {
           return 255 * t;
@@ -1587,7 +1623,7 @@
             var e = _ref13.commas,
             r = _ref13.format;
             _ref13.inGamut;
-            var s = _objectWithoutProperties(_ref13, ["precision", "commas", "format", "inGamut"]);
+            var s = _objectWithoutProperties(_ref13, _excluded5);
 
         return r || (r = function r(t, e) {
           return e > 0 ? t + "%" : t;
@@ -1691,7 +1727,7 @@
             t = _ref14.format;
             _ref14.commas;
             _ref14.inGamut;
-            var a = _objectWithoutProperties(_ref14, ["format", "commas", "inGamut"]);
+            var a = _objectWithoutProperties(_ref14, _excluded6);
 
         return t || (t = function t(_t32, e) {
           return e > 0 ? _t32 + "%" : _t32;
@@ -1928,7 +1964,7 @@
       toString: function toString() {
         var _ref15 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
             t = _ref15.format,
-            e = _objectWithoutProperties(_ref15, ["format"]);
+            e = _objectWithoutProperties(_ref15, _excluded7);
 
         return h.prototype.toString.call(this, _objectSpread2({
           name: "jzazbz",
@@ -2279,7 +2315,7 @@
         i = _r10$steps === void 0 ? 2 : _r10$steps,
         _r10$maxSteps = _r10.maxSteps,
         n = _r10$maxSteps === void 0 ? 1e3 : _r10$maxSteps,
-        c = _objectWithoutProperties(_r10, ["maxDeltaE", "deltaEMethod", "steps", "maxSteps"]);
+        c = _objectWithoutProperties(_r10, _excluded8);
 
     a || (t = h.get(t), e = h.get(e), a = h.range(t, e, c));
     var l = this.deltaE(e),
@@ -2699,27 +2735,27 @@
     "transparent" === e ? (r.coords = g.black, r.alpha = 0) : r.coords = g[e], r.coords && (t.color = r);
   });
 
-  var _id = new WeakMap();
+  var _id = /*#__PURE__*/new WeakMap();
 
-  var _obj = new WeakMap();
+  var _obj = /*#__PURE__*/new WeakMap();
 
-  var _values$1 = new WeakMap();
+  var _values$1 = /*#__PURE__*/new WeakMap();
 
   var Attribute = /*#__PURE__*/function () {
     function Attribute(id, obj) {
       _classCallCheck(this, Attribute);
 
-      _id.set(this, {
+      _classPrivateFieldInitSpec(this, _id, {
         writable: true,
         value: void 0
       });
 
-      _obj.set(this, {
+      _classPrivateFieldInitSpec(this, _obj, {
         writable: true,
         value: void 0
       });
 
-      _values$1.set(this, {
+      _classPrivateFieldInitSpec(this, _values$1, {
         writable: true,
         value: void 0
       });
@@ -2818,27 +2854,27 @@
     return Attribute;
   }();
 
-  var _catexxxgories = new WeakMap();
+  var _catexxxgories = /*#__PURE__*/new WeakMap();
 
-  var _attributes = new WeakMap();
+  var _attributes = /*#__PURE__*/new WeakMap();
 
-  var _datasets = new WeakMap();
+  var _datasets = /*#__PURE__*/new WeakMap();
 
   var Records = /*#__PURE__*/function () {
     function Records() {
       _classCallCheck(this, Records);
 
-      _catexxxgories.set(this, {
+      _classPrivateFieldInitSpec(this, _catexxxgories, {
         writable: true,
         value: void 0
       });
 
-      _attributes.set(this, {
+      _classPrivateFieldInitSpec(this, _attributes, {
         writable: true,
         value: void 0
       });
 
-      _datasets.set(this, {
+      _classPrivateFieldInitSpec(this, _datasets, {
         writable: true,
         value: void 0
       });
@@ -2988,11 +3024,11 @@
 
   var Records$1 = new Records();
 
-  var _key = new WeakMap();
+  var _key = /*#__PURE__*/new WeakMap();
 
-  var _catexxxgoryId = new WeakMap();
+  var _catexxxgoryId = /*#__PURE__*/new WeakMap();
 
-  var _dataset = new WeakMap();
+  var _dataset = /*#__PURE__*/new WeakMap();
 
   var BaseCondition = /*#__PURE__*/function () {
     // <Attribute>
@@ -3001,17 +3037,17 @@
 
       _defineProperty(this, "_attributeId", void 0);
 
-      _key.set(this, {
+      _classPrivateFieldInitSpec(this, _key, {
         writable: true,
         value: void 0
       });
 
-      _catexxxgoryId.set(this, {
+      _classPrivateFieldInitSpec(this, _catexxxgoryId, {
         writable: true,
         value: void 0
       });
 
-      _dataset.set(this, {
+      _classPrivateFieldInitSpec(this, _dataset, {
         writable: true,
         value: void 0
       });
@@ -3054,11 +3090,11 @@
     return BaseCondition;
   }();
 
-  var _parentCategoryId$1 = new WeakMap();
+  var _parentCategoryId$1 = /*#__PURE__*/new WeakMap();
 
-  var _value = new WeakMap();
+  var _value = /*#__PURE__*/new WeakMap();
 
-  var _ancestors = new WeakMap();
+  var _ancestors = /*#__PURE__*/new WeakMap();
 
   var KeyCondition = /*#__PURE__*/function (_BaseCondition) {
     _inherits(KeyCondition, _BaseCondition);
@@ -3072,17 +3108,17 @@
 
       _this = _super.call(this, attributeId);
 
-      _parentCategoryId$1.set(_assertThisInitialized(_this), {
+      _classPrivateFieldInitSpec(_assertThisInitialized(_this), _parentCategoryId$1, {
         writable: true,
         value: void 0
       });
 
-      _value.set(_assertThisInitialized(_this), {
+      _classPrivateFieldInitSpec(_assertThisInitialized(_this), _value, {
         writable: true,
         value: void 0
       });
 
-      _ancestors.set(_assertThisInitialized(_this), {
+      _classPrivateFieldInitSpec(_assertThisInitialized(_this), _ancestors, {
         writable: true,
         value: void 0
       });
@@ -3178,7 +3214,7 @@
     return KeyCondition;
   }(BaseCondition);
 
-  var _categoryIds = new WeakMap();
+  var _categoryIds = /*#__PURE__*/new WeakMap();
 
   var ValuesCondition = /*#__PURE__*/function (_BaseCondition) {
     _inherits(ValuesCondition, _BaseCondition);
@@ -3192,7 +3228,7 @@
 
       _this = _super.call(this, attributeId);
 
-      _categoryIds.set(_assertThisInitialized(_this), {
+      _classPrivateFieldInitSpec(_assertThisInitialized(_this), _categoryIds, {
         writable: true,
         value: void 0
       });
@@ -3262,35 +3298,35 @@
     return ValuesCondition;
   }(BaseCondition);
 
-  var _togoKey$1 = new WeakMap();
+  var _togoKey$1 = /*#__PURE__*/new WeakMap();
 
-  var _keyConditions$1 = new WeakMap();
+  var _keyConditions$1 = /*#__PURE__*/new WeakMap();
 
-  var _valuesConditions$1 = new WeakMap();
+  var _valuesConditions$1 = /*#__PURE__*/new WeakMap();
 
-  var _copyKeyConditions = new WeakSet();
+  var _copyKeyConditions = /*#__PURE__*/new WeakSet();
 
-  var _copyValuesConditions = new WeakSet();
+  var _copyValuesConditions = /*#__PURE__*/new WeakSet();
 
   var DXCondition = /*#__PURE__*/function () {
     function DXCondition(togoKey, _keyConditions2, _valuesConditions2) {
       _classCallCheck(this, DXCondition);
 
-      _copyValuesConditions.add(this);
+      _classPrivateMethodInitSpec(this, _copyValuesConditions);
 
-      _copyKeyConditions.add(this);
+      _classPrivateMethodInitSpec(this, _copyKeyConditions);
 
-      _togoKey$1.set(this, {
+      _classPrivateFieldInitSpec(this, _togoKey$1, {
         writable: true,
         value: void 0
       });
 
-      _keyConditions$1.set(this, {
+      _classPrivateFieldInitSpec(this, _keyConditions$1, {
         writable: true,
         value: void 0
       });
 
-      _valuesConditions$1.set(this, {
+      _classPrivateFieldInitSpec(this, _valuesConditions$1, {
         writable: true,
         value: void 0
       });
@@ -3428,33 +3464,33 @@
 
   var collapsed = 'collapsed';
 
-  var _keyConditions = new WeakMap();
+  var _keyConditions = /*#__PURE__*/new WeakMap();
 
-  var _valuesConditions = new WeakMap();
+  var _valuesConditions = /*#__PURE__*/new WeakMap();
 
-  var _togoKey = new WeakMap();
+  var _togoKey = /*#__PURE__*/new WeakMap();
 
-  var _userIds = new WeakMap();
+  var _userIds = /*#__PURE__*/new WeakMap();
 
-  var _isRestoredConditinoFromURLParameters = new WeakMap();
+  var _isRestoredConditinoFromURLParameters = /*#__PURE__*/new WeakMap();
 
-  var _preparingCounter = new WeakMap();
+  var _preparingCounter = /*#__PURE__*/new WeakMap();
 
-  var _postProcessing = new WeakSet();
+  var _postProcessing = /*#__PURE__*/new WeakSet();
 
-  var _createSearchConditionFromURLParameters = new WeakSet();
+  var _createSearchConditionFromURLParameters = /*#__PURE__*/new WeakSet();
 
-  var _makeQueueOfGettingChildCategoryIds = new WeakSet();
+  var _makeQueueOfGettingChildCategoryIds = /*#__PURE__*/new WeakSet();
 
-  var _progressQueueOfGettingChildCategoryIds = new WeakSet();
+  var _progressQueueOfGettingChildCategoryIds = /*#__PURE__*/new WeakSet();
 
-  var _getChildCategoryIds = new WeakSet();
+  var _getChildCategoryIds = /*#__PURE__*/new WeakSet();
 
-  var _restoreConditions = new WeakSet();
+  var _restoreConditions = /*#__PURE__*/new WeakSet();
 
-  var _clearConditinos = new WeakSet();
+  var _clearConditinos = /*#__PURE__*/new WeakSet();
 
-  var _getCondtionsFromHierarchicConditions = new WeakSet();
+  var _getCondtionsFromHierarchicConditions = /*#__PURE__*/new WeakSet();
 
   var ConditionBuilder = /*#__PURE__*/function () {
     // Array<KeyCondition>
@@ -3462,48 +3498,48 @@
     function ConditionBuilder() {
       _classCallCheck(this, ConditionBuilder);
 
-      _getCondtionsFromHierarchicConditions.add(this);
+      _classPrivateMethodInitSpec(this, _getCondtionsFromHierarchicConditions);
 
-      _clearConditinos.add(this);
+      _classPrivateMethodInitSpec(this, _clearConditinos);
 
-      _restoreConditions.add(this);
+      _classPrivateMethodInitSpec(this, _restoreConditions);
 
-      _getChildCategoryIds.add(this);
+      _classPrivateMethodInitSpec(this, _getChildCategoryIds);
 
-      _progressQueueOfGettingChildCategoryIds.add(this);
+      _classPrivateMethodInitSpec(this, _progressQueueOfGettingChildCategoryIds);
 
-      _makeQueueOfGettingChildCategoryIds.add(this);
+      _classPrivateMethodInitSpec(this, _makeQueueOfGettingChildCategoryIds);
 
-      _createSearchConditionFromURLParameters.add(this);
+      _classPrivateMethodInitSpec(this, _createSearchConditionFromURLParameters);
 
-      _postProcessing.add(this);
+      _classPrivateMethodInitSpec(this, _postProcessing);
 
-      _keyConditions.set(this, {
+      _classPrivateFieldInitSpec(this, _keyConditions, {
         writable: true,
         value: void 0
       });
 
-      _valuesConditions.set(this, {
+      _classPrivateFieldInitSpec(this, _valuesConditions, {
         writable: true,
         value: void 0
       });
 
-      _togoKey.set(this, {
+      _classPrivateFieldInitSpec(this, _togoKey, {
         writable: true,
         value: void 0
       });
 
-      _userIds.set(this, {
+      _classPrivateFieldInitSpec(this, _userIds, {
         writable: true,
         value: void 0
       });
 
-      _isRestoredConditinoFromURLParameters.set(this, {
+      _classPrivateFieldInitSpec(this, _isRestoredConditinoFromURLParameters, {
         writable: true,
         value: false
       });
 
-      _preparingCounter.set(this, {
+      _classPrivateFieldInitSpec(this, _preparingCounter, {
         writable: true,
         value: void 0
       });
@@ -3979,13 +4015,13 @@
 
   var POLLING_DURATION = 1000;
 
-  var _condition = new WeakMap();
+  var _condition = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$e = new WeakMap();
+  var _ROOT$e = /*#__PURE__*/new WeakMap();
 
-  var _LABELS = new WeakMap();
+  var _LABELS = /*#__PURE__*/new WeakMap();
 
-  var _make = new WeakSet();
+  var _make = /*#__PURE__*/new WeakSet();
 
   var StackingConditionView = /*#__PURE__*/function () {
     // #isRange;
@@ -4001,19 +4037,19 @@
 
       _classCallCheck(this, StackingConditionView);
 
-      _make.add(this);
+      _classPrivateMethodInitSpec(this, _make);
 
-      _condition.set(this, {
+      _classPrivateFieldInitSpec(this, _condition, {
         writable: true,
         value: void 0
       });
 
-      _ROOT$e.set(this, {
+      _classPrivateFieldInitSpec(this, _ROOT$e, {
         writable: true,
         value: void 0
       });
 
-      _LABELS.set(this, {
+      _classPrivateFieldInitSpec(this, _LABELS, {
         writable: true,
         value: void 0
       });
@@ -4188,90 +4224,90 @@
     });
   }
 
-  var _properties = new WeakMap();
+  var _properties = /*#__PURE__*/new WeakMap();
 
-  var _propertyValues = new WeakMap();
+  var _propertyValues = /*#__PURE__*/new WeakMap();
 
-  var _isDefined = new WeakMap();
+  var _isDefined = /*#__PURE__*/new WeakMap();
 
-  var _placeHolderExamples = new WeakMap();
+  var _placeHolderExamples = /*#__PURE__*/new WeakMap();
 
-  var _TOGO_KEYS = new WeakMap();
+  var _TOGO_KEYS = /*#__PURE__*/new WeakMap();
 
-  var _USER_IDS$1 = new WeakMap();
+  var _USER_IDS$1 = /*#__PURE__*/new WeakMap();
 
-  var _PROPERTIES_CONDITIONS_CONTAINER = new WeakMap();
+  var _PROPERTIES_CONDITIONS_CONTAINER = /*#__PURE__*/new WeakMap();
 
-  var _ATTRIBUTES_CONDITIONS_CONTAINER = new WeakMap();
+  var _ATTRIBUTES_CONDITIONS_CONTAINER = /*#__PURE__*/new WeakMap();
 
-  var _EXEC_BUTTON = new WeakMap();
+  var _EXEC_BUTTON = /*#__PURE__*/new WeakMap();
 
-  var _defineTogoKeys = new WeakSet();
+  var _defineTogoKeys = /*#__PURE__*/new WeakSet();
 
-  var _addAttribute = new WeakSet();
+  var _addAttribute = /*#__PURE__*/new WeakSet();
 
-  var _removeAttribute = new WeakSet();
+  var _removeAttribute = /*#__PURE__*/new WeakSet();
 
-  var _addAttributeValue = new WeakSet();
+  var _addAttributeValue = /*#__PURE__*/new WeakSet();
 
-  var _removeAttributeValue = new WeakSet();
+  var _removeAttributeValue = /*#__PURE__*/new WeakSet();
 
   var ConditionBuilderView = function ConditionBuilderView(elm) {
     var _this = this;
 
     _classCallCheck(this, ConditionBuilderView);
 
-    _removeAttributeValue.add(this);
+    _classPrivateMethodInitSpec(this, _removeAttributeValue);
 
-    _addAttributeValue.add(this);
+    _classPrivateMethodInitSpec(this, _addAttributeValue);
 
-    _removeAttribute.add(this);
+    _classPrivateMethodInitSpec(this, _removeAttribute);
 
-    _addAttribute.add(this);
+    _classPrivateMethodInitSpec(this, _addAttribute);
 
-    _defineTogoKeys.add(this);
+    _classPrivateMethodInitSpec(this, _defineTogoKeys);
 
-    _properties.set(this, {
+    _classPrivateFieldInitSpec(this, _properties, {
       writable: true,
       value: void 0
     });
 
-    _propertyValues.set(this, {
+    _classPrivateFieldInitSpec(this, _propertyValues, {
       writable: true,
       value: void 0
     });
 
-    _isDefined.set(this, {
+    _classPrivateFieldInitSpec(this, _isDefined, {
       writable: true,
       value: void 0
     });
 
-    _placeHolderExamples.set(this, {
+    _classPrivateFieldInitSpec(this, _placeHolderExamples, {
       writable: true,
       value: void 0
     });
 
-    _TOGO_KEYS.set(this, {
+    _classPrivateFieldInitSpec(this, _TOGO_KEYS, {
       writable: true,
       value: void 0
     });
 
-    _USER_IDS$1.set(this, {
+    _classPrivateFieldInitSpec(this, _USER_IDS$1, {
       writable: true,
       value: void 0
     });
 
-    _PROPERTIES_CONDITIONS_CONTAINER.set(this, {
+    _classPrivateFieldInitSpec(this, _PROPERTIES_CONDITIONS_CONTAINER, {
       writable: true,
       value: void 0
     });
 
-    _ATTRIBUTES_CONDITIONS_CONTAINER.set(this, {
+    _classPrivateFieldInitSpec(this, _ATTRIBUTES_CONDITIONS_CONTAINER, {
       writable: true,
       value: void 0
     });
 
-    _EXEC_BUTTON.set(this, {
+    _classPrivateFieldInitSpec(this, _EXEC_BUTTON, {
       writable: true,
       value: void 0
     });
@@ -4462,21 +4498,21 @@
     });
   }
 
-  var _label = new WeakMap();
+  var _label = /*#__PURE__*/new WeakMap();
 
-  var _count = new WeakMap();
+  var _count = /*#__PURE__*/new WeakMap();
 
-  var _categoryId = new WeakMap();
+  var _categoryId = /*#__PURE__*/new WeakMap();
 
-  var _index$1 = new WeakMap();
+  var _index$1 = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$d = new WeakMap();
+  var _ROOT$d = /*#__PURE__*/new WeakMap();
 
-  var _INPUT_VALUE = new WeakMap();
+  var _INPUT_VALUE = /*#__PURE__*/new WeakMap();
 
-  var _INPUT_KEY = new WeakMap();
+  var _INPUT_KEY = /*#__PURE__*/new WeakMap();
 
-  var _clearUserValues = new WeakSet();
+  var _clearUserValues = /*#__PURE__*/new WeakSet();
 
   var ColumnItemView = /*#__PURE__*/function () {
     function ColumnItemView(column, _ref, index, selectedCategoryIds) {
@@ -4489,39 +4525,39 @@
 
       _classCallCheck(this, ColumnItemView);
 
-      _clearUserValues.add(this);
+      _classPrivateMethodInitSpec(this, _clearUserValues);
 
-      _label.set(this, {
+      _classPrivateFieldInitSpec(this, _label, {
         writable: true,
         value: void 0
       });
 
-      _count.set(this, {
+      _classPrivateFieldInitSpec(this, _count, {
         writable: true,
         value: void 0
       });
 
-      _categoryId.set(this, {
+      _classPrivateFieldInitSpec(this, _categoryId, {
         writable: true,
         value: void 0
       });
 
-      _index$1.set(this, {
+      _classPrivateFieldInitSpec(this, _index$1, {
         writable: true,
         value: void 0
       });
 
-      _ROOT$d.set(this, {
+      _classPrivateFieldInitSpec(this, _ROOT$d, {
         writable: true,
         value: void 0
       });
 
-      _INPUT_VALUE.set(this, {
+      _classPrivateFieldInitSpec(this, _INPUT_VALUE, {
         writable: true,
         value: void 0
       });
 
-      _INPUT_KEY.set(this, {
+      _classPrivateFieldInitSpec(this, _INPUT_KEY, {
         writable: true,
         value: void 0
       });
@@ -4661,17 +4697,17 @@
 
   var SORTABLE_COLUMNS = ['label', 'total'];
 
-  var _status = new WeakMap();
+  var _status = /*#__PURE__*/new WeakMap();
 
-  var _setDocument = new WeakSet();
+  var _setDocument = /*#__PURE__*/new WeakSet();
 
   var ColumnSelectorSortManager = /*#__PURE__*/function () {
     function ColumnSelectorSortManager() {
       _classCallCheck(this, ColumnSelectorSortManager);
 
-      _setDocument.add(this);
+      _classPrivateMethodInitSpec(this, _setDocument);
 
-      _status.set(this, {
+      _classPrivateFieldInitSpec(this, _status, {
         writable: true,
         value: void 0
       });
@@ -4755,33 +4791,33 @@
     return "".concat(App$1.locate, "?attribute=").concat(attributeId, "&categoryIds=").concat(categoryIds, "&togokey=").concat(ConditionBuilder$1.currentTogoKey, "&queries=").concat((_ConditionBuilder$use = ConditionBuilder$1.userIds) !== null && _ConditionBuilder$use !== void 0 ? _ConditionBuilder$use : '');
   }
 
-  var _depth = new WeakMap();
+  var _depth = /*#__PURE__*/new WeakMap();
 
-  var _selector = new WeakMap();
+  var _selector = /*#__PURE__*/new WeakMap();
 
-  var _max = new WeakMap();
+  var _max = /*#__PURE__*/new WeakMap();
 
-  var _parentCategoryId = new WeakMap();
+  var _parentCategoryId = /*#__PURE__*/new WeakMap();
 
-  var _columnItemViews = new WeakMap();
+  var _columnItemViews = /*#__PURE__*/new WeakMap();
 
-  var _cachedUserValues = new WeakMap();
+  var _cachedUserValues = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$c = new WeakMap();
+  var _ROOT$c = /*#__PURE__*/new WeakMap();
 
-  var _TBODY$1 = new WeakMap();
+  var _TBODY$1 = /*#__PURE__*/new WeakMap();
 
-  var _draw$1 = new WeakSet();
+  var _draw$1 = /*#__PURE__*/new WeakSet();
 
-  var _update$2 = new WeakSet();
+  var _update$2 = /*#__PURE__*/new WeakSet();
 
-  var _sort = new WeakSet();
+  var _sort = /*#__PURE__*/new WeakSet();
 
-  var _heatmap = new WeakSet();
+  var _heatmap = /*#__PURE__*/new WeakSet();
 
-  var _getUserValues = new WeakSet();
+  var _getUserValues = /*#__PURE__*/new WeakSet();
 
-  var _existed = new WeakMap();
+  var _existed = /*#__PURE__*/new WeakMap();
 
   var ColumnView = /*#__PURE__*/function () {
     function ColumnView(selector, _values, depth, parentCategoryId) {
@@ -4789,57 +4825,57 @@
 
       _classCallCheck(this, ColumnView);
 
-      _existed.set(this, {
+      _classPrivateFieldInitSpec(this, _existed, {
         get: _get_existed,
         set: void 0
       });
 
-      _getUserValues.add(this);
+      _classPrivateMethodInitSpec(this, _getUserValues);
 
-      _heatmap.add(this);
+      _classPrivateMethodInitSpec(this, _heatmap);
 
-      _sort.add(this);
+      _classPrivateMethodInitSpec(this, _sort);
 
-      _update$2.add(this);
+      _classPrivateMethodInitSpec(this, _update$2);
 
-      _draw$1.add(this);
+      _classPrivateMethodInitSpec(this, _draw$1);
 
-      _depth.set(this, {
+      _classPrivateFieldInitSpec(this, _depth, {
         writable: true,
         value: void 0
       });
 
-      _selector.set(this, {
+      _classPrivateFieldInitSpec(this, _selector, {
         writable: true,
         value: void 0
       });
 
-      _max.set(this, {
+      _classPrivateFieldInitSpec(this, _max, {
         writable: true,
         value: void 0
       });
 
-      _parentCategoryId.set(this, {
+      _classPrivateFieldInitSpec(this, _parentCategoryId, {
         writable: true,
         value: void 0
       });
 
-      _columnItemViews.set(this, {
+      _classPrivateFieldInitSpec(this, _columnItemViews, {
         writable: true,
         value: void 0
       });
 
-      _cachedUserValues.set(this, {
+      _classPrivateFieldInitSpec(this, _cachedUserValues, {
         writable: true,
         value: void 0
       });
 
-      _ROOT$c.set(this, {
+      _classPrivateFieldInitSpec(this, _ROOT$c, {
         writable: true,
         value: void 0
       });
 
-      _TBODY$1.set(this, {
+      _classPrivateFieldInitSpec(this, _TBODY$1, {
         writable: true,
         value: void 0
       });
@@ -5078,86 +5114,86 @@
     return _classPrivateFieldGet(this, _ROOT$c).parentNode !== null;
   }
 
-  var _attribute$3 = new WeakMap();
+  var _attribute$3 = /*#__PURE__*/new WeakMap();
 
-  var _items$1 = new WeakMap();
+  var _items$1 = /*#__PURE__*/new WeakMap();
 
-  var _columnViews = new WeakMap();
+  var _columnViews = /*#__PURE__*/new WeakMap();
 
-  var _currentColumnViews = new WeakMap();
+  var _currentColumnViews = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$b = new WeakMap();
+  var _ROOT$b = /*#__PURE__*/new WeakMap();
 
-  var _CONTAINER$1 = new WeakMap();
+  var _CONTAINER$1 = /*#__PURE__*/new WeakMap();
 
-  var _LOADING_VIEW$2 = new WeakMap();
+  var _LOADING_VIEW$2 = /*#__PURE__*/new WeakMap();
 
-  var _CONTAINED_VIEW = new WeakMap();
+  var _CONTAINED_VIEW = /*#__PURE__*/new WeakMap();
 
-  var _setItems = new WeakSet();
+  var _setItems = /*#__PURE__*/new WeakSet();
 
-  var _getColumn = new WeakSet();
+  var _getColumn = /*#__PURE__*/new WeakSet();
 
-  var _makeCoumnView = new WeakSet();
+  var _makeCoumnView = /*#__PURE__*/new WeakSet();
 
-  var _setSubColumn = new WeakSet();
+  var _setSubColumn = /*#__PURE__*/new WeakSet();
 
-  var _appendSubColumn = new WeakSet();
+  var _appendSubColumn = /*#__PURE__*/new WeakSet();
 
-  var _setSelectedValue = new WeakSet();
+  var _setSelectedValue = /*#__PURE__*/new WeakSet();
 
   var ColumnSelectorView = /*#__PURE__*/function () {
     function ColumnSelectorView(elm, attribute, _items2) {
       _classCallCheck(this, ColumnSelectorView);
 
-      _setSelectedValue.add(this);
+      _classPrivateMethodInitSpec(this, _setSelectedValue);
 
-      _appendSubColumn.add(this);
+      _classPrivateMethodInitSpec(this, _appendSubColumn);
 
-      _setSubColumn.add(this);
+      _classPrivateMethodInitSpec(this, _setSubColumn);
 
-      _makeCoumnView.add(this);
+      _classPrivateMethodInitSpec(this, _makeCoumnView);
 
-      _getColumn.add(this);
+      _classPrivateMethodInitSpec(this, _getColumn);
 
-      _setItems.add(this);
+      _classPrivateMethodInitSpec(this, _setItems);
 
-      _attribute$3.set(this, {
+      _classPrivateFieldInitSpec(this, _attribute$3, {
         writable: true,
         value: void 0
       });
 
-      _items$1.set(this, {
+      _classPrivateFieldInitSpec(this, _items$1, {
         writable: true,
         value: void 0
       });
 
-      _columnViews.set(this, {
+      _classPrivateFieldInitSpec(this, _columnViews, {
         writable: true,
         value: void 0
       });
 
-      _currentColumnViews.set(this, {
+      _classPrivateFieldInitSpec(this, _currentColumnViews, {
         writable: true,
         value: void 0
       });
 
-      _ROOT$b.set(this, {
+      _classPrivateFieldInitSpec(this, _ROOT$b, {
         writable: true,
         value: void 0
       });
 
-      _CONTAINER$1.set(this, {
+      _classPrivateFieldInitSpec(this, _CONTAINER$1, {
         writable: true,
         value: void 0
       });
 
-      _LOADING_VIEW$2.set(this, {
+      _classPrivateFieldInitSpec(this, _LOADING_VIEW$2, {
         writable: true,
         value: void 0
       });
 
-      _CONTAINED_VIEW.set(this, {
+      _classPrivateFieldInitSpec(this, _CONTAINED_VIEW, {
         writable: true,
         value: void 0
       });
@@ -5350,53 +5386,53 @@
     _classPrivateFieldGet(this, _items$1)[categoryId].selected = selected;
   }
 
-  var _target = new WeakMap();
+  var _target = /*#__PURE__*/new WeakMap();
 
-  var _selection = new WeakMap();
+  var _selection = /*#__PURE__*/new WeakMap();
 
-  var _unit = new WeakMap();
+  var _unit = /*#__PURE__*/new WeakMap();
 
-  var _SELECTING_AREA = new WeakMap();
+  var _SELECTING_AREA = /*#__PURE__*/new WeakMap();
 
-  var _SELECTOR_BARS = new WeakMap();
+  var _SELECTOR_BARS = /*#__PURE__*/new WeakMap();
 
-  var _defineSelection = new WeakSet();
+  var _defineSelection = /*#__PURE__*/new WeakSet();
 
-  var _defineInteraction = new WeakSet();
+  var _defineInteraction = /*#__PURE__*/new WeakSet();
 
-  var _update$1 = new WeakSet();
+  var _update$1 = /*#__PURE__*/new WeakSet();
 
   var HistogramRangeSelectorController = /*#__PURE__*/function () {
     function HistogramRangeSelectorController(target, _selector) {
       _classCallCheck(this, HistogramRangeSelectorController);
 
-      _update$1.add(this);
+      _classPrivateMethodInitSpec(this, _update$1);
 
-      _defineInteraction.add(this);
+      _classPrivateMethodInitSpec(this, _defineInteraction);
 
-      _defineSelection.add(this);
+      _classPrivateMethodInitSpec(this, _defineSelection);
 
-      _target.set(this, {
+      _classPrivateFieldInitSpec(this, _target, {
         writable: true,
         value: void 0
       });
 
-      _selection.set(this, {
+      _classPrivateFieldInitSpec(this, _selection, {
         writable: true,
         value: void 0
       });
 
-      _unit.set(this, {
+      _classPrivateFieldInitSpec(this, _unit, {
         writable: true,
         value: void 0
       });
 
-      _SELECTING_AREA.set(this, {
+      _classPrivateFieldInitSpec(this, _SELECTING_AREA, {
         writable: true,
         value: void 0
       });
 
-      _SELECTOR_BARS.set(this, {
+      _classPrivateFieldInitSpec(this, _SELECTOR_BARS, {
         writable: true,
         value: void 0
       });
@@ -5709,19 +5745,19 @@
 
   var NUM_OF_GRID = 4;
 
-  var _items = new WeakMap();
+  var _items = /*#__PURE__*/new WeakMap();
 
-  var _attribute$2 = new WeakMap();
+  var _attribute$2 = /*#__PURE__*/new WeakMap();
 
-  var _selectorController = new WeakMap();
+  var _selectorController = /*#__PURE__*/new WeakMap();
 
-  var _OVERVIEW_CONTAINER$1 = new WeakMap();
+  var _OVERVIEW_CONTAINER$1 = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$a = new WeakMap();
+  var _ROOT$a = /*#__PURE__*/new WeakMap();
 
-  var _GRIDS = new WeakMap();
+  var _GRIDS = /*#__PURE__*/new WeakMap();
 
-  var _indicateValue = new WeakSet();
+  var _indicateValue = /*#__PURE__*/new WeakSet();
 
   var HistogramRangeSelectorView = /*#__PURE__*/function () {
     function HistogramRangeSelectorView(elm, attribute, items) {
@@ -5729,34 +5765,34 @@
 
       _classCallCheck(this, HistogramRangeSelectorView);
 
-      _indicateValue.add(this);
+      _classPrivateMethodInitSpec(this, _indicateValue);
 
-      _items.set(this, {
+      _classPrivateFieldInitSpec(this, _items, {
         writable: true,
         value: void 0
       });
 
-      _attribute$2.set(this, {
+      _classPrivateFieldInitSpec(this, _attribute$2, {
         writable: true,
         value: void 0
       });
 
-      _selectorController.set(this, {
+      _classPrivateFieldInitSpec(this, _selectorController, {
         writable: true,
         value: void 0
       });
 
-      _OVERVIEW_CONTAINER$1.set(this, {
+      _classPrivateFieldInitSpec(this, _OVERVIEW_CONTAINER$1, {
         writable: true,
         value: void 0
       });
 
-      _ROOT$a.set(this, {
+      _classPrivateFieldInitSpec(this, _ROOT$a, {
         writable: true,
         value: void 0
       });
 
-      _GRIDS.set(this, {
+      _classPrivateFieldInitSpec(this, _GRIDS, {
         writable: true,
         value: void 0
       });
@@ -5866,47 +5902,47 @@
   var MAX_PIN_SIZE = 24;
   var RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
 
-  var _attribute$1 = new WeakMap();
+  var _attribute$1 = /*#__PURE__*/new WeakMap();
 
-  var _values = new WeakMap();
+  var _values = /*#__PURE__*/new WeakMap();
 
-  var _userValues = new WeakMap();
+  var _userValues = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$9 = new WeakMap();
+  var _ROOT$9 = /*#__PURE__*/new WeakMap();
 
-  var _update = new WeakSet();
+  var _update = /*#__PURE__*/new WeakSet();
 
-  var _plotUserIdValues = new WeakSet();
+  var _plotUserIdValues = /*#__PURE__*/new WeakSet();
 
-  var _clearUserIdValues = new WeakSet();
+  var _clearUserIdValues = /*#__PURE__*/new WeakSet();
 
   var TrackOverviewCategorical = function TrackOverviewCategorical(elm, attribute, values) {
     var _this = this;
 
     _classCallCheck(this, TrackOverviewCategorical);
 
-    _clearUserIdValues.add(this);
+    _classPrivateMethodInitSpec(this, _clearUserIdValues);
 
-    _plotUserIdValues.add(this);
+    _classPrivateMethodInitSpec(this, _plotUserIdValues);
 
-    _update.add(this);
+    _classPrivateMethodInitSpec(this, _update);
 
-    _attribute$1.set(this, {
+    _classPrivateFieldInitSpec(this, _attribute$1, {
       writable: true,
       value: void 0
     });
 
-    _values.set(this, {
+    _classPrivateFieldInitSpec(this, _values, {
       writable: true,
       value: void 0
     });
 
-    _userValues.set(this, {
+    _classPrivateFieldInitSpec(this, _userValues, {
       writable: true,
       value: void 0
     });
 
-    _ROOT$9.set(this, {
+    _classPrivateFieldInitSpec(this, _ROOT$9, {
       writable: true,
       value: void 0
     });
@@ -6128,68 +6164,68 @@
     _classPrivateFieldSet(this, _userValues, undefined);
   }
 
-  var _attribute = new WeakMap();
+  var _attribute = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$8 = new WeakMap();
+  var _ROOT$8 = /*#__PURE__*/new WeakMap();
 
-  var _LOADING_VIEW$1 = new WeakMap();
+  var _LOADING_VIEW$1 = /*#__PURE__*/new WeakMap();
 
-  var _SELECT_CONTAINER = new WeakMap();
+  var _SELECT_CONTAINER = /*#__PURE__*/new WeakMap();
 
-  var _OVERVIEW_CONTAINER = new WeakMap();
+  var _OVERVIEW_CONTAINER = /*#__PURE__*/new WeakMap();
 
-  var _CHECKBOX_ALL_PROPERTIES = new WeakMap();
+  var _CHECKBOX_ALL_PROPERTIES = /*#__PURE__*/new WeakMap();
 
-  var _COLLAPSE_BUTTON = new WeakMap();
+  var _COLLAPSE_BUTTON = /*#__PURE__*/new WeakMap();
 
-  var _makeValues = new WeakSet();
+  var _makeValues = /*#__PURE__*/new WeakSet();
 
-  var _showError = new WeakSet();
+  var _showError = /*#__PURE__*/new WeakSet();
 
-  var _clearError = new WeakSet();
+  var _clearError = /*#__PURE__*/new WeakSet();
 
   var AttributeTrackView = function AttributeTrackView(attributeId, container, positionRate) {
     var _this = this;
 
     _classCallCheck(this, AttributeTrackView);
 
-    _clearError.add(this);
+    _classPrivateMethodInitSpec(this, _clearError);
 
-    _showError.add(this);
+    _classPrivateMethodInitSpec(this, _showError);
 
-    _makeValues.add(this);
+    _classPrivateMethodInitSpec(this, _makeValues);
 
-    _attribute.set(this, {
+    _classPrivateFieldInitSpec(this, _attribute, {
       writable: true,
       value: void 0
     });
 
-    _ROOT$8.set(this, {
+    _classPrivateFieldInitSpec(this, _ROOT$8, {
       writable: true,
       value: void 0
     });
 
-    _LOADING_VIEW$1.set(this, {
+    _classPrivateFieldInitSpec(this, _LOADING_VIEW$1, {
       writable: true,
       value: void 0
     });
 
-    _SELECT_CONTAINER.set(this, {
+    _classPrivateFieldInitSpec(this, _SELECT_CONTAINER, {
       writable: true,
       value: void 0
     });
 
-    _OVERVIEW_CONTAINER.set(this, {
+    _classPrivateFieldInitSpec(this, _OVERVIEW_CONTAINER, {
       writable: true,
       value: void 0
     });
 
-    _CHECKBOX_ALL_PROPERTIES.set(this, {
+    _classPrivateFieldInitSpec(this, _CHECKBOX_ALL_PROPERTIES, {
       writable: true,
       value: void 0
     });
 
-    _COLLAPSE_BUTTON.set(this, {
+    _classPrivateFieldInitSpec(this, _COLLAPSE_BUTTON, {
       writable: true,
       value: void 0
     });
@@ -6350,63 +6386,63 @@
     }
   };
 
-  var _index = new WeakMap();
+  var _index = /*#__PURE__*/new WeakMap();
 
-  var _attributeId = new WeakMap();
+  var _attributeId = /*#__PURE__*/new WeakMap();
 
-  var _tableData$2 = new WeakMap();
+  var _tableData$2 = /*#__PURE__*/new WeakMap();
 
-  var _referenceValues = new WeakMap();
+  var _referenceValues = /*#__PURE__*/new WeakMap();
 
-  var _BARS = new WeakMap();
+  var _BARS = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$7 = new WeakMap();
+  var _ROOT$7 = /*#__PURE__*/new WeakMap();
 
-  var _ROOT_NODE = new WeakMap();
+  var _ROOT_NODE = /*#__PURE__*/new WeakMap();
 
-  var _draw = new WeakSet();
+  var _draw = /*#__PURE__*/new WeakSet();
 
-  var _failedFetchTableDataIds = new WeakSet();
+  var _failedFetchTableDataIds = /*#__PURE__*/new WeakSet();
 
   var StatisticsView = /*#__PURE__*/function () {
     function StatisticsView(statisticsRootNode, elm, tableData, index, condition) {
       _classCallCheck(this, StatisticsView);
 
-      _failedFetchTableDataIds.add(this);
+      _classPrivateMethodInitSpec(this, _failedFetchTableDataIds);
 
-      _draw.add(this);
+      _classPrivateMethodInitSpec(this, _draw);
 
-      _index.set(this, {
+      _classPrivateFieldInitSpec(this, _index, {
         writable: true,
         value: void 0
       });
 
-      _attributeId.set(this, {
+      _classPrivateFieldInitSpec(this, _attributeId, {
         writable: true,
         value: void 0
       });
 
-      _tableData$2.set(this, {
+      _classPrivateFieldInitSpec(this, _tableData$2, {
         writable: true,
         value: void 0
       });
 
-      _referenceValues.set(this, {
+      _classPrivateFieldInitSpec(this, _referenceValues, {
         writable: true,
         value: void 0
       });
 
-      _BARS.set(this, {
+      _classPrivateFieldInitSpec(this, _BARS, {
         writable: true,
         value: void 0
       });
 
-      _ROOT$7.set(this, {
+      _classPrivateFieldInitSpec(this, _ROOT$7, {
         writable: true,
         value: void 0
       });
 
-      _ROOT_NODE.set(this, {
+      _classPrivateFieldInitSpec(this, _ROOT_NODE, {
         writable: true,
         value: void 0
       });
@@ -6568,39 +6604,39 @@
     _classPrivateFieldGet(this, _ROOT$7).querySelector(':scope > .loading-view').classList.remove('-shown');
   }
 
-  var _intersctionObserver = new WeakMap();
+  var _intersctionObserver = /*#__PURE__*/new WeakMap();
 
-  var _tableData$1 = new WeakMap();
+  var _tableData$1 = /*#__PURE__*/new WeakMap();
 
-  var _header$1 = new WeakMap();
+  var _header$1 = /*#__PURE__*/new WeakMap();
 
-  var _hea___der = new WeakMap();
+  var _hea___der = /*#__PURE__*/new WeakMap();
 
-  var _statisticsViews = new WeakMap();
+  var _statisticsViews = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$6 = new WeakMap();
+  var _ROOT$6 = /*#__PURE__*/new WeakMap();
 
-  var _THEAD = new WeakMap();
+  var _THEAD = /*#__PURE__*/new WeakMap();
 
-  var _THEAD_SUB = new WeakMap();
+  var _THEAD_SUB = /*#__PURE__*/new WeakMap();
 
-  var _STATS = new WeakMap();
+  var _STATS = /*#__PURE__*/new WeakMap();
 
-  var _TBODY = new WeakMap();
+  var _TBODY = /*#__PURE__*/new WeakMap();
 
-  var _TABLE_END = new WeakMap();
+  var _TABLE_END = /*#__PURE__*/new WeakMap();
 
-  var _LOADING_VIEW = new WeakMap();
+  var _LOADING_VIEW = /*#__PURE__*/new WeakMap();
 
-  var _enterTableEnd = new WeakSet();
+  var _enterTableEnd = /*#__PURE__*/new WeakSet();
 
-  var _setupTable = new WeakSet();
+  var _setupTable = /*#__PURE__*/new WeakSet();
 
-  var _addTableRows = new WeakSet();
+  var _addTableRows = /*#__PURE__*/new WeakSet();
 
-  var _failed = new WeakSet();
+  var _failed = /*#__PURE__*/new WeakSet();
 
-  var _colHighlight = new WeakSet();
+  var _colHighlight = /*#__PURE__*/new WeakSet();
 
   var ResultsTable = function ResultsTable(elm) {
     var _this = this,
@@ -6608,72 +6644,72 @@
 
     _classCallCheck(this, ResultsTable);
 
-    _colHighlight.add(this);
+    _classPrivateMethodInitSpec(this, _colHighlight);
 
-    _failed.add(this);
+    _classPrivateMethodInitSpec(this, _failed);
 
-    _addTableRows.add(this);
+    _classPrivateMethodInitSpec(this, _addTableRows);
 
-    _setupTable.add(this);
+    _classPrivateMethodInitSpec(this, _setupTable);
 
-    _enterTableEnd.add(this);
+    _classPrivateMethodInitSpec(this, _enterTableEnd);
 
-    _intersctionObserver.set(this, {
+    _classPrivateFieldInitSpec(this, _intersctionObserver, {
       writable: true,
       value: void 0
     });
 
-    _tableData$1.set(this, {
+    _classPrivateFieldInitSpec(this, _tableData$1, {
       writable: true,
       value: void 0
     });
 
-    _header$1.set(this, {
+    _classPrivateFieldInitSpec(this, _header$1, {
       writable: true,
       value: void 0
     });
 
-    _hea___der.set(this, {
+    _classPrivateFieldInitSpec(this, _hea___der, {
       writable: true,
       value: void 0
     });
 
-    _statisticsViews.set(this, {
+    _classPrivateFieldInitSpec(this, _statisticsViews, {
       writable: true,
       value: void 0
     });
 
-    _ROOT$6.set(this, {
+    _classPrivateFieldInitSpec(this, _ROOT$6, {
       writable: true,
       value: void 0
     });
 
-    _THEAD.set(this, {
+    _classPrivateFieldInitSpec(this, _THEAD, {
       writable: true,
       value: void 0
     });
 
-    _THEAD_SUB.set(this, {
+    _classPrivateFieldInitSpec(this, _THEAD_SUB, {
       writable: true,
       value: void 0
     });
 
-    _STATS.set(this, {
+    _classPrivateFieldInitSpec(this, _STATS, {
       writable: true,
       value: void 0
     });
 
-    _TBODY.set(this, {
+    _classPrivateFieldInitSpec(this, _TBODY, {
       writable: true,
       value: void 0
     });
 
-    _TABLE_END.set(this, {
+    _classPrivateFieldInitSpec(this, _TABLE_END, {
       writable: true,
       value: void 0
     });
 
-    _LOADING_VIEW.set(this, {
+    _classPrivateFieldInitSpec(this, _LOADING_VIEW, {
       writable: true,
       value: void 0
     });
@@ -6967,20 +7003,20 @@
     });
   }
 
-  var _templates = new WeakMap();
+  var _templates = /*#__PURE__*/new WeakMap();
 
-  var _isReady = new WeakMap();
+  var _isReady = /*#__PURE__*/new WeakMap();
 
   var StanzaManager = /*#__PURE__*/function () {
     function StanzaManager() {
       _classCallCheck(this, StanzaManager);
 
-      _templates.set(this, {
+      _classPrivateFieldInitSpec(this, _templates, {
         writable: true,
         value: void 0
       });
 
-      _isReady.set(this, {
+      _classPrivateFieldInitSpec(this, _isReady, {
         writable: true,
         value: void 0
       });
@@ -7065,102 +7101,102 @@
     }
   }
 
-  var _ROOT$5 = new WeakMap();
+  var _ROOT$5 = /*#__PURE__*/new WeakMap();
 
-  var _RESULTS_TABLE = new WeakMap();
+  var _RESULTS_TABLE = /*#__PURE__*/new WeakMap();
 
-  var _RESULT_MODAL = new WeakMap();
+  var _RESULT_MODAL = /*#__PURE__*/new WeakMap();
 
-  var _exit_button = new WeakMap();
+  var _exit_button = /*#__PURE__*/new WeakMap();
 
-  var _popup_top = new WeakMap();
+  var _popup_top = /*#__PURE__*/new WeakMap();
 
-  var _popup_left = new WeakMap();
+  var _popup_left = /*#__PURE__*/new WeakMap();
 
-  var _showPopup = new WeakSet();
+  var _showPopup = /*#__PURE__*/new WeakSet();
 
-  var _popup = new WeakSet();
+  var _popup = /*#__PURE__*/new WeakSet();
 
-  var _header = new WeakSet();
+  var _header = /*#__PURE__*/new WeakSet();
 
-  var _container = new WeakSet();
+  var _container = /*#__PURE__*/new WeakSet();
 
-  var _stanzas = new WeakSet();
+  var _stanzas = /*#__PURE__*/new WeakSet();
 
-  var _arrow = new WeakSet();
+  var _arrow = /*#__PURE__*/new WeakSet();
 
-  var _setHighlight = new WeakSet();
+  var _setHighlight = /*#__PURE__*/new WeakSet();
 
-  var _handleKeydown = new WeakMap();
+  var _handleKeydown = /*#__PURE__*/new WeakMap();
 
-  var _arrowFuncs = new WeakMap();
+  var _arrowFuncs = /*#__PURE__*/new WeakMap();
 
-  var _setMovementArrow = new WeakSet();
+  var _setMovementArrow = /*#__PURE__*/new WeakSet();
 
-  var _getTargetEntry = new WeakSet();
+  var _getTargetEntry = /*#__PURE__*/new WeakSet();
 
-  var _entriesByAxes = new WeakSet();
+  var _entriesByAxes = /*#__PURE__*/new WeakSet();
 
-  var _hidePopup = new WeakSet();
+  var _hidePopup = /*#__PURE__*/new WeakSet();
 
   var ResultDetailModal = function ResultDetailModal() {
     var _this = this;
 
     _classCallCheck(this, ResultDetailModal);
 
-    _hidePopup.add(this);
+    _classPrivateMethodInitSpec(this, _hidePopup);
 
-    _entriesByAxes.add(this);
+    _classPrivateMethodInitSpec(this, _entriesByAxes);
 
-    _getTargetEntry.add(this);
+    _classPrivateMethodInitSpec(this, _getTargetEntry);
 
-    _setMovementArrow.add(this);
+    _classPrivateMethodInitSpec(this, _setMovementArrow);
 
-    _setHighlight.add(this);
+    _classPrivateMethodInitSpec(this, _setHighlight);
 
-    _arrow.add(this);
+    _classPrivateMethodInitSpec(this, _arrow);
 
-    _stanzas.add(this);
+    _classPrivateMethodInitSpec(this, _stanzas);
 
-    _container.add(this);
+    _classPrivateMethodInitSpec(this, _container);
 
-    _header.add(this);
+    _classPrivateMethodInitSpec(this, _header);
 
-    _popup.add(this);
+    _classPrivateMethodInitSpec(this, _popup);
 
-    _showPopup.add(this);
+    _classPrivateMethodInitSpec(this, _showPopup);
 
-    _ROOT$5.set(this, {
+    _classPrivateFieldInitSpec(this, _ROOT$5, {
       writable: true,
       value: void 0
     });
 
-    _RESULTS_TABLE.set(this, {
+    _classPrivateFieldInitSpec(this, _RESULTS_TABLE, {
       writable: true,
       value: void 0
     });
 
-    _RESULT_MODAL.set(this, {
+    _classPrivateFieldInitSpec(this, _RESULT_MODAL, {
       writable: true,
       value: void 0
     });
 
-    _exit_button.set(this, {
+    _classPrivateFieldInitSpec(this, _exit_button, {
       writable: true,
       value: void 0
     });
 
-    _popup_top.set(this, {
+    _classPrivateFieldInitSpec(this, _popup_top, {
       writable: true,
       value: void 0
     });
 
-    _popup_left.set(this, {
+    _classPrivateFieldInitSpec(this, _popup_left, {
       writable: true,
       value: void 0
     });
 
-    _handleKeydown.set(this, {
+    _classPrivateFieldInitSpec(this, _handleKeydown, {
       writable: true,
       value: function value(e) {
         if (e.key == 'Escape') {
@@ -7173,7 +7209,7 @@
       }
     });
 
-    _arrowFuncs.set(this, {
+    _classPrivateFieldInitSpec(this, _arrowFuncs, {
       writable: true,
       value: new Map([['ArrowLeft', function (x, y) {
         return [x - 1, y];
@@ -7401,21 +7437,21 @@
     document.removeEventListener('keydown', _classPrivateFieldGet(this, _handleKeydown));
   }
 
-  var _ROOT$4 = new WeakMap();
+  var _ROOT$4 = /*#__PURE__*/new WeakMap();
 
-  var _CONTAINER = new WeakMap();
+  var _CONTAINER = /*#__PURE__*/new WeakMap();
 
   var BalloonView = function BalloonView() {
     var _this = this;
 
     _classCallCheck(this, BalloonView);
 
-    _ROOT$4.set(this, {
+    _classPrivateFieldInitSpec(this, _ROOT$4, {
       writable: true,
       value: void 0
     });
 
-    _CONTAINER.set(this, {
+    _classPrivateFieldInitSpec(this, _CONTAINER, {
       writable: true,
       value: void 0
     });
@@ -7468,33 +7504,33 @@
     DETAILED: 'detailed'
   };
 
-  var _ROOT$3 = new WeakMap();
+  var _ROOT$3 = /*#__PURE__*/new WeakMap();
 
-  var _TEXT_OFFSET = new WeakMap();
+  var _TEXT_OFFSET = /*#__PURE__*/new WeakMap();
 
-  var _TEXT_TOTAL = new WeakMap();
+  var _TEXT_TOTAL = /*#__PURE__*/new WeakMap();
 
-  var _TEXT_STATUS = new WeakMap();
+  var _TEXT_STATUS = /*#__PURE__*/new WeakMap();
 
-  var _BAR = new WeakMap();
+  var _BAR = /*#__PURE__*/new WeakMap();
 
-  var _totalDuration = new WeakMap();
+  var _totalDuration = /*#__PURE__*/new WeakMap();
 
-  var _total = new WeakMap();
+  var _total = /*#__PURE__*/new WeakMap();
 
-  var _mode = new WeakMap();
+  var _mode = /*#__PURE__*/new WeakMap();
 
-  var _updateAmount = new WeakSet();
+  var _updateAmount = /*#__PURE__*/new WeakSet();
 
-  var _updateBarWidth = new WeakSet();
+  var _updateBarWidth = /*#__PURE__*/new WeakSet();
 
-  var _remainingTimeInSec = new WeakSet();
+  var _remainingTimeInSec = /*#__PURE__*/new WeakSet();
 
-  var _timeString = new WeakSet();
+  var _timeString = /*#__PURE__*/new WeakSet();
 
-  var _updateTime = new WeakSet();
+  var _updateTime = /*#__PURE__*/new WeakSet();
 
-  var _setMessage = new WeakSet();
+  var _setMessage = /*#__PURE__*/new WeakSet();
 
   var ProgressIndicator = /*#__PURE__*/function () {
     /**
@@ -7506,54 +7542,54 @@
 
       _classCallCheck(this, ProgressIndicator);
 
-      _setMessage.add(this);
+      _classPrivateMethodInitSpec(this, _setMessage);
 
-      _updateTime.add(this);
+      _classPrivateMethodInitSpec(this, _updateTime);
 
-      _timeString.add(this);
+      _classPrivateMethodInitSpec(this, _timeString);
 
-      _remainingTimeInSec.add(this);
+      _classPrivateMethodInitSpec(this, _remainingTimeInSec);
 
-      _updateBarWidth.add(this);
+      _classPrivateMethodInitSpec(this, _updateBarWidth);
 
-      _updateAmount.add(this);
+      _classPrivateMethodInitSpec(this, _updateAmount);
 
-      _ROOT$3.set(this, {
+      _classPrivateFieldInitSpec(this, _ROOT$3, {
         writable: true,
         value: void 0
       });
 
-      _TEXT_OFFSET.set(this, {
+      _classPrivateFieldInitSpec(this, _TEXT_OFFSET, {
         writable: true,
         value: void 0
       });
 
-      _TEXT_TOTAL.set(this, {
+      _classPrivateFieldInitSpec(this, _TEXT_TOTAL, {
         writable: true,
         value: void 0
       });
 
-      _TEXT_STATUS.set(this, {
+      _classPrivateFieldInitSpec(this, _TEXT_STATUS, {
         writable: true,
         value: void 0
       });
 
-      _BAR.set(this, {
+      _classPrivateFieldInitSpec(this, _BAR, {
         writable: true,
         value: void 0
       });
 
-      _totalDuration.set(this, {
+      _classPrivateFieldInitSpec(this, _totalDuration, {
         writable: true,
         value: void 0
       });
 
-      _total.set(this, {
+      _classPrivateFieldInitSpec(this, _total, {
         writable: true,
         value: void 0
       });
 
-      _mode.set(this, {
+      _classPrivateFieldInitSpec(this, _mode, {
         writable: true,
         value: void 0
       });
@@ -7673,7 +7709,7 @@
     isError ? _classPrivateFieldGet(this, _ROOT$3).classList.add('error') : _classPrivateFieldGet(this, _ROOT$3).classList.remove('error');
   }
 
-  var LIMIT = 100;
+  var LIMIT = 10;
   var downloadUrls = new Map();
   var timeOutError$1 = 'ECONNABORTED';
   /**
@@ -7713,63 +7749,63 @@
     dataButton: ''
   }]]);
 
-  var _dxCondition = new WeakMap();
+  var _dxCondition = /*#__PURE__*/new WeakMap();
 
-  var _queryIds = new WeakMap();
+  var _queryIds = /*#__PURE__*/new WeakMap();
 
-  var _rows = new WeakMap();
+  var _rows = /*#__PURE__*/new WeakMap();
 
-  var _source$1 = new WeakMap();
+  var _source$1 = /*#__PURE__*/new WeakMap();
 
-  var _isLoading = new WeakMap();
+  var _isLoading = /*#__PURE__*/new WeakMap();
 
-  var _isCompleted = new WeakMap();
+  var _isCompleted = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$2 = new WeakMap();
+  var _ROOT$2 = /*#__PURE__*/new WeakMap();
 
-  var _STATUS = new WeakMap();
+  var _STATUS = /*#__PURE__*/new WeakMap();
 
-  var _progressIndicator$1 = new WeakMap();
+  var _progressIndicator$1 = /*#__PURE__*/new WeakMap();
 
-  var _CONTROLLER = new WeakMap();
+  var _CONTROLLER = /*#__PURE__*/new WeakMap();
 
-  var _BUTTON_LEFT = new WeakMap();
+  var _BUTTON_LEFT = /*#__PURE__*/new WeakMap();
 
-  var _BUTTON_RIGHT = new WeakMap();
+  var _BUTTON_RIGHT = /*#__PURE__*/new WeakMap();
 
-  var _deleteCondition = new WeakSet();
+  var _deleteCondition = /*#__PURE__*/new WeakSet();
 
-  var _makeDataButton = new WeakSet();
+  var _makeDataButton = /*#__PURE__*/new WeakSet();
 
-  var _updateDataButton = new WeakSet();
+  var _updateDataButton = /*#__PURE__*/new WeakSet();
 
-  var _dataButtonPauseOrResume = new WeakSet();
+  var _dataButtonPauseOrResume = /*#__PURE__*/new WeakSet();
 
-  var _dataButtonEdit = new WeakSet();
+  var _dataButtonEdit = /*#__PURE__*/new WeakSet();
 
-  var _dataButtonRetry = new WeakSet();
+  var _dataButtonRetry = /*#__PURE__*/new WeakSet();
 
-  var _dataButtonEvent = new WeakSet();
+  var _dataButtonEvent = /*#__PURE__*/new WeakSet();
 
-  var _setDownloadButtons = new WeakSet();
+  var _setDownloadButtons = /*#__PURE__*/new WeakSet();
 
-  var _setJsonUrl = new WeakSet();
+  var _setJsonUrl = /*#__PURE__*/new WeakSet();
 
-  var _setTsvUrl = new WeakSet();
+  var _setTsvUrl = /*#__PURE__*/new WeakSet();
 
-  var _handleError = new WeakSet();
+  var _handleError = /*#__PURE__*/new WeakSet();
 
-  var _displayError = new WeakSet();
+  var _displayError = /*#__PURE__*/new WeakSet();
 
-  var _queryIdsPayload = new WeakMap();
+  var _queryIdsPayload = /*#__PURE__*/new WeakMap();
 
-  var _getQueryIds = new WeakSet();
+  var _getQueryIds = /*#__PURE__*/new WeakSet();
 
-  var _propertiesPayload = new WeakMap();
+  var _propertiesPayload = /*#__PURE__*/new WeakMap();
 
-  var _getProperties = new WeakSet();
+  var _getProperties = /*#__PURE__*/new WeakSet();
 
-  var _complete$1 = new WeakSet();
+  var _complete$1 = /*#__PURE__*/new WeakSet();
 
   var TableData = /*#__PURE__*/function () {
     function TableData(dxCondition, elm) {
@@ -7777,102 +7813,102 @@
 
       _classCallCheck(this, TableData);
 
-      _complete$1.add(this);
+      _classPrivateMethodInitSpec(this, _complete$1);
 
-      _getProperties.add(this);
+      _classPrivateMethodInitSpec(this, _getProperties);
 
-      _propertiesPayload.set(this, {
+      _classPrivateFieldInitSpec(this, _propertiesPayload, {
         get: _get_propertiesPayload,
         set: void 0
       });
 
-      _getQueryIds.add(this);
+      _classPrivateMethodInitSpec(this, _getQueryIds);
 
-      _queryIdsPayload.set(this, {
+      _classPrivateFieldInitSpec(this, _queryIdsPayload, {
         get: _get_queryIdsPayload,
         set: void 0
       });
 
-      _displayError.add(this);
+      _classPrivateMethodInitSpec(this, _displayError);
 
-      _handleError.add(this);
+      _classPrivateMethodInitSpec(this, _handleError);
 
-      _setTsvUrl.add(this);
+      _classPrivateMethodInitSpec(this, _setTsvUrl);
 
-      _setJsonUrl.add(this);
+      _classPrivateMethodInitSpec(this, _setJsonUrl);
 
-      _setDownloadButtons.add(this);
+      _classPrivateMethodInitSpec(this, _setDownloadButtons);
 
-      _dataButtonEvent.add(this);
+      _classPrivateMethodInitSpec(this, _dataButtonEvent);
 
-      _dataButtonRetry.add(this);
+      _classPrivateMethodInitSpec(this, _dataButtonRetry);
 
-      _dataButtonEdit.add(this);
+      _classPrivateMethodInitSpec(this, _dataButtonEdit);
 
-      _dataButtonPauseOrResume.add(this);
+      _classPrivateMethodInitSpec(this, _dataButtonPauseOrResume);
 
-      _updateDataButton.add(this);
+      _classPrivateMethodInitSpec(this, _updateDataButton);
 
-      _makeDataButton.add(this);
+      _classPrivateMethodInitSpec(this, _makeDataButton);
 
-      _deleteCondition.add(this);
+      _classPrivateMethodInitSpec(this, _deleteCondition);
 
-      _dxCondition.set(this, {
+      _classPrivateFieldInitSpec(this, _dxCondition, {
         writable: true,
         value: void 0
       });
 
-      _queryIds.set(this, {
+      _classPrivateFieldInitSpec(this, _queryIds, {
         writable: true,
         value: void 0
       });
 
-      _rows.set(this, {
+      _classPrivateFieldInitSpec(this, _rows, {
         writable: true,
         value: void 0
       });
 
-      _source$1.set(this, {
+      _classPrivateFieldInitSpec(this, _source$1, {
         writable: true,
         value: void 0
       });
 
-      _isLoading.set(this, {
+      _classPrivateFieldInitSpec(this, _isLoading, {
         writable: true,
         value: void 0
       });
 
-      _isCompleted.set(this, {
+      _classPrivateFieldInitSpec(this, _isCompleted, {
         writable: true,
         value: void 0
       });
 
-      _ROOT$2.set(this, {
+      _classPrivateFieldInitSpec(this, _ROOT$2, {
         writable: true,
         value: void 0
       });
 
-      _STATUS.set(this, {
+      _classPrivateFieldInitSpec(this, _STATUS, {
         writable: true,
         value: void 0
       });
 
-      _progressIndicator$1.set(this, {
+      _classPrivateFieldInitSpec(this, _progressIndicator$1, {
         writable: true,
         value: void 0
       });
 
-      _CONTROLLER.set(this, {
+      _classPrivateFieldInitSpec(this, _CONTROLLER, {
         writable: true,
         value: void 0
       });
 
-      _BUTTON_LEFT.set(this, {
+      _classPrivateFieldInitSpec(this, _BUTTON_LEFT, {
         writable: true,
         value: void 0
       });
 
-      _BUTTON_RIGHT.set(this, {
+      _classPrivateFieldInitSpec(this, _BUTTON_RIGHT, {
         writable: true,
         value: void 0
       });
@@ -8317,40 +8353,40 @@
     if (withData) _classPrivateMethodGet(this, _setDownloadButtons, _setDownloadButtons2).call(this);
   }
 
-  var _tableData = new WeakMap();
+  var _tableData = /*#__PURE__*/new WeakMap();
 
-  var _ROOT$1 = new WeakMap();
+  var _ROOT$1 = /*#__PURE__*/new WeakMap();
 
-  var _CONDITIONS_CONTAINER = new WeakMap();
+  var _CONDITIONS_CONTAINER = /*#__PURE__*/new WeakMap();
 
-  var _setTableData = new WeakSet();
+  var _setTableData = /*#__PURE__*/new WeakSet();
 
-  var _selectTableData = new WeakSet();
+  var _selectTableData = /*#__PURE__*/new WeakSet();
 
-  var _deleteTableData = new WeakSet();
+  var _deleteTableData = /*#__PURE__*/new WeakSet();
 
   var ConditionsController = function ConditionsController(_elm) {
     var _this = this;
 
     _classCallCheck(this, ConditionsController);
 
-    _deleteTableData.add(this);
+    _classPrivateMethodInitSpec(this, _deleteTableData);
 
-    _selectTableData.add(this);
+    _classPrivateMethodInitSpec(this, _selectTableData);
 
-    _setTableData.add(this);
+    _classPrivateMethodInitSpec(this, _setTableData);
 
-    _tableData.set(this, {
+    _classPrivateFieldInitSpec(this, _tableData, {
       writable: true,
       value: void 0
     });
 
-    _ROOT$1.set(this, {
+    _classPrivateFieldInitSpec(this, _ROOT$1, {
       writable: true,
       value: void 0
     });
 
-    _CONDITIONS_CONTAINER.set(this, {
+    _classPrivateFieldInitSpec(this, _CONDITIONS_CONTAINER, {
       writable: true,
       value: void 0
     });
@@ -8437,6 +8473,8 @@
     _classPrivateFieldGet(this, _tableData).splice(index, 1);
   }
 
+  var lib = {};
+
   var WHITELIST = [
   	'ETIMEDOUT',
   	'ECONNRESET',
@@ -8498,17 +8536,20 @@
   	return true;
   };
 
-  var isNetworkError_1 = isNetworkError;
-  var isRetryableError_1 = isRetryableError;
-  var isSafeRequestError_1 = isSafeRequestError;
-  var isIdempotentRequestError_1 = isIdempotentRequestError;
-  var isNetworkOrIdempotentRequestError_1 = isNetworkOrIdempotentRequestError;
-  var exponentialDelay_1 = exponentialDelay;
-  var _default = axiosRetry$1;
+  Object.defineProperty(lib, "__esModule", {
+    value: true
+  });
+  lib.isNetworkError = isNetworkError;
+  lib.isRetryableError = isRetryableError;
+  lib.isSafeRequestError = isSafeRequestError;
+  lib.isIdempotentRequestError = isIdempotentRequestError;
+  lib.isNetworkOrIdempotentRequestError = isNetworkOrIdempotentRequestError;
+  lib.exponentialDelay = exponentialDelay;
+  lib.default = axiosRetry$1;
 
+  var _isRetryAllowed = isRetryAllowed;
 
-
-  var _isRetryAllowed2 = _interopRequireDefault(isRetryAllowed);
+  var _isRetryAllowed2 = _interopRequireDefault(_isRetryAllowed);
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8744,103 +8785,92 @@
   axiosRetry$1.exponentialDelay = exponentialDelay;
   axiosRetry$1.isRetryableError = isRetryableError;
 
-
-  var lib = /*#__PURE__*/Object.defineProperty({
-  	isNetworkError: isNetworkError_1,
-  	isRetryableError: isRetryableError_1,
-  	isSafeRequestError: isSafeRequestError_1,
-  	isIdempotentRequestError: isIdempotentRequestError_1,
-  	isNetworkOrIdempotentRequestError: isNetworkOrIdempotentRequestError_1,
-  	exponentialDelay: exponentialDelay_1,
-  	default: _default
-  }, '__esModule', {value: true});
-
   var axiosRetry = lib.default;
 
   var timeOutError = 'ECONNABORTED';
 
-  var _ROOT = new WeakMap();
+  var _ROOT = /*#__PURE__*/new WeakMap();
 
-  var _BODY = new WeakMap();
+  var _BODY = /*#__PURE__*/new WeakMap();
 
-  var _USER_IDS = new WeakMap();
+  var _USER_IDS = /*#__PURE__*/new WeakMap();
 
-  var _progressIndicator = new WeakMap();
+  var _progressIndicator = /*#__PURE__*/new WeakMap();
 
-  var _source = new WeakMap();
+  var _source = /*#__PURE__*/new WeakMap();
 
-  var _offset = new WeakMap();
+  var _offset = /*#__PURE__*/new WeakMap();
 
-  var _errorCount = new WeakMap();
+  var _errorCount = /*#__PURE__*/new WeakMap();
 
-  var _fetch = new WeakSet();
+  var _fetch = /*#__PURE__*/new WeakSet();
 
-  var _prepareProgressIndicator = new WeakSet();
+  var _prepareProgressIndicator = /*#__PURE__*/new WeakSet();
 
-  var _getAttribute = new WeakSet();
+  var _getAttribute = /*#__PURE__*/new WeakSet();
 
-  var _handleProp = new WeakSet();
+  var _handleProp = /*#__PURE__*/new WeakSet();
 
-  var _complete = new WeakSet();
+  var _complete = /*#__PURE__*/new WeakSet();
 
-  var _resetCounters = new WeakSet();
+  var _resetCounters = /*#__PURE__*/new WeakSet();
 
-  var _reset = new WeakSet();
+  var _reset = /*#__PURE__*/new WeakSet();
 
-  var _clear = new WeakSet();
+  var _clear = /*#__PURE__*/new WeakSet();
 
   var UploadUserIDsView = function UploadUserIDsView(elm) {
     var _this = this;
 
     _classCallCheck(this, UploadUserIDsView);
 
-    _clear.add(this);
+    _classPrivateMethodInitSpec(this, _clear);
 
-    _reset.add(this);
+    _classPrivateMethodInitSpec(this, _reset);
 
-    _resetCounters.add(this);
+    _classPrivateMethodInitSpec(this, _resetCounters);
 
-    _complete.add(this);
+    _classPrivateMethodInitSpec(this, _complete);
 
-    _handleProp.add(this);
+    _classPrivateMethodInitSpec(this, _handleProp);
 
-    _getAttribute.add(this);
+    _classPrivateMethodInitSpec(this, _getAttribute);
 
-    _prepareProgressIndicator.add(this);
+    _classPrivateMethodInitSpec(this, _prepareProgressIndicator);
 
-    _fetch.add(this);
+    _classPrivateMethodInitSpec(this, _fetch);
 
-    _ROOT.set(this, {
+    _classPrivateFieldInitSpec(this, _ROOT, {
       writable: true,
       value: void 0
     });
 
-    _BODY.set(this, {
+    _classPrivateFieldInitSpec(this, _BODY, {
       writable: true,
       value: void 0
     });
 
-    _USER_IDS.set(this, {
+    _classPrivateFieldInitSpec(this, _USER_IDS, {
       writable: true,
       value: void 0
     });
 
-    _progressIndicator.set(this, {
+    _classPrivateFieldInitSpec(this, _progressIndicator, {
       writable: true,
       value: void 0
     });
 
-    _source.set(this, {
+    _classPrivateFieldInitSpec(this, _source, {
       writable: true,
       value: void 0
     });
 
-    _offset.set(this, {
+    _classPrivateFieldInitSpec(this, _offset, {
       writable: true,
       value: void 0
     });
 
-    _errorCount.set(this, {
+    _classPrivateFieldInitSpec(this, _errorCount, {
       writable: true,
       value: void 0
     });
@@ -8963,7 +8993,6 @@
       });
       DefaultEventEmitter$1.dispatchEvent(customEvent);
     }).catch(function (error) {
-      var _this$errorCount;
 
       if (axios.isCancel && error.message === 'user cancel') return;
       var customEvent = new CustomEvent(toggleErrorUserValues, {
@@ -8977,7 +9006,7 @@
 
       _classPrivateMethodGet(_this3, _handleProp, _handleProp2).call(_this3);
 
-      _classPrivateFieldSet(_this3, _errorCount, (_this$errorCount = +_classPrivateFieldGet(_this3, _errorCount)) + 1), _this$errorCount;
+      _classPrivateFieldSet(_this3, _errorCount, (+_classPrivateFieldGet(_this3, _errorCount)) + 1);
     }).then(function () {
       if (_classPrivateFieldGet(_this3, _offset) >= Records$1.attributes.length) {
         _classPrivateMethodGet(_this3, _complete, _complete2).call(_this3, _classPrivateFieldGet(_this3, _errorCount) > 0);
@@ -9040,70 +9069,70 @@
     _classPrivateMethodGet(this, _complete, _complete2).call(this);
   }
 
-  var _viewModes = new WeakMap();
+  var _viewModes = /*#__PURE__*/new WeakMap();
 
-  var _backend = new WeakMap();
+  var _backend = /*#__PURE__*/new WeakMap();
 
-  var _colorWhite = new WeakMap();
+  var _colorWhite = /*#__PURE__*/new WeakMap();
 
-  var _colorLightGray = new WeakMap();
+  var _colorLightGray = /*#__PURE__*/new WeakMap();
 
-  var _colorSilver = new WeakMap();
+  var _colorSilver = /*#__PURE__*/new WeakMap();
 
-  var _colorGray = new WeakMap();
+  var _colorGray = /*#__PURE__*/new WeakMap();
 
-  var _colorDarkGray = new WeakMap();
+  var _colorDarkGray = /*#__PURE__*/new WeakMap();
 
-  var _colorLampBlack = new WeakMap();
+  var _colorLampBlack = /*#__PURE__*/new WeakMap();
 
-  var _makeCategoryViews = new WeakSet();
+  var _makeCategoryViews = /*#__PURE__*/new WeakSet();
 
-  var _defineAllTracksCollapseButton = new WeakSet();
+  var _defineAllTracksCollapseButton = /*#__PURE__*/new WeakSet();
 
   var App = /*#__PURE__*/function () {
     function App() {
       _classCallCheck(this, App);
 
-      _defineAllTracksCollapseButton.add(this);
+      _classPrivateMethodInitSpec(this, _defineAllTracksCollapseButton);
 
-      _makeCategoryViews.add(this);
+      _classPrivateMethodInitSpec(this, _makeCategoryViews);
 
-      _viewModes.set(this, {
+      _classPrivateFieldInitSpec(this, _viewModes, {
         writable: true,
         value: void 0
       });
 
-      _backend.set(this, {
+      _classPrivateFieldInitSpec(this, _backend, {
         writable: true,
         value: void 0
       });
 
-      _colorWhite.set(this, {
+      _classPrivateFieldInitSpec(this, _colorWhite, {
         writable: true,
         value: void 0
       });
 
-      _colorLightGray.set(this, {
+      _classPrivateFieldInitSpec(this, _colorLightGray, {
         writable: true,
         value: void 0
       });
 
-      _colorSilver.set(this, {
+      _classPrivateFieldInitSpec(this, _colorSilver, {
         writable: true,
         value: void 0
       });
 
-      _colorGray.set(this, {
+      _classPrivateFieldInitSpec(this, _colorGray, {
         writable: true,
         value: void 0
       });
 
-      _colorDarkGray.set(this, {
+      _classPrivateFieldInitSpec(this, _colorDarkGray, {
         writable: true,
         value: void 0
       });
 
-      _colorLampBlack.set(this, {
+      _classPrivateFieldInitSpec(this, _colorLampBlack, {
         writable: true,
         value: void 0
       });
@@ -9281,5 +9310,5 @@
     App$1.ready(api);
   });
 
-}());
+})();
 //# sourceMappingURL=main.js.map

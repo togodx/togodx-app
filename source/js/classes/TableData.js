@@ -5,7 +5,7 @@ import Records from './Records';
 import * as event from '../events';
 import ProgressIndicator from './ProgressIndicator';
 
-const LIMIT = 100;
+const LIMIT = 10;
 const downloadUrls = new Map();
 const timeOutError = 'ECONNABORTED';
 
