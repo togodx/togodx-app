@@ -185,7 +185,7 @@ class ConditionBuilder {
     // evaluate if search is possible
     const established 
       = this.#togoKey
-      && (this.#keyConditions.length > 0 || this.#valuesConditions.length > 0);
+      && (this.#valuesConditions.length > 0);
     const customEvent = new CustomEvent(event.mutateEstablishConditions, {detail: established});
     DefaultEventEmitter.dispatchEvent(customEvent);
 

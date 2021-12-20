@@ -3808,7 +3808,7 @@
     var dontLeaveInHistory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
     if (!_classPrivateFieldGet(this, _isRestoredConditinoFromURLParameters)) return; // evaluate if search is possible
 
-    var established = _classPrivateFieldGet(this, _togoKey) && (_classPrivateFieldGet(this, _keyConditions).length > 0 || _classPrivateFieldGet(this, _valuesConditions).length > 0);
+    var established = _classPrivateFieldGet(this, _togoKey) && _classPrivateFieldGet(this, _valuesConditions).length > 0;
     var customEvent = new CustomEvent(mutateEstablishConditions, {
       detail: established
     });
