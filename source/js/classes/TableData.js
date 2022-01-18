@@ -4,6 +4,7 @@ import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
 import ProgressIndicator from './ProgressIndicator';
+import axios from 'axios';
 
 const LIMIT = 10;
 const downloadUrls = new Map();

@@ -4,6 +4,7 @@ import Records from './Records';
 import * as event from '../events';
 import * as queryTemplates from '../functions/queryTemplates';
 import ProgressIndicator from './ProgressIndicator';
+import axios from 'axios';
 import axiosRetry from 'axios-retry';
 
 const timeOutError = 'ECONNABORTED';
