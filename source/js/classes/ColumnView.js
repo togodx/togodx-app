@@ -6,6 +6,7 @@ import App from "./App";
 import Records from "./Records";
 import * as event from '../events';
 import * as queryTemplates from '../functions/queryTemplates';
+import axios from "axios";
 
 export default class ColumnView {
 
@@ -154,8 +155,7 @@ export default class ColumnView {
     if (document.body.classList.contains('-showuserids') && ConditionBuilder.userIds) {
       this.#getUserValues(
         queryTemplates.dataFromUserIds(
-          this.#selector.api,
-          this.#selector.dataset,
+          this.#selector.attributeId,
           this.#parentCategoryId
           )
         )

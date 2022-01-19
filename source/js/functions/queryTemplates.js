@@ -1,13 +1,13 @@
 import App from '../classes/App';
 import ConditionBuilder from '../classes/ConditionBuilder';
 
-export function dataFromUserIds(attributeId, categoryIds = '') {
+export function dataFromUserIds(attributeId, node = '') {
   return `${
     App.locate
   }?attribute=${
     attributeId
-  }&categoryIds=${
-    categoryIds
+  }&node=${
+    node
   }&togokey=${
     ConditionBuilder.currentTogoKey
   }&queries=${
