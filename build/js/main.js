@@ -4550,6 +4550,8 @@
         value: void 0
       });
 
+      console.log(arguments);
+
       _classPrivateFieldSet(this, _label, label);
 
       _classPrivateFieldSet(this, _count, count);
@@ -10773,9 +10775,28 @@
     var _this3 = this;
 
     var id = _ref.id;
-    axios.get(dataFromUserIds(id), {
-      cancelToken: _classPrivateFieldGet(this, _source).token
-    }).then(function (response) {
+    console.log(ConditionBuilder$1.userIds);
+    axios.post(App$1.locate, {
+      attribute: id,
+      node: '',
+      dataset: ConditionBuilder$1.currentTogoKey,
+      queries: JSON.stringify(ConditionBuilder$1.userIds.split(','))
+    }) // .post(`${App.locate}?attribute=${
+    //     id
+    //   }&node=${
+    //     ''
+    //   }&dataset=${
+    //     ConditionBuilder.currentTogoKey
+    //   }&queries=${
+    //     JSON.stringify(ConditionBuilder.userIds.split(','))
+    //   }`,
+    //   {
+    //     cancelToken: this.#source.token
+    //   })
+    // .get(queryTemplates.dataFromUserIds(id), {
+    //   cancelToken: this.#source.token,
+    // })
+    .then(function (response) {
       _classPrivateFieldGet(_this3, _BODY).classList.add('-showuserids');
 
       _classPrivateMethodGet(_this3, _handleProp, _handleProp2).call(_this3); // dispatch event

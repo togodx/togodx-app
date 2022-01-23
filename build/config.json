@@ -1,5 +1,5 @@
 {
-  "TEMPLATES": "https://raw.githubusercontent.com/togodx/togodx-config-human/develop/config/templates.json",
-  "BACKEND": "https://raw.githubusercontent.com/togodx/togodx-config-human/develop/config/backend.json",
-  "ATTRIBUTES": "https://raw.githubusercontent.com/togodx/togodx-config-human/develop/config/attributes.json"
+  "TEMPLATES": "https://raw.githubusercontent.com/togodx/togodx-config-human/kohan/config/templates.json",
+  "BACKEND": "https://raw.githubusercontent.com/togodx/togodx-config-human/kohan/config/backend.kohan.json",
+  "ATTRIBUTES": "https://raw.githubusercontent.com/togodx/togodx-config-human/kohan/config/attributes.kohan.json"
 }

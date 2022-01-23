@@ -1,6 +1,7 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
+import App from './App';
 import * as event from '../events';
 import * as queryTemplates from '../functions/queryTemplates';
 import ProgressIndicator from './ProgressIndicator';
@@ -114,10 +115,29 @@ export default class UploadUserIDsView {
   }
 
   #getAttribute({id}) {
+    console.log(ConditionBuilder.userIds)
     axios
-      .get(queryTemplates.dataFromUserIds(id), {
-        cancelToken: this.#source.token,
+      .post(App.locate, {
+        attribute: id,
+        node: '',
+        dataset: ConditionBuilder.currentTogoKey,
+        queries: JSON.stringify(ConditionBuilder.userIds.split(','))
       })
+      // .post(`${App.locate}?attribute=${
+      //     id
+      //   }&node=${
+      //     ''
+      //   }&dataset=${
+      //     ConditionBuilder.currentTogoKey
+      //   }&queries=${
+      //     JSON.stringify(ConditionBuilder.userIds.split(','))
+      //   }`,
+      //   {
+      //     cancelToken: this.#source.token
+      //   })
+      // .get(queryTemplates.dataFromUserIds(id), {
+      //   cancelToken: this.#source.token,
+      // })
       .then(response => {
         this.#BODY.classList.add('-showuserids');
         this.#handleProp();
