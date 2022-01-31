@@ -19,7 +19,7 @@ export default class Attribute {
       if (values.length > 0) {
         resolve(values);
       } else {
-        fetch(`${this.api}${parentCategoryId ? `?categoryIds=${parentCategoryId}` : ''}`)
+        fetch(`${this.api}${parentCategoryId ? `?node=${parentCategoryId}` : ''}`)
         .then(responce => responce.json())
         .then(values => {
 

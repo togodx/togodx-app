@@ -2769,7 +2769,7 @@
           if (values.length > 0) {
             resolve(values);
           } else {
-            fetch("".concat(_this.api).concat(parentCategoryId ? "?categoryIds=".concat(parentCategoryId) : '')).then(function (responce) {
+            fetch("".concat(_this.api).concat(parentCategoryId ? "?node=".concat(parentCategoryId) : '')).then(function (responce) {
               return responce.json();
             }).then(function (values) {
               var _classPrivateFieldGet2;
