@@ -56,7 +56,6 @@ class ConditionBuilder {
   }
 
   addAttributeValue(attributeId, categoryId, ancestors = [], isFinal = true) {
-    // console.log(attributeId, categoryId, ancestors)
     // find value of same property
     const sameValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.attributeId === attributeId);
     // store

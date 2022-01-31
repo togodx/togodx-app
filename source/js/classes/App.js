@@ -74,7 +74,6 @@ class App {
       })
       .then(([templates, backend, attributes]) => {
         Records.setAttributes(attributes);
-        ConditionBuilder.init();
 
         // define primary keys
         const customEvent = new CustomEvent(event.defineTogoKey, {detail: {datasets: attributes.datasets}});
@@ -88,6 +87,9 @@ class App {
 
         this.#makeCategoryViews();
         this.#defineAllTracksCollapseButton();
+
+        ConditionBuilder.init();
+
       });
   }
 

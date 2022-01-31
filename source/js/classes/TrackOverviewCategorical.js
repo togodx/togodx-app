@@ -27,11 +27,12 @@ export default class TrackOverviewCategorical {
     // TODO: ヒストグラムは別処理
     const sum = values.reduce((acc, value) => acc + value.count, 0);
     const width = 100 / values.length;
+    const selectedValues = ConditionBuilder.getSelectedCategoryIds(attribute.id).values;
     elm.innerHTML = this.#values.map((value, index) => {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / sum * 100;
       value.baseColor = util.colorTintByHue(category.color, 360 * index / values.length);
-      const selectedClass = '';
+      const selectedClass = selectedValues.indexOf(value.categoryId) !== -1 ? ' -selected' : '';
       return `
         <li class="track-value-view _catexxxgory-background-color${selectedClass}" style="width: ${width}%;" data-category-id="${value.categoryId}">
           <div class="labels">

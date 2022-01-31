@@ -3605,7 +3605,6 @@
       value: function addAttributeValue(attributeId, categoryId) {
         var isFinal = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 
-        // console.log(attributeId, categoryId, ancestors)
         // find value of same property
         var sameValuesCondition = _classPrivateFieldGet(this, _valuesConditions).find(function (valuesCondition) {
           return valuesCondition.attributeId === attributeId;
@@ -7826,11 +7825,12 @@
 
     var _width = 100 / values.length;
 
+    var selectedValues = ConditionBuilder$1.getSelectedCategoryIds(attribute.id).values;
     elm.innerHTML = _classPrivateFieldGet(this, _values).map(function (value, index) {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / _sum * 100;
       value.baseColor = colorTintByHue(category.color, 360 * index / values.length);
-      var selectedClass = '';
+      var selectedClass = selectedValues.indexOf(value.categoryId) !== -1 ? ' -selected' : '';
       return "\n        <li class=\"track-value-view _catexxxgory-background-color".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\">\n            <span class=\"material-icons\">location_on</span>\n          </div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .track-value-view').forEach(function (elm, index) {
@@ -11049,8 +11049,7 @@
               backend = _ref2[1],
               attributes = _ref2[2];
 
-          Records$1.setAttributes(attributes);
-          ConditionBuilder$1.init(); // define primary keys
+          Records$1.setAttributes(attributes); // define primary keys
 
           var customEvent = new CustomEvent(defineTogoKey, {
             detail: {
@@ -11066,6 +11065,8 @@
           _classPrivateMethodGet(_this, _makeCategoryViews, _makeCategoryViews2).call(_this);
 
           _classPrivateMethodGet(_this, _defineAllTracksCollapseButton, _defineAllTracksCollapseButton2).call(_this);
+
+          ConditionBuilder$1.init();
         });
       } // private methods
 
