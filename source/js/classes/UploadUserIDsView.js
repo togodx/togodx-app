@@ -122,7 +122,7 @@ export default class UploadUserIDsView {
           attribute: id,
           node: '',
           dataset: ConditionBuilder.currentTogoKey,
-          queries: ConditionBuilder.userIds.split(',')
+          queries: ConditionBuilder.userIds
         }),
         {
           cancelToken: this.#source.token,

@@ -172,7 +172,7 @@ class ConditionBuilder {
   }
 
   get userIds() {
-    return this.#userIds === '' ? undefined : this.#userIds;
+    return !this.#userIds ? [] : this.#userIds.split(',');
   }
 
 

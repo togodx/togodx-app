@@ -136,7 +136,7 @@ export default class ColumnView {
         attribute,
         node,
         dataset: ConditionBuilder.currentTogoKey,
-        queries: ConditionBuilder.userIds.split(',')
+        queries: ConditionBuilder.userIds
       });
       const values = this.#cachedUserValues.get(parameter);
       if (values) {
@@ -171,7 +171,7 @@ export default class ColumnView {
     this.#update();
 
     // user IDs
-    if (document.body.classList.contains('-showuserids') && ConditionBuilder.userIds) {
+    if (document.body.classList.contains('-showuserids') && ConditionBuilder.userIds.length > 0) {
       this.#getUserValues(this.#selector.attributeId, this.#parentCategoryId)
         .then(values => {
           console.log(values)

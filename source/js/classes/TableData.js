@@ -3,6 +3,7 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
+import {getApiParameter} from '../functions/queryTemplates';
 import ProgressIndicator from './ProgressIndicator';
 import axios from 'axios';
 
@@ -411,26 +412,19 @@ export default class TableData {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  get #queryIdsPayload() {
-    return `togokey=${
-      this.#dxCondition.togoKey
-    }&filters=${
-      this.#dxCondition.queryFilters
-    }${
-      ConditionBuilder.userIds?.length > 0
-        ? `&queries=${encodeURIComponent(
-            JSON.stringify(ConditionBuilder.userIds.split(','))
-          )}`
-        : ''
-    }`;
-  }
-
   #getQueryIds() {
     axios
-      .post(App.aggregate, this.#queryIdsPayload, {
-        cancelToken: this.#source.token,
-      })
+      .post(
+        App.getApiUrl('aggregate'),
+        getApiParameter('aggregate', {
+          dataset: this.#dxCondition.togoKey,
+          filters: this.#dxCondition.queryFilters,
+          queries: ConditionBuilder.userIds
+        }),
+        {cancelToken: this.#source.token}
+      )
       .then(response => {
+
         this.#queryIds = response.data;
 
         if (this.#queryIds.length <= 0) {
@@ -448,25 +442,20 @@ export default class TableData {
       });
   }
 
-  get #propertiesPayload() {
-    return `${App.dataframe}?togokey=${
-      this.#dxCondition.togoKey
-    }&filters=${
-      this.#dxCondition.queryFilters
-    }&annotations=${
-      this.#dxCondition.queryAnnotations
-    }&queries=${
-      encodeURIComponent(
-        JSON.stringify(this.#queryIds.slice(this.offset, this.offset + LIMIT))
-      )
-    }`;
-  }
-
   #getProperties() {
     this.#isLoading = true;
     const startTime = Date.now();
     axios
-      .get(this.#propertiesPayload, {cancelToken: this.#source.token})
+      .post(
+        App.getApiUrl('dataframe'),
+        getApiParameter('dataframe', {
+          dataset: this.#dxCondition.togoKey,
+          filters: this.#dxCondition.queryFilters,
+          annotations: this.#dxCondition.queryAnnotations,
+          queries: this.#queryIds.slice(this.offset, this.offset + LIMIT)
+        }),
+        {cancelToken: this.#source.token}
+      )
       .then(response => {
         const offset = this.offset;
         this.#rows.push(...response.data);
