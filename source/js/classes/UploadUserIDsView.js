@@ -3,7 +3,7 @@ import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import App from './App';
 import * as event from '../events';
-import * as queryTemplates from '../functions/queryTemplates';
+import {getApiParameter} from '../functions/queryTemplates';
 import ProgressIndicator from './ProgressIndicator';
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
@@ -115,38 +115,39 @@ export default class UploadUserIDsView {
   }
 
   #getAttribute({id}) {
-    console.log(ConditionBuilder.userIds)
     axios
-      .post(App.locate, {
-        attribute: id,
-        node: '',
-        dataset: ConditionBuilder.currentTogoKey,
-        queries: JSON.stringify(ConditionBuilder.userIds.split(','))
-      })
-      // .post(`${App.locate}?attribute=${
-      //     id
-      //   }&node=${
-      //     ''
-      //   }&dataset=${
-      //     ConditionBuilder.currentTogoKey
-      //   }&queries=${
-      //     JSON.stringify(ConditionBuilder.userIds.split(','))
-      //   }`,
-      //   {
-      //     cancelToken: this.#source.token
-      //   })
-      // .get(queryTemplates.dataFromUserIds(id), {
-      //   cancelToken: this.#source.token,
-      // })
+      .post(
+        App.getApiUrl('locate'),
+        getApiParameter('locate', {
+          attribute: id,
+          node: '',
+          dataset: ConditionBuilder.currentTogoKey,
+          queries: ConditionBuilder.userIds.split(',')
+        }),
+        {
+          cancelToken: this.#source.token,
+        }
+      )
       .then(response => {
         this.#BODY.classList.add('-showuserids');
         this.#handleProp();
+
+        const __temp__data = response.data.map(datum => {
+          return {
+            categoryId: datum.node,
+            count: datum.count,
+            hit_count: datum.mapped,
+            label: datum.label,
+            pValue: datum.pvalue,
+          }
+        });
 
         // dispatch event
         const customEvent = new CustomEvent(event.setUserValues, {
           detail: {
             attributeId: id,
-            values: response.data,
+            // values: values,
+            values: __temp__data,
           },
         });
         DefaultEventEmitter.dispatchEvent(customEvent);

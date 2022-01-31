@@ -22,11 +22,24 @@ export default class Attribute {
         fetch(`${this.api}${parentCategoryId ? `?categoryIds=${parentCategoryId}` : ''}`)
         .then(responce => responce.json())
         .then(values => {
+
+          const __temp__values = values.map(value => {
+            return {
+              categoryId: value.node,
+              count: value.count,
+              hasChild: !value.leaf,
+              label: value.label
+            };
+          });
+          
           // set parent category id
-          if (parentCategoryId) values.forEach(value => value.parentCategoryId = parentCategoryId);
+          // if (parentCategoryId) values.forEach(value => value.parentCategoryId = parentCategoryId);
+          if (parentCategoryId) __temp__values.forEach(value => value.parentCategoryId = parentCategoryId);
           // set values
-          this.#values.push(...values);
-          resolve(values);
+          // this.#values.push(...values);
+          this.#values.push(...__temp__values);
+          // resolve(values);
+          resolve(__temp__values);
         })
         .catch(error => {
           console.error(this, error);

@@ -2774,14 +2774,26 @@
             }).then(function (values) {
               var _classPrivateFieldGet2;
 
-              // set parent category id
-              if (parentCategoryId) values.forEach(function (value) {
+              var __temp__values = values.map(function (value) {
+                return {
+                  categoryId: value.node,
+                  count: value.count,
+                  hasChild: !value.leaf,
+                  label: value.label
+                };
+              }); // set parent category id
+              // if (parentCategoryId) values.forEach(value => value.parentCategoryId = parentCategoryId);
+
+
+              if (parentCategoryId) __temp__values.forEach(function (value) {
                 return value.parentCategoryId = parentCategoryId;
               }); // set values
+              // this.#values.push(...values);
 
-              (_classPrivateFieldGet2 = _classPrivateFieldGet(_this, _values$1)).push.apply(_classPrivateFieldGet2, _toConsumableArray(values));
+              (_classPrivateFieldGet2 = _classPrivateFieldGet(_this, _values$1)).push.apply(_classPrivateFieldGet2, _toConsumableArray(__temp__values)); // resolve(values);
 
-              resolve(values);
+
+              resolve(__temp__values);
             }).catch(function (error) {
               console.error(_this, error);
               reject(error);
@@ -4550,8 +4562,6 @@
         value: void 0
       });
 
-      console.log(arguments);
-
       _classPrivateFieldSet(this, _label, label);
 
       _classPrivateFieldSet(this, _count, count);
@@ -4774,11 +4784,39 @@
 
   var ColumnSelectorSortManager$1 = new ColumnSelectorSortManager();
 
-  function dataFromUserIds(attributeId) {
-    var _ConditionBuilder$use;
+  var noprocessing = function noprocessing(parameter) {
+    return parameter;
+  };
 
-    var node = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-    return "".concat(App$1.locate, "?attribute=").concat(attributeId, "&node=").concat(node, "&togokey=").concat(ConditionBuilder$1.currentTogoKey, "&queries=").concat((_ConditionBuilder$use = ConditionBuilder$1.userIds) !== null && _ConditionBuilder$use !== void 0 ? _ConditionBuilder$use : '');
+  var stringify = function stringify(parameter) {
+    return JSON.stringify(parameter);
+  };
+
+  var QUERY_TEMPRATES = {
+    locate: {
+      attribute: noprocessing,
+      ndoe: noprocessing,
+      dataset: noprocessing,
+      queries: stringify
+    },
+    aggregate: {
+      dataset: noprocessing,
+      filters: stringify,
+      queries: stringify
+    },
+    dataframe: {
+      dataset: noprocessing,
+      filters: stringify,
+      annotations: stringify,
+      queries: stringify
+    }
+  };
+  function getApiParameter(api, parameters) {
+    var template = QUERY_TEMPRATES[api];
+    var map = Object.keys(template).map(function (key) {
+      return [key, template[key](parameters[key])];
+    });
+    return Object.fromEntries(map);
   }
 
   var axios$2 = {exports: {}};
@@ -6717,7 +6755,7 @@
 
 
         if (document.body.classList.contains('-showuserids') && ConditionBuilder$1.userIds) {
-          _classPrivateMethodGet(this, _getUserValues, _getUserValues2).call(this, dataFromUserIds(_classPrivateFieldGet(this, _selector).attributeId, _classPrivateFieldGet(this, _parentCategoryId))).then(function (values) {
+          _classPrivateMethodGet(this, _getUserValues, _getUserValues2).call(this, _classPrivateFieldGet(this, _selector).attributeId, _classPrivateFieldGet(this, _parentCategoryId)).then(function (values) {
             console.log(values);
 
             _classPrivateFieldGet(_this2, _columnItemViews).forEach(function (columnItemView) {
@@ -6898,19 +6936,37 @@
     });
   }
 
-  function _getUserValues2(query) {
+  function _getUserValues2(attribute, node) {
     var _this5 = this;
 
     return new Promise(function (resolve, reject) {
-      var values = _classPrivateFieldGet(_this5, _cachedUserValues).get(query);
+      var parameter = getApiParameter('locate', {
+        attribute: attribute,
+        node: node,
+        dataset: ConditionBuilder$1.currentTogoKey,
+        queries: ConditionBuilder$1.userIds.split(',')
+      });
+
+      var values = _classPrivateFieldGet(_this5, _cachedUserValues).get(parameter);
 
       if (values) {
         resolve(values);
       } else {
-        axios.get(query).then(function (response) {
-          _classPrivateFieldGet(_this5, _cachedUserValues).set(query, response.data);
+        axios.post(App$1.getApiUrl('locate'), parameter) // .get(parameter)
+        .then(function (response) {
+          var __temp__data = response.data.map(function (datum) {
+            return {
+              categoryId: datum.node,
+              count: datum.count,
+              hit_count: datum.mapped,
+              label: datum.label,
+              pValue: datum.pvalue
+            };
+          });
 
-          resolve(response.data);
+          _classPrivateFieldGet(_this5, _cachedUserValues).set(parameter, __temp__data);
+
+          resolve(__temp__data);
         });
       }
     });
@@ -10775,37 +10831,34 @@
     var _this3 = this;
 
     var id = _ref.id;
-    console.log(ConditionBuilder$1.userIds);
-    axios.post(App$1.locate, {
+    axios.post(App$1.getApiUrl('locate'), getApiParameter('locate', {
       attribute: id,
       node: '',
       dataset: ConditionBuilder$1.currentTogoKey,
-      queries: JSON.stringify(ConditionBuilder$1.userIds.split(','))
-    }) // .post(`${App.locate}?attribute=${
-    //     id
-    //   }&node=${
-    //     ''
-    //   }&dataset=${
-    //     ConditionBuilder.currentTogoKey
-    //   }&queries=${
-    //     JSON.stringify(ConditionBuilder.userIds.split(','))
-    //   }`,
-    //   {
-    //     cancelToken: this.#source.token
-    //   })
-    // .get(queryTemplates.dataFromUserIds(id), {
-    //   cancelToken: this.#source.token,
-    // })
-    .then(function (response) {
+      queries: ConditionBuilder$1.userIds.split(',')
+    }), {
+      cancelToken: _classPrivateFieldGet(this, _source).token
+    }).then(function (response) {
       _classPrivateFieldGet(_this3, _BODY).classList.add('-showuserids');
 
-      _classPrivateMethodGet(_this3, _handleProp, _handleProp2).call(_this3); // dispatch event
+      _classPrivateMethodGet(_this3, _handleProp, _handleProp2).call(_this3);
+
+      var __temp__data = response.data.map(function (datum) {
+        return {
+          categoryId: datum.node,
+          count: datum.count,
+          hit_count: datum.mapped,
+          label: datum.label,
+          pValue: datum.pvalue
+        };
+      }); // dispatch event
 
 
       var customEvent = new CustomEvent(setUserValues, {
         detail: {
           attributeId: id,
-          values: response.data
+          // values: values,
+          values: __temp__data
         }
       });
       DefaultEventEmitter$1.dispatchEvent(customEvent);
@@ -11023,8 +11076,6 @@
 
           StanzaManager$1.init(templates); // aggregate
 
-          console.log(backend);
-
           _classPrivateFieldSet(_this, _backend, Object.freeze(backend));
 
           _classPrivateMethodGet(_this, _makeCategoryViews, _makeCategoryViews2).call(_this);
@@ -11034,27 +11085,32 @@
       } // private methods
 
     }, {
+      key: "getApiUrl",
+      value: // public methods
+
+      /**
+       * 
+       * @param {String} api 'aggregate' or 'dataframe' or 'locate'
+       * @returns 
+       */
+      function getApiUrl(api) {
+        return _classPrivateFieldGet(this, _backend)[api].url;
+      } // accessor
+
+    }, {
       key: "viewModes",
-      get: // public methods
-      // accessor
-      function get() {
+      get: function get() {
         return _classPrivateFieldGet(this, _viewModes);
-      }
-    }, {
-      key: "aggregate",
-      get: function get() {
-        return _classPrivateFieldGet(this, _backend).aggregate.url;
-      }
-    }, {
-      key: "dataframe",
-      get: function get() {
-        return _classPrivateFieldGet(this, _backend).dataframe.url;
-      }
-    }, {
-      key: "locate",
-      get: function get() {
-        return _classPrivateFieldGet(this, _backend).locate.url;
-      }
+      } // get aggregate() {
+      //   return this.#backend.aggregate.url;
+      // }
+      // get dataframe() {
+      //   return this.#backend.dataframe.url;
+      // }
+      // get locate() {
+      //   return this.#backend.locate.url;
+      // }
+
     }, {
       key: "colorWhite",
       get: function get() {

@@ -119,19 +119,28 @@ class App {
 
   // public methods
 
+  /**
+   * 
+   * @param {String} api 'aggregate' or 'dataframe' or 'locate'
+   * @returns 
+   */
+  getApiUrl(api) {
+    return this.#backend[api].url;
+  }
+
   // accessor
   get viewModes() {
     return this.#viewModes;
   }
-  get aggregate() {
-    return this.#backend.aggregate.url;
-  }
-  get dataframe() {
-    return this.#backend.dataframe.url;
-  }
-  get locate() {
-    return this.#backend.locate.url;
-  }
+  // get aggregate() {
+  //   return this.#backend.aggregate.url;
+  // }
+  // get dataframe() {
+  //   return this.#backend.dataframe.url;
+  // }
+  // get locate() {
+  //   return this.#backend.locate.url;
+  // }
   get colorWhite() {
     return this.#colorWhite;
   }
