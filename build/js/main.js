@@ -3830,15 +3830,11 @@
       };
 
       if (key.id) {
-        var node = {
-          node: key.id.categoryId
-        };
+        zzzKey.node = key.id.categoryId;
 
         if (key.id.ancestors) {
-          node.ancestors = key.id.ancestors;
+          zzzKey.path = _toConsumableArray(key.id.ancestors);
         }
-
-        zzzKey.node = node;
       }
 
       return zzzKey;
@@ -3849,15 +3845,19 @@
     var __zzz__values = values.map(function (value) {
       var zzzValue = {
         attribute: value.attributeId
-      };
+      }; // if (value.ids) {
 
-      if (value.ids) {
-        zzzValue.nodes = value.ids.map(function (id) {
-          return {
-            node: id.categoryId
-          };
-        });
-      }
+      zzzValue.nodes = value.ids.map(function (id) {
+        var zzzId = {
+          node: id.categoryId
+        };
+
+        if (id.ancestors) {
+          zzzId.path = _toConsumableArray(id.ancestors);
+        }
+
+        return zzzId;
+      }); // }
 
       return zzzValue;
     });
@@ -3865,6 +3865,7 @@
     console.log(__zzz__values); // generate permalink
 
     var params = new URL(location).searchParams;
+    console.log(params);
     params.set('togoKey', _classPrivateFieldGet(this, _togoKey));
     params.set('keys', JSON.stringify(keys));
     params.set('values', JSON.stringify(values));
@@ -3881,29 +3882,70 @@
     // get conditions with ancestors
     var params = new URL(location).searchParams;
     var condition = {
-      togoKey: params.get('togoKey'),
-      keys: (_JSON$parse = JSON.parse(params.get('keys'))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
-      values: (_JSON$parse2 = JSON.parse(params.get('values'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
-    }; // in older versions, 'attributeId' is 'propertyId', so convert them
+      dataset: params.get('dataset'),
+      annotations: (_JSON$parse = JSON.parse(params.get('annotations'))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
+      filters: (_JSON$parse2 = JSON.parse(params.get('filters'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : [] // togoKey: params.get('togoKey'),
+      // keys: JSON.parse(params.get('keys')) ?? [],
+      // values: JSON.parse(params.get('values')) ?? []
 
-    condition.keys.forEach(function (key) {
-      if (key.propertyId) {
-        key.attributeId = key.propertyId;
-        delete key.propertyId;
-      }
-    });
-    condition.values.forEach(function (key) {
-      if (key.propertyId) {
-        key.attributeId = key.propertyId;
-        delete key.propertyId;
-      }
-    });
+    };
+    console.log(condition);
+    var __zzz__condition = {
+      togoKey: condition.dataset,
+      keys: condition.annotations.map(function (annotation) {
+        var zzzKey = {
+          attributeId: annotation.attribute
+        };
+
+        if (annotation.node) {
+          zzzKey.id = {
+            categoryId: annotation.node
+          };
+
+          if (annotation.path) {
+            zzzKey.id.ancestors = _toConsumableArray(annotation.path);
+          }
+        }
+
+        return zzzKey;
+      }),
+      values: condition.filters.map(function (filter) {
+        var zzzValue = {
+          attributeId: filter.attribute,
+          ids: filter.nodes.map(function (node) {
+            var zzzNode = {
+              categoryId: node.node
+            };
+
+            if (node.path) {
+              zzzNode.ancestors = _toConsumableArray(node.path);
+            }
+
+            return zzzNode;
+          })
+        };
+        return zzzValue;
+      })
+    };
+    console.log(__zzz__condition); // in older versions, 'attributeId' is 'propertyId', so convert them
+    // condition.keys.forEach(key => {
+    //   if (key.propertyId) {
+    //     key.attributeId = key.propertyId;
+    //     delete key.propertyId;
+    //   }
+    // });
+    // condition.values.forEach(key => {
+    //   if (key.propertyId) {
+    //     key.attributeId = key.propertyId;
+    //     delete key.propertyId;
+    //   }
+    // });
 
     if (isFirst) {
       // get child category ids
-      _classPrivateMethodGet(this, _makeQueueOfGettingChildCategoryIds, _makeQueueOfGettingChildCategoryIds2).call(this, condition);
+      _classPrivateMethodGet(this, _makeQueueOfGettingChildCategoryIds, _makeQueueOfGettingChildCategoryIds2).call(this, __zzz__condition);
     } else {
-      _classPrivateMethodGet(this, _restoreConditions, _restoreConditions2).call(this, condition);
+      _classPrivateMethodGet(this, _restoreConditions, _restoreConditions2).call(this, __zzz__condition);
     }
   }
 

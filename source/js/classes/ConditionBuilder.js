@@ -197,22 +197,23 @@ class ConditionBuilder {
     const __zzz__keys = keys.map(key => {
       const zzzKey = {attribute: key.attributeId};
       if (key.id) {
-        const node = {node: key.id.categoryId};
+        zzzKey.node = key.id.categoryId;
         if (key.id.ancestors) {
-          node.ancestors = key.id.ancestors;
+          zzzKey.path = [...key.id.ancestors];
         }
-        zzzKey.node = node;
       }
       return zzzKey;
     });
     console.log(__zzz__keys)
     const __zzz__values = values.map(value => {
       const zzzValue = {attribute: value.attributeId};
-      if (value.ids) {
-        zzzValue.nodes = value.ids.map(id => {
-          return {node: id.categoryId};
-        });
-      }
+      zzzValue.nodes = value.ids.map(id => {
+        const zzzId = {node: id.categoryId};
+        if (id.ancestors) {
+          zzzId.path = [...id.ancestors];
+        }
+        return zzzId;
+      });
       return zzzValue;
     });
     console.log(__zzz__values)
@@ -233,29 +234,49 @@ class ConditionBuilder {
     // get conditions with ancestors
     const params = new URL(location).searchParams;
     const condition = {
-      togoKey: params.get('togoKey'),
-      keys: JSON.parse(params.get('keys')) ?? [],
-      values: JSON.parse(params.get('values')) ?? []
+      dataset: params.get('dataset'),
+      annotations: JSON.parse(params.get('annotations')) ?? [],
+      filters: JSON.parse(params.get('filters')) ?? [],
+
+      // togoKey: params.get('togoKey'),
+      // keys: JSON.parse(params.get('keys')) ?? [],
+      // values: JSON.parse(params.get('values')) ?? []
     }
-    // in older versions, 'attributeId' is 'propertyId', so convert them
-    condition.keys.forEach(key => {
-      if (key.propertyId) {
-        key.attributeId = key.propertyId;
-        delete key.propertyId;
-      }
-    });
-    condition.values.forEach(key => {
-      if (key.propertyId) {
-        key.attributeId = key.propertyId;
-        delete key.propertyId;
-      }
-    });
+    console.log(condition);
+
+    const __zzz__condition = {
+      togoKey: condition.dataset,
+      keys: condition.annotations.map(annotation => {
+        const zzzKey = {attributeId: annotation.attribute};
+        if (annotation.node) {
+          zzzKey.id = {categoryId: annotation.node};
+          if (annotation.path) {
+            zzzKey.id.ancestors = [...annotation.path];
+          }
+        }
+        return zzzKey;
+      }),
+      values: condition.filters.map(filter => {
+        const zzzValue = {
+          attributeId: filter.attribute,
+          ids: filter.nodes.map(node => {
+            const zzzNode = {categoryId: node.node};
+            if (node.path) {
+              zzzNode.ancestors = [...node.path];
+            }
+            return zzzNode;
+          })
+        };
+        return zzzValue;
+      })
+    }
+    console.log(__zzz__condition);
     
     if (isFirst) {
       // get child category ids
-      this.#makeQueueOfGettingChildCategoryIds(condition);
+      this.#makeQueueOfGettingChildCategoryIds(__zzz__condition);
     } else {
-      this.#restoreConditions(condition);
+      this.#restoreConditions(__zzz__condition);
     }
 
   }
