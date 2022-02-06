@@ -191,12 +191,40 @@ class ConditionBuilder {
     // get hierarchic conditions
     const keys = this.#keyConditions.map(keyCondiiton => keyCondiiton.getURLParameter());
     const values = this.#valuesConditions.map(valuesCondition => valuesCondition.getURLParameter());
+    console.log(keys )
+    console.log(values )
+
+    const __zzz__keys = keys.map(key => {
+      const zzzKey = {attribute: key.attributeId};
+      if (key.id) {
+        const node = {node: key.id.categoryId};
+        if (key.id.ancestors) {
+          node.ancestors = key.id.ancestors;
+        }
+        zzzKey.node = node;
+      }
+      return zzzKey;
+    });
+    console.log(__zzz__keys)
+    const __zzz__values = values.map(value => {
+      const zzzValue = {attribute: value.attributeId};
+      if (value.ids) {
+        zzzValue.nodes = value.ids.map(id => {
+          return {node: id.categoryId};
+        });
+      }
+      return zzzValue;
+    });
+    console.log(__zzz__values)
     
     // generate permalink
     const params = new URL(location).searchParams;
     params.set('togoKey', this.#togoKey);
     params.set('keys', JSON.stringify(keys));
     params.set('values', JSON.stringify(values));
+    params.set('dataset', this.#togoKey);
+    params.set('annotations', JSON.stringify(__zzz__keys));
+    params.set('filters', JSON.stringify(__zzz__values));
     if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
   }
 

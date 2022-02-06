@@ -3819,13 +3819,58 @@
 
     var values = _classPrivateFieldGet(this, _valuesConditions).map(function (valuesCondition) {
       return valuesCondition.getURLParameter();
-    }); // generate permalink
+    });
 
+    console.log(keys);
+    console.log(values);
+
+    var __zzz__keys = keys.map(function (key) {
+      var zzzKey = {
+        attribute: key.attributeId
+      };
+
+      if (key.id) {
+        var node = {
+          node: key.id.categoryId
+        };
+
+        if (key.id.ancestors) {
+          node.ancestors = key.id.ancestors;
+        }
+
+        zzzKey.node = node;
+      }
+
+      return zzzKey;
+    });
+
+    console.log(__zzz__keys);
+
+    var __zzz__values = values.map(function (value) {
+      var zzzValue = {
+        attribute: value.attributeId
+      };
+
+      if (value.ids) {
+        zzzValue.nodes = value.ids.map(function (id) {
+          return {
+            node: id.categoryId
+          };
+        });
+      }
+
+      return zzzValue;
+    });
+
+    console.log(__zzz__values); // generate permalink
 
     var params = new URL(location).searchParams;
     params.set('togoKey', _classPrivateFieldGet(this, _togoKey));
     params.set('keys', JSON.stringify(keys));
     params.set('values', JSON.stringify(values));
+    params.set('dataset', _classPrivateFieldGet(this, _togoKey));
+    params.set('annotations', JSON.stringify(__zzz__keys));
+    params.set('filters', JSON.stringify(__zzz__values));
     if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
   }
 
