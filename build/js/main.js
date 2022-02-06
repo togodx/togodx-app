@@ -3821,9 +3821,6 @@
       return valuesCondition.getURLParameter();
     });
 
-    console.log(keys);
-    console.log(values);
-
     var __zzz__keys = keys.map(function (key) {
       var zzzKey = {
         attribute: key.attributeId
@@ -3840,13 +3837,10 @@
       return zzzKey;
     });
 
-    console.log(__zzz__keys);
-
     var __zzz__values = values.map(function (value) {
       var zzzValue = {
         attribute: value.attributeId
-      }; // if (value.ids) {
-
+      };
       zzzValue.nodes = value.ids.map(function (id) {
         var zzzId = {
           node: id.categoryId
@@ -3857,18 +3851,12 @@
         }
 
         return zzzId;
-      }); // }
-
+      });
       return zzzValue;
-    });
+    }); // generate permalink
 
-    console.log(__zzz__values); // generate permalink
 
     var params = new URL(location).searchParams;
-    console.log(params);
-    params.set('togoKey', _classPrivateFieldGet(this, _togoKey));
-    params.set('keys', JSON.stringify(keys));
-    params.set('values', JSON.stringify(values));
     params.set('dataset', _classPrivateFieldGet(this, _togoKey));
     params.set('annotations', JSON.stringify(__zzz__keys));
     params.set('filters', JSON.stringify(__zzz__values));
@@ -3884,12 +3872,8 @@
     var condition = {
       dataset: params.get('dataset'),
       annotations: (_JSON$parse = JSON.parse(params.get('annotations'))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
-      filters: (_JSON$parse2 = JSON.parse(params.get('filters'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : [] // togoKey: params.get('togoKey'),
-      // keys: JSON.parse(params.get('keys')) ?? [],
-      // values: JSON.parse(params.get('values')) ?? []
-
+      filters: (_JSON$parse2 = JSON.parse(params.get('filters'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
     };
-    console.log(condition);
     var __zzz__condition = {
       togoKey: condition.dataset,
       keys: condition.annotations.map(function (annotation) {
@@ -3927,19 +3911,6 @@
         return zzzValue;
       })
     };
-    console.log(__zzz__condition); // in older versions, 'attributeId' is 'propertyId', so convert them
-    // condition.keys.forEach(key => {
-    //   if (key.propertyId) {
-    //     key.attributeId = key.propertyId;
-    //     delete key.propertyId;
-    //   }
-    // });
-    // condition.values.forEach(key => {
-    //   if (key.propertyId) {
-    //     key.attributeId = key.propertyId;
-    //     delete key.propertyId;
-    //   }
-    // });
 
     if (isFirst) {
       // get child category ids

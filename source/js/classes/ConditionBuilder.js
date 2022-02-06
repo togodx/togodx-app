@@ -191,8 +191,6 @@ class ConditionBuilder {
     // get hierarchic conditions
     const keys = this.#keyConditions.map(keyCondiiton => keyCondiiton.getURLParameter());
     const values = this.#valuesConditions.map(valuesCondition => valuesCondition.getURLParameter());
-    console.log(keys )
-    console.log(values )
 
     const __zzz__keys = keys.map(key => {
       const zzzKey = {attribute: key.attributeId};
@@ -204,7 +202,6 @@ class ConditionBuilder {
       }
       return zzzKey;
     });
-    console.log(__zzz__keys)
     const __zzz__values = values.map(value => {
       const zzzValue = {attribute: value.attributeId};
       zzzValue.nodes = value.ids.map(id => {
@@ -216,13 +213,9 @@ class ConditionBuilder {
       });
       return zzzValue;
     });
-    console.log(__zzz__values)
     
     // generate permalink
     const params = new URL(location).searchParams;
-    params.set('togoKey', this.#togoKey);
-    params.set('keys', JSON.stringify(keys));
-    params.set('values', JSON.stringify(values));
     params.set('dataset', this.#togoKey);
     params.set('annotations', JSON.stringify(__zzz__keys));
     params.set('filters', JSON.stringify(__zzz__values));
@@ -237,12 +230,7 @@ class ConditionBuilder {
       dataset: params.get('dataset'),
       annotations: JSON.parse(params.get('annotations')) ?? [],
       filters: JSON.parse(params.get('filters')) ?? [],
-
-      // togoKey: params.get('togoKey'),
-      // keys: JSON.parse(params.get('keys')) ?? [],
-      // values: JSON.parse(params.get('values')) ?? []
     }
-    console.log(condition);
 
     const __zzz__condition = {
       togoKey: condition.dataset,
@@ -270,7 +258,6 @@ class ConditionBuilder {
         return zzzValue;
       })
     }
-    console.log(__zzz__condition);
     
     if (isFirst) {
       // get child category ids
