@@ -8422,14 +8422,10 @@
         _e$detail;
 
     var attributes = _.uniqBy(_classPrivateFieldGet(this, _tableData$2).data.map(function (datum) {
-      return datum.properties[_classPrivateFieldGet(_this, _index)];
-    }).filter(function (property) {
-      return property !== undefined;
-    }).map(function (property) {
-      return property.attributes;
-    }).flat(), 'id').map(function (property) {
-      return property.attribute;
-    });
+      return datum.attributes[_classPrivateFieldGet(_this, _index)];
+    }).map(function (attribute) {
+      return attribute.items;
+    }).flat(), 'entry');
 
     var hitVlues = [];
 
@@ -8438,7 +8434,7 @@
           label = _ref.label,
           count = _ref.count;
       var filtered = attributes.filter(function (attribute) {
-        return attribute.categoryId === categoryId;
+        return attribute.node === categoryId;
       });
       if (filtered.length === 0) return;
       hitVlues.push({
@@ -8844,11 +8840,8 @@
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
       return "\n          <tr\n            data-index=\"".concat(offset + index, "\"\n            data-togo-id=\"").concat(row.index.entry, "\">\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(tableData.togoKey, "\"\n                    data-order=\"").concat([0, offset + index], "\"\n                    data-sub-order=\"0\"\n                    data-subject-id=\"primary\"\n                    data-unique-entry-id=\"").concat(row.index.entry, "\">").concat(row.index.entry, "\n                  </div>\n                  <span>").concat(row.index.label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.attributes.map(function (column, columnIndex) {
-        console.log(column);
-
         if (column) {
           return "\n                  <td><div class=\"inner\"><ul>".concat(column.items.map(function (item, itemIndex) {
-            // if (!item.attribute) console.error(item);
             return "\n                      <li>\n                        <div\n                          class=\"togo-key-view\"\n                          data-order=\"".concat([columnIndex + 1, offset + index], "\"\n                          data-sub-order=\"").concat(itemIndex, "\"\n                          data-key=\"").concat(column.id, "\"\n                          data-subject-id=\"").concat(_classPrivateFieldGet(_this3, _header$1)[columnIndex].catexxxgoryId, "\"\n                          data-main-category-id=\"").concat(_classPrivateFieldGet(_this3, _header$1)[columnIndex].attributeId, "\"\n                          data-sub-category-id=\"").concat(item.node, "\"\n                          data-unique-entry-id=\"").concat(item.entry, "\"\n                          >").concat(item.entry, "</div>\n                        <span>").concat(item.label, "</span>\n                      </li>");
           }).join(''), "</ul></div></td>");
         } else {

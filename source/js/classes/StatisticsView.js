@@ -62,19 +62,19 @@ export default class StatisticsView {
   #draw(e) {
 
     const attributes = (
+
       _.uniqBy(
         this.#tableData.data
-          .map(datum => datum.properties[this.#index])
-          .filter(property => property !== undefined)
-          .map(property => property.attributes)
+          .map(datum => datum.attributes[this.#index])
+          .map(attribute => attribute.items)
           .flat(),
-          'id'
-      ).map(property => property.attribute)
+          'entry'
+      )
     );
 
     const hitVlues = [];
     this.#referenceValues.forEach(({categoryId, label, count}) => {
-      const filtered = attributes.filter(attribute => attribute.categoryId === categoryId);
+      const filtered = attributes.filter(attribute => attribute.node === categoryId);
       if (filtered.length === 0) return;
       hitVlues.push({
         categoryId, label, count,
