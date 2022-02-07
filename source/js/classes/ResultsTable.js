@@ -207,7 +207,7 @@ export default class ResultsTable {
           return `
           <tr
             data-index="${offset + index}"
-            data-togo-id="${row.id}">
+            data-togo-id="${row.index.entry}">
             <td>
               <div class="inner">
                 <ul>
@@ -217,19 +217,18 @@ export default class ResultsTable {
                     data-order="${[0, offset + index]}"
                     data-sub-order="0"
                     data-subject-id="primary"
-                    data-unique-entry-id="${row.id}">${row.id}
+                    data-unique-entry-id="${row.index.entry}">${row.index.entry}
                   </div>
-                  <span>${row.label}</span>
+                  <span>${row.index.label}</span>
                 </ul>
               </div<
             </td>
-            ${row.properties
+            ${row.attributes
               .map((column, columnIndex) => {
                 if (column) {
                   return `
-                  <td><div class="inner"><ul>${column.attributes
-                    .map((attribute, attributeIndex) => {
-                      if (!attribute.attribute) console.error(attribute);
+                  <td><div class="inner"><ul>${column.items
+                    .map((item, itemIndex) => {
                       return `
                       <li>
                         <div
@@ -238,8 +237,8 @@ export default class ResultsTable {
                             columnIndex + 1,
                             offset + index,
                           ]}"
-                          data-sub-order="${attributeIndex}"
-                          data-key="${column.propertyKey}"
+                          data-sub-order="${itemIndex}"
+                          data-key="${column.id}"
                           data-subject-id="${
                             this.#header[columnIndex].catexxxgoryId
                           }"
@@ -247,16 +246,12 @@ export default class ResultsTable {
                             this.#header[columnIndex].attributeId
                           }"
                           data-sub-category-id="${
-                            attribute.attribute.categoryId
-                              ? attribute.attribute.categoryId
-                              : attribute.attribute.categoryIds
+                            item.node
                           }"
-                          data-unique-entry-id="${attribute.id}"
-                          >${attribute.id}</div>
+                          data-unique-entry-id="${item.entry}"
+                          >${item.entry}</div>
                         <span>${
-                          attribute.attribute
-                            ? attribute.attribute.label
-                            : attribute
+                          item.label
                         }</span>
                       </li>`;
                     })
