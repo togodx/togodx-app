@@ -341,28 +341,8 @@ export default class TableData {
   }
 
   #setTsvUrl() {
-    const temporaryArray = [];
-    this.#rows.forEach(row => {
-      row.properties.forEach(property => {
-        property.attributes.forEach(attribute => {
-          const singleItem = [
-            this.#dxCondition.togoKey, // togoKey
-            row.id, // togoKeyId
-            row.label, // togoKeyLabel
-            property.propertyId, // attribute
-            property.propertyKey, // attributeKey
-            attribute.id, // attributeKeyId
-            attribute.attribute.label, // attributeValue
-          ];
-          temporaryArray.push(singleItem);
-        });
-      });
-    });
-    const tsvArray = temporaryArray.map(item => {
-      return item.join('\t');
-    });
-    if (tsvArray.length !== 0) {
-      const tsvHeader = [
+    const tsv = [
+      [
         'togoKey',
         'togoKeyId',
         'togoKeyLabel',
@@ -370,11 +350,25 @@ export default class TableData {
         'attributeKey',
         'attributeKeyId',
         'attributeValue',
-      ];
-      tsvArray.unshift(tsvHeader.join('\t'));
-    }
+      ].join('\t'),
+      ...this.#rows.map(row => {
+        return row.attributes.map(attribute => {
+          return attribute.items.map(item => {
+            return [
+              this.#dxCondition.togoKey, // togoKey
+              row.index.entry, // togoKeyId
+              row.index.label, // togoKeyLabel
+              attribute.id, // attribute
+              item.dataset, // attributeKey
+              item.entry, // attributeKeyId
+              item.label, // attributeValue
+            ].join('\t');
+          });
+        }).flat();
+      }).flat()
+    ].join('\n');
     const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
-    const tsvBlob = new Blob([bom, tsvArray.join('\n')], {type: 'text/plain'});
+    const tsvBlob = new Blob([bom, tsv], {type: 'text/plain'});
     const tsvUrl = URL.createObjectURL(tsvBlob);
     downloadUrls.set('tsv', tsvUrl);
   }
@@ -438,6 +432,7 @@ export default class TableData {
         this.#getProperties();
       })
       .catch(error => {
+        console.error(error)
         this.#handleError(error);
       });
   }
