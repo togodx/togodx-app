@@ -238,7 +238,7 @@ export default class ResultsTable {
                             offset + index,
                           ]}"
                           data-sub-order="${itemIndex}"
-                          data-key="${column.id}"
+                          data-key="${item.dataset}"
                           data-subject-id="${
                             this.#header[columnIndex].catexxxgoryId
                           }"

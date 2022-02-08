@@ -3864,7 +3864,7 @@
   }
 
   function _createSearchConditionFromURLParameters2() {
-    var _JSON$parse, _JSON$parse2;
+    var _JSON$parse, _JSON$parse2, _condition$dataset;
 
     var isFirst = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     // get conditions with ancestors
@@ -3875,7 +3875,7 @@
       filters: (_JSON$parse2 = JSON.parse(params.get('filters'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
     };
     var __zzz__condition = {
-      togoKey: condition.dataset,
+      togoKey: (_condition$dataset = condition.dataset) !== null && _condition$dataset !== void 0 ? _condition$dataset : _classPrivateFieldGet(this, _togoKey),
       keys: condition.annotations.map(function (annotation) {
         var zzzKey = {
           attributeId: annotation.attribute
@@ -8842,7 +8842,7 @@
       return "\n          <tr\n            data-index=\"".concat(offset + index, "\"\n            data-togo-id=\"").concat(row.index.entry, "\">\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(tableData.togoKey, "\"\n                    data-order=\"").concat([0, offset + index], "\"\n                    data-sub-order=\"0\"\n                    data-subject-id=\"primary\"\n                    data-unique-entry-id=\"").concat(row.index.entry, "\">").concat(row.index.entry, "\n                  </div>\n                  <span>").concat(row.index.label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.attributes.map(function (column, columnIndex) {
         if (column) {
           return "\n                  <td><div class=\"inner\"><ul>".concat(column.items.map(function (item, itemIndex) {
-            return "\n                      <li>\n                        <div\n                          class=\"togo-key-view\"\n                          data-order=\"".concat([columnIndex + 1, offset + index], "\"\n                          data-sub-order=\"").concat(itemIndex, "\"\n                          data-key=\"").concat(column.id, "\"\n                          data-subject-id=\"").concat(_classPrivateFieldGet(_this3, _header$1)[columnIndex].catexxxgoryId, "\"\n                          data-main-category-id=\"").concat(_classPrivateFieldGet(_this3, _header$1)[columnIndex].attributeId, "\"\n                          data-sub-category-id=\"").concat(item.node, "\"\n                          data-unique-entry-id=\"").concat(item.entry, "\"\n                          >").concat(item.entry, "</div>\n                        <span>").concat(item.label, "</span>\n                      </li>");
+            return "\n                      <li>\n                        <div\n                          class=\"togo-key-view\"\n                          data-order=\"".concat([columnIndex + 1, offset + index], "\"\n                          data-sub-order=\"").concat(itemIndex, "\"\n                          data-key=\"").concat(item.dataset, "\"\n                          data-subject-id=\"").concat(_classPrivateFieldGet(_this3, _header$1)[columnIndex].catexxxgoryId, "\"\n                          data-main-category-id=\"").concat(_classPrivateFieldGet(_this3, _header$1)[columnIndex].attributeId, "\"\n                          data-sub-category-id=\"").concat(item.node, "\"\n                          data-unique-entry-id=\"").concat(item.entry, "\"\n                          >").concat(item.entry, "</div>\n                        <span>").concat(item.label, "</span>\n                      </li>");
           }).join(''), "</ul></div></td>");
         } else {
           return "<td><div class=\"inner -empty\"></div></td>";
