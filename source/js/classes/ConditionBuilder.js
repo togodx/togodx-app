@@ -233,7 +233,7 @@ class ConditionBuilder {
     }
 
     const __zzz__condition = {
-      togoKey: condition.dataset,
+      togoKey: condition.dataset ?? this.#togoKey,
       keys: condition.annotations.map(annotation => {
         const zzzKey = {attributeId: annotation.attribute};
         if (annotation.node) {
