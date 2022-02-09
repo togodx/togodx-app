@@ -147,7 +147,7 @@ export default class ColumnView {
           // .get(parameter)
           .then(response => {
 
-            const __temp__data = response.data.map(datum => {
+            const __zzz__data = response.data.map(datum => {
               return {
                 categoryId: datum.node,
                 count: datum.count,
@@ -157,8 +157,8 @@ export default class ColumnView {
               }
             });
     
-            this.#cachedUserValues.set(parameter, __temp__data);
-            resolve(__temp__data);
+            this.#cachedUserValues.set(parameter, __zzz__data);
+            resolve(__zzz__data);
           });
       }
     });

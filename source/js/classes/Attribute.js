@@ -23,7 +23,7 @@ export default class Attribute {
         .then(responce => responce.json())
         .then(values => {
 
-          const __temp__values = values.map(value => {
+          const __zzz__values = values.map(value => {
             return {
               categoryId: value.node,
               count: value.count,
@@ -34,12 +34,12 @@ export default class Attribute {
           
           // set parent category id
           // if (parentCategoryId) values.forEach(value => value.parentCategoryId = parentCategoryId);
-          if (parentCategoryId) __temp__values.forEach(value => value.parentCategoryId = parentCategoryId);
+          if (parentCategoryId) __zzz__values.forEach(value => value.parentCategoryId = parentCategoryId);
           // set values
           // this.#values.push(...values);
-          this.#values.push(...__temp__values);
+          this.#values.push(...__zzz__values);
           // resolve(values);
-          resolve(__temp__values);
+          resolve(__zzz__values);
         })
         .catch(error => {
           console.error(this, error);
