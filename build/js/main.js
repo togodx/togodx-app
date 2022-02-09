@@ -9624,7 +9624,7 @@
     isError ? _classPrivateFieldGet(this, _ROOT$3).classList.add('error') : _classPrivateFieldGet(this, _ROOT$3).classList.remove('error');
   }
 
-  var LIMIT = 10;
+  var LIMIT = 100;
   var downloadUrls = new Map();
   var timeOutError$1 = 'ECONNABORTED';
   /**
@@ -10094,16 +10094,16 @@
   function _setTsvUrl2() {
     var _this4 = this;
 
-    var tsv = [['togoKey', 'togoKeyId', 'togoKeyLabel', 'attribute', 'attributeKey', 'attributeKeyId', 'attributeValue'].join('\t')].concat(_toConsumableArray(_classPrivateFieldGet(this, _rows).map(function (row) {
+    var tsv = [['orig_dataset', 'orig_entry', 'orig_label', 'dest_dataset', 'dest_entry', 'node', 'value'].join('\t')].concat(_toConsumableArray(_classPrivateFieldGet(this, _rows).map(function (row) {
       return row.attributes.map(function (attribute) {
         return attribute.items.map(function (item) {
-          return [_classPrivateFieldGet(_this4, _dxCondition).togoKey, // togoKey
-          row.index.entry, // togoKeyId
-          row.index.label, // togoKeyLabel
-          attribute.id, // attribute
-          item.dataset, // attributeKey
-          item.entry, // attributeKeyId
-          item.label // attributeValue
+          return [_classPrivateFieldGet(_this4, _dxCondition).togoKey, // orig_dataset
+          row.index.entry, // orig_entry
+          row.index.label, // orig_label
+          item.dataset, // dest_dataset
+          item.entry, // dest_entry
+          attribute.id, // node
+          item.label // value
           ].join('\t');
         });
       }).flat();

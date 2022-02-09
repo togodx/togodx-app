@@ -7,7 +7,7 @@ import {getApiParameter} from '../functions/queryTemplates';
 import ProgressIndicator from './ProgressIndicator';
 import axios from 'axios';
 
-const LIMIT = 10;
+const LIMIT = 100;
 const downloadUrls = new Map();
 const timeOutError = 'ECONNABORTED';
 
@@ -343,25 +343,25 @@ export default class TableData {
   #setTsvUrl() {
     const tsv = [
       [
-        'togoKey',
-        'togoKeyId',
-        'togoKeyLabel',
-        'attribute',
-        'attributeKey',
-        'attributeKeyId',
-        'attributeValue',
+        'orig_dataset',
+        'orig_entry',
+        'orig_label',
+        'dest_dataset',
+        'dest_entry',
+        'node',
+        'value',
       ].join('\t'),
       ...this.#rows.map(row => {
         return row.attributes.map(attribute => {
           return attribute.items.map(item => {
             return [
-              this.#dxCondition.togoKey, // togoKey
-              row.index.entry, // togoKeyId
-              row.index.label, // togoKeyLabel
-              attribute.id, // attribute
-              item.dataset, // attributeKey
-              item.entry, // attributeKeyId
-              item.label, // attributeValue
+              this.#dxCondition.togoKey, // orig_dataset
+              row.index.entry, // orig_entry
+              row.index.label, // orig_label
+              item.dataset, // dest_dataset
+              item.entry, // dest_entry
+              attribute.id, // node
+              item.label, // value
             ].join('\t');
           });
         }).flat();
