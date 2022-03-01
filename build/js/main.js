@@ -2778,7 +2778,7 @@
                 return {
                   categoryId: value.node,
                   count: value.count,
-                  hasChild: !value.leaf,
+                  hasChild: !value.tip,
                   label: value.label
                 };
               }); // set parent category id

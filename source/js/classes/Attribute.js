@@ -27,7 +27,7 @@ export default class Attribute {
             return {
               categoryId: value.node,
               count: value.count,
-              hasChild: !value.leaf,
+              hasChild: !value.tip,
               label: value.label
             };
           });
