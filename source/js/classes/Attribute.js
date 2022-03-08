@@ -19,7 +19,19 @@ export default class Attribute {
       if (values.length > 0) {
         resolve(values);
       } else {
-        fetch(`${this.api}${parentCategoryId ? `?node=${parentCategoryId}` : ''}`)
+        const body = {};
+        if (parentCategoryId) body.node = parentCategoryId;
+        if (this.order) body.order = this.order;
+        fetch(
+          this.api,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+          }
+        )
         .then(responce => responce.json())
         .then(values => {
 
@@ -81,6 +93,10 @@ export default class Attribute {
 
   get source() {
     return this.#obj.source;
+  }
+
+  get order() {
+    return this.#obj.order;
   }
 
   get values() {

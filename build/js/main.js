@@ -2769,7 +2769,16 @@
           if (values.length > 0) {
             resolve(values);
           } else {
-            fetch("".concat(_this.api).concat(parentCategoryId ? "?node=".concat(parentCategoryId) : '')).then(function (responce) {
+            var body = {};
+            if (parentCategoryId) body.node = parentCategoryId;
+            if (_this.order) body.order = _this.order;
+            fetch(_this.api, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(body)
+            }).then(function (responce) {
               return responce.json();
             }).then(function (values) {
               var _classPrivateFieldGet2;
@@ -2843,6 +2852,11 @@
       key: "source",
       get: function get() {
         return _classPrivateFieldGet(this, _obj).source;
+      }
+    }, {
+      key: "order",
+      get: function get() {
+        return _classPrivateFieldGet(this, _obj).order;
       }
     }, {
       key: "values",
