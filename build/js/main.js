@@ -8435,11 +8435,15 @@
     var _this = this,
         _e$detail;
 
-    var attributes = _classPrivateFieldGet(this, _tableData$2).data.map(function (datum) {
+    var flattenedAttributes = _classPrivateFieldGet(this, _tableData$2).data.map(function (datum) {
       return datum.attributes[_classPrivateFieldGet(_this, _index)];
     }).map(function (attribute) {
       return attribute.items;
     }).flat();
+
+    var uniquedAttributes = _.uniqWith(flattenedAttributes, function (a, b) {
+      return a.entry === b.entry && a.node === b.node;
+    });
 
     var hitVlues = [];
 
@@ -8447,7 +8451,7 @@
       var categoryId = _ref.categoryId,
           label = _ref.label,
           count = _ref.count;
-      var filtered = attributes.filter(function (attribute) {
+      var filtered = uniquedAttributes.filter(function (attribute) {
         return attribute.node === categoryId;
       });
       if (filtered.length === 0) return;
