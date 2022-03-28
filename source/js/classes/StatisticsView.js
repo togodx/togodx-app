@@ -61,16 +61,10 @@ export default class StatisticsView {
    */
   #draw(e) {
 
-    const attributes = (
-      _.uniqBy(
-        this.#tableData.data
-          .map(datum => datum.attributes[this.#index])
-          .map(attribute => attribute.items)
-          .flat(),
-        'node'
-      )
-    );
-
+    const attributes = this.#tableData.data
+      .map(datum => datum.attributes[this.#index])
+      .map(attribute => attribute.items)
+      .flat();
     const hitVlues = [];
     this.#referenceValues.forEach(({categoryId, label, count}) => {
       const filtered = attributes.filter(attribute => attribute.node === categoryId);

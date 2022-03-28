@@ -8435,11 +8435,11 @@
     var _this = this,
         _e$detail;
 
-    var attributes = _.uniqBy(_classPrivateFieldGet(this, _tableData$2).data.map(function (datum) {
+    var attributes = _classPrivateFieldGet(this, _tableData$2).data.map(function (datum) {
       return datum.attributes[_classPrivateFieldGet(_this, _index)];
     }).map(function (attribute) {
       return attribute.items;
-    }).flat(), 'node');
+    }).flat();
 
     var hitVlues = [];
 
