@@ -62,13 +62,12 @@ export default class StatisticsView {
   #draw(e) {
 
     const attributes = (
-
       _.uniqBy(
         this.#tableData.data
           .map(datum => datum.attributes[this.#index])
           .map(attribute => attribute.items)
           .flat(),
-          'entry'
+        'node'
       )
     );
 

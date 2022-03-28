@@ -8439,7 +8439,7 @@
       return datum.attributes[_classPrivateFieldGet(_this, _index)];
     }).map(function (attribute) {
       return attribute.items;
-    }).flat(), 'entry');
+    }).flat(), 'node');
 
     var hitVlues = [];
 
