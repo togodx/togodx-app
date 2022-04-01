@@ -3,9 +3,11 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import * as event from '../events';
+import {getApiParameter} from '../functions/queryTemplates';
 import ProgressIndicator from './ProgressIndicator';
+import axios from 'axios';
 
-const LIMIT = 10;
+const LIMIT = 100;
 const downloadUrls = new Map();
 const timeOutError = 'ECONNABORTED';
 
@@ -339,40 +341,34 @@ export default class TableData {
   }
 
   #setTsvUrl() {
-    const temporaryArray = [];
-    this.#rows.forEach(row => {
-      row.properties.forEach(property => {
-        property.attributes.forEach(attribute => {
-          const singleItem = [
-            this.#dxCondition.togoKey, // togoKey
-            row.id, // togoKeyId
-            row.label, // togoKeyLabel
-            property.propertyId, // attribute
-            property.propertyKey, // attributeKey
-            attribute.id, // attributeKeyId
-            attribute.attribute.label, // attributeValue
-          ];
-          temporaryArray.push(singleItem);
-        });
-      });
-    });
-    const tsvArray = temporaryArray.map(item => {
-      return item.join('\t');
-    });
-    if (tsvArray.length !== 0) {
-      const tsvHeader = [
-        'togoKey',
-        'togoKeyId',
-        'togoKeyLabel',
-        'attribute',
-        'attributeKey',
-        'attributeKeyId',
-        'attributeValue',
-      ];
-      tsvArray.unshift(tsvHeader.join('\t'));
-    }
+    const tsv = [
+      [
+        'orig_dataset',
+        'orig_entry',
+        'orig_label',
+        'dest_dataset',
+        'dest_entry',
+        'node',
+        'value',
+      ].join('\t'),
+      ...this.#rows.map(row => {
+        return row.attributes.map(attribute => {
+          return attribute.items.map(item => {
+            return [
+              this.#dxCondition.togoKey, // orig_dataset
+              row.index.entry, // orig_entry
+              row.index.label, // orig_label
+              item.dataset, // dest_dataset
+              item.entry, // dest_entry
+              attribute.id, // node
+              item.label, // value
+            ].join('\t');
+          });
+        }).flat();
+      }).flat()
+    ].join('\n');
     const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
-    const tsvBlob = new Blob([bom, tsvArray.join('\n')], {type: 'text/plain'});
+    const tsvBlob = new Blob([bom, tsv], {type: 'text/plain'});
     const tsvUrl = URL.createObjectURL(tsvBlob);
     downloadUrls.set('tsv', tsvUrl);
   }
@@ -410,26 +406,19 @@ export default class TableData {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  get #queryIdsPayload() {
-    return `togokey=${
-      this.#dxCondition.togoKey
-    }&filters=${
-      this.#dxCondition.queryFilters
-    }${
-      ConditionBuilder.userIds?.length > 0
-        ? `&queries=${encodeURIComponent(
-            JSON.stringify(ConditionBuilder.userIds.split(','))
-          )}`
-        : ''
-    }`;
-  }
-
   #getQueryIds() {
     axios
-      .post(App.aggregate, this.#queryIdsPayload, {
-        cancelToken: this.#source.token,
-      })
+      .post(
+        App.getApiUrl('aggregate'),
+        getApiParameter('aggregate', {
+          dataset: this.#dxCondition.togoKey,
+          filters: this.#dxCondition.queryFilters,
+          queries: ConditionBuilder.userIds
+        }),
+        {cancelToken: this.#source.token}
+      )
       .then(response => {
+
         this.#queryIds = response.data;
 
         if (this.#queryIds.length <= 0) {
@@ -443,29 +432,25 @@ export default class TableData {
         this.#getProperties();
       })
       .catch(error => {
+        console.error(error)
         this.#handleError(error);
       });
-  }
-
-  get #propertiesPayload() {
-    return `${App.dataframe}?togokey=${
-      this.#dxCondition.togoKey
-    }&filters=${
-      this.#dxCondition.queryFilters
-    }&annotations=${
-      this.#dxCondition.queryAnnotations
-    }&queries=${
-      encodeURIComponent(
-        JSON.stringify(this.#queryIds.slice(this.offset, this.offset + LIMIT))
-      )
-    }`;
   }
 
   #getProperties() {
     this.#isLoading = true;
     const startTime = Date.now();
     axios
-      .get(this.#propertiesPayload, {cancelToken: this.#source.token})
+      .post(
+        App.getApiUrl('dataframe'),
+        getApiParameter('dataframe', {
+          dataset: this.#dxCondition.togoKey,
+          filters: this.#dxCondition.queryFilters,
+          annotations: this.#dxCondition.queryAnnotations,
+          queries: this.#queryIds.slice(this.offset, this.offset + LIMIT)
+        }),
+        {cancelToken: this.#source.token}
+      )
       .then(response => {
         const offset = this.offset;
         this.#rows.push(...response.data);

@@ -5,7 +5,9 @@ import ColumnSelectorSortManager from "./ColumnSelectorSortManager";
 import App from "./App";
 import Records from "./Records";
 import * as event from '../events';
-import * as queryTemplates from '../functions/queryTemplates';
+import {getApiParameter} from '../functions/queryTemplates';
+// import * as queryTemplates from '../functions/queryTemplates';
+import axios from "axios";
 
 export default class ColumnView {
 
@@ -128,17 +130,35 @@ export default class ColumnView {
     });
   }
 
-  #getUserValues(query) {
+  #getUserValues(attribute, node) {
     return new Promise((resolve, reject) => {
-      const values = this.#cachedUserValues.get(query);
+      const parameter = getApiParameter('locate', {
+        attribute,
+        node,
+        dataset: ConditionBuilder.currentTogoKey,
+        queries: ConditionBuilder.userIds
+      });
+      const values = this.#cachedUserValues.get(parameter);
       if (values) {
         resolve(values);
       } else {
         axios
-          .get(query)
+          .post(App.getApiUrl('locate'), parameter)
+          // .get(parameter)
           .then(response => {
-            this.#cachedUserValues.set(query, response.data);
-            resolve(response.data);
+
+            const __zzz__data = response.data.map(datum => {
+              return {
+                categoryId: datum.node,
+                count: datum.count,
+                hit_count: datum.mapped,
+                label: datum.label,
+                pValue: datum.pvalue,
+              }
+            });
+    
+            this.#cachedUserValues.set(parameter, __zzz__data);
+            resolve(__zzz__data);
           });
       }
     });
@@ -151,14 +171,8 @@ export default class ColumnView {
     this.#update();
 
     // user IDs
-    if (document.body.classList.contains('-showuserids') && ConditionBuilder.userIds) {
-      this.#getUserValues(
-        queryTemplates.dataFromUserIds(
-          this.#selector.api,
-          this.#selector.dataset,
-          this.#parentCategoryId
-          )
-        )
+    if (document.body.classList.contains('-showuserids') && ConditionBuilder.userIds.length > 0) {
+      this.#getUserValues(this.#selector.attributeId, this.#parentCategoryId)
         .then(values => {
           console.log(values)
           this.#columnItemViews.forEach(columnItemView => columnItemView.setUserValues(values));

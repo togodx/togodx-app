@@ -78,25 +78,11 @@ export default class DXCondition {
   }
 
   get queryFilters() {
-    return encodeURIComponent(
-      JSON.stringify(
-        this.#valuesConditions
-          .map(
-            valuesConditions => valuesConditions.query
-          )
-      )
-    );
+    return this.#valuesConditions.map(valuesConditions => valuesConditions.query);
   }
 
   get queryAnnotations() {
-    return encodeURIComponent(
-      JSON.stringify(
-        this.#keyConditions
-          .map(
-            keyConditions => keyConditions.query
-          )
-      )
-    );
+    return this.#keyConditions.map(keyConditions => keyConditions.query);
   }
 
 }

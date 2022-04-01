@@ -74,7 +74,6 @@ class App {
       })
       .then(([templates, backend, attributes]) => {
         Records.setAttributes(attributes);
-        ConditionBuilder.init();
 
         // define primary keys
         const customEvent = new CustomEvent(event.defineTogoKey, {detail: {datasets: attributes.datasets}});
@@ -88,6 +87,9 @@ class App {
 
         this.#makeCategoryViews();
         this.#defineAllTracksCollapseButton();
+
+        ConditionBuilder.init();
+
       });
   }
 
@@ -119,19 +121,28 @@ class App {
 
   // public methods
 
+  /**
+   * 
+   * @param {String} api 'aggregate' or 'dataframe' or 'locate'
+   * @returns 
+   */
+  getApiUrl(api) {
+    return this.#backend[api].url;
+  }
+
   // accessor
   get viewModes() {
     return this.#viewModes;
   }
-  get aggregate() {
-    return this.#backend.aggregate.url;
-  }
-  get dataframe() {
-    return this.#backend.dataframe.url;
-  }
-  get locate() {
-    return this.#backend.locate.url;
-  }
+  // get aggregate() {
+  //   return this.#backend.aggregate.url;
+  // }
+  // get dataframe() {
+  //   return this.#backend.dataframe.url;
+  // }
+  // get locate() {
+  //   return this.#backend.locate.url;
+  // }
   get colorWhite() {
     return this.#colorWhite;
   }
