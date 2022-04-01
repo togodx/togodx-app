@@ -56,7 +56,6 @@ class ConditionBuilder {
   }
 
   addAttributeValue(attributeId, categoryId, ancestors = [], isFinal = true) {
-    // console.log(attributeId, categoryId, ancestors)
     // find value of same property
     const sameValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.attributeId === attributeId);
     // store
@@ -172,7 +171,7 @@ class ConditionBuilder {
   }
 
   get userIds() {
-    return this.#userIds === '' ? undefined : this.#userIds;
+    return !this.#userIds ? [] : this.#userIds.split(',');
   }
 
 
@@ -185,19 +184,41 @@ class ConditionBuilder {
     // evaluate if search is possible
     const established 
       = this.#togoKey
-      && (this.#keyConditions.length > 0 || this.#valuesConditions.length > 0);
+      && (this.#valuesConditions.length > 0);
     const customEvent = new CustomEvent(event.mutateEstablishConditions, {detail: established});
     DefaultEventEmitter.dispatchEvent(customEvent);
 
     // get hierarchic conditions
     const keys = this.#keyConditions.map(keyCondiiton => keyCondiiton.getURLParameter());
     const values = this.#valuesConditions.map(valuesCondition => valuesCondition.getURLParameter());
+
+    const __zzz__keys = keys.map(key => {
+      const zzzKey = {attribute: key.attributeId};
+      if (key.id) {
+        zzzKey.node = key.id.categoryId;
+        if (key.id.ancestors) {
+          zzzKey.path = [...key.id.ancestors];
+        }
+      }
+      return zzzKey;
+    });
+    const __zzz__values = values.map(value => {
+      const zzzValue = {attribute: value.attributeId};
+      zzzValue.nodes = value.ids.map(id => {
+        const zzzId = {node: id.categoryId};
+        if (id.ancestors) {
+          zzzId.path = [...id.ancestors];
+        }
+        return zzzId;
+      });
+      return zzzValue;
+    });
     
     // generate permalink
     const params = new URL(location).searchParams;
-    params.set('togoKey', this.#togoKey);
-    params.set('keys', JSON.stringify(keys));
-    params.set('values', JSON.stringify(values));
+    params.set('dataset', this.#togoKey);
+    params.set('annotations', JSON.stringify(__zzz__keys));
+    params.set('filters', JSON.stringify(__zzz__values));
     if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
   }
 
@@ -206,29 +227,43 @@ class ConditionBuilder {
     // get conditions with ancestors
     const params = new URL(location).searchParams;
     const condition = {
-      togoKey: params.get('togoKey'),
-      keys: JSON.parse(params.get('keys')) ?? [],
-      values: JSON.parse(params.get('values')) ?? []
+      dataset: params.get('dataset'),
+      annotations: JSON.parse(params.get('annotations')) ?? [],
+      filters: JSON.parse(params.get('filters')) ?? [],
     }
-    // in older versions, 'attributeId' is 'propertyId', so convert them
-    condition.keys.forEach(key => {
-      if (key.propertyId) {
-        key.attributeId = key.propertyId;
-        delete key.propertyId;
-      }
-    });
-    condition.values.forEach(key => {
-      if (key.propertyId) {
-        key.attributeId = key.propertyId;
-        delete key.propertyId;
-      }
-    });
+
+    const __zzz__condition = {
+      togoKey: condition.dataset ?? this.#togoKey,
+      keys: condition.annotations.map(annotation => {
+        const zzzKey = {attributeId: annotation.attribute};
+        if (annotation.node) {
+          zzzKey.id = {categoryId: annotation.node};
+          if (annotation.path) {
+            zzzKey.id.ancestors = [...annotation.path];
+          }
+        }
+        return zzzKey;
+      }),
+      values: condition.filters.map(filter => {
+        const zzzValue = {
+          attributeId: filter.attribute,
+          ids: filter.nodes.map(node => {
+            const zzzNode = {categoryId: node.node};
+            if (node.path) {
+              zzzNode.ancestors = [...node.path];
+            }
+            return zzzNode;
+          })
+        };
+        return zzzValue;
+      })
+    }
     
     if (isFirst) {
       // get child category ids
-      this.#makeQueueOfGettingChildCategoryIds(condition);
+      this.#makeQueueOfGettingChildCategoryIds(__zzz__condition);
     } else {
-      this.#restoreConditions(condition);
+      this.#restoreConditions(__zzz__condition);
     }
 
   }

@@ -19,14 +19,39 @@ export default class Attribute {
       if (values.length > 0) {
         resolve(values);
       } else {
-        fetch(`${this.api}${parentCategoryId ? `?categoryIds=${parentCategoryId}` : ''}`)
+        const body = {};
+        if (parentCategoryId) body.node = parentCategoryId;
+        if (this.order) body.order = this.order;
+        fetch(
+          this.api,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+          }
+        )
         .then(responce => responce.json())
         .then(values => {
+
+          const __zzz__values = values.map(value => {
+            return {
+              categoryId: value.node,
+              count: value.count,
+              hasChild: !value.tip,
+              label: value.label
+            };
+          });
+          
           // set parent category id
-          if (parentCategoryId) values.forEach(value => value.parentCategoryId = parentCategoryId);
+          // if (parentCategoryId) values.forEach(value => value.parentCategoryId = parentCategoryId);
+          if (parentCategoryId) __zzz__values.forEach(value => value.parentCategoryId = parentCategoryId);
           // set values
-          this.#values.push(...values);
-          resolve(values);
+          // this.#values.push(...values);
+          this.#values.push(...__zzz__values);
+          // resolve(values);
+          resolve(__zzz__values);
         })
         .catch(error => {
           console.error(this, error);
@@ -68,6 +93,10 @@ export default class Attribute {
 
   get source() {
     return this.#obj.source;
+  }
+
+  get order() {
+    return this.#obj.order;
   }
 
   get values() {
