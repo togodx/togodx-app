@@ -4715,7 +4715,7 @@
           _classPrivateFieldGet(this, _ROOT$d).classList.add('-pinsticking');
 
           _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .mapped').textContent = value.mapped ? value.mapped.toLocaleString() : '';
-          _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(2) : '';
+          _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .pvalue').textContent = value.pvalue ? value.pvalue.toExponential(2) : '';
           if (value.mapped === 0) _classPrivateFieldGet(this, _ROOT$d).classList.remove('-pinsticking');else _classPrivateFieldGet(this, _ROOT$d).classList.add('-pinsticking');
         }
       } // accessors
@@ -7015,7 +7015,7 @@
               count: datum.count,
               mapped: datum.mapped,
               label: datum.label,
-              pValue: datum.pvalue
+              pvalue: datum.pvalue
             };
           });
 
@@ -7913,10 +7913,10 @@
             value: "".concat(value.userValueCount.toLocaleString(), " / ").concat(value.count.toLocaleString())
           });
 
-          if (userValue !== null && userValue !== void 0 && userValue.pValue) {
+          if (userValue !== null && userValue !== void 0 && userValue.pvalue) {
             values.push({
               key: 'P-value',
-              value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(3)
+              value: userValue.pvalue === 1 ? 1 : userValue.pvalue.toExponential(3)
             });
           }
         } else {
@@ -8027,38 +8027,38 @@
           value.elm.classList.add('-pinsticking'); // pin
 
           var ratio,
-              pValueGreaterThan = 1;
+              pvalueGreaterThan = 1;
           ratio = userValue.mapped / value.count;
           ratio = ratio > 1 ? 1 : ratio;
 
-          if (userValue.pValue) {
+          if (userValue.pvalue) {
             switch (true) {
-              case userValue.pValue < 0.001:
-                pValueGreaterThan = '<0.001';
+              case userValue.pvalue < 0.001:
+                pvalueGreaterThan = '<0.001';
                 break;
 
-              case userValue.pValue < 0.005:
-                pValueGreaterThan = '<0.005';
+              case userValue.pvalue < 0.005:
+                pvalueGreaterThan = '<0.005';
                 break;
 
-              case userValue.pValue < 0.01:
-                pValueGreaterThan = '<0.01';
+              case userValue.pvalue < 0.01:
+                pvalueGreaterThan = '<0.01';
                 break;
 
-              case userValue.pValue < 0.05:
-                pValueGreaterThan = '<0.05';
+              case userValue.pvalue < 0.05:
+                pvalueGreaterThan = '<0.05';
                 break;
 
-              case userValue.pValue < 0.1:
-                pValueGreaterThan = '<0.1';
+              case userValue.pvalue < 0.1:
+                pvalueGreaterThan = '<0.1';
                 break;
 
-              case userValue.pValue < 1:
-                pValueGreaterThan = '<1';
+              case userValue.pvalue < 1:
+                pvalueGreaterThan = '<1';
                 break;
             }
           } else {
-            pValueGreaterThan = 1;
+            pvalueGreaterThan = 1;
           }
 
           var size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
@@ -8066,7 +8066,7 @@
           value.pin.style.height = size + 'px';
           value.icon.style.fontSize = size + 'px';
           value.userValueCount = userValue.mapped;
-          value.elm.dataset.pValueGreaterThan = pValueGreaterThan;
+          value.elm.dataset.pvalueGreaterThan = pvalueGreaterThan;
         } else {
           value.elm.classList.remove('-pinsticking');
         }
@@ -10878,7 +10878,7 @@
           count: datum.count,
           mapped: datum.mapped,
           label: datum.label,
-          pValue: datum.pvalue
+          pvalue: datum.pvalue
         };
       }); // dispatch event
 

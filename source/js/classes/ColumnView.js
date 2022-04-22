@@ -153,7 +153,7 @@ export default class ColumnView {
                 count: datum.count,
                 mapped: datum.mapped,
                 label: datum.label,
-                pValue: datum.pvalue,
+                pvalue: datum.pvalue,
               }
             });
     

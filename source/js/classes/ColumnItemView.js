@@ -105,7 +105,7 @@ export default class ColumnItemView {
     if (value) {
       this.#ROOT.classList.add('-pinsticking');
       this.#ROOT.querySelector(':scope > .mapped').textContent = value.mapped ? value.mapped.toLocaleString() : '';
-      this.#ROOT.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(2) : '';
+      this.#ROOT.querySelector(':scope > .pvalue').textContent = value.pvalue ? value.pvalue.toExponential(2) : '';
       if (value.mapped === 0) this.#ROOT.classList.remove('-pinsticking');
       else this.#ROOT.classList.add('-pinsticking');
 
