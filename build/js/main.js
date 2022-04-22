@@ -4714,9 +4714,9 @@
         if (value) {
           _classPrivateFieldGet(this, _ROOT$d).classList.add('-pinsticking');
 
-          _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .mapped').textContent = value.hit_count ? value.hit_count.toLocaleString() : '';
+          _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .mapped').textContent = value.mapped ? value.mapped.toLocaleString() : '';
           _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(2) : '';
-          if (value.hit_count === 0) _classPrivateFieldGet(this, _ROOT$d).classList.remove('-pinsticking');else _classPrivateFieldGet(this, _ROOT$d).classList.add('-pinsticking');
+          if (value.mapped === 0) _classPrivateFieldGet(this, _ROOT$d).classList.remove('-pinsticking');else _classPrivateFieldGet(this, _ROOT$d).classList.add('-pinsticking');
         }
       } // accessors
 
@@ -7013,7 +7013,7 @@
             return {
               node: datum.node,
               count: datum.count,
-              hit_count: datum.mapped,
+              mapped: datum.mapped,
               label: datum.label,
               pValue: datum.pvalue
             };
@@ -7906,7 +7906,7 @@
           return userValue.node === value.node;
         });
 
-        if (userValue !== null && userValue !== void 0 && userValue.hit_count) {
+        if (userValue !== null && userValue !== void 0 && userValue.mapped) {
           // does not have user value
           values.push({
             key: 'Count',
@@ -8023,12 +8023,12 @@
           return userValue.node === value.node;
         });
 
-        if (userValue !== null && userValue !== void 0 && userValue.hit_count) {
+        if (userValue !== null && userValue !== void 0 && userValue.mapped) {
           value.elm.classList.add('-pinsticking'); // pin
 
           var ratio,
               pValueGreaterThan = 1;
-          ratio = userValue.hit_count / value.count;
+          ratio = userValue.mapped / value.count;
           ratio = ratio > 1 ? 1 : ratio;
 
           if (userValue.pValue) {
@@ -8065,7 +8065,7 @@
           value.pin.style.width = size + 'px';
           value.pin.style.height = size + 'px';
           value.icon.style.fontSize = size + 'px';
-          value.userValueCount = userValue.hit_count;
+          value.userValueCount = userValue.mapped;
           value.elm.dataset.pValueGreaterThan = pValueGreaterThan;
         } else {
           value.elm.classList.remove('-pinsticking');
@@ -10876,7 +10876,7 @@
         return {
           node: datum.node,
           count: datum.count,
-          hit_count: datum.mapped,
+          mapped: datum.mapped,
           label: datum.label,
           pValue: datum.pvalue
         };

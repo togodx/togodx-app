@@ -104,9 +104,9 @@ export default class ColumnItemView {
     const value = values.find(value => value.node === this.#node);
     if (value) {
       this.#ROOT.classList.add('-pinsticking');
-      this.#ROOT.querySelector(':scope > .mapped').textContent = value.hit_count ? value.hit_count.toLocaleString() : '';
+      this.#ROOT.querySelector(':scope > .mapped').textContent = value.mapped ? value.mapped.toLocaleString() : '';
       this.#ROOT.querySelector(':scope > .pvalue').textContent = value.pValue ? value.pValue.toExponential(2) : '';
-      if (value.hit_count === 0) this.#ROOT.classList.remove('-pinsticking');
+      if (value.mapped === 0) this.#ROOT.classList.remove('-pinsticking');
       else this.#ROOT.classList.add('-pinsticking');
 
     }

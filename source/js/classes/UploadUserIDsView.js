@@ -136,7 +136,7 @@ export default class UploadUserIDsView {
           return {
             node: datum.node,
             count: datum.count,
-            hit_count: datum.mapped,
+            mapped: datum.mapped,
             label: datum.label,
             pValue: datum.pvalue,
           }
