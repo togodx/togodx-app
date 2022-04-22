@@ -35,23 +35,11 @@ export default class Attribute {
         .then(responce => responce.json())
         .then(values => {
 
-          const __zzz__values = values.map(value => {
-            return {
-              node: value.node,
-              count: value.count,
-              tip: value.tip,
-              label: value.label
-            };
-          });
-          
-          // set parent category id
-          // if (parentNode) values.forEach(value => value.parentNode = parentNode);
-          if (parentNode) __zzz__values.forEach(value => value.parentNode = parentNode);
+          // set parent node
+          if (parentNode) values.forEach(value => value.parentNode = parentNode);
           // set values
-          // this.#values.push(...values);
-          this.#values.push(...__zzz__values);
-          // resolve(values);
-          resolve(__zzz__values);
+          this.#values.push(...values);
+          resolve(values);
         })
         .catch(error => {
           console.error(this, error);

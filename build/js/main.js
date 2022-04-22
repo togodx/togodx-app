@@ -2783,26 +2783,14 @@
             }).then(function (values) {
               var _classPrivateFieldGet2;
 
-              var __zzz__values = values.map(function (value) {
-                return {
-                  node: value.node,
-                  count: value.count,
-                  tip: value.tip,
-                  label: value.label
-                };
-              }); // set parent category id
-              // if (parentNode) values.forEach(value => value.parentNode = parentNode);
-
-
-              if (parentNode) __zzz__values.forEach(function (value) {
+              // set parent node
+              if (parentNode) values.forEach(function (value) {
                 return value.parentNode = parentNode;
               }); // set values
-              // this.#values.push(...values);
 
-              (_classPrivateFieldGet2 = _classPrivateFieldGet(_this, _values$1)).push.apply(_classPrivateFieldGet2, _toConsumableArray(__zzz__values)); // resolve(values);
+              (_classPrivateFieldGet2 = _classPrivateFieldGet(_this, _values$1)).push.apply(_classPrivateFieldGet2, _toConsumableArray(values));
 
-
-              resolve(__zzz__values);
+              resolve(values);
             }).catch(function (error) {
               console.error(_this, error);
               reject(error);
