@@ -58,7 +58,7 @@ export default class ColumnItemView {
     DefaultEventEmitter.addEventListener(event.mutateAttributeCondition, ({detail: {action, keyCondition}}) => {
       if (action === 'remove') {
         if (column.attributeId === keyCondition.attributeId) {
-          if (keyCondition.parentCategoryId && node === keyCondition.parentCategoryId) {
+          if (keyCondition.parentNode && node === keyCondition.parentNode) {
             this.#INPUT_KEY.checked = action === 'add';
           }
         }

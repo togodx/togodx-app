@@ -13,14 +13,14 @@ export default class Attribute {
 
   // public Methods
 
-  fetchValuesWithParentCategoryId(parentCategoryId) {
+  fetchValuesWithParentCategoryId(parentNode) {
     return new Promise((resolve, reject) => {
-      const values = this.#values.filter(value => value.parentCategoryId === parentCategoryId);
+      const values = this.#values.filter(value => value.parentNode === parentNode);
       if (values.length > 0) {
         resolve(values);
       } else {
         const body = {};
-        if (parentCategoryId) body.node = parentCategoryId;
+        if (parentNode) body.node = parentNode;
         if (this.order) body.order = this.order;
         fetch(
           this.api,
@@ -45,8 +45,8 @@ export default class Attribute {
           });
           
           // set parent category id
-          // if (parentCategoryId) values.forEach(value => value.parentCategoryId = parentCategoryId);
-          if (parentCategoryId) __zzz__values.forEach(value => value.parentCategoryId = parentCategoryId);
+          // if (parentNode) values.forEach(value => value.parentNode = parentNode);
+          if (parentNode) __zzz__values.forEach(value => value.parentNode = parentNode);
           // set values
           // this.#values.push(...values);
           this.#values.push(...__zzz__values);

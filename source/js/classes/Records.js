@@ -83,9 +83,9 @@ class Records {
     return attribute.getValue(node);
   }
 
-  getValuesWithParentCategoryId(attributeId, parentCategoryId) {
+  getValuesWithParentCategoryId(attributeId, parentNode) {
     const attribute = this.getAttribute(attributeId);
-    return attribute.values.filter(value => value.parentCategoryId === parentCategoryId);
+    return attribute.values.filter(value => value.parentNode === parentNode);
   }
 
   getAncestors(attributeId, node) {
@@ -95,7 +95,7 @@ class Records {
     do { // find ancestors
       parent = attribute.values.find(value => value.node === node);
       if (parent) ancestors.unshift(parent);
-      node = parent?.parentCategoryId;
+      node = parent?.parentNode;
     } while (parent);
     ancestors.pop();
     return ancestors;

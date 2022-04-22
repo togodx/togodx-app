@@ -29,12 +29,12 @@ export default class StackingConditionView {
     this.#ROOT.classList.add('stacking-condition-view');
     this.#ROOT.dataset.catexxxgoryId = condition.catexxxgoryId;
     this.#ROOT.dataset.attributeId = condition.attributeId;
-    if (condition.parentCategoryId) this.#ROOT.dataset.parentCategoryId = condition.parentCategoryId;
+    if (condition.parentNode) this.#ROOT.dataset.parentNode = condition.parentNode;
     // make view
     let label, ancestorLabels = [Records.getCatexxxgory(condition.catexxxgoryId).label];
     switch(true) {
       case this.#condition instanceof KeyCondition: {
-        if (condition.parentCategoryId) {
+        if (condition.parentNode) {
           const getValue = () => {
             const value = condition.value;
             if (value) {
@@ -88,7 +88,7 @@ export default class StackingConditionView {
       switch (true) {
         case this.#condition instanceof KeyCondition:
           // notify
-          ConditionBuilder.removeAttribute(this.#condition.attributeId, this.#condition.parentCategoryId);
+          ConditionBuilder.removeAttribute(this.#condition.attributeId, this.#condition.parentNode);
           break;
         case this.#condition instanceof ValuesCondition:
           for (const label of this.#LABELS.querySelectorAll(':scope > .label')) {
@@ -122,7 +122,7 @@ export default class StackingConditionView {
   removeAttribute(keyCondition) {
     const isMatch =
       (keyCondition.attributeId === this.#condition.attributeId) &&
-      (keyCondition.parentCategoryId ? keyCondition.parentCategoryId === this.#condition.parentCategoryId : true);
+      (keyCondition.parentNode ? keyCondition.parentNode === this.#condition.parentNode : true);
     if (isMatch) this.#ROOT.parentNode.removeChild(this.#ROOT);
     return isMatch;
   }

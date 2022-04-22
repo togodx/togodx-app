@@ -14,18 +14,18 @@ export default class ColumnView {
   #depth;
   #selector;
   #max;
-  #parentCategoryId;
+  #parentNode;
   #columnItemViews;
   #cachedUserValues;
   #ROOT;
   #TBODY;
 
-  constructor(selector, values, depth, parentCategoryId) {
+  constructor(selector, values, depth, parentNode) {
 
     // set members
     this.#depth = depth;
     this.#selector = selector;
-    this.#parentCategoryId = parentCategoryId;
+    this.#parentNode = parentNode;
     this.#cachedUserValues = new Map();
 
     // draw
@@ -45,7 +45,7 @@ export default class ColumnView {
     this.#ROOT = document.createElement('div');
     this.#ROOT.classList.add('column');
     this.#ROOT.dataset.capturingCollapse = true;
-    this.#ROOT.dataset.parentCategoryId = this.#parentCategoryId ?? '';
+    this.#ROOT.dataset.parentNode = this.#parentNode ?? '';
     this.#max = 0;
     this.#ROOT.innerHTML = `
     <table>
@@ -172,7 +172,7 @@ export default class ColumnView {
 
     // user IDs
     if (document.body.classList.contains('-showuserids') && ConditionBuilder.userIds.length > 0) {
-      this.#getUserValues(this.#selector.attributeId, this.#parentCategoryId)
+      this.#getUserValues(this.#selector.attributeId, this.#parentNode)
         .then(values => {
           console.log(values)
           this.#columnItemViews.forEach(columnItemView => columnItemView.setUserValues(values));
@@ -184,15 +184,15 @@ export default class ColumnView {
     e.stopPropagation();
     const checkbox = e.target;
     const ancestors = [];
-    let parentCategoryId;
+    let parentNode;
     let column = checkbox.closest('.column');
     do { // find ancestors
-      parentCategoryId = column?.dataset.parentCategoryId;
-      if (parentCategoryId) {
-        ancestors.unshift(parentCategoryId);
+      parentNode = column?.dataset.parentNode;
+      if (parentNode) {
+        ancestors.unshift(parentNode);
         column = column.previousElementSibling;
       }
-    } while (parentCategoryId);
+    } while (parentNode);
     if (checkbox.checked) { // add
       ConditionBuilder.addAttributeValue(
         this.attributeId,
@@ -228,8 +228,8 @@ export default class ColumnView {
     return this.#selector.attributeId;
   }
 
-  get parentCategoryId() {
-    return this.#parentCategoryId;
+  get parentNode() {
+    return this.#parentNode;
   }
 
   get rootNode() {

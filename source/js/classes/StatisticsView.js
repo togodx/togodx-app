@@ -32,8 +32,8 @@ export default class StatisticsView {
     `;
 
     // display order of bar chart
-    if (condition.parentCategoryId) {
-      this.#referenceValues = Records.getValuesWithParentCategoryId(this.#attributeId, condition.parentCategoryId);
+    if (condition.parentNode) {
+      this.#referenceValues = Records.getValuesWithParentCategoryId(this.#attributeId, condition.parentNode);
     } else {
       this.#referenceValues = Records.getAttribute(this.#attributeId).values;
     }

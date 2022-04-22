@@ -54,7 +54,7 @@ export default class ColumnSelectorView {
 
   #getColumn(node, depth) {
     return new Promise((resolve, reject) => {
-      const columnView = this.#columnViews.find(columnView => columnView.parentCategoryId === node);
+      const columnView = this.#columnViews.find(columnView => columnView.parentNode === node);
       if (columnView) {
         resolve(columnView);
       } else {
@@ -71,8 +71,8 @@ export default class ColumnSelectorView {
     });
   }
 
-  #makeCoumnView(values, depth, parentCategoryId) {
-    const columnView = new ColumnView(this, values, depth, parentCategoryId);
+  #makeCoumnView(values, depth, parentNode) {
+    const columnView = new ColumnView(this, values, depth, parentNode);
     this.#columnViews.push(columnView);
     return columnView;
   }

@@ -29,7 +29,7 @@ export default class DXCondition {
         return dxCondition.keyConditions.findIndex(newKeyCondition => {
           return (
             keyCondition.attributeId === newKeyCondition.attributeId &&
-            keyCondition.parentCategoryId === newKeyCondition.parentCategoryId
+            keyCondition.parentNode === newKeyCondition.parentNode
           );
         }) !== -1;
       });
@@ -55,7 +55,7 @@ export default class DXCondition {
   }
 
   #copyKeyConditions(keyConditions) {
-    return keyConditions.map(keyCondition => new KeyCondition(keyCondition.attributeId, keyCondition.parentCategoryId));
+    return keyConditions.map(keyCondition => new KeyCondition(keyCondition.attributeId, keyCondition.parentNode));
   }
 
   #copyValuesConditions(valuesConditions) {

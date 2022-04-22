@@ -3,13 +3,13 @@ import Records from "./Records";
 
 export default class KeyCondition extends BaseCondition {
 
-  #parentCategoryId;
+  #parentNode;
   #value;
   #ancestors;
 
-  constructor(attributeId, parentCategoryId) {
+  constructor(attributeId, parentNode) {
     super(attributeId);
-    this.#parentCategoryId = parentCategoryId;
+    this.#parentNode = parentNode;
   }
 
 
@@ -18,13 +18,13 @@ export default class KeyCondition extends BaseCondition {
   /**
    * 
    * @param {String} attributeId 
-   * @param {String} parentCategoryId 
+   * @param {String} parentNode 
    * @return {Boolean}
    */
-  isSameCondition(attributeId, parentCategoryId) {
+  isSameCondition(attributeId, parentNode) {
     if (attributeId === this._attributeId) {
-      if (parentCategoryId) {
-        return parentCategoryId === this.#parentCategoryId;
+      if (parentNode) {
+        return parentNode === this.#parentNode;
       } else {
         return true;
       }
@@ -38,9 +38,9 @@ export default class KeyCondition extends BaseCondition {
     const key = {
       attributeId: this._attributeId
     };
-    if (this.#parentCategoryId) {
+    if (this.#parentNode) {
       key.id = {
-        node: this.#parentCategoryId,
+        node: this.#parentNode,
         ancestors: this.ancestors
       }
     }
@@ -50,19 +50,19 @@ export default class KeyCondition extends BaseCondition {
 
   // accessor
 
-  get parentCategoryId() {
-    return this.#parentCategoryId;
+  get parentNode() {
+    return this.#parentNode;
   }
 
   get ancestors() {
     if (!this.#ancestors) {
-      this.#ancestors = Records.getAncestors(this._attributeId, this.#parentCategoryId).map(ancestor => ancestor.node);
+      this.#ancestors = Records.getAncestors(this._attributeId, this.#parentNode).map(ancestor => ancestor.node);
     }
     return this.#ancestors;
   }
 
   get label() {
-    if (this.#parentCategoryId) {
+    if (this.#parentNode) {
       return this.value.label;
     } else {
       return this.key.label;
@@ -71,7 +71,7 @@ export default class KeyCondition extends BaseCondition {
 
   get value() {
     if (!this.#value) {
-      this.#value = Records.getValue(this._attributeId, this.#parentCategoryId);
+      this.#value = Records.getValue(this._attributeId, this.#parentNode);
     }
     return this.#value;
   }
@@ -80,7 +80,7 @@ export default class KeyCondition extends BaseCondition {
     const query = {
       attribute: this._attributeId
     };
-    if (this.#parentCategoryId) query.node = this.#parentCategoryId;
+    if (this.#parentNode) query.node = this.#parentNode;
     return query;
   }
 

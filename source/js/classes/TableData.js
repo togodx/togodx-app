@@ -270,7 +270,7 @@ export default class TableData {
       this.#dxCondition.keyConditions.map(keyCondition => {
         return {
           attributeId: keyCondition.attributeId,
-          parentCategoryId: keyCondition.parentCategoryId,
+          parentNode: keyCondition.parentNode,
         }
       }),
       false

@@ -2758,19 +2758,19 @@
 
     _createClass(Attribute, [{
       key: "fetchValuesWithParentCategoryId",
-      value: function fetchValuesWithParentCategoryId(parentCategoryId) {
+      value: function fetchValuesWithParentCategoryId(parentNode) {
         var _this = this;
 
         return new Promise(function (resolve, reject) {
           var values = _classPrivateFieldGet(_this, _values$1).filter(function (value) {
-            return value.parentCategoryId === parentCategoryId;
+            return value.parentNode === parentNode;
           });
 
           if (values.length > 0) {
             resolve(values);
           } else {
             var body = {};
-            if (parentCategoryId) body.node = parentCategoryId;
+            if (parentNode) body.node = parentNode;
             if (_this.order) body.order = _this.order;
             fetch(_this.api, {
               method: 'POST',
@@ -2791,11 +2791,11 @@
                   label: value.label
                 };
               }); // set parent category id
-              // if (parentCategoryId) values.forEach(value => value.parentCategoryId = parentCategoryId);
+              // if (parentNode) values.forEach(value => value.parentNode = parentNode);
 
 
-              if (parentCategoryId) __zzz__values.forEach(function (value) {
-                return value.parentCategoryId = parentCategoryId;
+              if (parentNode) __zzz__values.forEach(function (value) {
+                return value.parentNode = parentNode;
               }); // set values
               // this.#values.push(...values);
 
@@ -2988,10 +2988,10 @@
       }
     }, {
       key: "getValuesWithParentCategoryId",
-      value: function getValuesWithParentCategoryId(attributeId, parentCategoryId) {
+      value: function getValuesWithParentCategoryId(attributeId, parentNode) {
         var attribute = this.getAttribute(attributeId);
         return attribute.values.filter(function (value) {
-          return value.parentCategoryId === parentCategoryId;
+          return value.parentNode === parentNode;
         });
       }
     }, {
@@ -3009,7 +3009,7 @@
             return value.node === node;
           });
           if (parent) ancestors.unshift(parent);
-          node = (_parent = parent) === null || _parent === void 0 ? void 0 : _parent.parentCategoryId;
+          node = (_parent = parent) === null || _parent === void 0 ? void 0 : _parent.parentNode;
         } while (parent);
 
         ancestors.pop();
@@ -3104,7 +3104,7 @@
     return BaseCondition;
   }();
 
-  var _parentCategoryId$1 = /*#__PURE__*/new WeakMap();
+  var _parentNode$1 = /*#__PURE__*/new WeakMap();
 
   var _value = /*#__PURE__*/new WeakMap();
 
@@ -3115,14 +3115,14 @@
 
     var _super = _createSuper(KeyCondition);
 
-    function KeyCondition(attributeId, parentCategoryId) {
+    function KeyCondition(attributeId, parentNode) {
       var _this;
 
       _classCallCheck(this, KeyCondition);
 
       _this = _super.call(this, attributeId);
 
-      _classPrivateFieldInitSpec(_assertThisInitialized(_this), _parentCategoryId$1, {
+      _classPrivateFieldInitSpec(_assertThisInitialized(_this), _parentNode$1, {
         writable: true,
         value: void 0
       });
@@ -3137,7 +3137,7 @@
         value: void 0
       });
 
-      _classPrivateFieldSet(_assertThisInitialized(_this), _parentCategoryId$1, parentCategoryId);
+      _classPrivateFieldSet(_assertThisInitialized(_this), _parentNode$1, parentNode);
 
       return _this;
     } // methods
@@ -3145,17 +3145,17 @@
     /**
      * 
      * @param {String} attributeId 
-     * @param {String} parentCategoryId 
+     * @param {String} parentNode 
      * @return {Boolean}
      */
 
 
     _createClass(KeyCondition, [{
       key: "isSameCondition",
-      value: function isSameCondition(attributeId, parentCategoryId) {
+      value: function isSameCondition(attributeId, parentNode) {
         if (attributeId === this._attributeId) {
-          if (parentCategoryId) {
-            return parentCategoryId === _classPrivateFieldGet(this, _parentCategoryId$1);
+          if (parentNode) {
+            return parentNode === _classPrivateFieldGet(this, _parentNode$1);
           } else {
             return true;
           }
@@ -3170,9 +3170,9 @@
           attributeId: this._attributeId
         };
 
-        if (_classPrivateFieldGet(this, _parentCategoryId$1)) {
+        if (_classPrivateFieldGet(this, _parentNode$1)) {
           key.id = {
-            node: _classPrivateFieldGet(this, _parentCategoryId$1),
+            node: _classPrivateFieldGet(this, _parentNode$1),
             ancestors: this.ancestors
           };
         }
@@ -3181,15 +3181,15 @@
       } // accessor
 
     }, {
-      key: "parentCategoryId",
+      key: "parentNode",
       get: function get() {
-        return _classPrivateFieldGet(this, _parentCategoryId$1);
+        return _classPrivateFieldGet(this, _parentNode$1);
       }
     }, {
       key: "ancestors",
       get: function get() {
         if (!_classPrivateFieldGet(this, _ancestors)) {
-          _classPrivateFieldSet(this, _ancestors, Records$1.getAncestors(this._attributeId, _classPrivateFieldGet(this, _parentCategoryId$1)).map(function (ancestor) {
+          _classPrivateFieldSet(this, _ancestors, Records$1.getAncestors(this._attributeId, _classPrivateFieldGet(this, _parentNode$1)).map(function (ancestor) {
             return ancestor.node;
           }));
         }
@@ -3199,7 +3199,7 @@
     }, {
       key: "label",
       get: function get() {
-        if (_classPrivateFieldGet(this, _parentCategoryId$1)) {
+        if (_classPrivateFieldGet(this, _parentNode$1)) {
           return this.value.label;
         } else {
           return this.key.label;
@@ -3209,7 +3209,7 @@
       key: "value",
       get: function get() {
         if (!_classPrivateFieldGet(this, _value)) {
-          _classPrivateFieldSet(this, _value, Records$1.getValue(this._attributeId, _classPrivateFieldGet(this, _parentCategoryId$1)));
+          _classPrivateFieldSet(this, _value, Records$1.getValue(this._attributeId, _classPrivateFieldGet(this, _parentNode$1)));
         }
 
         return _classPrivateFieldGet(this, _value);
@@ -3220,7 +3220,7 @@
         var query = {
           attribute: this._attributeId
         };
-        if (_classPrivateFieldGet(this, _parentCategoryId$1)) query.node = _classPrivateFieldGet(this, _parentCategoryId$1);
+        if (_classPrivateFieldGet(this, _parentNode$1)) query.node = _classPrivateFieldGet(this, _parentNode$1);
         return query;
       }
     }]);
@@ -3368,7 +3368,7 @@
         if (this.keyConditions.length === dxCondition.keyConditions.length) {
           matchKeys = this.keyConditions.every(function (keyCondition) {
             return dxCondition.keyConditions.findIndex(function (newKeyCondition) {
-              return keyCondition.attributeId === newKeyCondition.attributeId && keyCondition.parentCategoryId === newKeyCondition.parentCategoryId;
+              return keyCondition.attributeId === newKeyCondition.attributeId && keyCondition.parentNode === newKeyCondition.parentNode;
             }) !== -1;
           });
         } // values
@@ -3427,7 +3427,7 @@
 
   function _copyKeyConditions2(keyConditions) {
     return keyConditions.map(function (keyCondition) {
-      return new KeyCondition(keyCondition.attributeId, keyCondition.parentCategoryId);
+      return new KeyCondition(keyCondition.attributeId, keyCondition.parentNode);
     });
   }
 
@@ -3596,10 +3596,10 @@
       }
     }, {
       key: "addAttribute",
-      value: function addAttribute(attributeId, parentCategoryId) {
+      value: function addAttribute(attributeId, parentNode) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
         // store
-        var keyCondition = new KeyCondition(attributeId, parentCategoryId);
+        var keyCondition = new KeyCondition(attributeId, parentNode);
 
         _classPrivateFieldGet(this, _keyConditions).push(keyCondition); // evaluate
 
@@ -3647,12 +3647,12 @@
       }
     }, {
       key: "removeAttribute",
-      value: function removeAttribute(attributeId, parentCategoryId) {
+      value: function removeAttribute(attributeId, parentNode) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
         // remove from store
         var index = _classPrivateFieldGet(this, _keyConditions).findIndex(function (keyCondition) {
-          return keyCondition.isSameCondition(attributeId, parentCategoryId);
+          return keyCondition.isSameCondition(attributeId, parentNode);
         });
 
         if (index === -1) return;
@@ -3707,13 +3707,13 @@
 
         // delete existing properties
         while (_classPrivateFieldGet(this, _keyConditions).length > 0) {
-          this.removeAttribute(_classPrivateFieldGet(this, _keyConditions)[0].attributeId, _classPrivateFieldGet(this, _keyConditions)[0].parentCategoryId, false);
+          this.removeAttribute(_classPrivateFieldGet(this, _keyConditions)[0].attributeId, _classPrivateFieldGet(this, _keyConditions)[0].parentNode, false);
         }
 
         conditions.forEach(function (_ref) {
           var attributeId = _ref.attributeId,
-              parentCategoryId = _ref.parentCategoryId;
-          return _this.addAttribute(attributeId, parentCategoryId, false);
+              parentNode = _ref.parentNode;
+          return _this.addAttribute(attributeId, parentNode, false);
         }); // post processing (permalink, evaluate)
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
@@ -3795,7 +3795,7 @@
         });
 
         if (keyConditions) (_nodes$keys = nodes.keys).push.apply(_nodes$keys, _toConsumableArray(keyConditions.map(function (keyCondiiton) {
-          return keyCondiiton.parentCategoryId;
+          return keyCondiiton.parentNode;
         })));
         if (valuesCondition) (_nodes$values = nodes.values).push.apply(_nodes$values, _toConsumableArray(valuesCondition.nodes));
         return nodes;
@@ -4041,9 +4041,9 @@
     while (_classPrivateFieldGet(this, _keyConditions).length > 0) {
       var _classPrivateFieldGet2 = _classPrivateFieldGet(this, _keyConditions)[0],
           attributeId = _classPrivateFieldGet2.attributeId,
-          parentCategoryId = _classPrivateFieldGet2.parentCategoryId;
+          parentNode = _classPrivateFieldGet2.parentNode;
 
-      this.removeAttribute(attributeId, parentCategoryId, false);
+      this.removeAttribute(attributeId, parentNode, false);
     }
 
     while (_classPrivateFieldGet(this, _valuesConditions).length > 0) {
@@ -4066,7 +4066,7 @@
           id = _ref6.id;
       return {
         attributeId: attributeId,
-        parentCategoryId: id === null || id === void 0 ? void 0 : id.node
+        parentNode: id === null || id === void 0 ? void 0 : id.node
       };
     });
     var values2 = values.map(function (_ref7) {
@@ -4136,7 +4136,7 @@
 
       _classPrivateFieldGet(this, _ROOT$e).dataset.catexxxgoryId = condition.catexxxgoryId;
       _classPrivateFieldGet(this, _ROOT$e).dataset.attributeId = condition.attributeId;
-      if (condition.parentCategoryId) _classPrivateFieldGet(this, _ROOT$e).dataset.parentCategoryId = condition.parentCategoryId; // make view
+      if (condition.parentNode) _classPrivateFieldGet(this, _ROOT$e).dataset.parentNode = condition.parentNode; // make view
 
       var _label,
           _ancestorLabels = [Records$1.getCatexxxgory(condition.catexxxgoryId).label];
@@ -4144,7 +4144,7 @@
       switch (true) {
         case _classPrivateFieldGet(this, _condition) instanceof KeyCondition:
           {
-            if (condition.parentCategoryId) {
+            if (condition.parentNode) {
               var getValue = function getValue() {
                 var value = condition.value;
 
@@ -4210,7 +4210,7 @@
     }, {
       key: "removeAttribute",
       value: function removeAttribute(keyCondition) {
-        var isMatch = keyCondition.attributeId === _classPrivateFieldGet(this, _condition).attributeId && (keyCondition.parentCategoryId ? keyCondition.parentCategoryId === _classPrivateFieldGet(this, _condition).parentCategoryId : true);
+        var isMatch = keyCondition.attributeId === _classPrivateFieldGet(this, _condition).attributeId && (keyCondition.parentNode ? keyCondition.parentNode === _classPrivateFieldGet(this, _condition).parentNode : true);
         if (isMatch) _classPrivateFieldGet(this, _ROOT$e).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$e));
         return isMatch;
       }
@@ -4272,7 +4272,7 @@
       switch (true) {
         case _classPrivateFieldGet(_this3, _condition) instanceof KeyCondition:
           // notify
-          ConditionBuilder$1.removeAttribute(_classPrivateFieldGet(_this3, _condition).attributeId, _classPrivateFieldGet(_this3, _condition).parentCategoryId);
+          ConditionBuilder$1.removeAttribute(_classPrivateFieldGet(_this3, _condition).attributeId, _classPrivateFieldGet(_this3, _condition).parentNode);
           break;
 
         case _classPrivateFieldGet(_this3, _condition) instanceof ValuesCondition:
@@ -4673,7 +4673,7 @@
 
         if (action === 'remove') {
           if (column.attributeId === keyCondition.attributeId) {
-            if (keyCondition.parentCategoryId && node === keyCondition.parentCategoryId) {
+            if (keyCondition.parentNode && node === keyCondition.parentNode) {
               _classPrivateFieldGet(_this, _INPUT_KEY).checked = action === 'add';
             }
           }
@@ -6708,7 +6708,7 @@
 
   var _max = /*#__PURE__*/new WeakMap();
 
-  var _parentCategoryId = /*#__PURE__*/new WeakMap();
+  var _parentNode = /*#__PURE__*/new WeakMap();
 
   var _columnItemViews = /*#__PURE__*/new WeakMap();
 
@@ -6731,7 +6731,7 @@
   var _existed = /*#__PURE__*/new WeakMap();
 
   var ColumnView = /*#__PURE__*/function () {
-    function ColumnView(selector, _values, depth, parentCategoryId) {
+    function ColumnView(selector, _values, depth, parentNode) {
       var _this = this;
 
       _classCallCheck(this, ColumnView);
@@ -6766,7 +6766,7 @@
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _parentCategoryId, {
+      _classPrivateFieldInitSpec(this, _parentNode, {
         writable: true,
         value: void 0
       });
@@ -6796,7 +6796,7 @@
 
       _classPrivateFieldSet(this, _selector, selector);
 
-      _classPrivateFieldSet(this, _parentCategoryId, parentCategoryId);
+      _classPrivateFieldSet(this, _parentNode, parentNode);
 
       _classPrivateFieldSet(this, _cachedUserValues, new Map()); // draw
 
@@ -6822,7 +6822,7 @@
 
 
         if (document.body.classList.contains('-showuserids') && ConditionBuilder$1.userIds.length > 0) {
-          _classPrivateMethodGet(this, _getUserValues, _getUserValues2).call(this, _classPrivateFieldGet(this, _selector).attributeId, _classPrivateFieldGet(this, _parentCategoryId)).then(function (values) {
+          _classPrivateMethodGet(this, _getUserValues, _getUserValues2).call(this, _classPrivateFieldGet(this, _selector).attributeId, _classPrivateFieldGet(this, _parentNode)).then(function (values) {
             console.log(values);
 
             _classPrivateFieldGet(_this2, _columnItemViews).forEach(function (columnItemView) {
@@ -6837,20 +6837,20 @@
         e.stopPropagation();
         var checkbox = e.target;
         var ancestors = [];
-        var parentCategoryId;
+        var parentNode;
         var column = checkbox.closest('.column');
 
         do {
           var _column;
 
           // find ancestors
-          parentCategoryId = (_column = column) === null || _column === void 0 ? void 0 : _column.dataset.parentCategoryId;
+          parentNode = (_column = column) === null || _column === void 0 ? void 0 : _column.dataset.parentNode;
 
-          if (parentCategoryId) {
-            ancestors.unshift(parentCategoryId);
+          if (parentNode) {
+            ancestors.unshift(parentNode);
             column = column.previousElementSibling;
           }
-        } while (parentCategoryId);
+        } while (parentNode);
 
         if (checkbox.checked) {
           // add
@@ -6882,9 +6882,9 @@
         return _classPrivateFieldGet(this, _selector).attributeId;
       }
     }, {
-      key: "parentCategoryId",
+      key: "parentNode",
       get: function get() {
-        return _classPrivateFieldGet(this, _parentCategoryId);
+        return _classPrivateFieldGet(this, _parentNode);
       }
     }, {
       key: "rootNode",
@@ -6906,7 +6906,7 @@
     _classPrivateFieldGet(this, _ROOT$c).classList.add('column');
 
     _classPrivateFieldGet(this, _ROOT$c).dataset.capturingCollapse = true;
-    _classPrivateFieldGet(this, _ROOT$c).dataset.parentCategoryId = (_classPrivateFieldGet2 = _classPrivateFieldGet(this, _parentCategoryId)) !== null && _classPrivateFieldGet2 !== void 0 ? _classPrivateFieldGet2 : '';
+    _classPrivateFieldGet(this, _ROOT$c).dataset.parentNode = (_classPrivateFieldGet2 = _classPrivateFieldGet(this, _parentNode)) !== null && _classPrivateFieldGet2 !== void 0 ? _classPrivateFieldGet2 : '';
 
     _classPrivateFieldSet(this, _max, 0);
 
@@ -7249,7 +7249,7 @@
 
     return new Promise(function (resolve, reject) {
       var columnView = _classPrivateFieldGet(_this2, _columnViews).find(function (columnView) {
-        return columnView.parentCategoryId === node;
+        return columnView.parentNode === node;
       });
 
       if (columnView) {
@@ -7268,8 +7268,8 @@
     });
   }
 
-  function _makeCoumnView2(values, depth, parentCategoryId) {
-    var columnView = new ColumnView(this, values, depth, parentCategoryId);
+  function _makeCoumnView2(values, depth, parentNode) {
+    var columnView = new ColumnView(this, values, depth, parentNode);
 
     _classPrivateFieldGet(this, _columnViews).push(columnView);
 
@@ -8212,7 +8212,7 @@
       var _ref$detail = _ref.detail,
           action = _ref$detail.action,
           keyCondition = _ref$detail.keyCondition;
-      if (keyCondition.parentCategoryId !== undefined) return;
+      if (keyCondition.parentNode !== undefined) return;
 
       switch (action) {
         case 'add':
@@ -8392,8 +8392,8 @@
 
       elm.innerHTML = "\n    <div class=\"statistics\">\n      <div class=\"bars\"></div>\n    </div>\n    <div class=\"loading-view -shown\"></div>\n    "; // display order of bar chart
 
-      if (condition.parentCategoryId) {
-        _classPrivateFieldSet(this, _referenceValues, Records$1.getValuesWithParentCategoryId(_classPrivateFieldGet(this, _attributeId), condition.parentCategoryId));
+      if (condition.parentNode) {
+        _classPrivateFieldSet(this, _referenceValues, Records$1.getValuesWithParentCategoryId(_classPrivateFieldGet(this, _attributeId), condition.parentNode));
       } else {
         _classPrivateFieldSet(this, _referenceValues, Records$1.getAttribute(_classPrivateFieldGet(this, _attributeId)).values);
       } // references
@@ -10031,7 +10031,7 @@
     ConditionBuilder$1.setAttributes(_classPrivateFieldGet(this, _dxCondition).keyConditions.map(function (keyCondition) {
       return {
         attributeId: keyCondition.attributeId,
-        parentCategoryId: keyCondition.parentCategoryId
+        parentNode: keyCondition.parentNode
       };
     }), false); // attribute (classification/distribution)
 

@@ -44,9 +44,9 @@ class ConditionBuilder {
     this.#postProcessing();
   }
 
-  addAttribute(attributeId, parentCategoryId, isFinal = true) {
+  addAttribute(attributeId, parentNode, isFinal = true) {
     // store
-    const keyCondition = new KeyCondition(attributeId, parentCategoryId);
+    const keyCondition = new KeyCondition(attributeId, parentNode);
     this.#keyConditions.push(keyCondition);
     // evaluate
     if (isFinal) this.#postProcessing();
@@ -72,9 +72,9 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  removeAttribute(attributeId, parentCategoryId, isFinal = true) {
+  removeAttribute(attributeId, parentNode, isFinal = true) {
     // remove from store
-    const index = this.#keyConditions.findIndex(keyCondition => keyCondition.isSameCondition(attributeId, parentCategoryId));
+    const index = this.#keyConditions.findIndex(keyCondition => keyCondition.isSameCondition(attributeId, parentNode));
     if (index === -1) return;
     const keyCondition = this.#keyConditions.splice(index, 1)[0];
     // post processing (permalink, evaluate)
@@ -105,10 +105,10 @@ class ConditionBuilder {
   setAttributes(conditions, isFinal = true) {
     // delete existing properties
     while (this.#keyConditions.length > 0) {
-      this.removeAttribute(this.#keyConditions[0].attributeId, this.#keyConditions[0].parentCategoryId, false);
+      this.removeAttribute(this.#keyConditions[0].attributeId, this.#keyConditions[0].parentNode, false);
     };
     // set new properties
-    conditions.forEach(({attributeId, parentCategoryId}) => this.addAttribute(attributeId, parentCategoryId, false));
+    conditions.forEach(({attributeId, parentNode}) => this.addAttribute(attributeId, parentNode, false));
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
   }
@@ -158,7 +158,7 @@ class ConditionBuilder {
     };
     const keyConditions = this.#keyConditions.filter(keyCondition => keyCondition.attributeId === attributeId);
     const valuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.attributeId === attributeId);
-    if (keyConditions) nodes.keys.push(...keyConditions.map(keyCondiiton => keyCondiiton.parentCategoryId));
+    if (keyConditions) nodes.keys.push(...keyConditions.map(keyCondiiton => keyCondiiton.parentNode));
     if (valuesCondition) nodes.values.push(...valuesCondition.nodes);
     return nodes;
   }
@@ -338,8 +338,8 @@ class ConditionBuilder {
 
   #clearConditinos() {
     while (this.#keyConditions.length > 0) {
-      const {attributeId, parentCategoryId} = this.#keyConditions[0];
-      this.removeAttribute(attributeId, parentCategoryId, false);
+      const {attributeId, parentNode} = this.#keyConditions[0];
+      this.removeAttribute(attributeId, parentNode, false);
     };
     while (this.#valuesConditions.length > 0) {
       const {attributeId, nodes} = this.#valuesConditions[0];
@@ -355,7 +355,7 @@ class ConditionBuilder {
     const keys2 = keys.map(({attributeId, id}) => {
       return {
         attributeId,
-        parentCategoryId: id?.node
+        parentNode: id?.node
       }
     });
     const values2 = values.map(({attributeId, ids}) => {
