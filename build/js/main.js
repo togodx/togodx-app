@@ -2787,7 +2787,7 @@
                 return {
                   node: value.node,
                   count: value.count,
-                  hasChild: !value.tip,
+                  tip: value.tip,
                   label: value.label
                 };
               }); // set parent category id
@@ -4591,7 +4591,7 @@
 
       var count = _ref.count,
           node = _ref.node,
-          hasChild = _ref.hasChild,
+          tip = _ref.tip,
           label = _ref.label;
 
       _classCallCheck(this, ColumnItemView);
@@ -4646,10 +4646,10 @@
 
       _classPrivateFieldGet(this, _ROOT$d).classList.add('item');
 
-      if (hasChild) _classPrivateFieldGet(this, _ROOT$d).classList.add('-haschild');
+      if (!tip) _classPrivateFieldGet(this, _ROOT$d).classList.add('-haschild');
       _classPrivateFieldGet(this, _ROOT$d).dataset.id = node;
       _classPrivateFieldGet(this, _ROOT$d).dataset.count = count;
-      _classPrivateFieldGet(this, _ROOT$d).innerHTML = "\n    <td class=\"label\">\n      <label class=\"key\">\n        <input type=\"checkbox\" value=\"".concat(node, "\"").concat(hasChild ? '' : ' disabled', "/>\n        ").concat(label, "\n      </label>\n      <label class=\"value\">\n        <input type=\"checkbox\" value=\"").concat(node, "\"/>\n        ").concat(label, "\n      </label>\n    </td>\n    <td class=\"total\">").concat(count.toLocaleString(), "</td>\n    <td class=\"mapped\"></td>\n    <td class=\"pvalue\"></td>\n    <td class=\"drilldown\"></td>");
+      _classPrivateFieldGet(this, _ROOT$d).innerHTML = "\n    <td class=\"label\">\n      <label class=\"key\">\n        <input type=\"checkbox\" value=\"".concat(node, "\"").concat(!tip ? '' : ' disabled', "/>\n        ").concat(label, "\n      </label>\n      <label class=\"value\">\n        <input type=\"checkbox\" value=\"").concat(node, "\"/>\n        ").concat(label, "\n      </label>\n    </td>\n    <td class=\"total\">").concat(count.toLocaleString(), "</td>\n    <td class=\"mapped\"></td>\n    <td class=\"pvalue\"></td>\n    <td class=\"drilldown\"></td>");
 
       _classPrivateFieldSet(this, _INPUT_VALUE, _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > td.label > label.value > input'));
 
@@ -4697,7 +4697,7 @@
       _classPrivateFieldGet(this, _INPUT_VALUE).addEventListener('click', column.checkValue.bind(column)); // drill down
 
 
-      if (hasChild) {
+      if (!tip) {
         var drilldown = _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .drilldown');
 
         drilldown.addEventListener('click', column.drillDown.bind(column));

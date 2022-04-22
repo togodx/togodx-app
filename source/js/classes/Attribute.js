@@ -39,7 +39,7 @@ export default class Attribute {
             return {
               node: value.node,
               count: value.count,
-              hasChild: !value.tip,
+              tip: value.tip,
               label: value.label
             };
           });

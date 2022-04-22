@@ -13,7 +13,7 @@ export default class ColumnItemView {
   #INPUT_VALUE;
   #INPUT_KEY;
 
-  constructor(column, {count, node, hasChild, label}, index, selectedCategoryIds) {
+  constructor(column, {count, node, tip, label}, index, selectedCategoryIds) {
 
     this.#label = label;
     this.#count = count;
@@ -23,13 +23,13 @@ export default class ColumnItemView {
     // make HTML
     this.#ROOT = document.createElement('tr');
     this.#ROOT.classList.add('item');
-    if (hasChild) this.#ROOT.classList.add('-haschild');
+    if (!tip) this.#ROOT.classList.add('-haschild');
     this.#ROOT.dataset.id = node;
     this.#ROOT.dataset.count = count;
     this.#ROOT.innerHTML = `
     <td class="label">
       <label class="key">
-        <input type="checkbox" value="${node}"${hasChild ? '' : ' disabled'}/>
+        <input type="checkbox" value="${node}"${!tip ? '' : ' disabled'}/>
         ${label}
       </label>
       <label class="value">
@@ -78,7 +78,7 @@ export default class ColumnItemView {
     this.#INPUT_VALUE.addEventListener('click', column.checkValue.bind(column));
 
     // drill down
-    if (hasChild) {
+    if (!tip) {
       const drilldown = this.#ROOT.querySelector(':scope > .drilldown');
       drilldown.addEventListener('click', column.drillDown.bind(column));
     }
