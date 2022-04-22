@@ -32,9 +32,9 @@ export default class TrackOverviewCategorical {
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / sum * 100;
       value.baseColor = util.colorTintByHue(category.color, 360 * index / values.length);
-      const selectedClass = selectedValues.indexOf(value.categoryId) !== -1 ? ' -selected' : '';
+      const selectedClass = selectedValues.indexOf(value.node) !== -1 ? ' -selected' : '';
       return `
-        <li class="track-value-view _catexxxgory-background-color${selectedClass}" style="width: ${width}%;" data-category-id="${value.categoryId}">
+        <li class="track-value-view _catexxxgory-background-color${selectedClass}" style="width: ${width}%;" data-category-id="${value.node}">
           <div class="labels">
             <p>
               <span class="label">${value.label}</span>
@@ -59,7 +59,7 @@ export default class TrackOverviewCategorical {
       const label = `<span class="_catexxxgory-color" data-catexxxgory-id="${category.id}">${value.label}</span>`;
       elm.addEventListener('mouseenter', () => {
         const values = [];
-        const userValue = this.#userValues?.find(userValue => userValue.categoryId === value.categoryId);
+        const userValue = this.#userValues?.find(userValue => userValue.node === value.node);
         if (userValue?.hit_count) {
           // does not have user value
           values.push({
@@ -91,22 +91,22 @@ export default class TrackOverviewCategorical {
       elm.addEventListener('click', () => {
         if (elm.classList.contains('-selected')) {
           elm.classList.remove('-selected');
-          ConditionBuilder.removeAttributeValue(this.#attribute.id, value.categoryId);
+          ConditionBuilder.removeAttributeValue(this.#attribute.id, value.node);
         } else {
           elm.classList.add('-selected');
           ConditionBuilder.addAttributeValue(
             this.#attribute.id,
-            value.categoryId
+            value.node
           );
         }
       });
     });
 
     // event listener
-    DefaultEventEmitter.addEventListener(event.mutateAttributeValueCondition, ({detail: {action, attributeId, categoryId}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateAttributeValueCondition, ({detail: {action, attributeId, node}}) => {
       if (this.#attribute.id === attributeId) {
         this.#values.forEach(value => {
-          if (value.categoryId === categoryId) {
+          if (value.node === node) {
             switch (action) {
               case 'add':
                 value.elm.classList.add('-selected');
@@ -150,7 +150,7 @@ export default class TrackOverviewCategorical {
 
       // mapping
       this.#values.forEach(value => {
-        const userValue = detail.values.find(userValue => userValue.categoryId === value.categoryId);
+        const userValue = detail.values.find(userValue => userValue.node === value.node);
         if (userValue?.hit_count) {
           value.elm.classList.add('-pinsticking');
           // pin

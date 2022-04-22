@@ -59,13 +59,13 @@ export default class ConditionBuilderView {
           break;
       }
     });
-    DefaultEventEmitter.addEventListener(event.mutateAttributeValueCondition, ({detail: {action, attributeId, categoryId}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateAttributeValueCondition, ({detail: {action, attributeId, node}}) => {
       switch (action) {
         case 'add':
-          this.#addAttributeValue(attributeId, categoryId);
+          this.#addAttributeValue(attributeId, node);
           break;
         case 'remove':
-          this.#removeAttributeValue(attributeId, categoryId);
+          this.#removeAttributeValue(attributeId, node);
           break;
       }
     });
@@ -119,23 +119,23 @@ export default class ConditionBuilderView {
     if (this.#properties.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
-  #addAttributeValue(attributeId, categoryId) {
+  #addAttributeValue(attributeId, node) {
     // modifier
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // find a condition view has same attribute id
     const stackingConditionView = this.#propertyValues.find(stackingConditionView => stackingConditionView.sameAttribute(attributeId));
     if (stackingConditionView) {
-      // if it exists, add new categoryId
-      stackingConditionView.addValue(categoryId);
+      // if it exists, add new node
+      stackingConditionView.addValue(node);
     } else {
       // otherwise, make new condition view
-      this.#propertyValues.push(new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', new ValuesCondition(attributeId, [categoryId])));
+      this.#propertyValues.push(new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', new ValuesCondition(attributeId, [node])));
     }
   }
 
-  #removeAttributeValue(attributeId, categoryId) {
+  #removeAttributeValue(attributeId, node) {
     // remove from array
-    const index = this.#propertyValues.findIndex(stackingConditionView => stackingConditionView.removeAttributeValue(attributeId, categoryId));
+    const index = this.#propertyValues.findIndex(stackingConditionView => stackingConditionView.removeAttributeValue(attributeId, node));
     if (index !== -1) this.#propertyValues.splice(index, 1);
     // modifier
     if (this.#propertyValues.length === 0) this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.add('-empty');

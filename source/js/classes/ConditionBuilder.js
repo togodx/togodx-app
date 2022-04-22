@@ -55,20 +55,20 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  addAttributeValue(attributeId, categoryId, ancestors = [], isFinal = true) {
+  addAttributeValue(attributeId, node, ancestors = [], isFinal = true) {
     // find value of same property
     const sameValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.attributeId === attributeId);
     // store
     if (sameValuesCondition) {
-      sameValuesCondition.addCategoryId(categoryId);
+      sameValuesCondition.addCategoryId(node);
     } else {
-      const valuesCondition = new ValuesCondition(attributeId, [categoryId]);
+      const valuesCondition = new ValuesCondition(attributeId, [node]);
       this.#valuesConditions.push(valuesCondition);
     }
     // evaluate
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutateAttributeValueCondition, {detail: {action: 'add', attributeId, categoryId}});
+    const customEvent = new CustomEvent(event.mutateAttributeValueCondition, {detail: {action: 'add', attributeId, node}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
@@ -84,12 +84,12 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  removeAttributeValue(attributeId, categoryId, isFinal = true) {
+  removeAttributeValue(attributeId, node, isFinal = true) {
     // remove from store
     const index = this.#valuesConditions.findIndex(valuesCondition => {
       if (valuesCondition.attributeId === attributeId) {
-        valuesCondition.removeCategoryId(categoryId);
-        return valuesCondition.categoryIds.length === 0;
+        valuesCondition.removeCategoryId(node);
+        return valuesCondition.nodes.length === 0;
       } else {
         return false;
       }
@@ -98,7 +98,7 @@ class ConditionBuilder {
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutateAttributeValueCondition, {detail: {action: 'remove', attributeId, categoryId}});
+    const customEvent = new CustomEvent(event.mutateAttributeValueCondition, {detail: {action: 'remove', attributeId, node}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
@@ -113,24 +113,24 @@ class ConditionBuilder {
     if (isFinal) this.#postProcessing();
   }
 
-  setAttributeValues(attributeId, categoryIds, isFinal = true) {
+  setAttributeValues(attributeId, nodes, isFinal = true) {
     const oldValuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.attributeId === attributeId);
     if (oldValuesCondition) {
       const originalValues = Records.getAttribute(attributeId).values;
       originalValues.forEach(originalValue => {
-        const indexInNew = categoryIds.indexOf(originalValue.categoryId);
-        const indexInOld = oldValuesCondition.categoryIds.indexOf(originalValue.categoryId);
+        const indexInNew = nodes.indexOf(originalValue.node);
+        const indexInOld = oldValuesCondition.nodes.indexOf(originalValue.node);
         if (indexInNew !== -1) {
           // if new value does not exist in old values, add property value
-          if (indexInOld === -1) this.addAttributeValue(attributeId, originalValue.categoryId, [], false);
+          if (indexInOld === -1) this.addAttributeValue(attributeId, originalValue.node, [], false);
         } else {
           // if extra value exists in old values, remove property value
-          if (indexInOld !== -1) this.removeAttributeValue(attributeId, originalValue.categoryId, false);
+          if (indexInOld !== -1) this.removeAttributeValue(attributeId, originalValue.node, false);
         }
       });
     } else {
-      for (const categoryId of categoryIds) {
-        this.addAttributeValue(attributeId, categoryId, [], false);
+      for (const node of nodes) {
+        this.addAttributeValue(attributeId, node, [], false);
       }
     }
     // post processing (permalink, evaluate)
@@ -152,15 +152,15 @@ class ConditionBuilder {
   }
 
   getSelectedCategoryIds(attributeId) {
-    const categoryIds = {
+    const nodes = {
       keys: [],
       values: []
     };
     const keyConditions = this.#keyConditions.filter(keyCondition => keyCondition.attributeId === attributeId);
     const valuesCondition = this.#valuesConditions.find(valuesCondition => valuesCondition.attributeId === attributeId);
-    if (keyConditions) categoryIds.keys.push(...keyConditions.map(keyCondiiton => keyCondiiton.parentCategoryId));
-    if (valuesCondition) categoryIds.values.push(...valuesCondition.categoryIds);
-    return categoryIds;
+    if (keyConditions) nodes.keys.push(...keyConditions.map(keyCondiiton => keyCondiiton.parentCategoryId));
+    if (valuesCondition) nodes.values.push(...valuesCondition.nodes);
+    return nodes;
   }
 
 
@@ -195,7 +195,7 @@ class ConditionBuilder {
     const __zzz__keys = keys.map(key => {
       const zzzKey = {attribute: key.attributeId};
       if (key.id) {
-        zzzKey.node = key.id.categoryId;
+        zzzKey.node = key.id.node;
         if (key.id.ancestors) {
           zzzKey.path = [...key.id.ancestors];
         }
@@ -205,7 +205,7 @@ class ConditionBuilder {
     const __zzz__values = values.map(value => {
       const zzzValue = {attribute: value.attributeId};
       zzzValue.nodes = value.ids.map(id => {
-        const zzzId = {node: id.categoryId};
+        const zzzId = {node: id.node};
         if (id.ancestors) {
           zzzId.path = [...id.ancestors];
         }
@@ -237,7 +237,7 @@ class ConditionBuilder {
       keys: condition.annotations.map(annotation => {
         const zzzKey = {attributeId: annotation.attribute};
         if (annotation.node) {
-          zzzKey.id = {categoryId: annotation.node};
+          zzzKey.id = {node: annotation.node};
           if (annotation.path) {
             zzzKey.id.ancestors = [...annotation.path];
           }
@@ -248,7 +248,7 @@ class ConditionBuilder {
         const zzzValue = {
           attributeId: filter.attribute,
           ids: filter.nodes.map(node => {
-            const zzzNode = {categoryId: node.node};
+            const zzzNode = {node: node.node};
             if (node.path) {
               zzzNode.ancestors = [...node.path];
             }
@@ -272,11 +272,11 @@ class ConditionBuilder {
     if (condition.togoKey) this.#togoKey = condition.togoKey;
     const queue = [];
     const addQueue = (attributeId, id) => {
-      const ancestors = [id.categoryId];
+      const ancestors = [id.node];
       if (id.ancestors) ancestors.push(...id.ancestors);
-      ancestors.forEach(categoryId => {
-        if (queue.findIndex(task => task.attributeId === attributeId && task.categoryId === categoryId) === -1) {
-          queue.push({attributeId, categoryId});
+      ancestors.forEach(node => {
+        if (queue.findIndex(task => task.attributeId === attributeId && task.node === node) === -1) {
+          queue.push({attributeId, node});
         }
       });
     };
@@ -293,17 +293,17 @@ class ConditionBuilder {
 
   #progressQueueOfGettingChildCategoryIds(condition, queue) {
     if (queue.length > 0) {
-      const {attributeId, categoryId} = queue.shift();
-      this.#getChildCategoryIds(attributeId, categoryId)
+      const {attributeId, node} = queue.shift();
+      this.#getChildCategoryIds(attributeId, node)
         .then(() => this.#progressQueueOfGettingChildCategoryIds(condition, queue));
     } else {
       this.#restoreConditions(condition);
     }
   }
 
-  #getChildCategoryIds(attributeId, categoryId) {
+  #getChildCategoryIds(attributeId, node) {
     return new Promise((resolve, reject) => {
-      Records.fetchAttributeValues(attributeId, categoryId)
+      Records.fetchAttributeValues(attributeId, node)
         .then(values => {
           resolve();
         })
@@ -324,9 +324,9 @@ class ConditionBuilder {
     this.setAttributes(keys2, false);
     Records.attributes.forEach(({id}) => {
       const attribute = values2.find(attribute => attribute.attributeId === id);
-      const categoryIds = [];
-      if (attribute) categoryIds.push(...attribute.categoryIds);
-      this.setAttributeValues(id, categoryIds, false);
+      const nodes = [];
+      if (attribute) nodes.push(...attribute.nodes);
+      this.setAttributeValues(id, nodes, false);
     });
     this.finish(false);
 
@@ -342,9 +342,9 @@ class ConditionBuilder {
       this.removeAttribute(attributeId, parentCategoryId, false);
     };
     while (this.#valuesConditions.length > 0) {
-      const {attributeId, categoryIds} = this.#valuesConditions[0];
-      while (categoryIds.length > 0) {
-        this.removeAttributeValue(attributeId, categoryIds[0], false);
+      const {attributeId, nodes} = this.#valuesConditions[0];
+      while (nodes.length > 0) {
+        this.removeAttributeValue(attributeId, nodes[0], false);
       }
     };
     this.#postProcessing();
@@ -355,13 +355,13 @@ class ConditionBuilder {
     const keys2 = keys.map(({attributeId, id}) => {
       return {
         attributeId,
-        parentCategoryId: id?.categoryId
+        parentCategoryId: id?.node
       }
     });
     const values2 = values.map(({attributeId, ids}) => {
       return {
         attributeId,
-        categoryIds: ids.map(id => id.categoryId)
+        nodes: ids.map(id => id.node)
       }
     });
     return [keys2, values2];

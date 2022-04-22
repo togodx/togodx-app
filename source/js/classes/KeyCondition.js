@@ -40,7 +40,7 @@ export default class KeyCondition extends BaseCondition {
     };
     if (this.#parentCategoryId) {
       key.id = {
-        categoryId: this.#parentCategoryId,
+        node: this.#parentCategoryId,
         ancestors: this.ancestors
       }
     }
@@ -56,7 +56,7 @@ export default class KeyCondition extends BaseCondition {
 
   get ancestors() {
     if (!this.#ancestors) {
-      this.#ancestors = Records.getAncestors(this._attributeId, this.#parentCategoryId).map(ancestor => ancestor.categoryId);
+      this.#ancestors = Records.getAncestors(this._attributeId, this.#parentCategoryId).map(ancestor => ancestor.node);
     }
     return this.#ancestors;
   }

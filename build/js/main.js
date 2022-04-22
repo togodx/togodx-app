@@ -2785,7 +2785,7 @@
 
               var __zzz__values = values.map(function (value) {
                 return {
-                  categoryId: value.node,
+                  node: value.node,
                   count: value.count,
                   hasChild: !value.tip,
                   label: value.label
@@ -2812,9 +2812,9 @@
       }
     }, {
       key: "getValue",
-      value: function getValue(categoryId) {
+      value: function getValue(node) {
         return _classPrivateFieldGet(this, _values$1).find(function (value) {
-          return value.categoryId === categoryId;
+          return value.node === node;
         });
       } // accessors
 
@@ -2955,9 +2955,9 @@
       }
     }, {
       key: "fetchAttributeValues",
-      value: function fetchAttributeValues(attributeId, categoryId) {
+      value: function fetchAttributeValues(attributeId, node) {
         var attribute = this.getAttribute(attributeId);
-        return attribute.fetchValuesWithParentCategoryId(categoryId);
+        return attribute.fetchValuesWithParentCategoryId(node);
       }
     }, {
       key: "getCatexxxgory",
@@ -2982,9 +2982,9 @@
       }
     }, {
       key: "getValue",
-      value: function getValue(attributeId, categoryId) {
+      value: function getValue(attributeId, node) {
         var attribute = this.getAttribute(attributeId);
-        return attribute.getValue(categoryId);
+        return attribute.getValue(node);
       }
     }, {
       key: "getValuesWithParentCategoryId",
@@ -2996,7 +2996,7 @@
       }
     }, {
       key: "getAncestors",
-      value: function getAncestors(attributeId, categoryId) {
+      value: function getAncestors(attributeId, node) {
         var attribute = this.getAttribute(attributeId);
         var ancestors = [];
         var parent;
@@ -3006,10 +3006,10 @@
 
           // find ancestors
           parent = attribute.values.find(function (value) {
-            return value.categoryId === categoryId;
+            return value.node === node;
           });
           if (parent) ancestors.unshift(parent);
-          categoryId = (_parent = parent) === null || _parent === void 0 ? void 0 : _parent.parentCategoryId;
+          node = (_parent = parent) === null || _parent === void 0 ? void 0 : _parent.parentCategoryId;
         } while (parent);
 
         ancestors.pop();
@@ -3172,7 +3172,7 @@
 
         if (_classPrivateFieldGet(this, _parentCategoryId$1)) {
           key.id = {
-            categoryId: _classPrivateFieldGet(this, _parentCategoryId$1),
+            node: _classPrivateFieldGet(this, _parentCategoryId$1),
             ancestors: this.ancestors
           };
         }
@@ -3190,7 +3190,7 @@
       get: function get() {
         if (!_classPrivateFieldGet(this, _ancestors)) {
           _classPrivateFieldSet(this, _ancestors, Records$1.getAncestors(this._attributeId, _classPrivateFieldGet(this, _parentCategoryId$1)).map(function (ancestor) {
-            return ancestor.categoryId;
+            return ancestor.node;
           }));
         }
 
@@ -3228,26 +3228,26 @@
     return KeyCondition;
   }(BaseCondition);
 
-  var _categoryIds = /*#__PURE__*/new WeakMap();
+  var _nodes = /*#__PURE__*/new WeakMap();
 
   var ValuesCondition = /*#__PURE__*/function (_BaseCondition) {
     _inherits(ValuesCondition, _BaseCondition);
 
     var _super = _createSuper(ValuesCondition);
 
-    function ValuesCondition(attributeId, categoryIds) {
+    function ValuesCondition(attributeId, nodes) {
       var _this;
 
       _classCallCheck(this, ValuesCondition);
 
       _this = _super.call(this, attributeId);
 
-      _classPrivateFieldInitSpec(_assertThisInitialized(_this), _categoryIds, {
+      _classPrivateFieldInitSpec(_assertThisInitialized(_this), _nodes, {
         writable: true,
         value: void 0
       });
 
-      _classPrivateFieldSet(_assertThisInitialized(_this), _categoryIds, categoryIds);
+      _classPrivateFieldSet(_assertThisInitialized(_this), _nodes, nodes);
 
       return _this;
     } // methods
@@ -3255,15 +3255,15 @@
 
     _createClass(ValuesCondition, [{
       key: "addCategoryId",
-      value: function addCategoryId(categoryId) {
-        _classPrivateFieldGet(this, _categoryIds).push(categoryId);
+      value: function addCategoryId(node) {
+        _classPrivateFieldGet(this, _nodes).push(node);
       }
     }, {
       key: "removeCategoryId",
-      value: function removeCategoryId(categoryId) {
-        var index = _classPrivateFieldGet(this, _categoryIds).indexOf(categoryId);
+      value: function removeCategoryId(node) {
+        var index = _classPrivateFieldGet(this, _nodes).indexOf(node);
 
-        _classPrivateFieldGet(this, _categoryIds).splice(index, 1);
+        _classPrivateFieldGet(this, _nodes).splice(index, 1);
       }
     }, {
       key: "getURLParameter",
@@ -3275,12 +3275,12 @@
           ids: []
         };
 
-        _classPrivateFieldGet(this, _categoryIds).forEach(function (categoryId) {
+        _classPrivateFieldGet(this, _nodes).forEach(function (node) {
           var id = {
-            categoryId: categoryId
+            node: node
           };
-          var ancestors = Records$1.getAncestors(_this2._attributeId, categoryId).map(function (ancestor) {
-            return ancestor.categoryId;
+          var ancestors = Records$1.getAncestors(_this2._attributeId, node).map(function (ancestor) {
+            return ancestor.node;
           });
           if (ancestors.length > 0) id.ancestors = ancestors;
           values.ids.push(id);
@@ -3290,9 +3290,9 @@
       } // accessor
 
     }, {
-      key: "categoryIds",
+      key: "nodes",
       get: function get() {
-        return _classPrivateFieldGet(this, _categoryIds);
+        return _classPrivateFieldGet(this, _nodes);
       }
     }, {
       key: "label",
@@ -3304,7 +3304,7 @@
       get: function get() {
         return {
           attribute: this._attributeId,
-          nodes: this.categoryIds
+          nodes: this.nodes
         };
       }
     }]);
@@ -3379,9 +3379,9 @@
         if (this.valuesConditions.length === dxCondition.valuesConditions.length) {
           matchValues = this.valuesConditions.every(function (valuesCondition) {
             return dxCondition.valuesConditions.findIndex(function (newValuesCondition) {
-              return valuesCondition.attributeId === newValuesCondition.attributeId && valuesCondition.categoryIds.length === newValuesCondition.categoryIds.length && valuesCondition.categoryIds.every(function (categoryId) {
-                return newValuesCondition.categoryIds.findIndex(function (newCategoryId) {
-                  return categoryId === newCategoryId;
+              return valuesCondition.attributeId === newValuesCondition.attributeId && valuesCondition.nodes.length === newValuesCondition.nodes.length && valuesCondition.nodes.every(function (node) {
+                return newValuesCondition.nodes.findIndex(function (newCategoryId) {
+                  return node === newCategoryId;
                 }) !== -1;
               });
             }) !== -1;
@@ -3433,7 +3433,7 @@
 
   function _copyValuesConditions2(valuesConditions) {
     return valuesConditions.map(function (valuesCondition) {
-      return new ValuesCondition(valuesCondition.attributeId, _toConsumableArray(valuesCondition.categoryIds));
+      return new ValuesCondition(valuesCondition.attributeId, _toConsumableArray(valuesCondition.nodes));
     });
   }
 
@@ -3616,7 +3616,7 @@
       }
     }, {
       key: "addAttributeValue",
-      value: function addAttributeValue(attributeId, categoryId) {
+      value: function addAttributeValue(attributeId, node) {
         var isFinal = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 
         // find value of same property
@@ -3626,9 +3626,9 @@
 
 
         if (sameValuesCondition) {
-          sameValuesCondition.addCategoryId(categoryId);
+          sameValuesCondition.addCategoryId(node);
         } else {
-          var valuesCondition = new ValuesCondition(attributeId, [categoryId]);
+          var valuesCondition = new ValuesCondition(attributeId, [node]);
 
           _classPrivateFieldGet(this, _valuesConditions).push(valuesCondition);
         } // evaluate
@@ -3640,7 +3640,7 @@
           detail: {
             action: 'add',
             attributeId: attributeId,
-            categoryId: categoryId
+            node: node
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
@@ -3672,14 +3672,14 @@
       }
     }, {
       key: "removeAttributeValue",
-      value: function removeAttributeValue(attributeId, categoryId) {
+      value: function removeAttributeValue(attributeId, node) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
         // remove from store
         var index = _classPrivateFieldGet(this, _valuesConditions).findIndex(function (valuesCondition) {
           if (valuesCondition.attributeId === attributeId) {
-            valuesCondition.removeCategoryId(categoryId);
-            return valuesCondition.categoryIds.length === 0;
+            valuesCondition.removeCategoryId(node);
+            return valuesCondition.nodes.length === 0;
           } else {
             return false;
           }
@@ -3693,7 +3693,7 @@
           detail: {
             action: 'remove',
             attributeId: attributeId,
-            categoryId: categoryId
+            node: node
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
@@ -3720,7 +3720,7 @@
       }
     }, {
       key: "setAttributeValues",
-      value: function setAttributeValues(attributeId, categoryIds) {
+      value: function setAttributeValues(attributeId, nodes) {
         var _this2 = this;
 
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
@@ -3732,25 +3732,25 @@
         if (oldValuesCondition) {
           var originalValues = Records$1.getAttribute(attributeId).values;
           originalValues.forEach(function (originalValue) {
-            var indexInNew = categoryIds.indexOf(originalValue.categoryId);
-            var indexInOld = oldValuesCondition.categoryIds.indexOf(originalValue.categoryId);
+            var indexInNew = nodes.indexOf(originalValue.node);
+            var indexInOld = oldValuesCondition.nodes.indexOf(originalValue.node);
 
             if (indexInNew !== -1) {
               // if new value does not exist in old values, add property value
-              if (indexInOld === -1) _this2.addAttributeValue(attributeId, originalValue.categoryId, [], false);
+              if (indexInOld === -1) _this2.addAttributeValue(attributeId, originalValue.node, [], false);
             } else {
               // if extra value exists in old values, remove property value
-              if (indexInOld !== -1) _this2.removeAttributeValue(attributeId, originalValue.categoryId, false);
+              if (indexInOld !== -1) _this2.removeAttributeValue(attributeId, originalValue.node, false);
             }
           });
         } else {
-          var _iterator = _createForOfIteratorHelper(categoryIds),
+          var _iterator = _createForOfIteratorHelper(nodes),
               _step;
 
           try {
             for (_iterator.s(); !(_step = _iterator.n()).done;) {
-              var categoryId = _step.value;
-              this.addAttributeValue(attributeId, categoryId, [], false);
+              var node = _step.value;
+              this.addAttributeValue(attributeId, node, [], false);
             }
           } catch (err) {
             _iterator.e(err);
@@ -3779,9 +3779,9 @@
     }, {
       key: "getSelectedCategoryIds",
       value: function getSelectedCategoryIds(attributeId) {
-        var _categoryIds$keys, _categoryIds$values;
+        var _nodes$keys, _nodes$values;
 
-        var categoryIds = {
+        var nodes = {
           keys: [],
           values: []
         };
@@ -3794,11 +3794,11 @@
           return valuesCondition.attributeId === attributeId;
         });
 
-        if (keyConditions) (_categoryIds$keys = categoryIds.keys).push.apply(_categoryIds$keys, _toConsumableArray(keyConditions.map(function (keyCondiiton) {
+        if (keyConditions) (_nodes$keys = nodes.keys).push.apply(_nodes$keys, _toConsumableArray(keyConditions.map(function (keyCondiiton) {
           return keyCondiiton.parentCategoryId;
         })));
-        if (valuesCondition) (_categoryIds$values = categoryIds.values).push.apply(_categoryIds$values, _toConsumableArray(valuesCondition.categoryIds));
-        return categoryIds;
+        if (valuesCondition) (_nodes$values = nodes.values).push.apply(_nodes$values, _toConsumableArray(valuesCondition.nodes));
+        return nodes;
       } // public accessor
 
     }, {
@@ -3841,7 +3841,7 @@
       };
 
       if (key.id) {
-        zzzKey.node = key.id.categoryId;
+        zzzKey.node = key.id.node;
 
         if (key.id.ancestors) {
           zzzKey.path = _toConsumableArray(key.id.ancestors);
@@ -3857,7 +3857,7 @@
       };
       zzzValue.nodes = value.ids.map(function (id) {
         var zzzId = {
-          node: id.categoryId
+          node: id.node
         };
 
         if (id.ancestors) {
@@ -3897,7 +3897,7 @@
 
         if (annotation.node) {
           zzzKey.id = {
-            categoryId: annotation.node
+            node: annotation.node
           };
 
           if (annotation.path) {
@@ -3912,7 +3912,7 @@
           attributeId: filter.attribute,
           ids: filter.nodes.map(function (node) {
             var zzzNode = {
-              categoryId: node.node
+              node: node.node
             };
 
             if (node.path) {
@@ -3939,15 +3939,15 @@
     var queue = [];
 
     var addQueue = function addQueue(attributeId, id) {
-      var ancestors = [id.categoryId];
+      var ancestors = [id.node];
       if (id.ancestors) ancestors.push.apply(ancestors, _toConsumableArray(id.ancestors));
-      ancestors.forEach(function (categoryId) {
+      ancestors.forEach(function (node) {
         if (queue.findIndex(function (task) {
-          return task.attributeId === attributeId && task.categoryId === categoryId;
+          return task.attributeId === attributeId && task.node === node;
         }) === -1) {
           queue.push({
             attributeId: attributeId,
-            categoryId: categoryId
+            node: node
           });
         }
       });
@@ -3975,9 +3975,9 @@
     if (queue.length > 0) {
       var _queue$shift = queue.shift(),
           attributeId = _queue$shift.attributeId,
-          categoryId = _queue$shift.categoryId;
+          node = _queue$shift.node;
 
-      _classPrivateMethodGet(this, _getChildCategoryIds, _getChildCategoryIds2).call(this, attributeId, categoryId).then(function () {
+      _classPrivateMethodGet(this, _getChildCategoryIds, _getChildCategoryIds2).call(this, attributeId, node).then(function () {
         return _classPrivateMethodGet(_this3, _progressQueueOfGettingChildCategoryIds, _progressQueueOfGettingChildCategoryIds2).call(_this3, condition, queue);
       });
     } else {
@@ -3985,9 +3985,9 @@
     }
   }
 
-  function _getChildCategoryIds2(attributeId, categoryId) {
+  function _getChildCategoryIds2(attributeId, node) {
     return new Promise(function (resolve, reject) {
-      Records$1.fetchAttributeValues(attributeId, categoryId).then(function (values) {
+      Records$1.fetchAttributeValues(attributeId, node).then(function (values) {
         resolve();
       }).catch(function (error) {
         reject(error);
@@ -4020,10 +4020,10 @@
       var attribute = values2.find(function (attribute) {
         return attribute.attributeId === id;
       });
-      var categoryIds = [];
-      if (attribute) categoryIds.push.apply(categoryIds, _toConsumableArray(attribute.categoryIds));
+      var nodes = [];
+      if (attribute) nodes.push.apply(nodes, _toConsumableArray(attribute.nodes));
 
-      _this4.setAttributeValues(id, categoryIds, false);
+      _this4.setAttributeValues(id, nodes, false);
     });
     this.finish(false); // dispatch event
 
@@ -4049,10 +4049,10 @@
     while (_classPrivateFieldGet(this, _valuesConditions).length > 0) {
       var _classPrivateFieldGet3 = _classPrivateFieldGet(this, _valuesConditions)[0],
           _attributeId = _classPrivateFieldGet3.attributeId,
-          categoryIds = _classPrivateFieldGet3.categoryIds;
+          nodes = _classPrivateFieldGet3.nodes;
 
-      while (categoryIds.length > 0) {
-        this.removeAttributeValue(_attributeId, categoryIds[0], false);
+      while (nodes.length > 0) {
+        this.removeAttributeValue(_attributeId, nodes[0], false);
       }
     }
 
@@ -4066,7 +4066,7 @@
           id = _ref6.id;
       return {
         attributeId: attributeId,
-        parentCategoryId: id === null || id === void 0 ? void 0 : id.categoryId
+        parentCategoryId: id === null || id === void 0 ? void 0 : id.node
       };
     });
     var values2 = values.map(function (_ref7) {
@@ -4074,8 +4074,8 @@
           ids = _ref7.ids;
       return {
         attributeId: attributeId,
-        categoryIds: ids.map(function (id) {
-          return id.categoryId;
+        nodes: ids.map(function (id) {
+          return id.node;
         })
       };
     });
@@ -4186,21 +4186,21 @@
     _createClass(StackingConditionView, [{
       key: "addValue",
       value: // public methods
-      function addValue(categoryId) {
+      function addValue(node) {
         var _this2 = this;
 
         var getValue = function getValue() {
-          var value = Records$1.getValue(_classPrivateFieldGet(_this2, _condition).attributeId, categoryId);
+          var value = Records$1.getValue(_classPrivateFieldGet(_this2, _condition).attributeId, node);
 
           if (value === undefined) {
             setTimeout(getValue, POLLING_DURATION);
           } else {
-            _classPrivateFieldGet(_this2, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _catexxxgory-background-color\" data-category-id=\"".concat(value.categoryId, "\">").concat(value.label, "<div class=\"close-button-view\"></div></li>")); // attach event
+            _classPrivateFieldGet(_this2, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _catexxxgory-background-color\" data-category-id=\"".concat(value.node, "\">").concat(value.label, "<div class=\"close-button-view\"></div></li>")); // attach event
 
 
             _classPrivateFieldGet(_this2, _LABELS).querySelector(':scope > .label:last-child').addEventListener('click', function (e) {
               e.stopPropagation();
-              ConditionBuilder$1.removeAttributeValue(_classPrivateFieldGet(_this2, _condition).attributeId, e.target.parentNode.dataset.categoryId);
+              ConditionBuilder$1.removeAttributeValue(_classPrivateFieldGet(_this2, _condition).attributeId, e.target.parentNode.dataset.node);
             });
           }
         };
@@ -4216,9 +4216,9 @@
       }
     }, {
       key: "removeAttributeValue",
-      value: function removeAttributeValue(attributeId, categoryId) {
+      value: function removeAttributeValue(attributeId, node) {
         if (attributeId === _classPrivateFieldGet(this, _condition).attributeId) {
-          _classPrivateFieldGet(this, _LABELS).removeChild(_classPrivateFieldGet(this, _LABELS).querySelector(":scope > [data-category-id=\"".concat(categoryId, "\"")));
+          _classPrivateFieldGet(this, _LABELS).removeChild(_classPrivateFieldGet(this, _LABELS).querySelector(":scope > [data-category-id=\"".concat(node, "\"")));
 
           if (_classPrivateFieldGet(this, _LABELS).childNodes.length === 0) {
             _classPrivateFieldGet(this, _ROOT$e).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$e));
@@ -4252,13 +4252,13 @@
     if (_classPrivateFieldGet(this, _condition) instanceof ValuesCondition) {
       _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$e).querySelector(':scope > .labels'));
 
-      var _iterator = _createForOfIteratorHelper(_classPrivateFieldGet(this, _condition).categoryIds),
+      var _iterator = _createForOfIteratorHelper(_classPrivateFieldGet(this, _condition).nodes),
           _step;
 
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var categoryId = _step.value;
-          this.addValue(categoryId);
+          var node = _step.value;
+          this.addValue(node);
         }
       } catch (err) {
         _iterator.e(err);
@@ -4282,7 +4282,7 @@
           try {
             for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
               var _label2 = _step2.value;
-              ConditionBuilder$1.removeAttributeValue(_classPrivateFieldGet(_this3, _condition).attributeId, _label2.dataset.categoryId);
+              ConditionBuilder$1.removeAttributeValue(_classPrivateFieldGet(_this3, _condition).attributeId, _label2.dataset.node);
             }
           } catch (err) {
             _iterator2.e(err);
@@ -4444,16 +4444,16 @@
       var _ref2$detail = _ref2.detail,
           action = _ref2$detail.action,
           attributeId = _ref2$detail.attributeId,
-          categoryId = _ref2$detail.categoryId;
+          node = _ref2$detail.node;
 
       switch (action) {
         case 'add':
-          _classPrivateMethodGet(_this, _addAttributeValue, _addAttributeValue2).call(_this, attributeId, categoryId);
+          _classPrivateMethodGet(_this, _addAttributeValue, _addAttributeValue2).call(_this, attributeId, node);
 
           break;
 
         case 'remove':
-          _classPrivateMethodGet(_this, _removeAttributeValue, _removeAttributeValue2).call(_this, attributeId, categoryId);
+          _classPrivateMethodGet(_this, _removeAttributeValue, _removeAttributeValue2).call(_this, attributeId, node);
 
           break;
       }
@@ -4524,7 +4524,7 @@
     if (_classPrivateFieldGet(this, _properties).length === 0) _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.add('-empty');
   }
 
-  function _addAttributeValue2(attributeId, categoryId) {
+  function _addAttributeValue2(attributeId, node) {
     // modifier
     _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.remove('-empty'); // find a condition view has same attribute id
 
@@ -4534,18 +4534,18 @@
     });
 
     if (stackingConditionView) {
-      // if it exists, add new categoryId
-      stackingConditionView.addValue(categoryId);
+      // if it exists, add new node
+      stackingConditionView.addValue(node);
     } else {
       // otherwise, make new condition view
-      _classPrivateFieldGet(this, _propertyValues).push(new StackingConditionView(_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER), 'value', new ValuesCondition(attributeId, [categoryId])));
+      _classPrivateFieldGet(this, _propertyValues).push(new StackingConditionView(_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER), 'value', new ValuesCondition(attributeId, [node])));
     }
   }
 
-  function _removeAttributeValue2(attributeId, categoryId) {
+  function _removeAttributeValue2(attributeId, node) {
     // remove from array
     var index = _classPrivateFieldGet(this, _propertyValues).findIndex(function (stackingConditionView) {
-      return stackingConditionView.removeAttributeValue(attributeId, categoryId);
+      return stackingConditionView.removeAttributeValue(attributeId, node);
     });
 
     if (index !== -1) _classPrivateFieldGet(this, _propertyValues).splice(index, 1); // modifier
@@ -4573,7 +4573,7 @@
 
   var _count = /*#__PURE__*/new WeakMap();
 
-  var _categoryId = /*#__PURE__*/new WeakMap();
+  var _node = /*#__PURE__*/new WeakMap();
 
   var _index$1 = /*#__PURE__*/new WeakMap();
 
@@ -4590,7 +4590,7 @@
       var _this = this;
 
       var count = _ref.count,
-          categoryId = _ref.categoryId,
+          node = _ref.node,
           hasChild = _ref.hasChild,
           label = _ref.label;
 
@@ -4608,7 +4608,7 @@
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _categoryId, {
+      _classPrivateFieldInitSpec(this, _node, {
         writable: true,
         value: void 0
       });
@@ -4637,7 +4637,7 @@
 
       _classPrivateFieldSet(this, _count, count);
 
-      _classPrivateFieldSet(this, _categoryId, categoryId);
+      _classPrivateFieldSet(this, _node, node);
 
       _classPrivateFieldSet(this, _index$1, index); // make HTML
 
@@ -4647,22 +4647,22 @@
       _classPrivateFieldGet(this, _ROOT$d).classList.add('item');
 
       if (hasChild) _classPrivateFieldGet(this, _ROOT$d).classList.add('-haschild');
-      _classPrivateFieldGet(this, _ROOT$d).dataset.id = categoryId;
+      _classPrivateFieldGet(this, _ROOT$d).dataset.id = node;
       _classPrivateFieldGet(this, _ROOT$d).dataset.count = count;
-      _classPrivateFieldGet(this, _ROOT$d).innerHTML = "\n    <td class=\"label\">\n      <label class=\"key\">\n        <input type=\"checkbox\" value=\"".concat(categoryId, "\"").concat(hasChild ? '' : ' disabled', "/>\n        ").concat(label, "\n      </label>\n      <label class=\"value\">\n        <input type=\"checkbox\" value=\"").concat(categoryId, "\"/>\n        ").concat(label, "\n      </label>\n    </td>\n    <td class=\"total\">").concat(count.toLocaleString(), "</td>\n    <td class=\"mapped\"></td>\n    <td class=\"pvalue\"></td>\n    <td class=\"drilldown\"></td>");
+      _classPrivateFieldGet(this, _ROOT$d).innerHTML = "\n    <td class=\"label\">\n      <label class=\"key\">\n        <input type=\"checkbox\" value=\"".concat(node, "\"").concat(hasChild ? '' : ' disabled', "/>\n        ").concat(label, "\n      </label>\n      <label class=\"value\">\n        <input type=\"checkbox\" value=\"").concat(node, "\"/>\n        ").concat(label, "\n      </label>\n    </td>\n    <td class=\"total\">").concat(count.toLocaleString(), "</td>\n    <td class=\"mapped\"></td>\n    <td class=\"pvalue\"></td>\n    <td class=\"drilldown\"></td>");
 
       _classPrivateFieldSet(this, _INPUT_VALUE, _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > td.label > label.value > input'));
 
       _classPrivateFieldSet(this, _INPUT_KEY, _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > td.label > label.key > input'));
 
-      if (selectedCategoryIds.keys.indexOf(categoryId) !== -1) _classPrivateFieldGet(this, _INPUT_KEY).checked = true;
-      if (selectedCategoryIds.values.indexOf(categoryId) !== -1) _classPrivateFieldGet(this, _INPUT_VALUE).checked = true; // even listener
+      if (selectedCategoryIds.keys.indexOf(node) !== -1) _classPrivateFieldGet(this, _INPUT_KEY).checked = true;
+      if (selectedCategoryIds.values.indexOf(node) !== -1) _classPrivateFieldGet(this, _INPUT_VALUE).checked = true; // even listener
 
       _classPrivateFieldGet(this, _INPUT_KEY).addEventListener('change', function (e) {
         if (e.target.checked) {
-          ConditionBuilder$1.addAttribute(column.attributeId, categoryId);
+          ConditionBuilder$1.addAttribute(column.attributeId, node);
         } else {
-          ConditionBuilder$1.removeAttribute(column.attributeId, categoryId);
+          ConditionBuilder$1.removeAttribute(column.attributeId, node);
         }
       });
 
@@ -4673,7 +4673,7 @@
 
         if (action === 'remove') {
           if (column.attributeId === keyCondition.attributeId) {
-            if (keyCondition.parentCategoryId && categoryId === keyCondition.parentCategoryId) {
+            if (keyCondition.parentCategoryId && node === keyCondition.parentCategoryId) {
               _classPrivateFieldGet(_this, _INPUT_KEY).checked = action === 'add';
             }
           }
@@ -4682,7 +4682,7 @@
       DefaultEventEmitter$1.addEventListener(mutateAttributeValueCondition, function (_ref3) {
         var detail = _ref3.detail;
 
-        if (column.attributeId === detail.attributeId && categoryId === detail.categoryId) {
+        if (column.attributeId === detail.attributeId && node === detail.node) {
           _classPrivateFieldGet(_this, _INPUT_VALUE).checked = detail.action === 'add';
         }
       });
@@ -4720,7 +4720,7 @@
         var _this2 = this;
 
         var value = values.find(function (value) {
-          return value.categoryId === _classPrivateFieldGet(_this2, _categoryId);
+          return value.node === _classPrivateFieldGet(_this2, _node);
         });
 
         if (value) {
@@ -4748,9 +4748,9 @@
         return _classPrivateFieldGet(this, _index$1);
       }
     }, {
-      key: "categoryId",
+      key: "node",
       get: function get() {
-        return _classPrivateFieldGet(this, _categoryId);
+        return _classPrivateFieldGet(this, _node);
       }
     }, {
       key: "rootNode",
@@ -5425,6 +5425,12 @@
     return error;
   };
 
+  var transitional = {
+    silentJSONParsing: true,
+    forcedJSONParsing: true,
+    clarifyTimeoutError: false
+  };
+
   var enhanceError$1 = enhanceError$2;
 
   /**
@@ -5708,7 +5714,7 @@
   var parseHeaders = parseHeaders$1;
   var isURLSameOrigin = isURLSameOrigin$1;
   var createError = createError$2;
-  var defaults$4 = defaults_1;
+  var transitionalDefaults$1 = transitional;
   var Cancel$2 = Cancel_1;
 
   var xhr = function xhrAdapter(config) {
@@ -5823,7 +5829,7 @@
       // Handle timeout
       request.ontimeout = function handleTimeout() {
         var timeoutErrorMessage = config.timeout ? 'timeout of ' + config.timeout + 'ms exceeded' : 'timeout exceeded';
-        var transitional = config.transitional || defaults$4.transitional;
+        var transitional = config.transitional || transitionalDefaults$1;
         if (config.timeoutErrorMessage) {
           timeoutErrorMessage = config.timeoutErrorMessage;
         }
@@ -5914,6 +5920,7 @@
   var utils$6 = utils$e;
   var normalizeHeaderName = normalizeHeaderName$1;
   var enhanceError = enhanceError$2;
+  var transitionalDefaults = transitional;
 
   var DEFAULT_CONTENT_TYPE = {
     'Content-Type': 'application/x-www-form-urlencoded'
@@ -5954,11 +5961,7 @@
 
   var defaults$3 = {
 
-    transitional: {
-      silentJSONParsing: true,
-      forcedJSONParsing: true,
-      clarifyTimeoutError: false
-    },
+    transitional: transitionalDefaults,
 
     adapter: getDefaultAdapter(),
 
@@ -6254,7 +6257,7 @@
   };
 
   var data = {
-    "version": "0.25.0"
+    "version": "0.26.1"
   };
 
   var VERSION = data.version;
@@ -6374,10 +6377,6 @@
       config = configOrUrl || {};
     }
 
-    if (!config.url) {
-      throw new Error('Provided config url is not valid');
-    }
-
     config = mergeConfig$1(this.defaults, config);
 
     // Set config.method
@@ -6460,9 +6459,6 @@
   };
 
   Axios$1.prototype.getUri = function getUri(config) {
-    if (!config.url) {
-      throw new Error('Provided config url is not valid');
-    }
     config = mergeConfig$1(this.defaults, config);
     return buildURL(config.url, config.params, config.paramsSerializer).replace(/^\?/, '');
   };
@@ -7027,7 +7023,7 @@
         .then(function (response) {
           var __zzz__data = response.data.map(function (datum) {
             return {
-              categoryId: datum.node,
+              node: datum.node,
               count: datum.count,
               hit_count: datum.mapped,
               label: datum.label,
@@ -7164,7 +7160,7 @@
     _createClass(ColumnSelectorView, [{
       key: "drillDown",
       value: // public methods
-      function drillDown(categoryId, depth) {
+      function drillDown(node, depth) {
         var _this = this;
 
         // delete an existing lower columns
@@ -7199,9 +7195,9 @@
           _iterator.f();
         }
 
-        _classPrivateMethodGet(this, _setSelectedValue, _setSelectedValue2).call(this, categoryId, true);
+        _classPrivateMethodGet(this, _setSelectedValue, _setSelectedValue2).call(this, node, true);
 
-        _classPrivateMethodGet(this, _setSubColumn, _setSubColumn2).call(this, categoryId, depth + 1);
+        _classPrivateMethodGet(this, _setSubColumn, _setSubColumn2).call(this, node, depth + 1);
       } // accessors
 
     }, {
@@ -7236,7 +7232,7 @@
     try {
       for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
         var item = _step2.value;
-        _classPrivateFieldGet(this, _items$1)[item.categoryId] = {
+        _classPrivateFieldGet(this, _items$1)[item.node] = {
           depth: depth,
           selected: false
         };
@@ -7248,21 +7244,21 @@
     }
   }
 
-  function _getColumn2(categoryId, depth) {
+  function _getColumn2(node, depth) {
     var _this2 = this;
 
     return new Promise(function (resolve, reject) {
       var columnView = _classPrivateFieldGet(_this2, _columnViews).find(function (columnView) {
-        return columnView.parentCategoryId === categoryId;
+        return columnView.parentCategoryId === node;
       });
 
       if (columnView) {
         resolve(columnView);
       } else {
-        Records$1.fetchAttributeValues(_classPrivateFieldGet(_this2, _attribute$3).id, categoryId).then(function (values) {
+        Records$1.fetchAttributeValues(_classPrivateFieldGet(_this2, _attribute$3).id, node).then(function (values) {
           _classPrivateMethodGet(_this2, _setItems, _setItems2).call(_this2, values, depth);
 
-          var columnView = _classPrivateMethodGet(_this2, _makeCoumnView, _makeCoumnView2).call(_this2, values, depth, categoryId);
+          var columnView = _classPrivateMethodGet(_this2, _makeCoumnView, _makeCoumnView2).call(_this2, values, depth, node);
 
           resolve(columnView);
         }).catch(function (error) {
@@ -7280,12 +7276,12 @@
     return columnView;
   }
 
-  function _setSubColumn2(categoryId, depth) {
+  function _setSubColumn2(node, depth) {
     var _this3 = this;
 
     _classPrivateFieldGet(this, _LOADING_VIEW$2).classList.add('-shown');
 
-    _classPrivateMethodGet(this, _getColumn, _getColumn2).call(this, categoryId, depth).then(function (column) {
+    _classPrivateMethodGet(this, _getColumn, _getColumn2).call(this, node, depth).then(function (column) {
       _classPrivateMethodGet(_this3, _appendSubColumn, _appendSubColumn2).call(_this3, column, depth);
 
       _classPrivateFieldGet(_this3, _LOADING_VIEW$2).classList.remove('-shown');
@@ -7315,8 +7311,8 @@
     }
   }
 
-  function _setSelectedValue2(categoryId, selected) {
-    _classPrivateFieldGet(this, _items$1)[categoryId].selected = selected;
+  function _setSelectedValue2(node, selected) {
+    _classPrivateFieldGet(this, _items$1)[node].selected = selected;
   }
 
   var _target = /*#__PURE__*/new WeakMap();
@@ -7633,7 +7629,7 @@
 
 
     ConditionBuilder$1.setAttributeValues(_classPrivateFieldGet(this, _target).attributeId, this.selectedItems.map(function (item) {
-      return item.categoryId;
+      return item.node;
     }), false);
   }
 
@@ -7756,11 +7752,11 @@
       var width = 100 / _classPrivateFieldGet(this, _items).length;
 
       overview.innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
-        return "<div\n      class=\"bar _catexxxgory-background-color\"\n      data-category-id=\"".concat(item.categoryId, "\"\n      data-count=\"").concat(item.count, "\"\n      style=\"width: ").concat(width, "%; height: ").concat(item.count / max * 100, "%;\"></div>");
+        return "<div\n      class=\"bar _catexxxgory-background-color\"\n      data-category-id=\"".concat(item.node, "\"\n      data-count=\"").concat(item.count, "\"\n      style=\"width: ").concat(width, "%; height: ").concat(item.count / max * 100, "%;\"></div>");
       }).join('');
       var graph = histogram.querySelector(':scope > .graph');
       graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
-        return "<div class=\"bar\" data-category-id=\"".concat(item.categoryId, "\" data-count=\"").concat(item.count, "\">\n      <div class=\"actual\" style=\"background-color: rgb(").concat(colorTintByHue(category.color, 360 * index / _classPrivateFieldGet(_this, _items).length).coords.map(function (cood) {
+        return "<div class=\"bar\" data-category-id=\"".concat(item.node, "\" data-count=\"").concat(item.count, "\">\n      <div class=\"actual\" style=\"background-color: rgb(").concat(colorTintByHue(category.color, 360 * index / _classPrivateFieldGet(_this, _items).length).coords.map(function (cood) {
           return cood * 256;
         }).join(','), ");\"></div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
       }).join(''); // reference
@@ -7902,8 +7898,8 @@
       value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
       value.width = value.count / _sum * 100;
       value.baseColor = colorTintByHue(category.color, 360 * index / values.length);
-      var selectedClass = selectedValues.indexOf(value.categoryId) !== -1 ? ' -selected' : '';
-      return "\n        <li class=\"track-value-view _catexxxgory-background-color".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.categoryId, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\">\n            <span class=\"material-icons\">location_on</span>\n          </div>\n        </li>");
+      var selectedClass = selectedValues.indexOf(value.node) !== -1 ? ' -selected' : '';
+      return "\n        <li class=\"track-value-view _catexxxgory-background-color".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-category-id=\"").concat(value.node, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(value.label, "</span>\n              <span class=\"count\">").concat(value.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\">\n            <span class=\"material-icons\">location_on</span>\n          </div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .track-value-view').forEach(function (elm, index) {
       // reference
@@ -7919,7 +7915,7 @@
 
         var values = [];
         var userValue = (_classPrivateFieldGet2 = _classPrivateFieldGet(_this, _userValues)) === null || _classPrivateFieldGet2 === void 0 ? void 0 : _classPrivateFieldGet2.find(function (userValue) {
-          return userValue.categoryId === value.categoryId;
+          return userValue.node === value.node;
         });
 
         if (userValue !== null && userValue !== void 0 && userValue.hit_count) {
@@ -7960,10 +7956,10 @@
       elm.addEventListener('click', function () {
         if (elm.classList.contains('-selected')) {
           elm.classList.remove('-selected');
-          ConditionBuilder$1.removeAttributeValue(_classPrivateFieldGet(_this, _attribute$1).id, value.categoryId);
+          ConditionBuilder$1.removeAttributeValue(_classPrivateFieldGet(_this, _attribute$1).id, value.node);
         } else {
           elm.classList.add('-selected');
-          ConditionBuilder$1.addAttributeValue(_classPrivateFieldGet(_this, _attribute$1).id, value.categoryId);
+          ConditionBuilder$1.addAttributeValue(_classPrivateFieldGet(_this, _attribute$1).id, value.node);
         }
       });
     }); // event listener
@@ -7972,11 +7968,11 @@
       var _ref$detail = _ref.detail,
           action = _ref$detail.action,
           attributeId = _ref$detail.attributeId,
-          categoryId = _ref$detail.categoryId;
+          node = _ref$detail.node;
 
       if (_classPrivateFieldGet(_this, _attribute$1).id === attributeId) {
         _classPrivateFieldGet(_this, _values).forEach(function (value) {
-          if (value.categoryId === categoryId) {
+          if (value.node === node) {
             switch (action) {
               case 'add':
                 value.elm.classList.add('-selected');
@@ -8036,7 +8032,7 @@
 
       _classPrivateFieldGet(this, _values).forEach(function (value) {
         var userValue = detail.values.find(function (userValue) {
-          return userValue.categoryId === value.categoryId;
+          return userValue.node === value.node;
         });
 
         if (userValue !== null && userValue !== void 0 && userValue.hit_count) {
@@ -8448,15 +8444,15 @@
     var hitVlues = [];
 
     _classPrivateFieldGet(this, _referenceValues).forEach(function (_ref) {
-      var categoryId = _ref.categoryId,
+      var node = _ref.node,
           label = _ref.label,
           count = _ref.count;
       var filtered = uniquedAttributes.filter(function (attribute) {
-        return attribute.node === categoryId;
+        return attribute.node === node;
       });
       if (filtered.length === 0) return;
       hitVlues.push({
-        categoryId: categoryId,
+        node: node,
         label: label,
         count: count,
         hitCount: filtered.length
@@ -8481,18 +8477,18 @@
     }
 
     hitVlues.reduce(function (lastBar, _ref2) {
-      var categoryId = _ref2.categoryId,
+      var node = _ref2.node,
           label = _ref2.label,
           count = _ref2.count,
           hitCount = _ref2.hitCount;
 
-      var bar = _classPrivateFieldGet(_this, _BARS).querySelector(":scope > .bar[data-category-id=\"".concat(categoryId, "\"]"));
+      var bar = _classPrivateFieldGet(_this, _BARS).querySelector(":scope > .bar[data-category-id=\"".concat(node, "\"]"));
 
       if (bar === null) {
         // add bar
         bar = document.createElement('div');
         bar.classList.add('bar');
-        bar.dataset.categoryId = categoryId;
+        bar.dataset.node = node;
         bar.innerHTML = "\n        <div class=\"wholebar\"></div>\n        <div class=\"hitbar _catexxxgory-background-color-strong\">\n          <div class=\"value\"></div>\n        </div>\n        <div class=\"label\">".concat(label, "</div>");
 
         if (lastBar) {
@@ -8884,7 +8880,7 @@
     //  → Subject  (Gene)                          | category
     //    → Main-Category  (Expressed in tissues)  | attribute
     //      → Sub-Category  (Thyroid Gland)        | 
-    //        → Unique-Entry (ENSG00000139304)     | categoryId ?
+    //        → Unique-Entry (ENSG00000139304)     | node ?
 
 
     rows.forEach(function (row, index) {
@@ -10046,9 +10042,9 @@
         return valuesCondition.attributeId === id;
       });
 
-      var categoryIds = [];
-      if (valuesCondition) categoryIds.push.apply(categoryIds, _toConsumableArray(valuesCondition.categoryIds));
-      ConditionBuilder$1.setAttributeValues(id, categoryIds, false);
+      var nodes = [];
+      if (valuesCondition) nodes.push.apply(nodes, _toConsumableArray(valuesCondition.nodes));
+      ConditionBuilder$1.setAttributeValues(id, nodes, false);
     });
   }
 
@@ -10890,7 +10886,7 @@
 
       var __zzz__data = response.data.map(function (datum) {
         return {
-          categoryId: datum.node,
+          node: datum.node,
           count: datum.count,
           hit_count: datum.mapped,
           label: datum.label,

@@ -7,33 +7,33 @@ export default class ColumnItemView {
 
   #label;
   #count;
-  #categoryId;
+  #node;
   #index;
   #ROOT;
   #INPUT_VALUE;
   #INPUT_KEY;
 
-  constructor(column, {count, categoryId, hasChild, label}, index, selectedCategoryIds) {
+  constructor(column, {count, node, hasChild, label}, index, selectedCategoryIds) {
 
     this.#label = label;
     this.#count = count;
-    this.#categoryId = categoryId;
+    this.#node = node;
     this.#index = index;
 
     // make HTML
     this.#ROOT = document.createElement('tr');
     this.#ROOT.classList.add('item');
     if (hasChild) this.#ROOT.classList.add('-haschild');
-    this.#ROOT.dataset.id = categoryId;
+    this.#ROOT.dataset.id = node;
     this.#ROOT.dataset.count = count;
     this.#ROOT.innerHTML = `
     <td class="label">
       <label class="key">
-        <input type="checkbox" value="${categoryId}"${hasChild ? '' : ' disabled'}/>
+        <input type="checkbox" value="${node}"${hasChild ? '' : ' disabled'}/>
         ${label}
       </label>
       <label class="value">
-        <input type="checkbox" value="${categoryId}"/>
+        <input type="checkbox" value="${node}"/>
         ${label}
       </label>
     </td>
@@ -44,28 +44,28 @@ export default class ColumnItemView {
 
     this.#INPUT_VALUE = this.#ROOT.querySelector(':scope > td.label > label.value > input');
     this.#INPUT_KEY = this.#ROOT.querySelector(':scope > td.label > label.key > input');
-    if (selectedCategoryIds.keys.indexOf(categoryId) !== -1) this.#INPUT_KEY.checked = true;
-    if (selectedCategoryIds.values.indexOf(categoryId) !== -1) this.#INPUT_VALUE.checked = true;
+    if (selectedCategoryIds.keys.indexOf(node) !== -1) this.#INPUT_KEY.checked = true;
+    if (selectedCategoryIds.values.indexOf(node) !== -1) this.#INPUT_VALUE.checked = true;
 
     // even listener
     this.#INPUT_KEY.addEventListener('change', e => {
       if (e.target.checked) {
-        ConditionBuilder.addAttribute(column.attributeId, categoryId);
+        ConditionBuilder.addAttribute(column.attributeId, node);
       } else {
-        ConditionBuilder.removeAttribute(column.attributeId, categoryId);
+        ConditionBuilder.removeAttribute(column.attributeId, node);
       }
     });
     DefaultEventEmitter.addEventListener(event.mutateAttributeCondition, ({detail: {action, keyCondition}}) => {
       if (action === 'remove') {
         if (column.attributeId === keyCondition.attributeId) {
-          if (keyCondition.parentCategoryId && categoryId === keyCondition.parentCategoryId) {
+          if (keyCondition.parentCategoryId && node === keyCondition.parentCategoryId) {
             this.#INPUT_KEY.checked = action === 'add';
           }
         }
       }
     });
     DefaultEventEmitter.addEventListener(event.mutateAttributeValueCondition, ({detail}) => {
-      if (column.attributeId === detail.attributeId && categoryId === detail.categoryId) {
+      if (column.attributeId === detail.attributeId && node === detail.node) {
         this.#INPUT_VALUE.checked = detail.action === 'add';
       }
     });
@@ -101,7 +101,7 @@ export default class ColumnItemView {
   }
 
   setUserValues(values) {
-    const value = values.find(value => value.categoryId === this.#categoryId);
+    const value = values.find(value => value.node === this.#node);
     if (value) {
       this.#ROOT.classList.add('-pinsticking');
       this.#ROOT.querySelector(':scope > .mapped').textContent = value.hit_count ? value.hit_count.toLocaleString() : '';
@@ -127,8 +127,8 @@ export default class ColumnItemView {
     return this.#index;
   }
 
-  get categoryId() {
-    return this.#categoryId;
+  get node() {
+    return this.#node;
   }
 
   get rootNode() {

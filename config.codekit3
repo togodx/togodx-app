@@ -618,7 +618,7 @@
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/build\/js\/classes\/Attribute.js",
       "oF" : 0,
       "sC" : 3,
@@ -1314,8 +1314,8 @@
     "environmentVariableEntries" : [
       "NODE_ENV:::production"
     ],
-    "esLintConfigFileHandlingType" : 0,
-    "esLintECMAVersion" : 8,
+    "esLintConfigFileHandlingType" : 1,
+    "esLintECMAVersion" : 12,
     "esLintEnvironmentsMask" : 1,
     "esLintRules" : {
       "accessor-pairs" : {
@@ -2299,7 +2299,7 @@
         "optionString" : "'never', {'exceptRange': false, 'onlyEquality': false}"
       }
     },
-    "esLintSourceType" : 0,
+    "esLintSourceType" : 1,
     "externalServerAddress" : "http:\/\/localhost:8888",
     "gitIgnoreBuildFolder" : 1,
     "hideConfigFile" : 0,
@@ -2540,15 +2540,15 @@
       "autoOutputPathRelativePath" : "\/js",
       "autoOutputPathReplace1" : "",
       "autoOutputPathReplace2" : "",
-      "autoOutputPathStyle" : 0,
+      "autoOutputPathStyle" : 2,
       "createDeclarationFile" : 0,
       "jsxMode" : 0,
       "minifierStyle" : 0,
       "moduleResolutionType" : 0,
       "moduleType" : 2,
       "removeComments" : 0,
-      "sourceMapStyle" : 0,
-      "targetECMAVersion" : 0
+      "sourceMapStyle" : 1,
+      "targetECMAVersion" : 2
     },
     "languageDefaultsUserDefined" : [
 

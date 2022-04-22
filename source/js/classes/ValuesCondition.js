@@ -3,23 +3,23 @@ import Records from "./Records";
 
 export default class ValuesCondition extends BaseCondition {
 
-  #categoryIds;
+  #nodes;
 
-  constructor(attributeId, categoryIds) {
+  constructor(attributeId, nodes) {
     super(attributeId);
-    this.#categoryIds = categoryIds;
+    this.#nodes = nodes;
   }
 
 
   // methods
 
-  addCategoryId(categoryId) {
-    this.#categoryIds.push(categoryId);
+  addCategoryId(node) {
+    this.#nodes.push(node);
   }
 
-  removeCategoryId(categoryId) {
-    const index = this.#categoryIds.indexOf(categoryId);
-    this.#categoryIds.splice(index, 1);
+  removeCategoryId(node) {
+    const index = this.#nodes.indexOf(node);
+    this.#nodes.splice(index, 1);
   }
 
   getURLParameter() {
@@ -27,9 +27,9 @@ export default class ValuesCondition extends BaseCondition {
       attributeId: this._attributeId,
       ids: []
     }
-    this.#categoryIds.forEach(categoryId => {
-      const id = {categoryId};
-      const ancestors = Records.getAncestors(this._attributeId, categoryId).map(ancestor => ancestor.categoryId);
+    this.#nodes.forEach(node => {
+      const id = {node};
+      const ancestors = Records.getAncestors(this._attributeId, node).map(ancestor => ancestor.node);
       if (ancestors.length > 0) id.ancestors = ancestors;
       values.ids.push(id);
     })
@@ -39,8 +39,8 @@ export default class ValuesCondition extends BaseCondition {
 
   // accessor
 
-  get categoryIds() {
-    return this.#categoryIds;
+  get nodes() {
+    return this.#nodes;
   }
 
   get label() {
@@ -50,7 +50,7 @@ export default class ValuesCondition extends BaseCondition {
   get query() {
     return {
       attribute: this._attributeId,
-      nodes: this.categoryIds
+      nodes: this.nodes
     }
   }
 

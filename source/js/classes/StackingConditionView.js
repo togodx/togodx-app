@@ -78,8 +78,8 @@ export default class StackingConditionView {
     // reference
     if (this.#condition instanceof ValuesCondition) {
       this.#LABELS = this.#ROOT.querySelector(':scope > .labels');
-      for (const categoryId of this.#condition.categoryIds) {
-        this.addValue(categoryId);
+      for (const node of this.#condition.nodes) {
+        this.addValue(node);
       }
     }
 
@@ -92,7 +92,7 @@ export default class StackingConditionView {
           break;
         case this.#condition instanceof ValuesCondition:
           for (const label of this.#LABELS.querySelectorAll(':scope > .label')) {
-            ConditionBuilder.removeAttributeValue(this.#condition.attributeId, label.dataset.categoryId);
+            ConditionBuilder.removeAttributeValue(this.#condition.attributeId, label.dataset.node);
           }
           break;
       }
@@ -102,17 +102,17 @@ export default class StackingConditionView {
 
   // public methods
 
-  addValue(categoryId) {
+  addValue(node) {
     const getValue = () => {
-      const value = Records.getValue(this.#condition.attributeId, categoryId);
+      const value = Records.getValue(this.#condition.attributeId, node);
       if (value === undefined) {
         setTimeout(getValue, POLLING_DURATION);
       } else {
-        this.#LABELS.insertAdjacentHTML('beforeend', `<li class="label _catexxxgory-background-color" data-category-id="${value.categoryId}">${value.label}<div class="close-button-view"></div></li>`);
+        this.#LABELS.insertAdjacentHTML('beforeend', `<li class="label _catexxxgory-background-color" data-category-id="${value.node}">${value.label}<div class="close-button-view"></div></li>`);
         // attach event
         this.#LABELS.querySelector(':scope > .label:last-child').addEventListener('click', e => {
           e.stopPropagation();
-          ConditionBuilder.removeAttributeValue(this.#condition.attributeId, e.target.parentNode.dataset.categoryId);
+          ConditionBuilder.removeAttributeValue(this.#condition.attributeId, e.target.parentNode.dataset.node);
         });
       }
     }
@@ -127,9 +127,9 @@ export default class StackingConditionView {
     return isMatch;
   }
 
-  removeAttributeValue(attributeId, categoryId) {
+  removeAttributeValue(attributeId, node) {
     if (attributeId === this.#condition.attributeId) {
-      this.#LABELS.removeChild(this.#LABELS.querySelector(`:scope > [data-category-id="${categoryId}"`));
+      this.#LABELS.removeChild(this.#LABELS.querySelector(`:scope > [data-category-id="${node}"`));
       if (this.#LABELS.childNodes.length === 0) {
         this.#ROOT.parentNode.removeChild(this.#ROOT);
         return true;

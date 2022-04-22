@@ -134,7 +134,7 @@ export default class UploadUserIDsView {
 
         const __zzz__data = response.data.map(datum => {
           return {
-            categoryId: datum.node,
+            node: datum.node,
             count: datum.count,
             hit_count: datum.mapped,
             label: datum.label,

@@ -42,9 +42,9 @@ export default class DXCondition {
           return (
             valuesCondition.attributeId === newValuesCondition.attributeId &&
             (
-              valuesCondition.categoryIds.length === newValuesCondition.categoryIds.length &&
-              valuesCondition.categoryIds.every(categoryId => {
-                return newValuesCondition.categoryIds.findIndex(newCategoryId => categoryId === newCategoryId) !== -1;
+              valuesCondition.nodes.length === newValuesCondition.nodes.length &&
+              valuesCondition.nodes.every(node => {
+                return newValuesCondition.nodes.findIndex(newCategoryId => node === newCategoryId) !== -1;
               })
             )
           );
@@ -59,7 +59,7 @@ export default class DXCondition {
   }
 
   #copyValuesConditions(valuesConditions) {
-    return valuesConditions.map(valuesCondition => new ValuesCondition(valuesCondition.attributeId, [...valuesCondition.categoryIds]));
+    return valuesConditions.map(valuesCondition => new ValuesCondition(valuesCondition.attributeId, [...valuesCondition.nodes]));
   }
 
 

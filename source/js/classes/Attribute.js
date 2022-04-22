@@ -37,7 +37,7 @@ export default class Attribute {
 
           const __zzz__values = values.map(value => {
             return {
-              categoryId: value.node,
+              node: value.node,
               count: value.count,
               hasChild: !value.tip,
               label: value.label
@@ -61,8 +61,8 @@ export default class Attribute {
     });
   }
 
-  getValue(categoryId) {
-    return this.#values.find(value => value.categoryId === categoryId);
+  getValue(node) {
+    return this.#values.find(value => value.node === node);
   }
 
   // accessors

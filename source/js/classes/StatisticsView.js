@@ -69,11 +69,11 @@ export default class StatisticsView {
       return a.entry === b.entry && a.node === b.node;
     })
     const hitVlues = [];
-    this.#referenceValues.forEach(({categoryId, label, count}) => {
-      const filtered = uniquedAttributes.filter(attribute => attribute.node === categoryId);
+    this.#referenceValues.forEach(({node, label, count}) => {
+      const filtered = uniquedAttributes.filter(attribute => attribute.node === node);
       if (filtered.length === 0) return;
       hitVlues.push({
-        categoryId, label, count,
+        node, label, count,
         hitCount: filtered.length
       })
     });
@@ -88,13 +88,13 @@ export default class StatisticsView {
       countMax = Math.max(...hitVlues.map(value => value.count));
     }
 
-    hitVlues.reduce((lastBar, {categoryId, label, count, hitCount}) => {
-      let bar = this.#BARS.querySelector(`:scope > .bar[data-category-id="${categoryId}"]`);
+    hitVlues.reduce((lastBar, {node, label, count, hitCount}) => {
+      let bar = this.#BARS.querySelector(`:scope > .bar[data-category-id="${node}"]`);
       if (bar === null) {
         // add bar
         bar = document.createElement('div');
         bar.classList.add('bar');
-        bar.dataset.categoryId = categoryId;
+        bar.dataset.node = node;
         bar.innerHTML = `
         <div class="wholebar"></div>
         <div class="hitbar _catexxxgory-background-color-strong">

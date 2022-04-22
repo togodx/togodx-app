@@ -281,7 +281,7 @@ export default class ResultsTable {
     //  → Subject  (Gene)                          | category
     //    → Main-Category  (Expressed in tissues)  | attribute
     //      → Sub-Category  (Thyroid Gland)        | 
-    //        → Unique-Entry (ENSG00000139304)     | categoryId ?
+    //        → Unique-Entry (ENSG00000139304)     | node ?
     rows.forEach((row, index) => {
       const actualIndex = offset + index;
       const tr = this.#TBODY.querySelector(`:scope > tr[data-index="${actualIndex}"]`);

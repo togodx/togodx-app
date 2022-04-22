@@ -278,9 +278,9 @@ export default class TableData {
     // attribute (classification/distribution)
     Records.attributes.forEach(({id}) => {
       const valuesCondition = this.#dxCondition.valuesConditions.find(valuesCondition => valuesCondition.attributeId === id);
-      const categoryIds = [];
-      if (valuesCondition) categoryIds.push(...valuesCondition.categoryIds);
-      ConditionBuilder.setAttributeValues(id, categoryIds, false);
+      const nodes = [];
+      if (valuesCondition) nodes.push(...valuesCondition.nodes);
+      ConditionBuilder.setAttributeValues(id, nodes, false);
     });
   }
 

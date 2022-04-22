@@ -52,11 +52,11 @@ export default class HistogramRangeSelectorView {
     const width = 100 / this.#items.length;
     overview.innerHTML = this.#items.map(item => `<div
       class="bar _catexxxgory-background-color"
-      data-category-id="${item.categoryId}"
+      data-category-id="${item.node}"
       data-count="${item.count}"
       style="width: ${width}%; height: ${(item.count / max) * 100}%;"></div>`).join('');
     const graph = histogram.querySelector(':scope > .graph');
-    graph.innerHTML = this.#items.map((item, index) => `<div class="bar" data-category-id="${item.categoryId}" data-count="${item.count}">
+    graph.innerHTML = this.#items.map((item, index) => `<div class="bar" data-category-id="${item.node}" data-count="${item.count}">
       <div class="actual" style="background-color: rgb(${util.colorTintByHue(category.color, 360 * index / this.#items.length).coords.map(cood => cood * 256).join(',')});"></div>
       <p class="label">${item.label}</p>
     </div>`).join('');
