@@ -118,10 +118,10 @@ export default class ResultsTable {
     this.#tableData = tableData;
     this.#intersctionObserver.unobserve(this.#TABLE_END);
     this.#header = [
-      ...tableData.dxCondition.valuesConditions.map(({catexxxgoryId, attributeId}) => {
+      ...tableData.dxCondition.conditionFilters.map(({catexxxgoryId, attributeId}) => {
         return {catexxxgoryId, attributeId};
       }),
-      ...tableData.dxCondition.keyConditions.map(({catexxxgoryId, attributeId}) => {
+      ...tableData.dxCondition.conditionAnnotations.map(({catexxxgoryId, attributeId}) => {
         return {catexxxgoryId, attributeId};
       })
     ];
@@ -148,26 +148,26 @@ export default class ResultsTable {
     // makte table sub header
     this.#THEAD_SUB.innerHTML = `
     ${
-      tableData.dxCondition.valuesConditions
+      tableData.dxCondition.conditionFilters
         .map(
-          valuesCondition => `
+          conditionFilter => `
           <th>
-            <div class="inner _catexxxgory-background-color" data-catexxxgory-id="${valuesCondition.catexxxgoryId}">
-              <div class="togo-key-view">${Records.getDatasetLabel(valuesCondition.dataset)}</div>
-              <span>${valuesCondition.label}</span>
+            <div class="inner _catexxxgory-background-color" data-catexxxgory-id="${conditionFilter.catexxxgoryId}">
+              <div class="togo-key-view">${Records.getDatasetLabel(conditionFilter.dataset)}</div>
+              <span>${conditionFilter.label}</span>
             </div>
           </th>`
         )
         .join('')
     }
     ${
-      tableData.dxCondition.keyConditions
+      tableData.dxCondition.conditionAnnotations
         .map(
-          keyCondition => `
+          conditionAnnotation => `
           <th>
-            <div class="inner _catexxxgory-color" data-catexxxgory-id="${keyCondition.catexxxgoryId}">
-              <div class="togo-key-view">${Records.getDatasetLabel(keyCondition.dataset)}</div>
-              <span>${keyCondition.label}</span>
+            <div class="inner _catexxxgory-color" data-catexxxgory-id="${conditionAnnotation.catexxxgoryId}">
+              <div class="togo-key-view">${Records.getDatasetLabel(conditionAnnotation.dataset)}</div>
+              <span>${conditionAnnotation.label}</span>
             </div>
           </th>`
         )
@@ -184,8 +184,8 @@ export default class ResultsTable {
     this.#statisticsViews = [];
     this.#tableData.dxCondition
     const conditions = [
-      ...this.#tableData.dxCondition.valuesConditions,
-      ...this.#tableData.dxCondition.keyConditions
+      ...this.#tableData.dxCondition.conditionFilters,
+      ...this.#tableData.dxCondition.conditionAnnotations
     ];
     conditions.forEach((condition, index) => {
       const td = document.createElement('td');

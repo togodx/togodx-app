@@ -1,7 +1,7 @@
-import BaseCondition from "./BaseCondition";
+import ConditionBase from "./ConditionBase";
 import Records from "./Records";
 
-export default class KeyCondition extends BaseCondition {
+export default class ConditionAnnotation extends ConditionBase {
 
   #parentNode;
   #value;

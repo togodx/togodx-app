@@ -1,8 +1,8 @@
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import StackingConditionView from "./StackingConditionView";
-import KeyCondition from "./KeyCondition";
-import ValuesCondition from "./ValuesCondition";
+import ConditionAnnotation from "./ConditionAnnotation";
+import ConditionFilter from "./ConditionFilter";
 import * as event from '../events';
 
 const POLLING_DURATION = 100;
@@ -49,13 +49,13 @@ export default class ConditionBuilderView {
     });
 
     // event listeners
-    DefaultEventEmitter.addEventListener(event.mutateAttributeCondition, ({detail: {action, keyCondition}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateAttributeCondition, ({detail: {action, conditionAnnotation}}) => {
       switch (action) {
         case 'add':
-          this.#addAttribute(keyCondition);
+          this.#addAttribute(conditionAnnotation);
           break;
         case 'remove':
-          this.#removeAttribute(keyCondition);
+          this.#removeAttribute(conditionAnnotation);
           break;
       }
     });
@@ -104,16 +104,16 @@ export default class ConditionBuilderView {
     this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }
 
-  #addAttribute(keyCondition) {
+  #addAttribute(conditionAnnotation) {
     // modifier
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
-    this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'key', keyCondition));
+    this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'key', conditionAnnotation));
   }
   
-  #removeAttribute(keyCondition) {
+  #removeAttribute(conditionAnnotation) {
     // remove from array
-    const index = this.#properties.findIndex(stackingConditionView => stackingConditionView.removeAttribute(keyCondition));
+    const index = this.#properties.findIndex(stackingConditionView => stackingConditionView.removeAttribute(conditionAnnotation));
     this.#properties.splice(index, 1);
     // modifier
     if (this.#properties.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
@@ -129,7 +129,7 @@ export default class ConditionBuilderView {
       stackingConditionView.addValue(node);
     } else {
       // otherwise, make new condition view
-      this.#propertyValues.push(new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', new ValuesCondition(attributeId, [node])));
+      this.#propertyValues.push(new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', new ConditionFilter(attributeId, [node])));
     }
   }
 

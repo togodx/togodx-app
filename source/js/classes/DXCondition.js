@@ -1,16 +1,16 @@
-import KeyCondition from "./KeyCondition";
-import ValuesCondition from "./ValuesCondition";
+import ConditionAnnotation from "./ConditionAnnotation";
+import ConditionFilter from "./ConditionFilter";
 
 export default class DXCondition {
 
   #togoKey;
-  #keyConditions;
-  #valuesConditions;
+  #conditionAnnotations;
+  #conditionFilters;
 
-  constructor(togoKey, keyConditions, valuesConditions) {
+  constructor(togoKey, conditionAnnotations, conditionFilters) {
     this.#togoKey = togoKey;
-    this.#keyConditions = this.#copyKeyConditions(keyConditions);
-    this.#valuesConditions = this.#copyValuesConditions(valuesConditions);
+    this.#conditionAnnotations = this.#copyConditionAnnotations(conditionAnnotations);
+    this.#conditionFilters = this.#copyConditionFilters(conditionFilters);
   }
 
 
@@ -24,27 +24,27 @@ export default class DXCondition {
   checkSameCondition(dxCondition) {
     // keys
     let matchKeys = false;
-    if (this.keyConditions.length === dxCondition.keyConditions.length) {
-      matchKeys = this.keyConditions.every(keyCondition => {
-        return dxCondition.keyConditions.findIndex(newKeyCondition => {
+    if (this.conditionAnnotations.length === dxCondition.conditionAnnotations.length) {
+      matchKeys = this.conditionAnnotations.every(conditionAnnotation => {
+        return dxCondition.conditionAnnotations.findIndex(newConditionAnnotation => {
           return (
-            keyCondition.attributeId === newKeyCondition.attributeId &&
-            keyCondition.parentNode === newKeyCondition.parentNode
+            conditionAnnotation.attributeId === newConditionAnnotation.attributeId &&
+            conditionAnnotation.parentNode === newConditionAnnotation.parentNode
           );
         }) !== -1;
       });
     }
     // values
     let matchValues = false;
-    if (this.valuesConditions.length === dxCondition.valuesConditions.length) {
-      matchValues = this.valuesConditions.every(valuesCondition => {
-        return dxCondition.valuesConditions.findIndex(newValuesCondition => {
+    if (this.conditionFilters.length === dxCondition.conditionFilters.length) {
+      matchValues = this.conditionFilters.every(conditionFilter => {
+        return dxCondition.conditionFilters.findIndex(newConditionFilter => {
           return (
-            valuesCondition.attributeId === newValuesCondition.attributeId &&
+            conditionFilter.attributeId === newConditionFilter.attributeId &&
             (
-              valuesCondition.nodes.length === newValuesCondition.nodes.length &&
-              valuesCondition.nodes.every(node => {
-                return newValuesCondition.nodes.findIndex(newCategoryId => node === newCategoryId) !== -1;
+              conditionFilter.nodes.length === newConditionFilter.nodes.length &&
+              conditionFilter.nodes.every(node => {
+                return newConditionFilter.nodes.findIndex(newCategoryId => node === newCategoryId) !== -1;
               })
             )
           );
@@ -54,12 +54,12 @@ export default class DXCondition {
     return dxCondition.togoKey === this.togoKey && matchKeys && matchValues;
   }
 
-  #copyKeyConditions(keyConditions) {
-    return keyConditions.map(keyCondition => new KeyCondition(keyCondition.attributeId, keyCondition.parentNode));
+  #copyConditionAnnotations(conditionAnnotations) {
+    return conditionAnnotations.map(conditionAnnotation => new ConditionAnnotation(conditionAnnotation.attributeId, conditionAnnotation.parentNode));
   }
 
-  #copyValuesConditions(valuesConditions) {
-    return valuesConditions.map(valuesCondition => new ValuesCondition(valuesCondition.attributeId, [...valuesCondition.nodes]));
+  #copyConditionFilters(conditionFilters) {
+    return conditionFilters.map(conditionFilter => new ConditionFilter(conditionFilter.attributeId, [...conditionFilter.nodes]));
   }
 
 
@@ -69,20 +69,20 @@ export default class DXCondition {
     return this.#togoKey;
   }
 
-  get keyConditions() {
-    return this.#keyConditions;
+  get conditionAnnotations() {
+    return this.#conditionAnnotations;
   }
 
-  get valuesConditions() {
-    return this.#valuesConditions;
+  get conditionFilters() {
+    return this.#conditionFilters;
   }
 
   get queryFilters() {
-    return this.#valuesConditions.map(valuesConditions => valuesConditions.query);
+    return this.#conditionFilters.map(conditionFilters => conditionFilters.query);
   }
 
   get queryAnnotations() {
-    return this.#keyConditions.map(keyConditions => keyConditions.query);
+    return this.#conditionAnnotations.map(conditionAnnotations => conditionAnnotations.query);
   }
 
 }

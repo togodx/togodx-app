@@ -89,7 +89,7 @@ export default class StatisticsView {
     }
 
     hitVlues.reduce((lastBar, {node, label, count, hitCount}) => {
-      let bar = this.#BARS.querySelector(`:scope > .bar[data-category-id="${node}"]`);
+      let bar = this.#BARS.querySelector(`:scope > .bar[data-node="${node}"]`);
       if (bar === null) {
         // add bar
         bar = document.createElement('div');

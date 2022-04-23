@@ -1,7 +1,7 @@
 import ConditionBuilder from "./ConditionBuilder";
 import Records from "./Records";
-import KeyCondition from "./KeyCondition";
-import ValuesCondition from "./ValuesCondition";
+import ConditionAnnotation from "./ConditionAnnotation";
+import ConditionFilter from "./ConditionFilter";
 
 const POLLING_DURATION = 1000;
 
@@ -16,7 +16,7 @@ export default class StackingConditionView {
    * 
    * @param {HTMLElement} container 
    * @param {String} type: 'property' or 'value'
-   * @param {keyCondition, valuesCondition} condition 
+   * @param {conditionAnnotation, conditionFilter} condition 
    */
   constructor(container, type, condition, isRange = false) {
 
@@ -33,7 +33,7 @@ export default class StackingConditionView {
     // make view
     let label, ancestorLabels = [Records.getCatexxxgory(condition.catexxxgoryId).label];
     switch(true) {
-      case this.#condition instanceof KeyCondition: {
+      case this.#condition instanceof ConditionAnnotation: {
         if (condition.parentNode) {
           const getValue = () => {
             const value = condition.value;
@@ -54,7 +54,7 @@ export default class StackingConditionView {
         }
       }
         break;
-      case this.#condition instanceof ValuesCondition:
+      case this.#condition instanceof ConditionFilter:
         label = `<ul class="labels"></ul>`;
         ancestorLabels.push(attribute.label);
         this.#make(container, type, ancestorLabels, label);
@@ -76,7 +76,7 @@ export default class StackingConditionView {
     ${label}`;
     container.insertAdjacentElement('beforeend', this.#ROOT);
     // reference
-    if (this.#condition instanceof ValuesCondition) {
+    if (this.#condition instanceof ConditionFilter) {
       this.#LABELS = this.#ROOT.querySelector(':scope > .labels');
       for (const node of this.#condition.nodes) {
         this.addValue(node);
@@ -86,11 +86,11 @@ export default class StackingConditionView {
     // event
     this.#ROOT.querySelector(':scope > .close-button-view').addEventListener('click', () => {
       switch (true) {
-        case this.#condition instanceof KeyCondition:
+        case this.#condition instanceof ConditionAnnotation:
           // notify
           ConditionBuilder.removeAttribute(this.#condition.attributeId, this.#condition.parentNode);
           break;
-        case this.#condition instanceof ValuesCondition:
+        case this.#condition instanceof ConditionFilter:
           for (const label of this.#LABELS.querySelectorAll(':scope > .label')) {
             ConditionBuilder.removeAttributeValue(this.#condition.attributeId, label.dataset.node);
           }
@@ -108,7 +108,7 @@ export default class StackingConditionView {
       if (value === undefined) {
         setTimeout(getValue, POLLING_DURATION);
       } else {
-        this.#LABELS.insertAdjacentHTML('beforeend', `<li class="label _catexxxgory-background-color" data-category-id="${value.node}">${value.label}<div class="close-button-view"></div></li>`);
+        this.#LABELS.insertAdjacentHTML('beforeend', `<li class="label _catexxxgory-background-color" data-node="${value.node}">${value.label}<div class="close-button-view"></div></li>`);
         // attach event
         this.#LABELS.querySelector(':scope > .label:last-child').addEventListener('click', e => {
           e.stopPropagation();
@@ -119,17 +119,17 @@ export default class StackingConditionView {
     getValue();
   }
 
-  removeAttribute(keyCondition) {
+  removeAttribute(conditionAnnotation) {
     const isMatch =
-      (keyCondition.attributeId === this.#condition.attributeId) &&
-      (keyCondition.parentNode ? keyCondition.parentNode === this.#condition.parentNode : true);
+      (conditionAnnotation.attributeId === this.#condition.attributeId) &&
+      (conditionAnnotation.parentNode ? conditionAnnotation.parentNode === this.#condition.parentNode : true);
     if (isMatch) this.#ROOT.parentNode.removeChild(this.#ROOT);
     return isMatch;
   }
 
   removeAttributeValue(attributeId, node) {
     if (attributeId === this.#condition.attributeId) {
-      this.#LABELS.removeChild(this.#LABELS.querySelector(`:scope > [data-category-id="${node}"`));
+      this.#LABELS.removeChild(this.#LABELS.querySelector(`:scope > [data-node="${node}"`));
       if (this.#LABELS.childNodes.length === 0) {
         this.#ROOT.parentNode.removeChild(this.#ROOT);
         return true;

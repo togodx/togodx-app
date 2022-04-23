@@ -1,7 +1,7 @@
-import BaseCondition from "./BaseCondition";
+import ConditionBase from "./ConditionBase";
 import Records from "./Records";
 
-export default class ValuesCondition extends BaseCondition {
+export default class ConditionFilter extends ConditionBase {
 
   #nodes;
 

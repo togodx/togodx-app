@@ -1,6 +1,6 @@
 import Records from "./Records";
 
-export default class BaseCondition {
+export default class ConditionBase {
 
   _attributeId;
   #key; // <Attribute>

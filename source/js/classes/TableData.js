@@ -113,20 +113,20 @@ export default class TableData {
         }</p>
       </div>
       ${
-        this.#dxCondition.valuesConditions
-          .map(valuesCondition => {
-            const label = Records.getAttribute(valuesCondition.attributeId).label;
-            return `<div class="condition _catexxxgory-background-color" data-catexxxgory-id="${valuesCondition.catexxxgoryId}">
+        this.#dxCondition.conditionFilters
+          .map(conditionFilter => {
+            const label = Records.getAttribute(conditionFilter.attributeId).label;
+            return `<div class="condition _catexxxgory-background-color" data-catexxxgory-id="${conditionFilter.catexxxgoryId}">
               <p title="${label}">${label}</p>
             </div>`
           })
           .join('')
       }
       ${
-        this.#dxCondition.keyConditions
-          .map(keyCondition => {
-            return `<div class="condition _catexxxgory-color" data-catexxxgory-id="${keyCondition.catexxxgoryId}">
-              <p title="${keyCondition.label}">${keyCondition.label}</p>
+        this.#dxCondition.conditionAnnotations
+          .map(conditionAnnotation => {
+            return `<div class="condition _catexxxgory-color" data-catexxxgory-id="${conditionAnnotation.catexxxgoryId}">
+              <p title="${conditionAnnotation.label}">${conditionAnnotation.label}</p>
             </div>`;
           })
           .join('')
@@ -267,19 +267,19 @@ export default class TableData {
     e.stopPropagation();
     // property (attribute)
     ConditionBuilder.setAttributes(
-      this.#dxCondition.keyConditions.map(keyCondition => {
+      this.#dxCondition.conditionAnnotations.map(conditionAnnotation => {
         return {
-          attributeId: keyCondition.attributeId,
-          parentNode: keyCondition.parentNode,
+          attributeId: conditionAnnotation.attributeId,
+          parentNode: conditionAnnotation.parentNode,
         }
       }),
       false
     );
     // attribute (classification/distribution)
     Records.attributes.forEach(({id}) => {
-      const valuesCondition = this.#dxCondition.valuesConditions.find(valuesCondition => valuesCondition.attributeId === id);
+      const conditionFilter = this.#dxCondition.conditionFilters.find(conditionFilter => conditionFilter.attributeId === id);
       const nodes = [];
-      if (valuesCondition) nodes.push(...valuesCondition.nodes);
+      if (conditionFilter) nodes.push(...conditionFilter.nodes);
       ConditionBuilder.setAttributeValues(id, nodes, false);
     });
   }

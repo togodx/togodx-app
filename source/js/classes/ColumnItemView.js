@@ -55,10 +55,10 @@ export default class ColumnItemView {
         ConditionBuilder.removeAttribute(column.attributeId, node);
       }
     });
-    DefaultEventEmitter.addEventListener(event.mutateAttributeCondition, ({detail: {action, keyCondition}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateAttributeCondition, ({detail: {action, conditionAnnotation}}) => {
       if (action === 'remove') {
-        if (column.attributeId === keyCondition.attributeId) {
-          if (keyCondition.parentNode && node === keyCondition.parentNode) {
+        if (column.attributeId === conditionAnnotation.attributeId) {
+          if (conditionAnnotation.parentNode && node === conditionAnnotation.parentNode) {
             this.#INPUT_KEY.checked = action === 'add';
           }
         }
