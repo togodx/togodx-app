@@ -132,22 +132,11 @@ export default class UploadUserIDsView {
         this.#BODY.classList.add('-showuserids');
         this.#handleProp();
 
-        const __zzz__data = response.data.map(datum => {
-          return {
-            node: datum.node,
-            count: datum.count,
-            mapped: datum.mapped,
-            label: datum.label,
-            pvalue: datum.pvalue,
-          }
-        });
-
         // dispatch event
         const customEvent = new CustomEvent(event.setUserValues, {
           detail: {
             attributeId: id,
-            // values: values,
-            values: __zzz__data,
+            values: response.data
           },
         });
         DefaultEventEmitter.dispatchEvent(customEvent);

@@ -144,21 +144,9 @@ export default class ColumnView {
       } else {
         axios
           .post(App.getApiUrl('locate'), parameter)
-          // .get(parameter)
           .then(response => {
-
-            const __zzz__data = response.data.map(datum => {
-              return {
-                node: datum.node,
-                count: datum.count,
-                mapped: datum.mapped,
-                label: datum.label,
-                pvalue: datum.pvalue,
-              }
-            });
-    
-            this.#cachedUserValues.set(parameter, __zzz__data);
-            resolve(__zzz__data);
+            this.#cachedUserValues.set(parameter, response.data);
+            resolve(response.data);
           });
       }
     });

@@ -7007,21 +7007,10 @@
       if (values) {
         resolve(values);
       } else {
-        axios.post(App$1.getApiUrl('locate'), parameter) // .get(parameter)
-        .then(function (response) {
-          var __zzz__data = response.data.map(function (datum) {
-            return {
-              node: datum.node,
-              count: datum.count,
-              mapped: datum.mapped,
-              label: datum.label,
-              pvalue: datum.pvalue
-            };
-          });
+        axios.post(App$1.getApiUrl('locate'), parameter).then(function (response) {
+          _classPrivateFieldGet(_this5, _cachedUserValues).set(parameter, response.data);
 
-          _classPrivateFieldGet(_this5, _cachedUserValues).set(parameter, __zzz__data);
-
-          resolve(__zzz__data);
+          resolve(response.data);
         });
       }
     });
@@ -10870,24 +10859,13 @@
     }).then(function (response) {
       _classPrivateFieldGet(_this3, _BODY).classList.add('-showuserids');
 
-      _classPrivateMethodGet(_this3, _handleProp, _handleProp2).call(_this3);
-
-      var __zzz__data = response.data.map(function (datum) {
-        return {
-          node: datum.node,
-          count: datum.count,
-          mapped: datum.mapped,
-          label: datum.label,
-          pvalue: datum.pvalue
-        };
-      }); // dispatch event
+      _classPrivateMethodGet(_this3, _handleProp, _handleProp2).call(_this3); // dispatch event
 
 
       var customEvent = new CustomEvent(setUserValues, {
         detail: {
           attributeId: id,
-          // values: values,
-          values: __zzz__data
+          values: response.data
         }
       });
       DefaultEventEmitter$1.dispatchEvent(customEvent);
