@@ -816,10 +816,10 @@ body[data-sort-column=total][data-sort-direction=desc] .column-selector-view > .
 .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label {
   display: relative;
 }
-[data-condition=annotation] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > label.value {
+[data-condition=annotation] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > label.filter {
   display: none;
 }
-[data-condition=value] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > label.annotation {
+[data-condition=filter] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > label.annotation {
   display: none;
 }
 .column-selector-view > .columns > .inner > .column > table > tbody > tr > .total, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .mapped, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .pvalue {
@@ -872,6 +872,31 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
 }
 .column-selector-view > .loading-view {
   background-color: rgba(204, 204, 204, 0.5);
+}
+
+.external-link-button-view {
+  display: inline-block;
+  background-color: var(--color-lamp-black);
+  color: white;
+  font-weight: normal;
+  padding: 0 0.8rem;
+  border-radius: 0.2rem;
+  margin-right: 0.2rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.external-link-button-view:hover {
+  color: white;
+}
+.external-link-button-view::after {
+  content: "\e89e";
+  font-family: "Material Icons Outlined";
+  font-size: 1em;
+  vertical-align: middle;
+  margin-left: 0.3em;
+  position: relative;
+  top: -0.1em;
+  margin-right: -0.1em;
 }
 
 .histogram-range-selector-view {
@@ -1098,29 +1123,77 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
             transform: rotate(360deg);
   }
 }
-.external-link-button-view {
-  display: inline-block;
-  background-color: var(--color-lamp-black);
-  color: white;
-  font-weight: normal;
-  padding: 0 0.8rem;
-  border-radius: 0.2rem;
-  margin-right: 0.2rem;
-  cursor: pointer;
-  white-space: nowrap;
+.progress-indicator {
+  padding: 0.4rem 0.4rem;
+  display: none;
+  font-size: 1rem;
 }
-.external-link-button-view:hover {
-  color: white;
+.progress-indicator.-border {
+  border-bottom: solid 0.1rem var(--color-separator);
 }
-.external-link-button-view::after {
-  content: "\e89e";
-  font-family: "Material Icons Outlined";
-  font-size: 1em;
-  vertical-align: middle;
-  margin-left: 0.3em;
+.progress-indicator.-simple > .text {
+  padding-top: 1rem;
+}
+.progress-indicator > .text {
+  line-height: 1;
+  display: flex;
+  justify-content: space-between;
+}
+.progress-indicator > .text > .amount-of-data {
+  display: none;
+}
+.progress-indicator > .text > .status {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+.progress-indicator > .text > .status > .material-icons-outlined {
+  font-size: 1.4rem;
+  width: 1.6rem;
+}
+.progress-indicator > .text > .status > .material-icons-outlined.-rotating {
+  -webkit-animation: rotation 3s linear infinite;
+          animation: rotation 3s linear infinite;
+}
+.progress-indicator > .progress {
+  margin: 0.4rem 0;
   position: relative;
-  top: -0.1em;
-  margin-right: -0.1em;
+  height: 0.4rem;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.progress-indicator > .progress > .bar {
+  background-color: var(--color-lamp-black);
+  position: absolute;
+  height: 0.4rem;
+  top: 0;
+  left: 0;
+  transition: width var(--transition-wipe);
+}
+.-fetching .progress-indicator, [data-status="load rows"] .progress-indicator, [data-status=complete] .progress-indicator {
+  display: block;
+}
+[data-status="load rows"] .progress-indicator > .text > .amount-of-data, [data-status=complete] .progress-indicator > .text > .amount-of-data {
+  display: block;
+}
+.-fetching .progress-indicator > .text > .bar {
+  -webkit-animation: var(--transition-fetching) infinite alternate fetching;
+          animation: var(--transition-fetching) infinite alternate fetching;
+}
+[data-status=complete] .progress-indicator > .text > .status {
+  display: none;
+}
+[data-status=complete] .progress-indicator.-simple > .progress, [data-status=complete] .progress-indicator.error > .progress {
+  display: none;
+}
+[data-status=complete] .progress-indicator.-simple > .text > .status, [data-status=complete] .progress-indicator.error > .text > .status {
+  display: block;
+}
+[data-status=complete] .progress-indicator.-simple > .text > .status > .material-icons-outlined, [data-status=complete] .progress-indicator.error > .text > .status > .material-icons-outlined {
+  display: none;
+}
+[data-status=complete] .progress-indicator.error > .text > .status {
+  color: var(--color-error);
 }
 
 .rounded-button-view {
@@ -1288,7 +1361,7 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   height: 0% !important;
   opacity: 0;
 }
-.statistics-view > .statistics > .bars > .bar > .hitbar > .value {
+.statistics-view > .statistics > .bars > .bar > .hitbar > .filter {
   color: white;
   position: absolute;
   top: 0;
@@ -1304,7 +1377,7 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   pointer-events: none;
   text-align: left;
 }
-.statistics-view > .statistics > .bars > .bar > .hitbar > .value.-below {
+.statistics-view > .statistics > .bars > .bar > .hitbar > .filter.-below {
   color: var(--color-lamp-black);
   text-align: right;
   top: calc(0rem - var(--height-statistics));
@@ -1466,79 +1539,6 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
             transform: rotate(360deg);
   }
 }
-.progress-indicator {
-  padding: 0.4rem 0.4rem;
-  display: none;
-  font-size: 1rem;
-}
-.progress-indicator.-border {
-  border-bottom: solid 0.1rem var(--color-separator);
-}
-.progress-indicator.-simple > .text {
-  padding-top: 1rem;
-}
-.progress-indicator > .text {
-  line-height: 1;
-  display: flex;
-  justify-content: space-between;
-}
-.progress-indicator > .text > .amount-of-data {
-  display: none;
-}
-.progress-indicator > .text > .status {
-  display: flex;
-  align-items: center;
-  text-align: center;
-}
-.progress-indicator > .text > .status > .material-icons-outlined {
-  font-size: 1.4rem;
-  width: 1.6rem;
-}
-.progress-indicator > .text > .status > .material-icons-outlined.-rotating {
-  -webkit-animation: rotation 3s linear infinite;
-          animation: rotation 3s linear infinite;
-}
-.progress-indicator > .progress {
-  margin: 0.4rem 0;
-  position: relative;
-  height: 0.4rem;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.1);
-}
-.progress-indicator > .progress > .bar {
-  background-color: var(--color-lamp-black);
-  position: absolute;
-  height: 0.4rem;
-  top: 0;
-  left: 0;
-  transition: width var(--transition-wipe);
-}
-.-fetching .progress-indicator, [data-status="load rows"] .progress-indicator, [data-status=complete] .progress-indicator {
-  display: block;
-}
-[data-status="load rows"] .progress-indicator > .text > .amount-of-data, [data-status=complete] .progress-indicator > .text > .amount-of-data {
-  display: block;
-}
-.-fetching .progress-indicator > .text > .bar {
-  -webkit-animation: var(--transition-fetching) infinite alternate fetching;
-          animation: var(--transition-fetching) infinite alternate fetching;
-}
-[data-status=complete] .progress-indicator > .text > .status {
-  display: none;
-}
-[data-status=complete] .progress-indicator.-simple > .progress, [data-status=complete] .progress-indicator.error > .progress {
-  display: none;
-}
-[data-status=complete] .progress-indicator.-simple > .text > .status, [data-status=complete] .progress-indicator.error > .text > .status {
-  display: block;
-}
-[data-status=complete] .progress-indicator.-simple > .text > .status > .material-icons-outlined, [data-status=complete] .progress-indicator.error > .text > .status > .material-icons-outlined {
-  display: none;
-}
-[data-status=complete] .progress-indicator.error > .text > .status {
-  color: var(--color-error);
-}
-
 .togo-key-view {
   color: white;
   background-color: var(--color-translucent-lamp-black2);
@@ -1549,17 +1549,17 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   font-size: 1.2rem;
 }
 
-.track-value-view {
+.track-filter-view {
   line-height: calc(var(--height-track) - var(--padding-track-block-start) * 2);
   position: absolute;
   transition: width var(--transition-wipe), left var(--transition-wipe);
   cursor: pointer;
   transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
 }
-[data-condition=annotation] .track-value-view {
+[data-condition=annotation] .track-filter-view {
   pointer-events: none;
 }
-.track-value-view::after {
+.track-filter-view::after {
   content: "";
   display: block;
   position: absolute;
@@ -1569,10 +1569,10 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   border-left: solid 0.005rem var(--color-gray);
   z-index: var(--z-track-item-border);
 }
-.track-value-view > .labels {
+.track-filter-view > .labels {
   overflow: hidden;
 }
-.track-value-view > .labels > p {
+.track-filter-view > .labels > p {
   padding-left: 0.2rem;
   padding-right: 0.2rem;
   padding-top: var(--padding-track-block-start);
@@ -1583,15 +1583,15 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   text-align: center;
   transition: opacity var(--transition-wipe);
 }
-.track-value-view > .labels > p > .label {
+.track-filter-view > .labels > p > .label {
   font-size: 1.2rem;
 }
-.track-value-view > .labels > p > .count {
+.track-filter-view > .labels > p > .count {
   padding-left: 0.8rem;
   font-size: 1rem;
   font-weight: lighter;
 }
-.track-value-view > .pin {
+.track-filter-view > .pin {
   position: absolute;
   bottom: 100%;
   -webkit-transform: translate(-50%, calc(-20% + 0.4rem));
@@ -1599,34 +1599,34 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   z-index: var(--z-track-pin);
   display: none;
 }
-.track-value-view > .pin > .material-icons {
+.track-filter-view > .pin > .material-icons {
   text-shadow: -0.1rem 0 white, 0 0.1rem white, 0.1rem 0 white, 0 -0.1rem white;
 }
-.track-value-view[data-pvalue-greater-than="1"] > .pin {
+.track-filter-view[data-pvalue-greater-than="1"] > .pin {
   opacity: 0.4;
 }
-.track-value-view[data-pvalue-greater-than="<1"] > .pin {
+.track-filter-view[data-pvalue-greater-than="<1"] > .pin {
   opacity: 0.5;
 }
-.track-value-view[data-pvalue-greater-than="<0.1"] > .pin {
+.track-filter-view[data-pvalue-greater-than="<0.1"] > .pin {
   opacity: 0.6;
 }
-.track-value-view[data-pvalue-greater-than="<0.05"] > .pin {
+.track-filter-view[data-pvalue-greater-than="<0.05"] > .pin {
   opacity: 0.7;
 }
-.track-value-view[data-pvalue-greater-than="<0.01"] > .pin {
+.track-filter-view[data-pvalue-greater-than="<0.01"] > .pin {
   opacity: 0.8;
 }
-.track-value-view[data-pvalue-greater-than="<0.005"] > .pin {
+.track-filter-view[data-pvalue-greater-than="<0.005"] > .pin {
   opacity: 0.9;
 }
-.track-value-view[data-pvalue-greater-than="<0.001"] > .pin {
+.track-filter-view[data-pvalue-greater-than="<0.001"] > .pin {
   opacity: 1;
 }
-.track-value-view:hover, .track-value-view.-selected {
+.track-filter-view:hover, .track-filter-view.-selected {
   background-color: transparent !important;
 }
-.track-value-view:hover::before, .track-value-view.-selected::before {
+.track-filter-view:hover::before, .track-filter-view.-selected::before {
   content: "";
   display: block;
   position: absolute;
@@ -1634,24 +1634,24 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   height: 100%;
   border: solid 1px white;
 }
-.track-value-view.-selected::before {
+.track-filter-view.-selected::before {
   z-index: var(--z-track-item-selected);
 }
-.track-value-view:hover::before {
+.track-filter-view:hover::before {
   z-index: var(--z-track-item-selected-hover);
 }
-.track-value-view:hover > .pin {
+.track-filter-view:hover > .pin {
   opacity: 1;
   border-color: white;
   z-index: var(--z-track-pin-hover);
 }
-.-showuserids .track-value-view:not(.-pinsticking) {
+.-showuserids .track-filter-view:not(.-pinsticking) {
   background-color: var(--color-gray) !important;
 }
-.-showuserids .track-value-view:not(.-pinsticking) > .labels {
+.-showuserids .track-filter-view:not(.-pinsticking) > .labels {
   opacity: 0.25;
 }
-.-showuserids .track-value-view.-pinsticking > .pin {
+.-showuserids .track-filter-view.-pinsticking > .pin {
   display: block;
 }
 
@@ -1728,27 +1728,27 @@ body[data-display=results] #App > .inner {
 body[data-display=results] #ConditionBuilder > .conditions > .condition > .conditions > .stacking-condition-view > .close-button-view {
   display: none;
 }
-#ConditionBuilder > .conditions > #ConditionAnnotations, #ConditionBuilder > .conditions > #ConditionValues {
+#ConditionBuilder > .conditions > #ConditionAnnotations, #ConditionBuilder > .conditions > #ConditionFilters {
   transition: opacity var(--transition-instant);
   opacity: 0.8;
   background-color: var(--background-color-inactive);
   cursor: pointer;
 }
-#ConditionBuilder > .conditions > #ConditionAnnotations:hover, #ConditionBuilder > .conditions > #ConditionValues:hover {
+#ConditionBuilder > .conditions > #ConditionAnnotations:hover, #ConditionBuilder > .conditions > #ConditionFilters:hover {
   background-color: var(--background-color);
 }
 #ConditionBuilder > .conditions > #ConditionAnnotations {
   border-radius: var(--radius) var(--radius) 0 0;
 }
-[data-condition=value] #ConditionBuilder > .conditions > #ConditionAnnotations {
+[data-condition=filter] #ConditionBuilder > .conditions > #ConditionAnnotations {
   opacity: 1;
   background-color: var(--background-color);
 }
-#ConditionBuilder > .conditions > #ConditionValues {
+#ConditionBuilder > .conditions > #ConditionFilters {
   border-radius: 0 0 var(--radius) var(--radius);
   margin-top: 0.1rem;
 }
-[data-condition=annotation] #ConditionBuilder > .conditions > #ConditionValues {
+[data-condition=annotation] #ConditionBuilder > .conditions > #ConditionFilters {
   opacity: 1;
   background-color: var(--background-color);
 }

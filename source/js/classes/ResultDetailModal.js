@@ -93,7 +93,7 @@ export default class ResultDetailModal {
     // for continuous value (distribution), do not output label
     const subCategory = isPrimaryKey
       ? ''
-      : Records.getValue(keys.mainCategoryId, keys.subCategoryId);
+      : Records.getFilter(keys.mainCategoryId, keys.subCategoryId);
     const valueLabel = attribute?.datamodel !== 'distribution' && subCategory?.label
       ? `<span class="value">${subCategory.label}</span>`
       : '';

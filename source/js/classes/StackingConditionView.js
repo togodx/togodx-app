@@ -15,7 +15,7 @@ export default class StackingConditionView {
   /**
    * 
    * @param {HTMLElement} container 
-   * @param {String} type: 'property' or 'value'
+   * @param {String} type: 'property' or 'filter'
    * @param {conditionAnnotation, conditionFilter} condition 
    */
   constructor(container, type, condition, isRange = false) {
@@ -35,19 +35,19 @@ export default class StackingConditionView {
     switch(true) {
       case this.#condition instanceof ConditionAnnotation: {
         if (condition.parentNode) {
-          const getValue = () => {
-            const value = condition.value;
-            if (value) {
-              label = `<div class="label _catexxxgory-color">${value.label}</div>`;
+          const getFilter = () => {
+            const filter = condition.filter;
+            if (filter) {
+              label = `<div class="label _catexxxgory-color">${filter.label}</div>`;
               ancestorLabels.push(attribute.label, ...condition.ancestors.map(ancestor => {
-                return Records.getValue(condition.attributeId, ancestor).label;
+                return Records.getFilter(condition.attributeId, ancestor).label;
               }));
               this.#make(container, type, ancestorLabels, label);
             } else {
-              setTimeout(getValue, POLLING_DURATION);
+              setTimeout(getFilter, POLLING_DURATION);
             }
           }
-          getValue();
+          getFilter();
         } else {
           label = `<div class="label _catexxxgory-color">${attribute.label}</div>`;
           this.#make(container, type, ancestorLabels, label);
@@ -79,7 +79,7 @@ export default class StackingConditionView {
     if (this.#condition instanceof ConditionFilter) {
       this.#LABELS = this.#ROOT.querySelector(':scope > .labels');
       for (const node of this.#condition.nodes) {
-        this.addValue(node);
+        this.addFilter(node);
       }
     }
 
@@ -92,7 +92,7 @@ export default class StackingConditionView {
           break;
         case this.#condition instanceof ConditionFilter:
           for (const label of this.#LABELS.querySelectorAll(':scope > .label')) {
-            ConditionBuilder.removeAttributeValue(this.#condition.attributeId, label.dataset.node);
+            ConditionBuilder.removeAttributeFilter(this.#condition.attributeId, label.dataset.node);
           }
           break;
       }
@@ -102,21 +102,21 @@ export default class StackingConditionView {
 
   // public methods
 
-  addValue(node) {
-    const getValue = () => {
-      const value = Records.getValue(this.#condition.attributeId, node);
-      if (value === undefined) {
-        setTimeout(getValue, POLLING_DURATION);
+  addFilter(node) {
+    const getFilter = () => {
+      const filter = Records.getFilter(this.#condition.attributeId, node);
+      if (filter === undefined) {
+        setTimeout(getFilter, POLLING_DURATION);
       } else {
-        this.#LABELS.insertAdjacentHTML('beforeend', `<li class="label _catexxxgory-background-color" data-node="${value.node}">${value.label}<div class="close-button-view"></div></li>`);
+        this.#LABELS.insertAdjacentHTML('beforeend', `<li class="label _catexxxgory-background-color" data-node="${filter.node}">${filter.label}<div class="close-button-view"></div></li>`);
         // attach event
         this.#LABELS.querySelector(':scope > .label:last-child').addEventListener('click', e => {
           e.stopPropagation();
-          ConditionBuilder.removeAttributeValue(this.#condition.attributeId, e.target.parentNode.dataset.node);
+          ConditionBuilder.removeAttributeFilter(this.#condition.attributeId, e.target.parentNode.dataset.node);
         });
       }
     }
-    getValue();
+    getFilter();
   }
 
   removeAttribute(conditionAnnotation) {
@@ -127,7 +127,7 @@ export default class StackingConditionView {
     return isMatch;
   }
 
-  removeAttributeValue(attributeId, node) {
+  removeAttributeFilter(attributeId, node) {
     if (attributeId === this.#condition.attributeId) {
       this.#LABELS.removeChild(this.#LABELS.querySelector(`:scope > [data-node="${node}"`));
       if (this.#LABELS.childNodes.length === 0) {

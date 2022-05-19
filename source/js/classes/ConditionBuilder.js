@@ -55,8 +55,8 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  addAttributeValue(attributeId, node, ancestors = [], isFinal = true) {
-    // find value of same property
+  addAttributeFilter(attributeId, node, ancestors = [], isFinal = true) {
+    // find filter of same property
     const sameConditionFilter = this.#conditionFilters.find(conditionFilter => conditionFilter.attributeId === attributeId);
     // store
     if (sameConditionFilter) {
@@ -68,7 +68,7 @@ class ConditionBuilder {
     // evaluate
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutateAttributeValueCondition, {detail: {action: 'add', attributeId, node}});
+    const customEvent = new CustomEvent(event.mutateAttributeFilterCondition, {detail: {action: 'add', attributeId, node}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
@@ -84,7 +84,7 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  removeAttributeValue(attributeId, node, isFinal = true) {
+  removeAttributeFilter(attributeId, node, isFinal = true) {
     // remove from store
     const index = this.#conditionFilters.findIndex(conditionFilter => {
       if (conditionFilter.attributeId === attributeId) {
@@ -98,7 +98,7 @@ class ConditionBuilder {
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutateAttributeValueCondition, {detail: {action: 'remove', attributeId, node}});
+    const customEvent = new CustomEvent(event.mutateAttributeFilterCondition, {detail: {action: 'remove', attributeId, node}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
@@ -113,24 +113,24 @@ class ConditionBuilder {
     if (isFinal) this.#postProcessing();
   }
 
-  setAttributeValues(attributeId, nodes, isFinal = true) {
+  setAttributeFilters(attributeId, nodes, isFinal = true) {
     const oldConditionFilter = this.#conditionFilters.find(conditionFilter => conditionFilter.attributeId === attributeId);
     if (oldConditionFilter) {
-      const originalValues = Records.getAttribute(attributeId).values;
-      originalValues.forEach(originalValue => {
-        const indexInNew = nodes.indexOf(originalValue.node);
-        const indexInOld = oldConditionFilter.nodes.indexOf(originalValue.node);
+      const originalFilters = Records.getAttribute(attributeId).filters;
+      originalFilters.forEach(originalFilter => {
+        const indexInNew = nodes.indexOf(originalFilter.node);
+        const indexInOld = oldConditionFilter.nodes.indexOf(originalFilter.node);
         if (indexInNew !== -1) {
-          // if new value does not exist in old values, add property value
-          if (indexInOld === -1) this.addAttributeValue(attributeId, originalValue.node, [], false);
+          // if new filter does not exist in old filters, add property filter
+          if (indexInOld === -1) this.addAttributeFilter(attributeId, originalFilter.node, [], false);
         } else {
-          // if extra value exists in old values, remove property value
-          if (indexInOld !== -1) this.removeAttributeValue(attributeId, originalValue.node, false);
+          // if extra filter exists in old filters, remove property filter
+          if (indexInOld !== -1) this.removeAttributeFilter(attributeId, originalFilter.node, false);
         }
       });
     } else {
       for (const node of nodes) {
-        this.addAttributeValue(attributeId, node, [], false);
+        this.addAttributeFilter(attributeId, node, [], false);
       }
     }
     // post processing (permalink, evaluate)
@@ -154,12 +154,12 @@ class ConditionBuilder {
   getSelectedCategoryIds(attributeId) {
     const nodes = {
       annotations: [],
-      values: []
+      filters: []
     };
     const conditionAnnotations = this.#conditionAnnotations.filter(conditionAnnotation => conditionAnnotation.attributeId === attributeId);
     const conditionFilter = this.#conditionFilters.find(conditionFilter => conditionFilter.attributeId === attributeId);
     if (conditionAnnotations) nodes.annotations.push(...conditionAnnotations.map(annotationCondiiton => annotationCondiiton.parentNode));
-    if (conditionFilter) nodes.values.push(...conditionFilter.nodes);
+    if (conditionFilter) nodes.filters.push(...conditionFilter.nodes);
     return nodes;
   }
 
@@ -190,7 +190,7 @@ class ConditionBuilder {
 
     // get hierarchic conditions
     const annotations = this.#conditionAnnotations.map(annotationCondiiton => annotationCondiiton.getURLParameter());
-    const values = this.#conditionFilters.map(conditionFilter => conditionFilter.getURLParameter());
+    const filters = this.#conditionFilters.map(conditionFilter => conditionFilter.getURLParameter());
 
     const __zzz__annotations = annotations.map(annotation => {
       const annotation2 = {attribute: annotation.attributeId};
@@ -202,23 +202,23 @@ class ConditionBuilder {
       }
       return annotation2;
     });
-    const __zzz__values = values.map(value => {
-      const zzzValue = {attribute: value.attributeId};
-      zzzValue.nodes = value.ids.map(id => {
+    const __zzz__filters = filters.map(filter => {
+      const filter2 = {attribute: filter.attributeId};
+      filter2.nodes = filter.ids.map(id => {
         const zzzId = {node: id.node};
         if (id.ancestors) {
           zzzId.path = [...id.ancestors];
         }
         return zzzId;
       });
-      return zzzValue;
+      return filter2;
     });
     
     // generate permalink
     const params = new URL(location).searchParams;
     params.set('dataset', this.#togoKey);
     params.set('annotations', JSON.stringify(__zzz__annotations));
-    params.set('filters', JSON.stringify(__zzz__values));
+    params.set('filters', JSON.stringify(__zzz__filters));
     if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
   }
 
@@ -244,8 +244,8 @@ class ConditionBuilder {
         }
         return annotation2;
       }),
-      values: condition.filters.map(filter => {
-        const zzzValue = {
+      filters: condition.filters.map(filter => {
+        const filter2 = {
           attributeId: filter.attribute,
           ids: filter.nodes.map(node => {
             const zzzNode = {node: node.node};
@@ -255,7 +255,7 @@ class ConditionBuilder {
             return zzzNode;
           })
         };
-        return zzzValue;
+        return filter2;
       })
     }
     
@@ -283,7 +283,7 @@ class ConditionBuilder {
     condition.annotations.forEach(({attributeId, id}) => {
       if (id) addQueue(attributeId, id);
     });
-    condition.values.forEach(({attributeId, ids}) => {
+    condition.filters.forEach(({attributeId, ids}) => {
       ids.forEach(id => {
         if (id.ancestors) addQueue(attributeId, id);
       });
@@ -303,8 +303,8 @@ class ConditionBuilder {
 
   #getChildCategoryIds(attributeId, node) {
     return new Promise((resolve, reject) => {
-      Records.fetchAttributeValues(attributeId, node)
-        .then(values => {
+      Records.fetchAttributeFilters(attributeId, node)
+        .then(filters => {
           resolve();
         })
         .catch(error => {
@@ -313,25 +313,25 @@ class ConditionBuilder {
     });
   }
 
-  #restoreConditions({togoKey, userIds, annotations, values}) {
+  #restoreConditions({togoKey, userIds, annotations, filters}) {
     
     this.#isRestoredConditinoFromURLParameters = true;
 
     // restore conditions
     this.#togoKey = togoKey;
     // this.#userIds = userIds;
-    const [annotations2, values2] = this.#getCondtionsFromHierarchicConditions(annotations, values);
+    const [annotations2, filters2] = this.#getCondtionsFromHierarchicConditions(annotations, filters);
     this.setAttributes(annotations2, false);
     Records.attributes.forEach(({id}) => {
-      const attribute = values2.find(attribute => attribute.attributeId === id);
+      const attribute = filters2.find(attribute => attribute.attributeId === id);
       const nodes = [];
       if (attribute) nodes.push(...attribute.nodes);
-      this.setAttributeValues(id, nodes, false);
+      this.setAttributeFilters(id, nodes, false);
     });
     this.finish(false);
 
     // dispatch event
-    const customEvent = new CustomEvent(event.restoreParameters, {detail: {togoKey, annotations, values}});
+    const customEvent = new CustomEvent(event.restoreParameters, {detail: {togoKey, annotations, filters}});
     DefaultEventEmitter.dispatchEvent(customEvent);
 
   }
@@ -344,13 +344,13 @@ class ConditionBuilder {
     while (this.#conditionFilters.length > 0) {
       const {attributeId, nodes} = this.#conditionFilters[0];
       while (nodes.length > 0) {
-        this.removeAttributeValue(attributeId, nodes[0], false);
+        this.removeAttributeFilter(attributeId, nodes[0], false);
       }
     };
     this.#postProcessing();
   }
 
-  #getCondtionsFromHierarchicConditions(annotations, values) {
+  #getCondtionsFromHierarchicConditions(annotations, filters) {
     // restore conditions
     const annotations2 = annotations.map(({attributeId, id}) => {
       return {
@@ -358,13 +358,13 @@ class ConditionBuilder {
         parentNode: id?.node
       }
     });
-    const values2 = values.map(({attributeId, ids}) => {
+    const filters2 = filters.map(({attributeId, ids}) => {
       return {
         attributeId,
         nodes: ids.map(id => id.node)
       }
     });
-    return [annotations2, values2];
+    return [annotations2, filters2];
   }
 
 }

@@ -58,10 +58,10 @@ export default class ColumnSelectorView {
       if (columnView) {
         resolve(columnView);
       } else {
-        Records.fetchAttributeValues(this.#attribute.id, node)
-          .then(values => {
-            this.#setItems(values, depth);
-            const columnView = this.#makeCoumnView(values, depth, node);
+        Records.fetchAttributeFilters(this.#attribute.id, node)
+          .then(filters => {
+            this.#setItems(filters, depth);
+            const columnView = this.#makeCoumnView(filters, depth, node);
             resolve(columnView);
           })
           .catch(error => {
@@ -71,8 +71,8 @@ export default class ColumnSelectorView {
     });
   }
 
-  #makeCoumnView(values, depth, parentNode) {
-    const columnView = new ColumnView(this, values, depth, parentNode);
+  #makeCoumnView(filters, depth, parentNode) {
+    const columnView = new ColumnView(this, filters, depth, parentNode);
     this.#columnViews.push(columnView);
     return columnView;
   }
@@ -87,6 +87,7 @@ export default class ColumnSelectorView {
       .catch(error => {
         // TODO: エラー処理
         this.#LOADING_VIEW.classList.remove('-shown');
+        console.error(error)
         throw Error(error);
       });
   }
@@ -106,7 +107,7 @@ export default class ColumnSelectorView {
     };
   }
 
-  #setSelectedValue(node, selected) {
+  #setSelectedFilter(node, selected) {
     this.#items[node].selected = selected;
   }
 
@@ -128,7 +129,7 @@ export default class ColumnSelectorView {
       this.#currentColumnViews[depth].rootNode.querySelector(`[data-id="${key}"]`)?.classList.remove('-selected');
     }
     // get lower column
-    this.#setSelectedValue(node, true);
+    this.#setSelectedFilter(node, true);
     this.#setSubColumn(node, depth + 1);
   }
 

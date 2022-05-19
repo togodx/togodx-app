@@ -280,7 +280,7 @@ export default class TableData {
       const conditionFilter = this.#dxCondition.conditionFilters.find(conditionFilter => conditionFilter.attributeId === id);
       const nodes = [];
       if (conditionFilter) nodes.push(...conditionFilter.nodes);
-      ConditionBuilder.setAttributeValues(id, nodes, false);
+      ConditionBuilder.setAttributeFilters(id, nodes, false);
     });
   }
 

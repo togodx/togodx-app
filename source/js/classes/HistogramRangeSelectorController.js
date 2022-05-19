@@ -188,7 +188,7 @@ export default class HistogramRangeSelectorController {
     });
     this.#target.update();
     // set condition
-    ConditionBuilder.setAttributeValues(
+    ConditionBuilder.setAttributeFilters(
       this.#target.attributeId,
       this.selectedItems.map(item => item.node),
       false

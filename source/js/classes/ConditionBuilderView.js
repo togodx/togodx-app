@@ -10,7 +10,7 @@ const POLLING_DURATION = 100;
 export default class ConditionBuilderView {
 
   #properties;
-  #propertyValues;
+  #propertyFilters;
   #isDefined;
   #placeHolderExamples;
   #TOGO_KEYS;
@@ -22,20 +22,20 @@ export default class ConditionBuilderView {
   constructor(elm) {
 
     this.#properties = [];
-    this.#propertyValues = [];
+    this.#propertyFilters = [];
     this.#isDefined = false;
   
     // references
     const conditionsContainer = elm.querySelector(':scope > .conditions');
     this.#TOGO_KEYS = conditionsContainer.querySelector('#ConditionTogoKey > .inner > select');
     this.#USER_IDS = elm.querySelector('#UploadUserIDsView > textarea');
-    this.#PROPERTIES_CONDITIONS_CONTAINER = document.querySelector('#ConditionValues > .inner > .conditions');
+    this.#PROPERTIES_CONDITIONS_CONTAINER = document.querySelector('#ConditionFilters > .inner > .conditions');
     this.#ATTRIBUTES_CONDITIONS_CONTAINER = document.querySelector('#ConditionAnnotations > .inner > .conditions');
     this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
 
     // attach event
-    document.querySelector('#ConditionAnnotations').addEventListener('click', () => document.body.dataset.condition = 'value');
-    document.querySelector('#ConditionValues').addEventListener('click', () => document.body.dataset.condition = 'annotation');
+    document.querySelector('#ConditionAnnotations').addEventListener('click', () => document.body.dataset.condition = 'filter');
+    document.querySelector('#ConditionFilters').addEventListener('click', () => document.body.dataset.condition = 'annotation');
     this.#EXEC_BUTTON.addEventListener('click', () => {
       document.body.dataset.display = 'results';
       ConditionBuilder.makeQueryParameter();
@@ -59,13 +59,13 @@ export default class ConditionBuilderView {
           break;
       }
     });
-    DefaultEventEmitter.addEventListener(event.mutateAttributeValueCondition, ({detail: {action, attributeId, node}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateAttributeFilterCondition, ({detail: {action, attributeId, node}}) => {
       switch (action) {
         case 'add':
-          this.#addAttributeValue(attributeId, node);
+          this.#addAttributeFilter(attributeId, node);
           break;
         case 'remove':
-          this.#removeAttributeValue(attributeId, node);
+          this.#removeAttributeFilter(attributeId, node);
           break;
       }
     });
@@ -119,26 +119,26 @@ export default class ConditionBuilderView {
     if (this.#properties.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
-  #addAttributeValue(attributeId, node) {
+  #addAttributeFilter(attributeId, node) {
     // modifier
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // find a condition view has same attribute id
-    const stackingConditionView = this.#propertyValues.find(stackingConditionView => stackingConditionView.sameAttribute(attributeId));
+    const stackingConditionView = this.#propertyFilters.find(stackingConditionView => stackingConditionView.sameAttribute(attributeId));
     if (stackingConditionView) {
       // if it exists, add new node
-      stackingConditionView.addValue(node);
+      stackingConditionView.addFilter(node);
     } else {
       // otherwise, make new condition view
-      this.#propertyValues.push(new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', new ConditionFilter(attributeId, [node])));
+      this.#propertyFilters.push(new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', new ConditionFilter(attributeId, [node])));
     }
   }
 
-  #removeAttributeValue(attributeId, node) {
+  #removeAttributeFilter(attributeId, node) {
     // remove from array
-    const index = this.#propertyValues.findIndex(stackingConditionView => stackingConditionView.removeAttributeValue(attributeId, node));
-    if (index !== -1) this.#propertyValues.splice(index, 1);
+    const index = this.#propertyFilters.findIndex(stackingConditionView => stackingConditionView.removeAttributeFilter(attributeId, node));
+    if (index !== -1) this.#propertyFilters.splice(index, 1);
     // modifier
-    if (this.#propertyValues.length === 0) this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.add('-empty');
+    if (this.#propertyFilters.length === 0) this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
 }

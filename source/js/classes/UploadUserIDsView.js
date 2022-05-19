@@ -133,17 +133,17 @@ export default class UploadUserIDsView {
         this.#handleProp();
 
         // dispatch event
-        const customEvent = new CustomEvent(event.setUserValues, {
+        const customEvent = new CustomEvent(event.setUserFilters, {
           detail: {
             attributeId: id,
-            values: response.data
+            filters: response.data
           },
         });
         DefaultEventEmitter.dispatchEvent(customEvent);
       })
       .catch(error => {
         if (axios.isCancel && error.message === 'user cancel') return;
-        const customEvent = new CustomEvent(event.toggleErrorUserValues, {
+        const customEvent = new CustomEvent(event.toggleErrorUserFilters, {
           detail: {
             mode: 'show',
             attributeId: id,
@@ -186,10 +186,10 @@ export default class UploadUserIDsView {
   #reset(isPreparing = false) {
     this.#source?.cancel('user cancel');
     this.#resetCounters();
-    const customEvent = new CustomEvent(event.clearUserValues);
+    const customEvent = new CustomEvent(event.clearUserFilters);
     DefaultEventEmitter.dispatchEvent(customEvent);
 
-    const customEvent2 = new CustomEvent(event.toggleErrorUserValues, {
+    const customEvent2 = new CustomEvent(event.toggleErrorUserFilters, {
       detail: {
         mode: 'hide',
       },

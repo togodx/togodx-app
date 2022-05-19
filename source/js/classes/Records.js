@@ -61,9 +61,9 @@ class Records {
     this.#datasets = datasets;
   }
 
-  fetchAttributeValues(attributeId, node) {
+  fetchAttributeFilters(attributeId, node) {
     const attribute = this.getAttribute(attributeId);
-    return attribute.fetchValuesWithParentNode(node);
+    return attribute.fetchFiltersWithParentNode(node);
   }
 
   getCatexxxgory(id) {
@@ -78,14 +78,14 @@ class Records {
     return this.#attributes.find(attribute => attribute.id === attributeId);
   }
 
-  getValue(attributeId, node) {
+  getFilter(attributeId, node) {
     const attribute = this.getAttribute(attributeId);
-    return attribute.getValue(node);
+    return attribute.getFilter(node);
   }
 
-  getValuesWithParentCategoryId(attributeId, parentNode) {
+  getFiltersWithParentCategoryId(attributeId, parentNode) {
     const attribute = this.getAttribute(attributeId);
-    return attribute.values.filter(value => value.parentNode === parentNode);
+    return attribute.filters.filter(filter => filter.parentNode === parentNode);
   }
 
   getAncestors(attributeId, node) {
@@ -93,7 +93,7 @@ class Records {
     const ancestors = [];
     let parent;
     do { // find ancestors
-      parent = attribute.values.find(value => value.node === node);
+      parent = attribute.filters.find(filter => filter.node === node);
       if (parent) ancestors.unshift(parent);
       node = parent?.parentNode;
     } while (parent);

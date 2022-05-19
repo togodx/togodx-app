@@ -4,7 +4,7 @@ import Records from "./Records";
 export default class ConditionAnnotation extends ConditionBase {
 
   #parentNode;
-  #value;
+  #filter;
   #ancestors;
 
   constructor(attributeId, parentNode) {
@@ -63,17 +63,17 @@ export default class ConditionAnnotation extends ConditionBase {
 
   get label() {
     if (this.#parentNode) {
-      return this.value.label;
+      return this.filter.label;
     } else {
       return this.annotation.label;
     }
   }
 
-  get value() {
-    if (!this.#value) {
-      this.#value = Records.getValue(this._attributeId, this.#parentNode);
+  get filter() {
+    if (!this.#filter) {
+      this.#filter = Records.getFilter(this._attributeId, this.#parentNode);
     }
-    return this.#value;
+    return this.#filter;
   }
 
   get query() {

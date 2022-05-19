@@ -35,9 +35,9 @@ export default class DXCondition {
       });
     }
     // values
-    let matchValues = false;
+    let matchFilters = false;
     if (this.conditionFilters.length === dxCondition.conditionFilters.length) {
-      matchValues = this.conditionFilters.every(conditionFilter => {
+      matchFilters = this.conditionFilters.every(conditionFilter => {
         return dxCondition.conditionFilters.findIndex(newConditionFilter => {
           return (
             conditionFilter.attributeId === newConditionFilter.attributeId &&
@@ -51,7 +51,7 @@ export default class DXCondition {
         }) !== -1;
       });
     }
-    return dxCondition.togoKey === this.togoKey && matchAnnotations && matchValues;
+    return dxCondition.togoKey === this.togoKey && matchAnnotations && matchFilters;
   }
 
   #copyConditionAnnotations(conditionAnnotations) {

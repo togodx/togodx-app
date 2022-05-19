@@ -32,7 +32,7 @@ export default class ColumnItemView {
         <input type="checkbox" value="${node}"${!tip ? '' : ' disabled'}/>
         ${label}
       </label>
-      <label class="value">
+      <label class="filter">
         <input type="checkbox" value="${node}"/>
         ${label}
       </label>
@@ -42,10 +42,10 @@ export default class ColumnItemView {
     <td class="pvalue"></td>
     <td class="drilldown"></td>`;
 
-    this.#INPUT_VALUE = this.#ROOT.querySelector(':scope > td.label > label.value > input');
+    this.#INPUT_VALUE = this.#ROOT.querySelector(':scope > td.label > label.filter > input');
     this.#INPUT_KEY = this.#ROOT.querySelector(':scope > td.label > label.annotation > input');
     if (selectedCategoryIds.annotations.indexOf(node) !== -1) this.#INPUT_KEY.checked = true;
-    if (selectedCategoryIds.values.indexOf(node) !== -1) this.#INPUT_VALUE.checked = true;
+    if (selectedCategoryIds.filters.indexOf(node) !== -1) this.#INPUT_VALUE.checked = true;
 
     // even listener
     this.#INPUT_KEY.addEventListener('change', e => {
@@ -64,18 +64,18 @@ export default class ColumnItemView {
         }
       }
     });
-    DefaultEventEmitter.addEventListener(event.mutateAttributeValueCondition, ({detail}) => {
+    DefaultEventEmitter.addEventListener(event.mutateAttributeFilterCondition, ({detail}) => {
       if (column.attributeId === detail.attributeId && node === detail.node) {
         this.#INPUT_VALUE.checked = detail.action === 'add';
       }
     });
-    DefaultEventEmitter.addEventListener(event.setUserValues, ({detail: {attributeId, values}}) => {
-      if (column.attributeId === attributeId) this.setUserValues(values);
+    DefaultEventEmitter.addEventListener(event.setUserFilters, ({detail: {attributeId, filters}}) => {
+      if (column.attributeId === attributeId) this.setUserFilters(filters);
     });
-    DefaultEventEmitter.addEventListener(event.clearUserValues, this.#clearUserValues.bind(this));
+    DefaultEventEmitter.addEventListener(event.clearUserFilters, this.#clearUserFilters.bind(this));
 
     // select/deselect a item (attribute) > label
-    this.#INPUT_VALUE.addEventListener('click', column.checkValue.bind(column));
+    this.#INPUT_VALUE.addEventListener('click', column.checkFilter.bind(column));
 
     // drill down
     if (!tip) {
@@ -88,7 +88,7 @@ export default class ColumnItemView {
 
   // private methods
 
-  #clearUserValues() {
+  #clearUserFilters() {
     this.#ROOT.classList.remove('-pinsticking');
   }
 
@@ -100,13 +100,13 @@ export default class ColumnItemView {
     this.#ROOT.style.backgroundColor = `rgb(${color.mix(App.colorWhite, 1 - count / max).coords.map(cood => cood * 256).join(',')})`;
   }
 
-  setUserValues(values) {
-    const value = values.find(value => value.node === this.#node);
-    if (value) {
+  setUserFilters(filters) {
+    const filter = filters.find(filter => filter.node === this.#node);
+    if (filter) {
       this.#ROOT.classList.add('-pinsticking');
-      this.#ROOT.querySelector(':scope > .mapped').textContent = value.mapped ? value.mapped.toLocaleString() : '';
-      this.#ROOT.querySelector(':scope > .pvalue').textContent = value.pvalue ? value.pvalue.toExponential(2) : '';
-      if (value.mapped === 0) this.#ROOT.classList.remove('-pinsticking');
+      this.#ROOT.querySelector(':scope > .mapped').textContent = filter.mapped ? filter.mapped.toLocaleString() : '';
+      this.#ROOT.querySelector(':scope > .pvalue').textContent = filter.pvalue ? filter.pvalue.toExponential(2) : '';
+      if (filter.mapped === 0) this.#ROOT.classList.remove('-pinsticking');
       else this.#ROOT.classList.add('-pinsticking');
 
     }

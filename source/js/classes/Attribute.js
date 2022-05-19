@@ -2,22 +2,22 @@ export default class Attribute {
 
   #id;
   #obj;
-  #values;
+  #filters;
 
   constructor(id, obj) {
     this.#id = id;
     this.#obj = obj;
-    this.#values = [];
+    this.#filters = [];
   }
 
 
   // public Methods
 
-  fetchValuesWithParentNode(parentNode) {
+  fetchFiltersWithParentNode(parentNode) {
     return new Promise((resolve, reject) => {
-      const values = this.#values.filter(value => value.parentNode === parentNode);
-      if (values.length > 0) {
-        resolve(values);
+      const filters = this.#filters.filter(filter => filter.parentNode === parentNode);
+      if (filters.length > 0) {
+        resolve(filters);
       } else {
         const body = {};
         if (parentNode) body.node = parentNode;
@@ -33,13 +33,13 @@ export default class Attribute {
           }
         )
         .then(responce => responce.json())
-        .then(values => {
+        .then(filters => {
 
           // set parent node
-          if (parentNode) values.forEach(value => value.parentNode = parentNode);
-          // set values
-          this.#values.push(...values);
-          resolve(values);
+          if (parentNode) filters.forEach(filter => filter.parentNode = parentNode);
+          // set filters
+          this.#filters.push(...filters);
+          resolve(filters);
         })
         .catch(error => {
           console.error(this, error);
@@ -49,8 +49,8 @@ export default class Attribute {
     });
   }
 
-  getValue(node) {
-    return this.#values.find(value => value.node === node);
+  getFilter(node) {
+    return this.#filters.find(filter => filter.node === node);
   }
 
   // accessors
@@ -87,8 +87,8 @@ export default class Attribute {
     return this.#obj.order;
   }
 
-  get values() {
-    return this.#values;
+  get filters() {
+    return this.#filters;
   }
 
 }

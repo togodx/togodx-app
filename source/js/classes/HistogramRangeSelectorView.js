@@ -76,7 +76,7 @@ export default class HistogramRangeSelectorView {
 
   // private methods
 
-  #indicateValue() {
+  #indicateFilter() {
 
   }
 

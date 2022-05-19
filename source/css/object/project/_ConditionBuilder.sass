@@ -40,7 +40,7 @@
           > .close-button-view
             body[data-display="results"] &
               display: none
-    > #ConditionAnnotations, > #ConditionValues
+    > #ConditionAnnotations, > #ConditionFilters
       transition: opacity var(--transition-instant)
       opacity: .8
       background-color: var(--background-color-inactive)
@@ -49,10 +49,10 @@
         background-color: var(--background-color)
     > #ConditionAnnotations
       border-radius: var(--radius) var(--radius) 0 0
-      [data-condition="value"] &
+      [data-condition="filter"] &
         opacity: 1
         background-color: var(--background-color)
-    > #ConditionValues
+    > #ConditionFilters
       border-radius: 0 0 var(--radius) var(--radius)
       margin-top: .1rem
       [data-condition="annotation"] &

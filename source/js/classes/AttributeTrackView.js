@@ -35,7 +35,7 @@ export default class AttributeTrackView {
           <h2 class="title _catexxxgory-color">${this.#attribute.label}</h2>
         </div>
       </div>
-      <div class="right values">
+      <div class="right filters">
         <div class="overview _catexxxgory-background-color">
           <ul class="inner"></ul>
           <div class="loading-view -shown"></div>
@@ -61,11 +61,11 @@ export default class AttributeTrackView {
       </div>
       <div class="right selector"></div>
     </div>`;
-    const valuesContainer = this.#ROOT.querySelector(':scope > .row.-upper > .values');
-    this.#OVERVIEW_CONTAINER = valuesContainer.querySelector(
+    const filtersContainer = this.#ROOT.querySelector(':scope > .row.-upper > .filters');
+    this.#OVERVIEW_CONTAINER = filtersContainer.querySelector(
       ':scope > .overview > .inner'
     );
-    this.#LOADING_VIEW = valuesContainer.querySelector(
+    this.#LOADING_VIEW = filtersContainer.querySelector(
       ':scope > .overview > .loading-view'
     );
     this.#SELECT_CONTAINER = this.#ROOT.querySelector(
@@ -124,7 +124,7 @@ export default class AttributeTrackView {
       }
     });
 
-    DefaultEventEmitter.addEventListener(event.toggleErrorUserValues, e => {
+    DefaultEventEmitter.addEventListener(event.toggleErrorUserFilters, e => {
       if (e.detail.mode === 'show') {
         if (e.detail.attributeId !== attributeId) return;
         this.#showError(e.detail.message, true);
@@ -132,10 +132,9 @@ export default class AttributeTrackView {
     });
 
     // get property data
-    Records.fetchAttributeValues(attributeId)
-      .then(values => this.#makeValues(values))
+    Records.fetchAttributeFilters(attributeId)
+      .then(filters => this.#makeFilters(filters))
       .catch(error => {
-        console.log(this)
         console.error(error)
         this.#showError(error);
       })
@@ -146,14 +145,14 @@ export default class AttributeTrackView {
 
   // private methods
 
-  #makeValues(values) {
+  #makeFilters(filters) {
     this.#ROOT.classList.remove('-preparing');
 
     // make overview
     new TrackOverviewCategorical(
       this.#OVERVIEW_CONTAINER,
       this.#attribute,
-      values
+      filters
     );
 
     // make selector view
@@ -162,14 +161,14 @@ export default class AttributeTrackView {
         new ColumnSelectorView(
           this.#SELECT_CONTAINER,
           this.#attribute,
-          values
+          filters
         );
         break;
       case 'distribution':
         new HistogramRangeSelectorView(
           this.#SELECT_CONTAINER,
           this.#attribute,
-          values
+          filters
         );
         break;
     }
