@@ -13,7 +13,7 @@ export default class Attribute {
 
   // public Methods
 
-  fetchValuesWithParentCategoryId(parentNode) {
+  fetchValuesWithParentNode(parentNode) {
     return new Promise((resolve, reject) => {
       const values = this.#values.filter(value => value.parentNode === parentNode);
       if (values.length > 0) {

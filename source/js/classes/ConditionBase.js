@@ -3,7 +3,7 @@ import Records from "./Records";
 export default class ConditionBase {
 
   _attributeId;
-  #key; // <Attribute>
+  #annotation; // <Attribute>
   #catexxxgoryId;
   #dataset;
 
@@ -18,21 +18,21 @@ export default class ConditionBase {
     return this._attributeId;
   }
 
-  get key() {
-    if (!this.#key) this.#key = Records.getAttribute(this._attributeId);
-    return this.#key;
+  get annotation() {
+    if (!this.#annotation) this.#annotation = Records.getAttribute(this._attributeId);
+    return this.#annotation;
   }
 
   get catexxxgoryId() {
     if (!this.#catexxxgoryId) {
-      this.#catexxxgoryId = Records.getCatexxxgoryWithAttributeId(this.key.id).id;
+      this.#catexxxgoryId = Records.getCatexxxgoryWithAttributeId(this.annotation.id).id;
     }
     return this.#catexxxgoryId;
   }
 
   get dataset() {
     if (!this.#dataset) {
-      this.#dataset = this.key.dataset;
+      this.#dataset = this.annotation.dataset;
     }
     return this.#dataset;
   }

@@ -44,7 +44,7 @@ export default class ConditionFilter extends ConditionBase {
   }
 
   get label() {
-    return this.key.label;
+    return this.annotation.label;
   }
 
   get query() {

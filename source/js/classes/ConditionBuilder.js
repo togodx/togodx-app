@@ -153,12 +153,12 @@ class ConditionBuilder {
 
   getSelectedCategoryIds(attributeId) {
     const nodes = {
-      keys: [],
+      annotations: [],
       values: []
     };
     const conditionAnnotations = this.#conditionAnnotations.filter(conditionAnnotation => conditionAnnotation.attributeId === attributeId);
     const conditionFilter = this.#conditionFilters.find(conditionFilter => conditionFilter.attributeId === attributeId);
-    if (conditionAnnotations) nodes.keys.push(...conditionAnnotations.map(keyCondiiton => keyCondiiton.parentNode));
+    if (conditionAnnotations) nodes.annotations.push(...conditionAnnotations.map(annotationCondiiton => annotationCondiiton.parentNode));
     if (conditionFilter) nodes.values.push(...conditionFilter.nodes);
     return nodes;
   }
@@ -189,18 +189,18 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
 
     // get hierarchic conditions
-    const keys = this.#conditionAnnotations.map(keyCondiiton => keyCondiiton.getURLParameter());
+    const annotations = this.#conditionAnnotations.map(annotationCondiiton => annotationCondiiton.getURLParameter());
     const values = this.#conditionFilters.map(conditionFilter => conditionFilter.getURLParameter());
 
-    const __zzz__keys = keys.map(key => {
-      const zzzKey = {attribute: key.attributeId};
-      if (key.id) {
-        zzzKey.node = key.id.node;
-        if (key.id.ancestors) {
-          zzzKey.path = [...key.id.ancestors];
+    const __zzz__annotations = annotations.map(annotation => {
+      const annotation2 = {attribute: annotation.attributeId};
+      if (annotation.id) {
+        annotation2.node = annotation.id.node;
+        if (annotation.id.ancestors) {
+          annotation2.path = [...annotation.id.ancestors];
         }
       }
-      return zzzKey;
+      return annotation2;
     });
     const __zzz__values = values.map(value => {
       const zzzValue = {attribute: value.attributeId};
@@ -217,7 +217,7 @@ class ConditionBuilder {
     // generate permalink
     const params = new URL(location).searchParams;
     params.set('dataset', this.#togoKey);
-    params.set('annotations', JSON.stringify(__zzz__keys));
+    params.set('annotations', JSON.stringify(__zzz__annotations));
     params.set('filters', JSON.stringify(__zzz__values));
     if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
   }
@@ -234,15 +234,15 @@ class ConditionBuilder {
 
     const __zzz__condition = {
       togoKey: condition.dataset ?? this.#togoKey,
-      keys: condition.annotations.map(annotation => {
-        const zzzKey = {attributeId: annotation.attribute};
+      annotations: condition.annotations.map(annotation => {
+        const annotation2 = {attributeId: annotation.attribute};
         if (annotation.node) {
-          zzzKey.id = {node: annotation.node};
+          annotation2.id = {node: annotation.node};
           if (annotation.path) {
-            zzzKey.id.ancestors = [...annotation.path];
+            annotation2.id.ancestors = [...annotation.path];
           }
         }
-        return zzzKey;
+        return annotation2;
       }),
       values: condition.filters.map(filter => {
         const zzzValue = {
@@ -280,7 +280,7 @@ class ConditionBuilder {
         }
       });
     };
-    condition.keys.forEach(({attributeId, id}) => {
+    condition.annotations.forEach(({attributeId, id}) => {
       if (id) addQueue(attributeId, id);
     });
     condition.values.forEach(({attributeId, ids}) => {
@@ -313,15 +313,15 @@ class ConditionBuilder {
     });
   }
 
-  #restoreConditions({togoKey, userIds, keys, values}) {
+  #restoreConditions({togoKey, userIds, annotations, values}) {
     
     this.#isRestoredConditinoFromURLParameters = true;
 
     // restore conditions
     this.#togoKey = togoKey;
     // this.#userIds = userIds;
-    const [keys2, values2] = this.#getCondtionsFromHierarchicConditions(keys, values);
-    this.setAttributes(keys2, false);
+    const [annotations2, values2] = this.#getCondtionsFromHierarchicConditions(annotations, values);
+    this.setAttributes(annotations2, false);
     Records.attributes.forEach(({id}) => {
       const attribute = values2.find(attribute => attribute.attributeId === id);
       const nodes = [];
@@ -331,7 +331,7 @@ class ConditionBuilder {
     this.finish(false);
 
     // dispatch event
-    const customEvent = new CustomEvent(event.restoreParameters, {detail: {togoKey, keys, values}});
+    const customEvent = new CustomEvent(event.restoreParameters, {detail: {togoKey, annotations, values}});
     DefaultEventEmitter.dispatchEvent(customEvent);
 
   }
@@ -350,9 +350,9 @@ class ConditionBuilder {
     this.#postProcessing();
   }
 
-  #getCondtionsFromHierarchicConditions(keys, values) {
+  #getCondtionsFromHierarchicConditions(annotations, values) {
     // restore conditions
-    const keys2 = keys.map(({attributeId, id}) => {
+    const annotations2 = annotations.map(({attributeId, id}) => {
       return {
         attributeId,
         parentNode: id?.node
@@ -364,7 +364,7 @@ class ConditionBuilder {
         nodes: ids.map(id => id.node)
       }
     });
-    return [keys2, values2];
+    return [annotations2, values2];
   }
 
 }

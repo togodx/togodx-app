@@ -63,7 +63,7 @@ class Records {
 
   fetchAttributeValues(attributeId, node) {
     const attribute = this.getAttribute(attributeId);
-    return attribute.fetchValuesWithParentCategoryId(node);
+    return attribute.fetchValuesWithParentNode(node);
   }
 
   getCatexxxgory(id) {

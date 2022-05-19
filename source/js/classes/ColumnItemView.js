@@ -28,7 +28,7 @@ export default class ColumnItemView {
     this.#ROOT.dataset.count = count;
     this.#ROOT.innerHTML = `
     <td class="label">
-      <label class="key">
+      <label class="annotation">
         <input type="checkbox" value="${node}"${!tip ? '' : ' disabled'}/>
         ${label}
       </label>
@@ -43,8 +43,8 @@ export default class ColumnItemView {
     <td class="drilldown"></td>`;
 
     this.#INPUT_VALUE = this.#ROOT.querySelector(':scope > td.label > label.value > input');
-    this.#INPUT_KEY = this.#ROOT.querySelector(':scope > td.label > label.key > input');
-    if (selectedCategoryIds.keys.indexOf(node) !== -1) this.#INPUT_KEY.checked = true;
+    this.#INPUT_KEY = this.#ROOT.querySelector(':scope > td.label > label.annotation > input');
+    if (selectedCategoryIds.annotations.indexOf(node) !== -1) this.#INPUT_KEY.checked = true;
     if (selectedCategoryIds.values.indexOf(node) !== -1) this.#INPUT_VALUE.checked = true;
 
     // even listener

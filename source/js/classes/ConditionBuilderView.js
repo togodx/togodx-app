@@ -30,12 +30,12 @@ export default class ConditionBuilderView {
     this.#TOGO_KEYS = conditionsContainer.querySelector('#ConditionTogoKey > .inner > select');
     this.#USER_IDS = elm.querySelector('#UploadUserIDsView > textarea');
     this.#PROPERTIES_CONDITIONS_CONTAINER = document.querySelector('#ConditionValues > .inner > .conditions');
-    this.#ATTRIBUTES_CONDITIONS_CONTAINER = document.querySelector('#ConditionKeys > .inner > .conditions');
+    this.#ATTRIBUTES_CONDITIONS_CONTAINER = document.querySelector('#ConditionAnnotations > .inner > .conditions');
     this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
 
     // attach event
-    document.querySelector('#ConditionKeys').addEventListener('click', () => document.body.dataset.condition = 'value');
-    document.querySelector('#ConditionValues').addEventListener('click', () => document.body.dataset.condition = 'key');
+    document.querySelector('#ConditionAnnotations').addEventListener('click', () => document.body.dataset.condition = 'value');
+    document.querySelector('#ConditionValues').addEventListener('click', () => document.body.dataset.condition = 'annotation');
     this.#EXEC_BUTTON.addEventListener('click', () => {
       document.body.dataset.display = 'results';
       ConditionBuilder.makeQueryParameter();
@@ -108,7 +108,7 @@ export default class ConditionBuilderView {
     // modifier
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
-    this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'key', conditionAnnotation));
+    this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'annotation', conditionAnnotation));
   }
   
   #removeAttribute(conditionAnnotation) {

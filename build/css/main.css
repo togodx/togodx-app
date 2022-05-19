@@ -1,4 +1,3 @@
-@charset "UTF-8";
 @import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700,900");
 @import url("https://fonts.googleapis.com/css2?family=Material+Icons");
 @import url("https://fonts.googleapis.com/css2?family=Material+Icons+Outlined");
@@ -377,7 +376,7 @@ template {
   --opacity-disabled: .4;
 }
 
-[data-condition=key] {
+[data-condition=annotation] {
   --width-track-column-property: 20rem;
 }
 
@@ -454,22 +453,19 @@ main {
   position: relative;
 }
 .attribute-track-view > .row {
-  display: -webkit-flex;
   display: flex;
   height: var(--height-track);
 }
 .attribute-track-view > .row > .left {
   padding-bottom: 0.2rem;
   border-right: solid 0.1rem var(--color-gray);
-  -webkit-flex-basis: var(--width-track-column-property);
-          flex-basis: var(--width-track-column-property);
+  flex-basis: var(--width-track-column-property);
   min-width: var(--width-track-column-property);
   background-color: white;
   transition: width var(--transition-instant), opacity var(--transition-wipe);
 }
 .attribute-track-view > .row > .right {
-  -webkit-flex-basis: calc(100% - var(--width-track-column-property));
-          flex-basis: calc(100% - var(--width-track-column-property));
+  flex-basis: calc(100% - var(--width-track-column-property));
   max-width: calc(100% - var(--width-track-column-property));
   transition: width var(--transition-instant);
 }
@@ -484,10 +480,8 @@ main {
   width: 100%;
   height: var(--height-track);
   z-index: var(--z-track-collapse-button);
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: center;
-          align-items: center;
+  align-items: center;
 }
 .attribute-track-view > .row.-upper > .left > .collapsebutton::before {
   top: 0.8rem;
@@ -503,7 +497,7 @@ main {
   display: none;
   margin-right: 0.4rem;
 }
-[data-condition=key] .attribute-track-view > .row.-upper > .left > .collapsebutton > .mapping {
+[data-condition=annotation] .attribute-track-view > .row.-upper > .left > .collapsebutton > .mapping {
   display: inherit;
 }
 .attribute-track-view > .row.-upper > .right > .overview {
@@ -588,8 +582,8 @@ main {
   -webkit-filter: drop-shadow(var(--shadow-normal));
           filter: drop-shadow(var(--shadow-normal));
   z-index: var(--z-track-balloon);
-  -webkit-transform: translate(-50%, calc(-100% + -.5rem));
-          transform: translate(-50%, calc(-100% + -.5rem));
+  -webkit-transform: translate(-50%, calc(-100% - 0.5rem));
+          transform: translate(-50%, calc(-100% - 0.5rem));
   pointer-events: none;
   border-radius: 0.2rem;
 }
@@ -601,7 +595,7 @@ main {
   display: block;
   position: absolute;
   bottom: -1.4rem;
-  left: calc(50% - .7rem);
+  left: calc(50% - 0.7rem);
   border: 0.7rem solid transparent;
   border-top-color: white;
   width: 0;
@@ -626,13 +620,11 @@ main {
   font-weight: bold;
 }
 .balloon-view > .container > dl {
-  display: -webkit-flex;
   display: flex;
   margin: 0;
 }
 .balloon-view > .container > dl > dt {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
   font-weight: lighter;
 }
 .balloon-view > .container > dl > dd {
@@ -642,7 +634,6 @@ main {
 }
 
 .category-view {
-  display: -webkit-flex;
   display: flex;
 }
 .category-view > .title {
@@ -825,10 +816,10 @@ body[data-sort-column=total][data-sort-direction=desc] .column-selector-view > .
 .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label {
   display: relative;
 }
-[data-condition=key] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > label.value {
+[data-condition=annotation] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > label.value {
   display: none;
 }
-[data-condition=value] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > label.key {
+[data-condition=value] .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label > label.annotation {
   display: none;
 }
 .column-selector-view > .columns > .inner > .column > table > tbody > tr > .total, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .mapped, .column-selector-view > .columns > .inner > .column > table > tbody > tr > .pvalue {
@@ -907,10 +898,8 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   height: 100%;
 }
 .histogram-range-selector-view > .selector > .inner > .overview {
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: flex-end;
-          align-items: flex-end;
+  align-items: flex-end;
 }
 .histogram-range-selector-view > .selector > .inner > .overview > .bar {
   opacity: 0.2;
@@ -934,7 +923,7 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
 .histogram-range-selector-view > .selector > .inner > .selectingarea > .handle::before {
   content: "";
   position: absolute;
-  top: calc(50% - .6rem);
+  top: calc(50% - 0.6rem);
   display: block;
   width: 0;
   height: 0;
@@ -992,10 +981,8 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   left: 0;
 }
 .histogram-range-selector-view > .histogram > .graph {
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: flex-end;
-          align-items: flex-end;
+  align-items: flex-end;
 }
 .histogram-range-selector-view > .histogram > .graph > .bar {
   position: relative;
@@ -1077,8 +1064,8 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   border-radius: 0.8rem;
   background-color: rgba(255, 255, 255, 0.8);
   position: absolute;
-  left: calc(50% - .8rem);
-  top: calc(50% - .8rem);
+  left: calc(50% - 0.8rem);
+  top: calc(50% - 0.8rem);
 }
 .loading-view.-shown {
   background-color: var(--color-translucent-lamp-black3);
@@ -1126,7 +1113,7 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   color: white;
 }
 .external-link-button-view::after {
-  content: "";
+  content: "\e89e";
   font-family: "Material Icons Outlined";
   font-size: 1em;
   vertical-align: middle;
@@ -1160,7 +1147,7 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   border: solid 0.1rem var(--color-separator);
 }
 .rounded-button-view.-spread {
-  width: calc(100% + .2rem);
+  width: calc(100% + 0.2rem);
 }
 .rounded-button-view.-small {
   font-size: 1.2rem;
@@ -1361,7 +1348,6 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   right: 0.4rem;
 }
 .table-data-controller-view > .conditions {
-  display: -webkit-flex;
   display: flex;
   font-weight: bold;
   border-bottom: solid 0.1rem var(--color-separator);
@@ -1369,8 +1355,7 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
 .table-data-controller-view > .conditions > .condition {
   padding: 0.2rem 0.4rem;
   overflow: hidden;
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
 }
 .table-data-controller-view > .conditions > .condition:first-child {
   color: white;
@@ -1388,12 +1373,9 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
 .table-data-controller-view > .status {
   padding: 0.3rem 0;
   border-bottom: solid 0.1rem var(--color-separator);
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: center;
-          align-items: center;
-  -webkit-justify-content: center;
-          justify-content: center;
+  align-items: center;
+  justify-content: center;
 }
 .table-data-controller-view > .status > p {
   margin-bottom: 0;
@@ -1412,14 +1394,12 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   display: none;
 }
 .table-data-controller-view > .controller {
-  display: -webkit-flex;
   display: flex;
   color: white;
 }
 .table-data-controller-view > .controller > .button {
   padding: 0.2rem 0;
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
   background-color: var(--color-translucent-lamp-black2);
   transition: background-color var(--transition-instant);
   cursor: pointer;
@@ -1455,7 +1435,6 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   opacity: 1;
 }
 .table-data-controller-view.-fetching > .controller, .table-data-controller-view[data-status="load rows"] > .controller, .table-data-controller-view[data-status=complete] > .controller {
-  display: -webkit-flex;
   display: flex;
 }
 .table-data-controller-view.-fetching > .status > .material-icons-outlined {
@@ -1500,19 +1479,15 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
 }
 .progress-indicator > .text {
   line-height: 1;
-  display: -webkit-flex;
   display: flex;
-  -webkit-justify-content: space-between;
-          justify-content: space-between;
+  justify-content: space-between;
 }
 .progress-indicator > .text > .amount-of-data {
   display: none;
 }
 .progress-indicator > .text > .status {
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: center;
-          align-items: center;
+  align-items: center;
   text-align: center;
 }
 .progress-indicator > .text > .status > .material-icons-outlined {
@@ -1581,7 +1556,7 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   cursor: pointer;
   transition: background-color var(--transition-wipe), opacity var(--transition-wipe);
 }
-[data-condition=key] .track-value-view {
+[data-condition=annotation] .track-value-view {
   pointer-events: none;
 }
 .track-value-view::after {
@@ -1619,33 +1594,33 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
 .track-value-view > .pin {
   position: absolute;
   bottom: 100%;
-  -webkit-transform: translate(-50%, calc(-20% + .4rem));
-          transform: translate(-50%, calc(-20% + .4rem));
+  -webkit-transform: translate(-50%, calc(-20% + 0.4rem));
+          transform: translate(-50%, calc(-20% + 0.4rem));
   z-index: var(--z-track-pin);
   display: none;
 }
 .track-value-view > .pin > .material-icons {
   text-shadow: -0.1rem 0 white, 0 0.1rem white, 0.1rem 0 white, 0 -0.1rem white;
 }
-.track-value-view[data-p-value-greater-than="1"] > .pin {
+.track-value-view[data-pvalue-greater-than="1"] > .pin {
   opacity: 0.4;
 }
-.track-value-view[data-p-value-greater-than="<1"] > .pin {
+.track-value-view[data-pvalue-greater-than="<1"] > .pin {
   opacity: 0.5;
 }
-.track-value-view[data-p-value-greater-than="<0.1"] > .pin {
+.track-value-view[data-pvalue-greater-than="<0.1"] > .pin {
   opacity: 0.6;
 }
-.track-value-view[data-p-value-greater-than="<0.05"] > .pin {
+.track-value-view[data-pvalue-greater-than="<0.05"] > .pin {
   opacity: 0.7;
 }
-.track-value-view[data-p-value-greater-than="<0.01"] > .pin {
+.track-value-view[data-pvalue-greater-than="<0.01"] > .pin {
   opacity: 0.8;
 }
-.track-value-view[data-p-value-greater-than="<0.005"] > .pin {
+.track-value-view[data-pvalue-greater-than="<0.005"] > .pin {
   opacity: 0.9;
 }
-.track-value-view[data-p-value-greater-than="<0.001"] > .pin {
+.track-value-view[data-pvalue-greater-than="<0.001"] > .pin {
   opacity: 1;
 }
 .track-value-view:hover, .track-value-view.-selected {
@@ -1687,7 +1662,6 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
 #App > .inner {
   height: 100%;
   width: calc(200vw - var(--width-condition));
-  display: -webkit-flex;
   display: flex;
   transition: -webkit-transform var(--transition-wipe);
   transition: transform var(--transition-wipe);
@@ -1710,8 +1684,7 @@ body[data-display=results] #App > .inner {
   --background-color-inactive: #FFFFFF66;
 }
 #ConditionBuilder > .conditions {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
   padding-bottom: 1rem;
 }
 #ConditionBuilder > .conditions > .condition {
@@ -1726,10 +1699,8 @@ body[data-display=results] #App > .inner {
   margin: -0.2rem 0;
   line-height: 1;
   font-size: 1.2rem;
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: baseline;
-          align-items: baseline;
+  align-items: baseline;
 }
 #ConditionBuilder > .conditions > .condition > .inner > .title > .material-icons, #ConditionBuilder > .conditions > .condition > .inner > .title > .material-icons-outlined {
   font-size: 1.4rem;
@@ -1742,8 +1713,7 @@ body[data-display=results] #App > .inner {
 #ConditionBuilder > .conditions > .condition > .inner > .title > small {
   font-weight: normal;
   margin-left: 0.5rem;
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
 }
 #ConditionBuilder > .conditions > .condition > .inner > .title > .button {
   text-align: right;
@@ -1758,19 +1728,19 @@ body[data-display=results] #App > .inner {
 body[data-display=results] #ConditionBuilder > .conditions > .condition > .conditions > .stacking-condition-view > .close-button-view {
   display: none;
 }
-#ConditionBuilder > .conditions > #ConditionKeys, #ConditionBuilder > .conditions > #ConditionValues {
+#ConditionBuilder > .conditions > #ConditionAnnotations, #ConditionBuilder > .conditions > #ConditionValues {
   transition: opacity var(--transition-instant);
   opacity: 0.8;
   background-color: var(--background-color-inactive);
   cursor: pointer;
 }
-#ConditionBuilder > .conditions > #ConditionKeys:hover, #ConditionBuilder > .conditions > #ConditionValues:hover {
+#ConditionBuilder > .conditions > #ConditionAnnotations:hover, #ConditionBuilder > .conditions > #ConditionValues:hover {
   background-color: var(--background-color);
 }
-#ConditionBuilder > .conditions > #ConditionKeys {
+#ConditionBuilder > .conditions > #ConditionAnnotations {
   border-radius: var(--radius) var(--radius) 0 0;
 }
-[data-condition=value] #ConditionBuilder > .conditions > #ConditionKeys {
+[data-condition=value] #ConditionBuilder > .conditions > #ConditionAnnotations {
   opacity: 1;
   background-color: var(--background-color);
 }
@@ -1778,7 +1748,7 @@ body[data-display=results] #ConditionBuilder > .conditions > .condition > .condi
   border-radius: 0 0 var(--radius) var(--radius);
   margin-top: 0.1rem;
 }
-[data-condition=key] #ConditionBuilder > .conditions > #ConditionValues {
+[data-condition=annotation] #ConditionBuilder > .conditions > #ConditionValues {
   opacity: 1;
   background-color: var(--background-color);
 }
@@ -1819,17 +1789,13 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   position: fixed;
   top: var(--height-header);
   right: 0;
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
   z-index: var(--z-fixed-area);
 }
 #FixedArea > div > section {
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
   padding: var(--padding-block-start) var(--padding-inline-start);
 }
 #FixedArea > div > section > header {
@@ -1861,7 +1827,6 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   padding: 0 1.6rem;
   height: var(--height-header);
   line-height: calc(var(--height-header));
-  display: -webkit-flex;
   display: flex;
   background-color: white;
   z-index: var(--z-header);
@@ -1882,8 +1847,7 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   height: 3.1rem;
 }
 #Header > nav {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
   text-align: right;
 }
 #Header > nav > ul > li {
@@ -1901,10 +1865,8 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #Properties > .header {
   border-bottom: solid 0.1rem var(--color-lamp-black);
   padding: var(--padding-track-block-start) var(--padding-track-inline-start);
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: center;
-          align-items: center;
+  align-items: center;
   height: var(--height-header);
   line-height: calc(var(--height-header) - var(--padding-track-block-start) * 2);
   position: -webkit-sticky;
@@ -1929,8 +1891,7 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   border-color: white;
 }
 #Properties > .header > nav {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
   text-align: right;
 }
 #Properties > .header > nav > ul {
@@ -2126,12 +2087,9 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 }
 #ResultDetailModal.backdrop {
   position: fixed;
-  display: -webkit-flex;
   display: flex;
-  -webkit-justify-content: center;
-          justify-content: center;
-  -webkit-align-items: center;
-          align-items: center;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   height: 100%;
   top: 0;
@@ -2145,44 +2103,34 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #ResultDetailModal.backdrop > .popup {
   z-index: var(--z-modal-window);
   position: absolute;
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: column;
-          flex-direction: column;
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-direction: column;
+  flex-grow: 1;
   max-width: 90vw;
   max-height: 90vh;
-  -webkit-align-items: center;
-          align-items: center;
-  -webkit-align-content: center;
-          align-content: center;
+  align-items: center;
+  align-content: center;
   background-color: rgba(255, 255, 255, 0.85);
   border-radius: 0.4rem;
 }
 #ResultDetailModal.backdrop > .popup > header {
   cursor: pointer;
-  display: -webkit-flex;
   display: flex;
-  -webkit-justify-content: space-between;
-          justify-content: space-between;
-  -webkit-align-items: center;
-          align-items: center;
+  justify-content: space-between;
+  align-items: center;
   height: var(--height-header);
   width: 100%;
   line-height: 1.6rem;
   border-top-left-radius: inherit;
   border-top-right-radius: inherit;
-  padding: calc((var(--height-header) - 1.6rem) * .5) var(--padding-side);
+  padding: calc((var(--height-header) - 1.6rem) * 0.5) var(--padding-side);
 }
 #ResultDetailModal.backdrop > .popup > header.-primary {
   background-color: var(--color-gray);
 }
 #ResultDetailModal.backdrop > .popup > header > div {
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: center;
-          align-items: center;
+  align-items: center;
 }
 #ResultDetailModal.backdrop > .popup > header > div > .close-button-view {
   margin-left: 0.5rem;
@@ -2190,10 +2138,8 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   position: relative;
 }
 #ResultDetailModal.backdrop > .popup > header > .label {
-  -webkit-align-items: baseline;
-          align-items: baseline;
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  align-items: baseline;
+  flex-grow: 1;
   font-size: 1.4rem;
 }
 #ResultDetailModal.backdrop > .popup > header > .label > * {
@@ -2211,7 +2157,6 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #ResultDetailModal.backdrop > .popup > .container {
   height: 100%;
   width: 100%;
-  display: -webkit-flex;
   display: flex;
   overflow: hidden;
   position: relative;
@@ -2250,8 +2195,8 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   top: 0;
 }
 #ResultDetailModal.backdrop > .popup > .container > .arrow.-up::before {
-  border-left: calc(var(--width-arrow) * .5) solid transparent;
-  border-right: calc(var(--width-arrow) * .5) solid transparent;
+  border-left: calc(var(--width-arrow) * 0.5) solid transparent;
+  border-right: calc(var(--width-arrow) * 0.5) solid transparent;
   border-bottom: var(--height-arrow) solid;
   top: var(--inline-start-arrow);
 }
@@ -2259,8 +2204,8 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   right: 0;
 }
 #ResultDetailModal.backdrop > .popup > .container > .arrow.-right::before {
-  border-top: calc(var(--width-arrow) * .5) solid transparent;
-  border-bottom: calc(var(--width-arrow) * .5) solid transparent;
+  border-top: calc(var(--width-arrow) * 0.5) solid transparent;
+  border-bottom: calc(var(--width-arrow) * 0.5) solid transparent;
   border-left: var(--height-arrow) solid;
   right: var(--inline-start-arrow);
 }
@@ -2268,8 +2213,8 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   bottom: 0;
 }
 #ResultDetailModal.backdrop > .popup > .container > .arrow.-down::before {
-  border-left: calc(var(--width-arrow) * .5) solid transparent;
-  border-right: calc(var(--width-arrow) * .5) solid transparent;
+  border-left: calc(var(--width-arrow) * 0.5) solid transparent;
+  border-right: calc(var(--width-arrow) * 0.5) solid transparent;
   border-top: var(--height-arrow) solid;
   bottom: var(--inline-start-arrow);
 }
@@ -2277,8 +2222,8 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   left: 0;
 }
 #ResultDetailModal.backdrop > .popup > .container > .arrow.-left::before {
-  border-top: calc(var(--width-arrow) * .5) solid transparent;
-  border-bottom: calc(var(--width-arrow) * .5) solid transparent;
+  border-top: calc(var(--width-arrow) * 0.5) solid transparent;
+  border-bottom: calc(var(--width-arrow) * 0.5) solid transparent;
   border-right: var(--height-arrow) solid;
   left: var(--inline-start-arrow);
 }

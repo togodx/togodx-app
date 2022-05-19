@@ -35,16 +35,16 @@ export default class ConditionAnnotation extends ConditionBase {
   
 
   getURLParameter() {
-    const key = {
+    const annotation = {
       attributeId: this._attributeId
     };
     if (this.#parentNode) {
-      key.id = {
+      annotation.id = {
         node: this.#parentNode,
         ancestors: this.ancestors
       }
     }
-    return key;
+    return annotation;
   }
 
 
@@ -65,7 +65,7 @@ export default class ConditionAnnotation extends ConditionBase {
     if (this.#parentNode) {
       return this.value.label;
     } else {
-      return this.key.label;
+      return this.annotation.label;
     }
   }
 

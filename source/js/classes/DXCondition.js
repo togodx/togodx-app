@@ -22,10 +22,10 @@ export default class DXCondition {
    * @return Boolean
    */
   checkSameCondition(dxCondition) {
-    // keys
-    let matchKeys = false;
+    // annotations
+    let matchAnnotations = false;
     if (this.conditionAnnotations.length === dxCondition.conditionAnnotations.length) {
-      matchKeys = this.conditionAnnotations.every(conditionAnnotation => {
+      matchAnnotations = this.conditionAnnotations.every(conditionAnnotation => {
         return dxCondition.conditionAnnotations.findIndex(newConditionAnnotation => {
           return (
             conditionAnnotation.attributeId === newConditionAnnotation.attributeId &&
@@ -51,7 +51,7 @@ export default class DXCondition {
         }) !== -1;
       });
     }
-    return dxCondition.togoKey === this.togoKey && matchKeys && matchValues;
+    return dxCondition.togoKey === this.togoKey && matchAnnotations && matchValues;
   }
 
   #copyConditionAnnotations(conditionAnnotations) {
