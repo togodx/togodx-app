@@ -83,7 +83,7 @@ class Records {
     return attribute.getFilter(node);
   }
 
-  getFiltersWithParentCategoryId(attributeId, parentNode) {
+  getFiltersWithParentNode(attributeId, parentNode) {
     const attribute = this.getAttribute(attributeId);
     return attribute.filters.filter(filter => filter.parentNode === parentNode);
   }

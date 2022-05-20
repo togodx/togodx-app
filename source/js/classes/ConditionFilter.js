@@ -13,11 +13,11 @@ export default class ConditionFilter extends ConditionBase {
 
   // methods
 
-  addCategoryId(node) {
+  addNode(node) {
     this.#nodes.push(node);
   }
 
-  removeCategoryId(node) {
+  removeNode(node) {
     const index = this.#nodes.indexOf(node);
     this.#nodes.splice(index, 1);
   }

@@ -61,11 +61,11 @@ export default class ColumnView {
       <tbody></tbody>
     </table>`;
     this.#TBODY = this.#ROOT.querySelector(':scope > table > tbody');
-    const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.attributeId);
+    const selectedNodes = ConditionBuilder.getSelectedNodes(this.attributeId);
     this.#columnItemViews = filters.map((filter, index) => {
       this.#max = Math.max(this.#max, filter.count);
       // add item
-      const columnItemView = new ColumnItemView(this, filter, index, selectedCategoryIds);
+      const columnItemView = new ColumnItemView(this, filter, index, selectedNodes);
       this.#TBODY.append(columnItemView.rootNode);
       return columnItemView;
     });

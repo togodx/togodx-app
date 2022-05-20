@@ -27,7 +27,7 @@ export default class TrackOverviewCategorical {
     // TODO: ヒストグラムは別処理
     const sum = filters.reduce((acc, filter) => acc + filter.count, 0);
     const width = 100 / filters.length;
-    const selectedFilters = ConditionBuilder.getSelectedCategoryIds(attribute.id).filters;
+    const selectedFilters = ConditionBuilder.getSelectedNodes(attribute.id).filters;
     elm.innerHTML = this.#filters.map((filter, index) => {
       filter.countLog10 = filter.count === 0 ? 0 : Math.log10(filter.count);
       filter.width = filter.count / sum * 100;

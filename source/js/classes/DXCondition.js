@@ -44,7 +44,7 @@ export default class DXCondition {
             (
               conditionFilter.nodes.length === newConditionFilter.nodes.length &&
               conditionFilter.nodes.every(node => {
-                return newConditionFilter.nodes.findIndex(newCategoryId => node === newCategoryId) !== -1;
+                return newConditionFilter.nodes.findIndex(newNode => node === newNode) !== -1;
               })
             )
           );

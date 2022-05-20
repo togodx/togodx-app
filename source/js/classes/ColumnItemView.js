@@ -13,7 +13,7 @@ export default class ColumnItemView {
   #INPUT_VALUE;
   #INPUT_KEY;
 
-  constructor(column, {count, node, tip, label}, index, selectedCategoryIds) {
+  constructor(column, {count, node, tip, label}, index, selectedNodes) {
 
     this.#label = label;
     this.#count = count;
@@ -44,8 +44,8 @@ export default class ColumnItemView {
 
     this.#INPUT_VALUE = this.#ROOT.querySelector(':scope > td.label > label.filter > input');
     this.#INPUT_KEY = this.#ROOT.querySelector(':scope > td.label > label.annotation > input');
-    if (selectedCategoryIds.annotations.indexOf(node) !== -1) this.#INPUT_KEY.checked = true;
-    if (selectedCategoryIds.filters.indexOf(node) !== -1) this.#INPUT_VALUE.checked = true;
+    if (selectedNodes.annotations.indexOf(node) !== -1) this.#INPUT_KEY.checked = true;
+    if (selectedNodes.filters.indexOf(node) !== -1) this.#INPUT_VALUE.checked = true;
 
     // even listener
     this.#INPUT_KEY.addEventListener('change', e => {

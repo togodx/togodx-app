@@ -60,7 +60,7 @@ class ConditionBuilder {
     const sameConditionFilter = this.#conditionFilters.find(conditionFilter => conditionFilter.attributeId === attributeId);
     // store
     if (sameConditionFilter) {
-      sameConditionFilter.addCategoryId(node);
+      sameConditionFilter.addNode(node);
     } else {
       const conditionFilter = new ConditionFilter(attributeId, [node]);
       this.#conditionFilters.push(conditionFilter);
@@ -88,7 +88,7 @@ class ConditionBuilder {
     // remove from store
     const index = this.#conditionFilters.findIndex(conditionFilter => {
       if (conditionFilter.attributeId === attributeId) {
-        conditionFilter.removeCategoryId(node);
+        conditionFilter.removeNode(node);
         return conditionFilter.nodes.length === 0;
       } else {
         return false;
@@ -151,7 +151,7 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  getSelectedCategoryIds(attributeId) {
+  getSelectedNodes(attributeId) {
     const nodes = {
       annotations: [],
       filters: []
@@ -261,14 +261,14 @@ class ConditionBuilder {
     
     if (isFirst) {
       // get child category ids
-      this.#makeQueueOfGettingChildCategoryIds(__zzz__condition);
+      this.#makeQueueOfGettingChildNodes(__zzz__condition);
     } else {
       this.#restoreConditions(__zzz__condition);
     }
 
   }
 
-  #makeQueueOfGettingChildCategoryIds(condition) {
+  #makeQueueOfGettingChildNodes(condition) {
     if (condition.togoKey) this.#togoKey = condition.togoKey;
     const queue = [];
     const addQueue = (attributeId, id) => {
@@ -288,20 +288,20 @@ class ConditionBuilder {
         if (id.ancestors) addQueue(attributeId, id);
       });
     });
-    this.#progressQueueOfGettingChildCategoryIds(condition, queue);
+    this.#progressQueueOfGettingChildNodes(condition, queue);
   }
 
-  #progressQueueOfGettingChildCategoryIds(condition, queue) {
+  #progressQueueOfGettingChildNodes(condition, queue) {
     if (queue.length > 0) {
       const {attributeId, node} = queue.shift();
-      this.#getChildCategoryIds(attributeId, node)
-        .then(() => this.#progressQueueOfGettingChildCategoryIds(condition, queue));
+      this.#getChildNodes(attributeId, node)
+        .then(() => this.#progressQueueOfGettingChildNodes(condition, queue));
     } else {
       this.#restoreConditions(condition);
     }
   }
 
-  #getChildCategoryIds(attributeId, node) {
+  #getChildNodes(attributeId, node) {
     return new Promise((resolve, reject) => {
       Records.fetchAttributeFilters(attributeId, node)
         .then(filters => {

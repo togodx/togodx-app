@@ -2975,8 +2975,8 @@
         return attribute.getFilter(node);
       }
     }, {
-      key: "getFiltersWithParentCategoryId",
-      value: function getFiltersWithParentCategoryId(attributeId, parentNode) {
+      key: "getFiltersWithParentNode",
+      value: function getFiltersWithParentNode(attributeId, parentNode) {
         var attribute = this.getAttribute(attributeId);
         return attribute.filters.filter(function (filter) {
           return filter.parentNode === parentNode;
@@ -3242,13 +3242,13 @@
 
 
     _createClass(ConditionFilter, [{
-      key: "addCategoryId",
-      value: function addCategoryId(node) {
+      key: "addNode",
+      value: function addNode(node) {
         _classPrivateFieldGet(this, _nodes).push(node);
       }
     }, {
-      key: "removeCategoryId",
-      value: function removeCategoryId(node) {
+      key: "removeNode",
+      value: function removeNode(node) {
         var index = _classPrivateFieldGet(this, _nodes).indexOf(node);
 
         _classPrivateFieldGet(this, _nodes).splice(index, 1);
@@ -3368,8 +3368,8 @@
           matchFilters = this.conditionFilters.every(function (conditionFilter) {
             return dxCondition.conditionFilters.findIndex(function (newConditionFilter) {
               return conditionFilter.attributeId === newConditionFilter.attributeId && conditionFilter.nodes.length === newConditionFilter.nodes.length && conditionFilter.nodes.every(function (node) {
-                return newConditionFilter.nodes.findIndex(function (newCategoryId) {
-                  return node === newCategoryId;
+                return newConditionFilter.nodes.findIndex(function (newNode) {
+                  return node === newNode;
                 }) !== -1;
               });
             }) !== -1;
@@ -3482,11 +3482,11 @@
 
   var _createSearchConditionFromURLParameters = /*#__PURE__*/new WeakSet();
 
-  var _makeQueueOfGettingChildCategoryIds = /*#__PURE__*/new WeakSet();
+  var _makeQueueOfGettingChildNodes = /*#__PURE__*/new WeakSet();
 
-  var _progressQueueOfGettingChildCategoryIds = /*#__PURE__*/new WeakSet();
+  var _progressQueueOfGettingChildNodes = /*#__PURE__*/new WeakSet();
 
-  var _getChildCategoryIds = /*#__PURE__*/new WeakSet();
+  var _getChildNodes = /*#__PURE__*/new WeakSet();
 
   var _restoreConditions = /*#__PURE__*/new WeakSet();
 
@@ -3506,11 +3506,11 @@
 
       _classPrivateMethodInitSpec(this, _restoreConditions);
 
-      _classPrivateMethodInitSpec(this, _getChildCategoryIds);
+      _classPrivateMethodInitSpec(this, _getChildNodes);
 
-      _classPrivateMethodInitSpec(this, _progressQueueOfGettingChildCategoryIds);
+      _classPrivateMethodInitSpec(this, _progressQueueOfGettingChildNodes);
 
-      _classPrivateMethodInitSpec(this, _makeQueueOfGettingChildCategoryIds);
+      _classPrivateMethodInitSpec(this, _makeQueueOfGettingChildNodes);
 
       _classPrivateMethodInitSpec(this, _createSearchConditionFromURLParameters);
 
@@ -3614,7 +3614,7 @@
 
 
         if (sameConditionFilter) {
-          sameConditionFilter.addCategoryId(node);
+          sameConditionFilter.addNode(node);
         } else {
           var conditionFilter = new ConditionFilter(attributeId, [node]);
 
@@ -3666,7 +3666,7 @@
         // remove from store
         var index = _classPrivateFieldGet(this, _conditionFilters).findIndex(function (conditionFilter) {
           if (conditionFilter.attributeId === attributeId) {
-            conditionFilter.removeCategoryId(node);
+            conditionFilter.removeNode(node);
             return conditionFilter.nodes.length === 0;
           } else {
             return false;
@@ -3765,8 +3765,8 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
-      key: "getSelectedCategoryIds",
-      value: function getSelectedCategoryIds(attributeId) {
+      key: "getSelectedNodes",
+      value: function getSelectedNodes(attributeId) {
         var _nodes$annotations, _nodes$filters;
 
         var nodes = {
@@ -3916,13 +3916,13 @@
 
     if (isFirst) {
       // get child category ids
-      _classPrivateMethodGet(this, _makeQueueOfGettingChildCategoryIds, _makeQueueOfGettingChildCategoryIds2).call(this, __zzz__condition);
+      _classPrivateMethodGet(this, _makeQueueOfGettingChildNodes, _makeQueueOfGettingChildNodes2).call(this, __zzz__condition);
     } else {
       _classPrivateMethodGet(this, _restoreConditions, _restoreConditions2).call(this, __zzz__condition);
     }
   }
 
-  function _makeQueueOfGettingChildCategoryIds2(condition) {
+  function _makeQueueOfGettingChildNodes2(condition) {
     if (condition.togoKey) _classPrivateFieldSet(this, _togoKey, condition.togoKey);
     var queue = [];
 
@@ -3954,10 +3954,10 @@
       });
     });
 
-    _classPrivateMethodGet(this, _progressQueueOfGettingChildCategoryIds, _progressQueueOfGettingChildCategoryIds2).call(this, condition, queue);
+    _classPrivateMethodGet(this, _progressQueueOfGettingChildNodes, _progressQueueOfGettingChildNodes2).call(this, condition, queue);
   }
 
-  function _progressQueueOfGettingChildCategoryIds2(condition, queue) {
+  function _progressQueueOfGettingChildNodes2(condition, queue) {
     var _this3 = this;
 
     if (queue.length > 0) {
@@ -3965,15 +3965,15 @@
           attributeId = _queue$shift.attributeId,
           node = _queue$shift.node;
 
-      _classPrivateMethodGet(this, _getChildCategoryIds, _getChildCategoryIds2).call(this, attributeId, node).then(function () {
-        return _classPrivateMethodGet(_this3, _progressQueueOfGettingChildCategoryIds, _progressQueueOfGettingChildCategoryIds2).call(_this3, condition, queue);
+      _classPrivateMethodGet(this, _getChildNodes, _getChildNodes2).call(this, attributeId, node).then(function () {
+        return _classPrivateMethodGet(_this3, _progressQueueOfGettingChildNodes, _progressQueueOfGettingChildNodes2).call(_this3, condition, queue);
       });
     } else {
       _classPrivateMethodGet(this, _restoreConditions, _restoreConditions2).call(this, condition);
     }
   }
 
-  function _getChildCategoryIds2(attributeId, node) {
+  function _getChildNodes2(attributeId, node) {
     return new Promise(function (resolve, reject) {
       Records$1.fetchAttributeFilters(attributeId, node).then(function (filters) {
         resolve();
@@ -4574,7 +4574,7 @@
   var _clearUserFilters = /*#__PURE__*/new WeakSet();
 
   var ColumnItemView = /*#__PURE__*/function () {
-    function ColumnItemView(column, _ref, index, selectedCategoryIds) {
+    function ColumnItemView(column, _ref, index, selectedNodes) {
       var _this = this;
 
       var count = _ref.count,
@@ -4643,8 +4643,8 @@
 
       _classPrivateFieldSet(this, _INPUT_KEY, _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > td.label > label.annotation > input'));
 
-      if (selectedCategoryIds.annotations.indexOf(node) !== -1) _classPrivateFieldGet(this, _INPUT_KEY).checked = true;
-      if (selectedCategoryIds.filters.indexOf(node) !== -1) _classPrivateFieldGet(this, _INPUT_VALUE).checked = true; // even listener
+      if (selectedNodes.annotations.indexOf(node) !== -1) _classPrivateFieldGet(this, _INPUT_KEY).checked = true;
+      if (selectedNodes.filters.indexOf(node) !== -1) _classPrivateFieldGet(this, _INPUT_VALUE).checked = true; // even listener
 
       _classPrivateFieldGet(this, _INPUT_KEY).addEventListener('change', function (e) {
         if (e.target.checked) {
@@ -7046,13 +7046,13 @@
 
     _classPrivateFieldSet(this, _TBODY$1, _classPrivateFieldGet(this, _ROOT$c).querySelector(':scope > table > tbody'));
 
-    var selectedCategoryIds = ConditionBuilder$1.getSelectedCategoryIds(this.attributeId);
+    var selectedNodes = ConditionBuilder$1.getSelectedNodes(this.attributeId);
 
     _classPrivateFieldSet(this, _columnItemViews, filters.map(function (filter, index) {
       _classPrivateFieldSet(_this3, _max, Math.max(_classPrivateFieldGet(_this3, _max), filter.count)); // add item
 
 
-      var columnItemView = new ColumnItemView(_this3, filter, index, selectedCategoryIds);
+      var columnItemView = new ColumnItemView(_this3, filter, index, selectedNodes);
 
       _classPrivateFieldGet(_this3, _TBODY$1).append(columnItemView.rootNode);
 
@@ -8015,7 +8015,7 @@
 
     var _width = 100 / filters.length;
 
-    var selectedFilters = ConditionBuilder$1.getSelectedCategoryIds(attribute.id).filters;
+    var selectedFilters = ConditionBuilder$1.getSelectedNodes(attribute.id).filters;
     elm.innerHTML = _classPrivateFieldGet(this, _filters).map(function (filter, index) {
       filter.countLog10 = filter.count === 0 ? 0 : Math.log10(filter.count);
       filter.width = filter.count / _sum * 100;
@@ -8517,7 +8517,7 @@
       elm.innerHTML = "\n    <div class=\"statistics\">\n      <div class=\"bars\"></div>\n    </div>\n    <div class=\"loading-view -shown\"></div>\n    "; // display order of bar chart
 
       if (condition.parentNode) {
-        _classPrivateFieldSet(this, _referenceFilters, Records$1.getFiltersWithParentCategoryId(_classPrivateFieldGet(this, _attributeId), condition.parentNode));
+        _classPrivateFieldSet(this, _referenceFilters, Records$1.getFiltersWithParentNode(_classPrivateFieldGet(this, _attributeId), condition.parentNode));
       } else {
         _classPrivateFieldSet(this, _referenceFilters, Records$1.getAttribute(_classPrivateFieldGet(this, _attributeId)).filters);
       } // references

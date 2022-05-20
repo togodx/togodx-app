@@ -33,7 +33,7 @@ export default class StatisticsView {
 
     // display order of bar chart
     if (condition.parentNode) {
-      this.#referenceFilters = Records.getFiltersWithParentCategoryId(this.#attributeId, condition.parentNode);
+      this.#referenceFilters = Records.getFiltersWithParentNode(this.#attributeId, condition.parentNode);
     } else {
       this.#referenceFilters = Records.getAttribute(this.#attributeId).filters;
     }
