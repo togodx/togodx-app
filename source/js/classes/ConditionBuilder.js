@@ -45,6 +45,8 @@ class ConditionBuilder {
   }
 
   addAttribute(attributeId, parentNode, isFinal = true) {
+    console.log(this.#conditionAnnotations)
+    console.log(this.#conditionFilters)
     // store
     const conditionAnnotation = new ConditionAnnotation(attributeId, parentNode);
     this.#conditionAnnotations.push(conditionAnnotation);

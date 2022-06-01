@@ -1,24 +1,16 @@
 {
-  "name" : "codekit-project",
-  "private" : true,
-  "devDependencies" : {
-
+  "dependencies": {
+    "axios": "^0.27.2",
+    "axios-retry": "^3.2.5"
   },
-  "optionalDependencies" : {
-
-  },
-  "version" : "1.0.0",
-  "license" : "UNLICENSED",
-  "description" : "CodeKit created this starter package.json file. You should customize it appropriately. (If you intend to publish this project on npm, add an entry in the 'repository' field and remove the 'private' attribute, below.)",
-  "dependencies" : {
-    "axios-retry" : "^3.2.4",
-    "axios" : "^0.26.1"
-  },
-  "repository" : {
-
-  },
-  "author" : "",
-  "scripts" : {
-
-  }
+  "repository": {},
+  "version": "1.0.0",
+  "private": true,
+  "name": "codekit-project",
+  "devDependencies": {},
+  "license": "UNLICENSED",
+  "scripts": {},
+  "description": "CodeKit created this starter package.json file. You should customize it appropriately. (If you intend to publish this project on npm, add an entry in the 'repository' field and remove the 'private' attribute, below.)",
+  "optionalDependencies": {},
+  "author": ""
 }

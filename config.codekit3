@@ -25,6 +25,14 @@
       "oAP" : "\/build\/.github\/workflows\/release.yaml",
       "oF" : 0
     },
+    "\/.gitignore" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/build\/.gitignore",
+      "oF" : 0
+    },
     "\/build" : {
       "ft" : 65536,
       "oA" : 1,
@@ -49,6 +57,12 @@
       "pME" : 1,
       "rFN" : 0,
       "uCM" : 0
+    },
+    "\/frontend\/node_modules" : {
+      "ft" : 65536,
+      "oA" : 2,
+      "oAP" : "\/build\/frontend\/node_modules",
+      "oF" : 0
     },
     "\/node_modules" : {
       "ft" : 65536,
@@ -618,7 +632,7 @@
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
-      "oA" : 0,
+      "oA" : 1,
       "oAP" : "\/build\/js\/classes\/Attribute.js",
       "oF" : 0,
       "sC" : 3,
@@ -728,7 +742,7 @@
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/build\/js\/classes\/ConditionBase.js",
       "oF" : 0,
       "sC" : 3,
@@ -1314,8 +1328,8 @@
     "environmentVariableEntries" : [
       "NODE_ENV:::production"
     ],
-    "esLintConfigFileHandlingType" : 1,
-    "esLintECMAVersion" : 12,
+    "esLintConfigFileHandlingType" : 0,
+    "esLintECMAVersion" : 0,
     "esLintEnvironmentsMask" : 1,
     "esLintRules" : {
       "accessor-pairs" : {
@@ -2263,7 +2277,7 @@
         "optionString" : "'never', {'exceptRange': false, 'onlyEquality': false}"
       }
     },
-    "esLintSourceType" : 1,
+    "esLintSourceType" : 0,
     "externalServerAddress" : "http:\/\/localhost:8888",
     "gitIgnoreBuildFolder" : 1,
     "hideConfigFile" : 0,
@@ -2504,15 +2518,15 @@
       "autoOutputPathRelativePath" : "\/js",
       "autoOutputPathReplace1" : "",
       "autoOutputPathReplace2" : "",
-      "autoOutputPathStyle" : 2,
+      "autoOutputPathStyle" : 0,
       "createDeclarationFile" : 0,
       "jsxMode" : 0,
       "minifierStyle" : 0,
       "moduleResolutionType" : 0,
       "moduleType" : 2,
       "removeComments" : 0,
-      "sourceMapStyle" : 1,
-      "targetECMAVersion" : 2
+      "sourceMapStyle" : 0,
+      "targetECMAVersion" : 0
     },
     "languageDefaultsUserDefined" : [
 
