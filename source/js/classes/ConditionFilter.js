@@ -24,14 +24,14 @@ export default class ConditionFilter extends ConditionBase {
 
   getURLParameter() {
     const values = {
-      attributeId: this._attributeId,
-      ids: []
+      attribute: this._attributeId,
+      nodes: []
     }
     this.#nodes.forEach(node => {
-      const id = {node};
+      const node2 = {node};
       const ancestors = Records.getAncestors(this._attributeId, node).map(ancestor => ancestor.node);
-      if (ancestors.length > 0) id.ancestors = ancestors;
-      values.ids.push(id);
+      if (ancestors.length > 0) node2.path = ancestors;
+      values.nodes.push(node2);
     })
     return values;
 }

@@ -36,13 +36,11 @@ export default class ConditionAnnotation extends ConditionBase {
 
   getURLParameter() {
     const annotation = {
-      attributeId: this._attributeId
+      attribute: this._attributeId
     };
     if (this.#parentNode) {
-      annotation.id = {
-        node: this.#parentNode,
-        ancestors: this.ancestors
-      }
+      annotation.node = this.#parentNode;
+      annotation.path = this.ancestors;
     }
     return annotation;
   }

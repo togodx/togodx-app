@@ -3155,14 +3155,12 @@
       key: "getURLParameter",
       value: function getURLParameter() {
         var annotation = {
-          attributeId: this._attributeId
+          attribute: this._attributeId
         };
 
         if (_classPrivateFieldGet(this, _parentNode$1)) {
-          annotation.id = {
-            node: _classPrivateFieldGet(this, _parentNode$1),
-            ancestors: this.ancestors
-          };
+          annotation.node = _classPrivateFieldGet(this, _parentNode$1);
+          annotation.path = this.ancestors;
         }
 
         return annotation;
@@ -3259,19 +3257,19 @@
         var _this2 = this;
 
         var values = {
-          attributeId: this._attributeId,
-          ids: []
+          attribute: this._attributeId,
+          nodes: []
         };
 
         _classPrivateFieldGet(this, _nodes).forEach(function (node) {
-          var id = {
+          var node2 = {
             node: node
           };
           var ancestors = Records$1.getAncestors(_this2._attributeId, node).map(function (ancestor) {
             return ancestor.node;
           });
-          if (ancestors.length > 0) id.ancestors = ancestors;
-          values.ids.push(id);
+          if (ancestors.length > 0) node2.path = ancestors;
+          values.nodes.push(node2);
         });
 
         return values;
@@ -3586,9 +3584,7 @@
       key: "addAttribute",
       value: function addAttribute(attributeId, parentNode) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log(_classPrivateFieldGet(this, _conditionAnnotations));
-        console.log(_classPrivateFieldGet(this, _conditionFilters)); // store
-
+        // store
         var conditionAnnotation = new ConditionAnnotation(attributeId, parentNode);
 
         _classPrivateFieldGet(this, _conditionAnnotations).push(conditionAnnotation); // evaluate
@@ -3823,47 +3819,13 @@
 
     var filters = _classPrivateFieldGet(this, _conditionFilters).map(function (conditionFilter) {
       return conditionFilter.getURLParameter();
-    });
-
-    var __zzz__annotations = annotations.map(function (annotation) {
-      var annotation2 = {
-        attribute: annotation.attributeId
-      };
-
-      if (annotation.id) {
-        annotation2.node = annotation.id.node;
-
-        if (annotation.id.ancestors) {
-          annotation2.path = _toConsumableArray(annotation.id.ancestors);
-        }
-      }
-
-      return annotation2;
-    });
-
-    var __zzz__filters = filters.map(function (filter) {
-      var filter2 = {
-        attribute: filter.attributeId
-      };
-      filter2.nodes = filter.ids.map(function (id) {
-        var zzzId = {
-          node: id.node
-        };
-
-        if (id.ancestors) {
-          zzzId.path = _toConsumableArray(id.ancestors);
-        }
-
-        return zzzId;
-      });
-      return filter2;
     }); // generate permalink
 
 
     var params = new URL(location).searchParams;
     params.set('dataset', _classPrivateFieldGet(this, _togoKey));
-    params.set('annotations', JSON.stringify(__zzz__annotations));
-    params.set('filters', JSON.stringify(__zzz__filters));
+    params.set('annotations', JSON.stringify(annotations));
+    params.set('filters', JSON.stringify(filters));
     if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
   }
 
@@ -4904,22 +4866,6 @@
 
   var toString = Object.prototype.toString;
 
-  // eslint-disable-next-line func-names
-  var kindOf = (function(cache) {
-    // eslint-disable-next-line func-names
-    return function(thing) {
-      var str = toString.call(thing);
-      return cache[str] || (cache[str] = str.slice(8, -1).toLowerCase());
-    };
-  })(Object.create(null));
-
-  function kindOfTest(type) {
-    type = type.toLowerCase();
-    return function isKindOf(thing) {
-      return kindOf(thing) === type;
-    };
-  }
-
   /**
    * Determine if a value is an Array
    *
@@ -4954,12 +4900,22 @@
   /**
    * Determine if a value is an ArrayBuffer
    *
-   * @function
    * @param {Object} val The value to test
    * @returns {boolean} True if value is an ArrayBuffer, otherwise false
    */
-  var isArrayBuffer = kindOfTest('ArrayBuffer');
+  function isArrayBuffer(val) {
+    return toString.call(val) === '[object ArrayBuffer]';
+  }
 
+  /**
+   * Determine if a value is a FormData
+   *
+   * @param {Object} val The value to test
+   * @returns {boolean} True if value is an FormData, otherwise false
+   */
+  function isFormData(val) {
+    return toString.call(val) === '[object FormData]';
+  }
 
   /**
    * Determine if a value is a view on an ArrayBuffer
@@ -5014,7 +4970,7 @@
    * @return {boolean} True if value is a plain Object, otherwise false
    */
   function isPlainObject(val) {
-    if (kindOf(val) !== 'object') {
+    if (toString.call(val) !== '[object Object]') {
       return false;
     }
 
@@ -5025,38 +4981,32 @@
   /**
    * Determine if a value is a Date
    *
-   * @function
    * @param {Object} val The value to test
    * @returns {boolean} True if value is a Date, otherwise false
    */
-  var isDate = kindOfTest('Date');
+  function isDate(val) {
+    return toString.call(val) === '[object Date]';
+  }
 
   /**
    * Determine if a value is a File
    *
-   * @function
    * @param {Object} val The value to test
    * @returns {boolean} True if value is a File, otherwise false
    */
-  var isFile = kindOfTest('File');
+  function isFile(val) {
+    return toString.call(val) === '[object File]';
+  }
 
   /**
    * Determine if a value is a Blob
    *
-   * @function
    * @param {Object} val The value to test
    * @returns {boolean} True if value is a Blob, otherwise false
    */
-  var isBlob = kindOfTest('Blob');
-
-  /**
-   * Determine if a value is a FileList
-   *
-   * @function
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is a File, otherwise false
-   */
-  var isFileList = kindOfTest('FileList');
+  function isBlob(val) {
+    return toString.call(val) === '[object Blob]';
+  }
 
   /**
    * Determine if a value is a Function
@@ -5079,27 +5029,14 @@
   }
 
   /**
-   * Determine if a value is a FormData
-   *
-   * @param {Object} thing The value to test
-   * @returns {boolean} True if value is an FormData, otherwise false
-   */
-  function isFormData(thing) {
-    var pattern = '[object FormData]';
-    return thing && (
-      (typeof FormData === 'function' && thing instanceof FormData) ||
-      toString.call(thing) === pattern ||
-      (isFunction(thing.toString) && thing.toString() === pattern)
-    );
-  }
-
-  /**
    * Determine if a value is a URLSearchParams object
-   * @function
+   *
    * @param {Object} val The value to test
    * @returns {boolean} True if value is a URLSearchParams object, otherwise false
    */
-  var isURLSearchParams = kindOfTest('URLSearchParams');
+  function isURLSearchParams(val) {
+    return toString.call(val) === '[object URLSearchParams]';
+  }
 
   /**
    * Trim excess whitespace off the beginning and end of a string
@@ -5246,94 +5183,6 @@
     return content;
   }
 
-  /**
-   * Inherit the prototype methods from one constructor into another
-   * @param {function} constructor
-   * @param {function} superConstructor
-   * @param {object} [props]
-   * @param {object} [descriptors]
-   */
-
-  function inherits(constructor, superConstructor, props, descriptors) {
-    constructor.prototype = Object.create(superConstructor.prototype, descriptors);
-    constructor.prototype.constructor = constructor;
-    props && Object.assign(constructor.prototype, props);
-  }
-
-  /**
-   * Resolve object with deep prototype chain to a flat object
-   * @param {Object} sourceObj source object
-   * @param {Object} [destObj]
-   * @param {Function} [filter]
-   * @returns {Object}
-   */
-
-  function toFlatObject(sourceObj, destObj, filter) {
-    var props;
-    var i;
-    var prop;
-    var merged = {};
-
-    destObj = destObj || {};
-
-    do {
-      props = Object.getOwnPropertyNames(sourceObj);
-      i = props.length;
-      while (i-- > 0) {
-        prop = props[i];
-        if (!merged[prop]) {
-          destObj[prop] = sourceObj[prop];
-          merged[prop] = true;
-        }
-      }
-      sourceObj = Object.getPrototypeOf(sourceObj);
-    } while (sourceObj && (!filter || filter(sourceObj, destObj)) && sourceObj !== Object.prototype);
-
-    return destObj;
-  }
-
-  /*
-   * determines whether a string ends with the characters of a specified string
-   * @param {String} str
-   * @param {String} searchString
-   * @param {Number} [position= 0]
-   * @returns {boolean}
-   */
-  function endsWith(str, searchString, position) {
-    str = String(str);
-    if (position === undefined || position > str.length) {
-      position = str.length;
-    }
-    position -= searchString.length;
-    var lastIndex = str.indexOf(searchString, position);
-    return lastIndex !== -1 && lastIndex === position;
-  }
-
-
-  /**
-   * Returns new array from array like object
-   * @param {*} [thing]
-   * @returns {Array}
-   */
-  function toArray(thing) {
-    if (!thing) return null;
-    var i = thing.length;
-    if (isUndefined(i)) return null;
-    var arr = new Array(i);
-    while (i-- > 0) {
-      arr[i] = thing[i];
-    }
-    return arr;
-  }
-
-  // eslint-disable-next-line func-names
-  var isTypedArray = (function(TypedArray) {
-    // eslint-disable-next-line func-names
-    return function(thing) {
-      return TypedArray && thing instanceof TypedArray;
-    };
-  })(typeof Uint8Array !== 'undefined' && Object.getPrototypeOf(Uint8Array));
-
   var utils$9 = {
     isArray: isArray,
     isArrayBuffer: isArrayBuffer,
@@ -5356,15 +5205,7 @@
     merge: merge,
     extend: extend,
     trim: trim,
-    stripBOM: stripBOM,
-    inherits: inherits,
-    toFlatObject: toFlatObject,
-    kindOf: kindOf,
-    kindOfTest: kindOfTest,
-    endsWith: endsWith,
-    toArray: toArray,
-    isTypedArray: isTypedArray,
-    isFileList: isFileList
+    stripBOM: stripBOM
   };
 
   var utils$8 = utils$9;
@@ -5500,99 +5341,47 @@
     });
   };
 
-  var AxiosError_1;
-  var hasRequiredAxiosError;
+  /**
+   * Update an Error with the specified config, error code, and response.
+   *
+   * @param {Error} error The error to update.
+   * @param {Object} config The config.
+   * @param {string} [code] The error code (for example, 'ECONNABORTED').
+   * @param {Object} [request] The request.
+   * @param {Object} [response] The response.
+   * @returns {Error} The error.
+   */
+  var enhanceError$1 = function enhanceError(error, config, code, request, response) {
+    error.config = config;
+    if (code) {
+      error.code = code;
+    }
 
-  function requireAxiosError () {
-  	if (hasRequiredAxiosError) return AxiosError_1;
-  	hasRequiredAxiosError = 1;
+    error.request = request;
+    error.response = response;
+    error.isAxiosError = true;
 
-  	var utils = utils$9;
-
-  	/**
-  	 * Create an Error with the specified message, config, error code, request and response.
-  	 *
-  	 * @param {string} message The error message.
-  	 * @param {string} [code] The error code (for example, 'ECONNABORTED').
-  	 * @param {Object} [config] The config.
-  	 * @param {Object} [request] The request.
-  	 * @param {Object} [response] The response.
-  	 * @returns {Error} The created error.
-  	 */
-  	function AxiosError(message, code, config, request, response) {
-  	  Error.call(this);
-  	  this.message = message;
-  	  this.name = 'AxiosError';
-  	  code && (this.code = code);
-  	  config && (this.config = config);
-  	  request && (this.request = request);
-  	  response && (this.response = response);
-  	}
-
-  	utils.inherits(AxiosError, Error, {
-  	  toJSON: function toJSON() {
-  	    return {
-  	      // Standard
-  	      message: this.message,
-  	      name: this.name,
-  	      // Microsoft
-  	      description: this.description,
-  	      number: this.number,
-  	      // Mozilla
-  	      fileName: this.fileName,
-  	      lineNumber: this.lineNumber,
-  	      columnNumber: this.columnNumber,
-  	      stack: this.stack,
-  	      // Axios
-  	      config: this.config,
-  	      code: this.code,
-  	      status: this.response && this.response.status ? this.response.status : null
-  	    };
-  	  }
-  	});
-
-  	var prototype = AxiosError.prototype;
-  	var descriptors = {};
-
-  	[
-  	  'ERR_BAD_OPTION_VALUE',
-  	  'ERR_BAD_OPTION',
-  	  'ECONNABORTED',
-  	  'ETIMEDOUT',
-  	  'ERR_NETWORK',
-  	  'ERR_FR_TOO_MANY_REDIRECTS',
-  	  'ERR_DEPRECATED',
-  	  'ERR_BAD_RESPONSE',
-  	  'ERR_BAD_REQUEST',
-  	  'ERR_CANCELED'
-  	// eslint-disable-next-line func-names
-  	].forEach(function(code) {
-  	  descriptors[code] = {value: code};
-  	});
-
-  	Object.defineProperties(AxiosError, descriptors);
-  	Object.defineProperty(prototype, 'isAxiosError', {value: true});
-
-  	// eslint-disable-next-line func-names
-  	AxiosError.from = function(error, code, config, request, response, customProps) {
-  	  var axiosError = Object.create(prototype);
-
-  	  utils.toFlatObject(error, axiosError, function filter(obj) {
-  	    return obj !== Error.prototype;
-  	  });
-
-  	  AxiosError.call(axiosError, error.message, code, config, request, response);
-
-  	  axiosError.name = error.name;
-
-  	  customProps && Object.assign(axiosError, customProps);
-
-  	  return axiosError;
-  	};
-
-  	AxiosError_1 = AxiosError;
-  	return AxiosError_1;
-  }
+    error.toJSON = function toJSON() {
+      return {
+        // Standard
+        message: this.message,
+        name: this.name,
+        // Microsoft
+        description: this.description,
+        number: this.number,
+        // Mozilla
+        fileName: this.fileName,
+        lineNumber: this.lineNumber,
+        columnNumber: this.columnNumber,
+        stack: this.stack,
+        // Axios
+        config: this.config,
+        code: this.code,
+        status: this.response && this.response.status ? this.response.status : null
+      };
+    };
+    return error;
+  };
 
   var transitional = {
     silentJSONParsing: true,
@@ -5600,84 +5389,30 @@
     clarifyTimeoutError: false
   };
 
-  var toFormData_1;
-  var hasRequiredToFormData;
+  var createError;
+  var hasRequiredCreateError;
 
-  function requireToFormData () {
-  	if (hasRequiredToFormData) return toFormData_1;
-  	hasRequiredToFormData = 1;
+  function requireCreateError () {
+  	if (hasRequiredCreateError) return createError;
+  	hasRequiredCreateError = 1;
 
-  	var utils = utils$9;
+  	var enhanceError = enhanceError$1;
 
   	/**
-  	 * Convert a data object to FormData
-  	 * @param {Object} obj
-  	 * @param {?Object} [formData]
-  	 * @returns {Object}
-  	 **/
-
-  	function toFormData(obj, formData) {
-  	  // eslint-disable-next-line no-param-reassign
-  	  formData = formData || new FormData();
-
-  	  var stack = [];
-
-  	  function convertValue(value) {
-  	    if (value === null) return '';
-
-  	    if (utils.isDate(value)) {
-  	      return value.toISOString();
-  	    }
-
-  	    if (utils.isArrayBuffer(value) || utils.isTypedArray(value)) {
-  	      return typeof Blob === 'function' ? new Blob([value]) : Buffer.from(value);
-  	    }
-
-  	    return value;
-  	  }
-
-  	  function build(data, parentKey) {
-  	    if (utils.isPlainObject(data) || utils.isArray(data)) {
-  	      if (stack.indexOf(data) !== -1) {
-  	        throw Error('Circular reference detected in ' + parentKey);
-  	      }
-
-  	      stack.push(data);
-
-  	      utils.forEach(data, function each(value, key) {
-  	        if (utils.isUndefined(value)) return;
-  	        var fullKey = parentKey ? parentKey + '.' + key : key;
-  	        var arr;
-
-  	        if (value && !parentKey && typeof value === 'object') {
-  	          if (utils.endsWith(key, '{}')) {
-  	            // eslint-disable-next-line no-param-reassign
-  	            value = JSON.stringify(value);
-  	          } else if (utils.endsWith(key, '[]') && (arr = utils.toArray(value))) {
-  	            // eslint-disable-next-line func-names
-  	            arr.forEach(function(el) {
-  	              !utils.isUndefined(el) && formData.append(fullKey, convertValue(el));
-  	            });
-  	            return;
-  	          }
-  	        }
-
-  	        build(value, fullKey);
-  	      });
-
-  	      stack.pop();
-  	    } else {
-  	      formData.append(parentKey, convertValue(data));
-  	    }
-  	  }
-
-  	  build(obj);
-
-  	  return formData;
-  	}
-
-  	toFormData_1 = toFormData;
-  	return toFormData_1;
+  	 * Create an Error with the specified message, config, error code, request and response.
+  	 *
+  	 * @param {string} message The error message.
+  	 * @param {Object} config The config.
+  	 * @param {string} [code] The error code (for example, 'ECONNABORTED').
+  	 * @param {Object} [request] The request.
+  	 * @param {Object} [response] The response.
+  	 * @returns {Error} The created error.
+  	 */
+  	createError = function createError(message, config, code, request, response) {
+  	  var error = new Error(message);
+  	  return enhanceError(error, config, code, request, response);
+  	};
+  	return createError;
   }
 
   var settle;
@@ -5687,7 +5422,7 @@
   	if (hasRequiredSettle) return settle;
   	hasRequiredSettle = 1;
 
-  	var AxiosError = requireAxiosError();
+  	var createError = requireCreateError();
 
   	/**
   	 * Resolve or reject a Promise based on response status.
@@ -5701,10 +5436,10 @@
   	  if (!response.status || !validateStatus || validateStatus(response.status)) {
   	    resolve(response);
   	  } else {
-  	    reject(new AxiosError(
+  	    reject(createError(
   	      'Request failed with status code ' + response.status,
-  	      [AxiosError.ERR_BAD_REQUEST, AxiosError.ERR_BAD_RESPONSE][Math.floor(response.status / 100) - 4],
   	      response.config,
+  	      null,
   	      response.request,
   	      response
   	    ));
@@ -5774,50 +5509,77 @@
   	return cookies;
   }
 
-  /**
-   * Determines whether the specified URL is absolute
-   *
-   * @param {string} url The URL to test
-   * @returns {boolean} True if the specified URL is absolute, otherwise false
-   */
-  var isAbsoluteURL$1 = function isAbsoluteURL(url) {
-    // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
-    // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
-    // by any combination of letters, digits, plus, period, or hyphen.
-    return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
-  };
+  var isAbsoluteURL;
+  var hasRequiredIsAbsoluteURL;
 
-  /**
-   * Creates a new URL by combining the specified URLs
-   *
-   * @param {string} baseURL The base URL
-   * @param {string} relativeURL The relative URL
-   * @returns {string} The combined URL
-   */
-  var combineURLs$1 = function combineURLs(baseURL, relativeURL) {
-    return relativeURL
-      ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
-      : baseURL;
-  };
+  function requireIsAbsoluteURL () {
+  	if (hasRequiredIsAbsoluteURL) return isAbsoluteURL;
+  	hasRequiredIsAbsoluteURL = 1;
 
-  var isAbsoluteURL = isAbsoluteURL$1;
-  var combineURLs = combineURLs$1;
+  	/**
+  	 * Determines whether the specified URL is absolute
+  	 *
+  	 * @param {string} url The URL to test
+  	 * @returns {boolean} True if the specified URL is absolute, otherwise false
+  	 */
+  	isAbsoluteURL = function isAbsoluteURL(url) {
+  	  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
+  	  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
+  	  // by any combination of letters, digits, plus, period, or hyphen.
+  	  return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
+  	};
+  	return isAbsoluteURL;
+  }
 
-  /**
-   * Creates a new URL by combining the baseURL with the requestedURL,
-   * only when the requestedURL is not already an absolute URL.
-   * If the requestURL is absolute, this function returns the requestedURL untouched.
-   *
-   * @param {string} baseURL The base URL
-   * @param {string} requestedURL Absolute or relative URL to combine
-   * @returns {string} The combined full path
-   */
-  var buildFullPath$1 = function buildFullPath(baseURL, requestedURL) {
-    if (baseURL && !isAbsoluteURL(requestedURL)) {
-      return combineURLs(baseURL, requestedURL);
-    }
-    return requestedURL;
-  };
+  var combineURLs;
+  var hasRequiredCombineURLs;
+
+  function requireCombineURLs () {
+  	if (hasRequiredCombineURLs) return combineURLs;
+  	hasRequiredCombineURLs = 1;
+
+  	/**
+  	 * Creates a new URL by combining the specified URLs
+  	 *
+  	 * @param {string} baseURL The base URL
+  	 * @param {string} relativeURL The relative URL
+  	 * @returns {string} The combined URL
+  	 */
+  	combineURLs = function combineURLs(baseURL, relativeURL) {
+  	  return relativeURL
+  	    ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
+  	    : baseURL;
+  	};
+  	return combineURLs;
+  }
+
+  var buildFullPath;
+  var hasRequiredBuildFullPath;
+
+  function requireBuildFullPath () {
+  	if (hasRequiredBuildFullPath) return buildFullPath;
+  	hasRequiredBuildFullPath = 1;
+
+  	var isAbsoluteURL = requireIsAbsoluteURL();
+  	var combineURLs = requireCombineURLs();
+
+  	/**
+  	 * Creates a new URL by combining the baseURL with the requestedURL,
+  	 * only when the requestedURL is not already an absolute URL.
+  	 * If the requestURL is absolute, this function returns the requestedURL untouched.
+  	 *
+  	 * @param {string} baseURL The base URL
+  	 * @param {string} requestedURL Absolute or relative URL to combine
+  	 * @returns {string} The combined full path
+  	 */
+  	buildFullPath = function buildFullPath(baseURL, requestedURL) {
+  	  if (baseURL && !isAbsoluteURL(requestedURL)) {
+  	    return combineURLs(baseURL, requestedURL);
+  	  }
+  	  return requestedURL;
+  	};
+  	return buildFullPath;
+  }
 
   var parseHeaders;
   var hasRequiredParseHeaders;
@@ -5956,48 +5718,31 @@
   	return isURLSameOrigin;
   }
 
-  var CanceledError_1;
-  var hasRequiredCanceledError;
+  var Cancel_1;
+  var hasRequiredCancel;
 
-  function requireCanceledError () {
-  	if (hasRequiredCanceledError) return CanceledError_1;
-  	hasRequiredCanceledError = 1;
-
-  	var AxiosError = requireAxiosError();
-  	var utils = utils$9;
+  function requireCancel () {
+  	if (hasRequiredCancel) return Cancel_1;
+  	hasRequiredCancel = 1;
 
   	/**
-  	 * A `CanceledError` is an object that is thrown when an operation is canceled.
+  	 * A `Cancel` is an object that is thrown when an operation is canceled.
   	 *
   	 * @class
   	 * @param {string=} message The message.
   	 */
-  	function CanceledError(message) {
-  	  // eslint-disable-next-line no-eq-null,eqeqeq
-  	  AxiosError.call(this, message == null ? 'canceled' : message, AxiosError.ERR_CANCELED);
-  	  this.name = 'CanceledError';
+  	function Cancel(message) {
+  	  this.message = message;
   	}
 
-  	utils.inherits(CanceledError, AxiosError, {
-  	  __CANCEL__: true
-  	});
-
-  	CanceledError_1 = CanceledError;
-  	return CanceledError_1;
-  }
-
-  var parseProtocol;
-  var hasRequiredParseProtocol;
-
-  function requireParseProtocol () {
-  	if (hasRequiredParseProtocol) return parseProtocol;
-  	hasRequiredParseProtocol = 1;
-
-  	parseProtocol = function parseProtocol(url) {
-  	  var match = /^([-+\w]{1,25})(:?\/\/|:)/.exec(url);
-  	  return match && match[1] || '';
+  	Cancel.prototype.toString = function toString() {
+  	  return 'Cancel' + (this.message ? ': ' + this.message : '');
   	};
-  	return parseProtocol;
+
+  	Cancel.prototype.__CANCEL__ = true;
+
+  	Cancel_1 = Cancel;
+  	return Cancel_1;
   }
 
   var xhr;
@@ -6011,13 +5756,12 @@
   	var settle = requireSettle();
   	var cookies = requireCookies();
   	var buildURL = buildURL$1;
-  	var buildFullPath = buildFullPath$1;
+  	var buildFullPath = requireBuildFullPath();
   	var parseHeaders = requireParseHeaders();
   	var isURLSameOrigin = requireIsURLSameOrigin();
+  	var createError = requireCreateError();
   	var transitionalDefaults = transitional;
-  	var AxiosError = requireAxiosError();
-  	var CanceledError = requireCanceledError();
-  	var parseProtocol = requireParseProtocol();
+  	var Cancel = requireCancel();
 
   	xhr = function xhrAdapter(config) {
   	  return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -6035,7 +5779,7 @@
   	      }
   	    }
 
-  	    if (utils.isFormData(requestData) && utils.isStandardBrowserEnv()) {
+  	    if (utils.isFormData(requestData)) {
   	      delete requestHeaders['Content-Type']; // Let the browser set it
   	    }
 
@@ -6049,7 +5793,6 @@
   	    }
 
   	    var fullPath = buildFullPath(config.baseURL, config.url);
-
   	    request.open(config.method.toUpperCase(), buildURL(fullPath, config.params, config.paramsSerializer), true);
 
   	    // Set the request timeout in MS
@@ -6113,7 +5856,7 @@
   	        return;
   	      }
 
-  	      reject(new AxiosError('Request aborted', AxiosError.ECONNABORTED, config, request));
+  	      reject(createError('Request aborted', config, 'ECONNABORTED', request));
 
   	      // Clean up request
   	      request = null;
@@ -6123,7 +5866,7 @@
   	    request.onerror = function handleError() {
   	      // Real errors are hidden from us by the browser
   	      // onerror should only fire if it's a network error
-  	      reject(new AxiosError('Network Error', AxiosError.ERR_NETWORK, config, request, request));
+  	      reject(createError('Network Error', config, null, request));
 
   	      // Clean up request
   	      request = null;
@@ -6136,10 +5879,10 @@
   	      if (config.timeoutErrorMessage) {
   	        timeoutErrorMessage = config.timeoutErrorMessage;
   	      }
-  	      reject(new AxiosError(
+  	      reject(createError(
   	        timeoutErrorMessage,
-  	        transitional.clarifyTimeoutError ? AxiosError.ETIMEDOUT : AxiosError.ECONNABORTED,
   	        config,
+  	        transitional.clarifyTimeoutError ? 'ETIMEDOUT' : 'ECONNABORTED',
   	        request));
 
   	      // Clean up request
@@ -6200,7 +5943,7 @@
   	        if (!request) {
   	          return;
   	        }
-  	        reject(!cancel || (cancel && cancel.type) ? new CanceledError() : cancel);
+  	        reject(!cancel || (cancel && cancel.type) ? new Cancel('canceled') : cancel);
   	        request.abort();
   	        request = null;
   	      };
@@ -6215,14 +5958,6 @@
   	      requestData = null;
   	    }
 
-  	    var protocol = parseProtocol(fullPath);
-
-  	    if (protocol && [ 'http', 'https', 'file' ].indexOf(protocol) === -1) {
-  	      reject(new AxiosError('Unsupported protocol ' + protocol + ':', AxiosError.ERR_BAD_REQUEST, config));
-  	      return;
-  	    }
-
-
   	    // Send the request
   	    request.send(requestData);
   	  });
@@ -6230,22 +5965,10 @@
   	return xhr;
   }
 
-  var _null;
-  var hasRequired_null;
-
-  function require_null () {
-  	if (hasRequired_null) return _null;
-  	hasRequired_null = 1;
-  	// eslint-disable-next-line strict
-  	_null = null;
-  	return _null;
-  }
-
   var utils$5 = utils$9;
   var normalizeHeaderName = normalizeHeaderName$1;
-  var AxiosError$1 = requireAxiosError();
+  var enhanceError = enhanceError$1;
   var transitionalDefaults = transitional;
-  var toFormData = requireToFormData();
 
   var DEFAULT_CONTENT_TYPE = {
     'Content-Type': 'application/x-www-form-urlencoded'
@@ -6310,20 +6033,10 @@
         setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
         return data.toString();
       }
-
-      var isObjectPayload = utils$5.isObject(data);
-      var contentType = headers && headers['Content-Type'];
-
-      var isFileList;
-
-      if ((isFileList = utils$5.isFileList(data)) || (isObjectPayload && contentType === 'multipart/form-data')) {
-        var _FormData = this.env && this.env.FormData;
-        return toFormData(isFileList ? {'files[]': data} : data, _FormData && new _FormData());
-      } else if (isObjectPayload || contentType === 'application/json') {
+      if (utils$5.isObject(data) || (headers && headers['Content-Type'] === 'application/json')) {
         setContentTypeIfUnset(headers, 'application/json');
         return stringifySafely(data);
       }
-
       return data;
     }],
 
@@ -6339,7 +6052,7 @@
         } catch (e) {
           if (strictJSONParsing) {
             if (e.name === 'SyntaxError') {
-              throw AxiosError$1.from(e, AxiosError$1.ERR_BAD_RESPONSE, this, null, this.response);
+              throw enhanceError(e, this, 'E_JSON_PARSE');
             }
             throw e;
           }
@@ -6360,10 +6073,6 @@
 
     maxContentLength: -1,
     maxBodyLength: -1,
-
-    env: {
-      FormData: require_null()
-    },
 
     validateStatus: function validateStatus(status) {
       return status >= 200 && status < 300;
@@ -6424,10 +6133,10 @@
   var transformData = transformData$1;
   var isCancel = requireIsCancel();
   var defaults$1 = defaults_1;
-  var CanceledError = requireCanceledError();
+  var Cancel = requireCancel();
 
   /**
-   * Throws a `CanceledError` if cancellation has been requested.
+   * Throws a `Cancel` if cancellation has been requested.
    */
   function throwIfCancellationRequested(config) {
     if (config.cancelToken) {
@@ -6435,7 +6144,7 @@
     }
 
     if (config.signal && config.signal.aborted) {
-      throw new CanceledError();
+      throw new Cancel('canceled');
     }
   }
 
@@ -6586,7 +6295,6 @@
       'decompress': defaultToConfig2,
       'maxContentLength': defaultToConfig2,
       'maxBodyLength': defaultToConfig2,
-      'beforeRedirect': defaultToConfig2,
       'transport': defaultToConfig2,
       'httpAgent': defaultToConfig2,
       'httpsAgent': defaultToConfig2,
@@ -6612,13 +6320,12 @@
   	if (hasRequiredData) return data;
   	hasRequiredData = 1;
   	data = {
-  	  "version": "0.27.2"
+  	  "version": "0.26.1"
   	};
   	return data;
   }
 
   var VERSION = requireData().version;
-  var AxiosError = requireAxiosError();
 
   var validators$1 = {};
 
@@ -6646,10 +6353,7 @@
     // eslint-disable-next-line func-names
     return function(value, opt, opts) {
       if (validator === false) {
-        throw new AxiosError(
-          formatMessage(opt, ' has been removed' + (version ? ' in ' + version : '')),
-          AxiosError.ERR_DEPRECATED
-        );
+        throw new Error(formatMessage(opt, ' has been removed' + (version ? ' in ' + version : '')));
       }
 
       if (version && !deprecatedWarnings[opt]) {
@@ -6676,7 +6380,7 @@
 
   function assertOptions(options, schema, allowUnknown) {
     if (typeof options !== 'object') {
-      throw new AxiosError('options must be an object', AxiosError.ERR_BAD_OPTION_VALUE);
+      throw new TypeError('options must be an object');
     }
     var keys = Object.keys(options);
     var i = keys.length;
@@ -6687,12 +6391,12 @@
         var value = options[opt];
         var result = value === undefined || validator(value, opt, options);
         if (result !== true) {
-          throw new AxiosError('option ' + opt + ' must be ' + result, AxiosError.ERR_BAD_OPTION_VALUE);
+          throw new TypeError('option ' + opt + ' must be ' + result);
         }
         continue;
       }
       if (allowUnknown !== true) {
-        throw new AxiosError('Unknown option ' + opt, AxiosError.ERR_BAD_OPTION);
+        throw Error('Unknown option ' + opt);
       }
     }
   }
@@ -6707,7 +6411,6 @@
   var InterceptorManager = InterceptorManager_1;
   var dispatchRequest = dispatchRequest$1;
   var mergeConfig$1 = mergeConfig$2;
-  var buildFullPath = buildFullPath$1;
   var validator = validator$1;
 
   var validators = validator.validators;
@@ -6822,8 +6525,7 @@
 
   Axios$1.prototype.getUri = function getUri(config) {
     config = mergeConfig$1(this.defaults, config);
-    var fullPath = buildFullPath(config.baseURL, config.url);
-    return buildURL(fullPath, config.params, config.paramsSerializer);
+    return buildURL(config.url, config.params, config.paramsSerializer).replace(/^\?/, '');
   };
 
   // Provide aliases for supported request methods
@@ -6840,23 +6542,13 @@
 
   utils$1.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
     /*eslint func-names:0*/
-
-    function generateHTTPMethod(isForm) {
-      return function httpMethod(url, data, config) {
-        return this.request(mergeConfig$1(config || {}, {
-          method: method,
-          headers: isForm ? {
-            'Content-Type': 'multipart/form-data'
-          } : {},
-          url: url,
-          data: data
-        }));
-      };
-    }
-
-    Axios$1.prototype[method] = generateHTTPMethod();
-
-    Axios$1.prototype[method + 'Form'] = generateHTTPMethod(true);
+    Axios$1.prototype[method] = function(url, data, config) {
+      return this.request(mergeConfig$1(config || {}, {
+        method: method,
+        url: url,
+        data: data
+      }));
+    };
   });
 
   var Axios_1 = Axios$1;
@@ -6868,7 +6560,7 @@
   	if (hasRequiredCancelToken) return CancelToken_1;
   	hasRequiredCancelToken = 1;
 
-  	var CanceledError = requireCanceledError();
+  	var Cancel = requireCancel();
 
   	/**
   	 * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -6924,13 +6616,13 @@
   	      return;
   	    }
 
-  	    token.reason = new CanceledError(message);
+  	    token.reason = new Cancel(message);
   	    resolvePromise(token.reason);
   	  });
   	}
 
   	/**
-  	 * Throws a `CanceledError` if cancellation has been requested.
+  	 * Throws a `Cancel` if cancellation has been requested.
   	 */
   	CancelToken.prototype.throwIfRequested = function throwIfRequested() {
   	  if (this.reason) {
@@ -7081,17 +6773,10 @@
   axios$1.Axios = Axios;
 
   // Expose Cancel & CancelToken
-  axios$1.CanceledError = requireCanceledError();
+  axios$1.Cancel = requireCancel();
   axios$1.CancelToken = requireCancelToken();
   axios$1.isCancel = requireIsCancel();
   axios$1.VERSION = requireData().version;
-  axios$1.toFormData = requireToFormData();
-
-  // Expose AxiosError class
-  axios$1.AxiosError = requireAxiosError();
-
-  // alias for CanceledError for backward compatibility
-  axios$1.Cancel = axios$1.CanceledError;
 
   // Expose all/spread
   axios$1.all = function all(promises) {
@@ -10875,7 +10560,7 @@
   }
   /**
    * @param  {Error}  error
-   * @return {boolean}
+   * @return {boolean | Promise}
    */
 
   function isNetworkOrIdempotentRequestError(error) {
@@ -11016,9 +10701,8 @@
 
       if (typeof shouldRetryOrPromise === 'object') {
         try {
-          var shouldRetryPromiseResult = yield shouldRetryOrPromise; // keep return true unless shouldRetryPromiseResult return false for compatibility
-
-          return shouldRetryPromiseResult !== false;
+          yield shouldRetryOrPromise;
+          return true;
         } catch (_err) {
           return false;
         }

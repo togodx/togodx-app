@@ -45,8 +45,6 @@ class ConditionBuilder {
   }
 
   addAttribute(attributeId, parentNode, isFinal = true) {
-    console.log(this.#conditionAnnotations)
-    console.log(this.#conditionFilters)
     // store
     const conditionAnnotation = new ConditionAnnotation(attributeId, parentNode);
     this.#conditionAnnotations.push(conditionAnnotation);
@@ -194,33 +192,11 @@ class ConditionBuilder {
     const annotations = this.#conditionAnnotations.map(annotationCondiiton => annotationCondiiton.getURLParameter());
     const filters = this.#conditionFilters.map(conditionFilter => conditionFilter.getURLParameter());
 
-    const __zzz__annotations = annotations.map(annotation => {
-      const annotation2 = {attribute: annotation.attributeId};
-      if (annotation.id) {
-        annotation2.node = annotation.id.node;
-        if (annotation.id.ancestors) {
-          annotation2.path = [...annotation.id.ancestors];
-        }
-      }
-      return annotation2;
-    });
-    const __zzz__filters = filters.map(filter => {
-      const filter2 = {attribute: filter.attributeId};
-      filter2.nodes = filter.ids.map(id => {
-        const zzzId = {node: id.node};
-        if (id.ancestors) {
-          zzzId.path = [...id.ancestors];
-        }
-        return zzzId;
-      });
-      return filter2;
-    });
-    
     // generate permalink
     const params = new URL(location).searchParams;
     params.set('dataset', this.#togoKey);
-    params.set('annotations', JSON.stringify(__zzz__annotations));
-    params.set('filters', JSON.stringify(__zzz__filters));
+    params.set('annotations', JSON.stringify(annotations));
+    params.set('filters', JSON.stringify(filters));
     if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
   }
 
