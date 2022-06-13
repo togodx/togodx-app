@@ -88,16 +88,16 @@ export default class ConditionBuilderView {
       .map(key => `<option value="${key}">${datasets[key].label}</option>`)
       .join('');
     this.#TOGO_KEYS.disabled = false;
-    this.#TOGO_KEYS.value = ConditionBuilder.currentTogoKey;
+    this.#TOGO_KEYS.value = ConditionBuilder.currentDataset;
     // attach event
     this.#TOGO_KEYS.addEventListener('change', e => {
       ConditionBuilder.setSubject(e.target.value);
       this.#USER_IDS.placeholder = `e.g. ${this.#placeHolderExamples[e.target.value].join(', ')}`;
     });
     // preset
-    const togoKey = ConditionBuilder.currentTogoKey;
-    if (togoKey && Array.from(this.#TOGO_KEYS.options).map(option => option.value).indexOf(togoKey) !== -1) {
-      this.#TOGO_KEYS.value = togoKey;
+    const dataset = ConditionBuilder.currentDataset;
+    if (dataset && Array.from(this.#TOGO_KEYS.options).map(option => option.value).indexOf(dataset) !== -1) {
+      this.#TOGO_KEYS.value = dataset;
     } else {
       this.#TOGO_KEYS.options[0].selected = true;
     }

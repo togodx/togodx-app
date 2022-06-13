@@ -135,7 +135,7 @@ export default class ColumnView {
       const parameter = getApiParameter('locate', {
         attribute,
         node,
-        dataset: ConditionBuilder.currentTogoKey,
+        dataset: ConditionBuilder.currentDataset,
         queries: ConditionBuilder.userIds
       });
       const filters = this.#cachedUserFilters.get(parameter);

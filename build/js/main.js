@@ -3030,7 +3030,7 @@
 
   var _catexxxgoryId = /*#__PURE__*/new WeakMap();
 
-  var _dataset = /*#__PURE__*/new WeakMap();
+  var _dataset$1 = /*#__PURE__*/new WeakMap();
 
   var ConditionBase = /*#__PURE__*/function () {
     // <Attribute>
@@ -3049,7 +3049,7 @@
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _dataset, {
+      _classPrivateFieldInitSpec(this, _dataset$1, {
         writable: true,
         value: void 0
       });
@@ -3060,6 +3060,11 @@
 
     _createClass(ConditionBase, [{
       key: "attributeId",
+      get: function get() {
+        return this._attributeId;
+      }
+    }, {
+      key: "node",
       get: function get() {
         return this._attributeId;
       }
@@ -3081,11 +3086,11 @@
     }, {
       key: "dataset",
       get: function get() {
-        if (!_classPrivateFieldGet(this, _dataset)) {
-          _classPrivateFieldSet(this, _dataset, this.annotation.dataset);
+        if (!_classPrivateFieldGet(this, _dataset$1)) {
+          _classPrivateFieldSet(this, _dataset$1, this.annotation.dataset);
         }
 
-        return _classPrivateFieldGet(this, _dataset);
+        return _classPrivateFieldGet(this, _dataset$1);
       }
     }]);
 
@@ -3298,7 +3303,7 @@
     return ConditionFilter;
   }(ConditionBase);
 
-  var _togoKey$1 = /*#__PURE__*/new WeakMap();
+  var _togoKey = /*#__PURE__*/new WeakMap();
 
   var _conditionAnnotations$1 = /*#__PURE__*/new WeakMap();
 
@@ -3316,7 +3321,7 @@
 
       _classPrivateMethodInitSpec(this, _copyConditionAnnotations);
 
-      _classPrivateFieldInitSpec(this, _togoKey$1, {
+      _classPrivateFieldInitSpec(this, _togoKey, {
         writable: true,
         value: void 0
       });
@@ -3331,7 +3336,7 @@
         value: void 0
       });
 
-      _classPrivateFieldSet(this, _togoKey$1, togoKey);
+      _classPrivateFieldSet(this, _togoKey, togoKey);
 
       _classPrivateFieldSet(this, _conditionAnnotations$1, _classPrivateMethodGet(this, _copyConditionAnnotations, _copyConditionAnnotations2).call(this, _conditionAnnotations2));
 
@@ -3380,7 +3385,7 @@
       key: "togoKey",
       get: // accessor
       function get() {
-        return _classPrivateFieldGet(this, _togoKey$1);
+        return _classPrivateFieldGet(this, _togoKey);
       }
     }, {
       key: "conditionAnnotations",
@@ -3468,7 +3473,7 @@
 
   var _conditionFilters = /*#__PURE__*/new WeakMap();
 
-  var _togoKey = /*#__PURE__*/new WeakMap();
+  var _dataset = /*#__PURE__*/new WeakMap();
 
   var _userIds = /*#__PURE__*/new WeakMap();
 
@@ -3524,7 +3529,7 @@
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _togoKey, {
+      _classPrivateFieldInitSpec(this, _dataset, {
         writable: true,
         value: void 0
       });
@@ -3565,8 +3570,8 @@
       }
     }, {
       key: "setSubject",
-      value: function setSubject(togoKey) {
-        _classPrivateFieldSet(this, _togoKey, togoKey);
+      value: function setSubject(dataset) {
+        _classPrivateFieldSet(this, _dataset, dataset);
 
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
@@ -3580,13 +3585,19 @@
 
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
+      /**
+       * 
+       * @param {ConditionAnnotation} conditionAnnotation 
+       * @param {boolean} isFinal 
+       */
+
     }, {
       key: "addAttribute",
-      value: function addAttribute(attributeId, parentNode) {
-        var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        // store
-        var conditionAnnotation = new ConditionAnnotation(attributeId, parentNode);
+      value: function addAttribute(conditionAnnotation) {
+        var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
+        // store
+        // const conditionAnnotation = new ConditionAnnotation(attributeId, parentNode);
         _classPrivateFieldGet(this, _conditionAnnotations).push(conditionAnnotation); // evaluate
 
 
@@ -3684,9 +3695,15 @@
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
+      /**
+       * 
+       * @param {ConditionAnnotation[]} annotations
+       * @param {boolean} isFinal 
+       */
+
     }, {
       key: "setAttributes",
-      value: function setAttributes(conditions) {
+      value: function setAttributes(annotations) {
         var _this = this;
 
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
@@ -3696,10 +3713,8 @@
           this.removeAttribute(_classPrivateFieldGet(this, _conditionAnnotations)[0].attributeId, _classPrivateFieldGet(this, _conditionAnnotations)[0].parentNode, false);
         }
 
-        conditions.forEach(function (_ref) {
-          var attributeId = _ref.attributeId,
-              parentNode = _ref.parentNode;
-          return _this.addAttribute(attributeId, parentNode, false);
+        annotations.forEach(function (conditionAnnotation) {
+          return _this.addAttribute(conditionAnnotation, false);
         }); // post processing (permalink, evaluate)
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
@@ -3758,7 +3773,7 @@
       value: function makeQueryParameter() {
         // emmit event
         var customEvent = new CustomEvent(completeQueryParameter, {
-          detail: new DXCondition(_classPrivateFieldGet(this, _togoKey), _classPrivateFieldGet(this, _conditionAnnotations), _classPrivateFieldGet(this, _conditionFilters))
+          detail: new DXCondition(_classPrivateFieldGet(this, _dataset), _classPrivateFieldGet(this, _conditionAnnotations), _classPrivateFieldGet(this, _conditionFilters))
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
@@ -3788,9 +3803,9 @@
       } // public accessor
 
     }, {
-      key: "currentTogoKey",
+      key: "currentDataset",
       get: function get() {
-        return _classPrivateFieldGet(this, _togoKey);
+        return _classPrivateFieldGet(this, _dataset);
       }
     }, {
       key: "userIds",
@@ -3807,7 +3822,7 @@
     var dontLeaveInHistory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
     if (!_classPrivateFieldGet(this, _isRestoredConditinoFromURLParameters)) return; // evaluate if search is possible
 
-    var established = _classPrivateFieldGet(this, _togoKey) && _classPrivateFieldGet(this, _conditionFilters).length > 0;
+    var established = _classPrivateFieldGet(this, _dataset) && _classPrivateFieldGet(this, _conditionFilters).length > 0;
     var customEvent = new CustomEvent(mutateEstablishConditions, {
       detail: established
     });
@@ -3823,7 +3838,7 @@
 
 
     var params = new URL(location).searchParams;
-    params.set('dataset', _classPrivateFieldGet(this, _togoKey));
+    params.set('dataset', _classPrivateFieldGet(this, _dataset));
     params.set('annotations', JSON.stringify(annotations));
     params.set('filters', JSON.stringify(filters));
     if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
@@ -3841,7 +3856,7 @@
       filters: (_JSON$parse2 = JSON.parse(params.get('filters'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
     };
     var __zzz__condition = {
-      togoKey: (_condition$dataset = condition.dataset) !== null && _condition$dataset !== void 0 ? _condition$dataset : _classPrivateFieldGet(this, _togoKey),
+      dataset: (_condition$dataset = condition.dataset) !== null && _condition$dataset !== void 0 ? _condition$dataset : _classPrivateFieldGet(this, _dataset),
       annotations: condition.annotations.map(function (annotation) {
         var annotation2 = {
           attributeId: annotation.attribute
@@ -3877,6 +3892,8 @@
         return filter2;
       })
     };
+    console.log(condition.annotations);
+    console.log(__zzz__condition.annotations);
 
     if (isFirst) {
       // get child category ids
@@ -3887,7 +3904,7 @@
   }
 
   function _makeQueueOfGettingChildNodes2(condition) {
-    if (condition.togoKey) _classPrivateFieldSet(this, _togoKey, condition.togoKey);
+    if (condition.dataset) _classPrivateFieldSet(this, _dataset, condition.dataset);
     var queue = [];
 
     var addQueue = function addQueue(attributeId, id) {
@@ -3905,14 +3922,14 @@
       });
     };
 
-    condition.annotations.forEach(function (_ref2) {
-      var attributeId = _ref2.attributeId,
-          id = _ref2.id;
+    condition.annotations.forEach(function (_ref) {
+      var attributeId = _ref.attributeId,
+          id = _ref.id;
       if (id) addQueue(attributeId, id);
     });
-    condition.filters.forEach(function (_ref3) {
-      var attributeId = _ref3.attributeId,
-          ids = _ref3.ids;
+    condition.filters.forEach(function (_ref2) {
+      var attributeId = _ref2.attributeId,
+          ids = _ref2.ids;
       ids.forEach(function (id) {
         if (id.ancestors) addQueue(attributeId, id);
       });
@@ -3947,18 +3964,18 @@
     });
   }
 
-  function _restoreConditions2(_ref4) {
+  function _restoreConditions2(_ref3) {
     var _this4 = this;
 
-    var togoKey = _ref4.togoKey;
-        _ref4.userIds;
-        var annotations = _ref4.annotations,
-        filters = _ref4.filters;
+    var dataset = _ref3.dataset;
+        _ref3.userIds;
+        var annotations = _ref3.annotations,
+        filters = _ref3.filters;
 
     _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true); // restore conditions
 
 
-    _classPrivateFieldSet(this, _togoKey, togoKey); // this.#userIds = userIds;
+    _classPrivateFieldSet(this, _dataset, dataset); // this.#userIds = userIds;
 
 
     var _classPrivateMethodGe = _classPrivateMethodGet(this, _getCondtionsFromHierarchicConditions, _getCondtionsFromHierarchicConditions2).call(this, annotations, filters),
@@ -3967,8 +3984,8 @@
         filters2 = _classPrivateMethodGe2[1];
 
     this.setAttributes(annotations2, false);
-    Records$1.attributes.forEach(function (_ref5) {
-      var id = _ref5.id;
+    Records$1.attributes.forEach(function (_ref4) {
+      var id = _ref4.id;
       var attribute = filters2.find(function (attribute) {
         return attribute.attributeId === id;
       });
@@ -3979,13 +3996,7 @@
     });
     this.finish(false); // dispatch event
 
-    var customEvent = new CustomEvent(restoreParameters, {
-      detail: {
-        togoKey: togoKey,
-        annotations: annotations,
-        filters: filters
-      }
-    });
+    var customEvent = new CustomEvent(restoreParameters);
     DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
 
@@ -4013,17 +4024,14 @@
 
   function _getCondtionsFromHierarchicConditions2(annotations, filters) {
     // restore conditions
-    var annotations2 = annotations.map(function (_ref6) {
-      var attributeId = _ref6.attributeId,
-          id = _ref6.id;
-      return {
-        attributeId: attributeId,
-        parentNode: id === null || id === void 0 ? void 0 : id.node
-      };
+    var annotations2 = annotations.map(function (_ref5) {
+      var attributeId = _ref5.attributeId,
+          id = _ref5.id;
+      return new ConditionAnnotation(attributeId, id === null || id === void 0 ? void 0 : id.node);
     });
-    var filters2 = filters.map(function (_ref7) {
-      var attributeId = _ref7.attributeId,
-          ids = _ref7.ids;
+    var filters2 = filters.map(function (_ref6) {
+      var attributeId = _ref6.attributeId,
+          ids = _ref6.ids;
       return {
         attributeId: attributeId,
         nodes: ids.map(function (id) {
@@ -4435,7 +4443,7 @@
       return "<option value=\"".concat(key, "\">").concat(datasets[key].label, "</option>");
     }).join('');
     _classPrivateFieldGet(this, _TOGO_KEYS).disabled = false;
-    _classPrivateFieldGet(this, _TOGO_KEYS).value = ConditionBuilder$1.currentTogoKey; // attach event
+    _classPrivateFieldGet(this, _TOGO_KEYS).value = ConditionBuilder$1.currentDataset; // attach event
 
     _classPrivateFieldGet(this, _TOGO_KEYS).addEventListener('change', function (e) {
       ConditionBuilder$1.setSubject(e.target.value);
@@ -4443,12 +4451,12 @@
     }); // preset
 
 
-    var togoKey = ConditionBuilder$1.currentTogoKey;
+    var dataset = ConditionBuilder$1.currentDataset;
 
-    if (togoKey && Array.from(_classPrivateFieldGet(this, _TOGO_KEYS).options).map(function (option) {
+    if (dataset && Array.from(_classPrivateFieldGet(this, _TOGO_KEYS).options).map(function (option) {
       return option.value;
-    }).indexOf(togoKey) !== -1) {
-      _classPrivateFieldGet(this, _TOGO_KEYS).value = togoKey;
+    }).indexOf(dataset) !== -1) {
+      _classPrivateFieldGet(this, _TOGO_KEYS).value = dataset;
     } else {
       _classPrivateFieldGet(this, _TOGO_KEYS).options[0].selected = true;
     }
@@ -4611,8 +4619,10 @@
       if (selectedNodes.filters.indexOf(node) !== -1) _classPrivateFieldGet(this, _INPUT_VALUE).checked = true; // even listener
 
       _classPrivateFieldGet(this, _INPUT_KEY).addEventListener('change', function (e) {
+        var conditionAnnotation = new ConditionAnnotation(column.attributeId, node);
+
         if (e.target.checked) {
-          ConditionBuilder$1.addAttribute(column.attributeId, node);
+          ConditionBuilder$1.addAttribute(conditionAnnotation);
         } else {
           ConditionBuilder$1.removeAttribute(column.attributeId, node);
         }
@@ -7106,7 +7116,7 @@
       var parameter = getApiParameter('locate', {
         attribute: attribute,
         node: node,
-        dataset: ConditionBuilder$1.currentTogoKey,
+        dataset: ConditionBuilder$1.currentDataset,
         queries: ConditionBuilder$1.userIds
       });
 
@@ -8282,7 +8292,7 @@
 
       if (_classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked) {
         // add
-        ConditionBuilder$1.addAttribute(attributeId);
+        ConditionBuilder$1.addAttribute(new ConditionAnnotation(attributeId));
 
         _classPrivateFieldGet(_this, _ROOT$8).classList.add('-allselected');
       } else {
@@ -10117,10 +10127,7 @@
     e.stopPropagation(); // property (attribute)
 
     ConditionBuilder$1.setAttributes(_classPrivateFieldGet(this, _dxCondition).conditionAnnotations.map(function (conditionAnnotation) {
-      return {
-        attributeId: conditionAnnotation.attributeId,
-        parentNode: conditionAnnotation.parentNode
-      };
+      return conditionAnnotation;
     }), false); // attribute (classification/distribution)
 
     Records$1.attributes.forEach(function (_ref2) {
@@ -10920,14 +10927,10 @@
     }); // this.#USER_IDS.addEventListener('keyup', e => {
     //   if (e.keyCode === 13) this.#fetch();
     // });
-    // DefaultEventEmitter.addEventListener(event.restoreParameters, this.#restoreParameters.bind(this));
 
 
     DefaultEventEmitter$1.addEventListener(clearCondition, _classPrivateMethodGet(this, _clear, _clear2).bind(this));
   } // private methods
-  // #restoreParameters({detail}) {
-  //   this.#USER_IDS.value = detail.userIds;
-  // }
   );
 
   function _fetch2() {
@@ -10963,7 +10966,7 @@
     axios.post(App$1.getApiUrl('locate'), getApiParameter('locate', {
       attribute: id,
       node: '',
-      dataset: ConditionBuilder$1.currentTogoKey,
+      dataset: ConditionBuilder$1.currentDataset,
       queries: ConditionBuilder$1.userIds
     }), {
       cancelToken: _classPrivateFieldGet(this, _source).token

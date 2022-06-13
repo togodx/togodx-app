@@ -2,9 +2,10 @@ import App from './App';
 import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
-import * as event from '../events';
 import {getApiParameter} from '../functions/queryTemplates';
 import ProgressIndicator from './ProgressIndicator';
+import ConditionAnnotation from './ConditionAnnotation';
+import * as event from '../events';
 import axios from 'axios';
 
 const LIMIT = 100;
@@ -268,10 +269,7 @@ export default class TableData {
     // property (attribute)
     ConditionBuilder.setAttributes(
       this.#dxCondition.conditionAnnotations.map(conditionAnnotation => {
-        return {
-          attributeId: conditionAnnotation.attributeId,
-          parentNode: conditionAnnotation.parentNode,
-        }
+        return conditionAnnotation;
       }),
       false
     );

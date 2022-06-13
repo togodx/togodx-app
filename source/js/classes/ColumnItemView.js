@@ -1,5 +1,6 @@
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import ConditionBuilder from "./ConditionBuilder";
+import ConditionAnnotation from './ConditionAnnotation';
 import App from "./App";
 import * as event from '../events';
 
@@ -49,8 +50,9 @@ export default class ColumnItemView {
 
     // even listener
     this.#INPUT_KEY.addEventListener('change', e => {
+      const conditionAnnotation = new ConditionAnnotation(column.attributeId, node);
       if (e.target.checked) {
-        ConditionBuilder.addAttribute(column.attributeId, node);
+        ConditionBuilder.addAttribute(conditionAnnotation);
       } else {
         ConditionBuilder.removeAttribute(column.attributeId, node);
       }

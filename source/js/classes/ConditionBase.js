@@ -17,6 +17,9 @@ export default class ConditionBase {
   get attributeId() {
     return this._attributeId;
   }
+  get node() {
+    return this._attributeId;
+  }
 
   get annotation() {
     if (!this.#annotation) this.#annotation = Records.getAttribute(this._attributeId);

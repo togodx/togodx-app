@@ -9,7 +9,7 @@ class ConditionBuilder {
 
   #conditionAnnotations; // Array<ConditionAnnotation>
   #conditionFilters; // Array<ConditionFilter>
-  #togoKey;
+  #dataset;
   #userIds;
   #isRestoredConditinoFromURLParameters = false;
   #preparingCounter;
@@ -33,8 +33,8 @@ class ConditionBuilder {
     this.#createSearchConditionFromURLParameters(true);
   }
 
-  setSubject(togoKey) {
-    this.#togoKey = togoKey;
+  setSubject(dataset) {
+    this.#dataset = dataset;
     this.#postProcessing();
   }
 
@@ -44,9 +44,14 @@ class ConditionBuilder {
     this.#postProcessing();
   }
 
-  addAttribute(attributeId, parentNode, isFinal = true) {
+  /**
+   * 
+   * @param {ConditionAnnotation} conditionAnnotation 
+   * @param {boolean} isFinal 
+   */
+  addAttribute(conditionAnnotation, isFinal = true) {
     // store
-    const conditionAnnotation = new ConditionAnnotation(attributeId, parentNode);
+    // const conditionAnnotation = new ConditionAnnotation(attributeId, parentNode);
     this.#conditionAnnotations.push(conditionAnnotation);
     // evaluate
     if (isFinal) this.#postProcessing();
@@ -102,13 +107,18 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  setAttributes(conditions, isFinal = true) {
+  /**
+   * 
+   * @param {ConditionAnnotation[]} annotations
+   * @param {boolean} isFinal 
+   */
+  setAttributes(annotations, isFinal = true) {
     // delete existing properties
     while (this.#conditionAnnotations.length > 0) {
       this.removeAttribute(this.#conditionAnnotations[0].attributeId, this.#conditionAnnotations[0].parentNode, false);
     };
     // set new properties
-    conditions.forEach(({attributeId, parentNode}) => this.addAttribute(attributeId, parentNode, false));
+    annotations.forEach(conditionAnnotation => this.addAttribute(conditionAnnotation, false));
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
   }
@@ -144,7 +154,7 @@ class ConditionBuilder {
   makeQueryParameter() {
     // emmit event
     const customEvent = new CustomEvent(event.completeQueryParameter, {detail: new DXCondition(
-      this.#togoKey,
+      this.#dataset,
       this.#conditionAnnotations,
       this.#conditionFilters
     )});
@@ -166,8 +176,8 @@ class ConditionBuilder {
 
   // public accessor
 
-  get currentTogoKey() {
-    return this.#togoKey;
+  get currentDataset() {
+    return this.#dataset;
   }
 
   get userIds() {
@@ -183,7 +193,7 @@ class ConditionBuilder {
 
     // evaluate if search is possible
     const established 
-      = this.#togoKey
+      = this.#dataset
       && (this.#conditionFilters.length > 0);
     const customEvent = new CustomEvent(event.mutateEstablishConditions, {detail: established});
     DefaultEventEmitter.dispatchEvent(customEvent);
@@ -194,7 +204,7 @@ class ConditionBuilder {
 
     // generate permalink
     const params = new URL(location).searchParams;
-    params.set('dataset', this.#togoKey);
+    params.set('dataset', this.#dataset);
     params.set('annotations', JSON.stringify(annotations));
     params.set('filters', JSON.stringify(filters));
     if (dontLeaveInHistory) window.history.pushState(null, '', `${window.location.origin}${window.location.pathname}?${params.toString()}`)
@@ -211,7 +221,7 @@ class ConditionBuilder {
     }
 
     const __zzz__condition = {
-      togoKey: condition.dataset ?? this.#togoKey,
+      dataset: condition.dataset ?? this.#dataset,
       annotations: condition.annotations.map(annotation => {
         const annotation2 = {attributeId: annotation.attribute};
         if (annotation.node) {
@@ -236,6 +246,8 @@ class ConditionBuilder {
         return filter2;
       })
     }
+    console.log(condition.annotations)
+    console.log(__zzz__condition.annotations)
     
     if (isFirst) {
       // get child category ids
@@ -247,7 +259,7 @@ class ConditionBuilder {
   }
 
   #makeQueueOfGettingChildNodes(condition) {
-    if (condition.togoKey) this.#togoKey = condition.togoKey;
+    if (condition.dataset) this.#dataset = condition.dataset;
     const queue = [];
     const addQueue = (attributeId, id) => {
       const ancestors = [id.node];
@@ -291,12 +303,12 @@ class ConditionBuilder {
     });
   }
 
-  #restoreConditions({togoKey, userIds, annotations, filters}) {
+  #restoreConditions({dataset, userIds, annotations, filters}) {
     
     this.#isRestoredConditinoFromURLParameters = true;
 
     // restore conditions
-    this.#togoKey = togoKey;
+    this.#dataset = dataset;
     // this.#userIds = userIds;
     const [annotations2, filters2] = this.#getCondtionsFromHierarchicConditions(annotations, filters);
     this.setAttributes(annotations2, false);
@@ -309,7 +321,7 @@ class ConditionBuilder {
     this.finish(false);
 
     // dispatch event
-    const customEvent = new CustomEvent(event.restoreParameters, {detail: {togoKey, annotations, filters}});
+    const customEvent = new CustomEvent(event.restoreParameters);
     DefaultEventEmitter.dispatchEvent(customEvent);
 
   }
@@ -331,10 +343,7 @@ class ConditionBuilder {
   #getCondtionsFromHierarchicConditions(annotations, filters) {
     // restore conditions
     const annotations2 = annotations.map(({attributeId, id}) => {
-      return {
-        attributeId,
-        parentNode: id?.node
-      }
+      return new ConditionAnnotation(attributeId, id?.node);
     });
     const filters2 = filters.map(({attributeId, ids}) => {
       return {

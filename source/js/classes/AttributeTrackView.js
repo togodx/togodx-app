@@ -5,6 +5,7 @@ import collapseView from '../functions/collapseView';
 import ColumnSelectorView from './ColumnSelectorView';
 import HistogramRangeSelectorView from './HistogramRangeSelectorView';
 import TrackOverviewCategorical from './TrackOverviewCategorical';
+import ConditionAnnotation from './ConditionAnnotation';
 import * as event from '../events';
 
 export default class AttributeTrackView {
@@ -86,7 +87,7 @@ export default class AttributeTrackView {
       e.stopPropagation();
       if (this.#CHECKBOX_ALL_PROPERTIES.checked) {
         // add
-        ConditionBuilder.addAttribute(attributeId);
+        ConditionBuilder.addAttribute(new ConditionAnnotation(attributeId));
         this.#ROOT.classList.add('-allselected');
       } else {
         // remove

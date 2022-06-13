@@ -78,7 +78,6 @@ export default class UploadUserIDsView {
     // this.#USER_IDS.addEventListener('keyup', e => {
     //   if (e.keyCode === 13) this.#fetch();
     // });
-    // DefaultEventEmitter.addEventListener(event.restoreParameters, this.#restoreParameters.bind(this));
     DefaultEventEmitter.addEventListener(
       event.clearCondition,
       this.#clear.bind(this)
@@ -87,10 +86,6 @@ export default class UploadUserIDsView {
 
 
   // private methods
-
-  // #restoreParameters({detail}) {
-  //   this.#USER_IDS.value = detail.userIds;
-  // }
 
   #fetch() {
     if (this.#USER_IDS.value === '') return;
@@ -121,7 +116,7 @@ export default class UploadUserIDsView {
         getApiParameter('locate', {
           attribute: id,
           node: '',
-          dataset: ConditionBuilder.currentTogoKey,
+          dataset: ConditionBuilder.currentDataset,
           queries: ConditionBuilder.userIds
         }),
         {
