@@ -64,7 +64,7 @@ export default class TrackOverviewCategorical {
           // does not have user filter
           values.push({
             key: 'Count',
-            filter: `${filter.userFilterCount.toLocaleString()} / ${filter.count.toLocaleString()}`
+            value: `${filter.userFilterCount.toLocaleString()} / ${filter.count.toLocaleString()}`
           });
           if (userFilter?.pvalue) {
             values.push({
@@ -76,7 +76,7 @@ export default class TrackOverviewCategorical {
           // has user filter
           values.push({
             key: 'Count',
-            filter: filter.count.toLocaleString()
+            value: filter.count.toLocaleString()
           });
         }
         const customEvent = new CustomEvent(event.enterAttributeFilterItemView, {detail: {label, values, elm}});
