@@ -7,6 +7,12 @@ export default class DXCondition {
   #conditionAnnotations;
   #conditionFilters;
 
+  /**
+   * 
+   * @param {string} togoKey 
+   * @param {ConditionAnnotation[]} conditionAnnotations 
+   * @param {ConditionFilter[]} conditionFilters 
+   */
   constructor(togoKey, conditionAnnotations, conditionFilters) {
     this.#togoKey = togoKey;
     this.#conditionAnnotations = this.#copyConditionAnnotations(conditionAnnotations);

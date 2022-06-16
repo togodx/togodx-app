@@ -214,36 +214,17 @@ class ConditionBuilder {
     // get conditions with ancestors
     const params = new URL(location).searchParams;
     const condition = {
-      dataset: params.get('dataset'),
-      annotations: JSON.parse(params.get('annotations')) ?? [],
-      filters: JSON.parse(params.get('filters')) ?? [],
-    }
-
-    const __zzz__condition = {
-      dataset: condition.dataset ?? this.#dataset,
-      annotations: condition.annotations.map(({attributeId, parentNode, ancestors}) => {
-        const ca = new ConditionAnnotation(attributeId, parentNode);
-        ca.setAncestors(parentNode, ancestors);
-        return ca;
-      }),
-      filters: condition.filters.map(({attributeId, nodes}) => {
-        const cf = new ConditionFilter(attributeId, nodes.map(node => node.node));
-        nodes.forEach(({node, ancestors}) => {
-          if (ancestors) {
-            cf.setAncestors(node, ancestors);
-          }
-        });
-        return cf;
-      })
+      dataset: params.get('dataset') ?? this.#dataset,
+      annotations: ConditionAnnotation.decodeURLSearchParams(params.get('annotations')),
+      filters: ConditionFilter.decodeURLSearchParams(params.get('filters'))
     }
     
     if (isFirst) {
       // get child category ids
-      this.#makeQueueOfGettingChildNodes(__zzz__condition);
+      this.#makeQueueOfGettingChildNodes(condition);
     } else {
-      this.#restoreConditions(__zzz__condition);
+      this.#restoreConditions(condition);
     }
-
   }
 
   #makeQueueOfGettingChildNodes(condition) {
@@ -258,32 +239,16 @@ class ConditionBuilder {
         }
       });
     };
-    // const addQueue = (attributeId, id) => {
-    //   const ancestors = [id.node];
-    //   if (id.ancestors) ancestors.push(...id.ancestors);
-    //   ancestors.forEach(node => {
-    //     if (queue.findIndex(task => task.attributeId === attributeId && task.node === node) === -1) {
-    //       queue.push({attributeId, node});
-    //     }
-    //   });
-    // };
+
     condition.annotations.forEach(annotation => {
       if (annotation.parentNode) addQueue(annotation.attributeId, annotation.parentNode, annotation.ancestors);
     });
-    // condition.annotations.forEach(({attributeId, id}) => {
-    //   if (id) addQueue(attributeId, id);
-    // });
     condition.filters.forEach(filter => {
       filter.nodes.forEach(node => {
         const ancestors = filter.getAncestors(node);
         if (ancestors.length > 0) addQueue(filter.attributeId, node, ancestors);
       });
     });
-    // condition.filters.forEach(({attributeId, ids}) => {
-    //   ids.forEach(id => {
-    //     if (id.ancestors) addQueue(attributeId, id);
-    //   });
-    // });
 
     this.#progressQueueOfGettingChildNodes(condition, queue);
   }
@@ -317,10 +282,9 @@ class ConditionBuilder {
     // restore conditions
     this.#dataset = dataset;
     // this.#userIds = userIds;
-    const [annotations2, filters2] = this.#getCondtionsFromHierarchicConditions(annotations, filters);
-    this.setAttributes(annotations2, false);
+    this.setAttributes(annotations, false);
     Records.attributes.forEach(({id}) => {
-      const attribute = filters2.find(attribute => attribute.attributeId === id);
+      const attribute = filters.find(attribute => attribute.attributeId === id);
       const nodes = [];
       if (attribute) nodes.push(...attribute.nodes);
       this.setAttributeFilters(id, nodes, false);
@@ -345,22 +309,6 @@ class ConditionBuilder {
       }
     };
     this.#postProcessing();
-  }
-
-  #getCondtionsFromHierarchicConditions(annotations, filters) {
-    // restore conditions
-    const annotations2 = annotations;
-    // const annotations2 = annotations.map(({attributeId, id}) => {
-    //   return new ConditionAnnotation(attributeId, id?.node);
-    // });
-    const filters2 = filters;
-    // const filters2 = filters.map(({attributeId, ids}) => {
-    //   return {
-    //     attributeId,
-    //     nodes: ids.map(id => id.node)
-    //   }
-    // });
-    return [annotations2, filters2];
   }
 
 }

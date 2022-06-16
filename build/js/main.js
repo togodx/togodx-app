@@ -3225,6 +3225,26 @@
         };
         if (_classPrivateFieldGet(this, _parentNode$1)) query.node = _classPrivateFieldGet(this, _parentNode$1);
         return query;
+      } // static
+
+    }], [{
+      key: "decodeURLSearchParams",
+      value: function decodeURLSearchParams(searchParams) {
+        var annotations = [];
+        var parsed = JSON.parse(searchParams);
+
+        if (parsed) {
+          annotations.push.apply(annotations, _toConsumableArray(parsed.map(function (_ref) {
+            var attributeId = _ref.attributeId,
+                parentNode = _ref.parentNode,
+                ancestors = _ref.ancestors;
+            var annotation = new ConditionAnnotation(attributeId, parentNode);
+            annotation.setAncestors(parentNode, ancestors);
+            return annotation;
+          })));
+        }
+
+        return annotations;
       }
     }]);
 
@@ -3309,6 +3329,34 @@
           attribute: this._attributeId,
           nodes: this.nodes
         };
+      } // static
+
+    }], [{
+      key: "decodeURLSearchParams",
+      value: function decodeURLSearchParams(searchParams) {
+        var filters = [];
+        var parsed = JSON.parse(searchParams);
+
+        if (parsed) {
+          filters.push.apply(filters, _toConsumableArray(parsed.map(function (_ref) {
+            var attributeId = _ref.attributeId,
+                nodes = _ref.nodes;
+            var cf = new ConditionFilter(attributeId, nodes.map(function (node) {
+              return node.node;
+            }));
+            nodes.forEach(function (_ref2) {
+              var node = _ref2.node,
+                  ancestors = _ref2.ancestors;
+
+              if (ancestors) {
+                cf.setAncestors(node, ancestors);
+              }
+            });
+            return cf;
+          })));
+        }
+
+        return filters;
       }
     }]);
 
@@ -3326,6 +3374,12 @@
   var _copyConditionFilters = /*#__PURE__*/new WeakSet();
 
   var DXCondition = /*#__PURE__*/function () {
+    /**
+     * 
+     * @param {string} togoKey 
+     * @param {ConditionAnnotation[]} conditionAnnotations 
+     * @param {ConditionFilter[]} conditionFilters 
+     */
     function DXCondition(togoKey, _conditionAnnotations2, _conditionFilters2) {
       _classCallCheck(this, DXCondition);
 
@@ -3507,15 +3561,11 @@
 
   var _clearConditinos = /*#__PURE__*/new WeakSet();
 
-  var _getCondtionsFromHierarchicConditions = /*#__PURE__*/new WeakSet();
-
   var ConditionBuilder = /*#__PURE__*/function () {
     // Array<ConditionAnnotation>
     // Array<ConditionFilter>
     function ConditionBuilder() {
       _classCallCheck(this, ConditionBuilder);
-
-      _classPrivateMethodInitSpec(this, _getCondtionsFromHierarchicConditions);
 
       _classPrivateMethodInitSpec(this, _clearConditinos);
 
@@ -3856,49 +3906,22 @@
   }
 
   function _createSearchConditionFromURLParameters2() {
-    var _JSON$parse, _JSON$parse2, _condition$dataset;
+    var _params$get;
 
     var isFirst = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     // get conditions with ancestors
     var params = new URL(location).searchParams;
     var condition = {
-      dataset: params.get('dataset'),
-      annotations: (_JSON$parse = JSON.parse(params.get('annotations'))) !== null && _JSON$parse !== void 0 ? _JSON$parse : [],
-      filters: (_JSON$parse2 = JSON.parse(params.get('filters'))) !== null && _JSON$parse2 !== void 0 ? _JSON$parse2 : []
-    };
-    var __zzz__condition = {
-      dataset: (_condition$dataset = condition.dataset) !== null && _condition$dataset !== void 0 ? _condition$dataset : _classPrivateFieldGet(this, _dataset),
-      annotations: condition.annotations.map(function (_ref) {
-        var attributeId = _ref.attributeId,
-            parentNode = _ref.parentNode,
-            ancestors = _ref.ancestors;
-        var ca = new ConditionAnnotation(attributeId, parentNode);
-        ca.setAncestors(parentNode, ancestors);
-        return ca;
-      }),
-      filters: condition.filters.map(function (_ref2) {
-        var attributeId = _ref2.attributeId,
-            nodes = _ref2.nodes;
-        var cf = new ConditionFilter(attributeId, nodes.map(function (node) {
-          return node.node;
-        }));
-        nodes.forEach(function (_ref3) {
-          var node = _ref3.node,
-              ancestors = _ref3.ancestors;
-
-          if (ancestors) {
-            cf.setAncestors(node, ancestors);
-          }
-        });
-        return cf;
-      })
+      dataset: (_params$get = params.get('dataset')) !== null && _params$get !== void 0 ? _params$get : _classPrivateFieldGet(this, _dataset),
+      annotations: ConditionAnnotation.decodeURLSearchParams(params.get('annotations')),
+      filters: ConditionFilter.decodeURLSearchParams(params.get('filters'))
     };
 
     if (isFirst) {
       // get child category ids
-      _classPrivateMethodGet(this, _makeQueueOfGettingChildNodes, _makeQueueOfGettingChildNodes2).call(this, __zzz__condition);
+      _classPrivateMethodGet(this, _makeQueueOfGettingChildNodes, _makeQueueOfGettingChildNodes2).call(this, condition);
     } else {
-      _classPrivateMethodGet(this, _restoreConditions, _restoreConditions2).call(this, __zzz__condition);
+      _classPrivateMethodGet(this, _restoreConditions, _restoreConditions2).call(this, condition);
     }
   }
 
@@ -3919,33 +3942,17 @@
           });
         }
       });
-    }; // const addQueue = (attributeId, id) => {
-    //   const ancestors = [id.node];
-    //   if (id.ancestors) ancestors.push(...id.ancestors);
-    //   ancestors.forEach(node => {
-    //     if (queue.findIndex(task => task.attributeId === attributeId && task.node === node) === -1) {
-    //       queue.push({attributeId, node});
-    //     }
-    //   });
-    // };
-
+    };
 
     condition.annotations.forEach(function (annotation) {
       if (annotation.parentNode) addQueue(annotation.attributeId, annotation.parentNode, annotation.ancestors);
-    }); // condition.annotations.forEach(({attributeId, id}) => {
-    //   if (id) addQueue(attributeId, id);
-    // });
-
+    });
     condition.filters.forEach(function (filter) {
       filter.nodes.forEach(function (node) {
         var ancestors = filter.getAncestors(node);
         if (ancestors.length > 0) addQueue(filter.attributeId, node, ancestors);
       });
-    }); // condition.filters.forEach(({attributeId, ids}) => {
-    //   ids.forEach(id => {
-    //     if (id.ancestors) addQueue(attributeId, id);
-    //   });
-    // });
+    });
 
     _classPrivateMethodGet(this, _progressQueueOfGettingChildNodes, _progressQueueOfGettingChildNodes2).call(this, condition, queue);
   }
@@ -3976,13 +3983,13 @@
     });
   }
 
-  function _restoreConditions2(_ref4) {
+  function _restoreConditions2(_ref) {
     var _this4 = this;
 
-    var dataset = _ref4.dataset;
-        _ref4.userIds;
-        var annotations = _ref4.annotations,
-        filters = _ref4.filters;
+    var dataset = _ref.dataset;
+        _ref.userIds;
+        var annotations = _ref.annotations,
+        filters = _ref.filters;
 
     _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true); // restore conditions
 
@@ -3990,15 +3997,10 @@
     _classPrivateFieldSet(this, _dataset, dataset); // this.#userIds = userIds;
 
 
-    var _classPrivateMethodGe = _classPrivateMethodGet(this, _getCondtionsFromHierarchicConditions, _getCondtionsFromHierarchicConditions2).call(this, annotations, filters),
-        _classPrivateMethodGe2 = _slicedToArray(_classPrivateMethodGe, 2),
-        annotations2 = _classPrivateMethodGe2[0],
-        filters2 = _classPrivateMethodGe2[1];
-
-    this.setAttributes(annotations2, false);
-    Records$1.attributes.forEach(function (_ref5) {
-      var id = _ref5.id;
-      var attribute = filters2.find(function (attribute) {
+    this.setAttributes(annotations, false);
+    Records$1.attributes.forEach(function (_ref2) {
+      var id = _ref2.id;
+      var attribute = filters.find(function (attribute) {
         return attribute.attributeId === id;
       });
       var nodes = [];
@@ -4032,22 +4034,6 @@
     }
 
     _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
-  }
-
-  function _getCondtionsFromHierarchicConditions2(annotations, filters) {
-    // restore conditions
-    var annotations2 = annotations; // const annotations2 = annotations.map(({attributeId, id}) => {
-    //   return new ConditionAnnotation(attributeId, id?.node);
-    // });
-
-    var filters2 = filters; // const filters2 = filters.map(({attributeId, ids}) => {
-    //   return {
-    //     attributeId,
-    //     nodes: ids.map(id => id.node)
-    //   }
-    // });
-
-    return [annotations2, filters2];
   }
 
   var ConditionBuilder$1 = new ConditionBuilder();

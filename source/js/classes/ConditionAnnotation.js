@@ -79,4 +79,22 @@ export default class ConditionAnnotation extends ConditionBase {
     return query;
   }
 
+
+  // static
+  
+  static decodeURLSearchParams(searchParams) {
+    const annotations = [];
+    const parsed = JSON.parse(searchParams);
+    if (parsed) {
+      annotations.push(
+        ...parsed.map(({attributeId, parentNode, ancestors}) => {
+          const annotation = new ConditionAnnotation(attributeId, parentNode);
+          annotation.setAncestors(parentNode, ancestors);
+          return annotation;
+        })
+      )
+    }
+    return annotations;
+  }
+
 }

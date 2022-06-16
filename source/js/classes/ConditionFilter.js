@@ -54,4 +54,26 @@ export default class ConditionFilter extends ConditionBase {
     }
   }
 
+
+  // static
+
+  static decodeURLSearchParams(searchParams) {
+    const filters = [];
+    const parsed = JSON.parse(searchParams);
+    if (parsed) {
+      filters.push(
+        ...parsed.map(({attributeId, nodes}) => {
+          const cf = new ConditionFilter(attributeId, nodes.map(node => node.node));
+          nodes.forEach(({node, ancestors}) => {
+            if (ancestors) {
+              cf.setAncestors(node, ancestors);
+            }
+          });
+          return cf;
+        })
+      )
+    }
+    return filters;
+  }
+
 }
