@@ -49,7 +49,7 @@ class ConditionBuilder {
    * @param {ConditionAnnotation} conditionAnnotation 
    * @param {boolean} isFinal 
    */
-  addAttribute(conditionAnnotation, isFinal = true) {
+  addAnnotation(conditionAnnotation, isFinal = true) {
     // store
     this.#conditionAnnotations.push(conditionAnnotation);
     // evaluate
@@ -59,7 +59,7 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  addAttributeFilter(attributeId, node, ancestors = [], isFinal = true) {
+  addFilter(attributeId, node, ancestors = [], isFinal = true) {
     // find filter of same property
     const sameConditionFilter = this.#conditionFilters.find(conditionFilter => conditionFilter.attributeId === attributeId);
     // store
@@ -76,7 +76,7 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  removeAttribute(attributeId, parentNode, isFinal = true) {
+  removeAnnotation(attributeId, parentNode, isFinal = true) {
     // remove from store
     const index = this.#conditionAnnotations.findIndex(conditionAnnotation => conditionAnnotation.isSameCondition(attributeId, parentNode));
     if (index === -1) return;
@@ -88,7 +88,7 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  removeAttributeFilter(attributeId, node, isFinal = true) {
+  removeFilter(attributeId, node, isFinal = true) {
     // remove from store
     const index = this.#conditionFilters.findIndex(conditionFilter => {
       if (conditionFilter.attributeId === attributeId) {
@@ -111,18 +111,18 @@ class ConditionBuilder {
    * @param {ConditionAnnotation[]} annotations
    * @param {boolean} isFinal 
    */
-  setAttributes(annotations, isFinal = true) {
+  setAnnotation(annotations, isFinal = true) {
     // delete existing properties
     while (this.#conditionAnnotations.length > 0) {
-      this.removeAttribute(this.#conditionAnnotations[0].attributeId, this.#conditionAnnotations[0].parentNode, false);
+      this.removeAnnotation(this.#conditionAnnotations[0].attributeId, this.#conditionAnnotations[0].parentNode, false);
     };
     // set new properties
-    annotations.forEach(conditionAnnotation => this.addAttribute(conditionAnnotation, false));
+    annotations.forEach(conditionAnnotation => this.addAnnotation(conditionAnnotation, false));
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
   }
 
-  setAttributeFilters(attributeId, nodes, isFinal = true) {
+  setFilter(attributeId, nodes, isFinal = true) {
     const oldConditionFilter = this.#conditionFilters.find(conditionFilter => conditionFilter.attributeId === attributeId);
     if (oldConditionFilter) {
       const originalFilters = Records.getAttribute(attributeId).filters;
@@ -131,15 +131,15 @@ class ConditionBuilder {
         const indexInOld = oldConditionFilter.nodes.indexOf(originalFilter.node);
         if (indexInNew !== -1) {
           // if new filter does not exist in old filters, add property filter
-          if (indexInOld === -1) this.addAttributeFilter(attributeId, originalFilter.node, [], false);
+          if (indexInOld === -1) this.addFilter(attributeId, originalFilter.node, [], false);
         } else {
           // if extra filter exists in old filters, remove property filter
-          if (indexInOld !== -1) this.removeAttributeFilter(attributeId, originalFilter.node, false);
+          if (indexInOld !== -1) this.removeFilter(attributeId, originalFilter.node, false);
         }
       });
     } else {
       for (const node of nodes) {
-        this.addAttributeFilter(attributeId, node, [], false);
+        this.addFilter(attributeId, node, [], false);
       }
     }
     // post processing (permalink, evaluate)
@@ -282,12 +282,12 @@ class ConditionBuilder {
     // restore conditions
     this.#dataset = dataset;
     // this.#userIds = userIds;
-    this.setAttributes(annotations, false);
+    this.setAnnotation(annotations, false);
     Records.attributes.forEach(({id}) => {
       const attribute = filters.find(attribute => attribute.attributeId === id);
       const nodes = [];
       if (attribute) nodes.push(...attribute.nodes);
-      this.setAttributeFilters(id, nodes, false);
+      this.setFilter(id, nodes, false);
     });
     this.finish(false);
 
@@ -300,12 +300,12 @@ class ConditionBuilder {
   #clearConditinos() {
     while (this.#conditionAnnotations.length > 0) {
       const {attributeId, parentNode} = this.#conditionAnnotations[0];
-      this.removeAttribute(attributeId, parentNode, false);
+      this.removeAnnotation(attributeId, parentNode, false);
     };
     while (this.#conditionFilters.length > 0) {
       const {attributeId, nodes} = this.#conditionFilters[0];
       while (nodes.length > 0) {
-        this.removeAttributeFilter(attributeId, nodes[0], false);
+        this.removeFilter(attributeId, nodes[0], false);
       }
     };
     this.#postProcessing();

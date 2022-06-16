@@ -52,20 +52,20 @@ export default class ConditionBuilderView {
     DefaultEventEmitter.addEventListener(event.mutateAttributeCondition, ({detail: {action, conditionAnnotation}}) => {
       switch (action) {
         case 'add':
-          this.#addAttribute(conditionAnnotation);
+          this.#addAnnotation(conditionAnnotation);
           break;
         case 'remove':
-          this.#removeAttribute(conditionAnnotation);
+          this.#removeAnnotation(conditionAnnotation);
           break;
       }
     });
     DefaultEventEmitter.addEventListener(event.mutateAttributeFilterCondition, ({detail: {action, attributeId, node}}) => {
       switch (action) {
         case 'add':
-          this.#addAttributeFilter(attributeId, node);
+          this.#addFilter(attributeId, node);
           break;
         case 'remove':
-          this.#removeAttributeFilter(attributeId, node);
+          this.#removeFilter(attributeId, node);
           break;
       }
     });
@@ -104,22 +104,22 @@ export default class ConditionBuilderView {
     this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }
 
-  #addAttribute(conditionAnnotation) {
+  #addAnnotation(conditionAnnotation) {
     // modifier
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
     this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'annotation', conditionAnnotation));
   }
   
-  #removeAttribute(conditionAnnotation) {
+  #removeAnnotation(conditionAnnotation) {
     // remove from array
-    const index = this.#properties.findIndex(stackingConditionView => stackingConditionView.removeAttribute(conditionAnnotation));
+    const index = this.#properties.findIndex(stackingConditionView => stackingConditionView.removeAnnotation(conditionAnnotation));
     this.#properties.splice(index, 1);
     // modifier
     if (this.#properties.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
-  #addAttributeFilter(attributeId, node) {
+  #addFilter(attributeId, node) {
     // modifier
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // find a condition view has same attribute id
@@ -133,9 +133,9 @@ export default class ConditionBuilderView {
     }
   }
 
-  #removeAttributeFilter(attributeId, node) {
+  #removeFilter(attributeId, node) {
     // remove from array
-    const index = this.#propertyFilters.findIndex(stackingConditionView => stackingConditionView.removeAttributeFilter(attributeId, node));
+    const index = this.#propertyFilters.findIndex(stackingConditionView => stackingConditionView.removeFilter(attributeId, node));
     if (index !== -1) this.#propertyFilters.splice(index, 1);
     // modifier
     if (this.#propertyFilters.length === 0) this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.add('-empty');

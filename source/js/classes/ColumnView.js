@@ -182,13 +182,13 @@ export default class ColumnView {
       }
     } while (parentNode);
     if (checkbox.checked) { // add
-      ConditionBuilder.addAttributeFilter(
+      ConditionBuilder.addFilter(
         this.attributeId,
         checkbox.value,
         ancestors
       );
     } else { // remove
-      ConditionBuilder.removeAttributeFilter(this.attributeId, checkbox.value);
+      ConditionBuilder.removeFilter(this.attributeId, checkbox.value);
     }
   }
 

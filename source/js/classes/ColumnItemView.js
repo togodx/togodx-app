@@ -52,9 +52,9 @@ export default class ColumnItemView {
     this.#INPUT_KEY.addEventListener('change', e => {
       const conditionAnnotation = new ConditionAnnotation(column.attributeId, node);
       if (e.target.checked) {
-        ConditionBuilder.addAttribute(conditionAnnotation);
+        ConditionBuilder.addAnnotation(conditionAnnotation);
       } else {
-        ConditionBuilder.removeAttribute(column.attributeId, node);
+        ConditionBuilder.removeAnnotation(column.attributeId, node);
       }
     });
     DefaultEventEmitter.addEventListener(event.mutateAttributeCondition, ({detail: {action, conditionAnnotation}}) => {

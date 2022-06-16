@@ -267,7 +267,7 @@ export default class TableData {
   #dataButtonEdit(e) {
     e.stopPropagation();
     // property (attribute)
-    ConditionBuilder.setAttributes(
+    ConditionBuilder.setAnnotation(
       this.#dxCondition.conditionAnnotations.map(conditionAnnotation => {
         return conditionAnnotation;
       }),
@@ -278,7 +278,7 @@ export default class TableData {
       const conditionFilter = this.#dxCondition.conditionFilters.find(conditionFilter => conditionFilter.attributeId === id);
       const nodes = [];
       if (conditionFilter) nodes.push(...conditionFilter.nodes);
-      ConditionBuilder.setAttributeFilters(id, nodes, false);
+      ConditionBuilder.setFilter(id, nodes, false);
     });
   }
 

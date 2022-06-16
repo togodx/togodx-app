@@ -3654,8 +3654,8 @@
        */
 
     }, {
-      key: "addAttribute",
-      value: function addAttribute(conditionAnnotation) {
+      key: "addAnnotation",
+      value: function addAnnotation(conditionAnnotation) {
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
         // store
@@ -3673,8 +3673,8 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
-      key: "addAttributeFilter",
-      value: function addAttributeFilter(attributeId, node) {
+      key: "addFilter",
+      value: function addFilter(attributeId, node) {
         var isFinal = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 
         // find filter of same property
@@ -3704,8 +3704,8 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
-      key: "removeAttribute",
-      value: function removeAttribute(attributeId, parentNode) {
+      key: "removeAnnotation",
+      value: function removeAnnotation(attributeId, parentNode) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
         // remove from store
@@ -3729,8 +3729,8 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
     }, {
-      key: "removeAttributeFilter",
-      value: function removeAttributeFilter(attributeId, node) {
+      key: "removeFilter",
+      value: function removeFilter(attributeId, node) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
         // remove from store
@@ -3763,26 +3763,26 @@
        */
 
     }, {
-      key: "setAttributes",
-      value: function setAttributes(annotations) {
+      key: "setAnnotation",
+      value: function setAnnotation(annotations) {
         var _this = this;
 
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
         // delete existing properties
         while (_classPrivateFieldGet(this, _conditionAnnotations).length > 0) {
-          this.removeAttribute(_classPrivateFieldGet(this, _conditionAnnotations)[0].attributeId, _classPrivateFieldGet(this, _conditionAnnotations)[0].parentNode, false);
+          this.removeAnnotation(_classPrivateFieldGet(this, _conditionAnnotations)[0].attributeId, _classPrivateFieldGet(this, _conditionAnnotations)[0].parentNode, false);
         }
 
         annotations.forEach(function (conditionAnnotation) {
-          return _this.addAttribute(conditionAnnotation, false);
+          return _this.addAnnotation(conditionAnnotation, false);
         }); // post processing (permalink, evaluate)
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
     }, {
-      key: "setAttributeFilters",
-      value: function setAttributeFilters(attributeId, nodes) {
+      key: "setFilter",
+      value: function setFilter(attributeId, nodes) {
         var _this2 = this;
 
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
@@ -3799,10 +3799,10 @@
 
             if (indexInNew !== -1) {
               // if new filter does not exist in old filters, add property filter
-              if (indexInOld === -1) _this2.addAttributeFilter(attributeId, originalFilter.node, [], false);
+              if (indexInOld === -1) _this2.addFilter(attributeId, originalFilter.node, [], false);
             } else {
               // if extra filter exists in old filters, remove property filter
-              if (indexInOld !== -1) _this2.removeAttributeFilter(attributeId, originalFilter.node, false);
+              if (indexInOld !== -1) _this2.removeFilter(attributeId, originalFilter.node, false);
             }
           });
         } else {
@@ -3812,7 +3812,7 @@
           try {
             for (_iterator.s(); !(_step = _iterator.n()).done;) {
               var node = _step.value;
-              this.addAttributeFilter(attributeId, node, [], false);
+              this.addFilter(attributeId, node, [], false);
             }
           } catch (err) {
             _iterator.e(err);
@@ -3997,7 +3997,7 @@
     _classPrivateFieldSet(this, _dataset, dataset); // this.#userIds = userIds;
 
 
-    this.setAttributes(annotations, false);
+    this.setAnnotation(annotations, false);
     Records$1.attributes.forEach(function (_ref2) {
       var id = _ref2.id;
       var attribute = filters.find(function (attribute) {
@@ -4006,7 +4006,7 @@
       var nodes = [];
       if (attribute) nodes.push.apply(nodes, _toConsumableArray(attribute.nodes));
 
-      _this4.setAttributeFilters(id, nodes, false);
+      _this4.setFilter(id, nodes, false);
     });
     this.finish(false); // dispatch event
 
@@ -4020,7 +4020,7 @@
           attributeId = _classPrivateFieldGet2.attributeId,
           parentNode = _classPrivateFieldGet2.parentNode;
 
-      this.removeAttribute(attributeId, parentNode, false);
+      this.removeAnnotation(attributeId, parentNode, false);
     }
 
     while (_classPrivateFieldGet(this, _conditionFilters).length > 0) {
@@ -4029,7 +4029,7 @@
           nodes = _classPrivateFieldGet3.nodes;
 
       while (nodes.length > 0) {
-        this.removeAttributeFilter(_attributeId, nodes[0], false);
+        this.removeFilter(_attributeId, nodes[0], false);
       }
     }
 
@@ -4154,7 +4154,7 @@
 
             _classPrivateFieldGet(_this2, _LABELS).querySelector(':scope > .label:last-child').addEventListener('click', function (e) {
               e.stopPropagation();
-              ConditionBuilder$1.removeAttributeFilter(_classPrivateFieldGet(_this2, _condition).attributeId, e.target.parentNode.dataset.node);
+              ConditionBuilder$1.removeFilter(_classPrivateFieldGet(_this2, _condition).attributeId, e.target.parentNode.dataset.node);
             });
           }
         };
@@ -4162,15 +4162,15 @@
         getFilter();
       }
     }, {
-      key: "removeAttribute",
-      value: function removeAttribute(conditionAnnotation) {
+      key: "removeAnnotation",
+      value: function removeAnnotation(conditionAnnotation) {
         var isMatch = conditionAnnotation.attributeId === _classPrivateFieldGet(this, _condition).attributeId && (conditionAnnotation.parentNode ? conditionAnnotation.parentNode === _classPrivateFieldGet(this, _condition).parentNode : true);
         if (isMatch) _classPrivateFieldGet(this, _ROOT$e).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$e));
         return isMatch;
       }
     }, {
-      key: "removeAttributeFilter",
-      value: function removeAttributeFilter(attributeId, node) {
+      key: "removeFilter",
+      value: function removeFilter(attributeId, node) {
         if (attributeId === _classPrivateFieldGet(this, _condition).attributeId) {
           _classPrivateFieldGet(this, _LABELS).removeChild(_classPrivateFieldGet(this, _LABELS).querySelector(":scope > [data-node=\"".concat(node, "\"")));
 
@@ -4226,7 +4226,7 @@
       switch (true) {
         case _classPrivateFieldGet(_this3, _condition) instanceof ConditionAnnotation:
           // notify
-          ConditionBuilder$1.removeAttribute(_classPrivateFieldGet(_this3, _condition).attributeId, _classPrivateFieldGet(_this3, _condition).parentNode);
+          ConditionBuilder$1.removeAnnotation(_classPrivateFieldGet(_this3, _condition).attributeId, _classPrivateFieldGet(_this3, _condition).parentNode);
           break;
 
         case _classPrivateFieldGet(_this3, _condition) instanceof ConditionFilter:
@@ -4236,7 +4236,7 @@
           try {
             for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
               var _label2 = _step2.value;
-              ConditionBuilder$1.removeAttributeFilter(_classPrivateFieldGet(_this3, _condition).attributeId, _label2.dataset.node);
+              ConditionBuilder$1.removeFilter(_classPrivateFieldGet(_this3, _condition).attributeId, _label2.dataset.node);
             }
           } catch (err) {
             _iterator2.e(err);
@@ -4269,26 +4269,26 @@
 
   var _defineTogoKeys = /*#__PURE__*/new WeakSet();
 
-  var _addAttribute = /*#__PURE__*/new WeakSet();
+  var _addAnnotation = /*#__PURE__*/new WeakSet();
 
-  var _removeAttribute = /*#__PURE__*/new WeakSet();
+  var _removeAnnotation = /*#__PURE__*/new WeakSet();
 
-  var _addAttributeFilter = /*#__PURE__*/new WeakSet();
+  var _addFilter = /*#__PURE__*/new WeakSet();
 
-  var _removeAttributeFilter = /*#__PURE__*/new WeakSet();
+  var _removeFilter = /*#__PURE__*/new WeakSet();
 
   var ConditionBuilderView = /*#__PURE__*/_createClass(function ConditionBuilderView(elm) {
     var _this = this;
 
     _classCallCheck(this, ConditionBuilderView);
 
-    _classPrivateMethodInitSpec(this, _removeAttributeFilter);
+    _classPrivateMethodInitSpec(this, _removeFilter);
 
-    _classPrivateMethodInitSpec(this, _addAttributeFilter);
+    _classPrivateMethodInitSpec(this, _addFilter);
 
-    _classPrivateMethodInitSpec(this, _removeAttribute);
+    _classPrivateMethodInitSpec(this, _removeAnnotation);
 
-    _classPrivateMethodInitSpec(this, _addAttribute);
+    _classPrivateMethodInitSpec(this, _addAnnotation);
 
     _classPrivateMethodInitSpec(this, _defineTogoKeys);
 
@@ -4384,12 +4384,12 @@
 
       switch (action) {
         case 'add':
-          _classPrivateMethodGet(_this, _addAttribute, _addAttribute2).call(_this, conditionAnnotation);
+          _classPrivateMethodGet(_this, _addAnnotation, _addAnnotation2).call(_this, conditionAnnotation);
 
           break;
 
         case 'remove':
-          _classPrivateMethodGet(_this, _removeAttribute, _removeAttribute2).call(_this, conditionAnnotation);
+          _classPrivateMethodGet(_this, _removeAnnotation, _removeAnnotation2).call(_this, conditionAnnotation);
 
           break;
       }
@@ -4402,12 +4402,12 @@
 
       switch (action) {
         case 'add':
-          _classPrivateMethodGet(_this, _addAttributeFilter, _addAttributeFilter2).call(_this, attributeId, node);
+          _classPrivateMethodGet(_this, _addFilter, _addFilter2).call(_this, attributeId, node);
 
           break;
 
         case 'remove':
-          _classPrivateMethodGet(_this, _removeAttributeFilter, _removeAttributeFilter2).call(_this, attributeId, node);
+          _classPrivateMethodGet(_this, _removeFilter, _removeFilter2).call(_this, attributeId, node);
 
           break;
       }
@@ -4458,7 +4458,7 @@
     _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));
   }
 
-  function _addAttribute2(conditionAnnotation) {
+  function _addAnnotation2(conditionAnnotation) {
     // modifier
     _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.remove('-empty'); // make view
 
@@ -4466,10 +4466,10 @@
     _classPrivateFieldGet(this, _properties).push(new StackingConditionView(_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER), 'annotation', conditionAnnotation));
   }
 
-  function _removeAttribute2(conditionAnnotation) {
+  function _removeAnnotation2(conditionAnnotation) {
     // remove from array
     var index = _classPrivateFieldGet(this, _properties).findIndex(function (stackingConditionView) {
-      return stackingConditionView.removeAttribute(conditionAnnotation);
+      return stackingConditionView.removeAnnotation(conditionAnnotation);
     });
 
     _classPrivateFieldGet(this, _properties).splice(index, 1); // modifier
@@ -4478,7 +4478,7 @@
     if (_classPrivateFieldGet(this, _properties).length === 0) _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.add('-empty');
   }
 
-  function _addAttributeFilter2(attributeId, node) {
+  function _addFilter2(attributeId, node) {
     // modifier
     _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.remove('-empty'); // find a condition view has same attribute id
 
@@ -4496,10 +4496,10 @@
     }
   }
 
-  function _removeAttributeFilter2(attributeId, node) {
+  function _removeFilter2(attributeId, node) {
     // remove from array
     var index = _classPrivateFieldGet(this, _propertyFilters).findIndex(function (stackingConditionView) {
-      return stackingConditionView.removeAttributeFilter(attributeId, node);
+      return stackingConditionView.removeFilter(attributeId, node);
     });
 
     if (index !== -1) _classPrivateFieldGet(this, _propertyFilters).splice(index, 1); // modifier
@@ -4616,9 +4616,9 @@
         var conditionAnnotation = new ConditionAnnotation(column.attributeId, node);
 
         if (e.target.checked) {
-          ConditionBuilder$1.addAttribute(conditionAnnotation);
+          ConditionBuilder$1.addAnnotation(conditionAnnotation);
         } else {
-          ConditionBuilder$1.removeAttribute(column.attributeId, node);
+          ConditionBuilder$1.removeAnnotation(column.attributeId, node);
         }
       });
 
@@ -7231,10 +7231,10 @@
 
         if (checkbox.checked) {
           // add
-          ConditionBuilder$1.addAttributeFilter(this.attributeId, checkbox.value, ancestors);
+          ConditionBuilder$1.addFilter(this.attributeId, checkbox.value, ancestors);
         } else {
           // remove
-          ConditionBuilder$1.removeAttributeFilter(this.attributeId, checkbox.value);
+          ConditionBuilder$1.removeFilter(this.attributeId, checkbox.value);
         }
       } // checkKey(e) {
       // }
@@ -7995,7 +7995,7 @@
     _classPrivateFieldGet(this, _target).update(); // set condition
 
 
-    ConditionBuilder$1.setAttributeFilters(_classPrivateFieldGet(this, _target).attributeId, this.selectedItems.map(function (item) {
+    ConditionBuilder$1.setFilter(_classPrivateFieldGet(this, _target).attributeId, this.selectedItems.map(function (item) {
       return item.node;
     }), false);
   }
@@ -8323,10 +8323,10 @@
       elm.addEventListener('click', function () {
         if (elm.classList.contains('-selected')) {
           elm.classList.remove('-selected');
-          ConditionBuilder$1.removeAttributeFilter(_classPrivateFieldGet(_this, _attribute$1).id, filter.node);
+          ConditionBuilder$1.removeFilter(_classPrivateFieldGet(_this, _attribute$1).id, filter.node);
         } else {
           elm.classList.add('-selected');
-          ConditionBuilder$1.addAttributeFilter(_classPrivateFieldGet(_this, _attribute$1).id, filter.node);
+          ConditionBuilder$1.addFilter(_classPrivateFieldGet(_this, _attribute$1).id, filter.node);
         }
       });
     }); // event listener
@@ -8563,12 +8563,12 @@
 
       if (_classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked) {
         // add
-        ConditionBuilder$1.addAttribute(new ConditionAnnotation(attributeId));
+        ConditionBuilder$1.addAnnotation(new ConditionAnnotation(attributeId));
 
         _classPrivateFieldGet(_this, _ROOT$8).classList.add('-allselected');
       } else {
         // remove
-        ConditionBuilder$1.removeAttribute(attributeId);
+        ConditionBuilder$1.removeAnnotation(attributeId);
 
         _classPrivateFieldGet(_this, _ROOT$8).classList.remove('-allselected');
       }
@@ -10397,7 +10397,7 @@
 
     e.stopPropagation(); // property (attribute)
 
-    ConditionBuilder$1.setAttributes(_classPrivateFieldGet(this, _dxCondition).conditionAnnotations.map(function (conditionAnnotation) {
+    ConditionBuilder$1.setAnnotation(_classPrivateFieldGet(this, _dxCondition).conditionAnnotations.map(function (conditionAnnotation) {
       return conditionAnnotation;
     }), false); // attribute (classification/distribution)
 
@@ -10410,7 +10410,7 @@
 
       var nodes = [];
       if (conditionFilter) nodes.push.apply(nodes, _toConsumableArray(conditionFilter.nodes));
-      ConditionBuilder$1.setAttributeFilters(id, nodes, false);
+      ConditionBuilder$1.setFilter(id, nodes, false);
     });
   }
 
