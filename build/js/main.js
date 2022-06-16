@@ -3039,6 +3039,8 @@
 
       _defineProperty$1(this, "_attributeId", void 0);
 
+      _defineProperty$1(this, "_ancestors", new Map());
+
       _classPrivateFieldInitSpec(this, _annotation, {
         writable: true,
         value: void 0
@@ -3055,16 +3057,38 @@
       });
 
       this._attributeId = attributeId;
-    } // accessor
+    }
+    /**
+     * 
+     * @param {string} node 
+     * @param {string} ancestors 
+     */
 
 
     _createClass(ConditionBase, [{
-      key: "attributeId",
-      get: function get() {
-        return this._attributeId;
+      key: "setAncestors",
+      value: function setAncestors(node, ancestors) {
+        if (!node || !ancestors) return;
+
+        this._ancestors.set(node, _toConsumableArray(ancestors));
       }
     }, {
-      key: "node",
+      key: "getAncestors",
+      value: function getAncestors(node) {
+        var ancestors = this._ancestors.get(node);
+
+        if (!ancestors) {
+          ancestors = Records$1.getAncestors(this._attributeId, node).map(function (ancestor) {
+            return ancestor.node;
+          });
+          this.setAncestors(node, ancestors);
+        }
+
+        return ancestors;
+      } // accessor
+
+    }, {
+      key: "attributeId",
       get: function get() {
         return this._attributeId;
       }
@@ -3101,13 +3125,12 @@
 
   var _filter = /*#__PURE__*/new WeakMap();
 
-  var _ancestors = /*#__PURE__*/new WeakMap();
-
   var ConditionAnnotation = /*#__PURE__*/function (_ConditionBase) {
     _inherits(ConditionAnnotation, _ConditionBase);
 
     var _super = _createSuper(ConditionAnnotation);
 
+    // #ancestors;
     function ConditionAnnotation(attributeId, parentNode) {
       var _this;
 
@@ -3125,12 +3148,8 @@
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(_assertThisInitialized(_this), _ancestors, {
-        writable: true,
-        value: void 0
-      });
+      _classPrivateFieldSet(_assertThisInitialized(_this), _parentNode$1, parentNode); // if (ancestors) this.#ancestors = [...ancestors];
 
-      _classPrivateFieldSet(_assertThisInitialized(_this), _parentNode$1, parentNode);
 
       return _this;
     } // methods
@@ -3160,12 +3179,12 @@
       key: "getURLParameter",
       value: function getURLParameter() {
         var annotation = {
-          attribute: this._attributeId
+          attributeId: this._attributeId
         };
 
         if (_classPrivateFieldGet(this, _parentNode$1)) {
-          annotation.node = _classPrivateFieldGet(this, _parentNode$1);
-          annotation.path = this.ancestors;
+          annotation.parentNode = _classPrivateFieldGet(this, _parentNode$1);
+          annotation.ancestors = this.ancestors;
         }
 
         return annotation;
@@ -3179,13 +3198,8 @@
     }, {
       key: "ancestors",
       get: function get() {
-        if (!_classPrivateFieldGet(this, _ancestors)) {
-          _classPrivateFieldSet(this, _ancestors, Records$1.getAncestors(this._attributeId, _classPrivateFieldGet(this, _parentNode$1)).map(function (ancestor) {
-            return ancestor.node;
-          }));
-        }
-
-        return _classPrivateFieldGet(this, _ancestors);
+        if (!_classPrivateFieldGet(this, _parentNode$1)) return _classPrivateFieldGet(this, _parentNode$1);
+        return this.getAncestors(_classPrivateFieldGet(this, _parentNode$1));
       }
     }, {
       key: "label",
@@ -3240,6 +3254,7 @@
 
       _classPrivateFieldSet(_assertThisInitialized(_this), _nodes, nodes);
 
+      console.log(_assertThisInitialized(_this));
       return _this;
     } // methods
 
@@ -3262,7 +3277,7 @@
         var _this2 = this;
 
         var values = {
-          attribute: this._attributeId,
+          attributeId: this._attributeId,
           nodes: []
         };
 
@@ -3273,7 +3288,7 @@
           var ancestors = Records$1.getAncestors(_this2._attributeId, node).map(function (ancestor) {
             return ancestor.node;
           });
-          if (ancestors.length > 0) node2.path = ancestors;
+          if (ancestors.length > 0) node2.ancestors = ancestors;
           values.nodes.push(node2);
         });
 
@@ -3597,7 +3612,6 @@
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
         // store
-        // const conditionAnnotation = new ConditionAnnotation(attributeId, parentNode);
         _classPrivateFieldGet(this, _conditionAnnotations).push(conditionAnnotation); // evaluate
 
 
@@ -3857,23 +3871,24 @@
     };
     var __zzz__condition = {
       dataset: (_condition$dataset = condition.dataset) !== null && _condition$dataset !== void 0 ? _condition$dataset : _classPrivateFieldGet(this, _dataset),
-      annotations: condition.annotations.map(function (annotation) {
-        var annotation2 = {
-          attributeId: annotation.attribute
-        };
-
-        if (annotation.node) {
-          annotation2.id = {
-            node: annotation.node
-          };
-
-          if (annotation.path) {
-            annotation2.id.ancestors = _toConsumableArray(annotation.path);
-          }
-        }
-
-        return annotation2;
+      annotations: condition.annotations.map(function (_ref) {
+        var attributeId = _ref.attributeId,
+            parentNode = _ref.parentNode,
+            ancestors = _ref.ancestors;
+        var ca = new ConditionAnnotation(attributeId, parentNode);
+        ca.setAncestors(parentNode, ancestors);
+        return ca;
       }),
+      // annotations: condition.annotations.map(annotation => {
+      //   const annotation2 = {attributeId: annotation.attribute};
+      //   if (annotation.node) {
+      //     annotation2.id = {node: annotation.node};
+      //     if (annotation.path) {
+      //       annotation2.id.ancestors = [...annotation.path];
+      //     }
+      //   }
+      //   return annotation2;
+      // }),
       filters: condition.filters.map(function (filter) {
         var filter2 = {
           attributeId: filter.attribute,
@@ -3890,10 +3905,23 @@
           })
         };
         return filter2;
-      })
+      }) // filters: condition.filters.map(filter => {
+      //   const filter2 = {
+      //     attributeId: filter.attribute,
+      //     ids: filter.nodes.map(node => {
+      //       const zzzNode = {node: node.node};
+      //       if (node.path) {
+      //         zzzNode.ancestors = [...node.path];
+      //       }
+      //       return zzzNode;
+      //     })
+      //   };
+      //   return filter2;
+      // })
+
     };
-    console.log(condition.annotations);
-    console.log(__zzz__condition.annotations);
+    console.log(condition.filters);
+    console.log(__zzz__condition.filters);
 
     if (isFirst) {
       // get child category ids
@@ -3907,10 +3935,10 @@
     if (condition.dataset) _classPrivateFieldSet(this, _dataset, condition.dataset);
     var queue = [];
 
-    var addQueue = function addQueue(attributeId, id) {
-      var ancestors = [id.node];
-      if (id.ancestors) ancestors.push.apply(ancestors, _toConsumableArray(id.ancestors));
-      ancestors.forEach(function (node) {
+    var addQueue = function addQueue(attributeId, node, ancestors) {
+      var ancestors2 = [node];
+      if (ancestors) ancestors2.push.apply(ancestors2, _toConsumableArray(ancestors));
+      ancestors2.forEach(function (node) {
         if (queue.findIndex(function (task) {
           return task.attributeId === attributeId && task.node === node;
         }) === -1) {
@@ -3920,13 +3948,23 @@
           });
         }
       });
-    };
+    }; // const addQueue = (attributeId, id) => {
+    //   const ancestors = [id.node];
+    //   if (id.ancestors) ancestors.push(...id.ancestors);
+    //   ancestors.forEach(node => {
+    //     if (queue.findIndex(task => task.attributeId === attributeId && task.node === node) === -1) {
+    //       queue.push({attributeId, node});
+    //     }
+    //   });
+    // };
 
-    condition.annotations.forEach(function (_ref) {
-      var attributeId = _ref.attributeId,
-          id = _ref.id;
-      if (id) addQueue(attributeId, id);
-    });
+
+    condition.annotations.forEach(function (annotation) {
+      if (annotation.parentNode) addQueue(annotation.attributeId, annotation.parentNode, annotation.ancestors);
+    }); // condition.annotations.forEach(({attributeId, id}) => {
+    //   if (id) addQueue(attributeId, id);
+    // });
+
     condition.filters.forEach(function (_ref2) {
       var attributeId = _ref2.attributeId,
           ids = _ref2.ids;
@@ -3939,7 +3977,12 @@
   }
 
   function _progressQueueOfGettingChildNodes2(condition, queue) {
-    var _this3 = this;
+    var _console,
+        _this3 = this;
+
+    console.log(condition);
+
+    (_console = console).log.apply(_console, _toConsumableArray(queue));
 
     if (queue.length > 0) {
       var _queue$shift = queue.shift(),
@@ -3971,6 +4014,7 @@
         _ref3.userIds;
         var annotations = _ref3.annotations,
         filters = _ref3.filters;
+    console.log(annotations);
 
     _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true); // restore conditions
 
@@ -3983,6 +4027,7 @@
         annotations2 = _classPrivateMethodGe2[0],
         filters2 = _classPrivateMethodGe2[1];
 
+    console.log(annotations2);
     this.setAttributes(annotations2, false);
     Records$1.attributes.forEach(function (_ref4) {
       var id = _ref4.id;
@@ -4024,14 +4069,13 @@
 
   function _getCondtionsFromHierarchicConditions2(annotations, filters) {
     // restore conditions
-    var annotations2 = annotations.map(function (_ref5) {
+    var annotations2 = annotations; // const annotations2 = annotations.map(({attributeId, id}) => {
+    //   return new ConditionAnnotation(attributeId, id?.node);
+    // });
+
+    var filters2 = filters.map(function (_ref5) {
       var attributeId = _ref5.attributeId,
-          id = _ref5.id;
-      return new ConditionAnnotation(attributeId, id === null || id === void 0 ? void 0 : id.node);
-    });
-    var filters2 = filters.map(function (_ref6) {
-      var attributeId = _ref6.attributeId,
-          ids = _ref6.ids;
+          ids = _ref5.ids;
       return {
         attributeId: attributeId,
         nodes: ids.map(function (id) {

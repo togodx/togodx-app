@@ -8,6 +8,7 @@ export default class ConditionFilter extends ConditionBase {
   constructor(attributeId, nodes) {
     super(attributeId);
     this.#nodes = nodes;
+    console.log(this)
   }
 
 
@@ -24,13 +25,13 @@ export default class ConditionFilter extends ConditionBase {
 
   getURLParameter() {
     const values = {
-      attribute: this._attributeId,
+      attributeId: this._attributeId,
       nodes: []
     }
     this.#nodes.forEach(node => {
       const node2 = {node};
       const ancestors = Records.getAncestors(this._attributeId, node).map(ancestor => ancestor.node);
-      if (ancestors.length > 0) node2.path = ancestors;
+      if (ancestors.length > 0) node2.ancestors = ancestors;
       values.nodes.push(node2);
     })
     return values;

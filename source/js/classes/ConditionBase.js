@@ -3,6 +3,7 @@ import Records from "./Records";
 export default class ConditionBase {
 
   _attributeId;
+  _ancestors = new Map();
   #annotation; // <Attribute>
   #catexxxgoryId;
   #dataset;
@@ -11,13 +12,29 @@ export default class ConditionBase {
     this._attributeId = attributeId;
   }
 
+  /**
+   * 
+   * @param {string} node 
+   * @param {string} ancestors 
+   */
+  setAncestors(node, ancestors) {
+    if (!node || !ancestors) return;
+    this._ancestors.set(node, [...ancestors]);
+  }
+
+  getAncestors(node) {
+    let ancestors = this._ancestors.get(node);
+    if (!ancestors) {
+      ancestors = Records.getAncestors(this._attributeId, node).map(ancestor => ancestor.node);
+      this.setAncestors(node, ancestors);
+    }
+    return ancestors;
+  }
+
 
   // accessor
 
   get attributeId() {
-    return this._attributeId;
-  }
-  get node() {
     return this._attributeId;
   }
 

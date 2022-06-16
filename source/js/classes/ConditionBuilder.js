@@ -51,7 +51,6 @@ class ConditionBuilder {
    */
   addAttribute(conditionAnnotation, isFinal = true) {
     // store
-    // const conditionAnnotation = new ConditionAnnotation(attributeId, parentNode);
     this.#conditionAnnotations.push(conditionAnnotation);
     // evaluate
     if (isFinal) this.#postProcessing();
@@ -222,16 +221,21 @@ class ConditionBuilder {
 
     const __zzz__condition = {
       dataset: condition.dataset ?? this.#dataset,
-      annotations: condition.annotations.map(annotation => {
-        const annotation2 = {attributeId: annotation.attribute};
-        if (annotation.node) {
-          annotation2.id = {node: annotation.node};
-          if (annotation.path) {
-            annotation2.id.ancestors = [...annotation.path];
-          }
-        }
-        return annotation2;
+      annotations: condition.annotations.map(({attributeId, parentNode, ancestors}) => {
+        const ca = new ConditionAnnotation(attributeId, parentNode);
+        ca.setAncestors(parentNode, ancestors);
+        return ca;
       }),
+      // annotations: condition.annotations.map(annotation => {
+      //   const annotation2 = {attributeId: annotation.attribute};
+      //   if (annotation.node) {
+      //     annotation2.id = {node: annotation.node};
+      //     if (annotation.path) {
+      //       annotation2.id.ancestors = [...annotation.path];
+      //     }
+      //   }
+      //   return annotation2;
+      // }),
       filters: condition.filters.map(filter => {
         const filter2 = {
           attributeId: filter.attribute,
@@ -245,9 +249,22 @@ class ConditionBuilder {
         };
         return filter2;
       })
+      // filters: condition.filters.map(filter => {
+      //   const filter2 = {
+      //     attributeId: filter.attribute,
+      //     ids: filter.nodes.map(node => {
+      //       const zzzNode = {node: node.node};
+      //       if (node.path) {
+      //         zzzNode.ancestors = [...node.path];
+      //       }
+      //       return zzzNode;
+      //     })
+      //   };
+      //   return filter2;
+      // })
     }
-    console.log(condition.annotations)
-    console.log(__zzz__condition.annotations)
+    console.log(condition.filters)
+    console.log(__zzz__condition.filters)
     
     if (isFirst) {
       // get child category ids
@@ -261,27 +278,42 @@ class ConditionBuilder {
   #makeQueueOfGettingChildNodes(condition) {
     if (condition.dataset) this.#dataset = condition.dataset;
     const queue = [];
-    const addQueue = (attributeId, id) => {
-      const ancestors = [id.node];
-      if (id.ancestors) ancestors.push(...id.ancestors);
-      ancestors.forEach(node => {
+    const addQueue = (attributeId, node, ancestors) => {
+      const ancestors2 = [node];
+      if (ancestors) ancestors2.push(...ancestors);
+      ancestors2.forEach(node => {
         if (queue.findIndex(task => task.attributeId === attributeId && task.node === node) === -1) {
           queue.push({attributeId, node});
         }
       });
     };
-    condition.annotations.forEach(({attributeId, id}) => {
-      if (id) addQueue(attributeId, id);
+    // const addQueue = (attributeId, id) => {
+    //   const ancestors = [id.node];
+    //   if (id.ancestors) ancestors.push(...id.ancestors);
+    //   ancestors.forEach(node => {
+    //     if (queue.findIndex(task => task.attributeId === attributeId && task.node === node) === -1) {
+    //       queue.push({attributeId, node});
+    //     }
+    //   });
+    // };
+    condition.annotations.forEach(annotation => {
+      if (annotation.parentNode) addQueue(annotation.attributeId, annotation.parentNode, annotation.ancestors);
     });
+    // condition.annotations.forEach(({attributeId, id}) => {
+    //   if (id) addQueue(attributeId, id);
+    // });
     condition.filters.forEach(({attributeId, ids}) => {
       ids.forEach(id => {
         if (id.ancestors) addQueue(attributeId, id);
       });
     });
+
     this.#progressQueueOfGettingChildNodes(condition, queue);
   }
 
   #progressQueueOfGettingChildNodes(condition, queue) {
+    console.log(condition)
+    console.log(...queue)
     if (queue.length > 0) {
       const {attributeId, node} = queue.shift();
       this.#getChildNodes(attributeId, node)
@@ -304,6 +336,7 @@ class ConditionBuilder {
   }
 
   #restoreConditions({dataset, userIds, annotations, filters}) {
+    console.log(annotations)
     
     this.#isRestoredConditinoFromURLParameters = true;
 
@@ -311,6 +344,7 @@ class ConditionBuilder {
     this.#dataset = dataset;
     // this.#userIds = userIds;
     const [annotations2, filters2] = this.#getCondtionsFromHierarchicConditions(annotations, filters);
+    console.log(annotations2)
     this.setAttributes(annotations2, false);
     Records.attributes.forEach(({id}) => {
       const attribute = filters2.find(attribute => attribute.attributeId === id);
@@ -342,9 +376,10 @@ class ConditionBuilder {
 
   #getCondtionsFromHierarchicConditions(annotations, filters) {
     // restore conditions
-    const annotations2 = annotations.map(({attributeId, id}) => {
-      return new ConditionAnnotation(attributeId, id?.node);
-    });
+    const annotations2 = annotations;
+    // const annotations2 = annotations.map(({attributeId, id}) => {
+    //   return new ConditionAnnotation(attributeId, id?.node);
+    // });
     const filters2 = filters.map(({attributeId, ids}) => {
       return {
         attributeId,

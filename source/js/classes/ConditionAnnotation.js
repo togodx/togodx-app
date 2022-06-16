@@ -5,11 +5,12 @@ export default class ConditionAnnotation extends ConditionBase {
 
   #parentNode;
   #filter;
-  #ancestors;
+  // #ancestors;
 
   constructor(attributeId, parentNode) {
     super(attributeId);
     this.#parentNode = parentNode;
+    // if (ancestors) this.#ancestors = [...ancestors];
   }
 
 
@@ -36,11 +37,11 @@ export default class ConditionAnnotation extends ConditionBase {
 
   getURLParameter() {
     const annotation = {
-      attribute: this._attributeId
+      attributeId: this._attributeId
     };
     if (this.#parentNode) {
-      annotation.node = this.#parentNode;
-      annotation.path = this.ancestors;
+      annotation.parentNode = this.#parentNode;
+      annotation.ancestors = this.ancestors;
     }
     return annotation;
   }
@@ -53,10 +54,8 @@ export default class ConditionAnnotation extends ConditionBase {
   }
 
   get ancestors() {
-    if (!this.#ancestors) {
-      this.#ancestors = Records.getAncestors(this._attributeId, this.#parentNode).map(ancestor => ancestor.node);
-    }
-    return this.#ancestors;
+    if (!this.#parentNode) return this.#parentNode;
+    return this.getAncestors(this.#parentNode);
   }
 
   get label() {

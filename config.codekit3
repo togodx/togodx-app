@@ -742,9 +742,9 @@
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
-      "oA" : 0,
+      "oA" : 1,
       "oAP" : "\/build\/js\/classes\/ConditionBase.js",
-      "oF" : 0,
+      "oF" : 1,
       "sC" : 3,
       "tS" : 1
     },
