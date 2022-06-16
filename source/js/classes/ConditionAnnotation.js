@@ -5,12 +5,10 @@ export default class ConditionAnnotation extends ConditionBase {
 
   #parentNode;
   #filter;
-  // #ancestors;
 
   constructor(attributeId, parentNode) {
     super(attributeId);
     this.#parentNode = parentNode;
-    // if (ancestors) this.#ancestors = [...ancestors];
   }
 
 

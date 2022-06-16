@@ -8,7 +8,6 @@ export default class ConditionFilter extends ConditionBase {
   constructor(attributeId, nodes) {
     super(attributeId);
     this.#nodes = nodes;
-    console.log(this)
   }
 
 

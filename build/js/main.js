@@ -3130,7 +3130,6 @@
 
     var _super = _createSuper(ConditionAnnotation);
 
-    // #ancestors;
     function ConditionAnnotation(attributeId, parentNode) {
       var _this;
 
@@ -3148,8 +3147,7 @@
         value: void 0
       });
 
-      _classPrivateFieldSet(_assertThisInitialized(_this), _parentNode$1, parentNode); // if (ancestors) this.#ancestors = [...ancestors];
-
+      _classPrivateFieldSet(_assertThisInitialized(_this), _parentNode$1, parentNode);
 
       return _this;
     } // methods
@@ -3254,7 +3252,6 @@
 
       _classPrivateFieldSet(_assertThisInitialized(_this), _nodes, nodes);
 
-      console.log(_assertThisInitialized(_this));
       return _this;
     } // methods
 
@@ -3879,49 +3876,23 @@
         ca.setAncestors(parentNode, ancestors);
         return ca;
       }),
-      // annotations: condition.annotations.map(annotation => {
-      //   const annotation2 = {attributeId: annotation.attribute};
-      //   if (annotation.node) {
-      //     annotation2.id = {node: annotation.node};
-      //     if (annotation.path) {
-      //       annotation2.id.ancestors = [...annotation.path];
-      //     }
-      //   }
-      //   return annotation2;
-      // }),
-      filters: condition.filters.map(function (filter) {
-        var filter2 = {
-          attributeId: filter.attribute,
-          ids: filter.nodes.map(function (node) {
-            var zzzNode = {
-              node: node.node
-            };
+      filters: condition.filters.map(function (_ref2) {
+        var attributeId = _ref2.attributeId,
+            nodes = _ref2.nodes;
+        var cf = new ConditionFilter(attributeId, nodes.map(function (node) {
+          return node.node;
+        }));
+        nodes.forEach(function (_ref3) {
+          var node = _ref3.node,
+              ancestors = _ref3.ancestors;
 
-            if (node.path) {
-              zzzNode.ancestors = _toConsumableArray(node.path);
-            }
-
-            return zzzNode;
-          })
-        };
-        return filter2;
-      }) // filters: condition.filters.map(filter => {
-      //   const filter2 = {
-      //     attributeId: filter.attribute,
-      //     ids: filter.nodes.map(node => {
-      //       const zzzNode = {node: node.node};
-      //       if (node.path) {
-      //         zzzNode.ancestors = [...node.path];
-      //       }
-      //       return zzzNode;
-      //     })
-      //   };
-      //   return filter2;
-      // })
-
+          if (ancestors) {
+            cf.setAncestors(node, ancestors);
+          }
+        });
+        return cf;
+      })
     };
-    console.log(condition.filters);
-    console.log(__zzz__condition.filters);
 
     if (isFirst) {
       // get child category ids
@@ -3965,24 +3936,22 @@
     //   if (id) addQueue(attributeId, id);
     // });
 
-    condition.filters.forEach(function (_ref2) {
-      var attributeId = _ref2.attributeId,
-          ids = _ref2.ids;
-      ids.forEach(function (id) {
-        if (id.ancestors) addQueue(attributeId, id);
+    condition.filters.forEach(function (filter) {
+      filter.nodes.forEach(function (node) {
+        var ancestors = filter.getAncestors(node);
+        if (ancestors.length > 0) addQueue(filter.attributeId, node, ancestors);
       });
-    });
+    }); // condition.filters.forEach(({attributeId, ids}) => {
+    //   ids.forEach(id => {
+    //     if (id.ancestors) addQueue(attributeId, id);
+    //   });
+    // });
 
     _classPrivateMethodGet(this, _progressQueueOfGettingChildNodes, _progressQueueOfGettingChildNodes2).call(this, condition, queue);
   }
 
   function _progressQueueOfGettingChildNodes2(condition, queue) {
-    var _console,
-        _this3 = this;
-
-    console.log(condition);
-
-    (_console = console).log.apply(_console, _toConsumableArray(queue));
+    var _this3 = this;
 
     if (queue.length > 0) {
       var _queue$shift = queue.shift(),
@@ -4007,14 +3976,13 @@
     });
   }
 
-  function _restoreConditions2(_ref3) {
+  function _restoreConditions2(_ref4) {
     var _this4 = this;
 
-    var dataset = _ref3.dataset;
-        _ref3.userIds;
-        var annotations = _ref3.annotations,
-        filters = _ref3.filters;
-    console.log(annotations);
+    var dataset = _ref4.dataset;
+        _ref4.userIds;
+        var annotations = _ref4.annotations,
+        filters = _ref4.filters;
 
     _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true); // restore conditions
 
@@ -4027,10 +3995,9 @@
         annotations2 = _classPrivateMethodGe2[0],
         filters2 = _classPrivateMethodGe2[1];
 
-    console.log(annotations2);
     this.setAttributes(annotations2, false);
-    Records$1.attributes.forEach(function (_ref4) {
-      var id = _ref4.id;
+    Records$1.attributes.forEach(function (_ref5) {
+      var id = _ref5.id;
       var attribute = filters2.find(function (attribute) {
         return attribute.attributeId === id;
       });
@@ -4073,16 +4040,13 @@
     //   return new ConditionAnnotation(attributeId, id?.node);
     // });
 
-    var filters2 = filters.map(function (_ref5) {
-      var attributeId = _ref5.attributeId,
-          ids = _ref5.ids;
-      return {
-        attributeId: attributeId,
-        nodes: ids.map(function (id) {
-          return id.node;
-        })
-      };
-    });
+    var filters2 = filters; // const filters2 = filters.map(({attributeId, ids}) => {
+    //   return {
+    //     attributeId,
+    //     nodes: ids.map(id => id.node)
+    //   }
+    // });
+
     return [annotations2, filters2];
   }
 
