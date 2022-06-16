@@ -55,7 +55,7 @@ class ConditionBuilder {
     // evaluate
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutateAttributeCondition, {detail: {action: 'add', conditionAnnotation}});
+    const customEvent = new CustomEvent(event.mutateAnnotationCondition, {detail: {action: 'add', conditionAnnotation}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
@@ -72,7 +72,7 @@ class ConditionBuilder {
     // evaluate
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutateAttributeFilterCondition, {detail: {action: 'add', attributeId, node}});
+    const customEvent = new CustomEvent(event.mutateFilterCondition, {detail: {action: 'add', attributeId, node}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
@@ -84,7 +84,7 @@ class ConditionBuilder {
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutateAttributeCondition, {detail: {action: 'remove', conditionAnnotation}});
+    const customEvent = new CustomEvent(event.mutateAnnotationCondition, {detail: {action: 'remove', conditionAnnotation}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
@@ -102,7 +102,7 @@ class ConditionBuilder {
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutateAttributeFilterCondition, {detail: {action: 'remove', attributeId, node}});
+    const customEvent = new CustomEvent(event.mutateFilterCondition, {detail: {action: 'remove', attributeId, node}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 

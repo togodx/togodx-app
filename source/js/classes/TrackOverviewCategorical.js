@@ -103,7 +103,7 @@ export default class TrackOverviewCategorical {
     });
 
     // event listener
-    DefaultEventEmitter.addEventListener(event.mutateAttributeFilterCondition, ({detail: {action, attributeId, node}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateFilterCondition, ({detail: {action, attributeId, node}}) => {
       if (this.#attribute.id === attributeId) {
         this.#filters.forEach(filter => {
           if (filter.node === node) {

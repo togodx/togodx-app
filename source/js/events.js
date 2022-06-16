@@ -10,8 +10,8 @@ export const toggleErrorUserFilters = 'toggleErrorUserFilters';
 export const changeViewModes = 'changeViewModes';
 
 // Condition
-export const mutateAttributeCondition = 'mutateAttributeCondition';
-export const mutateAttributeFilterCondition = 'mutateAttributeFilterCondition';
+export const mutateAnnotationCondition = 'mutateAnnotationCondition';
+export const mutateFilterCondition = 'mutateFilterCondition';
 export const mutateEstablishConditions = 'mutateEstablishConditions';
 export const completeQueryParameter = 'completeQueryParameter';
 export const restoreParameters = 'restoreParameters';

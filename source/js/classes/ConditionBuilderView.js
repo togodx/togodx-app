@@ -49,7 +49,7 @@ export default class ConditionBuilderView {
     });
 
     // event listeners
-    DefaultEventEmitter.addEventListener(event.mutateAttributeCondition, ({detail: {action, conditionAnnotation}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateAnnotationCondition, ({detail: {action, conditionAnnotation}}) => {
       switch (action) {
         case 'add':
           this.#addAnnotation(conditionAnnotation);
@@ -59,7 +59,7 @@ export default class ConditionBuilderView {
           break;
       }
     });
-    DefaultEventEmitter.addEventListener(event.mutateAttributeFilterCondition, ({detail: {action, attributeId, node}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateFilterCondition, ({detail: {action, attributeId, node}}) => {
       switch (action) {
         case 'add':
           this.#addFilter(attributeId, node);

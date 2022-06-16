@@ -57,7 +57,7 @@ export default class ColumnItemView {
         ConditionBuilder.removeAnnotation(column.attributeId, node);
       }
     });
-    DefaultEventEmitter.addEventListener(event.mutateAttributeCondition, ({detail: {action, conditionAnnotation}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateAnnotationCondition, ({detail: {action, conditionAnnotation}}) => {
       if (action === 'remove') {
         if (column.attributeId === conditionAnnotation.attributeId) {
           if (conditionAnnotation.parentNode && node === conditionAnnotation.parentNode) {
@@ -66,7 +66,7 @@ export default class ColumnItemView {
         }
       }
     });
-    DefaultEventEmitter.addEventListener(event.mutateAttributeFilterCondition, ({detail}) => {
+    DefaultEventEmitter.addEventListener(event.mutateFilterCondition, ({detail}) => {
       if (column.attributeId === detail.attributeId && node === detail.node) {
         this.#INPUT_VALUE.checked = detail.action === 'add';
       }

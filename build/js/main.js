@@ -3503,8 +3503,8 @@
 
   var changeViewModes = 'changeViewModes'; // Condition
 
-  var mutateAttributeCondition = 'mutateAttributeCondition';
-  var mutateAttributeFilterCondition = 'mutateAttributeFilterCondition';
+  var mutateAnnotationCondition = 'mutateAnnotationCondition';
+  var mutateFilterCondition = 'mutateFilterCondition';
   var mutateEstablishConditions = 'mutateEstablishConditions';
   var completeQueryParameter = 'completeQueryParameter';
   var restoreParameters = 'restoreParameters';
@@ -3664,7 +3664,7 @@
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
-        var customEvent = new CustomEvent(mutateAttributeCondition, {
+        var customEvent = new CustomEvent(mutateAnnotationCondition, {
           detail: {
             action: 'add',
             conditionAnnotation: conditionAnnotation
@@ -3694,7 +3694,7 @@
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
-        var customEvent = new CustomEvent(mutateAttributeFilterCondition, {
+        var customEvent = new CustomEvent(mutateFilterCondition, {
           detail: {
             action: 'add',
             attributeId: attributeId,
@@ -3720,7 +3720,7 @@
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
-        var customEvent = new CustomEvent(mutateAttributeCondition, {
+        var customEvent = new CustomEvent(mutateAnnotationCondition, {
           detail: {
             action: 'remove',
             conditionAnnotation: conditionAnnotation
@@ -3747,7 +3747,7 @@
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
 
-        var customEvent = new CustomEvent(mutateAttributeFilterCondition, {
+        var customEvent = new CustomEvent(mutateFilterCondition, {
           detail: {
             action: 'remove',
             attributeId: attributeId,
@@ -4377,7 +4377,7 @@
       DefaultEventEmitter$1.dispatchEvent(customEvent);
     }); // event listeners
 
-    DefaultEventEmitter$1.addEventListener(mutateAttributeCondition, function (_ref) {
+    DefaultEventEmitter$1.addEventListener(mutateAnnotationCondition, function (_ref) {
       var _ref$detail = _ref.detail,
           action = _ref$detail.action,
           conditionAnnotation = _ref$detail.conditionAnnotation;
@@ -4394,7 +4394,7 @@
           break;
       }
     });
-    DefaultEventEmitter$1.addEventListener(mutateAttributeFilterCondition, function (_ref2) {
+    DefaultEventEmitter$1.addEventListener(mutateFilterCondition, function (_ref2) {
       var _ref2$detail = _ref2.detail,
           action = _ref2$detail.action,
           attributeId = _ref2$detail.attributeId,
@@ -4622,7 +4622,7 @@
         }
       });
 
-      DefaultEventEmitter$1.addEventListener(mutateAttributeCondition, function (_ref2) {
+      DefaultEventEmitter$1.addEventListener(mutateAnnotationCondition, function (_ref2) {
         var _ref2$detail = _ref2.detail,
             action = _ref2$detail.action,
             conditionAnnotation = _ref2$detail.conditionAnnotation;
@@ -4635,7 +4635,7 @@
           }
         }
       });
-      DefaultEventEmitter$1.addEventListener(mutateAttributeFilterCondition, function (_ref3) {
+      DefaultEventEmitter$1.addEventListener(mutateFilterCondition, function (_ref3) {
         var detail = _ref3.detail;
 
         if (column.attributeId === detail.attributeId && node === detail.node) {
@@ -8331,7 +8331,7 @@
       });
     }); // event listener
 
-    DefaultEventEmitter$1.addEventListener(mutateAttributeFilterCondition, function (_ref) {
+    DefaultEventEmitter$1.addEventListener(mutateFilterCondition, function (_ref) {
       var _ref$detail = _ref.detail,
           action = _ref$detail.action,
           attributeId = _ref$detail.attributeId,
@@ -8575,7 +8575,7 @@
     }); // event listener
 
 
-    DefaultEventEmitter$1.addEventListener(mutateAttributeCondition, function (_ref) {
+    DefaultEventEmitter$1.addEventListener(mutateAnnotationCondition, function (_ref) {
       var _ref$detail = _ref.detail,
           action = _ref$detail.action,
           conditionAnnotation = _ref$detail.conditionAnnotation;
