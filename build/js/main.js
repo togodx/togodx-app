@@ -3703,19 +3703,26 @@
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
+      /**
+       * 
+       * @param {ConditionAnnotation} conditionAnnotation 
+       * @param {boolean} isFinal 
+       * @returns 
+       */
+
     }, {
       key: "removeAnnotation",
-      value: function removeAnnotation(attributeId, parentNode) {
-        var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      value: function removeAnnotation(conditionAnnotation) {
+        var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
         // remove from store
-        var index = _classPrivateFieldGet(this, _conditionAnnotations).findIndex(function (conditionAnnotation) {
-          return conditionAnnotation.isSameCondition(attributeId, parentNode);
+        var index = _classPrivateFieldGet(this, _conditionAnnotations).findIndex(function (conditionAnnotation2) {
+          return conditionAnnotation2.isSameCondition(conditionAnnotation.attributeId, conditionAnnotation.parentNode);
         });
 
         if (index === -1) return;
 
-        var conditionAnnotation = _classPrivateFieldGet(this, _conditionAnnotations).splice(index, 1)[0]; // post processing (permalink, evaluate)
+        var conditionAnnotation2 = _classPrivateFieldGet(this, _conditionAnnotations).splice(index, 1)[0]; // post processing (permalink, evaluate)
 
 
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
@@ -3723,7 +3730,7 @@
         var customEvent = new CustomEvent(mutateAnnotationCondition, {
           detail: {
             action: 'remove',
-            conditionAnnotation: conditionAnnotation
+            conditionAnnotation: conditionAnnotation2
           }
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
@@ -3771,7 +3778,7 @@
 
         // delete existing properties
         while (_classPrivateFieldGet(this, _conditionAnnotations).length > 0) {
-          this.removeAnnotation(_classPrivateFieldGet(this, _conditionAnnotations)[0].attributeId, _classPrivateFieldGet(this, _conditionAnnotations)[0].parentNode, false);
+          this.removeAnnotation(_classPrivateFieldGet(this, _conditionAnnotations)[0], false);
         }
 
         annotations.forEach(function (conditionAnnotation) {
@@ -4016,20 +4023,16 @@
 
   function _clearConditinos2() {
     while (_classPrivateFieldGet(this, _conditionAnnotations).length > 0) {
-      var _classPrivateFieldGet2 = _classPrivateFieldGet(this, _conditionAnnotations)[0],
-          attributeId = _classPrivateFieldGet2.attributeId,
-          parentNode = _classPrivateFieldGet2.parentNode;
-
-      this.removeAnnotation(attributeId, parentNode, false);
+      this.removeAnnotation(_classPrivateFieldGet(this, _conditionAnnotations)[0], false);
     }
 
     while (_classPrivateFieldGet(this, _conditionFilters).length > 0) {
-      var _classPrivateFieldGet3 = _classPrivateFieldGet(this, _conditionFilters)[0],
-          _attributeId = _classPrivateFieldGet3.attributeId,
-          nodes = _classPrivateFieldGet3.nodes;
+      var _classPrivateFieldGet2 = _classPrivateFieldGet(this, _conditionFilters)[0],
+          attributeId = _classPrivateFieldGet2.attributeId,
+          nodes = _classPrivateFieldGet2.nodes;
 
       while (nodes.length > 0) {
-        this.removeFilter(_attributeId, nodes[0], false);
+        this.removeFilter(attributeId, nodes[0], false);
       }
     }
 
@@ -4055,7 +4058,7 @@
      * 
      * @param {HTMLElement} container 
      * @param {String} type: 'property' or 'filter'
-     * @param {conditionAnnotation, conditionFilter} condition 
+     * @param {conditionAnnotation|conditionFilter} condition 
      */
     function StackingConditionView(_container, type, condition) {
       var _this = this;
@@ -4226,7 +4229,7 @@
       switch (true) {
         case _classPrivateFieldGet(_this3, _condition) instanceof ConditionAnnotation:
           // notify
-          ConditionBuilder$1.removeAnnotation(_classPrivateFieldGet(_this3, _condition).attributeId, _classPrivateFieldGet(_this3, _condition).parentNode);
+          ConditionBuilder$1.removeAnnotation(new ConditionAnnotation(_classPrivateFieldGet(_this3, _condition).attributeId, _classPrivateFieldGet(_this3, _condition).parentNode));
           break;
 
         case _classPrivateFieldGet(_this3, _condition) instanceof ConditionFilter:

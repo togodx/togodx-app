@@ -76,15 +76,21 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  removeAnnotation(attributeId, parentNode, isFinal = true) {
+  /**
+   * 
+   * @param {ConditionAnnotation} conditionAnnotation 
+   * @param {boolean} isFinal 
+   * @returns 
+   */
+  removeAnnotation(conditionAnnotation, isFinal = true) {
     // remove from store
-    const index = this.#conditionAnnotations.findIndex(conditionAnnotation => conditionAnnotation.isSameCondition(attributeId, parentNode));
+    const index = this.#conditionAnnotations.findIndex(conditionAnnotation2 => conditionAnnotation2.isSameCondition(conditionAnnotation.attributeId, conditionAnnotation.parentNode));
     if (index === -1) return;
-    const conditionAnnotation = this.#conditionAnnotations.splice(index, 1)[0];
+    const conditionAnnotation2 = this.#conditionAnnotations.splice(index, 1)[0];
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutateAnnotationCondition, {detail: {action: 'remove', conditionAnnotation}});
+    const customEvent = new CustomEvent(event.mutateAnnotationCondition, {detail: {action: 'remove', conditionAnnotation: conditionAnnotation2}});
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
@@ -114,7 +120,7 @@ class ConditionBuilder {
   setAnnotation(annotations, isFinal = true) {
     // delete existing properties
     while (this.#conditionAnnotations.length > 0) {
-      this.removeAnnotation(this.#conditionAnnotations[0].attributeId, this.#conditionAnnotations[0].parentNode, false);
+      this.removeAnnotation(this.#conditionAnnotations[0], false);
     };
     // set new properties
     annotations.forEach(conditionAnnotation => this.addAnnotation(conditionAnnotation, false));
@@ -299,8 +305,7 @@ class ConditionBuilder {
 
   #clearConditinos() {
     while (this.#conditionAnnotations.length > 0) {
-      const {attributeId, parentNode} = this.#conditionAnnotations[0];
-      this.removeAnnotation(attributeId, parentNode, false);
+      this.removeAnnotation(this.#conditionAnnotations[0], false);
     };
     while (this.#conditionFilters.length > 0) {
       const {attributeId, nodes} = this.#conditionFilters[0];

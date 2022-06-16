@@ -16,7 +16,7 @@ export default class StackingConditionView {
    * 
    * @param {HTMLElement} container 
    * @param {String} type: 'property' or 'filter'
-   * @param {conditionAnnotation, conditionFilter} condition 
+   * @param {conditionAnnotation|conditionFilter} condition 
    */
   constructor(container, type, condition, isRange = false) {
 
@@ -88,7 +88,7 @@ export default class StackingConditionView {
       switch (true) {
         case this.#condition instanceof ConditionAnnotation:
           // notify
-          ConditionBuilder.removeAnnotation(this.#condition.attributeId, this.#condition.parentNode);
+          ConditionBuilder.removeAnnotation(new ConditionAnnotation(this.#condition.attributeId, this.#condition.parentNode));
           break;
         case this.#condition instanceof ConditionFilter:
           for (const label of this.#LABELS.querySelectorAll(':scope > .label')) {
