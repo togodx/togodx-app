@@ -2,7 +2,7 @@ import Color from "./Color";
 import Attribute from "./Attribute";
 
 class Records {
-  #catexxxgories;
+  #categories;
   #attributes;
   #datasets;
 
@@ -23,7 +23,7 @@ class Records {
       categories[i].colorCSSValue = `rgb(${srgb.coords.map(channel => channel * 256).join(',')})`;
       categories[i].colorCSSStrongValue = `rgb(${srgbStrong.coords.map(channel => channel * 256).join(',')})`;
     }
-    this.#catexxxgories = Object.freeze(categories);
+    this.#categories = Object.freeze(categories);
 
     // set attributes
     this.#attributes = Object.keys(attributes).map(id => new Attribute(id, attributes[id]));
@@ -33,27 +33,27 @@ class Records {
     document.head.appendChild(styleElm);
     const styleSheet = styleElm.sheet;
     styleSheet.insertRule(`:root {
-      ${categories.map(catexxxgory => `
-        --color-catexxxgory-${catexxxgory.id}: ${catexxxgory.colorCSSValue};
-        --color-catexxxgory-${catexxxgory.id}-strong: ${catexxxgory.colorCSSStrongValue};
+      ${categories.map(category => `
+        --color-category-${category.id}: ${category.colorCSSValue};
+        --color-category-${category.id}-strong: ${category.colorCSSStrongValue};
         `).join('')}
     }`);
-    for (const catexxxgory of categories) {
+    for (const category of categories) {
       styleSheet.insertRule(`
-      ._catexxxgory-color[data-catexxxgory-id="${catexxxgory.id}"], [data-catexxxgory-id="${catexxxgory.id}"] ._catexxxgory-color {
-        color: var(--color-catexxxgory-${catexxxgory.id}-strong);
+      ._category-color[data-category-id="${category.id}"], [data-category-id="${category.id}"] ._category-color {
+        color: var(--color-category-${category.id}-strong);
       }`);
       styleSheet.insertRule(`
-      ._catexxxgory-background-color[data-catexxxgory-id="${catexxxgory.id}"], [data-catexxxgory-id="${catexxxgory.id}"] ._catexxxgory-background-color {
-        background-color: var(--color-catexxxgory-${catexxxgory.id});
+      ._category-background-color[data-category-id="${category.id}"], [data-category-id="${category.id}"] ._category-background-color {
+        background-color: var(--color-category-${category.id});
       }`);
       styleSheet.insertRule(`
-      ._catexxxgory-background-color-strong[data-catexxxgory-id="${catexxxgory.id}"], [data-catexxxgory-id="${catexxxgory.id}"] ._catexxxgory-background-color-strong {
-        background-color: var(--color-catexxxgory-${catexxxgory.id}-strong);
+      ._category-background-color-strong[data-category-id="${category.id}"], [data-category-id="${category.id}"] ._category-background-color-strong {
+        background-color: var(--color-category-${category.id}-strong);
       }`);
       styleSheet.insertRule(`
-      ._catexxxgory-border-color[data-catexxxgory-id="${catexxxgory.id}"], [data-catexxxgory-id="${catexxxgory.id}"] ._catexxxgory-border-color {
-        border-color: var(--color-catexxxgory-${catexxxgory.id});
+      ._category-border-color[data-category-id="${category.id}"], [data-category-id="${category.id}"] ._category-border-color {
+        border-color: var(--color-category-${category.id});
       }`);
     }
 
@@ -66,12 +66,12 @@ class Records {
     return attribute.fetchFiltersWithParentNode(node);
   }
 
-  getCatexxxgory(id) {
-    return this.#catexxxgories.find(category => category.id === id);
+  getCategory(id) {
+    return this.#categories.find(category => category.id === id);
   }
 
-  getCatexxxgoryWithAttributeId(attributeId) {
-    return this.#catexxxgories.find(category => category.attributes.indexOf(attributeId) !== -1);
+  getCategoryWithAttributeId(attributeId) {
+    return this.#categories.find(category => category.attributes.indexOf(attributeId) !== -1);
   }
 
   getAttribute(attributeId) {
@@ -107,8 +107,8 @@ class Records {
 
   // public accessors
 
-  get catexxxgories() {
-    return this.#catexxxgories;
+  get categories() {
+    return this.#categories;
   }
 
   get attributes() {

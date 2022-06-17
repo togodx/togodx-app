@@ -124,7 +124,7 @@ export default class ColumnView {
   #heatmap() {
     const isLog10 = App.viewModes.log10;
     let max = isLog10 && this.#max > 1 ? Math.log10(this.#max) : this.#max;
-    const category = Records.getCatexxxgoryWithAttributeId(this.attributeId);
+    const category = Records.getCategoryWithAttributeId(this.attributeId);
     this.#columnItemViews.forEach(columnItemView => {
       columnItemView.update(category.color, isLog10, max);
     });

@@ -21,7 +21,7 @@ export default class StatisticsView {
     this.#ROOT = elm;
 
     elm.classList.add('statistics-view');
-    elm.dataset.catexxxgoryId = condition.catexxxgoryId;
+    elm.dataset.categoryId = condition.categoryId;
 
     // make HTML
     elm.innerHTML = `
@@ -97,7 +97,7 @@ export default class StatisticsView {
         bar.dataset.node = node;
         bar.innerHTML = `
         <div class="wholebar"></div>
-        <div class="hitbar _catexxxgory-background-color-strong">
+        <div class="hitbar _category-background-color-strong">
           <div class="filter"></div>
         </div>
         <div class="label">${label}</div>`;

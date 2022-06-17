@@ -5,7 +5,7 @@ export default class ConditionBase {
   _attributeId;
   _ancestors = new Map();
   #annotation; // <Attribute>
-  #catexxxgoryId;
+  #categoryId;
   #dataset;
 
   constructor(attributeId) {
@@ -43,11 +43,11 @@ export default class ConditionBase {
     return this.#annotation;
   }
 
-  get catexxxgoryId() {
-    if (!this.#catexxxgoryId) {
-      this.#catexxxgoryId = Records.getCatexxxgoryWithAttributeId(this.annotation.id).id;
+  get categoryId() {
+    if (!this.#categoryId) {
+      this.#categoryId = Records.getCategoryWithAttributeId(this.annotation.id).id;
     }
-    return this.#catexxxgoryId;
+    return this.#categoryId;
   }
 
   get dataset() {

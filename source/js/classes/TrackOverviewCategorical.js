@@ -21,7 +21,7 @@ export default class TrackOverviewCategorical {
     this.#ROOT = elm;
     this.#attribute = attribute;
     this.#filters = filters.map(filter => Object.assign({}, filter));
-    const category = Records.getCatexxxgoryWithAttributeId(this.#attribute.id);
+    const category = Records.getCategoryWithAttributeId(this.#attribute.id);
 
     // make overview
     // TODO: ヒストグラムは別処理
@@ -34,7 +34,7 @@ export default class TrackOverviewCategorical {
       filter.baseColor = util.colorTintByHue(category.color, 360 * index / filters.length);
       const selectedClass = selectedFilters.indexOf(filter.node) !== -1 ? ' -selected' : '';
       return `
-        <li class="track-filter-view _catexxxgory-background-color${selectedClass}" style="width: ${width}%;" data-node="${filter.node}">
+        <li class="track-filter-view _category-background-color${selectedClass}" style="width: ${width}%;" data-node="${filter.node}">
           <div class="labels">
             <p>
               <span class="label">${filter.label}</span>
@@ -56,7 +56,7 @@ export default class TrackOverviewCategorical {
       filter.icon = filter.pin.querySelector(':scope > .material-icons');
 
       // attach event: show tooltip
-      const label = `<span class="_catexxxgory-color" data-catexxxgory-id="${category.id}">${filter.label}</span>`;
+      const label = `<span class="_category-color" data-category-id="${category.id}">${filter.label}</span>`;
       elm.addEventListener('mouseenter', () => {
         const values = [];
         const userFilter = this.#userFilters?.find(userFilter => userFilter.node === filter.node);

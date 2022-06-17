@@ -27,18 +27,18 @@ export default class StackingConditionView {
     // attributes
     this.#ROOT = document.createElement('div');
     this.#ROOT.classList.add('stacking-condition-view');
-    this.#ROOT.dataset.catexxxgoryId = condition.catexxxgoryId;
+    this.#ROOT.dataset.categoryId = condition.categoryId;
     this.#ROOT.dataset.attributeId = condition.attributeId;
     if (condition.parentNode) this.#ROOT.dataset.parentNode = condition.parentNode;
     // make view
-    let label, ancestorLabels = [Records.getCatexxxgory(condition.catexxxgoryId).label];
+    let label, ancestorLabels = [Records.getCategory(condition.categoryId).label];
     switch(true) {
       case this.#condition instanceof ConditionAnnotation: {
         if (condition.parentNode) {
           const getFilter = () => {
             const filter = condition.filter;
             if (filter) {
-              label = `<div class="label _catexxxgory-color">${filter.label}</div>`;
+              label = `<div class="label _category-color">${filter.label}</div>`;
               ancestorLabels.push(attribute.label, ...condition.ancestors.map(ancestor => {
                 return Records.getFilter(condition.attributeId, ancestor).label;
               }));
@@ -49,7 +49,7 @@ export default class StackingConditionView {
           }
           getFilter();
         } else {
-          label = `<div class="label _catexxxgory-color">${attribute.label}</div>`;
+          label = `<div class="label _category-color">${attribute.label}</div>`;
           this.#make(container, type, ancestorLabels, label);
         }
       }
@@ -108,7 +108,7 @@ export default class StackingConditionView {
       if (filter === undefined) {
         setTimeout(getFilter, POLLING_DURATION);
       } else {
-        this.#LABELS.insertAdjacentHTML('beforeend', `<li class="label _catexxxgory-background-color" data-node="${filter.node}">${filter.label}<div class="close-button-view"></div></li>`);
+        this.#LABELS.insertAdjacentHTML('beforeend', `<li class="label _category-background-color" data-node="${filter.node}">${filter.label}<div class="close-button-view"></div></li>`);
         // attach event
         this.#LABELS.querySelector(':scope > .label:last-child').addEventListener('click', e => {
           e.stopPropagation();

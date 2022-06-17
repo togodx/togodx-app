@@ -2856,7 +2856,7 @@
     return Attribute;
   }();
 
-  var _catexxxgories = /*#__PURE__*/new WeakMap();
+  var _categories = /*#__PURE__*/new WeakMap();
 
   var _attributes = /*#__PURE__*/new WeakMap();
 
@@ -2866,7 +2866,7 @@
     function Records() {
       _classCallCheck(this, Records);
 
-      _classPrivateFieldInitSpec(this, _catexxxgories, {
+      _classPrivateFieldInitSpec(this, _categories, {
         writable: true,
         value: void 0
       });
@@ -2906,7 +2906,7 @@
           }).join(','), ")");
         }
 
-        _classPrivateFieldSet(this, _catexxxgories, Object.freeze(categories)); // set attributes
+        _classPrivateFieldSet(this, _categories, Object.freeze(categories)); // set attributes
 
 
         _classPrivateFieldSet(this, _attributes, Object.keys(attributes).map(function (id) {
@@ -2917,8 +2917,8 @@
         var styleElm = document.createElement('style');
         document.head.appendChild(styleElm);
         var styleSheet = styleElm.sheet;
-        styleSheet.insertRule(":root {\n      ".concat(categories.map(function (catexxxgory) {
-          return "\n        --color-catexxxgory-".concat(catexxxgory.id, ": ").concat(catexxxgory.colorCSSValue, ";\n        --color-catexxxgory-").concat(catexxxgory.id, "-strong: ").concat(catexxxgory.colorCSSStrongValue, ";\n        ");
+        styleSheet.insertRule(":root {\n      ".concat(categories.map(function (category) {
+          return "\n        --color-category-".concat(category.id, ": ").concat(category.colorCSSValue, ";\n        --color-category-").concat(category.id, "-strong: ").concat(category.colorCSSStrongValue, ";\n        ");
         }).join(''), "\n    }"));
 
         var _iterator = _createForOfIteratorHelper(categories),
@@ -2926,11 +2926,11 @@
 
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var catexxxgory = _step.value;
-            styleSheet.insertRule("\n      ._catexxxgory-color[data-catexxxgory-id=\"".concat(catexxxgory.id, "\"], [data-catexxxgory-id=\"").concat(catexxxgory.id, "\"] ._catexxxgory-color {\n        color: var(--color-catexxxgory-").concat(catexxxgory.id, "-strong);\n      }"));
-            styleSheet.insertRule("\n      ._catexxxgory-background-color[data-catexxxgory-id=\"".concat(catexxxgory.id, "\"], [data-catexxxgory-id=\"").concat(catexxxgory.id, "\"] ._catexxxgory-background-color {\n        background-color: var(--color-catexxxgory-").concat(catexxxgory.id, ");\n      }"));
-            styleSheet.insertRule("\n      ._catexxxgory-background-color-strong[data-catexxxgory-id=\"".concat(catexxxgory.id, "\"], [data-catexxxgory-id=\"").concat(catexxxgory.id, "\"] ._catexxxgory-background-color-strong {\n        background-color: var(--color-catexxxgory-").concat(catexxxgory.id, "-strong);\n      }"));
-            styleSheet.insertRule("\n      ._catexxxgory-border-color[data-catexxxgory-id=\"".concat(catexxxgory.id, "\"], [data-catexxxgory-id=\"").concat(catexxxgory.id, "\"] ._catexxxgory-border-color {\n        border-color: var(--color-catexxxgory-").concat(catexxxgory.id, ");\n      }"));
+            var category = _step.value;
+            styleSheet.insertRule("\n      ._category-color[data-category-id=\"".concat(category.id, "\"], [data-category-id=\"").concat(category.id, "\"] ._category-color {\n        color: var(--color-category-").concat(category.id, "-strong);\n      }"));
+            styleSheet.insertRule("\n      ._category-background-color[data-category-id=\"".concat(category.id, "\"], [data-category-id=\"").concat(category.id, "\"] ._category-background-color {\n        background-color: var(--color-category-").concat(category.id, ");\n      }"));
+            styleSheet.insertRule("\n      ._category-background-color-strong[data-category-id=\"".concat(category.id, "\"], [data-category-id=\"").concat(category.id, "\"] ._category-background-color-strong {\n        background-color: var(--color-category-").concat(category.id, "-strong);\n      }"));
+            styleSheet.insertRule("\n      ._category-border-color[data-category-id=\"".concat(category.id, "\"], [data-category-id=\"").concat(category.id, "\"] ._category-border-color {\n        border-color: var(--color-category-").concat(category.id, ");\n      }"));
           } // set datasets
 
         } catch (err) {
@@ -2948,16 +2948,16 @@
         return attribute.fetchFiltersWithParentNode(node);
       }
     }, {
-      key: "getCatexxxgory",
-      value: function getCatexxxgory(id) {
-        return _classPrivateFieldGet(this, _catexxxgories).find(function (category) {
+      key: "getCategory",
+      value: function getCategory(id) {
+        return _classPrivateFieldGet(this, _categories).find(function (category) {
           return category.id === id;
         });
       }
     }, {
-      key: "getCatexxxgoryWithAttributeId",
-      value: function getCatexxxgoryWithAttributeId(attributeId) {
-        return _classPrivateFieldGet(this, _catexxxgories).find(function (category) {
+      key: "getCategoryWithAttributeId",
+      value: function getCategoryWithAttributeId(attributeId) {
+        return _classPrivateFieldGet(this, _categories).find(function (category) {
           return category.attributes.indexOf(attributeId) !== -1;
         });
       }
@@ -3010,9 +3010,9 @@
       } // public accessors
 
     }, {
-      key: "catexxxgories",
+      key: "categories",
       get: function get() {
-        return _classPrivateFieldGet(this, _catexxxgories);
+        return _classPrivateFieldGet(this, _categories);
       }
     }, {
       key: "attributes",
@@ -3028,7 +3028,7 @@
 
   var _annotation = /*#__PURE__*/new WeakMap();
 
-  var _catexxxgoryId = /*#__PURE__*/new WeakMap();
+  var _categoryId = /*#__PURE__*/new WeakMap();
 
   var _dataset$1 = /*#__PURE__*/new WeakMap();
 
@@ -3046,7 +3046,7 @@
         value: void 0
       });
 
-      _classPrivateFieldInitSpec(this, _catexxxgoryId, {
+      _classPrivateFieldInitSpec(this, _categoryId, {
         writable: true,
         value: void 0
       });
@@ -3099,13 +3099,13 @@
         return _classPrivateFieldGet(this, _annotation);
       }
     }, {
-      key: "catexxxgoryId",
+      key: "categoryId",
       get: function get() {
-        if (!_classPrivateFieldGet(this, _catexxxgoryId)) {
-          _classPrivateFieldSet(this, _catexxxgoryId, Records$1.getCatexxxgoryWithAttributeId(this.annotation.id).id);
+        if (!_classPrivateFieldGet(this, _categoryId)) {
+          _classPrivateFieldSet(this, _categoryId, Records$1.getCategoryWithAttributeId(this.annotation.id).id);
         }
 
-        return _classPrivateFieldGet(this, _catexxxgoryId);
+        return _classPrivateFieldGet(this, _categoryId);
       }
     }, {
       key: "dataset",
@@ -4091,12 +4091,12 @@
 
       _classPrivateFieldGet(this, _ROOT$e).classList.add('stacking-condition-view');
 
-      _classPrivateFieldGet(this, _ROOT$e).dataset.catexxxgoryId = condition.catexxxgoryId;
+      _classPrivateFieldGet(this, _ROOT$e).dataset.categoryId = condition.categoryId;
       _classPrivateFieldGet(this, _ROOT$e).dataset.attributeId = condition.attributeId;
       if (condition.parentNode) _classPrivateFieldGet(this, _ROOT$e).dataset.parentNode = condition.parentNode; // make view
 
       var _label,
-          _ancestorLabels = [Records$1.getCatexxxgory(condition.catexxxgoryId).label];
+          _ancestorLabels = [Records$1.getCategory(condition.categoryId).label];
 
       switch (true) {
         case _classPrivateFieldGet(this, _condition) instanceof ConditionAnnotation:
@@ -4106,7 +4106,7 @@
                 var filter = condition.filter;
 
                 if (filter) {
-                  _label = "<div class=\"label _catexxxgory-color\">".concat(filter.label, "</div>");
+                  _label = "<div class=\"label _category-color\">".concat(filter.label, "</div>");
 
                   _ancestorLabels.push.apply(_ancestorLabels, [attribute.label].concat(_toConsumableArray(condition.ancestors.map(function (ancestor) {
                     return Records$1.getFilter(condition.attributeId, ancestor).label;
@@ -4120,7 +4120,7 @@
 
               getFilter();
             } else {
-              _label = "<div class=\"label _catexxxgory-color\">".concat(attribute.label, "</div>");
+              _label = "<div class=\"label _category-color\">".concat(attribute.label, "</div>");
 
               _classPrivateMethodGet(this, _make, _make2).call(this, _container, type, _ancestorLabels, _label);
             }
@@ -4152,7 +4152,7 @@
           if (filter === undefined) {
             setTimeout(getFilter, POLLING_DURATION);
           } else {
-            _classPrivateFieldGet(_this2, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _catexxxgory-background-color\" data-node=\"".concat(filter.node, "\">").concat(filter.label, "<div class=\"close-button-view\"></div></li>")); // attach event
+            _classPrivateFieldGet(_this2, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _category-background-color\" data-node=\"".concat(filter.node, "\">").concat(filter.label, "<div class=\"close-button-view\"></div></li>")); // attach event
 
 
             _classPrivateFieldGet(_this2, _LABELS).querySelector(':scope > .label:last-child').addEventListener('click', function (e) {
@@ -4873,22 +4873,6 @@
 
   var toString = Object.prototype.toString;
 
-  // eslint-disable-next-line func-names
-  var kindOf = (function(cache) {
-    // eslint-disable-next-line func-names
-    return function(thing) {
-      var str = toString.call(thing);
-      return cache[str] || (cache[str] = str.slice(8, -1).toLowerCase());
-    };
-  })(Object.create(null));
-
-  function kindOfTest(type) {
-    type = type.toLowerCase();
-    return function isKindOf(thing) {
-      return kindOf(thing) === type;
-    };
-  }
-
   /**
    * Determine if a value is an Array
    *
@@ -4923,12 +4907,22 @@
   /**
    * Determine if a value is an ArrayBuffer
    *
-   * @function
    * @param {Object} val The value to test
    * @returns {boolean} True if value is an ArrayBuffer, otherwise false
    */
-  var isArrayBuffer = kindOfTest('ArrayBuffer');
+  function isArrayBuffer(val) {
+    return toString.call(val) === '[object ArrayBuffer]';
+  }
 
+  /**
+   * Determine if a value is a FormData
+   *
+   * @param {Object} val The value to test
+   * @returns {boolean} True if value is an FormData, otherwise false
+   */
+  function isFormData(val) {
+    return toString.call(val) === '[object FormData]';
+  }
 
   /**
    * Determine if a value is a view on an ArrayBuffer
@@ -4983,7 +4977,7 @@
    * @return {boolean} True if value is a plain Object, otherwise false
    */
   function isPlainObject(val) {
-    if (kindOf(val) !== 'object') {
+    if (toString.call(val) !== '[object Object]') {
       return false;
     }
 
@@ -4994,38 +4988,32 @@
   /**
    * Determine if a value is a Date
    *
-   * @function
    * @param {Object} val The value to test
    * @returns {boolean} True if value is a Date, otherwise false
    */
-  var isDate = kindOfTest('Date');
+  function isDate(val) {
+    return toString.call(val) === '[object Date]';
+  }
 
   /**
    * Determine if a value is a File
    *
-   * @function
    * @param {Object} val The value to test
    * @returns {boolean} True if value is a File, otherwise false
    */
-  var isFile = kindOfTest('File');
+  function isFile(val) {
+    return toString.call(val) === '[object File]';
+  }
 
   /**
    * Determine if a value is a Blob
    *
-   * @function
    * @param {Object} val The value to test
    * @returns {boolean} True if value is a Blob, otherwise false
    */
-  var isBlob = kindOfTest('Blob');
-
-  /**
-   * Determine if a value is a FileList
-   *
-   * @function
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is a File, otherwise false
-   */
-  var isFileList = kindOfTest('FileList');
+  function isBlob(val) {
+    return toString.call(val) === '[object Blob]';
+  }
 
   /**
    * Determine if a value is a Function
@@ -5048,27 +5036,14 @@
   }
 
   /**
-   * Determine if a value is a FormData
-   *
-   * @param {Object} thing The value to test
-   * @returns {boolean} True if value is an FormData, otherwise false
-   */
-  function isFormData(thing) {
-    var pattern = '[object FormData]';
-    return thing && (
-      (typeof FormData === 'function' && thing instanceof FormData) ||
-      toString.call(thing) === pattern ||
-      (isFunction(thing.toString) && thing.toString() === pattern)
-    );
-  }
-
-  /**
    * Determine if a value is a URLSearchParams object
-   * @function
+   *
    * @param {Object} val The value to test
    * @returns {boolean} True if value is a URLSearchParams object, otherwise false
    */
-  var isURLSearchParams = kindOfTest('URLSearchParams');
+  function isURLSearchParams(val) {
+    return toString.call(val) === '[object URLSearchParams]';
+  }
 
   /**
    * Trim excess whitespace off the beginning and end of a string
@@ -5215,94 +5190,6 @@
     return content;
   }
 
-  /**
-   * Inherit the prototype methods from one constructor into another
-   * @param {function} constructor
-   * @param {function} superConstructor
-   * @param {object} [props]
-   * @param {object} [descriptors]
-   */
-
-  function inherits(constructor, superConstructor, props, descriptors) {
-    constructor.prototype = Object.create(superConstructor.prototype, descriptors);
-    constructor.prototype.constructor = constructor;
-    props && Object.assign(constructor.prototype, props);
-  }
-
-  /**
-   * Resolve object with deep prototype chain to a flat object
-   * @param {Object} sourceObj source object
-   * @param {Object} [destObj]
-   * @param {Function} [filter]
-   * @returns {Object}
-   */
-
-  function toFlatObject(sourceObj, destObj, filter) {
-    var props;
-    var i;
-    var prop;
-    var merged = {};
-
-    destObj = destObj || {};
-
-    do {
-      props = Object.getOwnPropertyNames(sourceObj);
-      i = props.length;
-      while (i-- > 0) {
-        prop = props[i];
-        if (!merged[prop]) {
-          destObj[prop] = sourceObj[prop];
-          merged[prop] = true;
-        }
-      }
-      sourceObj = Object.getPrototypeOf(sourceObj);
-    } while (sourceObj && (!filter || filter(sourceObj, destObj)) && sourceObj !== Object.prototype);
-
-    return destObj;
-  }
-
-  /*
-   * determines whether a string ends with the characters of a specified string
-   * @param {String} str
-   * @param {String} searchString
-   * @param {Number} [position= 0]
-   * @returns {boolean}
-   */
-  function endsWith(str, searchString, position) {
-    str = String(str);
-    if (position === undefined || position > str.length) {
-      position = str.length;
-    }
-    position -= searchString.length;
-    var lastIndex = str.indexOf(searchString, position);
-    return lastIndex !== -1 && lastIndex === position;
-  }
-
-
-  /**
-   * Returns new array from array like object
-   * @param {*} [thing]
-   * @returns {Array}
-   */
-  function toArray(thing) {
-    if (!thing) return null;
-    var i = thing.length;
-    if (isUndefined(i)) return null;
-    var arr = new Array(i);
-    while (i-- > 0) {
-      arr[i] = thing[i];
-    }
-    return arr;
-  }
-
-  // eslint-disable-next-line func-names
-  var isTypedArray = (function(TypedArray) {
-    // eslint-disable-next-line func-names
-    return function(thing) {
-      return TypedArray && thing instanceof TypedArray;
-    };
-  })(typeof Uint8Array !== 'undefined' && Object.getPrototypeOf(Uint8Array));
-
   var utils$9 = {
     isArray: isArray,
     isArrayBuffer: isArrayBuffer,
@@ -5325,15 +5212,7 @@
     merge: merge,
     extend: extend,
     trim: trim,
-    stripBOM: stripBOM,
-    inherits: inherits,
-    toFlatObject: toFlatObject,
-    kindOf: kindOf,
-    kindOfTest: kindOfTest,
-    endsWith: endsWith,
-    toArray: toArray,
-    isTypedArray: isTypedArray,
-    isFileList: isFileList
+    stripBOM: stripBOM
   };
 
   var utils$8 = utils$9;
@@ -5469,99 +5348,47 @@
     });
   };
 
-  var AxiosError_1;
-  var hasRequiredAxiosError;
+  /**
+   * Update an Error with the specified config, error code, and response.
+   *
+   * @param {Error} error The error to update.
+   * @param {Object} config The config.
+   * @param {string} [code] The error code (for example, 'ECONNABORTED').
+   * @param {Object} [request] The request.
+   * @param {Object} [response] The response.
+   * @returns {Error} The error.
+   */
+  var enhanceError$1 = function enhanceError(error, config, code, request, response) {
+    error.config = config;
+    if (code) {
+      error.code = code;
+    }
 
-  function requireAxiosError () {
-  	if (hasRequiredAxiosError) return AxiosError_1;
-  	hasRequiredAxiosError = 1;
+    error.request = request;
+    error.response = response;
+    error.isAxiosError = true;
 
-  	var utils = utils$9;
-
-  	/**
-  	 * Create an Error with the specified message, config, error code, request and response.
-  	 *
-  	 * @param {string} message The error message.
-  	 * @param {string} [code] The error code (for example, 'ECONNABORTED').
-  	 * @param {Object} [config] The config.
-  	 * @param {Object} [request] The request.
-  	 * @param {Object} [response] The response.
-  	 * @returns {Error} The created error.
-  	 */
-  	function AxiosError(message, code, config, request, response) {
-  	  Error.call(this);
-  	  this.message = message;
-  	  this.name = 'AxiosError';
-  	  code && (this.code = code);
-  	  config && (this.config = config);
-  	  request && (this.request = request);
-  	  response && (this.response = response);
-  	}
-
-  	utils.inherits(AxiosError, Error, {
-  	  toJSON: function toJSON() {
-  	    return {
-  	      // Standard
-  	      message: this.message,
-  	      name: this.name,
-  	      // Microsoft
-  	      description: this.description,
-  	      number: this.number,
-  	      // Mozilla
-  	      fileName: this.fileName,
-  	      lineNumber: this.lineNumber,
-  	      columnNumber: this.columnNumber,
-  	      stack: this.stack,
-  	      // Axios
-  	      config: this.config,
-  	      code: this.code,
-  	      status: this.response && this.response.status ? this.response.status : null
-  	    };
-  	  }
-  	});
-
-  	var prototype = AxiosError.prototype;
-  	var descriptors = {};
-
-  	[
-  	  'ERR_BAD_OPTION_VALUE',
-  	  'ERR_BAD_OPTION',
-  	  'ECONNABORTED',
-  	  'ETIMEDOUT',
-  	  'ERR_NETWORK',
-  	  'ERR_FR_TOO_MANY_REDIRECTS',
-  	  'ERR_DEPRECATED',
-  	  'ERR_BAD_RESPONSE',
-  	  'ERR_BAD_REQUEST',
-  	  'ERR_CANCELED'
-  	// eslint-disable-next-line func-names
-  	].forEach(function(code) {
-  	  descriptors[code] = {value: code};
-  	});
-
-  	Object.defineProperties(AxiosError, descriptors);
-  	Object.defineProperty(prototype, 'isAxiosError', {value: true});
-
-  	// eslint-disable-next-line func-names
-  	AxiosError.from = function(error, code, config, request, response, customProps) {
-  	  var axiosError = Object.create(prototype);
-
-  	  utils.toFlatObject(error, axiosError, function filter(obj) {
-  	    return obj !== Error.prototype;
-  	  });
-
-  	  AxiosError.call(axiosError, error.message, code, config, request, response);
-
-  	  axiosError.name = error.name;
-
-  	  customProps && Object.assign(axiosError, customProps);
-
-  	  return axiosError;
-  	};
-
-  	AxiosError_1 = AxiosError;
-  	return AxiosError_1;
-  }
+    error.toJSON = function toJSON() {
+      return {
+        // Standard
+        message: this.message,
+        name: this.name,
+        // Microsoft
+        description: this.description,
+        number: this.number,
+        // Mozilla
+        fileName: this.fileName,
+        lineNumber: this.lineNumber,
+        columnNumber: this.columnNumber,
+        stack: this.stack,
+        // Axios
+        config: this.config,
+        code: this.code,
+        status: this.response && this.response.status ? this.response.status : null
+      };
+    };
+    return error;
+  };
 
   var transitional = {
     silentJSONParsing: true,
@@ -5569,84 +5396,30 @@
     clarifyTimeoutError: false
   };
 
-  var toFormData_1;
-  var hasRequiredToFormData;
+  var createError;
+  var hasRequiredCreateError;
 
-  function requireToFormData () {
-  	if (hasRequiredToFormData) return toFormData_1;
-  	hasRequiredToFormData = 1;
+  function requireCreateError () {
+  	if (hasRequiredCreateError) return createError;
+  	hasRequiredCreateError = 1;
 
-  	var utils = utils$9;
+  	var enhanceError = enhanceError$1;
 
   	/**
-  	 * Convert a data object to FormData
-  	 * @param {Object} obj
-  	 * @param {?Object} [formData]
-  	 * @returns {Object}
-  	 **/
-
-  	function toFormData(obj, formData) {
-  	  // eslint-disable-next-line no-param-reassign
-  	  formData = formData || new FormData();
-
-  	  var stack = [];
-
-  	  function convertValue(value) {
-  	    if (value === null) return '';
-
-  	    if (utils.isDate(value)) {
-  	      return value.toISOString();
-  	    }
-
-  	    if (utils.isArrayBuffer(value) || utils.isTypedArray(value)) {
-  	      return typeof Blob === 'function' ? new Blob([value]) : Buffer.from(value);
-  	    }
-
-  	    return value;
-  	  }
-
-  	  function build(data, parentKey) {
-  	    if (utils.isPlainObject(data) || utils.isArray(data)) {
-  	      if (stack.indexOf(data) !== -1) {
-  	        throw Error('Circular reference detected in ' + parentKey);
-  	      }
-
-  	      stack.push(data);
-
-  	      utils.forEach(data, function each(value, key) {
-  	        if (utils.isUndefined(value)) return;
-  	        var fullKey = parentKey ? parentKey + '.' + key : key;
-  	        var arr;
-
-  	        if (value && !parentKey && typeof value === 'object') {
-  	          if (utils.endsWith(key, '{}')) {
-  	            // eslint-disable-next-line no-param-reassign
-  	            value = JSON.stringify(value);
-  	          } else if (utils.endsWith(key, '[]') && (arr = utils.toArray(value))) {
-  	            // eslint-disable-next-line func-names
-  	            arr.forEach(function(el) {
-  	              !utils.isUndefined(el) && formData.append(fullKey, convertValue(el));
-  	            });
-  	            return;
-  	          }
-  	        }
-
-  	        build(value, fullKey);
-  	      });
-
-  	      stack.pop();
-  	    } else {
-  	      formData.append(parentKey, convertValue(data));
-  	    }
-  	  }
-
-  	  build(obj);
-
-  	  return formData;
-  	}
-
-  	toFormData_1 = toFormData;
-  	return toFormData_1;
+  	 * Create an Error with the specified message, config, error code, request and response.
+  	 *
+  	 * @param {string} message The error message.
+  	 * @param {Object} config The config.
+  	 * @param {string} [code] The error code (for example, 'ECONNABORTED').
+  	 * @param {Object} [request] The request.
+  	 * @param {Object} [response] The response.
+  	 * @returns {Error} The created error.
+  	 */
+  	createError = function createError(message, config, code, request, response) {
+  	  var error = new Error(message);
+  	  return enhanceError(error, config, code, request, response);
+  	};
+  	return createError;
   }
 
   var settle;
@@ -5656,7 +5429,7 @@
   	if (hasRequiredSettle) return settle;
   	hasRequiredSettle = 1;
 
-  	var AxiosError = requireAxiosError();
+  	var createError = requireCreateError();
 
   	/**
   	 * Resolve or reject a Promise based on response status.
@@ -5670,10 +5443,10 @@
   	  if (!response.status || !validateStatus || validateStatus(response.status)) {
   	    resolve(response);
   	  } else {
-  	    reject(new AxiosError(
+  	    reject(createError(
   	      'Request failed with status code ' + response.status,
-  	      [AxiosError.ERR_BAD_REQUEST, AxiosError.ERR_BAD_RESPONSE][Math.floor(response.status / 100) - 4],
   	      response.config,
+  	      null,
   	      response.request,
   	      response
   	    ));
@@ -5743,50 +5516,77 @@
   	return cookies;
   }
 
-  /**
-   * Determines whether the specified URL is absolute
-   *
-   * @param {string} url The URL to test
-   * @returns {boolean} True if the specified URL is absolute, otherwise false
-   */
-  var isAbsoluteURL$1 = function isAbsoluteURL(url) {
-    // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
-    // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
-    // by any combination of letters, digits, plus, period, or hyphen.
-    return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
-  };
+  var isAbsoluteURL;
+  var hasRequiredIsAbsoluteURL;
 
-  /**
-   * Creates a new URL by combining the specified URLs
-   *
-   * @param {string} baseURL The base URL
-   * @param {string} relativeURL The relative URL
-   * @returns {string} The combined URL
-   */
-  var combineURLs$1 = function combineURLs(baseURL, relativeURL) {
-    return relativeURL
-      ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
-      : baseURL;
-  };
+  function requireIsAbsoluteURL () {
+  	if (hasRequiredIsAbsoluteURL) return isAbsoluteURL;
+  	hasRequiredIsAbsoluteURL = 1;
 
-  var isAbsoluteURL = isAbsoluteURL$1;
-  var combineURLs = combineURLs$1;
+  	/**
+  	 * Determines whether the specified URL is absolute
+  	 *
+  	 * @param {string} url The URL to test
+  	 * @returns {boolean} True if the specified URL is absolute, otherwise false
+  	 */
+  	isAbsoluteURL = function isAbsoluteURL(url) {
+  	  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
+  	  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
+  	  // by any combination of letters, digits, plus, period, or hyphen.
+  	  return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
+  	};
+  	return isAbsoluteURL;
+  }
 
-  /**
-   * Creates a new URL by combining the baseURL with the requestedURL,
-   * only when the requestedURL is not already an absolute URL.
-   * If the requestURL is absolute, this function returns the requestedURL untouched.
-   *
-   * @param {string} baseURL The base URL
-   * @param {string} requestedURL Absolute or relative URL to combine
-   * @returns {string} The combined full path
-   */
-  var buildFullPath$1 = function buildFullPath(baseURL, requestedURL) {
-    if (baseURL && !isAbsoluteURL(requestedURL)) {
-      return combineURLs(baseURL, requestedURL);
-    }
-    return requestedURL;
-  };
+  var combineURLs;
+  var hasRequiredCombineURLs;
+
+  function requireCombineURLs () {
+  	if (hasRequiredCombineURLs) return combineURLs;
+  	hasRequiredCombineURLs = 1;
+
+  	/**
+  	 * Creates a new URL by combining the specified URLs
+  	 *
+  	 * @param {string} baseURL The base URL
+  	 * @param {string} relativeURL The relative URL
+  	 * @returns {string} The combined URL
+  	 */
+  	combineURLs = function combineURLs(baseURL, relativeURL) {
+  	  return relativeURL
+  	    ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
+  	    : baseURL;
+  	};
+  	return combineURLs;
+  }
+
+  var buildFullPath;
+  var hasRequiredBuildFullPath;
+
+  function requireBuildFullPath () {
+  	if (hasRequiredBuildFullPath) return buildFullPath;
+  	hasRequiredBuildFullPath = 1;
+
+  	var isAbsoluteURL = requireIsAbsoluteURL();
+  	var combineURLs = requireCombineURLs();
+
+  	/**
+  	 * Creates a new URL by combining the baseURL with the requestedURL,
+  	 * only when the requestedURL is not already an absolute URL.
+  	 * If the requestURL is absolute, this function returns the requestedURL untouched.
+  	 *
+  	 * @param {string} baseURL The base URL
+  	 * @param {string} requestedURL Absolute or relative URL to combine
+  	 * @returns {string} The combined full path
+  	 */
+  	buildFullPath = function buildFullPath(baseURL, requestedURL) {
+  	  if (baseURL && !isAbsoluteURL(requestedURL)) {
+  	    return combineURLs(baseURL, requestedURL);
+  	  }
+  	  return requestedURL;
+  	};
+  	return buildFullPath;
+  }
 
   var parseHeaders;
   var hasRequiredParseHeaders;
@@ -5925,48 +5725,31 @@
   	return isURLSameOrigin;
   }
 
-  var CanceledError_1;
-  var hasRequiredCanceledError;
+  var Cancel_1;
+  var hasRequiredCancel;
 
-  function requireCanceledError () {
-  	if (hasRequiredCanceledError) return CanceledError_1;
-  	hasRequiredCanceledError = 1;
-
-  	var AxiosError = requireAxiosError();
-  	var utils = utils$9;
+  function requireCancel () {
+  	if (hasRequiredCancel) return Cancel_1;
+  	hasRequiredCancel = 1;
 
   	/**
-  	 * A `CanceledError` is an object that is thrown when an operation is canceled.
+  	 * A `Cancel` is an object that is thrown when an operation is canceled.
   	 *
   	 * @class
   	 * @param {string=} message The message.
   	 */
-  	function CanceledError(message) {
-  	  // eslint-disable-next-line no-eq-null,eqeqeq
-  	  AxiosError.call(this, message == null ? 'canceled' : message, AxiosError.ERR_CANCELED);
-  	  this.name = 'CanceledError';
+  	function Cancel(message) {
+  	  this.message = message;
   	}
 
-  	utils.inherits(CanceledError, AxiosError, {
-  	  __CANCEL__: true
-  	});
-
-  	CanceledError_1 = CanceledError;
-  	return CanceledError_1;
-  }
-
-  var parseProtocol;
-  var hasRequiredParseProtocol;
-
-  function requireParseProtocol () {
-  	if (hasRequiredParseProtocol) return parseProtocol;
-  	hasRequiredParseProtocol = 1;
-
-  	parseProtocol = function parseProtocol(url) {
-  	  var match = /^([-+\w]{1,25})(:?\/\/|:)/.exec(url);
-  	  return match && match[1] || '';
+  	Cancel.prototype.toString = function toString() {
+  	  return 'Cancel' + (this.message ? ': ' + this.message : '');
   	};
-  	return parseProtocol;
+
+  	Cancel.prototype.__CANCEL__ = true;
+
+  	Cancel_1 = Cancel;
+  	return Cancel_1;
   }
 
   var xhr;
@@ -5980,13 +5763,12 @@
   	var settle = requireSettle();
   	var cookies = requireCookies();
   	var buildURL = buildURL$1;
-  	var buildFullPath = buildFullPath$1;
+  	var buildFullPath = requireBuildFullPath();
   	var parseHeaders = requireParseHeaders();
   	var isURLSameOrigin = requireIsURLSameOrigin();
+  	var createError = requireCreateError();
   	var transitionalDefaults = transitional;
-  	var AxiosError = requireAxiosError();
-  	var CanceledError = requireCanceledError();
-  	var parseProtocol = requireParseProtocol();
+  	var Cancel = requireCancel();
 
   	xhr = function xhrAdapter(config) {
   	  return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -6004,7 +5786,7 @@
   	      }
   	    }
 
-  	    if (utils.isFormData(requestData) && utils.isStandardBrowserEnv()) {
+  	    if (utils.isFormData(requestData)) {
   	      delete requestHeaders['Content-Type']; // Let the browser set it
   	    }
 
@@ -6018,7 +5800,6 @@
   	    }
 
   	    var fullPath = buildFullPath(config.baseURL, config.url);
-
   	    request.open(config.method.toUpperCase(), buildURL(fullPath, config.params, config.paramsSerializer), true);
 
   	    // Set the request timeout in MS
@@ -6082,7 +5863,7 @@
   	        return;
   	      }
 
-  	      reject(new AxiosError('Request aborted', AxiosError.ECONNABORTED, config, request));
+  	      reject(createError('Request aborted', config, 'ECONNABORTED', request));
 
   	      // Clean up request
   	      request = null;
@@ -6092,7 +5873,7 @@
   	    request.onerror = function handleError() {
   	      // Real errors are hidden from us by the browser
   	      // onerror should only fire if it's a network error
-  	      reject(new AxiosError('Network Error', AxiosError.ERR_NETWORK, config, request, request));
+  	      reject(createError('Network Error', config, null, request));
 
   	      // Clean up request
   	      request = null;
@@ -6105,10 +5886,10 @@
   	      if (config.timeoutErrorMessage) {
   	        timeoutErrorMessage = config.timeoutErrorMessage;
   	      }
-  	      reject(new AxiosError(
+  	      reject(createError(
   	        timeoutErrorMessage,
-  	        transitional.clarifyTimeoutError ? AxiosError.ETIMEDOUT : AxiosError.ECONNABORTED,
   	        config,
+  	        transitional.clarifyTimeoutError ? 'ETIMEDOUT' : 'ECONNABORTED',
   	        request));
 
   	      // Clean up request
@@ -6169,7 +5950,7 @@
   	        if (!request) {
   	          return;
   	        }
-  	        reject(!cancel || (cancel && cancel.type) ? new CanceledError() : cancel);
+  	        reject(!cancel || (cancel && cancel.type) ? new Cancel('canceled') : cancel);
   	        request.abort();
   	        request = null;
   	      };
@@ -6184,14 +5965,6 @@
   	      requestData = null;
   	    }
 
-  	    var protocol = parseProtocol(fullPath);
-
-  	    if (protocol && [ 'http', 'https', 'file' ].indexOf(protocol) === -1) {
-  	      reject(new AxiosError('Unsupported protocol ' + protocol + ':', AxiosError.ERR_BAD_REQUEST, config));
-  	      return;
-  	    }
-
-
   	    // Send the request
   	    request.send(requestData);
   	  });
@@ -6199,22 +5972,10 @@
   	return xhr;
   }
 
-  var _null;
-  var hasRequired_null;
-
-  function require_null () {
-  	if (hasRequired_null) return _null;
-  	hasRequired_null = 1;
-  	// eslint-disable-next-line strict
-  	_null = null;
-  	return _null;
-  }
-
   var utils$5 = utils$9;
   var normalizeHeaderName = normalizeHeaderName$1;
-  var AxiosError$1 = requireAxiosError();
+  var enhanceError = enhanceError$1;
   var transitionalDefaults = transitional;
-  var toFormData = requireToFormData();
 
   var DEFAULT_CONTENT_TYPE = {
     'Content-Type': 'application/x-www-form-urlencoded'
@@ -6279,20 +6040,10 @@
         setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
         return data.toString();
       }
-
-      var isObjectPayload = utils$5.isObject(data);
-      var contentType = headers && headers['Content-Type'];
-
-      var isFileList;
-
-      if ((isFileList = utils$5.isFileList(data)) || (isObjectPayload && contentType === 'multipart/form-data')) {
-        var _FormData = this.env && this.env.FormData;
-        return toFormData(isFileList ? {'files[]': data} : data, _FormData && new _FormData());
-      } else if (isObjectPayload || contentType === 'application/json') {
+      if (utils$5.isObject(data) || (headers && headers['Content-Type'] === 'application/json')) {
         setContentTypeIfUnset(headers, 'application/json');
         return stringifySafely(data);
       }
-
       return data;
     }],
 
@@ -6308,7 +6059,7 @@
         } catch (e) {
           if (strictJSONParsing) {
             if (e.name === 'SyntaxError') {
-              throw AxiosError$1.from(e, AxiosError$1.ERR_BAD_RESPONSE, this, null, this.response);
+              throw enhanceError(e, this, 'E_JSON_PARSE');
             }
             throw e;
           }
@@ -6329,10 +6080,6 @@
 
     maxContentLength: -1,
     maxBodyLength: -1,
-
-    env: {
-      FormData: require_null()
-    },
 
     validateStatus: function validateStatus(status) {
       return status >= 200 && status < 300;
@@ -6393,10 +6140,10 @@
   var transformData = transformData$1;
   var isCancel = requireIsCancel();
   var defaults$1 = defaults_1;
-  var CanceledError = requireCanceledError();
+  var Cancel = requireCancel();
 
   /**
-   * Throws a `CanceledError` if cancellation has been requested.
+   * Throws a `Cancel` if cancellation has been requested.
    */
   function throwIfCancellationRequested(config) {
     if (config.cancelToken) {
@@ -6404,7 +6151,7 @@
     }
 
     if (config.signal && config.signal.aborted) {
-      throw new CanceledError();
+      throw new Cancel('canceled');
     }
   }
 
@@ -6555,7 +6302,6 @@
       'decompress': defaultToConfig2,
       'maxContentLength': defaultToConfig2,
       'maxBodyLength': defaultToConfig2,
-      'beforeRedirect': defaultToConfig2,
       'transport': defaultToConfig2,
       'httpAgent': defaultToConfig2,
       'httpsAgent': defaultToConfig2,
@@ -6581,13 +6327,12 @@
   	if (hasRequiredData) return data;
   	hasRequiredData = 1;
   	data = {
-  	  "version": "0.27.2"
+  	  "version": "0.26.1"
   	};
   	return data;
   }
 
   var VERSION = requireData().version;
-  var AxiosError = requireAxiosError();
 
   var validators$1 = {};
 
@@ -6615,10 +6360,7 @@
     // eslint-disable-next-line func-names
     return function(value, opt, opts) {
       if (validator === false) {
-        throw new AxiosError(
-          formatMessage(opt, ' has been removed' + (version ? ' in ' + version : '')),
-          AxiosError.ERR_DEPRECATED
-        );
+        throw new Error(formatMessage(opt, ' has been removed' + (version ? ' in ' + version : '')));
       }
 
       if (version && !deprecatedWarnings[opt]) {
@@ -6645,7 +6387,7 @@
 
   function assertOptions(options, schema, allowUnknown) {
     if (typeof options !== 'object') {
-      throw new AxiosError('options must be an object', AxiosError.ERR_BAD_OPTION_VALUE);
+      throw new TypeError('options must be an object');
     }
     var keys = Object.keys(options);
     var i = keys.length;
@@ -6656,12 +6398,12 @@
         var value = options[opt];
         var result = value === undefined || validator(value, opt, options);
         if (result !== true) {
-          throw new AxiosError('option ' + opt + ' must be ' + result, AxiosError.ERR_BAD_OPTION_VALUE);
+          throw new TypeError('option ' + opt + ' must be ' + result);
         }
         continue;
       }
       if (allowUnknown !== true) {
-        throw new AxiosError('Unknown option ' + opt, AxiosError.ERR_BAD_OPTION);
+        throw Error('Unknown option ' + opt);
       }
     }
   }
@@ -6676,7 +6418,6 @@
   var InterceptorManager = InterceptorManager_1;
   var dispatchRequest = dispatchRequest$1;
   var mergeConfig$1 = mergeConfig$2;
-  var buildFullPath = buildFullPath$1;
   var validator = validator$1;
 
   var validators = validator.validators;
@@ -6791,8 +6532,7 @@
 
   Axios$1.prototype.getUri = function getUri(config) {
     config = mergeConfig$1(this.defaults, config);
-    var fullPath = buildFullPath(config.baseURL, config.url);
-    return buildURL(fullPath, config.params, config.paramsSerializer);
+    return buildURL(config.url, config.params, config.paramsSerializer).replace(/^\?/, '');
   };
 
   // Provide aliases for supported request methods
@@ -6809,23 +6549,13 @@
 
   utils$1.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
     /*eslint func-names:0*/
-
-    function generateHTTPMethod(isForm) {
-      return function httpMethod(url, data, config) {
-        return this.request(mergeConfig$1(config || {}, {
-          method: method,
-          headers: isForm ? {
-            'Content-Type': 'multipart/form-data'
-          } : {},
-          url: url,
-          data: data
-        }));
-      };
-    }
-
-    Axios$1.prototype[method] = generateHTTPMethod();
-
-    Axios$1.prototype[method + 'Form'] = generateHTTPMethod(true);
+    Axios$1.prototype[method] = function(url, data, config) {
+      return this.request(mergeConfig$1(config || {}, {
+        method: method,
+        url: url,
+        data: data
+      }));
+    };
   });
 
   var Axios_1 = Axios$1;
@@ -6837,7 +6567,7 @@
   	if (hasRequiredCancelToken) return CancelToken_1;
   	hasRequiredCancelToken = 1;
 
-  	var CanceledError = requireCanceledError();
+  	var Cancel = requireCancel();
 
   	/**
   	 * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -6893,13 +6623,13 @@
   	      return;
   	    }
 
-  	    token.reason = new CanceledError(message);
+  	    token.reason = new Cancel(message);
   	    resolvePromise(token.reason);
   	  });
   	}
 
   	/**
-  	 * Throws a `CanceledError` if cancellation has been requested.
+  	 * Throws a `Cancel` if cancellation has been requested.
   	 */
   	CancelToken.prototype.throwIfRequested = function throwIfRequested() {
   	  if (this.reason) {
@@ -7050,17 +6780,10 @@
   axios$1.Axios = Axios;
 
   // Expose Cancel & CancelToken
-  axios$1.CanceledError = requireCanceledError();
+  axios$1.Cancel = requireCancel();
   axios$1.CancelToken = requireCancelToken();
   axios$1.isCancel = requireIsCancel();
   axios$1.VERSION = requireData().version;
-  axios$1.toFormData = requireToFormData();
-
-  // Expose AxiosError class
-  axios$1.AxiosError = requireAxiosError();
-
-  // alias for CanceledError for backward compatibility
-  axios$1.Cancel = axios$1.CanceledError;
 
   // Expose all/spread
   axios$1.all = function all(promises) {
@@ -7376,7 +7099,7 @@
   function _heatmap2() {
     var isLog10 = App$1.viewModes.log10;
     var max = isLog10 && _classPrivateFieldGet(this, _max) > 1 ? Math.log10(_classPrivateFieldGet(this, _max)) : _classPrivateFieldGet(this, _max);
-    var category = Records$1.getCatexxxgoryWithAttributeId(this.attributeId);
+    var category = Records$1.getCategoryWithAttributeId(this.attributeId);
 
     _classPrivateFieldGet(this, _columnItemViews).forEach(function (columnItemView) {
       columnItemView.update(category.color, isLog10, max);
@@ -8098,7 +7821,7 @@
 
       _classPrivateFieldSet(this, _attribute$2, attribute);
 
-      var category = Records$1.getCatexxxgoryWithAttributeId(_classPrivateFieldGet(this, _attribute$2).id);
+      var category = Records$1.getCategoryWithAttributeId(_classPrivateFieldGet(this, _attribute$2).id);
 
       _classPrivateFieldSet(this, _items, items.map(function (item) {
         return Object.assign({}, item);
@@ -8122,7 +7845,7 @@
       var width = 100 / _classPrivateFieldGet(this, _items).length;
 
       overview.innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
-        return "<div\n      class=\"bar _catexxxgory-background-color\"\n      data-node=\"".concat(item.node, "\"\n      data-count=\"").concat(item.count, "\"\n      style=\"width: ").concat(width, "%; height: ").concat(item.count / max * 100, "%;\"></div>");
+        return "<div\n      class=\"bar _category-background-color\"\n      data-node=\"".concat(item.node, "\"\n      data-count=\"").concat(item.count, "\"\n      style=\"width: ").concat(width, "%; height: ").concat(item.count / max * 100, "%;\"></div>");
       }).join('');
       var graph = histogram.querySelector(':scope > .graph');
       graph.innerHTML = _classPrivateFieldGet(this, _items).map(function (item, index) {
@@ -8254,7 +7977,7 @@
       return Object.assign({}, filter);
     }));
 
-    var category = Records$1.getCatexxxgoryWithAttributeId(_classPrivateFieldGet(this, _attribute$1).id); // make overview
+    var category = Records$1.getCategoryWithAttributeId(_classPrivateFieldGet(this, _attribute$1).id); // make overview
     // TODO: ヒストグラムは別処理
 
     var _sum = filters.reduce(function (acc, filter) {
@@ -8269,7 +7992,7 @@
       filter.width = filter.count / _sum * 100;
       filter.baseColor = colorTintByHue(category.color, 360 * index / filters.length);
       var selectedClass = selectedFilters.indexOf(filter.node) !== -1 ? ' -selected' : '';
-      return "\n        <li class=\"track-filter-view _catexxxgory-background-color".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-node=\"").concat(filter.node, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(filter.label, "</span>\n              <span class=\"count\">").concat(filter.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\">\n            <span class=\"material-icons\">location_on</span>\n          </div>\n        </li>");
+      return "\n        <li class=\"track-filter-view _category-background-color".concat(selectedClass, "\" style=\"width: ").concat(_width, "%;\" data-node=\"").concat(filter.node, "\">\n          <div class=\"labels\">\n            <p>\n              <span class=\"label\">").concat(filter.label, "</span>\n              <span class=\"count\">").concat(filter.count.toLocaleString(), "</span>\n            </p>\n          </div>\n          <div class=\"pin\">\n            <span class=\"material-icons\">location_on</span>\n          </div>\n        </li>");
     }).join('');
     elm.querySelectorAll(':scope > .track-filter-view').forEach(function (elm, index) {
       // reference
@@ -8279,7 +8002,7 @@
       filter.pin = elm.querySelector(':scope > .pin');
       filter.icon = filter.pin.querySelector(':scope > .material-icons'); // attach event: show tooltip
 
-      var label = "<span class=\"_catexxxgory-color\" data-catexxxgory-id=\"".concat(category.id, "\">").concat(filter.label, "</span>");
+      var label = "<span class=\"_category-color\" data-category-id=\"".concat(category.id, "\">").concat(filter.label, "</span>");
       elm.addEventListener('mouseenter', function () {
         var _classPrivateFieldGet2;
 
@@ -8535,14 +8258,14 @@
     _classPrivateFieldSet(this, _ROOT$8, document.createElement('div'));
 
     container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$8));
-    var category = Records$1.getCatexxxgoryWithAttributeId(attributeId);
+    var category = Records$1.getCategoryWithAttributeId(attributeId);
 
     _classPrivateFieldGet(this, _ROOT$8).classList.add('attribute-track-view', '-preparing', 'collapse-view');
 
-    _classPrivateFieldGet(this, _ROOT$8).dataset.catexxxgoryId = category.id;
+    _classPrivateFieldGet(this, _ROOT$8).dataset.categoryId = category.id;
     _classPrivateFieldGet(this, _ROOT$8).dataset.collapse = attributeId; // make html
 
-    _classPrivateFieldGet(this, _ROOT$8).innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(attributeId, "\">\n          <input type=\"checkbox\" class=\"mapping\">\n          <h2 class=\"title _catexxxgory-color\">").concat(_classPrivateFieldGet(this, _attribute).label, "</h2>\n        </div>\n      </div>\n      <div class=\"right filters\">\n        <div class=\"overview _catexxxgory-background-color\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(attributeId, "\">\n      <div class=\"left\">\n        <dl class=\"specification\">\n          <dt>Description</dt>\n          <dd>").concat(_classPrivateFieldGet(this, _attribute).description, "</dd>\n          <dt>API</dt>\n          <dd><a href=\"").concat(_classPrivateFieldGet(this, _attribute).api, "\" target=\"_blank\">").concat(_classPrivateFieldGet(this, _attribute).api, "</a></dd>\n        </dl>\n        ").concat(_classPrivateFieldGet(this, _attribute).source.map(function (source) {
+    _classPrivateFieldGet(this, _ROOT$8).innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(attributeId, "\">\n          <input type=\"checkbox\" class=\"mapping\">\n          <h2 class=\"title _category-color\">").concat(_classPrivateFieldGet(this, _attribute).label, "</h2>\n        </div>\n      </div>\n      <div class=\"right filters\">\n        <div class=\"overview _category-background-color\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(attributeId, "\">\n      <div class=\"left\">\n        <dl class=\"specification\">\n          <dt>Description</dt>\n          <dd>").concat(_classPrivateFieldGet(this, _attribute).description, "</dd>\n          <dt>API</dt>\n          <dd><a href=\"").concat(_classPrivateFieldGet(this, _attribute).api, "\" target=\"_blank\">").concat(_classPrivateFieldGet(this, _attribute).api, "</a></dd>\n        </dl>\n        ").concat(_classPrivateFieldGet(this, _attribute).source.map(function (source) {
       return "<dl class=\"source\">\n        <dt>Original data</dt>\n          <dd><a href=\"".concat(source.url, "\" target=\"_blank\">").concat(source.label, "</a></dd>\n          <dt>Version</dt>\n          <dd>").concat(source.version, "</dd>\n          <dt>Last updated</dt>\n          <dd>").concat(source.updated, "</dd>\n        </dl>");
     }).join(''), "\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
 
@@ -8677,7 +8400,7 @@
     _classCallCheck(this, CategoryView);
 
     elm.classList.add('category-view');
-    elm.innerHTML = "\n    <h3 class=\"title _catexxxgory-background-color-strong\" data-catexxxgory-id=\"".concat(category.id, "\">\n      <span>").concat(category.label, "</span>\n    </h3>\n    <div class=\"attributes\"></div>"); // make tracks
+    elm.innerHTML = "\n    <h3 class=\"title _category-background-color-strong\" data-category-id=\"".concat(category.id, "\">\n      <span>").concat(category.label, "</span>\n    </h3>\n    <div class=\"attributes\"></div>"); // make tracks
 
     var attributes = category.attributes;
     var attributesContainer = elm.querySelector(':scope > .attributes');
@@ -8760,7 +8483,7 @@
       _classPrivateFieldSet(this, _ROOT$7, elm);
 
       elm.classList.add('statistics-view');
-      elm.dataset.catexxxgoryId = condition.catexxxgoryId; // make HTML
+      elm.dataset.categoryId = condition.categoryId; // make HTML
 
       elm.innerHTML = "\n    <div class=\"statistics\">\n      <div class=\"bars\"></div>\n    </div>\n    <div class=\"loading-view -shown\"></div>\n    "; // display order of bar chart
 
@@ -8861,7 +8584,7 @@
         bar = document.createElement('div');
         bar.classList.add('bar');
         bar.dataset.node = node;
-        bar.innerHTML = "\n        <div class=\"wholebar\"></div>\n        <div class=\"hitbar _catexxxgory-background-color-strong\">\n          <div class=\"filter\"></div>\n        </div>\n        <div class=\"label\">".concat(label, "</div>");
+        bar.innerHTML = "\n        <div class=\"wholebar\"></div>\n        <div class=\"hitbar _category-background-color-strong\">\n          <div class=\"filter\"></div>\n        </div>\n        <div class=\"label\">".concat(label, "</div>");
 
         if (lastBar) {
           lastBar.after(bar);
@@ -9139,17 +8862,17 @@
     _classPrivateFieldGet(this, _intersctionObserver).unobserve(_classPrivateFieldGet(this, _TABLE_END));
 
     _classPrivateFieldSet(this, _header$1, [].concat(_toConsumableArray(tableData.dxCondition.conditionFilters.map(function (_ref) {
-      var catexxxgoryId = _ref.catexxxgoryId,
+      var categoryId = _ref.categoryId,
           attributeId = _ref.attributeId;
       return {
-        catexxxgoryId: catexxxgoryId,
+        categoryId: categoryId,
         attributeId: attributeId
       };
     })), _toConsumableArray(tableData.dxCondition.conditionAnnotations.map(function (_ref2) {
-      var catexxxgoryId = _ref2.catexxxgoryId,
+      var categoryId = _ref2.categoryId,
           attributeId = _ref2.attributeId;
       return {
-        catexxxgoryId: catexxxgoryId,
+        categoryId: categoryId,
         attributeId: attributeId
       };
     }))));
@@ -9166,9 +8889,9 @@
     _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getDatasetLabel(tableData.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      "); // makte table sub header
 
     _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    ".concat(tableData.dxCondition.conditionFilters.map(function (conditionFilter) {
-      return "\n          <th>\n            <div class=\"inner _catexxxgory-background-color\" data-catexxxgory-id=\"".concat(conditionFilter.catexxxgoryId, "\">\n              <div class=\"togo-key-view\">").concat(Records$1.getDatasetLabel(conditionFilter.dataset), "</div>\n              <span>").concat(conditionFilter.label, "</span>\n            </div>\n          </th>");
+      return "\n          <th>\n            <div class=\"inner _category-background-color\" data-category-id=\"".concat(conditionFilter.categoryId, "\">\n              <div class=\"togo-key-view\">").concat(Records$1.getDatasetLabel(conditionFilter.dataset), "</div>\n              <span>").concat(conditionFilter.label, "</span>\n            </div>\n          </th>");
     }).join(''), "\n    ").concat(tableData.dxCondition.conditionAnnotations.map(function (conditionAnnotation) {
-      return "\n          <th>\n            <div class=\"inner _catexxxgory-color\" data-catexxxgory-id=\"".concat(conditionAnnotation.catexxxgoryId, "\">\n              <div class=\"togo-key-view\">").concat(Records$1.getDatasetLabel(conditionAnnotation.dataset), "</div>\n              <span>").concat(conditionAnnotation.label, "</span>\n            </div>\n          </th>");
+      return "\n          <th>\n            <div class=\"inner _category-color\" data-category-id=\"".concat(conditionAnnotation.categoryId, "\">\n              <div class=\"togo-key-view\">").concat(Records$1.getDatasetLabel(conditionAnnotation.dataset), "</div>\n              <span>").concat(conditionAnnotation.label, "</span>\n            </div>\n          </th>");
     }).join('')); // make stats
 
     var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _STATS).querySelectorAll(':scope > td')),
@@ -9228,7 +8951,7 @@
       return "\n          <tr\n            data-index=\"".concat(offset + index, "\"\n            data-togo-id=\"").concat(row.index.entry, "\">\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(tableData.togoKey, "\"\n                    data-order=\"").concat([0, offset + index], "\"\n                    data-sub-order=\"0\"\n                    data-subject-id=\"primary\"\n                    data-unique-entry-id=\"").concat(row.index.entry, "\">").concat(row.index.entry, "\n                  </div>\n                  <span>").concat(row.index.label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.attributes.map(function (column, columnIndex) {
         if (column) {
           return "\n                  <td><div class=\"inner\"><ul>".concat(column.items.map(function (item, itemIndex) {
-            return "\n                      <li>\n                        <div\n                          class=\"togo-key-view\"\n                          data-order=\"".concat([columnIndex + 1, offset + index], "\"\n                          data-sub-order=\"").concat(itemIndex, "\"\n                          data-key=\"").concat(item.dataset, "\"\n                          data-subject-id=\"").concat(_classPrivateFieldGet(_this3, _header$1)[columnIndex].catexxxgoryId, "\"\n                          data-main-category-id=\"").concat(_classPrivateFieldGet(_this3, _header$1)[columnIndex].attributeId, "\"\n                          data-sub-category-id=\"").concat(item.node, "\"\n                          data-unique-entry-id=\"").concat(item.entry, "\"\n                          >").concat(item.entry, "</div>\n                        <span>").concat(item.label, "</span>\n                      </li>");
+            return "\n                      <li>\n                        <div\n                          class=\"togo-key-view\"\n                          data-order=\"".concat([columnIndex + 1, offset + index], "\"\n                          data-sub-order=\"").concat(itemIndex, "\"\n                          data-key=\"").concat(item.dataset, "\"\n                          data-subject-id=\"").concat(_classPrivateFieldGet(_this3, _header$1)[columnIndex].categoryId, "\"\n                          data-main-category-id=\"").concat(_classPrivateFieldGet(_this3, _header$1)[columnIndex].attributeId, "\"\n                          data-sub-category-id=\"").concat(item.node, "\"\n                          data-unique-entry-id=\"").concat(item.entry, "\"\n                          >").concat(item.entry, "</div>\n                        <span>").concat(item.label, "</span>\n                      </li>");
           }).join(''), "</ul></div></td>");
         } else {
           return "<td><div class=\"inner -empty\"></div></td>";
@@ -9577,7 +9300,7 @@
   }
 
   function _popup2(detail) {
-    _classPrivateFieldGet(this, _ROOT$5).dataset.catexxxgoryId = detail.keys.subjectId;
+    _classPrivateFieldGet(this, _ROOT$5).dataset.categoryId = detail.keys.subjectId;
     var popup = document.createElement('div');
     popup.className = 'popup';
     popup.style.left = _classPrivateFieldGet(this, _popup_left);
@@ -9588,18 +9311,18 @@
   }
 
   function _header2(keys, props) {
-    var category = Records$1.getCatexxxgory(keys.subjectId);
+    var category = Records$1.getCategory(keys.subjectId);
     var attribute = Records$1.getAttribute(keys.mainCategoryId);
     var isPrimaryKey = props.isPrimaryKey;
     var mainCategory = isPrimaryKey ? '' : Records$1.getAttribute(keys.mainCategoryId);
-    var categoryLabel = isPrimaryKey ? keys.dataKey : "<span class=\"category _catexxxgory-background-color-strong\">".concat(category.label, "</span>");
+    var categoryLabel = isPrimaryKey ? keys.dataKey : "<span class=\"category _category-background-color-strong\">".concat(category.label, "</span>");
     var attributeLable = "<span class=\"attribute\">".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, "</span>"); // for continuous value (distribution), do not output label
 
     var subCategory = isPrimaryKey ? '' : Records$1.getFilter(keys.mainCategoryId, keys.subCategoryId);
     var valueLabel = (attribute === null || attribute === void 0 ? void 0 : attribute.datamodel) !== 'distribution' && subCategory !== null && subCategory !== void 0 && subCategory.label ? "<span class=\"value\">".concat(subCategory.label, "</span>") : '';
     var header = document.createElement('header');
     header.innerHTML = "\n      <div class=\"label\">\n        ".concat(categoryLabel, "\n        ").concat(attributeLable, "\n        ").concat(valueLabel, "\n      </div>\n      <div/>\n    ");
-    header.classList.add('_catexxxgory-background-color');
+    header.classList.add('_category-background-color');
     header.lastElementChild.appendChild(_classPrivateFieldGet(this, _exit_button));
     header.addEventListener('mousedown', function (e) {
       var customEvent = new CustomEvent(dragElement, {
@@ -10219,9 +9942,9 @@
       elm.dataset.status = 'load ids';
       elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condition\">\n        <p title=\"".concat(dxCondition.togoKey, "\">").concat(Records$1.getDatasetLabel(dxCondition.togoKey), "</p>\n      </div>\n      ").concat(_classPrivateFieldGet(this, _dxCondition).conditionFilters.map(function (conditionFilter) {
         var label = Records$1.getAttribute(conditionFilter.attributeId).label;
-        return "<div class=\"condition _catexxxgory-background-color\" data-catexxxgory-id=\"".concat(conditionFilter.catexxxgoryId, "\">\n              <p title=\"").concat(label, "\">").concat(label, "</p>\n            </div>");
+        return "<div class=\"condition _category-background-color\" data-category-id=\"".concat(conditionFilter.categoryId, "\">\n              <p title=\"").concat(label, "\">").concat(label, "</p>\n            </div>");
       }).join(''), "\n      ").concat(_classPrivateFieldGet(this, _dxCondition).conditionAnnotations.map(function (conditionAnnotation) {
-        return "<div class=\"condition _catexxxgory-color\" data-catexxxgory-id=\"".concat(conditionAnnotation.catexxxgoryId, "\">\n              <p title=\"").concat(conditionAnnotation.label, "\">").concat(conditionAnnotation.label, "</p>\n            </div>");
+        return "<div class=\"condition _category-color\" data-category-id=\"".concat(conditionAnnotation.categoryId, "\">\n              <p title=\"").concat(conditionAnnotation.label, "\">").concat(conditionAnnotation.label, "</p>\n            </div>");
       }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting ID list</p>\n      <span class=\"material-icons-outlined -rotating\">autorenew</span>\n    </div>\n    <div class=\"-border\">\n    </div>\n    <div class=\"controller\">\n    </div>\n    "); // reference
 
       _classPrivateFieldSet(this, _ROOT$2, elm);
@@ -10841,7 +10564,7 @@
   }
   /**
    * @param  {Error}  error
-   * @return {boolean}
+   * @return {boolean | Promise}
    */
 
   function isNetworkOrIdempotentRequestError(error) {
@@ -10982,9 +10705,8 @@
 
       if (typeof shouldRetryOrPromise === 'object') {
         try {
-          var shouldRetryPromiseResult = yield shouldRetryOrPromise; // keep return true unless shouldRetryPromiseResult return false for compatibility
-
-          return shouldRetryPromiseResult !== false;
+          yield shouldRetryOrPromise;
+          return true;
         } catch (_err) {
           return false;
         }
@@ -11546,7 +11268,7 @@
 
   function _makeCategoryViews2() {
     var conceptsContainer = document.querySelector('#Properties > .concepts');
-    Records$1.catexxxgories.forEach(function (category) {
+    Records$1.categories.forEach(function (category) {
       var elm = document.createElement('section');
       new CategoryView(category, elm);
       conceptsContainer.insertAdjacentElement('beforeend', elm);

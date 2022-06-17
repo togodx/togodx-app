@@ -118,11 +118,11 @@ export default class ResultsTable {
     this.#tableData = tableData;
     this.#intersctionObserver.unobserve(this.#TABLE_END);
     this.#header = [
-      ...tableData.dxCondition.conditionFilters.map(({catexxxgoryId, attributeId}) => {
-        return {catexxxgoryId, attributeId};
+      ...tableData.dxCondition.conditionFilters.map(({categoryId, attributeId}) => {
+        return {categoryId, attributeId};
       }),
-      ...tableData.dxCondition.conditionAnnotations.map(({catexxxgoryId, attributeId}) => {
-        return {catexxxgoryId, attributeId};
+      ...tableData.dxCondition.conditionAnnotations.map(({categoryId, attributeId}) => {
+        return {categoryId, attributeId};
       })
     ];
     this.#ROOT.classList.remove('-complete');
@@ -152,7 +152,7 @@ export default class ResultsTable {
         .map(
           conditionFilter => `
           <th>
-            <div class="inner _catexxxgory-background-color" data-catexxxgory-id="${conditionFilter.catexxxgoryId}">
+            <div class="inner _category-background-color" data-category-id="${conditionFilter.categoryId}">
               <div class="togo-key-view">${Records.getDatasetLabel(conditionFilter.dataset)}</div>
               <span>${conditionFilter.label}</span>
             </div>
@@ -165,7 +165,7 @@ export default class ResultsTable {
         .map(
           conditionAnnotation => `
           <th>
-            <div class="inner _catexxxgory-color" data-catexxxgory-id="${conditionAnnotation.catexxxgoryId}">
+            <div class="inner _category-color" data-category-id="${conditionAnnotation.categoryId}">
               <div class="togo-key-view">${Records.getDatasetLabel(conditionAnnotation.dataset)}</div>
               <span>${conditionAnnotation.label}</span>
             </div>
@@ -240,7 +240,7 @@ export default class ResultsTable {
                           data-sub-order="${itemIndex}"
                           data-key="${item.dataset}"
                           data-subject-id="${
-                            this.#header[columnIndex].catexxxgoryId
+                            this.#header[columnIndex].categoryId
                           }"
                           data-main-category-id="${
                             this.#header[columnIndex].attributeId

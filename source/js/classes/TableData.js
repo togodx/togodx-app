@@ -117,7 +117,7 @@ export default class TableData {
         this.#dxCondition.conditionFilters
           .map(conditionFilter => {
             const label = Records.getAttribute(conditionFilter.attributeId).label;
-            return `<div class="condition _catexxxgory-background-color" data-catexxxgory-id="${conditionFilter.catexxxgoryId}">
+            return `<div class="condition _category-background-color" data-category-id="${conditionFilter.categoryId}">
               <p title="${label}">${label}</p>
             </div>`
           })
@@ -126,7 +126,7 @@ export default class TableData {
       ${
         this.#dxCondition.conditionAnnotations
           .map(conditionAnnotation => {
-            return `<div class="condition _catexxxgory-color" data-catexxxgory-id="${conditionAnnotation.catexxxgoryId}">
+            return `<div class="condition _category-color" data-category-id="${conditionAnnotation.categoryId}">
               <p title="${conditionAnnotation.label}">${conditionAnnotation.label}</p>
             </div>`;
           })
