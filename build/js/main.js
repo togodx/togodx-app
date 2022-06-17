@@ -8021,7 +8021,7 @@
           if (userFilter !== null && userFilter !== void 0 && userFilter.pvalue) {
             values.push({
               key: 'P-value',
-              filter: userFilter.pvalue === 1 ? 1 : userFilter.pvalue.toExponential(3)
+              value: userFilter.pvalue === 1 ? 1 : userFilter.pvalue.toExponential(3)
             });
           }
         } else {
