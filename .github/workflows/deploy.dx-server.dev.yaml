@@ -20,9 +20,9 @@ jobs:
           fetch-depth: 1
           path: app
 
-      - name: "Copy config.dx-server.json"
+      - name: "Copy config.dx-server-dev.json"
         run: |
-          cp -f ./config/config.dx-server.json ./app/build/config.json
+          cp -f ./config/config.dx-server-dev.json ./app/build/config.json
 
       - name: "Upload to S3 bucket: togodx-dx-server-dev"
         uses: opspresso/action-s3-sync@master
