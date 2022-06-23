@@ -14,22 +14,22 @@ export default class ColumnView {
   #depth;
   #selector;
   #max;
-  #parentCategoryId;
+  #parentNode;
   #columnItemViews;
-  #cachedUserValues;
+  #cachedUserFilters;
   #ROOT;
   #TBODY;
 
-  constructor(selector, values, depth, parentCategoryId) {
+  constructor(selector, filters, depth, parentNode) {
 
     // set members
     this.#depth = depth;
     this.#selector = selector;
-    this.#parentCategoryId = parentCategoryId;
-    this.#cachedUserValues = new Map();
+    this.#parentNode = parentNode;
+    this.#cachedUserFilters = new Map();
 
     // draw
-    this.#draw(values);
+    this.#draw(filters);
 
     // even listener
     DefaultEventEmitter.addEventListener(event.changeViewModes, this.#update.bind(this));
@@ -39,13 +39,13 @@ export default class ColumnView {
     })
   }
 
-  #draw(values) {
+  #draw(filters) {
 
     // make column
     this.#ROOT = document.createElement('div');
     this.#ROOT.classList.add('column');
     this.#ROOT.dataset.capturingCollapse = true;
-    this.#ROOT.dataset.parentCategoryId = this.#parentCategoryId ?? '';
+    this.#ROOT.dataset.parentNode = this.#parentNode ?? '';
     this.#max = 0;
     this.#ROOT.innerHTML = `
     <table>
@@ -61,11 +61,11 @@ export default class ColumnView {
       <tbody></tbody>
     </table>`;
     this.#TBODY = this.#ROOT.querySelector(':scope > table > tbody');
-    const selectedCategoryIds = ConditionBuilder.getSelectedCategoryIds(this.attributeId);
-    this.#columnItemViews = values.map((value, index) => {
-      this.#max = Math.max(this.#max, value.count);
+    const selectedNodes = ConditionBuilder.getSelectedNodes(this.attributeId);
+    this.#columnItemViews = filters.map((filter, index) => {
+      this.#max = Math.max(this.#max, filter.count);
       // add item
-      const columnItemView = new ColumnItemView(this, value, index, selectedCategoryIds);
+      const columnItemView = new ColumnItemView(this, filter, index, selectedNodes);
       this.#TBODY.append(columnItemView.rootNode);
       return columnItemView;
     });
@@ -103,15 +103,15 @@ export default class ColumnView {
     const items = this.#columnItemViews.map(columnItemView => {
       return {
         index: columnItemView.index,
-        value: columnItemView[column]
+        filter: columnItemView[column]
       }
     });
     switch(sortDescriptor.column) {
       case 'label':
-        items.sort((a, b) => a.value > b.value ? 1 : -1);
+        items.sort((a, b) => a.filter > b.filter ? 1 : -1);
         break;
       case 'total':
-        items.sort((a, b) => b.value - a.value);
+        items.sort((a, b) => b.filter - a.filter);
         break;
     }
     if (sortDescriptor.direction === 'desc') items.reverse();
@@ -124,41 +124,29 @@ export default class ColumnView {
   #heatmap() {
     const isLog10 = App.viewModes.log10;
     let max = isLog10 && this.#max > 1 ? Math.log10(this.#max) : this.#max;
-    const category = Records.getCatexxxgoryWithAttributeId(this.attributeId);
+    const category = Records.getCategoryWithAttributeId(this.attributeId);
     this.#columnItemViews.forEach(columnItemView => {
       columnItemView.update(category.color, isLog10, max);
     });
   }
 
-  #getUserValues(attribute, node) {
+  #getUserFilters(attribute, node) {
     return new Promise((resolve, reject) => {
       const parameter = getApiParameter('locate', {
         attribute,
         node,
-        dataset: ConditionBuilder.currentTogoKey,
+        dataset: ConditionBuilder.currentDataset,
         queries: ConditionBuilder.userIds
       });
-      const values = this.#cachedUserValues.get(parameter);
-      if (values) {
-        resolve(values);
+      const filters = this.#cachedUserFilters.get(parameter);
+      if (filters) {
+        resolve(filters);
       } else {
         axios
           .post(App.getApiUrl('locate'), parameter)
-          // .get(parameter)
           .then(response => {
-
-            const __zzz__data = response.data.map(datum => {
-              return {
-                categoryId: datum.node,
-                count: datum.count,
-                hit_count: datum.mapped,
-                label: datum.label,
-                pValue: datum.pvalue,
-              }
-            });
-    
-            this.#cachedUserValues.set(parameter, __zzz__data);
-            resolve(__zzz__data);
+            this.#cachedUserFilters.set(parameter, response.data);
+            resolve(response.data);
           });
       }
     });
@@ -172,35 +160,35 @@ export default class ColumnView {
 
     // user IDs
     if (document.body.classList.contains('-showuserids') && ConditionBuilder.userIds.length > 0) {
-      this.#getUserValues(this.#selector.attributeId, this.#parentCategoryId)
-        .then(values => {
-          console.log(values)
-          this.#columnItemViews.forEach(columnItemView => columnItemView.setUserValues(values));
+      this.#getUserFilters(this.#selector.attributeId, this.#parentNode)
+        .then(filters => {
+          console.log(filters)
+          this.#columnItemViews.forEach(columnItemView => columnItemView.setUserFilters(filters));
         });
     }
   }
 
-  checkValue(e) {
+  checkFilter(e) {
     e.stopPropagation();
     const checkbox = e.target;
     const ancestors = [];
-    let parentCategoryId;
+    let parentNode;
     let column = checkbox.closest('.column');
     do { // find ancestors
-      parentCategoryId = column?.dataset.parentCategoryId;
-      if (parentCategoryId) {
-        ancestors.unshift(parentCategoryId);
+      parentNode = column?.dataset.parentNode;
+      if (parentNode) {
+        ancestors.unshift(parentNode);
         column = column.previousElementSibling;
       }
-    } while (parentCategoryId);
+    } while (parentNode);
     if (checkbox.checked) { // add
-      ConditionBuilder.addAttributeValue(
+      ConditionBuilder.addFilter(
         this.attributeId,
         checkbox.value,
         ancestors
       );
     } else { // remove
-      ConditionBuilder.removeAttributeValue(this.attributeId, checkbox.value);
+      ConditionBuilder.removeFilter(this.attributeId, checkbox.value);
     }
   }
 
@@ -228,8 +216,8 @@ export default class ColumnView {
     return this.#selector.attributeId;
   }
 
-  get parentCategoryId() {
-    return this.#parentCategoryId;
+  get parentNode() {
+    return this.#parentNode;
   }
 
   get rootNode() {

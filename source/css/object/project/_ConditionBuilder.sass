@@ -40,22 +40,22 @@
           > .close-button-view
             body[data-display="results"] &
               display: none
-    > #ConditionKeys, > #ConditionValues
+    > #ConditionAnnotations, > #ConditionFilters
       transition: opacity var(--transition-instant)
       opacity: .8
       background-color: var(--background-color-inactive)
       cursor: pointer
       &:hover
         background-color: var(--background-color)
-    > #ConditionKeys
+    > #ConditionAnnotations
       border-radius: var(--radius) var(--radius) 0 0
-      [data-condition="value"] &
+      [data-condition="filter"] &
         opacity: 1
         background-color: var(--background-color)
-    > #ConditionValues
+    > #ConditionFilters
       border-radius: 0 0 var(--radius) var(--radius)
       margin-top: .1rem
-      [data-condition="key"] &
+      [data-condition="annotation"] &
         opacity: 1
         background-color: var(--background-color)
     > #ConditionTogoKey

@@ -2,25 +2,25 @@ export default class Attribute {
 
   #id;
   #obj;
-  #values;
+  #filters;
 
   constructor(id, obj) {
     this.#id = id;
     this.#obj = obj;
-    this.#values = [];
+    this.#filters = [];
   }
 
 
   // public Methods
 
-  fetchValuesWithParentCategoryId(parentCategoryId) {
+  fetchFiltersWithParentNode(parentNode) {
     return new Promise((resolve, reject) => {
-      const values = this.#values.filter(value => value.parentCategoryId === parentCategoryId);
-      if (values.length > 0) {
-        resolve(values);
+      const filters = this.#filters.filter(filter => filter.parentNode === parentNode);
+      if (filters.length > 0) {
+        resolve(filters);
       } else {
         const body = {};
-        if (parentCategoryId) body.node = parentCategoryId;
+        if (parentNode) body.node = parentNode;
         if (this.order) body.order = this.order;
         fetch(
           this.api,
@@ -33,25 +33,13 @@ export default class Attribute {
           }
         )
         .then(responce => responce.json())
-        .then(values => {
+        .then(filters => {
 
-          const __zzz__values = values.map(value => {
-            return {
-              categoryId: value.node,
-              count: value.count,
-              hasChild: !value.tip,
-              label: value.label
-            };
-          });
-          
-          // set parent category id
-          // if (parentCategoryId) values.forEach(value => value.parentCategoryId = parentCategoryId);
-          if (parentCategoryId) __zzz__values.forEach(value => value.parentCategoryId = parentCategoryId);
-          // set values
-          // this.#values.push(...values);
-          this.#values.push(...__zzz__values);
-          // resolve(values);
-          resolve(__zzz__values);
+          // set parent node
+          if (parentNode) filters.forEach(filter => filter.parentNode = parentNode);
+          // set filters
+          this.#filters.push(...filters);
+          resolve(filters);
         })
         .catch(error => {
           console.error(this, error);
@@ -61,8 +49,8 @@ export default class Attribute {
     });
   }
 
-  getValue(categoryId) {
-    return this.#values.find(value => value.categoryId === categoryId);
+  getFilter(node) {
+    return this.#filters.find(filter => filter.node === node);
   }
 
   // accessors
@@ -99,8 +87,8 @@ export default class Attribute {
     return this.#obj.order;
   }
 
-  get values() {
-    return this.#values;
+  get filters() {
+    return this.#filters;
   }
 
 }

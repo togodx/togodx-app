@@ -19,7 +19,7 @@ export default class HistogramRangeSelectorView {
   constructor(elm, attribute, items) {
 
     this.#attribute = attribute;
-    const category = Records.getCatexxxgoryWithAttributeId(this.#attribute.id);
+    const category = Records.getCategoryWithAttributeId(this.#attribute.id);
     this.#items = items.map(item => Object.assign({}, item));
 
     // make container
@@ -51,12 +51,12 @@ export default class HistogramRangeSelectorView {
     const max = Math.max(...this.#items.map(item => item.count));
     const width = 100 / this.#items.length;
     overview.innerHTML = this.#items.map(item => `<div
-      class="bar _catexxxgory-background-color"
-      data-category-id="${item.categoryId}"
+      class="bar _category-background-color"
+      data-node="${item.node}"
       data-count="${item.count}"
       style="width: ${width}%; height: ${(item.count / max) * 100}%;"></div>`).join('');
     const graph = histogram.querySelector(':scope > .graph');
-    graph.innerHTML = this.#items.map((item, index) => `<div class="bar" data-category-id="${item.categoryId}" data-count="${item.count}">
+    graph.innerHTML = this.#items.map((item, index) => `<div class="bar" data-node="${item.node}" data-count="${item.count}">
       <div class="actual" style="background-color: rgb(${util.colorTintByHue(category.color, 360 * index / this.#items.length).coords.map(cood => cood * 256).join(',')});"></div>
       <p class="label">${item.label}</p>
     </div>`).join('');
@@ -76,7 +76,7 @@ export default class HistogramRangeSelectorView {
 
   // private methods
 
-  #indicateValue() {
+  #indicateFilter() {
 
   }
 

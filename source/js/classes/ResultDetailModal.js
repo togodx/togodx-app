@@ -68,7 +68,7 @@ export default class ResultDetailModal {
   }
   // HTML elements
   #popup(detail) {
-    this.#ROOT.dataset.catexxxgoryId = detail.keys.subjectId;
+    this.#ROOT.dataset.categoryId = detail.keys.subjectId;
     const popup = document.createElement('div');
     popup.className = 'popup';
     popup.style.left = this.#popup_left;
@@ -80,7 +80,7 @@ export default class ResultDetailModal {
   }
 
   #header(keys, props) {
-    const category = Records.getCatexxxgory(keys.subjectId);
+    const category = Records.getCategory(keys.subjectId);
     const attribute = Records.getAttribute(keys.mainCategoryId);
     const isPrimaryKey = props.isPrimaryKey;
     const mainCategory = isPrimaryKey
@@ -88,12 +88,12 @@ export default class ResultDetailModal {
       : Records.getAttribute(keys.mainCategoryId);
     const categoryLabel = isPrimaryKey
       ? keys.dataKey
-      : `<span class="category _catexxxgory-background-color-strong">${category.label}</span>`;
+      : `<span class="category _category-background-color-strong">${category.label}</span>`;
     const attributeLable = `<span class="attribute">${isPrimaryKey ? keys.uniqueEntryId : mainCategory.label}</span>`;
     // for continuous value (distribution), do not output label
     const subCategory = isPrimaryKey
       ? ''
-      : Records.getValue(keys.mainCategoryId, keys.subCategoryId);
+      : Records.getFilter(keys.mainCategoryId, keys.subCategoryId);
     const valueLabel = attribute?.datamodel !== 'distribution' && subCategory?.label
       ? `<span class="value">${subCategory.label}</span>`
       : '';
@@ -106,7 +106,7 @@ export default class ResultDetailModal {
       </div>
       <div/>
     `;
-    header.classList.add('_catexxxgory-background-color');
+    header.classList.add('_category-background-color');
     header.lastElementChild.appendChild(this.#exit_button);
     header.addEventListener('mousedown', e => {
       const customEvent = new CustomEvent(event.dragElement, {

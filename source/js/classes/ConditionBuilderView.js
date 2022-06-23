@@ -1,8 +1,8 @@
 import ConditionBuilder from "./ConditionBuilder";
 import DefaultEventEmitter from "./DefaultEventEmitter";
 import StackingConditionView from "./StackingConditionView";
-import KeyCondition from "./KeyCondition";
-import ValuesCondition from "./ValuesCondition";
+import ConditionAnnotation from "./ConditionAnnotation";
+import ConditionFilter from "./ConditionFilter";
 import * as event from '../events';
 
 const POLLING_DURATION = 100;
@@ -10,7 +10,7 @@ const POLLING_DURATION = 100;
 export default class ConditionBuilderView {
 
   #properties;
-  #propertyValues;
+  #propertyFilters;
   #isDefined;
   #placeHolderExamples;
   #TOGO_KEYS;
@@ -22,20 +22,20 @@ export default class ConditionBuilderView {
   constructor(elm) {
 
     this.#properties = [];
-    this.#propertyValues = [];
+    this.#propertyFilters = [];
     this.#isDefined = false;
   
     // references
     const conditionsContainer = elm.querySelector(':scope > .conditions');
     this.#TOGO_KEYS = conditionsContainer.querySelector('#ConditionTogoKey > .inner > select');
     this.#USER_IDS = elm.querySelector('#UploadUserIDsView > textarea');
-    this.#PROPERTIES_CONDITIONS_CONTAINER = document.querySelector('#ConditionValues > .inner > .conditions');
-    this.#ATTRIBUTES_CONDITIONS_CONTAINER = document.querySelector('#ConditionKeys > .inner > .conditions');
+    this.#PROPERTIES_CONDITIONS_CONTAINER = document.querySelector('#ConditionFilters > .inner > .conditions');
+    this.#ATTRIBUTES_CONDITIONS_CONTAINER = document.querySelector('#ConditionAnnotations > .inner > .conditions');
     this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
 
     // attach event
-    document.querySelector('#ConditionKeys').addEventListener('click', () => document.body.dataset.condition = 'value');
-    document.querySelector('#ConditionValues').addEventListener('click', () => document.body.dataset.condition = 'key');
+    document.querySelector('#ConditionAnnotations').addEventListener('click', () => document.body.dataset.condition = 'filter');
+    document.querySelector('#ConditionFilters').addEventListener('click', () => document.body.dataset.condition = 'annotation');
     this.#EXEC_BUTTON.addEventListener('click', () => {
       document.body.dataset.display = 'results';
       ConditionBuilder.makeQueryParameter();
@@ -49,23 +49,23 @@ export default class ConditionBuilderView {
     });
 
     // event listeners
-    DefaultEventEmitter.addEventListener(event.mutateAttributeCondition, ({detail: {action, keyCondition}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateAnnotationCondition, ({detail: {action, conditionAnnotation}}) => {
       switch (action) {
         case 'add':
-          this.#addAttribute(keyCondition);
+          this.#addAnnotation(conditionAnnotation);
           break;
         case 'remove':
-          this.#removeAttribute(keyCondition);
+          this.#removeAnnotation(conditionAnnotation);
           break;
       }
     });
-    DefaultEventEmitter.addEventListener(event.mutateAttributeValueCondition, ({detail: {action, attributeId, categoryId}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateFilterCondition, ({detail: {action, attributeId, node}}) => {
       switch (action) {
         case 'add':
-          this.#addAttributeValue(attributeId, categoryId);
+          this.#addFilter(attributeId, node);
           break;
         case 'remove':
-          this.#removeAttributeValue(attributeId, categoryId);
+          this.#removeFilter(attributeId, node);
           break;
       }
     });
@@ -88,57 +88,57 @@ export default class ConditionBuilderView {
       .map(key => `<option value="${key}">${datasets[key].label}</option>`)
       .join('');
     this.#TOGO_KEYS.disabled = false;
-    this.#TOGO_KEYS.value = ConditionBuilder.currentTogoKey;
+    this.#TOGO_KEYS.value = ConditionBuilder.currentDataset;
     // attach event
     this.#TOGO_KEYS.addEventListener('change', e => {
       ConditionBuilder.setSubject(e.target.value);
       this.#USER_IDS.placeholder = `e.g. ${this.#placeHolderExamples[e.target.value].join(', ')}`;
     });
     // preset
-    const togoKey = ConditionBuilder.currentTogoKey;
-    if (togoKey && Array.from(this.#TOGO_KEYS.options).map(option => option.value).indexOf(togoKey) !== -1) {
-      this.#TOGO_KEYS.value = togoKey;
+    const dataset = ConditionBuilder.currentDataset;
+    if (dataset && Array.from(this.#TOGO_KEYS.options).map(option => option.value).indexOf(dataset) !== -1) {
+      this.#TOGO_KEYS.value = dataset;
     } else {
       this.#TOGO_KEYS.options[0].selected = true;
     }
     this.#TOGO_KEYS.dispatchEvent(new Event('change'));
   }
 
-  #addAttribute(keyCondition) {
+  #addAnnotation(conditionAnnotation) {
     // modifier
     this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
-    this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'key', keyCondition));
+    this.#properties.push(new StackingConditionView(this.#PROPERTIES_CONDITIONS_CONTAINER, 'annotation', conditionAnnotation));
   }
   
-  #removeAttribute(keyCondition) {
+  #removeAnnotation(conditionAnnotation) {
     // remove from array
-    const index = this.#properties.findIndex(stackingConditionView => stackingConditionView.removeAttribute(keyCondition));
+    const index = this.#properties.findIndex(stackingConditionView => stackingConditionView.removeAnnotation(conditionAnnotation));
     this.#properties.splice(index, 1);
     // modifier
     if (this.#properties.length === 0) this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
-  #addAttributeValue(attributeId, categoryId) {
+  #addFilter(attributeId, node) {
     // modifier
     this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
     // find a condition view has same attribute id
-    const stackingConditionView = this.#propertyValues.find(stackingConditionView => stackingConditionView.sameAttribute(attributeId));
+    const stackingConditionView = this.#propertyFilters.find(stackingConditionView => stackingConditionView.sameAttribute(attributeId));
     if (stackingConditionView) {
-      // if it exists, add new categoryId
-      stackingConditionView.addValue(categoryId);
+      // if it exists, add new node
+      stackingConditionView.addFilter(node);
     } else {
       // otherwise, make new condition view
-      this.#propertyValues.push(new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', new ValuesCondition(attributeId, [categoryId])));
+      this.#propertyFilters.push(new StackingConditionView(this.#ATTRIBUTES_CONDITIONS_CONTAINER, 'value', new ConditionFilter(attributeId, [node])));
     }
   }
 
-  #removeAttributeValue(attributeId, categoryId) {
+  #removeFilter(attributeId, node) {
     // remove from array
-    const index = this.#propertyValues.findIndex(stackingConditionView => stackingConditionView.removeAttributeValue(attributeId, categoryId));
-    if (index !== -1) this.#propertyValues.splice(index, 1);
+    const index = this.#propertyFilters.findIndex(stackingConditionView => stackingConditionView.removeFilter(attributeId, node));
+    if (index !== -1) this.#propertyFilters.splice(index, 1);
     // modifier
-    if (this.#propertyValues.length === 0) this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.add('-empty');
+    if (this.#propertyFilters.length === 0) this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
 }

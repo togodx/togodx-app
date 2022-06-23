@@ -7,7 +7,7 @@ export default class StatisticsView {
   #index;
   #attributeId;
   #tableData;
-  #referenceValues;
+  #referenceFilters;
   #BARS;
   #ROOT;
   #ROOT_NODE;
@@ -21,7 +21,7 @@ export default class StatisticsView {
     this.#ROOT = elm;
 
     elm.classList.add('statistics-view');
-    elm.dataset.catexxxgoryId = condition.catexxxgoryId;
+    elm.dataset.categoryId = condition.categoryId;
 
     // make HTML
     elm.innerHTML = `
@@ -32,10 +32,10 @@ export default class StatisticsView {
     `;
 
     // display order of bar chart
-    if (condition.parentCategoryId) {
-      this.#referenceValues = Records.getValuesWithParentCategoryId(this.#attributeId, condition.parentCategoryId);
+    if (condition.parentNode) {
+      this.#referenceFilters = Records.getFiltersWithParentNode(this.#attributeId, condition.parentNode);
     } else {
-      this.#referenceValues = Records.getAttribute(this.#attributeId).values;
+      this.#referenceFilters = Records.getAttribute(this.#attributeId).filters;
     }
 
     // references
@@ -69,11 +69,11 @@ export default class StatisticsView {
       return a.entry === b.entry && a.node === b.node;
     })
     const hitVlues = [];
-    this.#referenceValues.forEach(({categoryId, label, count}) => {
-      const filtered = uniquedAttributes.filter(attribute => attribute.node === categoryId);
+    this.#referenceFilters.forEach(({node, label, count}) => {
+      const filtered = uniquedAttributes.filter(attribute => attribute.node === node);
       if (filtered.length === 0) return;
       hitVlues.push({
-        categoryId, label, count,
+        node, label, count,
         hitCount: filtered.length
       })
     });
@@ -83,22 +83,22 @@ export default class StatisticsView {
     const isOnlyHitCount = this.#ROOT_NODE.classList.contains('-onlyhitcount');
     const isStretch = !isOnlyHitCount && this.#ROOT_NODE.classList.contains('-stretch');
     if (isOnlyHitCount) {
-      countMax = Math.max(...hitVlues.map(value => value.hitCount));
+      countMax = Math.max(...hitVlues.map(filter => filter.hitCount));
     } else {
-      countMax = Math.max(...hitVlues.map(value => value.count));
+      countMax = Math.max(...hitVlues.map(filter => filter.count));
     }
 
-    hitVlues.reduce((lastBar, {categoryId, label, count, hitCount}) => {
-      let bar = this.#BARS.querySelector(`:scope > .bar[data-category-id="${categoryId}"]`);
+    hitVlues.reduce((lastBar, {node, label, count, hitCount}) => {
+      let bar = this.#BARS.querySelector(`:scope > .bar[data-node="${node}"]`);
       if (bar === null) {
         // add bar
         bar = document.createElement('div');
         bar.classList.add('bar');
-        bar.dataset.categoryId = categoryId;
+        bar.dataset.node = node;
         bar.innerHTML = `
         <div class="wholebar"></div>
-        <div class="hitbar _catexxxgory-background-color-strong">
-          <div class="value"></div>
+        <div class="hitbar _category-background-color-strong">
+          <div class="filter"></div>
         </div>
         <div class="label">${label}</div>`;
         if (lastBar) {
@@ -110,7 +110,7 @@ export default class StatisticsView {
       // styling
       bar.querySelector(':scope > .wholebar').style.height = `${count / countMax * 100}%`;
       const hitbar = bar.querySelector(':scope > .hitbar');
-      const hitCountLabel = hitbar.querySelector(':scope > .value');
+      const hitCountLabel = hitbar.querySelector(':scope > .filter');
       let hitbarHeight;
       if (isStretch) {
         hitbarHeight = hitCount / count;

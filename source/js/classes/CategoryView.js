@@ -5,7 +5,7 @@ export default class CategoryView {
   constructor(category, elm) {
     elm.classList.add('category-view');
     elm.innerHTML = `
-    <h3 class="title _catexxxgory-background-color-strong" data-catexxxgory-id="${category.id}">
+    <h3 class="title _category-background-color-strong" data-category-id="${category.id}">
       <span>${category.label}</span>
     </h3>
     <div class="attributes"></div>`;

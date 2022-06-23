@@ -45,23 +45,23 @@ export default class ColumnSelectorView {
 
   #setItems(items, depth) {
     for (const item of items) {
-      this.#items[item.categoryId] = {
+      this.#items[item.node] = {
         depth,
         selected: false,
       }
     }
   }
 
-  #getColumn(categoryId, depth) {
+  #getColumn(node, depth) {
     return new Promise((resolve, reject) => {
-      const columnView = this.#columnViews.find(columnView => columnView.parentCategoryId === categoryId);
+      const columnView = this.#columnViews.find(columnView => columnView.parentNode === node);
       if (columnView) {
         resolve(columnView);
       } else {
-        Records.fetchAttributeValues(this.#attribute.id, categoryId)
-          .then(values => {
-            this.#setItems(values, depth);
-            const columnView = this.#makeCoumnView(values, depth, categoryId);
+        Records.fetchAttributeFilters(this.#attribute.id, node)
+          .then(filters => {
+            this.#setItems(filters, depth);
+            const columnView = this.#makeCoumnView(filters, depth, node);
             resolve(columnView);
           })
           .catch(error => {
@@ -71,15 +71,15 @@ export default class ColumnSelectorView {
     });
   }
 
-  #makeCoumnView(values, depth, parentCategoryId) {
-    const columnView = new ColumnView(this, values, depth, parentCategoryId);
+  #makeCoumnView(filters, depth, parentNode) {
+    const columnView = new ColumnView(this, filters, depth, parentNode);
     this.#columnViews.push(columnView);
     return columnView;
   }
 
-  #setSubColumn(categoryId, depth) {
+  #setSubColumn(node, depth) {
     this.#LOADING_VIEW.classList.add('-shown');
-    this.#getColumn(categoryId, depth)
+    this.#getColumn(node, depth)
       .then(column => {
         this.#appendSubColumn(column, depth);
         this.#LOADING_VIEW.classList.remove('-shown');
@@ -87,6 +87,7 @@ export default class ColumnSelectorView {
       .catch(error => {
         // TODO: エラー処理
         this.#LOADING_VIEW.classList.remove('-shown');
+        console.error(error)
         throw Error(error);
       });
   }
@@ -106,14 +107,14 @@ export default class ColumnSelectorView {
     };
   }
 
-  #setSelectedValue(categoryId, selected) {
-    this.#items[categoryId].selected = selected;
+  #setSelectedFilter(node, selected) {
+    this.#items[node].selected = selected;
   }
 
 
   // public methods
 
-  drillDown(categoryId, depth) {
+  drillDown(node, depth) {
     // delete an existing lower columns
     if (this.#currentColumnViews.length > depth + 1) {
       for (let depth2 = depth + 1; depth2 < this.#currentColumnViews.length; depth2++) {
@@ -128,8 +129,8 @@ export default class ColumnSelectorView {
       this.#currentColumnViews[depth].rootNode.querySelector(`[data-id="${key}"]`)?.classList.remove('-selected');
     }
     // get lower column
-    this.#setSelectedValue(categoryId, true);
-    this.#setSubColumn(categoryId, depth + 1);
+    this.#setSelectedFilter(node, true);
+    this.#setSubColumn(node, depth + 1);
   }
 
 

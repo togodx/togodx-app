@@ -118,11 +118,11 @@ export default class ResultsTable {
     this.#tableData = tableData;
     this.#intersctionObserver.unobserve(this.#TABLE_END);
     this.#header = [
-      ...tableData.dxCondition.valuesConditions.map(({catexxxgoryId, attributeId}) => {
-        return {catexxxgoryId, attributeId};
+      ...tableData.dxCondition.conditionFilters.map(({categoryId, attributeId}) => {
+        return {categoryId, attributeId};
       }),
-      ...tableData.dxCondition.keyConditions.map(({catexxxgoryId, attributeId}) => {
-        return {catexxxgoryId, attributeId};
+      ...tableData.dxCondition.conditionAnnotations.map(({categoryId, attributeId}) => {
+        return {categoryId, attributeId};
       })
     ];
     this.#ROOT.classList.remove('-complete');
@@ -148,26 +148,26 @@ export default class ResultsTable {
     // makte table sub header
     this.#THEAD_SUB.innerHTML = `
     ${
-      tableData.dxCondition.valuesConditions
+      tableData.dxCondition.conditionFilters
         .map(
-          valuesCondition => `
+          conditionFilter => `
           <th>
-            <div class="inner _catexxxgory-background-color" data-catexxxgory-id="${valuesCondition.catexxxgoryId}">
-              <div class="togo-key-view">${Records.getDatasetLabel(valuesCondition.dataset)}</div>
-              <span>${valuesCondition.label}</span>
+            <div class="inner _category-background-color" data-category-id="${conditionFilter.categoryId}">
+              <div class="togo-key-view">${Records.getDatasetLabel(conditionFilter.dataset)}</div>
+              <span>${conditionFilter.label}</span>
             </div>
           </th>`
         )
         .join('')
     }
     ${
-      tableData.dxCondition.keyConditions
+      tableData.dxCondition.conditionAnnotations
         .map(
-          keyCondition => `
+          conditionAnnotation => `
           <th>
-            <div class="inner _catexxxgory-color" data-catexxxgory-id="${keyCondition.catexxxgoryId}">
-              <div class="togo-key-view">${Records.getDatasetLabel(keyCondition.dataset)}</div>
-              <span>${keyCondition.label}</span>
+            <div class="inner _category-color" data-category-id="${conditionAnnotation.categoryId}">
+              <div class="togo-key-view">${Records.getDatasetLabel(conditionAnnotation.dataset)}</div>
+              <span>${conditionAnnotation.label}</span>
             </div>
           </th>`
         )
@@ -184,8 +184,8 @@ export default class ResultsTable {
     this.#statisticsViews = [];
     this.#tableData.dxCondition
     const conditions = [
-      ...this.#tableData.dxCondition.valuesConditions,
-      ...this.#tableData.dxCondition.keyConditions
+      ...this.#tableData.dxCondition.conditionFilters,
+      ...this.#tableData.dxCondition.conditionAnnotations
     ];
     conditions.forEach((condition, index) => {
       const td = document.createElement('td');
@@ -240,7 +240,7 @@ export default class ResultsTable {
                           data-sub-order="${itemIndex}"
                           data-key="${item.dataset}"
                           data-subject-id="${
-                            this.#header[columnIndex].catexxxgoryId
+                            this.#header[columnIndex].categoryId
                           }"
                           data-main-category-id="${
                             this.#header[columnIndex].attributeId
@@ -281,7 +281,7 @@ export default class ResultsTable {
     //  → Subject  (Gene)                          | category
     //    → Main-Category  (Expressed in tissues)  | attribute
     //      → Sub-Category  (Thyroid Gland)        | 
-    //        → Unique-Entry (ENSG00000139304)     | categoryId ?
+    //        → Unique-Entry (ENSG00000139304)     | node ?
     rows.forEach((row, index) => {
       const actualIndex = offset + index;
       const tr = this.#TBODY.querySelector(`:scope > tr[data-index="${actualIndex}"]`);

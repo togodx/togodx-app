@@ -78,7 +78,6 @@ export default class UploadUserIDsView {
     // this.#USER_IDS.addEventListener('keyup', e => {
     //   if (e.keyCode === 13) this.#fetch();
     // });
-    // DefaultEventEmitter.addEventListener(event.restoreParameters, this.#restoreParameters.bind(this));
     DefaultEventEmitter.addEventListener(
       event.clearCondition,
       this.#clear.bind(this)
@@ -87,10 +86,6 @@ export default class UploadUserIDsView {
 
 
   // private methods
-
-  // #restoreParameters({detail}) {
-  //   this.#USER_IDS.value = detail.userIds;
-  // }
 
   #fetch() {
     if (this.#USER_IDS.value === '') return;
@@ -121,7 +116,7 @@ export default class UploadUserIDsView {
         getApiParameter('locate', {
           attribute: id,
           node: '',
-          dataset: ConditionBuilder.currentTogoKey,
+          dataset: ConditionBuilder.currentDataset,
           queries: ConditionBuilder.userIds
         }),
         {
@@ -132,29 +127,18 @@ export default class UploadUserIDsView {
         this.#BODY.classList.add('-showuserids');
         this.#handleProp();
 
-        const __zzz__data = response.data.map(datum => {
-          return {
-            categoryId: datum.node,
-            count: datum.count,
-            hit_count: datum.mapped,
-            label: datum.label,
-            pValue: datum.pvalue,
-          }
-        });
-
         // dispatch event
-        const customEvent = new CustomEvent(event.setUserValues, {
+        const customEvent = new CustomEvent(event.setUserFilters, {
           detail: {
             attributeId: id,
-            // values: values,
-            values: __zzz__data,
+            filters: response.data
           },
         });
         DefaultEventEmitter.dispatchEvent(customEvent);
       })
       .catch(error => {
         if (axios.isCancel && error.message === 'user cancel') return;
-        const customEvent = new CustomEvent(event.toggleErrorUserValues, {
+        const customEvent = new CustomEvent(event.toggleErrorUserFilters, {
           detail: {
             mode: 'show',
             attributeId: id,
@@ -197,10 +181,10 @@ export default class UploadUserIDsView {
   #reset(isPreparing = false) {
     this.#source?.cancel('user cancel');
     this.#resetCounters();
-    const customEvent = new CustomEvent(event.clearUserValues);
+    const customEvent = new CustomEvent(event.clearUserFilters);
     DefaultEventEmitter.dispatchEvent(customEvent);
 
-    const customEvent2 = new CustomEvent(event.toggleErrorUserValues, {
+    const customEvent2 = new CustomEvent(event.toggleErrorUserFilters, {
       detail: {
         mode: 'hide',
       },
