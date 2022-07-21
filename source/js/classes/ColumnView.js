@@ -1,16 +1,15 @@
-import ColumnItemView from "./ColumnItemView";
-import ConditionBuilder from "./ConditionBuilder";
-import DefaultEventEmitter from "./DefaultEventEmitter";
-import ColumnSelectorSortManager from "./ColumnSelectorSortManager";
-import App from "./App";
-import Records from "./Records";
+import ColumnItemView from './ColumnItemView';
+import ConditionBuilder from './ConditionBuilder';
+import DefaultEventEmitter from './DefaultEventEmitter';
+import ColumnSelectorSortManager from './ColumnSelectorSortManager';
+import App from './App';
+import Records from './Records';
 import * as event from '../events';
 import {getApiParameter} from '../functions/queryTemplates';
 // import * as queryTemplates from '../functions/queryTemplates';
-import axios from "axios";
+import axios from 'axios';
 
 export default class ColumnView {
-
   #depth;
   #selector;
   #max;
@@ -21,7 +20,6 @@ export default class ColumnView {
   #TBODY;
 
   constructor(selector, filters, depth, parentNode) {
-
     // set members
     this.#depth = depth;
     this.#selector = selector;
@@ -32,15 +30,20 @@ export default class ColumnView {
     this.#draw(filters);
 
     // even listener
-    DefaultEventEmitter.addEventListener(event.changeViewModes, this.#update.bind(this));
-    DefaultEventEmitter.addEventListener(event.changeColumnSelectorSorter, this.#update.bind(this));
+    DefaultEventEmitter.addEventListener(
+      event.changeViewModes,
+      this.#update.bind(this)
+    );
+    DefaultEventEmitter.addEventListener(
+      event.changeColumnSelectorSorter,
+      this.#update.bind(this)
+    );
     this.#ROOT.addEventListener(event.collapsed, e => {
       if (e.detail) this.#update();
-    })
+    });
   }
 
   #draw(filters) {
-
     // make column
     this.#ROOT = document.createElement('div');
     this.#ROOT.classList.add('column');
@@ -65,24 +68,38 @@ export default class ColumnView {
     this.#columnItemViews = filters.map((filter, index) => {
       this.#max = Math.max(this.#max, filter.count);
       // add item
-      const columnItemView = new ColumnItemView(this, filter, index, selectedNodes);
+      const columnItemView = new ColumnItemView(
+        this,
+        filter,
+        index,
+        selectedNodes
+      );
       this.#TBODY.append(columnItemView.rootNode);
       return columnItemView;
     });
 
     // attach sort function
-    const theadCells = Array.from(this.#ROOT.querySelectorAll(':scope > table > thead > tr > th'));
+    const theadCells = Array.from(
+      this.#ROOT.querySelectorAll(':scope > table > thead > tr > th')
+    );
     ColumnSelectorSortManager.sortableColumns.forEach(sortableColumn => {
-      const cell = theadCells.find(cell => cell.classList.contains(sortableColumn));
+      const cell = theadCells.find(cell =>
+        cell.classList.contains(sortableColumn)
+      );
       cell.classList.add('-sortable');
-      cell.insertAdjacentHTML('beforeend', `<div class="sorter" data-column="${sortableColumn}"></div>`);
+      cell.insertAdjacentHTML(
+        'beforeend',
+        `<div class="sorter" data-column="${sortableColumn}"></div>`
+      );
     });
-    this.#ROOT.querySelectorAll(':scope > table > thead > tr > .-sortable').forEach(sortable => {
-      sortable.addEventListener('click', ({target}) => {
-        const sorter = target.querySelector(':scope > .sorter');
-        ColumnSelectorSortManager.setSort(sorter.dataset.column);
+    this.#ROOT
+      .querySelectorAll(':scope > table > thead > tr > .-sortable')
+      .forEach(sortable => {
+        sortable.addEventListener('click', ({target}) => {
+          const sorter = target.querySelector(':scope > .sorter');
+          ColumnSelectorSortManager.setSort(sorter.dataset.column);
+        });
       });
-    });
   }
 
   #update() {
@@ -98,17 +115,17 @@ export default class ColumnView {
     const column = {
       '': 'index',
       label: 'label',
-      total: 'count'
+      total: 'count',
     }[sortDescriptor.column];
     const items = this.#columnItemViews.map(columnItemView => {
       return {
         index: columnItemView.index,
-        filter: columnItemView[column]
-      }
+        filter: columnItemView[column],
+      };
     });
-    switch(sortDescriptor.column) {
+    switch (sortDescriptor.column) {
       case 'label':
-        items.sort((a, b) => a.filter > b.filter ? 1 : -1);
+        items.sort((a, b) => (a.filter > b.filter ? 1 : -1));
         break;
       case 'total':
         items.sort((a, b) => b.filter - a.filter);
@@ -136,22 +153,19 @@ export default class ColumnView {
         attribute,
         node,
         dataset: ConditionBuilder.currentDataset,
-        queries: ConditionBuilder.userIds
+        queries: ConditionBuilder.userIds,
       });
       const filters = this.#cachedUserFilters.get(parameter);
       if (filters) {
         resolve(filters);
       } else {
-        axios
-          .post(App.getApiUrl('locate'), parameter)
-          .then(response => {
-            this.#cachedUserFilters.set(parameter, response.data);
-            resolve(response.data);
-          });
+        axios.post(App.getApiUrl('locate'), parameter).then(response => {
+          this.#cachedUserFilters.set(parameter, response.data);
+          resolve(response.data);
+        });
       }
     });
   }
-
 
   // public Methods
 
@@ -159,12 +173,17 @@ export default class ColumnView {
     this.#update();
 
     // user IDs
-    if (document.body.classList.contains('-showuserids') && ConditionBuilder.userIds.length > 0) {
-      this.#getUserFilters(this.#selector.attributeId, this.#parentNode)
-        .then(filters => {
-          console.log(filters)
-          this.#columnItemViews.forEach(columnItemView => columnItemView.setUserFilters(filters));
-        });
+    if (
+      document.body.classList.contains('-showuserids') &&
+      ConditionBuilder.userIds.length > 0
+    ) {
+      this.#getUserFilters(this.#selector.attributeId, this.#parentNode).then(
+        filters => {
+          this.#columnItemViews.forEach(columnItemView =>
+            columnItemView.setUserFilters(filters)
+          );
+        }
+      );
     }
   }
 
@@ -174,20 +193,19 @@ export default class ColumnView {
     const ancestors = [];
     let parentNode;
     let column = checkbox.closest('.column');
-    do { // find ancestors
+    do {
+      // find ancestors
       parentNode = column?.dataset.parentNode;
       if (parentNode) {
         ancestors.unshift(parentNode);
         column = column.previousElementSibling;
       }
     } while (parentNode);
-    if (checkbox.checked) { // add
-      ConditionBuilder.addFilter(
-        this.attributeId,
-        checkbox.value,
-        ancestors
-      );
-    } else { // remove
+    if (checkbox.checked) {
+      // add
+      ConditionBuilder.addFilter(this.attributeId, checkbox.value, ancestors);
+    } else {
+      // remove
       ConditionBuilder.removeFilter(this.attributeId, checkbox.value);
     }
   }
@@ -200,7 +218,6 @@ export default class ColumnView {
     itemNode.classList.add('-selected');
     this.#selector.drillDown(itemNode.dataset.id, this.#depth);
   }
-
 
   // accessors
 
@@ -223,5 +240,4 @@ export default class ColumnView {
   get rootNode() {
     return this.#ROOT;
   }
-
 }
