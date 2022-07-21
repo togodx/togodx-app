@@ -1,5 +1,5 @@
-import Color from "./Color";
-import Attribute from "./Attribute";
+import Color from './Color';
+import Attribute from './Attribute';
 
 class Records {
   #categories;
@@ -11,32 +11,41 @@ class Records {
   // public methods
 
   setAttributes({categories, attributes, datasets}) {
-
     // define categories
     for (let i = 0; i < categories.length; i++) {
-      let hue = 360 - (360 * i / categories.length) + 130;
+      let hue = 360 - (360 * i) / categories.length + 130;
       hue -= hue > 360 ? 360 : 0;
       const srgb = new Color('hsv', [hue, 45, 85]).to('srgb');
       const srgbStrong = new Color('hsv', [hue, 65, 65]).to('srgb');
       categories[i].hue = hue;
       categories[i].color = srgb;
-      categories[i].colorCSSValue = `rgb(${srgb.coords.map(channel => channel * 256).join(',')})`;
-      categories[i].colorCSSStrongValue = `rgb(${srgbStrong.coords.map(channel => channel * 256).join(',')})`;
+      categories[i].colorCSSValue = `rgb(${srgb.coords
+        .map(channel => channel * 256)
+        .join(',')})`;
+      categories[i].colorCSSStrongValue = `rgb(${srgbStrong.coords
+        .map(channel => channel * 256)
+        .join(',')})`;
     }
     this.#categories = Object.freeze(categories);
 
     // set attributes
-    this.#attributes = Object.keys(attributes).map(id => new Attribute(id, attributes[id]));
+    this.#attributes = Object.keys(attributes).map(
+      id => new Attribute(id, attributes[id])
+    );
 
     // make stylesheet
     const styleElm = document.createElement('style');
     document.head.appendChild(styleElm);
     const styleSheet = styleElm.sheet;
     styleSheet.insertRule(`:root {
-      ${categories.map(category => `
+      ${categories
+        .map(
+          category => `
         --color-category-${category.id}: ${category.colorCSSValue};
         --color-category-${category.id}-strong: ${category.colorCSSStrongValue};
-        `).join('')}
+        `
+        )
+        .join('')}
     }`);
     for (const category of categories) {
       styleSheet.insertRule(`
@@ -71,7 +80,9 @@ class Records {
   }
 
   getCategoryWithAttributeId(attributeId) {
-    return this.#categories.find(category => category.attributes.indexOf(attributeId) !== -1);
+    return this.#categories.find(
+      category => category.attributes.indexOf(attributeId) !== -1
+    );
   }
 
   getAttribute(attributeId) {
@@ -92,7 +103,8 @@ class Records {
     const attribute = this.getAttribute(attributeId);
     const ancestors = [];
     let parent;
-    do { // find ancestors
+    do {
+      // find ancestors
       parent = attribute.filters.find(filter => filter.node === node);
       if (parent) ancestors.unshift(parent);
       node = parent?.parentNode;
@@ -114,7 +126,6 @@ class Records {
   get attributes() {
     return this.#attributes;
   }
-  
 }
 
 export default new Records();

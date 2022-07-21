@@ -19,7 +19,6 @@ export default class ResultsTable {
   #LOADING_VIEW;
 
   constructor(elm) {
-
     this.#statisticsViews = [];
 
     // references
@@ -79,7 +78,9 @@ export default class ResultsTable {
     });
 
     // statistics
-    const controller = this.#STATS.querySelector(':scope > th.controller > .inner');
+    const controller = this.#STATS.querySelector(
+      ':scope > th.controller > .inner'
+    );
     controller.querySelectorAll(':scope > label > input').forEach(radio => {
       radio.addEventListener('change', () => {
         switch (radio.value) {
@@ -95,14 +96,18 @@ export default class ResultsTable {
             this.#STATS.classList.add('-onlyhitcount');
             this.#STATS.classList.remove('-stretch');
             break;
-          }
+        }
         const customEvent = new CustomEvent(event.changeStatisticsViewMode);
         DefaultEventEmitter.dispatchEvent(customEvent);
         window.localStorage.setItem('statistics_view_moe', radio.value);
       });
     });
-    const statisticsViewMoe = window.localStorage.getItem('statistics_view_moe');
-    controller.querySelector(`:scope > label > input[value="${statisticsViewMoe}"]`)?.dispatchEvent(new MouseEvent('click'));
+    const statisticsViewMoe = window.localStorage.getItem(
+      'statistics_view_moe'
+    );
+    controller
+      .querySelector(`:scope > label > input[value="${statisticsViewMoe}"]`)
+      ?.dispatchEvent(new MouseEvent('click'));
   }
 
   // private methods
@@ -113,17 +118,20 @@ export default class ResultsTable {
   }
 
   #setupTable(tableData) {
-
     // reset
     this.#tableData = tableData;
     this.#intersctionObserver.unobserve(this.#TABLE_END);
     this.#header = [
-      ...tableData.dxCondition.conditionFilters.map(({categoryId, attributeId}) => {
-        return {categoryId, attributeId};
-      }),
-      ...tableData.dxCondition.conditionAnnotations.map(({categoryId, attributeId}) => {
-        return {categoryId, attributeId};
-      })
+      ...tableData.dxCondition.conditionFilters.map(
+        ({categoryId, attributeId}) => {
+          return {categoryId, attributeId};
+        }
+      ),
+      ...tableData.dxCondition.conditionAnnotations.map(
+        ({categoryId, attributeId}) => {
+          return {categoryId, attributeId};
+        }
+      ),
     ];
     this.#ROOT.classList.remove('-complete');
     this.#THEAD.innerHTML = '';
@@ -135,9 +143,9 @@ export default class ResultsTable {
     this.#THEAD.innerHTML = `
       <th rowspan="2">
         <div class="inner">
-          <div class="togo-key-view">${
-            Records.getDatasetLabel(tableData.togoKey)
-          }</div>
+          <div class="togo-key-view">${Records.getDatasetLabel(
+            tableData.togoKey
+          )}</div>
         </div>
       </th>
       <th colspan="100%">
@@ -147,32 +155,37 @@ export default class ResultsTable {
 
     // makte table sub header
     this.#THEAD_SUB.innerHTML = `
-    ${
-      tableData.dxCondition.conditionFilters
-        .map(
-          conditionFilter => `
+    ${tableData.dxCondition.conditionFilters
+      .map(conditionFilter => {
+        console.log(conditionFilter);
+        return `
           <th>
-            <div class="inner _category-background-color" data-category-id="${conditionFilter.categoryId}">
-              <div class="togo-key-view">${Records.getDatasetLabel(conditionFilter.dataset)}</div>
+            <div class="inner _category-background-color" data-category-id="${
+              conditionFilter.categoryId
+            }">
+              <div class="togo-key-view">${Records.getDatasetLabel(
+                conditionFilter.dataset
+              )}</div>
               <span>${conditionFilter.label}</span>
             </div>
-          </th>`
-        )
-        .join('')
-    }
-    ${
-      tableData.dxCondition.conditionAnnotations
-        .map(
-          conditionAnnotation => `
+          </th>`;
+      })
+      .join('')}
+    ${tableData.dxCondition.conditionAnnotations
+      .map(
+        conditionAnnotation => `
           <th>
-            <div class="inner _category-color" data-category-id="${conditionAnnotation.categoryId}">
-              <div class="togo-key-view">${Records.getDatasetLabel(conditionAnnotation.dataset)}</div>
+            <div class="inner _category-color" data-category-id="${
+              conditionAnnotation.categoryId
+            }">
+              <div class="togo-key-view">${Records.getDatasetLabel(
+                conditionAnnotation.dataset
+              )}</div>
               <span>${conditionAnnotation.label}</span>
             </div>
           </th>`
-        )
-        .join('')
-    }`;
+      )
+      .join('')}`;
 
     // make stats
     for (const td of this.#STATS.querySelectorAll(':scope > td')) {
@@ -182,21 +195,28 @@ export default class ResultsTable {
       statisticsView.destroy();
     }
     this.#statisticsViews = [];
-    this.#tableData.dxCondition
+    this.#tableData.dxCondition;
     const conditions = [
       ...this.#tableData.dxCondition.conditionFilters,
-      ...this.#tableData.dxCondition.conditionAnnotations
+      ...this.#tableData.dxCondition.conditionAnnotations,
     ];
     conditions.forEach((condition, index) => {
       const td = document.createElement('td');
       td.innerHTML = '<div class="inner"><div></div></div>';
       this.#STATS.append(td);
-      this.#statisticsViews.push(new StatisticsView(this.#STATS, td.querySelector(':scope > .inner > div'), tableData, index, condition));
+      this.#statisticsViews.push(
+        new StatisticsView(
+          this.#STATS,
+          td.querySelector(':scope > .inner > div'),
+          tableData,
+          index,
+          condition
+        )
+      );
     });
   }
 
   #addTableRows({done, offset, rows, tableData}) {
-
     this.#tableData = tableData;
 
     // make table
@@ -233,10 +253,7 @@ export default class ResultsTable {
                       <li>
                         <div
                           class="togo-key-view"
-                          data-order="${[
-                            columnIndex + 1,
-                            offset + index,
-                          ]}"
+                          data-order="${[columnIndex + 1, offset + index]}"
                           data-sub-order="${itemIndex}"
                           data-key="${item.dataset}"
                           data-subject-id="${
@@ -245,14 +262,10 @@ export default class ResultsTable {
                           data-main-category-id="${
                             this.#header[columnIndex].attributeId
                           }"
-                          data-sub-category-id="${
-                            item.node
-                          }"
+                          data-sub-category-id="${item.node}"
                           data-unique-entry-id="${item.entry}"
                           >${item.entry}</div>
-                        <span>${
-                          item.label
-                        }</span>
+                        <span>${item.label}</span>
                       </li>`;
                     })
                     .join('')}</ul></div></td>`;
@@ -280,11 +293,13 @@ export default class ResultsTable {
     // Togo-key   (Uniprot)                        | primaryKey
     //  → Subject  (Gene)                          | category
     //    → Main-Category  (Expressed in tissues)  | attribute
-    //      → Sub-Category  (Thyroid Gland)        | 
+    //      → Sub-Category  (Thyroid Gland)        |
     //        → Unique-Entry (ENSG00000139304)     | node ?
     rows.forEach((row, index) => {
       const actualIndex = offset + index;
-      const tr = this.#TBODY.querySelector(`:scope > tr[data-index="${actualIndex}"]`);
+      const tr = this.#TBODY.querySelector(
+        `:scope > tr[data-index="${actualIndex}"]`
+      );
       const uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(uniqueEntry => {
         uniqueEntry.addEventListener('click', () => {
@@ -307,7 +322,6 @@ export default class ResultsTable {
         });
       });
     });
-
   }
 
   #failed(tableData) {
