@@ -1,7 +1,7 @@
 import ConditionBuilder from "./ConditionBuilder";
 import Records from "./Records";
-import KeyCondition from "./KeyCondition";
-import ValuesCondition from "./ValuesCondition";
+import ConditionAnnotation from "./ConditionAnnotation";
+import ConditionFilter from "./ConditionFilter";
 
 const POLLING_DURATION = 1000;
 
@@ -15,8 +15,8 @@ export default class StackingConditionView {
   /**
    * 
    * @param {HTMLElement} container 
-   * @param {String} type: 'property' or 'value'
-   * @param {keyCondition, valuesCondition} condition 
+   * @param {String} type: 'property' or 'filter'
+   * @param {conditionAnnotation|conditionFilter} condition 
    */
   constructor(container, type, condition, isRange = false) {
 
@@ -27,34 +27,34 @@ export default class StackingConditionView {
     // attributes
     this.#ROOT = document.createElement('div');
     this.#ROOT.classList.add('stacking-condition-view');
-    this.#ROOT.dataset.catexxxgoryId = condition.catexxxgoryId;
+    this.#ROOT.dataset.categoryId = condition.categoryId;
     this.#ROOT.dataset.attributeId = condition.attributeId;
-    if (condition.parentCategoryId) this.#ROOT.dataset.parentCategoryId = condition.parentCategoryId;
+    if (condition.parentNode) this.#ROOT.dataset.parentNode = condition.parentNode;
     // make view
-    let label, ancestorLabels = [Records.getCatexxxgory(condition.catexxxgoryId).label];
+    let label, ancestorLabels = [Records.getCategory(condition.categoryId).label];
     switch(true) {
-      case this.#condition instanceof KeyCondition: {
-        if (condition.parentCategoryId) {
-          const getValue = () => {
-            const value = condition.value;
-            if (value) {
-              label = `<div class="label _catexxxgory-color">${value.label}</div>`;
+      case this.#condition instanceof ConditionAnnotation: {
+        if (condition.parentNode) {
+          const getFilter = () => {
+            const filter = condition.filter;
+            if (filter) {
+              label = `<div class="label _category-color">${filter.label}</div>`;
               ancestorLabels.push(attribute.label, ...condition.ancestors.map(ancestor => {
-                return Records.getValue(condition.attributeId, ancestor).label;
+                return Records.getFilter(condition.attributeId, ancestor).label;
               }));
               this.#make(container, type, ancestorLabels, label);
             } else {
-              setTimeout(getValue, POLLING_DURATION);
+              setTimeout(getFilter, POLLING_DURATION);
             }
           }
-          getValue();
+          getFilter();
         } else {
-          label = `<div class="label _catexxxgory-color">${attribute.label}</div>`;
+          label = `<div class="label _category-color">${attribute.label}</div>`;
           this.#make(container, type, ancestorLabels, label);
         }
       }
         break;
-      case this.#condition instanceof ValuesCondition:
+      case this.#condition instanceof ConditionFilter:
         label = `<ul class="labels"></ul>`;
         ancestorLabels.push(attribute.label);
         this.#make(container, type, ancestorLabels, label);
@@ -76,23 +76,23 @@ export default class StackingConditionView {
     ${label}`;
     container.insertAdjacentElement('beforeend', this.#ROOT);
     // reference
-    if (this.#condition instanceof ValuesCondition) {
+    if (this.#condition instanceof ConditionFilter) {
       this.#LABELS = this.#ROOT.querySelector(':scope > .labels');
-      for (const categoryId of this.#condition.categoryIds) {
-        this.addValue(categoryId);
+      for (const node of this.#condition.nodes) {
+        this.addFilter(node);
       }
     }
 
     // event
     this.#ROOT.querySelector(':scope > .close-button-view').addEventListener('click', () => {
       switch (true) {
-        case this.#condition instanceof KeyCondition:
+        case this.#condition instanceof ConditionAnnotation:
           // notify
-          ConditionBuilder.removeAttribute(this.#condition.attributeId, this.#condition.parentCategoryId);
+          ConditionBuilder.removeAnnotation(new ConditionAnnotation(this.#condition.attributeId, this.#condition.parentNode));
           break;
-        case this.#condition instanceof ValuesCondition:
+        case this.#condition instanceof ConditionFilter:
           for (const label of this.#LABELS.querySelectorAll(':scope > .label')) {
-            ConditionBuilder.removeAttributeValue(this.#condition.attributeId, label.dataset.categoryId);
+            ConditionBuilder.removeFilter(this.#condition.attributeId, label.dataset.node);
           }
           break;
       }
@@ -102,34 +102,34 @@ export default class StackingConditionView {
 
   // public methods
 
-  addValue(categoryId) {
-    const getValue = () => {
-      const value = Records.getValue(this.#condition.attributeId, categoryId);
-      if (value === undefined) {
-        setTimeout(getValue, POLLING_DURATION);
+  addFilter(node) {
+    const getFilter = () => {
+      const filter = Records.getFilter(this.#condition.attributeId, node);
+      if (filter === undefined) {
+        setTimeout(getFilter, POLLING_DURATION);
       } else {
-        this.#LABELS.insertAdjacentHTML('beforeend', `<li class="label _catexxxgory-background-color" data-category-id="${value.categoryId}">${value.label}<div class="close-button-view"></div></li>`);
+        this.#LABELS.insertAdjacentHTML('beforeend', `<li class="label _category-background-color" data-node="${filter.node}">${filter.label}<div class="close-button-view"></div></li>`);
         // attach event
         this.#LABELS.querySelector(':scope > .label:last-child').addEventListener('click', e => {
           e.stopPropagation();
-          ConditionBuilder.removeAttributeValue(this.#condition.attributeId, e.target.parentNode.dataset.categoryId);
+          ConditionBuilder.removeFilter(this.#condition.attributeId, e.target.parentNode.dataset.node);
         });
       }
     }
-    getValue();
+    getFilter();
   }
 
-  removeAttribute(keyCondition) {
+  removeAnnotation(conditionAnnotation) {
     const isMatch =
-      (keyCondition.attributeId === this.#condition.attributeId) &&
-      (keyCondition.parentCategoryId ? keyCondition.parentCategoryId === this.#condition.parentCategoryId : true);
+      (conditionAnnotation.attributeId === this.#condition.attributeId) &&
+      (conditionAnnotation.parentNode ? conditionAnnotation.parentNode === this.#condition.parentNode : true);
     if (isMatch) this.#ROOT.parentNode.removeChild(this.#ROOT);
     return isMatch;
   }
 
-  removeAttributeValue(attributeId, categoryId) {
+  removeFilter(attributeId, node) {
     if (attributeId === this.#condition.attributeId) {
-      this.#LABELS.removeChild(this.#LABELS.querySelector(`:scope > [data-category-id="${categoryId}"`));
+      this.#LABELS.removeChild(this.#LABELS.querySelector(`:scope > [data-node="${node}"`));
       if (this.#LABELS.childNodes.length === 0) {
         this.#ROOT.parentNode.removeChild(this.#ROOT);
         return true;

@@ -2,16 +2,16 @@
 export const defineTogoKey = 'defineTogoKey';
 
 // User IDs
-export const setUserValues = 'setUserValues';
-export const clearUserValues = 'clearUserValues';
-export const toggleErrorUserValues = 'toggleErrorUserValues';
+export const setUserFilters = 'setUserFilters';
+export const clearUserFilters = 'clearUserFilters';
+export const toggleErrorUserFilters = 'toggleErrorUserFilters';
 
 // View mode
 export const changeViewModes = 'changeViewModes';
 
 // Condition
-export const mutateAttributeCondition = 'mutateAttributeCondition';
-export const mutateAttributeValueCondition = 'mutateAttributeValueCondition';
+export const mutateAnnotationCondition = 'mutateAnnotationCondition';
+export const mutateFilterCondition = 'mutateFilterCondition';
 export const mutateEstablishConditions = 'mutateEstablishConditions';
 export const completeQueryParameter = 'completeQueryParameter';
 export const restoreParameters = 'restoreParameters';
@@ -39,8 +39,8 @@ export const deleteTableData = 'deleteTableData';
 export const highlightCol = 'highlightCol';
 
 // Track
-export const enterAttributeValueItemView = 'enterAttributeValueItemView';
-export const leaveAttributeValueItemView = 'leaveAttributeValueItemView';
+export const enterAttributeFilterItemView = 'enterAttributeFilterItemView';
+export const leaveAttributeFilterItemView = 'leaveAttributeFilterItemView';
 export const allTracksCollapse = 'allTracksCollapse';
 
 // Statistics

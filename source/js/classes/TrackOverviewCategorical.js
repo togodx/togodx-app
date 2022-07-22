@@ -12,33 +12,33 @@ const RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
 export default class TrackOverviewCategorical {
 
   #attribute;
-  #values;
-  #userValues;
+  #filters;
+  #userFilters;
   #ROOT;
 
-  constructor(elm, attribute, values) {
+  constructor(elm, attribute, filters) {
 
     this.#ROOT = elm;
     this.#attribute = attribute;
-    this.#values = values.map(value => Object.assign({}, value));
-    const category = Records.getCatexxxgoryWithAttributeId(this.#attribute.id);
+    this.#filters = filters.map(filter => Object.assign({}, filter));
+    const category = Records.getCategoryWithAttributeId(this.#attribute.id);
 
     // make overview
     // TODO: ヒストグラムは別処理
-    const sum = values.reduce((acc, value) => acc + value.count, 0);
-    const width = 100 / values.length;
-    const selectedValues = ConditionBuilder.getSelectedCategoryIds(attribute.id).values;
-    elm.innerHTML = this.#values.map((value, index) => {
-      value.countLog10 = value.count === 0 ? 0 : Math.log10(value.count);
-      value.width = value.count / sum * 100;
-      value.baseColor = util.colorTintByHue(category.color, 360 * index / values.length);
-      const selectedClass = selectedValues.indexOf(value.categoryId) !== -1 ? ' -selected' : '';
+    const sum = filters.reduce((acc, filter) => acc + filter.count, 0);
+    const width = 100 / filters.length;
+    const selectedFilters = ConditionBuilder.getSelectedNodes(attribute.id).filters;
+    elm.innerHTML = this.#filters.map((filter, index) => {
+      filter.countLog10 = filter.count === 0 ? 0 : Math.log10(filter.count);
+      filter.width = filter.count / sum * 100;
+      filter.baseColor = util.colorTintByHue(category.color, 360 * index / filters.length);
+      const selectedClass = selectedFilters.indexOf(filter.node) !== -1 ? ' -selected' : '';
       return `
-        <li class="track-value-view _catexxxgory-background-color${selectedClass}" style="width: ${width}%;" data-category-id="${value.categoryId}">
+        <li class="track-filter-view _category-background-color${selectedClass}" style="width: ${width}%;" data-node="${filter.node}">
           <div class="labels">
             <p>
-              <span class="label">${value.label}</span>
-              <span class="count">${value.count.toLocaleString()}</span>
+              <span class="label">${filter.label}</span>
+              <span class="count">${filter.count.toLocaleString()}</span>
             </p>
           </div>
           <div class="pin">
@@ -47,72 +47,72 @@ export default class TrackOverviewCategorical {
         </li>`;
     }).join('');
 
-    elm.querySelectorAll(':scope > .track-value-view').forEach((elm, index) => {
+    elm.querySelectorAll(':scope > .track-filter-view').forEach((elm, index) => {
 
       // reference
-      const value = this.#values[index];
-      value.elm = elm;
-      value.pin = elm.querySelector(':scope > .pin');
-      value.icon = value.pin.querySelector(':scope > .material-icons');
+      const filter = this.#filters[index];
+      filter.elm = elm;
+      filter.pin = elm.querySelector(':scope > .pin');
+      filter.icon = filter.pin.querySelector(':scope > .material-icons');
 
       // attach event: show tooltip
-      const label = `<span class="_catexxxgory-color" data-catexxxgory-id="${category.id}">${value.label}</span>`;
+      const label = `<span class="_category-color" data-category-id="${category.id}">${filter.label}</span>`;
       elm.addEventListener('mouseenter', () => {
         const values = [];
-        const userValue = this.#userValues?.find(userValue => userValue.categoryId === value.categoryId);
-        if (userValue?.hit_count) {
-          // does not have user value
+        const userFilter = this.#userFilters?.find(userFilter => userFilter.node === filter.node);
+        if (userFilter?.mapped) {
+          // does not have user filter
           values.push({
             key: 'Count',
-            value: `${value.userValueCount.toLocaleString()} / ${value.count.toLocaleString()}`
+            value: `${filter.userFilterCount.toLocaleString()} / ${filter.count.toLocaleString()}`
           });
-          if (userValue?.pValue) {
+          if (userFilter?.pvalue) {
             values.push({
               key: 'P-value',
-              value: userValue.pValue === 1 ? 1 : userValue.pValue.toExponential(3)
+              value: userFilter.pvalue === 1 ? 1 : userFilter.pvalue.toExponential(3)
             });
           }
         } else {
-          // has user value
+          // has user filter
           values.push({
             key: 'Count',
-            value: value.count.toLocaleString()
+            value: filter.count.toLocaleString()
           });
         }
-        const customEvent = new CustomEvent(event.enterAttributeValueItemView, {detail: {label, values, elm}});
+        const customEvent = new CustomEvent(event.enterAttributeFilterItemView, {detail: {label, values, elm}});
         DefaultEventEmitter.dispatchEvent(customEvent);
       });
       elm.addEventListener('mouseleave', () => {
-        const customEvent = new CustomEvent(event.leaveAttributeValueItemView);
+        const customEvent = new CustomEvent(event.leaveAttributeFilterItemView);
         DefaultEventEmitter.dispatchEvent(customEvent);
       });
 
-      // attach event: select/deselect a value
+      // attach event: select/deselect a filter
       elm.addEventListener('click', () => {
         if (elm.classList.contains('-selected')) {
           elm.classList.remove('-selected');
-          ConditionBuilder.removeAttributeValue(this.#attribute.id, value.categoryId);
+          ConditionBuilder.removeFilter(this.#attribute.id, filter.node);
         } else {
           elm.classList.add('-selected');
-          ConditionBuilder.addAttributeValue(
+          ConditionBuilder.addFilter(
             this.#attribute.id,
-            value.categoryId
+            filter.node
           );
         }
       });
     });
 
     // event listener
-    DefaultEventEmitter.addEventListener(event.mutateAttributeValueCondition, ({detail: {action, attributeId, categoryId}}) => {
+    DefaultEventEmitter.addEventListener(event.mutateFilterCondition, ({detail: {action, attributeId, node}}) => {
       if (this.#attribute.id === attributeId) {
-        this.#values.forEach(value => {
-          if (value.categoryId === categoryId) {
+        this.#filters.forEach(filter => {
+          if (filter.node === node) {
             switch (action) {
               case 'add':
-                value.elm.classList.add('-selected');
+                filter.elm.classList.add('-selected');
                 break;
               case 'remove':
-                value.elm.classList.remove('-selected');
+                filter.elm.classList.remove('-selected');
                 break;
             }
           }
@@ -120,8 +120,8 @@ export default class TrackOverviewCategorical {
       }
     });
     DefaultEventEmitter.addEventListener(event.changeViewModes, e => this.#update(e.detail));
-    DefaultEventEmitter.addEventListener(event.setUserValues, e => this.#plotUserIdValues(e.detail));
-    DefaultEventEmitter.addEventListener(event.clearUserValues, e => this.#clearUserIdValues(e.detail));
+    DefaultEventEmitter.addEventListener(event.setUserFilters, e => this.#plotUserIdFilters(e.detail));
+    DefaultEventEmitter.addEventListener(event.clearUserFilters, e => this.#clearUserIdFilters(e.detail));
 
     this.#update(App.viewModes);
   }
@@ -129,74 +129,74 @@ export default class TrackOverviewCategorical {
   #update(viewModes) {
     
     const isLog10 = viewModes.log10;
-    const sum = this.#values.reduce((acc, value) => acc + (isLog10 ? value.countLog10 : value.count), 0);
-    let max = Math.max(...this.#values.map(value => value.count));
+    const sum = this.#filters.reduce((acc, filter) => acc + (isLog10 ? filter.countLog10 : filter.count), 0);
+    let max = Math.max(...this.#filters.map(filter => filter.count));
     max = isLog10 ? Math.log10(max) : max;
     let left = 0;
-    this.#values.forEach(value => {
-      const width = (isLog10 ? (value.count === 0 ? 0 : Math.log10(value.count)) : value.count) / sum * 100;
-      value.elm.style.backgroundColor = `rgb(${value.baseColor.mix(App.colorSilver, 1 - (isLog10 ? value.countLog10 : value.count) / max).coords.map(cood => cood * 256).join(',')})`;
-      value.elm.style.width = width + '%';
-      value.elm.style.left = left + '%';
+    this.#filters.forEach(filter => {
+      const width = (isLog10 ? (filter.count === 0 ? 0 : Math.log10(filter.count)) : filter.count) / sum * 100;
+      filter.elm.style.backgroundColor = `rgb(${filter.baseColor.mix(App.colorSilver, 1 - (isLog10 ? filter.countLog10 : filter.count) / max).coords.map(cood => cood * 256).join(',')})`;
+      filter.elm.style.width = width + '%';
+      filter.elm.style.left = left + '%';
       left += width;
     });
   }
 
-  #plotUserIdValues(detail) {
+  #plotUserIdFilters(detail) {
     if (this.#attribute.id === detail.attributeId) {
 
       this.#ROOT.classList.add('-pinsticking');
-      this.#userValues = detail.values;
+      this.#userFilters = detail.filters;
 
       // mapping
-      this.#values.forEach(value => {
-        const userValue = detail.values.find(userValue => userValue.categoryId === value.categoryId);
-        if (userValue?.hit_count) {
-          value.elm.classList.add('-pinsticking');
+      this.#filters.forEach(filter => {
+        const userFilter = detail.filters.find(userFilter => userFilter.node === filter.node);
+        if (userFilter?.mapped) {
+          filter.elm.classList.add('-pinsticking');
           // pin
-          let ratio, pValueGreaterThan = 1;
-          ratio = userValue.hit_count / value.count;
+          let ratio, pvalueGreaterThan = 1;
+          ratio = userFilter.mapped / filter.count;
           ratio = ratio > 1 ? 1 : ratio;
-          if (userValue.pValue) {
+          if (userFilter.pvalue) {
             switch (true) {
-              case userValue.pValue < 0.001:
-                pValueGreaterThan = '<0.001';
+              case userFilter.pvalue < 0.001:
+                pvalueGreaterThan = '<0.001';
                 break;
-              case userValue.pValue < 0.005:
-                pValueGreaterThan = '<0.005';
+              case userFilter.pvalue < 0.005:
+                pvalueGreaterThan = '<0.005';
                 break;
-              case userValue.pValue < 0.01:
-                pValueGreaterThan = '<0.01';
+              case userFilter.pvalue < 0.01:
+                pvalueGreaterThan = '<0.01';
                 break;
-              case userValue.pValue < 0.05:
-                pValueGreaterThan = '<0.05';
+              case userFilter.pvalue < 0.05:
+                pvalueGreaterThan = '<0.05';
                 break;
-              case userValue.pValue < 0.1:
-                pValueGreaterThan = '<0.1';
+              case userFilter.pvalue < 0.1:
+                pvalueGreaterThan = '<0.1';
                 break;
-              case userValue.pValue < 1:
-                pValueGreaterThan = '<1';
+              case userFilter.pvalue < 1:
+                pvalueGreaterThan = '<1';
                 break;
             }
           } else {
-            pValueGreaterThan = 1;
+            pvalueGreaterThan = 1;
           }
           const size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
-          value.pin.style.width = size + 'px';
-          value.pin.style.height = size + 'px';
-          value.icon.style.fontSize = size + 'px';
-          value.userValueCount = userValue.hit_count;
-          value.elm.dataset.pValueGreaterThan = pValueGreaterThan;
+          filter.pin.style.width = size + 'px';
+          filter.pin.style.height = size + 'px';
+          filter.icon.style.fontSize = size + 'px';
+          filter.userFilterCount = userFilter.mapped;
+          filter.elm.dataset.pvalueGreaterThan = pvalueGreaterThan;
         } else {
-          value.elm.classList.remove('-pinsticking');
+          filter.elm.classList.remove('-pinsticking');
         }
       });
     }
   }
 
-  #clearUserIdValues() {
-    this.#values.forEach(value => value.elm.classList.remove('-pinsticking'));
-    this.#userValues = undefined;
+  #clearUserIdFilters() {
+    this.#filters.forEach(filter => filter.elm.classList.remove('-pinsticking'));
+    this.#userFilters = undefined;
   }
 
 }

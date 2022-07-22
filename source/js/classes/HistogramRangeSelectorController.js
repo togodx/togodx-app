@@ -188,9 +188,9 @@ export default class HistogramRangeSelectorController {
     });
     this.#target.update();
     // set condition
-    ConditionBuilder.setAttributeValues(
+    ConditionBuilder.setFilter(
       this.#target.attributeId,
-      this.selectedItems.map(item => item.categoryId),
+      this.selectedItems.map(item => item.node),
       false
     );
   }

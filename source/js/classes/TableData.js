@@ -2,9 +2,10 @@ import App from './App';
 import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
-import * as event from '../events';
 import {getApiParameter} from '../functions/queryTemplates';
 import ProgressIndicator from './ProgressIndicator';
+import ConditionAnnotation from './ConditionAnnotation';
+import * as event from '../events';
 import axios from 'axios';
 
 const LIMIT = 100;
@@ -113,20 +114,20 @@ export default class TableData {
         }</p>
       </div>
       ${
-        this.#dxCondition.valuesConditions
-          .map(valuesCondition => {
-            const label = Records.getAttribute(valuesCondition.attributeId).label;
-            return `<div class="condition _catexxxgory-background-color" data-catexxxgory-id="${valuesCondition.catexxxgoryId}">
+        this.#dxCondition.conditionFilters
+          .map(conditionFilter => {
+            const label = Records.getAttribute(conditionFilter.attributeId).label;
+            return `<div class="condition _category-background-color" data-category-id="${conditionFilter.categoryId}">
               <p title="${label}">${label}</p>
             </div>`
           })
           .join('')
       }
       ${
-        this.#dxCondition.keyConditions
-          .map(keyCondition => {
-            return `<div class="condition _catexxxgory-color" data-catexxxgory-id="${keyCondition.catexxxgoryId}">
-              <p title="${keyCondition.label}">${keyCondition.label}</p>
+        this.#dxCondition.conditionAnnotations
+          .map(conditionAnnotation => {
+            return `<div class="condition _category-color" data-category-id="${conditionAnnotation.categoryId}">
+              <p title="${conditionAnnotation.label}">${conditionAnnotation.label}</p>
             </div>`;
           })
           .join('')
@@ -266,21 +267,18 @@ export default class TableData {
   #dataButtonEdit(e) {
     e.stopPropagation();
     // property (attribute)
-    ConditionBuilder.setAttributes(
-      this.#dxCondition.keyConditions.map(keyCondition => {
-        return {
-          attributeId: keyCondition.attributeId,
-          parentCategoryId: keyCondition.parentCategoryId,
-        }
+    ConditionBuilder.setAnnotation(
+      this.#dxCondition.conditionAnnotations.map(conditionAnnotation => {
+        return conditionAnnotation;
       }),
       false
     );
     // attribute (classification/distribution)
     Records.attributes.forEach(({id}) => {
-      const valuesCondition = this.#dxCondition.valuesConditions.find(valuesCondition => valuesCondition.attributeId === id);
-      const categoryIds = [];
-      if (valuesCondition) categoryIds.push(...valuesCondition.categoryIds);
-      ConditionBuilder.setAttributeValues(id, categoryIds, false);
+      const conditionFilter = this.#dxCondition.conditionFilters.find(conditionFilter => conditionFilter.attributeId === id);
+      const nodes = [];
+      if (conditionFilter) nodes.push(...conditionFilter.nodes);
+      ConditionBuilder.setFilter(id, nodes, false);
     });
   }
 

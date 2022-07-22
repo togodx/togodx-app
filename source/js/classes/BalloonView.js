@@ -16,7 +16,7 @@ export default class BalloonView {
     this.#CONTAINER = this.#ROOT.querySelector(':scope > .container');
 
     // event listener
-    DefaultEventEmitter.addEventListener(event.enterAttributeValueItemView, ({detail: {elm, label, values}}) => {
+    DefaultEventEmitter.addEventListener(event.enterAttributeFilterItemView, ({detail: {elm, label, values}}) => {
       this.#CONTAINER.innerHTML = `
         <header>${label}</header>
         ${values.map(value => `<dl>
@@ -36,7 +36,7 @@ export default class BalloonView {
       }
       this.#ROOT.classList.add('-showing');
     });
-    DefaultEventEmitter.addEventListener(event.leaveAttributeValueItemView, () => {
+    DefaultEventEmitter.addEventListener(event.leaveAttributeFilterItemView, () => {
       this.#ROOT.classList.remove('-showing');
     });
   }
