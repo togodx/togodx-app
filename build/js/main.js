@@ -10009,6 +10009,8 @@
     isError ? _classPrivateFieldGet(this, _ROOT$3).classList.add('error') : _classPrivateFieldGet(this, _ROOT$3).classList.remove('error');
   }
 
+  var mixin = {};
+
   var LIMIT = 100;
   var downloadUrls = new Map();
   var timeOutError$1 = 'ECONNABORTED';
@@ -10623,6 +10625,7 @@
 
     if (withData) _classPrivateMethodGet(this, _setDownloadButtons, _setDownloadButtons2).call(this);
   }
+  Object.assign(TableData.prototype, mixin);
 
   var _tableData = /*#__PURE__*/new WeakMap();
 
