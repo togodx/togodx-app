@@ -18,12 +18,15 @@ export default class AttributeTrackView {
   #COLLAPSE_BUTTON;
 
   constructor(attributeId, container, positionRate) {
-
     this.#attribute = Records.getAttribute(attributeId);
     this.#ROOT = document.createElement('div');
     container.insertAdjacentElement('beforeend', this.#ROOT);
     const category = Records.getCategoryWithAttributeId(attributeId);
-    this.#ROOT.classList.add('attribute-track-view', '-preparing', 'collapse-view');
+    this.#ROOT.classList.add(
+      'attribute-track-view',
+      '-preparing',
+      'collapse-view'
+    );
     this.#ROOT.dataset.categoryId = category.id;
     this.#ROOT.dataset.collapse = attributeId;
 
@@ -49,20 +52,35 @@ export default class AttributeTrackView {
           <dt>Description</dt>
           <dd>${this.#attribute.description}</dd>
           <dt>API</dt>
-          <dd><a href="${this.#attribute.api}" target="_blank">${this.#attribute.api}</a></dd>
+          <dd>
+            <a href="${this.#attribute.api}" target="_blank">${
+      this.#attribute.api
+    }</a>
+          </dd>
         </dl>
-        ${this.#attribute.source.map(source => `<dl class="source">
-        <dt>Original data</dt>
-          <dd><a href="${source.url}" target="_blank">${source.label}</a></dd>
-          <dt>Version</dt>
-          <dd>${source.version}</dd>
-          <dt>Last updated</dt>
-          <dd>${source.updated}</dd>
-        </dl>`).join('')}
+        ${this.#attribute.source
+          .map(
+            source => `
+        <dl class="source">
+          <dt>Original data</dt>
+            <dd><a href="${source.url}" target="_blank">${source.label}</a></dd>
+            ${
+              source.version ? `<dt>Version</dt><dd>${source.version}</dd>` : ''
+            }
+            ${
+              source.updated
+                ? `<dt>Last updated</dt><dd>${source.updated}</dd>`
+                : ''
+            }
+        </dl>`
+          )
+          .join('')}
       </div>
       <div class="right selector"></div>
     </div>`;
-    const filtersContainer = this.#ROOT.querySelector(':scope > .row.-upper > .filters');
+    const filtersContainer = this.#ROOT.querySelector(
+      ':scope > .row.-upper > .filters'
+    );
     this.#OVERVIEW_CONTAINER = filtersContainer.querySelector(
       ':scope > .overview > .inner'
     );
@@ -96,23 +114,26 @@ export default class AttributeTrackView {
       }
     });
     // event listener
-    DefaultEventEmitter.addEventListener(event.mutateAnnotationCondition, ({detail: {action, conditionAnnotation}}) => {
-      if (conditionAnnotation.parentNode !== undefined) return;
-      switch (action) {
-        case 'add':
-          if (conditionAnnotation.attributeId === attributeId) {
-            this.#CHECKBOX_ALL_PROPERTIES.checked = true;
-            this.#ROOT.classList.add('-allselected');
-          }
-          break;
-        case 'remove':
-          if (conditionAnnotation.attributeId === attributeId) {
-            this.#CHECKBOX_ALL_PROPERTIES.checked = false;
-            this.#ROOT.classList.remove('-allselected');
-          }
-          break;
+    DefaultEventEmitter.addEventListener(
+      event.mutateAnnotationCondition,
+      ({detail: {action, conditionAnnotation}}) => {
+        if (conditionAnnotation.parentNode !== undefined) return;
+        switch (action) {
+          case 'add':
+            if (conditionAnnotation.attributeId === attributeId) {
+              this.#CHECKBOX_ALL_PROPERTIES.checked = true;
+              this.#ROOT.classList.add('-allselected');
+            }
+            break;
+          case 'remove':
+            if (conditionAnnotation.attributeId === attributeId) {
+              this.#CHECKBOX_ALL_PROPERTIES.checked = false;
+              this.#ROOT.classList.remove('-allselected');
+            }
+            break;
+        }
       }
-    });
+    );
     DefaultEventEmitter.addEventListener(event.allTracksCollapse, e => {
       if (e.detail) {
         if (!this.#ROOT.classList.contains('-spread')) {
@@ -136,7 +157,7 @@ export default class AttributeTrackView {
     Records.fetchAttributeFilters(attributeId)
       .then(filters => this.#makeFilters(filters))
       .catch(error => {
-        console.error(error)
+        console.error(error);
         this.#showError(error);
       })
       .finally(() => {
