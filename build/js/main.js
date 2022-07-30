@@ -9164,7 +9164,6 @@
     _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getDatasetLabel(tableData.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      "); // makte table sub header
 
     _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    ".concat(tableData.dxCondition.conditionFilters.map(function (conditionFilter) {
-      console.log(conditionFilter);
       return "\n          <th>\n            <div class=\"inner _category-background-color\" data-category-id=\"".concat(conditionFilter.categoryId, "\">\n              <div class=\"togo-key-view\">").concat(Records$1.getDatasetLabel(conditionFilter.dataset), "</div>\n              <span>").concat(conditionFilter.label, "</span>\n            </div>\n          </th>");
     }).join(''), "\n    ").concat(tableData.dxCondition.conditionAnnotations.map(function (conditionAnnotation) {
       return "\n          <th>\n            <div class=\"inner _category-color\" data-category-id=\"".concat(conditionAnnotation.categoryId, "\">\n              <div class=\"togo-key-view\">").concat(Records$1.getDatasetLabel(conditionAnnotation.dataset), "</div>\n              <span>").concat(conditionAnnotation.label, "</span>\n            </div>\n          </th>");
@@ -9219,9 +9218,7 @@
         offset = _ref3.offset,
         rows = _ref3.rows,
         tableData = _ref3.tableData;
-
-    _classPrivateFieldSet(this, _tableData$1, tableData); // make table
-
+    if (_classPrivateFieldGet(this, _tableData$1) !== tableData) return; // make table
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
       return "\n          <tr\n            data-index=\"".concat(offset + index, "\"\n            data-togo-id=\"").concat(row.index.entry, "\">\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(tableData.togoKey, "\"\n                    data-order=\"").concat([0, offset + index], "\"\n                    data-sub-order=\"0\"\n                    data-subject-id=\"primary\"\n                    data-unique-entry-id=\"").concat(row.index.entry, "\">").concat(row.index.entry, "\n                  </div>\n                  <span>").concat(row.index.label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.attributes.map(function (column, columnIndex) {
