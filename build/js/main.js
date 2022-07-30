@@ -10278,6 +10278,7 @@
           var customEvent2 = new CustomEvent(addNextRows, {
             detail: {
               tableData: this,
+              offset: 0,
               rows: _classPrivateFieldGet(this, _rows),
               done: done
             }

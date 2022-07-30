@@ -506,6 +506,7 @@ export default class TableData {
       const customEvent2 = new CustomEvent(event.addNextRows, {
         detail: {
           tableData: this,
+          offset: 0,
           rows: this.#rows,
           done,
         },
