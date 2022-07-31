@@ -1668,8 +1668,8 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   transition: transform var(--transition-wipe), -webkit-transform var(--transition-wipe);
 }
 body[data-display=results] #App > .inner {
-  -webkit-transform: translateX(calc(-100vw + var(--width-condition)));
-          transform: translateX(calc(-100vw + var(--width-condition)));
+  -webkit-transform: translateX(calc(max(100vw, var(--min-width-app)) * -1 + var(--width-condition)));
+          transform: translateX(calc(max(100vw, var(--min-width-app)) * -1 + var(--width-condition)));
 }
 #App > .loading-view {
   position: fixed;
@@ -1943,6 +1943,7 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #Results {
   --height-header: calc(var(--height-track) - var(--padding-track-block-start) * 2 + .2rem);
   width: calc(100vw - var(--width-condition));
+  min-width: calc(var(--min-width-app) - var(--width-condition));
 }
 #Results > .inner {
   height: 100%;
