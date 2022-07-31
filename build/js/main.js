@@ -4705,7 +4705,7 @@
 
           _classPrivateFieldGet(this, _ROOT$d).classList.add('-pinsticking');
 
-          _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .mapped').textContent = filter.mapped ? filter.mapped.toLocaleString() : '';
+          _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .mapped').textContent = filter.mapped ? filter.mapped.toLocaleString() : 0;
           _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .pvalue').textContent = filter.pvalue ? filter.pvalue.toExponential(2) : '';
           if (filter.mapped === 0) _classPrivateFieldGet(this, _ROOT$d).classList.remove('-pinsticking');else _classPrivateFieldGet(this, _ROOT$d).classList.add('-pinsticking');
         } else {
@@ -7389,6 +7389,12 @@
     switch (sortDescriptor.column) {
       case 'label':
         items.sort(function (a, b) {
+          if (sortDescriptor.direction === 'desc') {
+            var _ref2 = [a, b];
+            b = _ref2[0];
+            a = _ref2[1];
+          }
+
           return a.filter > b.filter ? 1 : -1;
         });
         break;
@@ -7397,12 +7403,18 @@
       case 'mapped':
       case 'pvalue':
         items.sort(function (a, b) {
+          if (sortDescriptor.direction === 'desc') {
+            var _ref3 = [a, b];
+            b = _ref3[0];
+            a = _ref3[1];
+          }
+
           return b.filter - a.filter;
         });
         break;
-    }
+    } // if (sortDescriptor.direction === 'desc') items.reverse();
+    // replace
 
-    if (sortDescriptor.direction === 'desc') items.reverse(); // replace
 
     items.forEach(function (item) {
       _classPrivateFieldGet(_this4, _TBODY$1).append(_classPrivateFieldGet(_this4, _columnItemViews)[item.index].rootNode);

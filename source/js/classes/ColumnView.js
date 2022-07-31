@@ -126,15 +126,21 @@ export default class ColumnView {
     });
     switch (sortDescriptor.column) {
       case 'label':
-        items.sort((a, b) => (a.filter > b.filter ? 1 : -1));
+        items.sort((a, b) => {
+          if (sortDescriptor.direction === 'desc') [b, a] = [a, b];
+          return a.filter > b.filter ? 1 : -1;
+        });
         break;
       case 'total':
       case 'mapped':
       case 'pvalue':
-        items.sort((a, b) => b.filter - a.filter);
+        items.sort((a, b) => {
+          if (sortDescriptor.direction === 'desc') [b, a] = [a, b];
+          return b.filter - a.filter;
+        });
         break;
     }
-    if (sortDescriptor.direction === 'desc') items.reverse();
+    // if (sortDescriptor.direction === 'desc') items.reverse();
     // replace
     items.forEach(item => {
       this.#TBODY.append(this.#columnItemViews[item.index].rootNode);
