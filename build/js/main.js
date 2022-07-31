@@ -8859,6 +8859,7 @@
         bar = document.createElement('div');
         bar.classList.add('bar');
         bar.dataset.node = node;
+        bar.setAttribute('title', label);
         bar.innerHTML = "\n        <div class=\"wholebar\"></div>\n        <div class=\"hitbar _category-background-color-strong\">\n          <div class=\"filter\"></div>\n        </div>\n        <div class=\"label\">".concat(label, "</div>");
 
         if (lastBar) {
@@ -8884,7 +8885,7 @@
 
       hitbar.style.height = "".concat(hitbarHeight * 100, "%");
 
-      if (hitbarHeight < .5) {
+      if (hitbarHeight < 0.5) {
         hitCountLabel.classList.add('-below');
       } else {
         hitCountLabel.classList.remove('-below');
