@@ -87,6 +87,24 @@
                   body[data-sort-column="total"][data-sort-direction="desc"] &
                     > .sorter::after
                       opacity: 1
+                &.mapped
+                  body[data-sort-column="mapped"][data-sort-direction="asc"] &, body[data-sort-column="mapped"][data-sort-direction="desc"] &
+                    background-color: var(--color-lamp-black)
+                  body[data-sort-column="mapped"][data-sort-direction="asc"] &
+                    > .sorter::before
+                      opacity: 1
+                  body[data-sort-column="mapped"][data-sort-direction="desc"] &
+                    > .sorter::after
+                      opacity: 1
+                &.pvalue
+                  body[data-sort-column="pvalue"][data-sort-direction="asc"] &, body[data-sort-column="pvalue"][data-sort-direction="desc"] &
+                    background-color: var(--color-lamp-black)
+                  body[data-sort-column="pvalue"][data-sort-direction="asc"] &
+                    > .sorter::before
+                      opacity: 1
+                  body[data-sort-column="pvalue"][data-sort-direction="desc"] &
+                    > .sorter::after
+                      opacity: 1
           > tbody
             > tr
               > .label

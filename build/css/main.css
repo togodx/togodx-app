@@ -813,6 +813,24 @@ body[data-sort-column=total][data-sort-direction=asc] .column-selector-view > .c
 body[data-sort-column=total][data-sort-direction=desc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.total > .sorter::after {
   opacity: 1;
 }
+body[data-sort-column=mapped][data-sort-direction=asc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.mapped, body[data-sort-column=mapped][data-sort-direction=desc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.mapped {
+  background-color: var(--color-lamp-black);
+}
+body[data-sort-column=mapped][data-sort-direction=asc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.mapped > .sorter::before {
+  opacity: 1;
+}
+body[data-sort-column=mapped][data-sort-direction=desc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.mapped > .sorter::after {
+  opacity: 1;
+}
+body[data-sort-column=pvalue][data-sort-direction=asc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.pvalue, body[data-sort-column=pvalue][data-sort-direction=desc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.pvalue {
+  background-color: var(--color-lamp-black);
+}
+body[data-sort-column=pvalue][data-sort-direction=asc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.pvalue > .sorter::before {
+  opacity: 1;
+}
+body[data-sort-column=pvalue][data-sort-direction=desc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.pvalue > .sorter::after {
+  opacity: 1;
+}
 .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label {
   display: relative;
 }

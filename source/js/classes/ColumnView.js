@@ -6,7 +6,6 @@ import App from './App';
 import Records from './Records';
 import * as event from '../events';
 import {getApiParameter} from '../functions/queryTemplates';
-// import * as queryTemplates from '../functions/queryTemplates';
 import axios from 'axios';
 
 export default class ColumnView {
@@ -116,6 +115,8 @@ export default class ColumnView {
       '': 'index',
       label: 'label',
       total: 'count',
+      mapped: 'mapped',
+      pvalue: 'pvalue',
     }[sortDescriptor.column];
     const items = this.#columnItemViews.map(columnItemView => {
       return {
@@ -128,6 +129,8 @@ export default class ColumnView {
         items.sort((a, b) => (a.filter > b.filter ? 1 : -1));
         break;
       case 'total':
+      case 'mapped':
+      case 'pvalue':
         items.sort((a, b) => b.filter - a.filter);
         break;
     }
