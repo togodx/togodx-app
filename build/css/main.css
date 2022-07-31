@@ -432,9 +432,6 @@ body {
   line-height: 1.5;
   background-color: var(--color-gray);
 }
-body[data-page=top] {
-  overflow: hidden;
-}
 body[data-page=top][data-display=results] [data-hidden-by=results], body[data-page=top][data-display=properties] [data-hidden-by=properties] {
   display: none;
   opacity: 0;

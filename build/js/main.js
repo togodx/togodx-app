@@ -11486,9 +11486,9 @@
       value: // public methods
 
       /**
-       * 
+       *
        * @param {String} api 'aggregate' or 'dataframe' or 'locate'
-       * @returns 
+       * @returns
        */
       function getApiUrl(api) {
         return _classPrivateFieldGet(this, _backend)[api].url;
