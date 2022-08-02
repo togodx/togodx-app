@@ -432,9 +432,6 @@ body {
   line-height: 1.5;
   background-color: var(--color-gray);
 }
-body[data-page=top] {
-  overflow: hidden;
-}
 body[data-page=top][data-display=results] [data-hidden-by=results], body[data-page=top][data-display=properties] [data-hidden-by=properties] {
   display: none;
   opacity: 0;
@@ -1687,8 +1684,8 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   transition: transform var(--transition-wipe), -webkit-transform var(--transition-wipe);
 }
 body[data-display=results] #App > .inner {
-  -webkit-transform: translateX(calc(-100vw + var(--width-condition)));
-          transform: translateX(calc(-100vw + var(--width-condition)));
+  -webkit-transform: translateX(calc(max(100vw, var(--min-width-app)) * -1 + var(--width-condition)));
+          transform: translateX(calc(max(100vw, var(--min-width-app)) * -1 + var(--width-condition)));
 }
 #App > .loading-view {
   position: fixed;
@@ -1962,6 +1959,7 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #Results {
   --height-header: calc(var(--height-track) - var(--padding-track-block-start) * 2 + .2rem);
   width: calc(100vw - var(--width-condition));
+  min-width: calc(var(--min-width-app) - var(--width-condition));
 }
 #Results > .inner {
   height: 100%;
