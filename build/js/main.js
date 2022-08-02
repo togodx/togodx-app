@@ -4530,6 +4530,10 @@
 
   var _count = /*#__PURE__*/new WeakMap();
 
+  var _mapped = /*#__PURE__*/new WeakMap();
+
+  var _pvalue = /*#__PURE__*/new WeakMap();
+
   var _node = /*#__PURE__*/new WeakMap();
 
   var _index$1 = /*#__PURE__*/new WeakMap();
@@ -4561,6 +4565,16 @@
       });
 
       _classPrivateFieldInitSpec(this, _count, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _mapped, {
+        writable: true,
+        value: void 0
+      });
+
+      _classPrivateFieldInitSpec(this, _pvalue, {
         writable: true,
         value: void 0
       });
@@ -4683,11 +4697,21 @@
         });
 
         if (filter) {
+          var _filter$mapped, _filter$pvalue;
+
+          _classPrivateFieldSet(this, _mapped, (_filter$mapped = filter.mapped) !== null && _filter$mapped !== void 0 ? _filter$mapped : null);
+
+          _classPrivateFieldSet(this, _pvalue, (_filter$pvalue = filter.pvalue) !== null && _filter$pvalue !== void 0 ? _filter$pvalue : null);
+
           _classPrivateFieldGet(this, _ROOT$d).classList.add('-pinsticking');
 
-          _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .mapped').textContent = filter.mapped ? filter.mapped.toLocaleString() : '';
+          _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .mapped').textContent = filter.mapped ? filter.mapped.toLocaleString() : 0;
           _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .pvalue').textContent = filter.pvalue ? filter.pvalue.toExponential(2) : '';
           if (filter.mapped === 0) _classPrivateFieldGet(this, _ROOT$d).classList.remove('-pinsticking');else _classPrivateFieldGet(this, _ROOT$d).classList.add('-pinsticking');
+        } else {
+          _classPrivateFieldSet(this, _mapped, null);
+
+          _classPrivateFieldSet(this, _pvalue, null);
         }
       } // accessors
 
@@ -4700,6 +4724,16 @@
       key: "count",
       get: function get() {
         return _classPrivateFieldGet(this, _count);
+      }
+    }, {
+      key: "mapped",
+      get: function get() {
+        return _classPrivateFieldGet(this, _mapped);
+      }
+    }, {
+      key: "pvalue",
+      get: function get() {
+        return _classPrivateFieldGet(this, _pvalue);
       }
     }, {
       key: "index",
@@ -4725,7 +4759,7 @@
     _classPrivateFieldGet(this, _ROOT$d).classList.remove('-pinsticking');
   }
 
-  var SORTABLE_COLUMNS = ['label', 'total'];
+  var SORTABLE_COLUMNS = ['label', 'total', 'mapped', 'pvalue'];
 
   var _status = /*#__PURE__*/new WeakMap();
 
@@ -7340,7 +7374,9 @@
     var column = {
       '': 'index',
       label: 'label',
-      total: 'count'
+      total: 'count',
+      mapped: 'mapped',
+      pvalue: 'pvalue'
     }[sortDescriptor.column];
 
     var items = _classPrivateFieldGet(this, _columnItemViews).map(function (columnItemView) {
@@ -7353,18 +7389,32 @@
     switch (sortDescriptor.column) {
       case 'label':
         items.sort(function (a, b) {
+          if (sortDescriptor.direction === 'desc') {
+            var _ref2 = [a, b];
+            b = _ref2[0];
+            a = _ref2[1];
+          }
+
           return a.filter > b.filter ? 1 : -1;
         });
         break;
 
       case 'total':
+      case 'mapped':
+      case 'pvalue':
         items.sort(function (a, b) {
+          if (sortDescriptor.direction === 'desc') {
+            var _ref3 = [a, b];
+            b = _ref3[0];
+            a = _ref3[1];
+          }
+
           return b.filter - a.filter;
         });
         break;
-    }
+    } // if (sortDescriptor.direction === 'desc') items.reverse();
+    // replace
 
-    if (sortDescriptor.direction === 'desc') items.reverse(); // replace
 
     items.forEach(function (item) {
       _classPrivateFieldGet(_this4, _TBODY$1).append(_classPrivateFieldGet(_this4, _columnItemViews)[item.index].rootNode);
@@ -8859,6 +8909,7 @@
         bar = document.createElement('div');
         bar.classList.add('bar');
         bar.dataset.node = node;
+        bar.setAttribute('title', label);
         bar.innerHTML = "\n        <div class=\"wholebar\"></div>\n        <div class=\"hitbar _category-background-color-strong\">\n          <div class=\"filter\"></div>\n        </div>\n        <div class=\"label\">".concat(label, "</div>");
 
         if (lastBar) {
@@ -8884,7 +8935,7 @@
 
       hitbar.style.height = "".concat(hitbarHeight * 100, "%");
 
-      if (hitbarHeight < .5) {
+      if (hitbarHeight < 0.5) {
         hitCountLabel.classList.add('-below');
       } else {
         hitCountLabel.classList.remove('-below');
@@ -10544,6 +10595,15 @@
       if (_classPrivateFieldGet(_this5, _queryIds).length <= 0) {
         _classPrivateMethodGet(_this5, _complete$1, _complete2$1).call(_this5, false);
 
+        var customEvent = new CustomEvent(addNextRows, {
+          detail: {
+            tableData: _this5,
+            offset: 0,
+            rows: [],
+            done: true
+          }
+        });
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
         return;
       }
 
@@ -11487,9 +11547,9 @@
       value: // public methods
 
       /**
-       * 
+       *
        * @param {String} api 'aggregate' or 'dataframe' or 'locate'
-       * @returns 
+       * @returns
        */
       function getApiUrl(api) {
         return _classPrivateFieldGet(this, _backend)[api].url;

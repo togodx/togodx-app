@@ -423,6 +423,15 @@ export default class TableData {
 
         if (this.#queryIds.length <= 0) {
           this.#complete(false);
+          const customEvent = new CustomEvent(event.addNextRows, {
+            detail: {
+              tableData: this,
+              offset: 0,
+              rows: [],
+              done: true,
+            },
+          });
+          DefaultEventEmitter.dispatchEvent(customEvent);
           return;
         }
         this.#ROOT.dataset.status = 'load rows';
