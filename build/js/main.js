@@ -9215,7 +9215,6 @@
     _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getDatasetLabel(tableData.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      "); // makte table sub header
 
     _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    ".concat(tableData.dxCondition.conditionFilters.map(function (conditionFilter) {
-      console.log(conditionFilter);
       return "\n          <th>\n            <div class=\"inner _category-background-color\" data-category-id=\"".concat(conditionFilter.categoryId, "\">\n              <div class=\"togo-key-view\">").concat(Records$1.getDatasetLabel(conditionFilter.dataset), "</div>\n              <span>").concat(conditionFilter.label, "</span>\n            </div>\n          </th>");
     }).join(''), "\n    ").concat(tableData.dxCondition.conditionAnnotations.map(function (conditionAnnotation) {
       return "\n          <th>\n            <div class=\"inner _category-color\" data-category-id=\"".concat(conditionAnnotation.categoryId, "\">\n              <div class=\"togo-key-view\">").concat(Records$1.getDatasetLabel(conditionAnnotation.dataset), "</div>\n              <span>").concat(conditionAnnotation.label, "</span>\n            </div>\n          </th>");
@@ -10595,6 +10594,15 @@
       if (_classPrivateFieldGet(_this5, _queryIds).length <= 0) {
         _classPrivateMethodGet(_this5, _complete$1, _complete2$1).call(_this5, false);
 
+        var customEvent = new CustomEvent(addNextRows, {
+          detail: {
+            tableData: _this5,
+            offset: 0,
+            rows: [],
+            done: true
+          }
+        });
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
         return;
       }
 
