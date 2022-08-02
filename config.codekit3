@@ -929,7 +929,7 @@
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
-      "oA" : 0,
+      "oA" : 1,
       "oAP" : "\/build\/js\/classes\/TableDataMixin.js",
       "oF" : 0,
       "sC" : 3,

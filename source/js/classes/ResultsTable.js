@@ -216,7 +216,7 @@ export default class ResultsTable {
   }
 
   #addTableRows({done, offset, rows, tableData}) {
-    this.#tableData = tableData;
+    if (this.#tableData !== tableData) return;
 
     // make table
     this.#TBODY.insertAdjacentHTML(

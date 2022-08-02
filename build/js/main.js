@@ -9269,9 +9269,7 @@
         offset = _ref3.offset,
         rows = _ref3.rows,
         tableData = _ref3.tableData;
-
-    _classPrivateFieldSet(this, _tableData$1, tableData); // make table
-
+    if (_classPrivateFieldGet(this, _tableData$1) !== tableData) return; // make table
 
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
       return "\n          <tr\n            data-index=\"".concat(offset + index, "\"\n            data-togo-id=\"").concat(row.index.entry, "\">\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(tableData.togoKey, "\"\n                    data-order=\"").concat([0, offset + index], "\"\n                    data-sub-order=\"0\"\n                    data-subject-id=\"primary\"\n                    data-unique-entry-id=\"").concat(row.index.entry, "\">").concat(row.index.entry, "\n                  </div>\n                  <span>").concat(row.index.label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.attributes.map(function (column, columnIndex) {
@@ -10059,6 +10057,8 @@
     isError ? _classPrivateFieldGet(this, _ROOT$3).classList.add('error') : _classPrivateFieldGet(this, _ROOT$3).classList.remove('error');
   }
 
+  var mixin = {};
+
   var LIMIT = 100;
   var downloadUrls = new Map();
   var timeOutError$1 = 'ECONNABORTED';
@@ -10329,6 +10329,7 @@
           var customEvent2 = new CustomEvent(addNextRows, {
             detail: {
               tableData: this,
+              offset: 0,
               rows: _classPrivateFieldGet(this, _rows),
               done: done
             }
@@ -10682,6 +10683,7 @@
 
     if (withData) _classPrivateMethodGet(this, _setDownloadButtons, _setDownloadButtons2).call(this);
   }
+  Object.assign(TableData.prototype, mixin);
 
   var _tableData = /*#__PURE__*/new WeakMap();
 
