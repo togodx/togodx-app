@@ -49,14 +49,7 @@ export default class AttributeTrackView {
     <div class="row -lower collapsingcontent" data-collapse="${attributeId}">
       <div class="left">
         <dl class="specification">
-          <dt>Description</dt>
           <dd>${this.#attribute.description}</dd>
-          <dt>API</dt>
-          <dd>
-            <a href="${this.#attribute.api}" target="_blank">${
-      this.#attribute.api
-    }</a>
-          </dd>
         </dl>
         ${this.#attribute.source
           .map(
