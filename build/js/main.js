@@ -1,5 +1,16 @@
-(function () {
-  'use strict';
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('https'), require('url'), require('stream'), require('assert'), require('zlib')) :
+  typeof define === 'function' && define.amd ? define(['https', 'url', 'stream', 'assert', 'zlib'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.require$$5, global.require$$0, global.require$$3, global.require$$4, global.require$$8));
+})(this, (function (require$$5, require$$0, require$$3, require$$4, require$$8) { 'use strict';
+
+  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+  var require$$5__default = /*#__PURE__*/_interopDefaultLegacy(require$$5);
+  var require$$0__default = /*#__PURE__*/_interopDefaultLegacy(require$$0);
+  var require$$3__default = /*#__PURE__*/_interopDefaultLegacy(require$$3);
+  var require$$4__default = /*#__PURE__*/_interopDefaultLegacy(require$$4);
+  var require$$8__default = /*#__PURE__*/_interopDefaultLegacy(require$$8);
 
   function ownKeys$1(object, enumerableOnly) {
     var keys = Object.keys(object);
@@ -6007,6 +6018,1046 @@
   	return xhr;
   }
 
+  var followRedirects = {exports: {}};
+
+  var https;
+  var hasRequiredHttps;
+
+  function requireHttps () {
+  	if (hasRequiredHttps) return https;
+  	hasRequiredHttps = 1;
+  	https = requireFollowRedirects().https;
+  	return https;
+  }
+
+  var debug_1;
+  var hasRequiredDebug;
+
+  function requireDebug () {
+  	if (hasRequiredDebug) return debug_1;
+  	hasRequiredDebug = 1;
+  	var debug;
+
+  	debug_1 = function () {
+  	  if (!debug) {
+  	    try {
+  	      /* eslint global-require: off */
+  	      debug = requireDebug()("follow-redirects");
+  	    }
+  	    catch (error) { /* */ }
+  	    if (typeof debug !== "function") {
+  	      debug = function () { /* */ };
+  	    }
+  	  }
+  	  debug.apply(null, arguments);
+  	};
+  	return debug_1;
+  }
+
+  var hasRequiredFollowRedirects;
+
+  function requireFollowRedirects () {
+  	if (hasRequiredFollowRedirects) return followRedirects.exports;
+  	hasRequiredFollowRedirects = 1;
+  	var url = require$$0__default["default"];
+  	var URL = url.URL;
+  	var http = requireHttp();
+  	var https = requireHttps();
+  	var Writable = require$$3__default["default"].Writable;
+  	var assert = require$$4__default["default"];
+  	var debug = requireDebug();
+
+  	// Create handlers that pass events from native requests
+  	var events = ["abort", "aborted", "connect", "error", "socket", "timeout"];
+  	var eventHandlers = Object.create(null);
+  	events.forEach(function (event) {
+  	  eventHandlers[event] = function (arg1, arg2, arg3) {
+  	    this._redirectable.emit(event, arg1, arg2, arg3);
+  	  };
+  	});
+
+  	// Error types with codes
+  	var RedirectionError = createErrorType(
+  	  "ERR_FR_REDIRECTION_FAILURE",
+  	  "Redirected request failed"
+  	);
+  	var TooManyRedirectsError = createErrorType(
+  	  "ERR_FR_TOO_MANY_REDIRECTS",
+  	  "Maximum number of redirects exceeded"
+  	);
+  	var MaxBodyLengthExceededError = createErrorType(
+  	  "ERR_FR_MAX_BODY_LENGTH_EXCEEDED",
+  	  "Request body larger than maxBodyLength limit"
+  	);
+  	var WriteAfterEndError = createErrorType(
+  	  "ERR_STREAM_WRITE_AFTER_END",
+  	  "write after end"
+  	);
+
+  	// An HTTP(S) request that can be redirected
+  	function RedirectableRequest(options, responseCallback) {
+  	  // Initialize the request
+  	  Writable.call(this);
+  	  this._sanitizeOptions(options);
+  	  this._options = options;
+  	  this._ended = false;
+  	  this._ending = false;
+  	  this._redirectCount = 0;
+  	  this._redirects = [];
+  	  this._requestBodyLength = 0;
+  	  this._requestBodyBuffers = [];
+
+  	  // Attach a callback if passed
+  	  if (responseCallback) {
+  	    this.on("response", responseCallback);
+  	  }
+
+  	  // React to responses of native requests
+  	  var self = this;
+  	  this._onNativeResponse = function (response) {
+  	    self._processResponse(response);
+  	  };
+
+  	  // Perform the first request
+  	  this._performRequest();
+  	}
+  	RedirectableRequest.prototype = Object.create(Writable.prototype);
+
+  	RedirectableRequest.prototype.abort = function () {
+  	  abortRequest(this._currentRequest);
+  	  this.emit("abort");
+  	};
+
+  	// Writes buffered data to the current native request
+  	RedirectableRequest.prototype.write = function (data, encoding, callback) {
+  	  // Writing is not allowed if end has been called
+  	  if (this._ending) {
+  	    throw new WriteAfterEndError();
+  	  }
+
+  	  // Validate input and shift parameters if necessary
+  	  if (!(typeof data === "string" || typeof data === "object" && ("length" in data))) {
+  	    throw new TypeError("data should be a string, Buffer or Uint8Array");
+  	  }
+  	  if (typeof encoding === "function") {
+  	    callback = encoding;
+  	    encoding = null;
+  	  }
+
+  	  // Ignore empty buffers, since writing them doesn't invoke the callback
+  	  // https://github.com/nodejs/node/issues/22066
+  	  if (data.length === 0) {
+  	    if (callback) {
+  	      callback();
+  	    }
+  	    return;
+  	  }
+  	  // Only write when we don't exceed the maximum body length
+  	  if (this._requestBodyLength + data.length <= this._options.maxBodyLength) {
+  	    this._requestBodyLength += data.length;
+  	    this._requestBodyBuffers.push({ data: data, encoding: encoding });
+  	    this._currentRequest.write(data, encoding, callback);
+  	  }
+  	  // Error when we exceed the maximum body length
+  	  else {
+  	    this.emit("error", new MaxBodyLengthExceededError());
+  	    this.abort();
+  	  }
+  	};
+
+  	// Ends the current native request
+  	RedirectableRequest.prototype.end = function (data, encoding, callback) {
+  	  // Shift parameters if necessary
+  	  if (typeof data === "function") {
+  	    callback = data;
+  	    data = encoding = null;
+  	  }
+  	  else if (typeof encoding === "function") {
+  	    callback = encoding;
+  	    encoding = null;
+  	  }
+
+  	  // Write data if needed and end
+  	  if (!data) {
+  	    this._ended = this._ending = true;
+  	    this._currentRequest.end(null, null, callback);
+  	  }
+  	  else {
+  	    var self = this;
+  	    var currentRequest = this._currentRequest;
+  	    this.write(data, encoding, function () {
+  	      self._ended = true;
+  	      currentRequest.end(null, null, callback);
+  	    });
+  	    this._ending = true;
+  	  }
+  	};
+
+  	// Sets a header value on the current native request
+  	RedirectableRequest.prototype.setHeader = function (name, value) {
+  	  this._options.headers[name] = value;
+  	  this._currentRequest.setHeader(name, value);
+  	};
+
+  	// Clears a header value on the current native request
+  	RedirectableRequest.prototype.removeHeader = function (name) {
+  	  delete this._options.headers[name];
+  	  this._currentRequest.removeHeader(name);
+  	};
+
+  	// Global timeout for all underlying requests
+  	RedirectableRequest.prototype.setTimeout = function (msecs, callback) {
+  	  var self = this;
+
+  	  // Destroys the socket on timeout
+  	  function destroyOnTimeout(socket) {
+  	    socket.setTimeout(msecs);
+  	    socket.removeListener("timeout", socket.destroy);
+  	    socket.addListener("timeout", socket.destroy);
+  	  }
+
+  	  // Sets up a timer to trigger a timeout event
+  	  function startTimer(socket) {
+  	    if (self._timeout) {
+  	      clearTimeout(self._timeout);
+  	    }
+  	    self._timeout = setTimeout(function () {
+  	      self.emit("timeout");
+  	      clearTimer();
+  	    }, msecs);
+  	    destroyOnTimeout(socket);
+  	  }
+
+  	  // Stops a timeout from triggering
+  	  function clearTimer() {
+  	    // Clear the timeout
+  	    if (self._timeout) {
+  	      clearTimeout(self._timeout);
+  	      self._timeout = null;
+  	    }
+
+  	    // Clean up all attached listeners
+  	    self.removeListener("abort", clearTimer);
+  	    self.removeListener("error", clearTimer);
+  	    self.removeListener("response", clearTimer);
+  	    if (callback) {
+  	      self.removeListener("timeout", callback);
+  	    }
+  	    if (!self.socket) {
+  	      self._currentRequest.removeListener("socket", startTimer);
+  	    }
+  	  }
+
+  	  // Attach callback if passed
+  	  if (callback) {
+  	    this.on("timeout", callback);
+  	  }
+
+  	  // Start the timer if or when the socket is opened
+  	  if (this.socket) {
+  	    startTimer(this.socket);
+  	  }
+  	  else {
+  	    this._currentRequest.once("socket", startTimer);
+  	  }
+
+  	  // Clean up on events
+  	  this.on("socket", destroyOnTimeout);
+  	  this.on("abort", clearTimer);
+  	  this.on("error", clearTimer);
+  	  this.on("response", clearTimer);
+
+  	  return this;
+  	};
+
+  	// Proxy all other public ClientRequest methods
+  	[
+  	  "flushHeaders", "getHeader",
+  	  "setNoDelay", "setSocketKeepAlive",
+  	].forEach(function (method) {
+  	  RedirectableRequest.prototype[method] = function (a, b) {
+  	    return this._currentRequest[method](a, b);
+  	  };
+  	});
+
+  	// Proxy all public ClientRequest properties
+  	["aborted", "connection", "socket"].forEach(function (property) {
+  	  Object.defineProperty(RedirectableRequest.prototype, property, {
+  	    get: function () { return this._currentRequest[property]; },
+  	  });
+  	});
+
+  	RedirectableRequest.prototype._sanitizeOptions = function (options) {
+  	  // Ensure headers are always present
+  	  if (!options.headers) {
+  	    options.headers = {};
+  	  }
+
+  	  // Since http.request treats host as an alias of hostname,
+  	  // but the url module interprets host as hostname plus port,
+  	  // eliminate the host property to avoid confusion.
+  	  if (options.host) {
+  	    // Use hostname if set, because it has precedence
+  	    if (!options.hostname) {
+  	      options.hostname = options.host;
+  	    }
+  	    delete options.host;
+  	  }
+
+  	  // Complete the URL object when necessary
+  	  if (!options.pathname && options.path) {
+  	    var searchPos = options.path.indexOf("?");
+  	    if (searchPos < 0) {
+  	      options.pathname = options.path;
+  	    }
+  	    else {
+  	      options.pathname = options.path.substring(0, searchPos);
+  	      options.search = options.path.substring(searchPos);
+  	    }
+  	  }
+  	};
+
+
+  	// Executes the next native request (initial or redirect)
+  	RedirectableRequest.prototype._performRequest = function () {
+  	  // Load the native protocol
+  	  var protocol = this._options.protocol;
+  	  var nativeProtocol = this._options.nativeProtocols[protocol];
+  	  if (!nativeProtocol) {
+  	    this.emit("error", new TypeError("Unsupported protocol " + protocol));
+  	    return;
+  	  }
+
+  	  // If specified, use the agent corresponding to the protocol
+  	  // (HTTP and HTTPS use different types of agents)
+  	  if (this._options.agents) {
+  	    var scheme = protocol.substr(0, protocol.length - 1);
+  	    this._options.agent = this._options.agents[scheme];
+  	  }
+
+  	  // Create the native request
+  	  var request = this._currentRequest =
+  	        nativeProtocol.request(this._options, this._onNativeResponse);
+  	  this._currentUrl = url.format(this._options);
+
+  	  // Set up event handlers
+  	  request._redirectable = this;
+  	  for (var e = 0; e < events.length; e++) {
+  	    request.on(events[e], eventHandlers[events[e]]);
+  	  }
+
+  	  // End a redirected request
+  	  // (The first request must be ended explicitly with RedirectableRequest#end)
+  	  if (this._isRedirect) {
+  	    // Write the request entity and end.
+  	    var i = 0;
+  	    var self = this;
+  	    var buffers = this._requestBodyBuffers;
+  	    (function writeNext(error) {
+  	      // Only write if this request has not been redirected yet
+  	      /* istanbul ignore else */
+  	      if (request === self._currentRequest) {
+  	        // Report any write errors
+  	        /* istanbul ignore if */
+  	        if (error) {
+  	          self.emit("error", error);
+  	        }
+  	        // Write the next buffer if there are still left
+  	        else if (i < buffers.length) {
+  	          var buffer = buffers[i++];
+  	          /* istanbul ignore else */
+  	          if (!request.finished) {
+  	            request.write(buffer.data, buffer.encoding, writeNext);
+  	          }
+  	        }
+  	        // End the request if `end` has been called on us
+  	        else if (self._ended) {
+  	          request.end();
+  	        }
+  	      }
+  	    }());
+  	  }
+  	};
+
+  	// Processes a response from the current native request
+  	RedirectableRequest.prototype._processResponse = function (response) {
+  	  // Store the redirected response
+  	  var statusCode = response.statusCode;
+  	  if (this._options.trackRedirects) {
+  	    this._redirects.push({
+  	      url: this._currentUrl,
+  	      headers: response.headers,
+  	      statusCode: statusCode,
+  	    });
+  	  }
+
+  	  // RFC7231§6.4: The 3xx (Redirection) class of status code indicates
+  	  // that further action needs to be taken by the user agent in order to
+  	  // fulfill the request. If a Location header field is provided,
+  	  // the user agent MAY automatically redirect its request to the URI
+  	  // referenced by the Location field value,
+  	  // even if the specific status code is not understood.
+
+  	  // If the response is not a redirect; return it as-is
+  	  var location = response.headers.location;
+  	  if (!location || this._options.followRedirects === false ||
+  	      statusCode < 300 || statusCode >= 400) {
+  	    response.responseUrl = this._currentUrl;
+  	    response.redirects = this._redirects;
+  	    this.emit("response", response);
+
+  	    // Clean up
+  	    this._requestBodyBuffers = [];
+  	    return;
+  	  }
+
+  	  // The response is a redirect, so abort the current request
+  	  abortRequest(this._currentRequest);
+  	  // Discard the remainder of the response to avoid waiting for data
+  	  response.destroy();
+
+  	  // RFC7231§6.4: A client SHOULD detect and intervene
+  	  // in cyclical redirections (i.e., "infinite" redirection loops).
+  	  if (++this._redirectCount > this._options.maxRedirects) {
+  	    this.emit("error", new TooManyRedirectsError());
+  	    return;
+  	  }
+
+  	  // RFC7231§6.4: Automatic redirection needs to done with
+  	  // care for methods not known to be safe, […]
+  	  // RFC7231§6.4.2–3: For historical reasons, a user agent MAY change
+  	  // the request method from POST to GET for the subsequent request.
+  	  if ((statusCode === 301 || statusCode === 302) && this._options.method === "POST" ||
+  	      // RFC7231§6.4.4: The 303 (See Other) status code indicates that
+  	      // the server is redirecting the user agent to a different resource […]
+  	      // A user agent can perform a retrieval request targeting that URI
+  	      // (a GET or HEAD request if using HTTP) […]
+  	      (statusCode === 303) && !/^(?:GET|HEAD)$/.test(this._options.method)) {
+  	    this._options.method = "GET";
+  	    // Drop a possible entity and headers related to it
+  	    this._requestBodyBuffers = [];
+  	    removeMatchingHeaders(/^content-/i, this._options.headers);
+  	  }
+
+  	  // Drop the Host header, as the redirect might lead to a different host
+  	  var currentHostHeader = removeMatchingHeaders(/^host$/i, this._options.headers);
+
+  	  // If the redirect is relative, carry over the host of the last request
+  	  var currentUrlParts = url.parse(this._currentUrl);
+  	  var currentHost = currentHostHeader || currentUrlParts.host;
+  	  var currentUrl = /^\w+:/.test(location) ? this._currentUrl :
+  	    url.format(Object.assign(currentUrlParts, { host: currentHost }));
+
+  	  // Determine the URL of the redirection
+  	  var redirectUrl;
+  	  try {
+  	    redirectUrl = url.resolve(currentUrl, location);
+  	  }
+  	  catch (cause) {
+  	    this.emit("error", new RedirectionError(cause));
+  	    return;
+  	  }
+
+  	  // Create the redirected request
+  	  debug("redirecting to", redirectUrl);
+  	  this._isRedirect = true;
+  	  var redirectUrlParts = url.parse(redirectUrl);
+  	  Object.assign(this._options, redirectUrlParts);
+
+  	  // Drop confidential headers when redirecting to a less secure protocol
+  	  // or to a different domain that is not a superdomain
+  	  if (redirectUrlParts.protocol !== currentUrlParts.protocol &&
+  	     redirectUrlParts.protocol !== "https:" ||
+  	     redirectUrlParts.host !== currentHost &&
+  	     !isSubdomain(redirectUrlParts.host, currentHost)) {
+  	    removeMatchingHeaders(/^(?:authorization|cookie)$/i, this._options.headers);
+  	  }
+
+  	  // Evaluate the beforeRedirect callback
+  	  if (typeof this._options.beforeRedirect === "function") {
+  	    var responseDetails = { headers: response.headers };
+  	    try {
+  	      this._options.beforeRedirect.call(null, this._options, responseDetails);
+  	    }
+  	    catch (err) {
+  	      this.emit("error", err);
+  	      return;
+  	    }
+  	    this._sanitizeOptions(this._options);
+  	  }
+
+  	  // Perform the redirected request
+  	  try {
+  	    this._performRequest();
+  	  }
+  	  catch (cause) {
+  	    this.emit("error", new RedirectionError(cause));
+  	  }
+  	};
+
+  	// Wraps the key/value object of protocols with redirect functionality
+  	function wrap(protocols) {
+  	  // Default settings
+  	  var exports = {
+  	    maxRedirects: 21,
+  	    maxBodyLength: 10 * 1024 * 1024,
+  	  };
+
+  	  // Wrap each protocol
+  	  var nativeProtocols = {};
+  	  Object.keys(protocols).forEach(function (scheme) {
+  	    var protocol = scheme + ":";
+  	    var nativeProtocol = nativeProtocols[protocol] = protocols[scheme];
+  	    var wrappedProtocol = exports[scheme] = Object.create(nativeProtocol);
+
+  	    // Executes a request, following redirects
+  	    function request(input, options, callback) {
+  	      // Parse parameters
+  	      if (typeof input === "string") {
+  	        var urlStr = input;
+  	        try {
+  	          input = urlToOptions(new URL(urlStr));
+  	        }
+  	        catch (err) {
+  	          /* istanbul ignore next */
+  	          input = url.parse(urlStr);
+  	        }
+  	      }
+  	      else if (URL && (input instanceof URL)) {
+  	        input = urlToOptions(input);
+  	      }
+  	      else {
+  	        callback = options;
+  	        options = input;
+  	        input = { protocol: protocol };
+  	      }
+  	      if (typeof options === "function") {
+  	        callback = options;
+  	        options = null;
+  	      }
+
+  	      // Set defaults
+  	      options = Object.assign({
+  	        maxRedirects: exports.maxRedirects,
+  	        maxBodyLength: exports.maxBodyLength,
+  	      }, input, options);
+  	      options.nativeProtocols = nativeProtocols;
+
+  	      assert.equal(options.protocol, protocol, "protocol mismatch");
+  	      debug("options", options);
+  	      return new RedirectableRequest(options, callback);
+  	    }
+
+  	    // Executes a GET request, following redirects
+  	    function get(input, options, callback) {
+  	      var wrappedRequest = wrappedProtocol.request(input, options, callback);
+  	      wrappedRequest.end();
+  	      return wrappedRequest;
+  	    }
+
+  	    // Expose the properties on the wrapped protocol
+  	    Object.defineProperties(wrappedProtocol, {
+  	      request: { value: request, configurable: true, enumerable: true, writable: true },
+  	      get: { value: get, configurable: true, enumerable: true, writable: true },
+  	    });
+  	  });
+  	  return exports;
+  	}
+
+  	/* istanbul ignore next */
+  	function noop() { /* empty */ }
+
+  	// from https://github.com/nodejs/node/blob/master/lib/internal/url.js
+  	function urlToOptions(urlObject) {
+  	  var options = {
+  	    protocol: urlObject.protocol,
+  	    hostname: urlObject.hostname.startsWith("[") ?
+  	      /* istanbul ignore next */
+  	      urlObject.hostname.slice(1, -1) :
+  	      urlObject.hostname,
+  	    hash: urlObject.hash,
+  	    search: urlObject.search,
+  	    pathname: urlObject.pathname,
+  	    path: urlObject.pathname + urlObject.search,
+  	    href: urlObject.href,
+  	  };
+  	  if (urlObject.port !== "") {
+  	    options.port = Number(urlObject.port);
+  	  }
+  	  return options;
+  	}
+
+  	function removeMatchingHeaders(regex, headers) {
+  	  var lastValue;
+  	  for (var header in headers) {
+  	    if (regex.test(header)) {
+  	      lastValue = headers[header];
+  	      delete headers[header];
+  	    }
+  	  }
+  	  return (lastValue === null || typeof lastValue === "undefined") ?
+  	    undefined : String(lastValue).trim();
+  	}
+
+  	function createErrorType(code, defaultMessage) {
+  	  function CustomError(cause) {
+  	    Error.captureStackTrace(this, this.constructor);
+  	    if (!cause) {
+  	      this.message = defaultMessage;
+  	    }
+  	    else {
+  	      this.message = defaultMessage + ": " + cause.message;
+  	      this.cause = cause;
+  	    }
+  	  }
+  	  CustomError.prototype = new Error();
+  	  CustomError.prototype.constructor = CustomError;
+  	  CustomError.prototype.name = "Error [" + code + "]";
+  	  CustomError.prototype.code = code;
+  	  return CustomError;
+  	}
+
+  	function abortRequest(request) {
+  	  for (var e = 0; e < events.length; e++) {
+  	    request.removeListener(events[e], eventHandlers[events[e]]);
+  	  }
+  	  request.on("error", noop);
+  	  request.abort();
+  	}
+
+  	function isSubdomain(subdomain, domain) {
+  	  const dot = subdomain.length - domain.length - 1;
+  	  return dot > 0 && subdomain[dot] === "." && subdomain.endsWith(domain);
+  	}
+
+  	// Exports
+  	followRedirects.exports = wrap({ http: http, https: https });
+  	followRedirects.exports.wrap = wrap;
+  	return followRedirects.exports;
+  }
+
+  var data;
+  var hasRequiredData;
+
+  function requireData () {
+  	if (hasRequiredData) return data;
+  	hasRequiredData = 1;
+  	data = {
+  	  "version": "0.26.1"
+  	};
+  	return data;
+  }
+
+  var http_1;
+  var hasRequiredHttp;
+
+  function requireHttp () {
+  	if (hasRequiredHttp) return http_1;
+  	hasRequiredHttp = 1;
+
+  	var utils = utils$9;
+  	var settle = requireSettle();
+  	var buildFullPath = requireBuildFullPath();
+  	var buildURL = buildURL$1;
+  	var http = requireHttp();
+  	var https = require$$5__default["default"];
+  	var httpFollow = requireFollowRedirects().http;
+  	var httpsFollow = requireFollowRedirects().https;
+  	var url = require$$0__default["default"];
+  	var zlib = require$$8__default["default"];
+  	var VERSION = requireData().version;
+  	var createError = requireCreateError();
+  	var enhanceError = enhanceError$1;
+  	var transitionalDefaults = transitional;
+  	var Cancel = requireCancel();
+
+  	var isHttps = /https:?/;
+
+  	/**
+  	 *
+  	 * @param {http.ClientRequestArgs} options
+  	 * @param {AxiosProxyConfig} proxy
+  	 * @param {string} location
+  	 */
+  	function setProxy(options, proxy, location) {
+  	  options.hostname = proxy.host;
+  	  options.host = proxy.host;
+  	  options.port = proxy.port;
+  	  options.path = location;
+
+  	  // Basic proxy authorization
+  	  if (proxy.auth) {
+  	    var base64 = Buffer.from(proxy.auth.username + ':' + proxy.auth.password, 'utf8').toString('base64');
+  	    options.headers['Proxy-Authorization'] = 'Basic ' + base64;
+  	  }
+
+  	  // If a proxy is used, any redirects must also pass through the proxy
+  	  options.beforeRedirect = function beforeRedirect(redirection) {
+  	    redirection.headers.host = redirection.host;
+  	    setProxy(redirection, proxy, redirection.href);
+  	  };
+  	}
+
+  	/*eslint consistent-return:0*/
+  	http_1 = function httpAdapter(config) {
+  	  return new Promise(function dispatchHttpRequest(resolvePromise, rejectPromise) {
+  	    var onCanceled;
+  	    function done() {
+  	      if (config.cancelToken) {
+  	        config.cancelToken.unsubscribe(onCanceled);
+  	      }
+
+  	      if (config.signal) {
+  	        config.signal.removeEventListener('abort', onCanceled);
+  	      }
+  	    }
+  	    var resolve = function resolve(value) {
+  	      done();
+  	      resolvePromise(value);
+  	    };
+  	    var rejected = false;
+  	    var reject = function reject(value) {
+  	      done();
+  	      rejected = true;
+  	      rejectPromise(value);
+  	    };
+  	    var data = config.data;
+  	    var headers = config.headers;
+  	    var headerNames = {};
+
+  	    Object.keys(headers).forEach(function storeLowerName(name) {
+  	      headerNames[name.toLowerCase()] = name;
+  	    });
+
+  	    // Set User-Agent (required by some servers)
+  	    // See https://github.com/axios/axios/issues/69
+  	    if ('user-agent' in headerNames) {
+  	      // User-Agent is specified; handle case where no UA header is desired
+  	      if (!headers[headerNames['user-agent']]) {
+  	        delete headers[headerNames['user-agent']];
+  	      }
+  	      // Otherwise, use specified value
+  	    } else {
+  	      // Only set header if it hasn't been set in config
+  	      headers['User-Agent'] = 'axios/' + VERSION;
+  	    }
+
+  	    if (data && !utils.isStream(data)) {
+  	      if (Buffer.isBuffer(data)) ; else if (utils.isArrayBuffer(data)) {
+  	        data = Buffer.from(new Uint8Array(data));
+  	      } else if (utils.isString(data)) {
+  	        data = Buffer.from(data, 'utf-8');
+  	      } else {
+  	        return reject(createError(
+  	          'Data after transformation must be a string, an ArrayBuffer, a Buffer, or a Stream',
+  	          config
+  	        ));
+  	      }
+
+  	      if (config.maxBodyLength > -1 && data.length > config.maxBodyLength) {
+  	        return reject(createError('Request body larger than maxBodyLength limit', config));
+  	      }
+
+  	      // Add Content-Length header if data exists
+  	      if (!headerNames['content-length']) {
+  	        headers['Content-Length'] = data.length;
+  	      }
+  	    }
+
+  	    // HTTP basic authentication
+  	    var auth = undefined;
+  	    if (config.auth) {
+  	      var username = config.auth.username || '';
+  	      var password = config.auth.password || '';
+  	      auth = username + ':' + password;
+  	    }
+
+  	    // Parse url
+  	    var fullPath = buildFullPath(config.baseURL, config.url);
+  	    var parsed = url.parse(fullPath);
+  	    var protocol = parsed.protocol || 'http:';
+
+  	    if (!auth && parsed.auth) {
+  	      var urlAuth = parsed.auth.split(':');
+  	      var urlUsername = urlAuth[0] || '';
+  	      var urlPassword = urlAuth[1] || '';
+  	      auth = urlUsername + ':' + urlPassword;
+  	    }
+
+  	    if (auth && headerNames.authorization) {
+  	      delete headers[headerNames.authorization];
+  	    }
+
+  	    var isHttpsRequest = isHttps.test(protocol);
+  	    var agent = isHttpsRequest ? config.httpsAgent : config.httpAgent;
+
+  	    try {
+  	      buildURL(parsed.path, config.params, config.paramsSerializer).replace(/^\?/, '');
+  	    } catch (err) {
+  	      var customErr = new Error(err.message);
+  	      customErr.config = config;
+  	      customErr.url = config.url;
+  	      customErr.exists = true;
+  	      reject(customErr);
+  	    }
+
+  	    var options = {
+  	      path: buildURL(parsed.path, config.params, config.paramsSerializer).replace(/^\?/, ''),
+  	      method: config.method.toUpperCase(),
+  	      headers: headers,
+  	      agent: agent,
+  	      agents: { http: config.httpAgent, https: config.httpsAgent },
+  	      auth: auth
+  	    };
+
+  	    if (config.socketPath) {
+  	      options.socketPath = config.socketPath;
+  	    } else {
+  	      options.hostname = parsed.hostname;
+  	      options.port = parsed.port;
+  	    }
+
+  	    var proxy = config.proxy;
+  	    if (!proxy && proxy !== false) {
+  	      var proxyEnv = protocol.slice(0, -1) + '_proxy';
+  	      var proxyUrl = process.env[proxyEnv] || process.env[proxyEnv.toUpperCase()];
+  	      if (proxyUrl) {
+  	        var parsedProxyUrl = url.parse(proxyUrl);
+  	        var noProxyEnv = process.env.no_proxy || process.env.NO_PROXY;
+  	        var shouldProxy = true;
+
+  	        if (noProxyEnv) {
+  	          var noProxy = noProxyEnv.split(',').map(function trim(s) {
+  	            return s.trim();
+  	          });
+
+  	          shouldProxy = !noProxy.some(function proxyMatch(proxyElement) {
+  	            if (!proxyElement) {
+  	              return false;
+  	            }
+  	            if (proxyElement === '*') {
+  	              return true;
+  	            }
+  	            if (proxyElement[0] === '.' &&
+  	                parsed.hostname.substr(parsed.hostname.length - proxyElement.length) === proxyElement) {
+  	              return true;
+  	            }
+
+  	            return parsed.hostname === proxyElement;
+  	          });
+  	        }
+
+  	        if (shouldProxy) {
+  	          proxy = {
+  	            host: parsedProxyUrl.hostname,
+  	            port: parsedProxyUrl.port,
+  	            protocol: parsedProxyUrl.protocol
+  	          };
+
+  	          if (parsedProxyUrl.auth) {
+  	            var proxyUrlAuth = parsedProxyUrl.auth.split(':');
+  	            proxy.auth = {
+  	              username: proxyUrlAuth[0],
+  	              password: proxyUrlAuth[1]
+  	            };
+  	          }
+  	        }
+  	      }
+  	    }
+
+  	    if (proxy) {
+  	      options.headers.host = parsed.hostname + (parsed.port ? ':' + parsed.port : '');
+  	      setProxy(options, proxy, protocol + '//' + parsed.hostname + (parsed.port ? ':' + parsed.port : '') + options.path);
+  	    }
+
+  	    var transport;
+  	    var isHttpsProxy = isHttpsRequest && (proxy ? isHttps.test(proxy.protocol) : true);
+  	    if (config.transport) {
+  	      transport = config.transport;
+  	    } else if (config.maxRedirects === 0) {
+  	      transport = isHttpsProxy ? https : http;
+  	    } else {
+  	      if (config.maxRedirects) {
+  	        options.maxRedirects = config.maxRedirects;
+  	      }
+  	      transport = isHttpsProxy ? httpsFollow : httpFollow;
+  	    }
+
+  	    if (config.maxBodyLength > -1) {
+  	      options.maxBodyLength = config.maxBodyLength;
+  	    }
+
+  	    if (config.insecureHTTPParser) {
+  	      options.insecureHTTPParser = config.insecureHTTPParser;
+  	    }
+
+  	    // Create the request
+  	    var req = transport.request(options, function handleResponse(res) {
+  	      if (req.aborted) return;
+
+  	      // uncompress the response body transparently if required
+  	      var stream = res;
+
+  	      // return the last request in case of redirects
+  	      var lastRequest = res.req || req;
+
+
+  	      // if no content, is HEAD request or decompress disabled we should not decompress
+  	      if (res.statusCode !== 204 && lastRequest.method !== 'HEAD' && config.decompress !== false) {
+  	        switch (res.headers['content-encoding']) {
+  	        /*eslint default-case:0*/
+  	        case 'gzip':
+  	        case 'compress':
+  	        case 'deflate':
+  	        // add the unzipper to the body stream processing pipeline
+  	          stream = stream.pipe(zlib.createUnzip());
+
+  	          // remove the content-encoding in order to not confuse downstream operations
+  	          delete res.headers['content-encoding'];
+  	          break;
+  	        }
+  	      }
+
+  	      var response = {
+  	        status: res.statusCode,
+  	        statusText: res.statusMessage,
+  	        headers: res.headers,
+  	        config: config,
+  	        request: lastRequest
+  	      };
+
+  	      if (config.responseType === 'stream') {
+  	        response.data = stream;
+  	        settle(resolve, reject, response);
+  	      } else {
+  	        var responseBuffer = [];
+  	        var totalResponseBytes = 0;
+  	        stream.on('data', function handleStreamData(chunk) {
+  	          responseBuffer.push(chunk);
+  	          totalResponseBytes += chunk.length;
+
+  	          // make sure the content length is not over the maxContentLength if specified
+  	          if (config.maxContentLength > -1 && totalResponseBytes > config.maxContentLength) {
+  	            // stream.destoy() emit aborted event before calling reject() on Node.js v16
+  	            rejected = true;
+  	            stream.destroy();
+  	            reject(createError('maxContentLength size of ' + config.maxContentLength + ' exceeded',
+  	              config, null, lastRequest));
+  	          }
+  	        });
+
+  	        stream.on('aborted', function handlerStreamAborted() {
+  	          if (rejected) {
+  	            return;
+  	          }
+  	          stream.destroy();
+  	          reject(createError('error request aborted', config, 'ERR_REQUEST_ABORTED', lastRequest));
+  	        });
+
+  	        stream.on('error', function handleStreamError(err) {
+  	          if (req.aborted) return;
+  	          reject(enhanceError(err, config, null, lastRequest));
+  	        });
+
+  	        stream.on('end', function handleStreamEnd() {
+  	          try {
+  	            var responseData = responseBuffer.length === 1 ? responseBuffer[0] : Buffer.concat(responseBuffer);
+  	            if (config.responseType !== 'arraybuffer') {
+  	              responseData = responseData.toString(config.responseEncoding);
+  	              if (!config.responseEncoding || config.responseEncoding === 'utf8') {
+  	                responseData = utils.stripBOM(responseData);
+  	              }
+  	            }
+  	            response.data = responseData;
+  	          } catch (err) {
+  	            reject(enhanceError(err, config, err.code, response.request, response));
+  	          }
+  	          settle(resolve, reject, response);
+  	        });
+  	      }
+  	    });
+
+  	    // Handle errors
+  	    req.on('error', function handleRequestError(err) {
+  	      if (req.aborted && err.code !== 'ERR_FR_TOO_MANY_REDIRECTS') return;
+  	      reject(enhanceError(err, config, null, req));
+  	    });
+
+  	    // set tcp keep alive to prevent drop connection by peer
+  	    req.on('socket', function handleRequestSocket(socket) {
+  	      // default interval of sending ack packet is 1 minute
+  	      socket.setKeepAlive(true, 1000 * 60);
+  	    });
+
+  	    // Handle request timeout
+  	    if (config.timeout) {
+  	      // This is forcing a int timeout to avoid problems if the `req` interface doesn't handle other types.
+  	      var timeout = parseInt(config.timeout, 10);
+
+  	      if (isNaN(timeout)) {
+  	        reject(createError(
+  	          'error trying to parse `config.timeout` to int',
+  	          config,
+  	          'ERR_PARSE_TIMEOUT',
+  	          req
+  	        ));
+
+  	        return;
+  	      }
+
+  	      // Sometime, the response will be very slow, and does not respond, the connect event will be block by event loop system.
+  	      // And timer callback will be fired, and abort() will be invoked before connection, then get "socket hang up" and code ECONNRESET.
+  	      // At this time, if we have a large number of request, nodejs will hang up some socket on background. and the number will up and up.
+  	      // And then these socket which be hang up will devoring CPU little by little.
+  	      // ClientRequest.setTimeout will be fired on the specify milliseconds, and can make sure that abort() will be fired after connect.
+  	      req.setTimeout(timeout, function handleRequestTimeout() {
+  	        req.abort();
+  	        var timeoutErrorMessage = '';
+  	        if (config.timeoutErrorMessage) {
+  	          timeoutErrorMessage = config.timeoutErrorMessage;
+  	        } else {
+  	          timeoutErrorMessage = 'timeout of ' + config.timeout + 'ms exceeded';
+  	        }
+  	        var transitional = config.transitional || transitionalDefaults;
+  	        reject(createError(
+  	          timeoutErrorMessage,
+  	          config,
+  	          transitional.clarifyTimeoutError ? 'ETIMEDOUT' : 'ECONNABORTED',
+  	          req
+  	        ));
+  	      });
+  	    }
+
+  	    if (config.cancelToken || config.signal) {
+  	      // Handle cancellation
+  	      // eslint-disable-next-line func-names
+  	      onCanceled = function(cancel) {
+  	        if (req.aborted) return;
+
+  	        req.abort();
+  	        reject(!cancel || (cancel && cancel.type) ? new Cancel('canceled') : cancel);
+  	      };
+
+  	      config.cancelToken && config.cancelToken.subscribe(onCanceled);
+  	      if (config.signal) {
+  	        config.signal.aborted ? onCanceled() : config.signal.addEventListener('abort', onCanceled);
+  	      }
+  	    }
+
+
+  	    // Send the request
+  	    if (utils.isStream(data)) {
+  	      data.on('error', function handleStreamError(err) {
+  	        reject(enhanceError(err, config, null, req));
+  	      }).pipe(req);
+  	    } else {
+  	      req.end(data);
+  	    }
+  	  });
+  	};
+  	return http_1;
+  }
+
   var utils$5 = utils$9;
   var normalizeHeaderName = normalizeHeaderName$1;
   var enhanceError = enhanceError$1;
@@ -6029,7 +7080,7 @@
       adapter = requireXhr();
     } else if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
       // For node use HTTP adapter
-      adapter = requireXhr();
+      adapter = requireHttp();
     }
     return adapter;
   }
@@ -6354,18 +7405,6 @@
 
     return config;
   };
-
-  var data;
-  var hasRequiredData;
-
-  function requireData () {
-  	if (hasRequiredData) return data;
-  	hasRequiredData = 1;
-  	data = {
-  	  "version": "0.26.1"
-  	};
-  	return data;
-  }
 
   var VERSION = requireData().version;
 
@@ -8343,7 +9382,7 @@
         _classPrivateFieldGet(_this, _ROOT$8).classList.add('-allselected');
       } else {
         // remove
-        ConditionBuilder$1.removeAnnotation(attributeId);
+        ConditionBuilder$1.removeAnnotation(new ConditionAnnotation(attributeId));
 
         _classPrivateFieldGet(_this, _ROOT$8).classList.remove('-allselected');
       }
@@ -11366,5 +12405,5 @@
     App$1.ready(api);
   });
 
-})();
+}));
 //# sourceMappingURL=main.js.map

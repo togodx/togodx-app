@@ -102,7 +102,7 @@ export default class AttributeTrackView {
         this.#ROOT.classList.add('-allselected');
       } else {
         // remove
-        ConditionBuilder.removeAnnotation(attributeId);
+        ConditionBuilder.removeAnnotation(new ConditionAnnotation(attributeId));
         this.#ROOT.classList.remove('-allselected');
       }
     });
