@@ -1,16 +1,7 @@
-(function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('https'), require('url'), require('stream'), require('assert'), require('zlib')) :
-  typeof define === 'function' && define.amd ? define(['https', 'url', 'stream', 'assert', 'zlib'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.require$$5, global.require$$0, global.require$$3, global.require$$4, global.require$$8));
-})(this, (function (require$$5, require$$0, require$$3, require$$4, require$$8) { 'use strict';
-
-  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-  var require$$5__default = /*#__PURE__*/_interopDefaultLegacy(require$$5);
-  var require$$0__default = /*#__PURE__*/_interopDefaultLegacy(require$$0);
-  var require$$3__default = /*#__PURE__*/_interopDefaultLegacy(require$$3);
-  var require$$4__default = /*#__PURE__*/_interopDefaultLegacy(require$$4);
-  var require$$8__default = /*#__PURE__*/_interopDefaultLegacy(require$$8);
+(function (factory) {
+  typeof define === 'function' && define.amd ? define(factory) :
+  factory();
+})((function () { 'use strict';
 
   function ownKeys$1(object, enumerableOnly) {
     var keys = Object.keys(object);
@@ -4919,6 +4910,22 @@
 
   var toString = Object.prototype.toString;
 
+  // eslint-disable-next-line func-names
+  var kindOf = (function(cache) {
+    // eslint-disable-next-line func-names
+    return function(thing) {
+      var str = toString.call(thing);
+      return cache[str] || (cache[str] = str.slice(8, -1).toLowerCase());
+    };
+  })(Object.create(null));
+
+  function kindOfTest(type) {
+    type = type.toLowerCase();
+    return function isKindOf(thing) {
+      return kindOf(thing) === type;
+    };
+  }
+
   /**
    * Determine if a value is an Array
    *
@@ -4953,22 +4960,12 @@
   /**
    * Determine if a value is an ArrayBuffer
    *
+   * @function
    * @param {Object} val The value to test
    * @returns {boolean} True if value is an ArrayBuffer, otherwise false
    */
-  function isArrayBuffer(val) {
-    return toString.call(val) === '[object ArrayBuffer]';
-  }
+  var isArrayBuffer = kindOfTest('ArrayBuffer');
 
-  /**
-   * Determine if a value is a FormData
-   *
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is an FormData, otherwise false
-   */
-  function isFormData(val) {
-    return toString.call(val) === '[object FormData]';
-  }
 
   /**
    * Determine if a value is a view on an ArrayBuffer
@@ -5023,7 +5020,7 @@
    * @return {boolean} True if value is a plain Object, otherwise false
    */
   function isPlainObject(val) {
-    if (toString.call(val) !== '[object Object]') {
+    if (kindOf(val) !== 'object') {
       return false;
     }
 
@@ -5034,32 +5031,38 @@
   /**
    * Determine if a value is a Date
    *
+   * @function
    * @param {Object} val The value to test
    * @returns {boolean} True if value is a Date, otherwise false
    */
-  function isDate(val) {
-    return toString.call(val) === '[object Date]';
-  }
+  var isDate = kindOfTest('Date');
 
   /**
    * Determine if a value is a File
    *
+   * @function
    * @param {Object} val The value to test
    * @returns {boolean} True if value is a File, otherwise false
    */
-  function isFile(val) {
-    return toString.call(val) === '[object File]';
-  }
+  var isFile = kindOfTest('File');
 
   /**
    * Determine if a value is a Blob
    *
+   * @function
    * @param {Object} val The value to test
    * @returns {boolean} True if value is a Blob, otherwise false
    */
-  function isBlob(val) {
-    return toString.call(val) === '[object Blob]';
-  }
+  var isBlob = kindOfTest('Blob');
+
+  /**
+   * Determine if a value is a FileList
+   *
+   * @function
+   * @param {Object} val The value to test
+   * @returns {boolean} True if value is a File, otherwise false
+   */
+  var isFileList = kindOfTest('FileList');
 
   /**
    * Determine if a value is a Function
@@ -5082,14 +5085,27 @@
   }
 
   /**
-   * Determine if a value is a URLSearchParams object
+   * Determine if a value is a FormData
    *
+   * @param {Object} thing The value to test
+   * @returns {boolean} True if value is an FormData, otherwise false
+   */
+  function isFormData(thing) {
+    var pattern = '[object FormData]';
+    return thing && (
+      (typeof FormData === 'function' && thing instanceof FormData) ||
+      toString.call(thing) === pattern ||
+      (isFunction(thing.toString) && thing.toString() === pattern)
+    );
+  }
+
+  /**
+   * Determine if a value is a URLSearchParams object
+   * @function
    * @param {Object} val The value to test
    * @returns {boolean} True if value is a URLSearchParams object, otherwise false
    */
-  function isURLSearchParams(val) {
-    return toString.call(val) === '[object URLSearchParams]';
-  }
+  var isURLSearchParams = kindOfTest('URLSearchParams');
 
   /**
    * Trim excess whitespace off the beginning and end of a string
@@ -5236,6 +5252,94 @@
     return content;
   }
 
+  /**
+   * Inherit the prototype methods from one constructor into another
+   * @param {function} constructor
+   * @param {function} superConstructor
+   * @param {object} [props]
+   * @param {object} [descriptors]
+   */
+
+  function inherits(constructor, superConstructor, props, descriptors) {
+    constructor.prototype = Object.create(superConstructor.prototype, descriptors);
+    constructor.prototype.constructor = constructor;
+    props && Object.assign(constructor.prototype, props);
+  }
+
+  /**
+   * Resolve object with deep prototype chain to a flat object
+   * @param {Object} sourceObj source object
+   * @param {Object} [destObj]
+   * @param {Function} [filter]
+   * @returns {Object}
+   */
+
+  function toFlatObject(sourceObj, destObj, filter) {
+    var props;
+    var i;
+    var prop;
+    var merged = {};
+
+    destObj = destObj || {};
+
+    do {
+      props = Object.getOwnPropertyNames(sourceObj);
+      i = props.length;
+      while (i-- > 0) {
+        prop = props[i];
+        if (!merged[prop]) {
+          destObj[prop] = sourceObj[prop];
+          merged[prop] = true;
+        }
+      }
+      sourceObj = Object.getPrototypeOf(sourceObj);
+    } while (sourceObj && (!filter || filter(sourceObj, destObj)) && sourceObj !== Object.prototype);
+
+    return destObj;
+  }
+
+  /*
+   * determines whether a string ends with the characters of a specified string
+   * @param {String} str
+   * @param {String} searchString
+   * @param {Number} [position= 0]
+   * @returns {boolean}
+   */
+  function endsWith(str, searchString, position) {
+    str = String(str);
+    if (position === undefined || position > str.length) {
+      position = str.length;
+    }
+    position -= searchString.length;
+    var lastIndex = str.indexOf(searchString, position);
+    return lastIndex !== -1 && lastIndex === position;
+  }
+
+
+  /**
+   * Returns new array from array like object
+   * @param {*} [thing]
+   * @returns {Array}
+   */
+  function toArray(thing) {
+    if (!thing) return null;
+    var i = thing.length;
+    if (isUndefined(i)) return null;
+    var arr = new Array(i);
+    while (i-- > 0) {
+      arr[i] = thing[i];
+    }
+    return arr;
+  }
+
+  // eslint-disable-next-line func-names
+  var isTypedArray = (function(TypedArray) {
+    // eslint-disable-next-line func-names
+    return function(thing) {
+      return TypedArray && thing instanceof TypedArray;
+    };
+  })(typeof Uint8Array !== 'undefined' && Object.getPrototypeOf(Uint8Array));
+
   var utils$9 = {
     isArray: isArray,
     isArrayBuffer: isArrayBuffer,
@@ -5258,7 +5362,15 @@
     merge: merge,
     extend: extend,
     trim: trim,
-    stripBOM: stripBOM
+    stripBOM: stripBOM,
+    inherits: inherits,
+    toFlatObject: toFlatObject,
+    kindOf: kindOf,
+    kindOfTest: kindOfTest,
+    endsWith: endsWith,
+    toArray: toArray,
+    isTypedArray: isTypedArray,
+    isFileList: isFileList
   };
 
   var utils$8 = utils$9;
@@ -5394,47 +5506,99 @@
     });
   };
 
-  /**
-   * Update an Error with the specified config, error code, and response.
-   *
-   * @param {Error} error The error to update.
-   * @param {Object} config The config.
-   * @param {string} [code] The error code (for example, 'ECONNABORTED').
-   * @param {Object} [request] The request.
-   * @param {Object} [response] The response.
-   * @returns {Error} The error.
-   */
-  var enhanceError$1 = function enhanceError(error, config, code, request, response) {
-    error.config = config;
-    if (code) {
-      error.code = code;
-    }
+  var AxiosError_1;
+  var hasRequiredAxiosError;
 
-    error.request = request;
-    error.response = response;
-    error.isAxiosError = true;
+  function requireAxiosError () {
+  	if (hasRequiredAxiosError) return AxiosError_1;
+  	hasRequiredAxiosError = 1;
 
-    error.toJSON = function toJSON() {
-      return {
-        // Standard
-        message: this.message,
-        name: this.name,
-        // Microsoft
-        description: this.description,
-        number: this.number,
-        // Mozilla
-        fileName: this.fileName,
-        lineNumber: this.lineNumber,
-        columnNumber: this.columnNumber,
-        stack: this.stack,
-        // Axios
-        config: this.config,
-        code: this.code,
-        status: this.response && this.response.status ? this.response.status : null
-      };
-    };
-    return error;
-  };
+  	var utils = utils$9;
+
+  	/**
+  	 * Create an Error with the specified message, config, error code, request and response.
+  	 *
+  	 * @param {string} message The error message.
+  	 * @param {string} [code] The error code (for example, 'ECONNABORTED').
+  	 * @param {Object} [config] The config.
+  	 * @param {Object} [request] The request.
+  	 * @param {Object} [response] The response.
+  	 * @returns {Error} The created error.
+  	 */
+  	function AxiosError(message, code, config, request, response) {
+  	  Error.call(this);
+  	  this.message = message;
+  	  this.name = 'AxiosError';
+  	  code && (this.code = code);
+  	  config && (this.config = config);
+  	  request && (this.request = request);
+  	  response && (this.response = response);
+  	}
+
+  	utils.inherits(AxiosError, Error, {
+  	  toJSON: function toJSON() {
+  	    return {
+  	      // Standard
+  	      message: this.message,
+  	      name: this.name,
+  	      // Microsoft
+  	      description: this.description,
+  	      number: this.number,
+  	      // Mozilla
+  	      fileName: this.fileName,
+  	      lineNumber: this.lineNumber,
+  	      columnNumber: this.columnNumber,
+  	      stack: this.stack,
+  	      // Axios
+  	      config: this.config,
+  	      code: this.code,
+  	      status: this.response && this.response.status ? this.response.status : null
+  	    };
+  	  }
+  	});
+
+  	var prototype = AxiosError.prototype;
+  	var descriptors = {};
+
+  	[
+  	  'ERR_BAD_OPTION_VALUE',
+  	  'ERR_BAD_OPTION',
+  	  'ECONNABORTED',
+  	  'ETIMEDOUT',
+  	  'ERR_NETWORK',
+  	  'ERR_FR_TOO_MANY_REDIRECTS',
+  	  'ERR_DEPRECATED',
+  	  'ERR_BAD_RESPONSE',
+  	  'ERR_BAD_REQUEST',
+  	  'ERR_CANCELED'
+  	// eslint-disable-next-line func-names
+  	].forEach(function(code) {
+  	  descriptors[code] = {value: code};
+  	});
+
+  	Object.defineProperties(AxiosError, descriptors);
+  	Object.defineProperty(prototype, 'isAxiosError', {value: true});
+
+  	// eslint-disable-next-line func-names
+  	AxiosError.from = function(error, code, config, request, response, customProps) {
+  	  var axiosError = Object.create(prototype);
+
+  	  utils.toFlatObject(error, axiosError, function filter(obj) {
+  	    return obj !== Error.prototype;
+  	  });
+
+  	  AxiosError.call(axiosError, error.message, code, config, request, response);
+
+  	  axiosError.name = error.name;
+
+  	  customProps && Object.assign(axiosError, customProps);
+
+  	  return axiosError;
+  	};
+
+  	AxiosError_1 = AxiosError;
+  	return AxiosError_1;
+  }
 
   var transitional = {
     silentJSONParsing: true,
@@ -5442,30 +5606,84 @@
     clarifyTimeoutError: false
   };
 
-  var createError;
-  var hasRequiredCreateError;
+  var toFormData_1;
+  var hasRequiredToFormData;
 
-  function requireCreateError () {
-  	if (hasRequiredCreateError) return createError;
-  	hasRequiredCreateError = 1;
+  function requireToFormData () {
+  	if (hasRequiredToFormData) return toFormData_1;
+  	hasRequiredToFormData = 1;
 
-  	var enhanceError = enhanceError$1;
+  	var utils = utils$9;
 
   	/**
-  	 * Create an Error with the specified message, config, error code, request and response.
-  	 *
-  	 * @param {string} message The error message.
-  	 * @param {Object} config The config.
-  	 * @param {string} [code] The error code (for example, 'ECONNABORTED').
-  	 * @param {Object} [request] The request.
-  	 * @param {Object} [response] The response.
-  	 * @returns {Error} The created error.
-  	 */
-  	createError = function createError(message, config, code, request, response) {
-  	  var error = new Error(message);
-  	  return enhanceError(error, config, code, request, response);
-  	};
-  	return createError;
+  	 * Convert a data object to FormData
+  	 * @param {Object} obj
+  	 * @param {?Object} [formData]
+  	 * @returns {Object}
+  	 **/
+
+  	function toFormData(obj, formData) {
+  	  // eslint-disable-next-line no-param-reassign
+  	  formData = formData || new FormData();
+
+  	  var stack = [];
+
+  	  function convertValue(value) {
+  	    if (value === null) return '';
+
+  	    if (utils.isDate(value)) {
+  	      return value.toISOString();
+  	    }
+
+  	    if (utils.isArrayBuffer(value) || utils.isTypedArray(value)) {
+  	      return typeof Blob === 'function' ? new Blob([value]) : Buffer.from(value);
+  	    }
+
+  	    return value;
+  	  }
+
+  	  function build(data, parentKey) {
+  	    if (utils.isPlainObject(data) || utils.isArray(data)) {
+  	      if (stack.indexOf(data) !== -1) {
+  	        throw Error('Circular reference detected in ' + parentKey);
+  	      }
+
+  	      stack.push(data);
+
+  	      utils.forEach(data, function each(value, key) {
+  	        if (utils.isUndefined(value)) return;
+  	        var fullKey = parentKey ? parentKey + '.' + key : key;
+  	        var arr;
+
+  	        if (value && !parentKey && typeof value === 'object') {
+  	          if (utils.endsWith(key, '{}')) {
+  	            // eslint-disable-next-line no-param-reassign
+  	            value = JSON.stringify(value);
+  	          } else if (utils.endsWith(key, '[]') && (arr = utils.toArray(value))) {
+  	            // eslint-disable-next-line func-names
+  	            arr.forEach(function(el) {
+  	              !utils.isUndefined(el) && formData.append(fullKey, convertValue(el));
+  	            });
+  	            return;
+  	          }
+  	        }
+
+  	        build(value, fullKey);
+  	      });
+
+  	      stack.pop();
+  	    } else {
+  	      formData.append(parentKey, convertValue(data));
+  	    }
+  	  }
+
+  	  build(obj);
+
+  	  return formData;
+  	}
+
+  	toFormData_1 = toFormData;
+  	return toFormData_1;
   }
 
   var settle;
@@ -5475,7 +5693,7 @@
   	if (hasRequiredSettle) return settle;
   	hasRequiredSettle = 1;
 
-  	var createError = requireCreateError();
+  	var AxiosError = requireAxiosError();
 
   	/**
   	 * Resolve or reject a Promise based on response status.
@@ -5489,10 +5707,10 @@
   	  if (!response.status || !validateStatus || validateStatus(response.status)) {
   	    resolve(response);
   	  } else {
-  	    reject(createError(
+  	    reject(new AxiosError(
   	      'Request failed with status code ' + response.status,
+  	      [AxiosError.ERR_BAD_REQUEST, AxiosError.ERR_BAD_RESPONSE][Math.floor(response.status / 100) - 4],
   	      response.config,
-  	      null,
   	      response.request,
   	      response
   	    ));
@@ -5562,77 +5780,50 @@
   	return cookies;
   }
 
-  var isAbsoluteURL;
-  var hasRequiredIsAbsoluteURL;
+  /**
+   * Determines whether the specified URL is absolute
+   *
+   * @param {string} url The URL to test
+   * @returns {boolean} True if the specified URL is absolute, otherwise false
+   */
+  var isAbsoluteURL$1 = function isAbsoluteURL(url) {
+    // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
+    // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
+    // by any combination of letters, digits, plus, period, or hyphen.
+    return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
+  };
 
-  function requireIsAbsoluteURL () {
-  	if (hasRequiredIsAbsoluteURL) return isAbsoluteURL;
-  	hasRequiredIsAbsoluteURL = 1;
+  /**
+   * Creates a new URL by combining the specified URLs
+   *
+   * @param {string} baseURL The base URL
+   * @param {string} relativeURL The relative URL
+   * @returns {string} The combined URL
+   */
+  var combineURLs$1 = function combineURLs(baseURL, relativeURL) {
+    return relativeURL
+      ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
+      : baseURL;
+  };
 
-  	/**
-  	 * Determines whether the specified URL is absolute
-  	 *
-  	 * @param {string} url The URL to test
-  	 * @returns {boolean} True if the specified URL is absolute, otherwise false
-  	 */
-  	isAbsoluteURL = function isAbsoluteURL(url) {
-  	  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
-  	  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
-  	  // by any combination of letters, digits, plus, period, or hyphen.
-  	  return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
-  	};
-  	return isAbsoluteURL;
-  }
+  var isAbsoluteURL = isAbsoluteURL$1;
+  var combineURLs = combineURLs$1;
 
-  var combineURLs;
-  var hasRequiredCombineURLs;
-
-  function requireCombineURLs () {
-  	if (hasRequiredCombineURLs) return combineURLs;
-  	hasRequiredCombineURLs = 1;
-
-  	/**
-  	 * Creates a new URL by combining the specified URLs
-  	 *
-  	 * @param {string} baseURL The base URL
-  	 * @param {string} relativeURL The relative URL
-  	 * @returns {string} The combined URL
-  	 */
-  	combineURLs = function combineURLs(baseURL, relativeURL) {
-  	  return relativeURL
-  	    ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
-  	    : baseURL;
-  	};
-  	return combineURLs;
-  }
-
-  var buildFullPath;
-  var hasRequiredBuildFullPath;
-
-  function requireBuildFullPath () {
-  	if (hasRequiredBuildFullPath) return buildFullPath;
-  	hasRequiredBuildFullPath = 1;
-
-  	var isAbsoluteURL = requireIsAbsoluteURL();
-  	var combineURLs = requireCombineURLs();
-
-  	/**
-  	 * Creates a new URL by combining the baseURL with the requestedURL,
-  	 * only when the requestedURL is not already an absolute URL.
-  	 * If the requestURL is absolute, this function returns the requestedURL untouched.
-  	 *
-  	 * @param {string} baseURL The base URL
-  	 * @param {string} requestedURL Absolute or relative URL to combine
-  	 * @returns {string} The combined full path
-  	 */
-  	buildFullPath = function buildFullPath(baseURL, requestedURL) {
-  	  if (baseURL && !isAbsoluteURL(requestedURL)) {
-  	    return combineURLs(baseURL, requestedURL);
-  	  }
-  	  return requestedURL;
-  	};
-  	return buildFullPath;
-  }
+  /**
+   * Creates a new URL by combining the baseURL with the requestedURL,
+   * only when the requestedURL is not already an absolute URL.
+   * If the requestURL is absolute, this function returns the requestedURL untouched.
+   *
+   * @param {string} baseURL The base URL
+   * @param {string} requestedURL Absolute or relative URL to combine
+   * @returns {string} The combined full path
+   */
+  var buildFullPath$1 = function buildFullPath(baseURL, requestedURL) {
+    if (baseURL && !isAbsoluteURL(requestedURL)) {
+      return combineURLs(baseURL, requestedURL);
+    }
+    return requestedURL;
+  };
 
   var parseHeaders;
   var hasRequiredParseHeaders;
@@ -5771,31 +5962,48 @@
   	return isURLSameOrigin;
   }
 
-  var Cancel_1;
-  var hasRequiredCancel;
+  var CanceledError_1;
+  var hasRequiredCanceledError;
 
-  function requireCancel () {
-  	if (hasRequiredCancel) return Cancel_1;
-  	hasRequiredCancel = 1;
+  function requireCanceledError () {
+  	if (hasRequiredCanceledError) return CanceledError_1;
+  	hasRequiredCanceledError = 1;
+
+  	var AxiosError = requireAxiosError();
+  	var utils = utils$9;
 
   	/**
-  	 * A `Cancel` is an object that is thrown when an operation is canceled.
+  	 * A `CanceledError` is an object that is thrown when an operation is canceled.
   	 *
   	 * @class
   	 * @param {string=} message The message.
   	 */
-  	function Cancel(message) {
-  	  this.message = message;
+  	function CanceledError(message) {
+  	  // eslint-disable-next-line no-eq-null,eqeqeq
+  	  AxiosError.call(this, message == null ? 'canceled' : message, AxiosError.ERR_CANCELED);
+  	  this.name = 'CanceledError';
   	}
 
-  	Cancel.prototype.toString = function toString() {
-  	  return 'Cancel' + (this.message ? ': ' + this.message : '');
+  	utils.inherits(CanceledError, AxiosError, {
+  	  __CANCEL__: true
+  	});
+
+  	CanceledError_1 = CanceledError;
+  	return CanceledError_1;
+  }
+
+  var parseProtocol;
+  var hasRequiredParseProtocol;
+
+  function requireParseProtocol () {
+  	if (hasRequiredParseProtocol) return parseProtocol;
+  	hasRequiredParseProtocol = 1;
+
+  	parseProtocol = function parseProtocol(url) {
+  	  var match = /^([-+\w]{1,25})(:?\/\/|:)/.exec(url);
+  	  return match && match[1] || '';
   	};
-
-  	Cancel.prototype.__CANCEL__ = true;
-
-  	Cancel_1 = Cancel;
-  	return Cancel_1;
+  	return parseProtocol;
   }
 
   var xhr;
@@ -5809,12 +6017,13 @@
   	var settle = requireSettle();
   	var cookies = requireCookies();
   	var buildURL = buildURL$1;
-  	var buildFullPath = requireBuildFullPath();
+  	var buildFullPath = buildFullPath$1;
   	var parseHeaders = requireParseHeaders();
   	var isURLSameOrigin = requireIsURLSameOrigin();
-  	var createError = requireCreateError();
   	var transitionalDefaults = transitional;
-  	var Cancel = requireCancel();
+  	var AxiosError = requireAxiosError();
+  	var CanceledError = requireCanceledError();
+  	var parseProtocol = requireParseProtocol();
 
   	xhr = function xhrAdapter(config) {
   	  return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -5832,7 +6041,7 @@
   	      }
   	    }
 
-  	    if (utils.isFormData(requestData)) {
+  	    if (utils.isFormData(requestData) && utils.isStandardBrowserEnv()) {
   	      delete requestHeaders['Content-Type']; // Let the browser set it
   	    }
 
@@ -5846,6 +6055,7 @@
   	    }
 
   	    var fullPath = buildFullPath(config.baseURL, config.url);
+
   	    request.open(config.method.toUpperCase(), buildURL(fullPath, config.params, config.paramsSerializer), true);
 
   	    // Set the request timeout in MS
@@ -5909,7 +6119,7 @@
   	        return;
   	      }
 
-  	      reject(createError('Request aborted', config, 'ECONNABORTED', request));
+  	      reject(new AxiosError('Request aborted', AxiosError.ECONNABORTED, config, request));
 
   	      // Clean up request
   	      request = null;
@@ -5919,7 +6129,7 @@
   	    request.onerror = function handleError() {
   	      // Real errors are hidden from us by the browser
   	      // onerror should only fire if it's a network error
-  	      reject(createError('Network Error', config, null, request));
+  	      reject(new AxiosError('Network Error', AxiosError.ERR_NETWORK, config, request, request));
 
   	      // Clean up request
   	      request = null;
@@ -5932,10 +6142,10 @@
   	      if (config.timeoutErrorMessage) {
   	        timeoutErrorMessage = config.timeoutErrorMessage;
   	      }
-  	      reject(createError(
+  	      reject(new AxiosError(
   	        timeoutErrorMessage,
+  	        transitional.clarifyTimeoutError ? AxiosError.ETIMEDOUT : AxiosError.ECONNABORTED,
   	        config,
-  	        transitional.clarifyTimeoutError ? 'ETIMEDOUT' : 'ECONNABORTED',
   	        request));
 
   	      // Clean up request
@@ -5996,7 +6206,7 @@
   	        if (!request) {
   	          return;
   	        }
-  	        reject(!cancel || (cancel && cancel.type) ? new Cancel('canceled') : cancel);
+  	        reject(!cancel || (cancel && cancel.type) ? new CanceledError() : cancel);
   	        request.abort();
   	        request = null;
   	      };
@@ -6011,6 +6221,14 @@
   	      requestData = null;
   	    }
 
+  	    var protocol = parseProtocol(fullPath);
+
+  	    if (protocol && [ 'http', 'https', 'file' ].indexOf(protocol) === -1) {
+  	      reject(new AxiosError('Unsupported protocol ' + protocol + ':', AxiosError.ERR_BAD_REQUEST, config));
+  	      return;
+  	    }
+
+
   	    // Send the request
   	    request.send(requestData);
   	  });
@@ -6018,1050 +6236,22 @@
   	return xhr;
   }
 
-  var followRedirects = {exports: {}};
-
-  var https;
-  var hasRequiredHttps;
-
-  function requireHttps () {
-  	if (hasRequiredHttps) return https;
-  	hasRequiredHttps = 1;
-  	https = requireFollowRedirects().https;
-  	return https;
-  }
-
-  var debug_1;
-  var hasRequiredDebug;
-
-  function requireDebug () {
-  	if (hasRequiredDebug) return debug_1;
-  	hasRequiredDebug = 1;
-  	var debug;
-
-  	debug_1 = function () {
-  	  if (!debug) {
-  	    try {
-  	      /* eslint global-require: off */
-  	      debug = requireDebug()("follow-redirects");
-  	    }
-  	    catch (error) { /* */ }
-  	    if (typeof debug !== "function") {
-  	      debug = function () { /* */ };
-  	    }
-  	  }
-  	  debug.apply(null, arguments);
-  	};
-  	return debug_1;
-  }
-
-  var hasRequiredFollowRedirects;
-
-  function requireFollowRedirects () {
-  	if (hasRequiredFollowRedirects) return followRedirects.exports;
-  	hasRequiredFollowRedirects = 1;
-  	var url = require$$0__default["default"];
-  	var URL = url.URL;
-  	var http = requireHttp();
-  	var https = requireHttps();
-  	var Writable = require$$3__default["default"].Writable;
-  	var assert = require$$4__default["default"];
-  	var debug = requireDebug();
-
-  	// Create handlers that pass events from native requests
-  	var events = ["abort", "aborted", "connect", "error", "socket", "timeout"];
-  	var eventHandlers = Object.create(null);
-  	events.forEach(function (event) {
-  	  eventHandlers[event] = function (arg1, arg2, arg3) {
-  	    this._redirectable.emit(event, arg1, arg2, arg3);
-  	  };
-  	});
-
-  	// Error types with codes
-  	var RedirectionError = createErrorType(
-  	  "ERR_FR_REDIRECTION_FAILURE",
-  	  "Redirected request failed"
-  	);
-  	var TooManyRedirectsError = createErrorType(
-  	  "ERR_FR_TOO_MANY_REDIRECTS",
-  	  "Maximum number of redirects exceeded"
-  	);
-  	var MaxBodyLengthExceededError = createErrorType(
-  	  "ERR_FR_MAX_BODY_LENGTH_EXCEEDED",
-  	  "Request body larger than maxBodyLength limit"
-  	);
-  	var WriteAfterEndError = createErrorType(
-  	  "ERR_STREAM_WRITE_AFTER_END",
-  	  "write after end"
-  	);
-
-  	// An HTTP(S) request that can be redirected
-  	function RedirectableRequest(options, responseCallback) {
-  	  // Initialize the request
-  	  Writable.call(this);
-  	  this._sanitizeOptions(options);
-  	  this._options = options;
-  	  this._ended = false;
-  	  this._ending = false;
-  	  this._redirectCount = 0;
-  	  this._redirects = [];
-  	  this._requestBodyLength = 0;
-  	  this._requestBodyBuffers = [];
-
-  	  // Attach a callback if passed
-  	  if (responseCallback) {
-  	    this.on("response", responseCallback);
-  	  }
-
-  	  // React to responses of native requests
-  	  var self = this;
-  	  this._onNativeResponse = function (response) {
-  	    self._processResponse(response);
-  	  };
-
-  	  // Perform the first request
-  	  this._performRequest();
-  	}
-  	RedirectableRequest.prototype = Object.create(Writable.prototype);
-
-  	RedirectableRequest.prototype.abort = function () {
-  	  abortRequest(this._currentRequest);
-  	  this.emit("abort");
-  	};
-
-  	// Writes buffered data to the current native request
-  	RedirectableRequest.prototype.write = function (data, encoding, callback) {
-  	  // Writing is not allowed if end has been called
-  	  if (this._ending) {
-  	    throw new WriteAfterEndError();
-  	  }
-
-  	  // Validate input and shift parameters if necessary
-  	  if (!(typeof data === "string" || typeof data === "object" && ("length" in data))) {
-  	    throw new TypeError("data should be a string, Buffer or Uint8Array");
-  	  }
-  	  if (typeof encoding === "function") {
-  	    callback = encoding;
-  	    encoding = null;
-  	  }
-
-  	  // Ignore empty buffers, since writing them doesn't invoke the callback
-  	  // https://github.com/nodejs/node/issues/22066
-  	  if (data.length === 0) {
-  	    if (callback) {
-  	      callback();
-  	    }
-  	    return;
-  	  }
-  	  // Only write when we don't exceed the maximum body length
-  	  if (this._requestBodyLength + data.length <= this._options.maxBodyLength) {
-  	    this._requestBodyLength += data.length;
-  	    this._requestBodyBuffers.push({ data: data, encoding: encoding });
-  	    this._currentRequest.write(data, encoding, callback);
-  	  }
-  	  // Error when we exceed the maximum body length
-  	  else {
-  	    this.emit("error", new MaxBodyLengthExceededError());
-  	    this.abort();
-  	  }
-  	};
-
-  	// Ends the current native request
-  	RedirectableRequest.prototype.end = function (data, encoding, callback) {
-  	  // Shift parameters if necessary
-  	  if (typeof data === "function") {
-  	    callback = data;
-  	    data = encoding = null;
-  	  }
-  	  else if (typeof encoding === "function") {
-  	    callback = encoding;
-  	    encoding = null;
-  	  }
-
-  	  // Write data if needed and end
-  	  if (!data) {
-  	    this._ended = this._ending = true;
-  	    this._currentRequest.end(null, null, callback);
-  	  }
-  	  else {
-  	    var self = this;
-  	    var currentRequest = this._currentRequest;
-  	    this.write(data, encoding, function () {
-  	      self._ended = true;
-  	      currentRequest.end(null, null, callback);
-  	    });
-  	    this._ending = true;
-  	  }
-  	};
-
-  	// Sets a header value on the current native request
-  	RedirectableRequest.prototype.setHeader = function (name, value) {
-  	  this._options.headers[name] = value;
-  	  this._currentRequest.setHeader(name, value);
-  	};
-
-  	// Clears a header value on the current native request
-  	RedirectableRequest.prototype.removeHeader = function (name) {
-  	  delete this._options.headers[name];
-  	  this._currentRequest.removeHeader(name);
-  	};
-
-  	// Global timeout for all underlying requests
-  	RedirectableRequest.prototype.setTimeout = function (msecs, callback) {
-  	  var self = this;
-
-  	  // Destroys the socket on timeout
-  	  function destroyOnTimeout(socket) {
-  	    socket.setTimeout(msecs);
-  	    socket.removeListener("timeout", socket.destroy);
-  	    socket.addListener("timeout", socket.destroy);
-  	  }
-
-  	  // Sets up a timer to trigger a timeout event
-  	  function startTimer(socket) {
-  	    if (self._timeout) {
-  	      clearTimeout(self._timeout);
-  	    }
-  	    self._timeout = setTimeout(function () {
-  	      self.emit("timeout");
-  	      clearTimer();
-  	    }, msecs);
-  	    destroyOnTimeout(socket);
-  	  }
-
-  	  // Stops a timeout from triggering
-  	  function clearTimer() {
-  	    // Clear the timeout
-  	    if (self._timeout) {
-  	      clearTimeout(self._timeout);
-  	      self._timeout = null;
-  	    }
-
-  	    // Clean up all attached listeners
-  	    self.removeListener("abort", clearTimer);
-  	    self.removeListener("error", clearTimer);
-  	    self.removeListener("response", clearTimer);
-  	    if (callback) {
-  	      self.removeListener("timeout", callback);
-  	    }
-  	    if (!self.socket) {
-  	      self._currentRequest.removeListener("socket", startTimer);
-  	    }
-  	  }
-
-  	  // Attach callback if passed
-  	  if (callback) {
-  	    this.on("timeout", callback);
-  	  }
-
-  	  // Start the timer if or when the socket is opened
-  	  if (this.socket) {
-  	    startTimer(this.socket);
-  	  }
-  	  else {
-  	    this._currentRequest.once("socket", startTimer);
-  	  }
-
-  	  // Clean up on events
-  	  this.on("socket", destroyOnTimeout);
-  	  this.on("abort", clearTimer);
-  	  this.on("error", clearTimer);
-  	  this.on("response", clearTimer);
-
-  	  return this;
-  	};
-
-  	// Proxy all other public ClientRequest methods
-  	[
-  	  "flushHeaders", "getHeader",
-  	  "setNoDelay", "setSocketKeepAlive",
-  	].forEach(function (method) {
-  	  RedirectableRequest.prototype[method] = function (a, b) {
-  	    return this._currentRequest[method](a, b);
-  	  };
-  	});
-
-  	// Proxy all public ClientRequest properties
-  	["aborted", "connection", "socket"].forEach(function (property) {
-  	  Object.defineProperty(RedirectableRequest.prototype, property, {
-  	    get: function () { return this._currentRequest[property]; },
-  	  });
-  	});
-
-  	RedirectableRequest.prototype._sanitizeOptions = function (options) {
-  	  // Ensure headers are always present
-  	  if (!options.headers) {
-  	    options.headers = {};
-  	  }
-
-  	  // Since http.request treats host as an alias of hostname,
-  	  // but the url module interprets host as hostname plus port,
-  	  // eliminate the host property to avoid confusion.
-  	  if (options.host) {
-  	    // Use hostname if set, because it has precedence
-  	    if (!options.hostname) {
-  	      options.hostname = options.host;
-  	    }
-  	    delete options.host;
-  	  }
-
-  	  // Complete the URL object when necessary
-  	  if (!options.pathname && options.path) {
-  	    var searchPos = options.path.indexOf("?");
-  	    if (searchPos < 0) {
-  	      options.pathname = options.path;
-  	    }
-  	    else {
-  	      options.pathname = options.path.substring(0, searchPos);
-  	      options.search = options.path.substring(searchPos);
-  	    }
-  	  }
-  	};
-
-
-  	// Executes the next native request (initial or redirect)
-  	RedirectableRequest.prototype._performRequest = function () {
-  	  // Load the native protocol
-  	  var protocol = this._options.protocol;
-  	  var nativeProtocol = this._options.nativeProtocols[protocol];
-  	  if (!nativeProtocol) {
-  	    this.emit("error", new TypeError("Unsupported protocol " + protocol));
-  	    return;
-  	  }
-
-  	  // If specified, use the agent corresponding to the protocol
-  	  // (HTTP and HTTPS use different types of agents)
-  	  if (this._options.agents) {
-  	    var scheme = protocol.substr(0, protocol.length - 1);
-  	    this._options.agent = this._options.agents[scheme];
-  	  }
-
-  	  // Create the native request
-  	  var request = this._currentRequest =
-  	        nativeProtocol.request(this._options, this._onNativeResponse);
-  	  this._currentUrl = url.format(this._options);
-
-  	  // Set up event handlers
-  	  request._redirectable = this;
-  	  for (var e = 0; e < events.length; e++) {
-  	    request.on(events[e], eventHandlers[events[e]]);
-  	  }
-
-  	  // End a redirected request
-  	  // (The first request must be ended explicitly with RedirectableRequest#end)
-  	  if (this._isRedirect) {
-  	    // Write the request entity and end.
-  	    var i = 0;
-  	    var self = this;
-  	    var buffers = this._requestBodyBuffers;
-  	    (function writeNext(error) {
-  	      // Only write if this request has not been redirected yet
-  	      /* istanbul ignore else */
-  	      if (request === self._currentRequest) {
-  	        // Report any write errors
-  	        /* istanbul ignore if */
-  	        if (error) {
-  	          self.emit("error", error);
-  	        }
-  	        // Write the next buffer if there are still left
-  	        else if (i < buffers.length) {
-  	          var buffer = buffers[i++];
-  	          /* istanbul ignore else */
-  	          if (!request.finished) {
-  	            request.write(buffer.data, buffer.encoding, writeNext);
-  	          }
-  	        }
-  	        // End the request if `end` has been called on us
-  	        else if (self._ended) {
-  	          request.end();
-  	        }
-  	      }
-  	    }());
-  	  }
-  	};
-
-  	// Processes a response from the current native request
-  	RedirectableRequest.prototype._processResponse = function (response) {
-  	  // Store the redirected response
-  	  var statusCode = response.statusCode;
-  	  if (this._options.trackRedirects) {
-  	    this._redirects.push({
-  	      url: this._currentUrl,
-  	      headers: response.headers,
-  	      statusCode: statusCode,
-  	    });
-  	  }
-
-  	  // RFC7231§6.4: The 3xx (Redirection) class of status code indicates
-  	  // that further action needs to be taken by the user agent in order to
-  	  // fulfill the request. If a Location header field is provided,
-  	  // the user agent MAY automatically redirect its request to the URI
-  	  // referenced by the Location field value,
-  	  // even if the specific status code is not understood.
-
-  	  // If the response is not a redirect; return it as-is
-  	  var location = response.headers.location;
-  	  if (!location || this._options.followRedirects === false ||
-  	      statusCode < 300 || statusCode >= 400) {
-  	    response.responseUrl = this._currentUrl;
-  	    response.redirects = this._redirects;
-  	    this.emit("response", response);
-
-  	    // Clean up
-  	    this._requestBodyBuffers = [];
-  	    return;
-  	  }
-
-  	  // The response is a redirect, so abort the current request
-  	  abortRequest(this._currentRequest);
-  	  // Discard the remainder of the response to avoid waiting for data
-  	  response.destroy();
-
-  	  // RFC7231§6.4: A client SHOULD detect and intervene
-  	  // in cyclical redirections (i.e., "infinite" redirection loops).
-  	  if (++this._redirectCount > this._options.maxRedirects) {
-  	    this.emit("error", new TooManyRedirectsError());
-  	    return;
-  	  }
-
-  	  // RFC7231§6.4: Automatic redirection needs to done with
-  	  // care for methods not known to be safe, […]
-  	  // RFC7231§6.4.2–3: For historical reasons, a user agent MAY change
-  	  // the request method from POST to GET for the subsequent request.
-  	  if ((statusCode === 301 || statusCode === 302) && this._options.method === "POST" ||
-  	      // RFC7231§6.4.4: The 303 (See Other) status code indicates that
-  	      // the server is redirecting the user agent to a different resource […]
-  	      // A user agent can perform a retrieval request targeting that URI
-  	      // (a GET or HEAD request if using HTTP) […]
-  	      (statusCode === 303) && !/^(?:GET|HEAD)$/.test(this._options.method)) {
-  	    this._options.method = "GET";
-  	    // Drop a possible entity and headers related to it
-  	    this._requestBodyBuffers = [];
-  	    removeMatchingHeaders(/^content-/i, this._options.headers);
-  	  }
-
-  	  // Drop the Host header, as the redirect might lead to a different host
-  	  var currentHostHeader = removeMatchingHeaders(/^host$/i, this._options.headers);
-
-  	  // If the redirect is relative, carry over the host of the last request
-  	  var currentUrlParts = url.parse(this._currentUrl);
-  	  var currentHost = currentHostHeader || currentUrlParts.host;
-  	  var currentUrl = /^\w+:/.test(location) ? this._currentUrl :
-  	    url.format(Object.assign(currentUrlParts, { host: currentHost }));
-
-  	  // Determine the URL of the redirection
-  	  var redirectUrl;
-  	  try {
-  	    redirectUrl = url.resolve(currentUrl, location);
-  	  }
-  	  catch (cause) {
-  	    this.emit("error", new RedirectionError(cause));
-  	    return;
-  	  }
-
-  	  // Create the redirected request
-  	  debug("redirecting to", redirectUrl);
-  	  this._isRedirect = true;
-  	  var redirectUrlParts = url.parse(redirectUrl);
-  	  Object.assign(this._options, redirectUrlParts);
-
-  	  // Drop confidential headers when redirecting to a less secure protocol
-  	  // or to a different domain that is not a superdomain
-  	  if (redirectUrlParts.protocol !== currentUrlParts.protocol &&
-  	     redirectUrlParts.protocol !== "https:" ||
-  	     redirectUrlParts.host !== currentHost &&
-  	     !isSubdomain(redirectUrlParts.host, currentHost)) {
-  	    removeMatchingHeaders(/^(?:authorization|cookie)$/i, this._options.headers);
-  	  }
-
-  	  // Evaluate the beforeRedirect callback
-  	  if (typeof this._options.beforeRedirect === "function") {
-  	    var responseDetails = { headers: response.headers };
-  	    try {
-  	      this._options.beforeRedirect.call(null, this._options, responseDetails);
-  	    }
-  	    catch (err) {
-  	      this.emit("error", err);
-  	      return;
-  	    }
-  	    this._sanitizeOptions(this._options);
-  	  }
-
-  	  // Perform the redirected request
-  	  try {
-  	    this._performRequest();
-  	  }
-  	  catch (cause) {
-  	    this.emit("error", new RedirectionError(cause));
-  	  }
-  	};
-
-  	// Wraps the key/value object of protocols with redirect functionality
-  	function wrap(protocols) {
-  	  // Default settings
-  	  var exports = {
-  	    maxRedirects: 21,
-  	    maxBodyLength: 10 * 1024 * 1024,
-  	  };
-
-  	  // Wrap each protocol
-  	  var nativeProtocols = {};
-  	  Object.keys(protocols).forEach(function (scheme) {
-  	    var protocol = scheme + ":";
-  	    var nativeProtocol = nativeProtocols[protocol] = protocols[scheme];
-  	    var wrappedProtocol = exports[scheme] = Object.create(nativeProtocol);
-
-  	    // Executes a request, following redirects
-  	    function request(input, options, callback) {
-  	      // Parse parameters
-  	      if (typeof input === "string") {
-  	        var urlStr = input;
-  	        try {
-  	          input = urlToOptions(new URL(urlStr));
-  	        }
-  	        catch (err) {
-  	          /* istanbul ignore next */
-  	          input = url.parse(urlStr);
-  	        }
-  	      }
-  	      else if (URL && (input instanceof URL)) {
-  	        input = urlToOptions(input);
-  	      }
-  	      else {
-  	        callback = options;
-  	        options = input;
-  	        input = { protocol: protocol };
-  	      }
-  	      if (typeof options === "function") {
-  	        callback = options;
-  	        options = null;
-  	      }
-
-  	      // Set defaults
-  	      options = Object.assign({
-  	        maxRedirects: exports.maxRedirects,
-  	        maxBodyLength: exports.maxBodyLength,
-  	      }, input, options);
-  	      options.nativeProtocols = nativeProtocols;
-
-  	      assert.equal(options.protocol, protocol, "protocol mismatch");
-  	      debug("options", options);
-  	      return new RedirectableRequest(options, callback);
-  	    }
-
-  	    // Executes a GET request, following redirects
-  	    function get(input, options, callback) {
-  	      var wrappedRequest = wrappedProtocol.request(input, options, callback);
-  	      wrappedRequest.end();
-  	      return wrappedRequest;
-  	    }
-
-  	    // Expose the properties on the wrapped protocol
-  	    Object.defineProperties(wrappedProtocol, {
-  	      request: { value: request, configurable: true, enumerable: true, writable: true },
-  	      get: { value: get, configurable: true, enumerable: true, writable: true },
-  	    });
-  	  });
-  	  return exports;
-  	}
-
-  	/* istanbul ignore next */
-  	function noop() { /* empty */ }
-
-  	// from https://github.com/nodejs/node/blob/master/lib/internal/url.js
-  	function urlToOptions(urlObject) {
-  	  var options = {
-  	    protocol: urlObject.protocol,
-  	    hostname: urlObject.hostname.startsWith("[") ?
-  	      /* istanbul ignore next */
-  	      urlObject.hostname.slice(1, -1) :
-  	      urlObject.hostname,
-  	    hash: urlObject.hash,
-  	    search: urlObject.search,
-  	    pathname: urlObject.pathname,
-  	    path: urlObject.pathname + urlObject.search,
-  	    href: urlObject.href,
-  	  };
-  	  if (urlObject.port !== "") {
-  	    options.port = Number(urlObject.port);
-  	  }
-  	  return options;
-  	}
-
-  	function removeMatchingHeaders(regex, headers) {
-  	  var lastValue;
-  	  for (var header in headers) {
-  	    if (regex.test(header)) {
-  	      lastValue = headers[header];
-  	      delete headers[header];
-  	    }
-  	  }
-  	  return (lastValue === null || typeof lastValue === "undefined") ?
-  	    undefined : String(lastValue).trim();
-  	}
-
-  	function createErrorType(code, defaultMessage) {
-  	  function CustomError(cause) {
-  	    Error.captureStackTrace(this, this.constructor);
-  	    if (!cause) {
-  	      this.message = defaultMessage;
-  	    }
-  	    else {
-  	      this.message = defaultMessage + ": " + cause.message;
-  	      this.cause = cause;
-  	    }
-  	  }
-  	  CustomError.prototype = new Error();
-  	  CustomError.prototype.constructor = CustomError;
-  	  CustomError.prototype.name = "Error [" + code + "]";
-  	  CustomError.prototype.code = code;
-  	  return CustomError;
-  	}
-
-  	function abortRequest(request) {
-  	  for (var e = 0; e < events.length; e++) {
-  	    request.removeListener(events[e], eventHandlers[events[e]]);
-  	  }
-  	  request.on("error", noop);
-  	  request.abort();
-  	}
-
-  	function isSubdomain(subdomain, domain) {
-  	  const dot = subdomain.length - domain.length - 1;
-  	  return dot > 0 && subdomain[dot] === "." && subdomain.endsWith(domain);
-  	}
-
-  	// Exports
-  	followRedirects.exports = wrap({ http: http, https: https });
-  	followRedirects.exports.wrap = wrap;
-  	return followRedirects.exports;
-  }
-
-  var data;
-  var hasRequiredData;
-
-  function requireData () {
-  	if (hasRequiredData) return data;
-  	hasRequiredData = 1;
-  	data = {
-  	  "version": "0.26.1"
-  	};
-  	return data;
-  }
-
-  var http_1;
-  var hasRequiredHttp;
-
-  function requireHttp () {
-  	if (hasRequiredHttp) return http_1;
-  	hasRequiredHttp = 1;
-
-  	var utils = utils$9;
-  	var settle = requireSettle();
-  	var buildFullPath = requireBuildFullPath();
-  	var buildURL = buildURL$1;
-  	var http = requireHttp();
-  	var https = require$$5__default["default"];
-  	var httpFollow = requireFollowRedirects().http;
-  	var httpsFollow = requireFollowRedirects().https;
-  	var url = require$$0__default["default"];
-  	var zlib = require$$8__default["default"];
-  	var VERSION = requireData().version;
-  	var createError = requireCreateError();
-  	var enhanceError = enhanceError$1;
-  	var transitionalDefaults = transitional;
-  	var Cancel = requireCancel();
-
-  	var isHttps = /https:?/;
-
-  	/**
-  	 *
-  	 * @param {http.ClientRequestArgs} options
-  	 * @param {AxiosProxyConfig} proxy
-  	 * @param {string} location
-  	 */
-  	function setProxy(options, proxy, location) {
-  	  options.hostname = proxy.host;
-  	  options.host = proxy.host;
-  	  options.port = proxy.port;
-  	  options.path = location;
-
-  	  // Basic proxy authorization
-  	  if (proxy.auth) {
-  	    var base64 = Buffer.from(proxy.auth.username + ':' + proxy.auth.password, 'utf8').toString('base64');
-  	    options.headers['Proxy-Authorization'] = 'Basic ' + base64;
-  	  }
-
-  	  // If a proxy is used, any redirects must also pass through the proxy
-  	  options.beforeRedirect = function beforeRedirect(redirection) {
-  	    redirection.headers.host = redirection.host;
-  	    setProxy(redirection, proxy, redirection.href);
-  	  };
-  	}
-
-  	/*eslint consistent-return:0*/
-  	http_1 = function httpAdapter(config) {
-  	  return new Promise(function dispatchHttpRequest(resolvePromise, rejectPromise) {
-  	    var onCanceled;
-  	    function done() {
-  	      if (config.cancelToken) {
-  	        config.cancelToken.unsubscribe(onCanceled);
-  	      }
-
-  	      if (config.signal) {
-  	        config.signal.removeEventListener('abort', onCanceled);
-  	      }
-  	    }
-  	    var resolve = function resolve(value) {
-  	      done();
-  	      resolvePromise(value);
-  	    };
-  	    var rejected = false;
-  	    var reject = function reject(value) {
-  	      done();
-  	      rejected = true;
-  	      rejectPromise(value);
-  	    };
-  	    var data = config.data;
-  	    var headers = config.headers;
-  	    var headerNames = {};
-
-  	    Object.keys(headers).forEach(function storeLowerName(name) {
-  	      headerNames[name.toLowerCase()] = name;
-  	    });
-
-  	    // Set User-Agent (required by some servers)
-  	    // See https://github.com/axios/axios/issues/69
-  	    if ('user-agent' in headerNames) {
-  	      // User-Agent is specified; handle case where no UA header is desired
-  	      if (!headers[headerNames['user-agent']]) {
-  	        delete headers[headerNames['user-agent']];
-  	      }
-  	      // Otherwise, use specified value
-  	    } else {
-  	      // Only set header if it hasn't been set in config
-  	      headers['User-Agent'] = 'axios/' + VERSION;
-  	    }
-
-  	    if (data && !utils.isStream(data)) {
-  	      if (Buffer.isBuffer(data)) ; else if (utils.isArrayBuffer(data)) {
-  	        data = Buffer.from(new Uint8Array(data));
-  	      } else if (utils.isString(data)) {
-  	        data = Buffer.from(data, 'utf-8');
-  	      } else {
-  	        return reject(createError(
-  	          'Data after transformation must be a string, an ArrayBuffer, a Buffer, or a Stream',
-  	          config
-  	        ));
-  	      }
-
-  	      if (config.maxBodyLength > -1 && data.length > config.maxBodyLength) {
-  	        return reject(createError('Request body larger than maxBodyLength limit', config));
-  	      }
-
-  	      // Add Content-Length header if data exists
-  	      if (!headerNames['content-length']) {
-  	        headers['Content-Length'] = data.length;
-  	      }
-  	    }
-
-  	    // HTTP basic authentication
-  	    var auth = undefined;
-  	    if (config.auth) {
-  	      var username = config.auth.username || '';
-  	      var password = config.auth.password || '';
-  	      auth = username + ':' + password;
-  	    }
-
-  	    // Parse url
-  	    var fullPath = buildFullPath(config.baseURL, config.url);
-  	    var parsed = url.parse(fullPath);
-  	    var protocol = parsed.protocol || 'http:';
-
-  	    if (!auth && parsed.auth) {
-  	      var urlAuth = parsed.auth.split(':');
-  	      var urlUsername = urlAuth[0] || '';
-  	      var urlPassword = urlAuth[1] || '';
-  	      auth = urlUsername + ':' + urlPassword;
-  	    }
-
-  	    if (auth && headerNames.authorization) {
-  	      delete headers[headerNames.authorization];
-  	    }
-
-  	    var isHttpsRequest = isHttps.test(protocol);
-  	    var agent = isHttpsRequest ? config.httpsAgent : config.httpAgent;
-
-  	    try {
-  	      buildURL(parsed.path, config.params, config.paramsSerializer).replace(/^\?/, '');
-  	    } catch (err) {
-  	      var customErr = new Error(err.message);
-  	      customErr.config = config;
-  	      customErr.url = config.url;
-  	      customErr.exists = true;
-  	      reject(customErr);
-  	    }
-
-  	    var options = {
-  	      path: buildURL(parsed.path, config.params, config.paramsSerializer).replace(/^\?/, ''),
-  	      method: config.method.toUpperCase(),
-  	      headers: headers,
-  	      agent: agent,
-  	      agents: { http: config.httpAgent, https: config.httpsAgent },
-  	      auth: auth
-  	    };
-
-  	    if (config.socketPath) {
-  	      options.socketPath = config.socketPath;
-  	    } else {
-  	      options.hostname = parsed.hostname;
-  	      options.port = parsed.port;
-  	    }
-
-  	    var proxy = config.proxy;
-  	    if (!proxy && proxy !== false) {
-  	      var proxyEnv = protocol.slice(0, -1) + '_proxy';
-  	      var proxyUrl = process.env[proxyEnv] || process.env[proxyEnv.toUpperCase()];
-  	      if (proxyUrl) {
-  	        var parsedProxyUrl = url.parse(proxyUrl);
-  	        var noProxyEnv = process.env.no_proxy || process.env.NO_PROXY;
-  	        var shouldProxy = true;
-
-  	        if (noProxyEnv) {
-  	          var noProxy = noProxyEnv.split(',').map(function trim(s) {
-  	            return s.trim();
-  	          });
-
-  	          shouldProxy = !noProxy.some(function proxyMatch(proxyElement) {
-  	            if (!proxyElement) {
-  	              return false;
-  	            }
-  	            if (proxyElement === '*') {
-  	              return true;
-  	            }
-  	            if (proxyElement[0] === '.' &&
-  	                parsed.hostname.substr(parsed.hostname.length - proxyElement.length) === proxyElement) {
-  	              return true;
-  	            }
-
-  	            return parsed.hostname === proxyElement;
-  	          });
-  	        }
-
-  	        if (shouldProxy) {
-  	          proxy = {
-  	            host: parsedProxyUrl.hostname,
-  	            port: parsedProxyUrl.port,
-  	            protocol: parsedProxyUrl.protocol
-  	          };
-
-  	          if (parsedProxyUrl.auth) {
-  	            var proxyUrlAuth = parsedProxyUrl.auth.split(':');
-  	            proxy.auth = {
-  	              username: proxyUrlAuth[0],
-  	              password: proxyUrlAuth[1]
-  	            };
-  	          }
-  	        }
-  	      }
-  	    }
-
-  	    if (proxy) {
-  	      options.headers.host = parsed.hostname + (parsed.port ? ':' + parsed.port : '');
-  	      setProxy(options, proxy, protocol + '//' + parsed.hostname + (parsed.port ? ':' + parsed.port : '') + options.path);
-  	    }
-
-  	    var transport;
-  	    var isHttpsProxy = isHttpsRequest && (proxy ? isHttps.test(proxy.protocol) : true);
-  	    if (config.transport) {
-  	      transport = config.transport;
-  	    } else if (config.maxRedirects === 0) {
-  	      transport = isHttpsProxy ? https : http;
-  	    } else {
-  	      if (config.maxRedirects) {
-  	        options.maxRedirects = config.maxRedirects;
-  	      }
-  	      transport = isHttpsProxy ? httpsFollow : httpFollow;
-  	    }
-
-  	    if (config.maxBodyLength > -1) {
-  	      options.maxBodyLength = config.maxBodyLength;
-  	    }
-
-  	    if (config.insecureHTTPParser) {
-  	      options.insecureHTTPParser = config.insecureHTTPParser;
-  	    }
-
-  	    // Create the request
-  	    var req = transport.request(options, function handleResponse(res) {
-  	      if (req.aborted) return;
-
-  	      // uncompress the response body transparently if required
-  	      var stream = res;
-
-  	      // return the last request in case of redirects
-  	      var lastRequest = res.req || req;
-
-
-  	      // if no content, is HEAD request or decompress disabled we should not decompress
-  	      if (res.statusCode !== 204 && lastRequest.method !== 'HEAD' && config.decompress !== false) {
-  	        switch (res.headers['content-encoding']) {
-  	        /*eslint default-case:0*/
-  	        case 'gzip':
-  	        case 'compress':
-  	        case 'deflate':
-  	        // add the unzipper to the body stream processing pipeline
-  	          stream = stream.pipe(zlib.createUnzip());
-
-  	          // remove the content-encoding in order to not confuse downstream operations
-  	          delete res.headers['content-encoding'];
-  	          break;
-  	        }
-  	      }
-
-  	      var response = {
-  	        status: res.statusCode,
-  	        statusText: res.statusMessage,
-  	        headers: res.headers,
-  	        config: config,
-  	        request: lastRequest
-  	      };
-
-  	      if (config.responseType === 'stream') {
-  	        response.data = stream;
-  	        settle(resolve, reject, response);
-  	      } else {
-  	        var responseBuffer = [];
-  	        var totalResponseBytes = 0;
-  	        stream.on('data', function handleStreamData(chunk) {
-  	          responseBuffer.push(chunk);
-  	          totalResponseBytes += chunk.length;
-
-  	          // make sure the content length is not over the maxContentLength if specified
-  	          if (config.maxContentLength > -1 && totalResponseBytes > config.maxContentLength) {
-  	            // stream.destoy() emit aborted event before calling reject() on Node.js v16
-  	            rejected = true;
-  	            stream.destroy();
-  	            reject(createError('maxContentLength size of ' + config.maxContentLength + ' exceeded',
-  	              config, null, lastRequest));
-  	          }
-  	        });
-
-  	        stream.on('aborted', function handlerStreamAborted() {
-  	          if (rejected) {
-  	            return;
-  	          }
-  	          stream.destroy();
-  	          reject(createError('error request aborted', config, 'ERR_REQUEST_ABORTED', lastRequest));
-  	        });
-
-  	        stream.on('error', function handleStreamError(err) {
-  	          if (req.aborted) return;
-  	          reject(enhanceError(err, config, null, lastRequest));
-  	        });
-
-  	        stream.on('end', function handleStreamEnd() {
-  	          try {
-  	            var responseData = responseBuffer.length === 1 ? responseBuffer[0] : Buffer.concat(responseBuffer);
-  	            if (config.responseType !== 'arraybuffer') {
-  	              responseData = responseData.toString(config.responseEncoding);
-  	              if (!config.responseEncoding || config.responseEncoding === 'utf8') {
-  	                responseData = utils.stripBOM(responseData);
-  	              }
-  	            }
-  	            response.data = responseData;
-  	          } catch (err) {
-  	            reject(enhanceError(err, config, err.code, response.request, response));
-  	          }
-  	          settle(resolve, reject, response);
-  	        });
-  	      }
-  	    });
-
-  	    // Handle errors
-  	    req.on('error', function handleRequestError(err) {
-  	      if (req.aborted && err.code !== 'ERR_FR_TOO_MANY_REDIRECTS') return;
-  	      reject(enhanceError(err, config, null, req));
-  	    });
-
-  	    // set tcp keep alive to prevent drop connection by peer
-  	    req.on('socket', function handleRequestSocket(socket) {
-  	      // default interval of sending ack packet is 1 minute
-  	      socket.setKeepAlive(true, 1000 * 60);
-  	    });
-
-  	    // Handle request timeout
-  	    if (config.timeout) {
-  	      // This is forcing a int timeout to avoid problems if the `req` interface doesn't handle other types.
-  	      var timeout = parseInt(config.timeout, 10);
-
-  	      if (isNaN(timeout)) {
-  	        reject(createError(
-  	          'error trying to parse `config.timeout` to int',
-  	          config,
-  	          'ERR_PARSE_TIMEOUT',
-  	          req
-  	        ));
-
-  	        return;
-  	      }
-
-  	      // Sometime, the response will be very slow, and does not respond, the connect event will be block by event loop system.
-  	      // And timer callback will be fired, and abort() will be invoked before connection, then get "socket hang up" and code ECONNRESET.
-  	      // At this time, if we have a large number of request, nodejs will hang up some socket on background. and the number will up and up.
-  	      // And then these socket which be hang up will devoring CPU little by little.
-  	      // ClientRequest.setTimeout will be fired on the specify milliseconds, and can make sure that abort() will be fired after connect.
-  	      req.setTimeout(timeout, function handleRequestTimeout() {
-  	        req.abort();
-  	        var timeoutErrorMessage = '';
-  	        if (config.timeoutErrorMessage) {
-  	          timeoutErrorMessage = config.timeoutErrorMessage;
-  	        } else {
-  	          timeoutErrorMessage = 'timeout of ' + config.timeout + 'ms exceeded';
-  	        }
-  	        var transitional = config.transitional || transitionalDefaults;
-  	        reject(createError(
-  	          timeoutErrorMessage,
-  	          config,
-  	          transitional.clarifyTimeoutError ? 'ETIMEDOUT' : 'ECONNABORTED',
-  	          req
-  	        ));
-  	      });
-  	    }
-
-  	    if (config.cancelToken || config.signal) {
-  	      // Handle cancellation
-  	      // eslint-disable-next-line func-names
-  	      onCanceled = function(cancel) {
-  	        if (req.aborted) return;
-
-  	        req.abort();
-  	        reject(!cancel || (cancel && cancel.type) ? new Cancel('canceled') : cancel);
-  	      };
-
-  	      config.cancelToken && config.cancelToken.subscribe(onCanceled);
-  	      if (config.signal) {
-  	        config.signal.aborted ? onCanceled() : config.signal.addEventListener('abort', onCanceled);
-  	      }
-  	    }
-
-
-  	    // Send the request
-  	    if (utils.isStream(data)) {
-  	      data.on('error', function handleStreamError(err) {
-  	        reject(enhanceError(err, config, null, req));
-  	      }).pipe(req);
-  	    } else {
-  	      req.end(data);
-  	    }
-  	  });
-  	};
-  	return http_1;
+  var _null;
+  var hasRequired_null;
+
+  function require_null () {
+  	if (hasRequired_null) return _null;
+  	hasRequired_null = 1;
+  	// eslint-disable-next-line strict
+  	_null = null;
+  	return _null;
   }
 
   var utils$5 = utils$9;
   var normalizeHeaderName = normalizeHeaderName$1;
-  var enhanceError = enhanceError$1;
+  var AxiosError$1 = requireAxiosError();
   var transitionalDefaults = transitional;
+  var toFormData = requireToFormData();
 
   var DEFAULT_CONTENT_TYPE = {
     'Content-Type': 'application/x-www-form-urlencoded'
@@ -7080,7 +6270,7 @@
       adapter = requireXhr();
     } else if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
       // For node use HTTP adapter
-      adapter = requireHttp();
+      adapter = requireXhr();
     }
     return adapter;
   }
@@ -7126,10 +6316,20 @@
         setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
         return data.toString();
       }
-      if (utils$5.isObject(data) || (headers && headers['Content-Type'] === 'application/json')) {
+
+      var isObjectPayload = utils$5.isObject(data);
+      var contentType = headers && headers['Content-Type'];
+
+      var isFileList;
+
+      if ((isFileList = utils$5.isFileList(data)) || (isObjectPayload && contentType === 'multipart/form-data')) {
+        var _FormData = this.env && this.env.FormData;
+        return toFormData(isFileList ? {'files[]': data} : data, _FormData && new _FormData());
+      } else if (isObjectPayload || contentType === 'application/json') {
         setContentTypeIfUnset(headers, 'application/json');
         return stringifySafely(data);
       }
+
       return data;
     }],
 
@@ -7145,7 +6345,7 @@
         } catch (e) {
           if (strictJSONParsing) {
             if (e.name === 'SyntaxError') {
-              throw enhanceError(e, this, 'E_JSON_PARSE');
+              throw AxiosError$1.from(e, AxiosError$1.ERR_BAD_RESPONSE, this, null, this.response);
             }
             throw e;
           }
@@ -7166,6 +6366,10 @@
 
     maxContentLength: -1,
     maxBodyLength: -1,
+
+    env: {
+      FormData: require_null()
+    },
 
     validateStatus: function validateStatus(status) {
       return status >= 200 && status < 300;
@@ -7226,10 +6430,10 @@
   var transformData = transformData$1;
   var isCancel = requireIsCancel();
   var defaults$1 = defaults_1;
-  var Cancel = requireCancel();
+  var CanceledError = requireCanceledError();
 
   /**
-   * Throws a `Cancel` if cancellation has been requested.
+   * Throws a `CanceledError` if cancellation has been requested.
    */
   function throwIfCancellationRequested(config) {
     if (config.cancelToken) {
@@ -7237,7 +6441,7 @@
     }
 
     if (config.signal && config.signal.aborted) {
-      throw new Cancel('canceled');
+      throw new CanceledError();
     }
   }
 
@@ -7388,6 +6592,7 @@
       'decompress': defaultToConfig2,
       'maxContentLength': defaultToConfig2,
       'maxBodyLength': defaultToConfig2,
+      'beforeRedirect': defaultToConfig2,
       'transport': defaultToConfig2,
       'httpAgent': defaultToConfig2,
       'httpsAgent': defaultToConfig2,
@@ -7406,7 +6611,20 @@
     return config;
   };
 
+  var data;
+  var hasRequiredData;
+
+  function requireData () {
+  	if (hasRequiredData) return data;
+  	hasRequiredData = 1;
+  	data = {
+  	  "version": "0.27.2"
+  	};
+  	return data;
+  }
+
   var VERSION = requireData().version;
+  var AxiosError = requireAxiosError();
 
   var validators$1 = {};
 
@@ -7434,7 +6652,10 @@
     // eslint-disable-next-line func-names
     return function(value, opt, opts) {
       if (validator === false) {
-        throw new Error(formatMessage(opt, ' has been removed' + (version ? ' in ' + version : '')));
+        throw new AxiosError(
+          formatMessage(opt, ' has been removed' + (version ? ' in ' + version : '')),
+          AxiosError.ERR_DEPRECATED
+        );
       }
 
       if (version && !deprecatedWarnings[opt]) {
@@ -7461,7 +6682,7 @@
 
   function assertOptions(options, schema, allowUnknown) {
     if (typeof options !== 'object') {
-      throw new TypeError('options must be an object');
+      throw new AxiosError('options must be an object', AxiosError.ERR_BAD_OPTION_VALUE);
     }
     var keys = Object.keys(options);
     var i = keys.length;
@@ -7472,12 +6693,12 @@
         var value = options[opt];
         var result = value === undefined || validator(value, opt, options);
         if (result !== true) {
-          throw new TypeError('option ' + opt + ' must be ' + result);
+          throw new AxiosError('option ' + opt + ' must be ' + result, AxiosError.ERR_BAD_OPTION_VALUE);
         }
         continue;
       }
       if (allowUnknown !== true) {
-        throw Error('Unknown option ' + opt);
+        throw new AxiosError('Unknown option ' + opt, AxiosError.ERR_BAD_OPTION);
       }
     }
   }
@@ -7492,6 +6713,7 @@
   var InterceptorManager = InterceptorManager_1;
   var dispatchRequest = dispatchRequest$1;
   var mergeConfig$1 = mergeConfig$2;
+  var buildFullPath = buildFullPath$1;
   var validator = validator$1;
 
   var validators = validator.validators;
@@ -7606,7 +6828,8 @@
 
   Axios$1.prototype.getUri = function getUri(config) {
     config = mergeConfig$1(this.defaults, config);
-    return buildURL(config.url, config.params, config.paramsSerializer).replace(/^\?/, '');
+    var fullPath = buildFullPath(config.baseURL, config.url);
+    return buildURL(fullPath, config.params, config.paramsSerializer);
   };
 
   // Provide aliases for supported request methods
@@ -7623,13 +6846,23 @@
 
   utils$1.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
     /*eslint func-names:0*/
-    Axios$1.prototype[method] = function(url, data, config) {
-      return this.request(mergeConfig$1(config || {}, {
-        method: method,
-        url: url,
-        data: data
-      }));
-    };
+
+    function generateHTTPMethod(isForm) {
+      return function httpMethod(url, data, config) {
+        return this.request(mergeConfig$1(config || {}, {
+          method: method,
+          headers: isForm ? {
+            'Content-Type': 'multipart/form-data'
+          } : {},
+          url: url,
+          data: data
+        }));
+      };
+    }
+
+    Axios$1.prototype[method] = generateHTTPMethod();
+
+    Axios$1.prototype[method + 'Form'] = generateHTTPMethod(true);
   });
 
   var Axios_1 = Axios$1;
@@ -7641,7 +6874,7 @@
   	if (hasRequiredCancelToken) return CancelToken_1;
   	hasRequiredCancelToken = 1;
 
-  	var Cancel = requireCancel();
+  	var CanceledError = requireCanceledError();
 
   	/**
   	 * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -7697,13 +6930,13 @@
   	      return;
   	    }
 
-  	    token.reason = new Cancel(message);
+  	    token.reason = new CanceledError(message);
   	    resolvePromise(token.reason);
   	  });
   	}
 
   	/**
-  	 * Throws a `Cancel` if cancellation has been requested.
+  	 * Throws a `CanceledError` if cancellation has been requested.
   	 */
   	CancelToken.prototype.throwIfRequested = function throwIfRequested() {
   	  if (this.reason) {
@@ -7854,10 +7087,17 @@
   axios$1.Axios = Axios;
 
   // Expose Cancel & CancelToken
-  axios$1.Cancel = requireCancel();
+  axios$1.CanceledError = requireCanceledError();
   axios$1.CancelToken = requireCancelToken();
   axios$1.isCancel = requireIsCancel();
   axios$1.VERSION = requireData().version;
+  axios$1.toFormData = requireToFormData();
+
+  // Expose AxiosError class
+  axios$1.AxiosError = requireAxiosError();
+
+  // alias for CanceledError for backward compatibility
+  axios$1.Cancel = axios$1.CanceledError;
 
   // Expose all/spread
   axios$1.all = function all(promises) {
@@ -11664,7 +10904,7 @@
   }
   /**
    * @param  {Error}  error
-   * @return {boolean | Promise}
+   * @return {boolean}
    */
 
   function isNetworkOrIdempotentRequestError(error) {
@@ -11805,8 +11045,9 @@
 
       if (typeof shouldRetryOrPromise === 'object') {
         try {
-          yield shouldRetryOrPromise;
-          return true;
+          var shouldRetryPromiseResult = yield shouldRetryOrPromise; // keep return true unless shouldRetryPromiseResult return false for compatibility
+
+          return shouldRetryPromiseResult !== false;
         } catch (_err) {
           return false;
         }
@@ -12250,7 +11491,7 @@
 
         _classPrivateFieldSet(this, _viewModes, {});
 
-        document.querySelectorAll('#Properties > .header > nav .viewmodecontroller input[type="checkbox"]').forEach(function (checkbox) {
+        document.querySelectorAll('#Properties > .inner > .header > nav .viewmodecontroller input[type="checkbox"]').forEach(function (checkbox) {
           _classPrivateFieldGet(_this, _viewModes)[checkbox.value] = checkbox.checked;
           checkbox.addEventListener('click', function () {
             if (checkbox.value === 'heatmap') body.dataset.heatmap = checkbox.checked;
@@ -12367,7 +11608,7 @@
   }();
 
   function _makeCategoryViews2() {
-    var conceptsContainer = document.querySelector('#Properties > .concepts');
+    var conceptsContainer = document.querySelector('#Properties > .inner > .concepts');
     Records$1.categories.forEach(function (category) {
       var elm = document.createElement('section');
       new CategoryView(category, elm);
@@ -12376,7 +11617,7 @@
   }
 
   function _defineAllTracksCollapseButton2() {
-    var collapsebutton = document.querySelector('#Properties > header > .title > h2.collapsebutton');
+    var collapsebutton = document.querySelector('#Properties > .inner > header > .title > h2.collapsebutton');
     collapsebutton.addEventListener('click', function (e) {
       var customEvent = new CustomEvent(allTracksCollapse);
 

@@ -11,29 +11,34 @@ block main
 
   main#App
     .inner
+
+      nav#GlobalToolBar
+        | HOGEHOGE
+        
       section#Properties
-        header.header.collapse-view
-          .title
-            h2.properties.collapsebutton Attribute keys
-            h2.attributes Attribute values
-          nav
-            ul
-              li.viewmodecontroller
-                label.log10
-                  input(type="checkbox" value="log10")
-                  | Log scale
-                label.area
-                  input(type="checkbox" value="area" checked)
-                  | Area
-                label.heatmap
-                  input(type="checkbox" value="heatmap" checked)
-                  | Heatmap
-            //-
-              li
-                .switch-view
-                  .item Area
-                  .item.-current Heatmap
-        section.concepts
+        .inner
+          header.header.collapse-view
+            .title
+              h2.properties.collapsebutton Attribute keys
+              h2.attributes Attribute values
+            nav
+              ul
+                li.viewmodecontroller
+                  label.log10
+                    input(type="checkbox" value="log10")
+                    | Log scale
+                  label.area
+                    input(type="checkbox" value="area" checked)
+                    | Area
+                  label.heatmap
+                    input(type="checkbox" value="heatmap" checked)
+                    | Heatmap
+              //-
+                li
+                  .switch-view
+                    .item Area
+                    .item.-current Heatmap
+          section.concepts
         //-
           section.concept-view
             h3.title

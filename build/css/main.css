@@ -347,6 +347,7 @@ template {
   --padding-track-inline-start: .8rem;
   --width-track-column-subject: 2rem;
   --width-track-column-property: 18rem;
+  --width-global-tool-bar: 4rem;
   --width-condition: 24rem;
   --height-track: 3rem;
   --height-header: 5rem;
@@ -522,7 +523,6 @@ main {
   content-visibility: hidden;
   -webkit-user-select: none;
      -moz-user-select: none;
-      -ms-user-select: none;
           user-select: none;
 }
 .attribute-track-view > .row.-lower > .left > .specification, .attribute-track-view > .row.-lower > .left > .source {
@@ -568,7 +568,6 @@ main {
   content-visibility: visible;
   -webkit-user-select: auto;
      -moz-user-select: auto;
-      -ms-user-select: auto;
           user-select: auto;
 }
 
@@ -641,7 +640,6 @@ main {
   font-size: 1.2rem;
   line-height: var(--width-track-column-subject);
   -webkit-writing-mode: vertical-rl;
-      -ms-writing-mode: tb-rl;
           writing-mode: vertical-rl;
   text-align: center;
 }
@@ -1384,7 +1382,6 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   left: 0;
   font-size: 1rem;
   -webkit-writing-mode: vertical-rl;
-      -ms-writing-mode: tb-rl;
           writing-mode: vertical-rl;
   height: var(--height-statistics);
   width: 1.2rem;
@@ -1839,6 +1836,11 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   border-top: solid 0.1rem rgba(255, 255, 255, 0.2);
 }
 
+#GlobalToolBar {
+  flex-basis: var(--width-global-tool-bar);
+  background-color: var(--color-lamp-black);
+}
+
 #Header {
   padding: 0 1.6rem;
   height: var(--height-header);
@@ -1873,12 +1875,16 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 
 #Properties {
   --height-header: 2.4rem;
-  width: calc(100vw - var(--width-condition));
-  min-width: calc(var(--min-width-app) - var(--width-condition));
-  overflow-y: auto;
+  width: calc(100vw - var(--width-condition) - var(--width-global-tool-bar));
+  overflow: auto;
   position: relative;
+  display: flex;
 }
-#Properties > .header {
+#Properties > .inner {
+  flex-grow: 1;
+  min-width: 100rem;
+}
+#Properties > .inner > .header {
   border-bottom: solid 0.1rem var(--color-lamp-black);
   padding: var(--padding-track-block-start) var(--padding-track-inline-start);
   display: flex;
@@ -1892,45 +1898,45 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   color: white;
   z-index: var(--z-track-tracks-header);
 }
-#Properties > .header > .title > * {
+#Properties > .inner > .header > .title > * {
   font-size: 1.2rem;
   margin-bottom: 0;
   display: inline-block;
 }
-#Properties > .header > .title > .properties {
+#Properties > .inner > .header > .title > .properties {
   padding-left: calc(var(--width-track-column-subject) - var(--padding-track-inline-start) + 1.4rem);
   width: calc(var(--width-track-column-subject) + var(--width-track-column-property) - var(--padding-track-inline-start));
 }
-#Properties > .header > .title > .collapsebutton::before {
+#Properties > .inner > .header > .title > .collapsebutton::before {
   left: 1.4rem;
   top: 2px;
   border-color: white;
 }
-#Properties > .header > nav {
+#Properties > .inner > .header > nav {
   flex-grow: 1;
   text-align: right;
 }
-#Properties > .header > nav > ul {
+#Properties > .inner > .header > nav > ul {
   list-style: none;
   margin-bottom: 0;
 }
-#Properties > .header > nav > ul > li {
+#Properties > .inner > .header > nav > ul > li {
   display: inline-block;
 }
-#Properties > .header > nav > ul > li + li {
+#Properties > .inner > .header > nav > ul > li + li {
   margin-left: 1.4rem;
 }
-#Properties > .header > nav > ul > li > label {
+#Properties > .inner > .header > nav > ul > li > label {
   margin-bottom: 0;
 }
-#Properties > .header > nav > ul > li > label + label {
+#Properties > .inner > .header > nav > ul > li > label + label {
   margin-left: 0.8rem;
 }
-#Properties > .header > nav > ul > li > label > input[type=checkbox] {
+#Properties > .inner > .header > nav > ul > li > label > input[type=checkbox] {
   vertical-align: middle;
   margin-right: 0.4rem;
 }
-#Properties > .header > nav > ul > li.viewmodecontroller > .area, #Properties > .header > nav > ul > li.viewmodecontroller > .heatmap {
+#Properties > .inner > .header > nav > ul > li.viewmodecontroller > .area, #Properties > .inner > .header > nav > ul > li.viewmodecontroller > .heatmap {
   display: none;
 }
 
@@ -2288,9 +2294,6 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
   color: gray;
 }
 #UploadUserIDsView > textarea::-moz-placeholder {
-  color: gray;
-}
-#UploadUserIDsView > textarea:-ms-input-placeholder {
   color: gray;
 }
 #UploadUserIDsView > textarea::placeholder {
