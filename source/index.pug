@@ -13,7 +13,9 @@ block main
     .inner
 
       nav#GlobalToolBar
-        | HOGEHOGE
+        ul
+          li
+            button(data-button="filter")
         
       section#Properties
         .inner
@@ -239,11 +241,25 @@ block main
                   | Select target dataset
                 select(disabled)
                   //- option(val="gene") Gene
-              hr
-              #UploadUserIDsView.inner
+            #ConditionAnnotations.condition
+              .inner
+                h2.title
+                  span.material-icons filter_alt
+                  | Filters
+                .conditions.-empty
+                //-
+                  .stacking-condition-view.-attribute
+                    .closebutton
+                    ul.path
+                      li Expression
+                      li Position
+                      li.end Genital
+                    .label Testis
+            #UploadUserIDsView.condition
+              .inner
                 h2.title
                   span.material-icons location_on
-                  | Map your IDs
+                  | Mapped IDs
                   small optional
                   .button
                     button.rounded-button-view.-verysmall.-black
@@ -254,25 +270,11 @@ block main
                   button.rounded-button-view.-verysmall.-outline(type="button") Submit
                   button.rounded-button-view.-verysmall.-outline(type="button") Reset
 
-            #ConditionAnnotations.condition
-              .inner
-                h2.title
-                  span.material-icons filter_alt
-                  | Add filters
-                .conditions.-empty
-                //-
-                  .stacking-condition-view.-attribute
-                    .closebutton
-                    ul.path
-                      li Expression
-                      li Position
-                      li.end Genital
-                    .label Testis
             #ConditionFilters.condition
               .inner
                 h2.title
-                  span.material-icons insights
-                  | Map attributes
+                  span.material-icons format_list_bulleted
+                  | Mapped attributes
                 .conditions.-empty
                 //-
                   .stacking-condition-view

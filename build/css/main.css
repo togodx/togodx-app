@@ -1735,10 +1735,6 @@ body[data-display=results] #App > .inner {
 #ConditionBuilder > .conditions > .condition > .inner > .title + * {
   margin-top: 0.4rem;
 }
-#ConditionBuilder > .conditions > .condition > hr {
-  border: none;
-  border-top: solid 0.1rem var(--color-separator);
-}
 body[data-display=results] #ConditionBuilder > .conditions > .condition > .conditions > .stacking-condition-view > .close-button-view {
   display: none;
 }
@@ -1751,16 +1747,9 @@ body[data-display=results] #ConditionBuilder > .conditions > .condition > .condi
 #ConditionBuilder > .conditions > #ConditionAnnotations:hover, #ConditionBuilder > .conditions > #ConditionFilters:hover {
   background-color: var(--background-color);
 }
-#ConditionBuilder > .conditions > #ConditionAnnotations {
-  border-radius: var(--radius) var(--radius) 0 0;
-}
 [data-condition=filter] #ConditionBuilder > .conditions > #ConditionAnnotations {
   opacity: 1;
   background-color: var(--background-color);
-}
-#ConditionBuilder > .conditions > #ConditionFilters {
-  border-radius: 0 0 var(--radius) var(--radius);
-  margin-top: 0.1rem;
 }
 [data-condition=annotation] #ConditionBuilder > .conditions > #ConditionFilters {
   opacity: 1;
@@ -2289,19 +2278,19 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #UploadUserIDsView {
   position: relative;
 }
-#UploadUserIDsView > textarea {
+#UploadUserIDsView > .inner > textarea {
   width: 100%;
 }
-#UploadUserIDsView > textarea::-webkit-input-placeholder {
+#UploadUserIDsView > .inner > textarea::-webkit-input-placeholder {
   color: gray;
 }
-#UploadUserIDsView > textarea::-moz-placeholder {
+#UploadUserIDsView > .inner > textarea::-moz-placeholder {
   color: gray;
 }
-#UploadUserIDsView > textarea::placeholder {
+#UploadUserIDsView > .inner > textarea::placeholder {
   color: gray;
 }
-#UploadUserIDsView > .buttons {
+#UploadUserIDsView > .inner > .buttons {
   margin-top: -0.2rem;
   text-align: center;
 }

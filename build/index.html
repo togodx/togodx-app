@@ -35,7 +35,13 @@
     </header>
     <main id="App">
       <div class="inner">
-        <nav id="GlobalToolBar">HOGEHOGE</nav>
+        <nav id="GlobalToolBar">
+          <ul>
+            <li>
+              <button data-button="filter"></button>
+            </li>
+          </ul>
+        </nav>
         <section id="Properties">
           <div class="inner">
             <header class="header collapse-view">
@@ -109,9 +115,16 @@
                   <h2 class="title"><span class="material-icons">layers</span>Select target dataset</h2>
                   <select disabled></select>
                 </div>
-                <hr>
-                <div class="inner" id="UploadUserIDsView">
-                  <h2 class="title"><span class="material-icons">location_on</span>Map your IDs<small>optional</small>
+              </div>
+              <div class="condition" id="ConditionAnnotations">
+                <div class="inner">
+                  <h2 class="title"><span class="material-icons">filter_alt</span>Filters</h2>
+                  <div class="conditions -empty"></div>
+                </div>
+              </div>
+              <div class="condition" id="UploadUserIDsView">
+                <div class="inner">
+                  <h2 class="title"><span class="material-icons">location_on</span>Mapped IDs<small>optional</small>
                     <div class="button">
                       <button class="rounded-button-view -verysmall -black"><span class="material-icons">subdirectory_arrow_right</span>Try</button>
                     </div>
@@ -123,15 +136,9 @@
                   </div>
                 </div>
               </div>
-              <div class="condition" id="ConditionAnnotations">
-                <div class="inner">
-                  <h2 class="title"><span class="material-icons">filter_alt</span>Add filters</h2>
-                  <div class="conditions -empty"></div>
-                </div>
-              </div>
               <div class="condition" id="ConditionFilters">
                 <div class="inner">
-                  <h2 class="title"><span class="material-icons">insights</span>Map attributes</h2>
+                  <h2 class="title"><span class="material-icons">format_list_bulleted</span>Mapped attributes</h2>
                   <div class="conditions -empty"></div>
                 </div>
               </div>
