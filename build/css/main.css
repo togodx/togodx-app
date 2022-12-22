@@ -1738,6 +1738,13 @@ body[data-display=results] #App > .inner {
 body[data-display=results] #ConditionBuilder > .conditions > .condition > .conditions > .stacking-condition-view > .close-button-view {
   display: none;
 }
+#ConditionBuilder > .conditions > [data-condition-type=dataset] > .inner > select {
+  width: 100%;
+}
+body[data-display=results] #ConditionBuilder > .conditions > [data-condition-type=dataset] {
+  pointer-events: none;
+  opacity: 0.5;
+}
 #ConditionBuilder > .conditions > [data-condition-type=filters], #ConditionBuilder > .conditions > [data-condition-type=annotations] {
   transition: opacity var(--transition-instant);
   opacity: 0.8;
@@ -1747,20 +1754,29 @@ body[data-display=results] #ConditionBuilder > .conditions > .condition > .condi
 #ConditionBuilder > .conditions > [data-condition-type=filters]:hover, #ConditionBuilder > .conditions > [data-condition-type=annotations]:hover {
   background-color: var(--background-color);
 }
-[data-condition=filter] #ConditionBuilder > .conditions > [data-condition-type=filters] {
+body[data-condition=filter] #ConditionBuilder > .conditions > [data-condition-type=filters] {
   opacity: 1;
   background-color: var(--background-color);
 }
-[data-condition=annotation] #ConditionBuilder > .conditions > [data-condition-type=annotations] {
+body[data-condition=annotation] #ConditionBuilder > .conditions > [data-condition-type=annotations] {
   opacity: 1;
   background-color: var(--background-color);
 }
-#ConditionBuilder > .conditions > [data-condition-type=dataset] > .inner > select {
+#ConditionBuilder > .conditions > [data-condition-type=ids] > .inner > textarea {
   width: 100%;
 }
-body[data-display=results] #ConditionBuilder > .conditions > [data-condition-type=dataset] {
-  pointer-events: none;
-  opacity: 0.5;
+#ConditionBuilder > .conditions > [data-condition-type=ids] > .inner > textarea::-webkit-input-placeholder {
+  color: gray;
+}
+#ConditionBuilder > .conditions > [data-condition-type=ids] > .inner > textarea::-moz-placeholder {
+  color: gray;
+}
+#ConditionBuilder > .conditions > [data-condition-type=ids] > .inner > textarea::placeholder {
+  color: gray;
+}
+#ConditionBuilder > .conditions > [data-condition-type=ids] > .inner > .buttons {
+  margin-top: -0.2rem;
+  text-align: center;
 }
 #ConditionBuilder > footer > button {
   font-weight: bold;
@@ -2273,26 +2289,6 @@ body[data-display=results] #ConditionBuilder > .conditions > [data-condition-typ
 }
 #ResultDetailModal.backdrop[data-category-id=primary] > .popup > header {
   background-color: var(--color-gray);
-}
-
-#UploadUserIDsView {
-  position: relative;
-}
-#UploadUserIDsView > .inner > textarea {
-  width: 100%;
-}
-#UploadUserIDsView > .inner > textarea::-webkit-input-placeholder {
-  color: gray;
-}
-#UploadUserIDsView > .inner > textarea::-moz-placeholder {
-  color: gray;
-}
-#UploadUserIDsView > .inner > textarea::placeholder {
-  color: gray;
-}
-#UploadUserIDsView > .inner > .buttons {
-  margin-top: -0.2rem;
-  text-align: center;
 }
 
 /*# sourceMappingURL=main.css.map */

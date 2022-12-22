@@ -588,21 +588,6 @@
       "pg" : 0,
       "sct" : 0
     },
-    "\/source\/css\/object\/project\/_UploadUserIDsView.sass" : {
-      "aP" : 1,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 2,
-      "ma" : 1,
-      "oA" : 1,
-      "oAP" : "\/build\/css\/object\/project\/_UploadUserIDsView.css",
-      "oF" : 0,
-      "oS" : 1,
-      "pg" : 0,
-      "sct" : 0
-    },
     "\/source\/css\/stanza.sass" : {
       "aP" : 1,
       "bl" : 0,

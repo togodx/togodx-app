@@ -37,6 +37,13 @@
           > .close-button-view
             body[data-display="results"] &
               display: none
+    > [data-condition-type="dataset"]
+      > .inner
+        > select
+          width: 100%
+      body[data-display="results"] &
+        pointer-events: none
+        opacity: .5
     > [data-condition-type="filters"], > [data-condition-type="annotations"]
       transition: opacity var(--transition-instant)
       opacity: .8
@@ -45,20 +52,22 @@
       &:hover
         background-color: var(--background-color)
     > [data-condition-type="filters"]
-      [data-condition="filter"] &
+      body[data-condition="filter"] &
         opacity: 1
         background-color: var(--background-color)
     > [data-condition-type="annotations"]
-      [data-condition="annotation"] &
+      body[data-condition="annotation"] &
         opacity: 1
         background-color: var(--background-color)
-    > [data-condition-type="dataset"]
+    > [data-condition-type="ids"]
       > .inner
-        > select
+        > textarea
           width: 100%
-      body[data-display="results"] &
-        pointer-events: none
-        opacity: .5
+          &::placeholder
+            color: gray
+        > .buttons
+          margin-top: -.2rem
+          text-align: center
   > footer
     > button
       font-weight: bold
