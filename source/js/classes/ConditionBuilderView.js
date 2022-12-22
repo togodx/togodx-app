@@ -12,10 +12,10 @@ export default class ConditionBuilderView {
   #propertyFilters;
   #isDefined;
   #placeHolderExamples;
-  #TOGO_KEYS;
+  #DATASET_KEY;
   #USER_IDS;
-  #PROPERTIES_CONDITIONS_CONTAINER;
-  #ATTRIBUTES_CONDITIONS_CONTAINER;
+  #ANNOTATIONS_CONDITIONS_CONTAINER;
+  #FILTERS_CONDITIONS_CONTAINER;
   #EXEC_BUTTON;
 
   constructor(elm) {
@@ -25,33 +25,35 @@ export default class ConditionBuilderView {
 
     // references
     const conditionsContainer = elm.querySelector(':scope > .conditions');
-    this.#TOGO_KEYS = conditionsContainer.querySelector(
-      '#ConditionTogoKey > .inner > select'
+    this.#DATASET_KEY = conditionsContainer.querySelector(
+      ':scope > [data-condition-type="dataset"] > .inner > select'
     );
-    this.#USER_IDS = elm.querySelector(
-      '#UploadUserIDsView > .inner > textarea'
+    this.#USER_IDS = conditionsContainer.querySelector(
+      ':scope > [data-condition-type="ids"] > .inner > textarea'
     );
-    this.#PROPERTIES_CONDITIONS_CONTAINER = document.querySelector(
-      '#ConditionFilters > .inner > .conditions'
+    const annotations = conditionsContainer.querySelector(
+      ':scope > .condition[data-condition-type="annotations"]'
     );
-    this.#ATTRIBUTES_CONDITIONS_CONTAINER = document.querySelector(
-      '#ConditionAnnotations > .inner > .conditions'
+    this.#ANNOTATIONS_CONDITIONS_CONTAINER = annotations.querySelector(
+      ':scope > .inner > .conditions'
+    );
+    const filters = conditionsContainer.querySelector(
+      ':scope > .condition[data-condition-type="filters"]'
+    );
+    this.#FILTERS_CONDITIONS_CONTAINER = filters.querySelector(
+      ':scope > .inner > .conditions'
     );
     this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
 
     // attach event
-    document
-      .querySelector('#ConditionAnnotations')
-      .addEventListener(
-        'click',
-        () => (document.body.dataset.condition = 'filter')
-      );
-    document
-      .querySelector('#ConditionFilters')
-      .addEventListener(
-        'click',
-        () => (document.body.dataset.condition = 'annotation')
-      );
+    filters.addEventListener(
+      'click',
+      () => (document.body.dataset.condition = 'filter')
+    );
+    annotations.addEventListener(
+      'click',
+      () => (document.body.dataset.condition = 'annotation')
+    );
     this.#EXEC_BUTTON.addEventListener('click', () => {
       document.body.dataset.display = 'results';
       ConditionBuilder.makeQueryParameter();
@@ -97,7 +99,7 @@ export default class ConditionBuilderView {
     );
     DefaultEventEmitter.addEventListener(
       event.defineTogoKey,
-      this.#defineTogoKeys.bind(this)
+      this.#defineDatasetKeys.bind(this)
     );
     DefaultEventEmitter.addEventListener(event.mutateEstablishConditions, e => {
       this.#EXEC_BUTTON.disabled = !e.detail;
@@ -106,22 +108,21 @@ export default class ConditionBuilderView {
 
   // private methods
 
-  #defineTogoKeys({detail: {datasets}}) {
+  #defineDatasetKeys({detail: {datasets}}) {
     this.#isDefined = true;
     this.#placeHolderExamples = Object.fromEntries(
       Object.keys(datasets).map(key => [key, datasets[key].examples])
     );
     // make options
-    this.#TOGO_KEYS.innerHTML = Object.keys(datasets)
+    this.#DATASET_KEY.innerHTML = Object.keys(datasets)
       .filter(key => datasets[key].target)
       .map(key => `<option value="${key}">${datasets[key].label}</option>`)
       .join('');
-    this.#TOGO_KEYS.disabled = false;
-    this.#TOGO_KEYS.value = ConditionBuilder.currentDataset;
+    this.#DATASET_KEY.disabled = false;
+    this.#DATASET_KEY.value = ConditionBuilder.currentDataset;
     // attach event
-    this.#TOGO_KEYS.addEventListener('change', e => {
+    this.#DATASET_KEY.addEventListener('change', e => {
       ConditionBuilder.setSubject(e.target.value);
-      console.log(this.#USER_IDS);
       this.#USER_IDS.placeholder = `e.g. ${this.#placeHolderExamples[
         e.target.value
       ].join(', ')}`;
@@ -130,24 +131,24 @@ export default class ConditionBuilderView {
     const dataset = ConditionBuilder.currentDataset;
     if (
       dataset &&
-      Array.from(this.#TOGO_KEYS.options)
+      Array.from(this.#DATASET_KEY.options)
         .map(option => option.value)
         .indexOf(dataset) !== -1
     ) {
-      this.#TOGO_KEYS.value = dataset;
+      this.#DATASET_KEY.value = dataset;
     } else {
-      this.#TOGO_KEYS.options[0].selected = true;
+      this.#DATASET_KEY.options[0].selected = true;
     }
-    this.#TOGO_KEYS.dispatchEvent(new Event('change'));
+    this.#DATASET_KEY.dispatchEvent(new Event('change'));
   }
 
   #addAnnotation(conditionAnnotation) {
     // modifier
-    this.#PROPERTIES_CONDITIONS_CONTAINER.classList.remove('-empty');
+    this.#ANNOTATIONS_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
     this.#properties.push(
       new StackingConditionView(
-        this.#PROPERTIES_CONDITIONS_CONTAINER,
+        this.#ANNOTATIONS_CONDITIONS_CONTAINER,
         'annotation',
         conditionAnnotation
       )
@@ -162,12 +163,12 @@ export default class ConditionBuilderView {
     this.#properties.splice(index, 1);
     // modifier
     if (this.#properties.length === 0)
-      this.#PROPERTIES_CONDITIONS_CONTAINER.classList.add('-empty');
+      this.#ANNOTATIONS_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 
   #addFilter(attributeId, node) {
     // modifier
-    this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.remove('-empty');
+    this.#FILTERS_CONDITIONS_CONTAINER.classList.remove('-empty');
     // find a condition view has same attribute id
     const stackingConditionView = this.#propertyFilters.find(
       stackingConditionView => stackingConditionView.sameAttribute(attributeId)
@@ -179,7 +180,7 @@ export default class ConditionBuilderView {
       // otherwise, make new condition view
       this.#propertyFilters.push(
         new StackingConditionView(
-          this.#ATTRIBUTES_CONDITIONS_CONTAINER,
+          this.#FILTERS_CONDITIONS_CONTAINER,
           'value',
           new ConditionFilter(attributeId, [node])
         )
@@ -195,6 +196,6 @@ export default class ConditionBuilderView {
     if (index !== -1) this.#propertyFilters.splice(index, 1);
     // modifier
     if (this.#propertyFilters.length === 0)
-      this.#ATTRIBUTES_CONDITIONS_CONTAINER.classList.add('-empty');
+      this.#FILTERS_CONDITIONS_CONTAINER.classList.add('-empty');
   }
 }

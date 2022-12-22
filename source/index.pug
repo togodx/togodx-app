@@ -234,14 +234,14 @@ block main
             h2.title Condition builder
             button.rounded-button-view.-verysmall.-outline(type="button") Clear
           .conditions(data-hidden-by="results")
-            #ConditionTogoKey.condition
+            .condition(data-condition-type="dataset")
               .inner
                 h2.title
                   span.material-icons layers
                   | Select target dataset
                 select(disabled)
                   //- option(val="gene") Gene
-            #ConditionAnnotations.condition
+            .condition(data-condition-type="filters")
               .inner
                 h2.title
                   span.material-icons filter_alt
@@ -255,7 +255,7 @@ block main
                       li Position
                       li.end Genital
                     .label Testis
-            #UploadUserIDsView.condition
+            #UploadUserIDsView.condition(data-condition-type="ids")
               .inner
                 h2.title
                   span.material-icons location_on
@@ -270,7 +270,7 @@ block main
                   button.rounded-button-view.-verysmall.-outline(type="button") Submit
                   button.rounded-button-view.-verysmall.-outline(type="button") Reset
 
-            #ConditionFilters.condition
+            .condition(data-condition-type="annotations")
               .inner
                 h2.title
                   span.material-icons format_list_bulleted

@@ -1738,27 +1738,27 @@ body[data-display=results] #App > .inner {
 body[data-display=results] #ConditionBuilder > .conditions > .condition > .conditions > .stacking-condition-view > .close-button-view {
   display: none;
 }
-#ConditionBuilder > .conditions > #ConditionAnnotations, #ConditionBuilder > .conditions > #ConditionFilters {
+#ConditionBuilder > .conditions > [data-condition-type=filters], #ConditionBuilder > .conditions > [data-condition-type=annotations] {
   transition: opacity var(--transition-instant);
   opacity: 0.8;
   background-color: var(--background-color-inactive);
   cursor: pointer;
 }
-#ConditionBuilder > .conditions > #ConditionAnnotations:hover, #ConditionBuilder > .conditions > #ConditionFilters:hover {
+#ConditionBuilder > .conditions > [data-condition-type=filters]:hover, #ConditionBuilder > .conditions > [data-condition-type=annotations]:hover {
   background-color: var(--background-color);
 }
-[data-condition=filter] #ConditionBuilder > .conditions > #ConditionAnnotations {
+[data-condition=filter] #ConditionBuilder > .conditions > [data-condition-type=filters] {
   opacity: 1;
   background-color: var(--background-color);
 }
-[data-condition=annotation] #ConditionBuilder > .conditions > #ConditionFilters {
+[data-condition=annotation] #ConditionBuilder > .conditions > [data-condition-type=annotations] {
   opacity: 1;
   background-color: var(--background-color);
 }
-#ConditionBuilder > .conditions > #ConditionTogoKey > .inner > select {
+#ConditionBuilder > .conditions > [data-condition-type=dataset] > .inner > select {
   width: 100%;
 }
-body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
+body[data-display=results] #ConditionBuilder > .conditions > [data-condition-type=dataset] {
   pointer-events: none;
   opacity: 0.5;
 }

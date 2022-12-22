@@ -4272,17 +4272,17 @@
 
   var _placeHolderExamples = /*#__PURE__*/new WeakMap();
 
-  var _TOGO_KEYS = /*#__PURE__*/new WeakMap();
+  var _DATASET_KEY = /*#__PURE__*/new WeakMap();
 
   var _USER_IDS$1 = /*#__PURE__*/new WeakMap();
 
-  var _PROPERTIES_CONDITIONS_CONTAINER = /*#__PURE__*/new WeakMap();
+  var _ANNOTATIONS_CONDITIONS_CONTAINER = /*#__PURE__*/new WeakMap();
 
-  var _ATTRIBUTES_CONDITIONS_CONTAINER = /*#__PURE__*/new WeakMap();
+  var _FILTERS_CONDITIONS_CONTAINER = /*#__PURE__*/new WeakMap();
 
   var _EXEC_BUTTON = /*#__PURE__*/new WeakMap();
 
-  var _defineTogoKeys = /*#__PURE__*/new WeakSet();
+  var _defineDatasetKeys = /*#__PURE__*/new WeakSet();
 
   var _addAnnotation = /*#__PURE__*/new WeakSet();
 
@@ -4305,7 +4305,7 @@
 
     _classPrivateMethodInitSpec(this, _addAnnotation);
 
-    _classPrivateMethodInitSpec(this, _defineTogoKeys);
+    _classPrivateMethodInitSpec(this, _defineDatasetKeys);
 
     _classPrivateFieldInitSpec(this, _properties, {
       writable: true,
@@ -4327,7 +4327,7 @@
       value: void 0
     });
 
-    _classPrivateFieldInitSpec(this, _TOGO_KEYS, {
+    _classPrivateFieldInitSpec(this, _DATASET_KEY, {
       writable: true,
       value: void 0
     });
@@ -4337,12 +4337,12 @@
       value: void 0
     });
 
-    _classPrivateFieldInitSpec(this, _PROPERTIES_CONDITIONS_CONTAINER, {
+    _classPrivateFieldInitSpec(this, _ANNOTATIONS_CONDITIONS_CONTAINER, {
       writable: true,
       value: void 0
     });
 
-    _classPrivateFieldInitSpec(this, _ATTRIBUTES_CONDITIONS_CONTAINER, {
+    _classPrivateFieldInitSpec(this, _FILTERS_CONDITIONS_CONTAINER, {
       writable: true,
       value: void 0
     });
@@ -4361,21 +4361,25 @@
 
     var conditionsContainer = elm.querySelector(':scope > .conditions');
 
-    _classPrivateFieldSet(this, _TOGO_KEYS, conditionsContainer.querySelector('#ConditionTogoKey > .inner > select'));
+    _classPrivateFieldSet(this, _DATASET_KEY, conditionsContainer.querySelector(':scope > [data-condition-type="dataset"] > .inner > select'));
 
-    _classPrivateFieldSet(this, _USER_IDS$1, elm.querySelector('#UploadUserIDsView > .inner > textarea'));
+    _classPrivateFieldSet(this, _USER_IDS$1, conditionsContainer.querySelector(':scope > [data-condition-type="ids"] > .inner > textarea'));
 
-    _classPrivateFieldSet(this, _PROPERTIES_CONDITIONS_CONTAINER, document.querySelector('#ConditionFilters > .inner > .conditions'));
+    var annotations = conditionsContainer.querySelector(':scope > .condition[data-condition-type="annotations"]');
 
-    _classPrivateFieldSet(this, _ATTRIBUTES_CONDITIONS_CONTAINER, document.querySelector('#ConditionAnnotations > .inner > .conditions'));
+    _classPrivateFieldSet(this, _ANNOTATIONS_CONDITIONS_CONTAINER, annotations.querySelector(':scope > .inner > .conditions'));
+
+    var filters = conditionsContainer.querySelector(':scope > .condition[data-condition-type="filters"]');
+
+    _classPrivateFieldSet(this, _FILTERS_CONDITIONS_CONTAINER, filters.querySelector(':scope > .inner > .conditions'));
 
     _classPrivateFieldSet(this, _EXEC_BUTTON, elm.querySelector(':scope > footer > button.exec')); // attach event
 
 
-    document.querySelector('#ConditionAnnotations').addEventListener('click', function () {
+    filters.addEventListener('click', function () {
       return document.body.dataset.condition = 'filter';
     });
-    document.querySelector('#ConditionFilters').addEventListener('click', function () {
+    annotations.addEventListener('click', function () {
       return document.body.dataset.condition = 'annotation';
     });
 
@@ -4427,14 +4431,14 @@
           break;
       }
     });
-    DefaultEventEmitter$1.addEventListener(defineTogoKey, _classPrivateMethodGet(this, _defineTogoKeys, _defineTogoKeys2).bind(this));
+    DefaultEventEmitter$1.addEventListener(defineTogoKey, _classPrivateMethodGet(this, _defineDatasetKeys, _defineDatasetKeys2).bind(this));
     DefaultEventEmitter$1.addEventListener(mutateEstablishConditions, function (e) {
       _classPrivateFieldGet(_this, _EXEC_BUTTON).disabled = !e.detail;
     });
   } // private methods
   );
 
-  function _defineTogoKeys2(_ref3) {
+  function _defineDatasetKeys2(_ref3) {
     var _this2 = this;
 
     var datasets = _ref3.detail.datasets;
@@ -4446,40 +4450,39 @@
     }))); // make options
 
 
-    _classPrivateFieldGet(this, _TOGO_KEYS).innerHTML = Object.keys(datasets).filter(function (key) {
+    _classPrivateFieldGet(this, _DATASET_KEY).innerHTML = Object.keys(datasets).filter(function (key) {
       return datasets[key].target;
     }).map(function (key) {
       return "<option value=\"".concat(key, "\">").concat(datasets[key].label, "</option>");
     }).join('');
-    _classPrivateFieldGet(this, _TOGO_KEYS).disabled = false;
-    _classPrivateFieldGet(this, _TOGO_KEYS).value = ConditionBuilder$1.currentDataset; // attach event
+    _classPrivateFieldGet(this, _DATASET_KEY).disabled = false;
+    _classPrivateFieldGet(this, _DATASET_KEY).value = ConditionBuilder$1.currentDataset; // attach event
 
-    _classPrivateFieldGet(this, _TOGO_KEYS).addEventListener('change', function (e) {
+    _classPrivateFieldGet(this, _DATASET_KEY).addEventListener('change', function (e) {
       ConditionBuilder$1.setSubject(e.target.value);
-      console.log(_classPrivateFieldGet(_this2, _USER_IDS$1));
       _classPrivateFieldGet(_this2, _USER_IDS$1).placeholder = "e.g. ".concat(_classPrivateFieldGet(_this2, _placeHolderExamples)[e.target.value].join(', '));
     }); // preset
 
 
     var dataset = ConditionBuilder$1.currentDataset;
 
-    if (dataset && Array.from(_classPrivateFieldGet(this, _TOGO_KEYS).options).map(function (option) {
+    if (dataset && Array.from(_classPrivateFieldGet(this, _DATASET_KEY).options).map(function (option) {
       return option.value;
     }).indexOf(dataset) !== -1) {
-      _classPrivateFieldGet(this, _TOGO_KEYS).value = dataset;
+      _classPrivateFieldGet(this, _DATASET_KEY).value = dataset;
     } else {
-      _classPrivateFieldGet(this, _TOGO_KEYS).options[0].selected = true;
+      _classPrivateFieldGet(this, _DATASET_KEY).options[0].selected = true;
     }
 
-    _classPrivateFieldGet(this, _TOGO_KEYS).dispatchEvent(new Event('change'));
+    _classPrivateFieldGet(this, _DATASET_KEY).dispatchEvent(new Event('change'));
   }
 
   function _addAnnotation2(conditionAnnotation) {
     // modifier
-    _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.remove('-empty'); // make view
+    _classPrivateFieldGet(this, _ANNOTATIONS_CONDITIONS_CONTAINER).classList.remove('-empty'); // make view
 
 
-    _classPrivateFieldGet(this, _properties).push(new StackingConditionView(_classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER), 'annotation', conditionAnnotation));
+    _classPrivateFieldGet(this, _properties).push(new StackingConditionView(_classPrivateFieldGet(this, _ANNOTATIONS_CONDITIONS_CONTAINER), 'annotation', conditionAnnotation));
   }
 
   function _removeAnnotation2(conditionAnnotation) {
@@ -4491,12 +4494,12 @@
     _classPrivateFieldGet(this, _properties).splice(index, 1); // modifier
 
 
-    if (_classPrivateFieldGet(this, _properties).length === 0) _classPrivateFieldGet(this, _PROPERTIES_CONDITIONS_CONTAINER).classList.add('-empty');
+    if (_classPrivateFieldGet(this, _properties).length === 0) _classPrivateFieldGet(this, _ANNOTATIONS_CONDITIONS_CONTAINER).classList.add('-empty');
   }
 
   function _addFilter2(attributeId, node) {
     // modifier
-    _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.remove('-empty'); // find a condition view has same attribute id
+    _classPrivateFieldGet(this, _FILTERS_CONDITIONS_CONTAINER).classList.remove('-empty'); // find a condition view has same attribute id
 
 
     var stackingConditionView = _classPrivateFieldGet(this, _propertyFilters).find(function (stackingConditionView) {
@@ -4508,7 +4511,7 @@
       stackingConditionView.addFilter(node);
     } else {
       // otherwise, make new condition view
-      _classPrivateFieldGet(this, _propertyFilters).push(new StackingConditionView(_classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER), 'value', new ConditionFilter(attributeId, [node])));
+      _classPrivateFieldGet(this, _propertyFilters).push(new StackingConditionView(_classPrivateFieldGet(this, _FILTERS_CONDITIONS_CONTAINER), 'value', new ConditionFilter(attributeId, [node])));
     }
   }
 
@@ -4520,7 +4523,7 @@
 
     if (index !== -1) _classPrivateFieldGet(this, _propertyFilters).splice(index, 1); // modifier
 
-    if (_classPrivateFieldGet(this, _propertyFilters).length === 0) _classPrivateFieldGet(this, _ATTRIBUTES_CONDITIONS_CONTAINER).classList.add('-empty');
+    if (_classPrivateFieldGet(this, _propertyFilters).length === 0) _classPrivateFieldGet(this, _FILTERS_CONDITIONS_CONTAINER).classList.add('-empty');
   }
 
   function collapseView(elm) {

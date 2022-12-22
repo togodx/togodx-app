@@ -37,22 +37,22 @@
           > .close-button-view
             body[data-display="results"] &
               display: none
-    > #ConditionAnnotations, > #ConditionFilters
+    > [data-condition-type="filters"], > [data-condition-type="annotations"]
       transition: opacity var(--transition-instant)
       opacity: .8
       background-color: var(--background-color-inactive)
       cursor: pointer
       &:hover
         background-color: var(--background-color)
-    > #ConditionAnnotations
+    > [data-condition-type="filters"]
       [data-condition="filter"] &
         opacity: 1
         background-color: var(--background-color)
-    > #ConditionFilters
+    > [data-condition-type="annotations"]
       [data-condition="annotation"] &
         opacity: 1
         background-color: var(--background-color)
-    > #ConditionTogoKey
+    > [data-condition-type="dataset"]
       > .inner
         > select
           width: 100%

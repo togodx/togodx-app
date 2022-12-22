@@ -110,19 +110,19 @@
               <button class="rounded-button-view -verysmall -outline" type="button">Clear</button>
             </header>
             <div class="conditions" data-hidden-by="results">
-              <div class="condition" id="ConditionTogoKey">
+              <div class="condition" data-condition-type="dataset">
                 <div class="inner">
                   <h2 class="title"><span class="material-icons">layers</span>Select target dataset</h2>
                   <select disabled></select>
                 </div>
               </div>
-              <div class="condition" id="ConditionAnnotations">
+              <div class="condition" data-condition-type="filters">
                 <div class="inner">
                   <h2 class="title"><span class="material-icons">filter_alt</span>Filters</h2>
                   <div class="conditions -empty"></div>
                 </div>
               </div>
-              <div class="condition" id="UploadUserIDsView">
+              <div class="condition" id="UploadUserIDsView" data-condition-type="ids">
                 <div class="inner">
                   <h2 class="title"><span class="material-icons">location_on</span>Mapped IDs<small>optional</small>
                     <div class="button">
@@ -136,7 +136,7 @@
                   </div>
                 </div>
               </div>
-              <div class="condition" id="ConditionFilters">
+              <div class="condition" data-condition-type="annotations">
                 <div class="inner">
                   <h2 class="title"><span class="material-icons">format_list_bulleted</span>Mapped attributes</h2>
                   <div class="conditions -empty"></div>
