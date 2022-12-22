@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+	<meta charset="utf-8"/>
+</head>
+<body>
+
+<h1 id="urlparameter">URL parameter</h1>
+
+<p>URL に適切な引数を渡すことで、検索条件が指定された状態にすることができる。
+引数をデコードすると、下記例のようなパラメータとなる。</p>
+
+<h2 id="dataset">dataset</h2>
+
+<pre><code>dataset = ensembl_gene
+</code></pre>
+
+<h2 id="annotation">annotation</h2>
+
+<pre><code class="json">[
+  {
+    &quot;attributeId&quot;: &quot;protein_ligands_uniprot&quot;,
+    &quot;parentNode&quot;: &quot;411-1&quot;,
+    &quot;ancestors&quot;: [
+      &quot;479&quot;
+    ]
+  },
+  {
+    &quot;attributeId&quot;: &quot;structure_helical_regions_uniprot&quot;
+  }
+]
+</code></pre>
+
+<h2 id="filter">filter</h2>
+
+<pre><code class="json">[
+  {
+    &quot;attributeId&quot;: &quot;gene_evolutionary_conservation_homologene&quot;,
+    &quot;nodes&quot;: [
+      {
+        &quot;node&quot;: &quot;branch_05&quot;
+      }
+    ]
+  },
+  {
+    &quot;attributeId&quot;: &quot;protein_biological_process_uniprot&quot;,
+    &quot;nodes&quot;: [
+      {
+        &quot;node&quot;: &quot;GO_0044260-1&quot;,
+        &quot;ancestors&quot;: [
+          &quot;GO_0009987&quot;,
+          &quot;GO_0044237-1&quot;
+        ]
+      }
+    ]
+  }
+]
+</code></pre>
+
+</body>
+</html>
+
