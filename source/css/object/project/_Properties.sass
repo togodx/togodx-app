@@ -1,5 +1,4 @@
 #Properties
-  --height-header: 2.4rem
   width: calc(100vw - var(--width-condition) - var(--width-global-tool-bar))
   overflow: auto
   position: relative
@@ -8,12 +7,11 @@
     flex-grow: 1
     min-width: 100rem
     > .header
-      border-bottom: solid .1rem var(--color-lamp-black)
       padding: var(--padding-track-block-start) var(--padding-track-inline-start)
       display: flex
       align-items: center
-      height: var(--height-header)
-      line-height: calc(var(--height-header) - var(--padding-track-block-start) * 2)
+      height: var(--height-properties-header)
+      line-height: calc(var(--height-properties-header) - var(--padding-track-block-start) * 2)
       position: sticky
       top: 0
       background-color: var(--color-lamp-black)

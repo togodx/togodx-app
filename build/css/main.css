@@ -351,6 +351,7 @@ template {
   --width-condition: 24rem;
   --height-track: 3rem;
   --height-header: 5rem;
+  --height-properties-header: 2.4rem;
   --min-width-app: 102.4rem;
   --height-results-statistics: 20rem;
   --font-size-title: 1.5rem;
@@ -446,9 +447,12 @@ main {
 }
 
 .attribute-track-view {
-  margin-bottom: 0.1rem;
+  margin-bottom: 1px;
   font-size: 1.2rem;
   position: relative;
+}
+.attribute-track-view:last-child {
+  margin-bottom: 0;
 }
 .attribute-track-view > .row {
   display: flex;
@@ -631,6 +635,7 @@ main {
 
 .category-view {
   display: flex;
+  background-color: var(--color-gray);
 }
 .category-view > .title {
   margin: 0;
@@ -645,6 +650,9 @@ main {
 }
 .category-view > .attributes {
   width: calc(100% - var(--width-track-column-subject));
+}
+.category-view + .category-view {
+  margin-top: 1px;
 }
 
 .close-button-view {
@@ -1680,6 +1688,7 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   transition: transform var(--transition-wipe);
   transition: transform var(--transition-wipe), -webkit-transform var(--transition-wipe);
   overflow: hidden;
+  background-color: var(--color-lamp-black);
 }
 body[data-display=results] #App > .inner {
   -webkit-transform: translateX(calc(-100vw + var(--width-condition)));
@@ -1845,7 +1854,26 @@ body[data-condition=annotation] #ConditionBuilder > .conditions > [data-conditio
 #GlobalToolBar {
   width: var(--width-global-tool-bar);
   flex-basis: var(--width-global-tool-bar);
-  background-color: var(--color-lamp-black);
+  padding-top: var(--height-properties-header);
+}
+#GlobalToolBar > ul {
+  list-style: none;
+  padding: 0;
+}
+#GlobalToolBar > ul > li > button {
+  padding: 0;
+  width: 100%;
+  border: none;
+  background-color: transparent;
+  display: block;
+}
+#GlobalToolBar > ul > li > button > span {
+  color: white;
+  font-size: 2.4rem;
+  line-height: 1.5;
+}
+#GlobalToolBar > ul > li + li {
+  margin-top: 0.5rem;
 }
 
 #Header {
@@ -1881,7 +1909,6 @@ body[data-condition=annotation] #ConditionBuilder > .conditions > [data-conditio
 }
 
 #Properties {
-  --height-header: 2.4rem;
   width: calc(100vw - var(--width-condition) - var(--width-global-tool-bar));
   overflow: auto;
   position: relative;
@@ -1892,12 +1919,11 @@ body[data-condition=annotation] #ConditionBuilder > .conditions > [data-conditio
   min-width: 100rem;
 }
 #Properties > .inner > .header {
-  border-bottom: solid 0.1rem var(--color-lamp-black);
   padding: var(--padding-track-block-start) var(--padding-track-inline-start);
   display: flex;
   align-items: center;
-  height: var(--height-header);
-  line-height: calc(var(--height-header) - var(--padding-track-block-start) * 2);
+  height: var(--height-properties-header);
+  line-height: calc(var(--height-properties-header) - var(--padding-track-block-start) * 2);
   position: -webkit-sticky;
   position: sticky;
   top: 0;

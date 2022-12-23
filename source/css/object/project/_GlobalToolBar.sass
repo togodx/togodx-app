@@ -1,4 +1,21 @@
 #GlobalToolBar
   width: var(--width-global-tool-bar)
   flex-basis: var(--width-global-tool-bar)
-  background-color: var(--color-lamp-black)
+  // background-color: var(--color-lamp-black)
+  padding-top: var(--height-properties-header)
+  > ul
+    list-style: none
+    padding: 0
+    > li
+      > button
+        padding: 0
+        width: 100%
+        border: none
+        background-color: transparent
+        display: block
+        > span
+          color: white
+          font-size: 2.4rem
+          line-height: 1.5
+      + li
+        margin-top: .5rem
