@@ -8,6 +8,7 @@ import ResultDetailModal from './ResultDetailModal';
 import BalloonView from './BalloonView';
 import ConditionsController from './ConditionsController';
 import UploadUserIDsView from './UploadUserIDsView';
+import GlobalToolBar from './GlobalToolBar';
 import Color from './Color';
 import StanzaManager from './StanzaManager';
 import * as event from '../events';
@@ -64,6 +65,7 @@ class App {
     new ResultDetailModal();
     new BalloonView();
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
+    new GlobalToolBar(document.querySelector('#GlobalToolBar'));
     // load config json
     Promise.all([
       fetch(config.TEMPLATES),

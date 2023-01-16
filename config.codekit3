@@ -632,17 +632,6 @@
       "sC" : 3,
       "tS" : 1
     },
-    "\/source\/js\/classes\/Appcopy.js" : {
-      "bF" : 4,
-      "ft" : 64,
-      "ma" : 1,
-      "mi" : 0,
-      "oA" : 0,
-      "oAP" : "\/build\/js\/classes\/Appcopy.js",
-      "oF" : 0,
-      "sC" : 3,
-      "tS" : 1
-    },
     "\/source\/js\/classes\/Attribute.js" : {
       "bF" : 4,
       "ft" : 64,
@@ -835,7 +824,7 @@
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
-      "oA" : 0,
+      "oA" : 1,
       "oAP" : "\/build\/js\/classes\/GlobalToolBar.js",
       "oF" : 0,
       "sC" : 3,

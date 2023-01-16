@@ -6744,6 +6744,7 @@
   var _complete$1 = /*#__PURE__*/new WeakSet();
   var TableData = /*#__PURE__*/function () {
     function TableData(dxCondition, elm) {
+      var _this = this;
       _classCallCheck(this, TableData);
       _classPrivateMethodInitSpec(this, _complete$1);
       _classPrivateMethodInitSpec(this, _getProperties);
@@ -6808,7 +6809,48 @@
         writable: true,
         value: void 0
       });
-      return;
+      var cancelToken = axios.CancelToken;
+      _classPrivateFieldSet(this, _source$1, cancelToken.source());
+      _classPrivateFieldSet(this, _isLoading, false);
+      _classPrivateFieldSet(this, _isCompleted, false);
+      _classPrivateFieldSet(this, _dxCondition, dxCondition);
+      _classPrivateFieldSet(this, _queryIds, []);
+      _classPrivateFieldSet(this, _rows, []);
+
+      // view
+      elm.classList.add('table-data-controller-view');
+      elm.dataset.status = 'load ids';
+      elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condition\">\n        <p title=\"".concat(dxCondition.togoKey, "\">").concat(Records$1.getDatasetLabel(dxCondition.togoKey), "</p>\n      </div>\n      ").concat(_classPrivateFieldGet(this, _dxCondition).conditionFilters.map(function (conditionFilter) {
+        var label = Records$1.getAttribute(conditionFilter.attributeId).label;
+        return "<div class=\"condition _category-background-color\" data-category-id=\"".concat(conditionFilter.categoryId, "\">\n              <p title=\"").concat(label, "\">").concat(label, "</p>\n            </div>");
+      }).join(''), "\n      ").concat(_classPrivateFieldGet(this, _dxCondition).conditionAnnotations.map(function (conditionAnnotation) {
+        return "<div class=\"condition _category-color\" data-category-id=\"".concat(conditionAnnotation.categoryId, "\">\n              <p title=\"").concat(conditionAnnotation.label, "\">").concat(conditionAnnotation.label, "</p>\n            </div>");
+      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting ID list</p>\n      <span class=\"material-icons-outlined -rotating\">autorenew</span>\n    </div>\n    <div class=\"-border\">\n    </div>\n    <div class=\"controller\">\n    </div>\n    ");
+
+      // reference
+      _classPrivateFieldSet(this, _ROOT$2, elm);
+      _classPrivateFieldSet(this, _STATUS, elm.querySelector(':scope > .status > p'));
+      _classPrivateFieldSet(this, _progressIndicator$1, new ProgressIndicator(elm.querySelector(':scope > .status + div')));
+      _classPrivateFieldSet(this, _CONTROLLER, elm.querySelector(':scope > .controller'));
+      _classPrivateFieldGet(this, _CONTROLLER).appendChild(_classPrivateMethodGet(this, _makeDataButton, _makeDataButton2).call(this, 'left'));
+      _classPrivateFieldGet(this, _CONTROLLER).appendChild(_classPrivateMethodGet(this, _makeDataButton, _makeDataButton2).call(this, 'right', dataButtonModes.get('edit')));
+      _classPrivateFieldSet(this, _BUTTON_LEFT, elm.querySelector(':scope > .controller > .button.left'));
+      _classPrivateFieldSet(this, _BUTTON_RIGHT, elm.querySelector(':scope > .controller > .button.right'));
+
+      // events
+      elm.addEventListener('click', function () {
+        if (elm.classList.contains('-current')) return;
+        _this.select();
+      });
+
+      // delete
+      _classPrivateFieldGet(this, _ROOT$2).querySelector(':scope > .close-button-view').addEventListener('click', function (e) {
+        _classPrivateMethodGet(_this, _deleteCondition, _deleteCondition2).call(_this, e);
+      });
+      ConditionBuilder$1.finish();
+      this.select();
+      _classPrivateFieldGet(this, _ROOT$2).classList.toggle('-fetching');
+      _classPrivateMethodGet(this, _getQueryIds, _getQueryIds2).call(this);
     }
 
     /* private methods */
@@ -6877,6 +6919,19 @@
     }]);
     return TableData;
   }();
+  function _deleteCondition2(e) {
+    e.stopPropagation();
+    var customEvent = new CustomEvent(deleteTableData, {
+      detail: this
+    });
+    DefaultEventEmitter$1.dispatchEvent(customEvent);
+    // abort fetch
+    _classPrivateFieldGet(this, _source$1).cancel('user cancel');
+    // delete element
+    _classPrivateFieldGet(this, _ROOT$2).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$2));
+    // transition
+    document.querySelector('body').dataset.display = 'properties';
+  }
   function _makeDataButton2(className) {
     var _this2 = this;
     var mode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
@@ -7721,6 +7776,26 @@
     _classPrivateMethodGet(this, _complete, _complete2).call(this);
   }
 
+  var GlobalToolBar = /*#__PURE__*/_createClass(function GlobalToolBar(elm) {
+    _classCallCheck(this, GlobalToolBar);
+    console.log(elm);
+    var buttons = _toConsumableArray(elm.querySelectorAll(':scope > ul > li > button'));
+    var filter = buttons.find(function (button) {
+      return button.dataset.button === 'filter';
+    });
+    var annotation = buttons.find(function (button) {
+      return button.dataset.button === 'annotation';
+    });
+
+    // attach event
+    filter.addEventListener('click', function () {
+      return document.body.dataset.condition = 'filter';
+    });
+    annotation.addEventListener('click', function () {
+      return document.body.dataset.condition = 'annotation';
+    });
+  });
+
   var _viewModes = /*#__PURE__*/new WeakMap();
   var _backend = /*#__PURE__*/new WeakMap();
   var _colorWhite = /*#__PURE__*/new WeakMap();
@@ -7798,14 +7873,15 @@
         DefaultEventEmitter$1.addEventListener(restoreParameters, function () {
           document.querySelector('#App > .loading-view').classList.remove('-shown');
         });
-        // // set up views
+        // set up views
         new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
         new ConditionsController(document.querySelector('#Conditions'));
         new ResultsTable(document.querySelector('#ResultsTable'));
         new ResultDetailModal();
         new BalloonView();
         new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
-        // // load config json
+        new GlobalToolBar(document.querySelector('#GlobalToolBar'));
+        // load config json
         Promise.all([fetch(config.TEMPLATES), fetch(config.BACKEND), fetch(config.ATTRIBUTES)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
@@ -7833,7 +7909,7 @@
         });
       }
 
-      // // private methods
+      // private methods
     }, {
       key: "getApiUrl",
       value:

@@ -959,7 +959,6 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   width: 0;
   border: solid 0.1rem var(--color-selected-deep);
   background-color: var(--color-selected);
-  cursor: -webkit-grab;
   cursor: grab;
 }
 .histogram-range-selector-view > .selector > .inner > .selectingarea > .handle {
@@ -1011,7 +1010,6 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   pointer-events: none;
 }
 .histogram-range-selector-view > .selector.-draggingarea > .inner > .controller {
-  cursor: -webkit-grabbing;
   cursor: grabbing;
 }
 .histogram-range-selector-view > .histogram {
@@ -1869,14 +1867,32 @@ body[data-condition=annotation] #ConditionBuilder > .conditions > [data-conditio
   border: none;
   background-color: transparent;
   display: block;
+  transition: background var(--transition-instant);
 }
 #GlobalToolBar > ul > li > button > span {
   color: white;
   font-size: 2.4rem;
   line-height: 1.5;
+  transition: color var(--transition-instant);
 }
 #GlobalToolBar > ul > li + li {
   margin-top: 0.5rem;
+}
+#GlobalToolBar > .switch {
+  background-color: rgba(0, 0, 0, 0.1333333333);
+  margin: 0 0.4rem;
+  padding: 0.2rem;
+  border-radius: 0.4rem;
+  box-shadow: 0 0.2rem 0.4rem black inset;
+}
+body[data-condition=filter] #GlobalToolBar > .switch > li > button[data-button=filter], body[data-condition=annotation] #GlobalToolBar > .switch > li > button[data-button=annotation] {
+  cursor: auto;
+  background-color: white;
+  border-radius: 0.2rem;
+  box-shadow: 0 0.1rem 0.2rem black;
+}
+body[data-condition=filter] #GlobalToolBar > .switch > li > button[data-button=filter] > span, body[data-condition=annotation] #GlobalToolBar > .switch > li > button[data-button=annotation] > span {
+  color: var(--color-lamp-black);
 }
 
 #Header {
