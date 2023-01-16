@@ -1,30 +1,43 @@
-(function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('https'), require('url'), require('stream'), require('assert'), require('zlib')) :
-  typeof define === 'function' && define.amd ? define(['https', 'url', 'stream', 'assert', 'zlib'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.require$$5, global.require$$0, global.require$$3, global.require$$4, global.require$$8));
-})(this, (function (require$$5, require$$0, require$$3, require$$4, require$$8) { 'use strict';
+(function () {
+  'use strict';
 
-  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-  var require$$5__default = /*#__PURE__*/_interopDefaultLegacy(require$$5);
-  var require$$0__default = /*#__PURE__*/_interopDefaultLegacy(require$$0);
-  var require$$3__default = /*#__PURE__*/_interopDefaultLegacy(require$$3);
-  var require$$4__default = /*#__PURE__*/_interopDefaultLegacy(require$$4);
-  var require$$8__default = /*#__PURE__*/_interopDefaultLegacy(require$$8);
-
+  function _iterableToArrayLimit(arr, i) {
+    var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"];
+    if (null != _i) {
+      var _s,
+        _e,
+        _x,
+        _r,
+        _arr = [],
+        _n = !0,
+        _d = !1;
+      try {
+        if (_x = (_i = _i.call(arr)).next, 0 === i) {
+          if (Object(_i) !== _i) return;
+          _n = !1;
+        } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0);
+      } catch (err) {
+        _d = !0, _e = err;
+      } finally {
+        try {
+          if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return;
+        } finally {
+          if (_d) throw _e;
+        }
+      }
+      return _arr;
+    }
+  }
   function ownKeys$1(object, enumerableOnly) {
     var keys = Object.keys(object);
-
     if (Object.getOwnPropertySymbols) {
       var symbols = Object.getOwnPropertySymbols(object);
       enumerableOnly && (symbols = symbols.filter(function (sym) {
         return Object.getOwnPropertyDescriptor(object, sym).enumerable;
       })), keys.push.apply(keys, symbols);
     }
-
     return keys;
   }
-
   function _objectSpread2(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = null != arguments[i] ? arguments[i] : {};
@@ -34,10 +47,8 @@
         Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
       });
     }
-
     return target;
   }
-
   function _typeof(obj) {
     "@babel/helpers - typeof";
 
@@ -47,23 +58,20 @@
       return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
     }, _typeof(obj);
   }
-
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
     }
   }
-
   function _defineProperties(target, props) {
     for (var i = 0; i < props.length; i++) {
       var descriptor = props[i];
       descriptor.enumerable = descriptor.enumerable || false;
       descriptor.configurable = true;
       if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
+      Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
     }
   }
-
   function _createClass(Constructor, protoProps, staticProps) {
     if (protoProps) _defineProperties(Constructor.prototype, protoProps);
     if (staticProps) _defineProperties(Constructor, staticProps);
@@ -72,8 +80,8 @@
     });
     return Constructor;
   }
-
   function _defineProperty$1(obj, key, value) {
+    key = _toPropertyKey(key);
     if (key in obj) {
       Object.defineProperty(obj, key, {
         value: value,
@@ -84,15 +92,12 @@
     } else {
       obj[key] = value;
     }
-
     return obj;
   }
-
   function _inherits(subClass, superClass) {
     if (typeof superClass !== "function" && superClass !== null) {
       throw new TypeError("Super expression must either be null or a function");
     }
-
     subClass.prototype = Object.create(superClass && superClass.prototype, {
       constructor: {
         value: subClass,
@@ -105,14 +110,12 @@
     });
     if (superClass) _setPrototypeOf(subClass, superClass);
   }
-
   function _getPrototypeOf(o) {
     _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) {
       return o.__proto__ || Object.getPrototypeOf(o);
     };
     return _getPrototypeOf(o);
   }
-
   function _setPrototypeOf(o, p) {
     _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
       o.__proto__ = p;
@@ -120,12 +123,10 @@
     };
     return _setPrototypeOf(o, p);
   }
-
   function _isNativeReflectConstruct() {
     if (typeof Reflect === "undefined" || !Reflect.construct) return false;
     if (Reflect.construct.sham) return false;
     if (typeof Proxy === "function") return true;
-
     try {
       Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
       return true;
@@ -133,7 +134,6 @@
       return false;
     }
   }
-
   function _construct(Parent, args, Class) {
     if (_isNativeReflectConstruct()) {
       _construct = Reflect.construct.bind();
@@ -147,34 +147,25 @@
         return instance;
       };
     }
-
     return _construct.apply(null, arguments);
   }
-
   function _isNativeFunction(fn) {
     return Function.toString.call(fn).indexOf("[native code]") !== -1;
   }
-
   function _wrapNativeSuper(Class) {
     var _cache = typeof Map === "function" ? new Map() : undefined;
-
     _wrapNativeSuper = function _wrapNativeSuper(Class) {
       if (Class === null || !_isNativeFunction(Class)) return Class;
-
       if (typeof Class !== "function") {
         throw new TypeError("Super expression must either be null or a function");
       }
-
       if (typeof _cache !== "undefined") {
         if (_cache.has(Class)) return _cache.get(Class);
-
         _cache.set(Class, Wrapper);
       }
-
       function Wrapper() {
         return _construct(Class, arguments, _getPrototypeOf(this).constructor);
       }
-
       Wrapper.prototype = Object.create(Class.prototype, {
         constructor: {
           value: Wrapper,
@@ -185,35 +176,26 @@
       });
       return _setPrototypeOf(Wrapper, Class);
     };
-
     return _wrapNativeSuper(Class);
   }
-
   function _objectWithoutPropertiesLoose(source, excluded) {
     if (source == null) return {};
     var target = {};
     var sourceKeys = Object.keys(source);
     var key, i;
-
     for (i = 0; i < sourceKeys.length; i++) {
       key = sourceKeys[i];
       if (excluded.indexOf(key) >= 0) continue;
       target[key] = source[key];
     }
-
     return target;
   }
-
   function _objectWithoutProperties(source, excluded) {
     if (source == null) return {};
-
     var target = _objectWithoutPropertiesLoose(source, excluded);
-
     var key, i;
-
     if (Object.getOwnPropertySymbols) {
       var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-
       for (i = 0; i < sourceSymbolKeys.length; i++) {
         key = sourceSymbolKeys[i];
         if (excluded.indexOf(key) >= 0) continue;
@@ -221,97 +203,51 @@
         target[key] = source[key];
       }
     }
-
     return target;
   }
-
   function _assertThisInitialized(self) {
     if (self === void 0) {
       throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
     }
-
     return self;
   }
-
   function _possibleConstructorReturn(self, call) {
     if (call && (typeof call === "object" || typeof call === "function")) {
       return call;
     } else if (call !== void 0) {
       throw new TypeError("Derived constructors may only return object or undefined");
     }
-
     return _assertThisInitialized(self);
   }
-
   function _createSuper(Derived) {
     var hasNativeReflectConstruct = _isNativeReflectConstruct();
-
     return function _createSuperInternal() {
       var Super = _getPrototypeOf(Derived),
-          result;
-
+        result;
       if (hasNativeReflectConstruct) {
         var NewTarget = _getPrototypeOf(this).constructor;
-
         result = Reflect.construct(Super, arguments, NewTarget);
       } else {
         result = Super.apply(this, arguments);
       }
-
       return _possibleConstructorReturn(this, result);
     };
   }
-
   function _slicedToArray(arr, i) {
     return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
   }
-
   function _toConsumableArray(arr) {
     return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
   }
-
   function _arrayWithoutHoles(arr) {
     if (Array.isArray(arr)) return _arrayLikeToArray(arr);
   }
-
   function _arrayWithHoles(arr) {
     if (Array.isArray(arr)) return arr;
   }
-
   function _iterableToArray(iter) {
     if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
   }
-
-  function _iterableToArrayLimit(arr, i) {
-    var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
-
-    if (_i == null) return;
-    var _arr = [];
-    var _n = true;
-    var _d = false;
-
-    var _s, _e;
-
-    try {
-      for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
-        _arr.push(_s.value);
-
-        if (i && _arr.length === i) break;
-      }
-    } catch (err) {
-      _d = true;
-      _e = err;
-    } finally {
-      try {
-        if (!_n && _i["return"] != null) _i["return"]();
-      } finally {
-        if (_d) throw _e;
-      }
-    }
-
-    return _arr;
-  }
-
   function _unsupportedIterableToArray(o, minLen) {
     if (!o) return;
     if (typeof o === "string") return _arrayLikeToArray(o, minLen);
@@ -320,33 +256,24 @@
     if (n === "Map" || n === "Set") return Array.from(o);
     if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
   }
-
   function _arrayLikeToArray(arr, len) {
     if (len == null || len > arr.length) len = arr.length;
-
     for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
-
     return arr2;
   }
-
   function _nonIterableSpread() {
     throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
-
   function _nonIterableRest() {
     throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
-
   function _createForOfIteratorHelper(o, allowArrayLike) {
     var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
-
     if (!it) {
       if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
         if (it) o = it;
         var i = 0;
-
         var F = function () {};
-
         return {
           s: F,
           n: function () {
@@ -364,13 +291,11 @@
           f: F
         };
       }
-
       throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
     }
-
     var normalCompletion = true,
-        didErr = false,
-        err;
+      didErr = false,
+      err;
     return {
       s: function () {
         it = it.call(o);
@@ -393,37 +318,41 @@
       }
     };
   }
-
+  function _toPrimitive(input, hint) {
+    if (typeof input !== "object" || input === null) return input;
+    var prim = input[Symbol.toPrimitive];
+    if (prim !== undefined) {
+      var res = prim.call(input, hint || "default");
+      if (typeof res !== "object") return res;
+      throw new TypeError("@@toPrimitive must return a primitive value.");
+    }
+    return (hint === "string" ? String : Number)(input);
+  }
+  function _toPropertyKey(arg) {
+    var key = _toPrimitive(arg, "string");
+    return typeof key === "symbol" ? key : String(key);
+  }
   function _classPrivateFieldGet(receiver, privateMap) {
     var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get");
-
     return _classApplyDescriptorGet(receiver, descriptor);
   }
-
   function _classPrivateFieldSet(receiver, privateMap, value) {
     var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set");
-
     _classApplyDescriptorSet(receiver, descriptor, value);
-
     return value;
   }
-
   function _classExtractFieldDescriptor(receiver, privateMap, action) {
     if (!privateMap.has(receiver)) {
       throw new TypeError("attempted to " + action + " private field on non-instance");
     }
-
     return privateMap.get(receiver);
   }
-
   function _classApplyDescriptorGet(receiver, descriptor) {
     if (descriptor.get) {
       return descriptor.get.call(receiver);
     }
-
     return descriptor.value;
   }
-
   function _classApplyDescriptorSet(receiver, descriptor, value) {
     if (descriptor.set) {
       descriptor.set.call(receiver, value);
@@ -431,150 +360,122 @@
       if (!descriptor.writable) {
         throw new TypeError("attempted to set read only private field");
       }
-
       descriptor.value = value;
     }
   }
-
   function _classPrivateMethodGet(receiver, privateSet, fn) {
     if (!privateSet.has(receiver)) {
       throw new TypeError("attempted to get private field on non-instance");
     }
-
     return fn;
   }
-
   function _checkPrivateRedeclaration(obj, privateCollection) {
     if (privateCollection.has(obj)) {
       throw new TypeError("Cannot initialize the same private elements twice on an object");
     }
   }
-
   function _classPrivateFieldInitSpec(obj, privateMap, value) {
     _checkPrivateRedeclaration(obj, privateMap);
-
     privateMap.set(obj, value);
   }
-
   function _classPrivateMethodInitSpec(obj, privateSet) {
     _checkPrivateRedeclaration(obj, privateSet);
-
     privateSet.add(obj);
   }
 
   var DefaultEventEmitter = /*#__PURE__*/function (_EventTarget) {
     _inherits(DefaultEventEmitter, _EventTarget);
-
     var _super = _createSuper(DefaultEventEmitter);
-
     function DefaultEventEmitter() {
       _classCallCheck(this, DefaultEventEmitter);
-
       return _super.call(this);
     }
-
     return _createClass(DefaultEventEmitter);
   }( /*#__PURE__*/_wrapNativeSuper(EventTarget));
-
   var DefaultEventEmitter$1 = new DefaultEventEmitter();
 
   var _excluded = ["method"],
-      _excluded2 = ["format"],
-      _excluded3 = ["format"],
-      _excluded4 = ["inGamut", "commas", "format"],
-      _excluded5 = ["precision", "commas", "format", "inGamut"],
-      _excluded6 = ["format", "commas", "inGamut"],
-      _excluded7 = ["format"],
-      _excluded8 = ["maxDeltaE", "deltaEMethod", "steps", "maxSteps"];
-
+    _excluded2 = ["format"],
+    _excluded3 = ["format"],
+    _excluded4 = ["inGamut", "commas", "format"],
+    _excluded5 = ["precision", "commas", "format", "inGamut"],
+    _excluded6 = ["format", "commas", "inGamut"],
+    _excluded7 = ["format"],
+    _excluded8 = ["maxDeltaE", "deltaEMethod", "steps", "maxSteps"];
   function t(t, e) {
     var r = t.length;
     Array.isArray(t[0]) || (t = [t]), Array.isArray(e[0]) || (e = e.map(function (t) {
       return [t];
     }));
     var a = e[0].length,
-        s = e[0].map(function (t, r) {
-      return e.map(function (t) {
-        return t[r];
+      s = e[0].map(function (t, r) {
+        return e.map(function (t) {
+          return t[r];
+        });
+      }),
+      o = t.map(function (t) {
+        return s.map(function (e) {
+          return Array.isArray(t) ? t.reduce(function (t, r, a) {
+            return t + r * (e[a] || 0);
+          }, 0) : e.reduce(function (e, r) {
+            return e + r * t;
+          }, 0);
+        });
       });
-    }),
-        o = t.map(function (t) {
-      return s.map(function (e) {
-        return Array.isArray(t) ? t.reduce(function (t, r, a) {
-          return t + r * (e[a] || 0);
-        }, 0) : e.reduce(function (e, r) {
-          return e + r * t;
-        }, 0);
-      });
-    });
     return 1 === r && (o = o[0]), 1 === a ? o.map(function (t) {
       return t[0];
     }) : o;
   }
-
   function e(t) {
     return "string" === r(t);
   }
-
   function r(t) {
     return (Object.prototype.toString.call(t).match(/^\[object\s+(.*?)\]$/)[1] || "").toLowerCase();
   }
-
   function a(t) {
     for (var _len = arguments.length, e = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
       e[_key - 1] = arguments[_key];
     }
-
     for (var _i = 0, _e = e; _i < _e.length; _i++) {
       var _r = _e[_i];
-
       if (_r) {
         var _e2 = Object.getOwnPropertyDescriptors(_r);
-
         Object.defineProperties(t, _e2);
       }
     }
-
     return t;
   }
-
   function s(t, e, r) {
     var a = Object.getOwnPropertyDescriptor(e, r);
     Object.defineProperty(t, r, a);
   }
-
   function o(t, e) {
     e = +e;
     var r = (Math.floor(t) + "").length;
     if (e > r) return +t.toFixed(e - r);
     {
       var _a = Math.pow(10, r - e);
-
       return Math.round(t / _a) * _a;
     }
   }
-
   function i(t) {
     if (t.indexOf(".") > 0) {
       var _t$split = t.split("."),
-          _t$split2 = _slicedToArray(_t$split, 2),
-          _e3 = _t$split2[0],
-          _r2 = _t$split2[1],
-          _a2 = Color.space(_e3);
-
+        _t$split2 = _slicedToArray(_t$split, 2),
+        _e3 = _t$split2[0],
+        _r2 = _t$split2[1],
+        _a2 = Color.space(_e3);
       if (!(_r2 in _a2.coords)) throw new ReferenceError("Color space \"".concat(_a2.name, "\" has no \"").concat(_r2, "\" coordinate."));
       return [_a2, _r2];
     }
   }
-
   function n(t, e, r) {
     var a = e.split("."),
-        s = a.pop();
+      s = a.pop();
     if (t = a.reduceRight(function (t, e) {
       return t && t[e];
     }, t)) return void 0 === r ? t[s] : t[s] = r;
   }
-
   var c = Object.freeze({
     __proto__: null,
     isString: e,
@@ -590,40 +491,28 @@
     multiplyMatrices: t
   });
   var l = "undefined" != typeof document;
-
   var h = /*#__PURE__*/function () {
     function h() {
       _classCallCheck(this, h);
-
       var r, a;
-
       for (var _len2 = arguments.length, t = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
         t[_key2] = arguments[_key2];
       }
-
       if (t[0] && "object" == _typeof(t[0]) && (t[0].space || t[0].spaceId) && t[0].coords) a = t[0];else if (e(t[0])) {
         if (l && 0 === t[0].indexOf("--")) {
           var _t = arguments[1] && 1 === arguments[1].nodeType ? arguments[1] : document.documentElement;
-
           r = getComputedStyle(_t).getPropertyValue(arguments[0]);
         } else 1 === t.length && (r = t[0]);
-
         r && (a = h.parse(r));
       }
       if (a) "spaceId" in a ? this.spaceId = a.spaceId : this.space = a.space, this.coords = a.coords.slice(), this.alpha = a.alpha;else {
         var _ref, _t2, _t3;
-
         var _e4, _r3, _a3;
-
         Array.isArray(t[0]) ? (_ref = ["sRGB"].concat(t), _e4 = _ref[0], _r3 = _ref[1], _a3 = _ref[2], _ref) : (_t2 = t, _t3 = _slicedToArray(_t2, 3), _e4 = _t3[0], _r3 = _t3[1], _a3 = _t3[2], _t2), this.spaceId = _e4 || "sRGB", this.coords = _r3 ? _r3.slice() : [0, 0, 0], this.alpha = _a3;
       }
       this.alpha = this.alpha < 1 ? this.alpha : 1;
-
-      for (var _t4 = 0; _t4 < this.coords.length; _t4++) {
-        "NaN" === this.coords[_t4] && (this.coords[_t4] = NaN);
-      }
+      for (var _t4 = 0; _t4 < this.coords.length; _t4++) "NaN" === this.coords[_t4] && (this.coords[_t4] = NaN);
     }
-
     _createClass(h, [{
       key: "space",
       get: function get() {
@@ -639,15 +528,10 @@
       },
       set: function set(t) {
         var e = h.space(t);
-
         if (t = e.id, this.space && e && this.space !== e) {
           this.coords = this[t];
-
-          for (var _t5 in this.space.instance) {
-            this.hasOwnProperty(_t5) && delete this[_t5];
-          }
+          for (var _t5 in this.space.instance) this.hasOwnProperty(_t5) && delete this[_t5];
         }
-
         this._spaceId = t, a(this, this.space.instance);
       }
     }, {
@@ -660,16 +544,11 @@
       value: function set(t, e) {
         if (1 === arguments.length && "object" === r(arguments[0])) {
           var _t6 = arguments[0];
-
-          for (var _e5 in _t6) {
-            this.set(_e5, _t6[_e5]);
-          }
+          for (var _e5 in _t6) this.set(_e5, _t6[_e5]);
         } else if ("function" == typeof e) {
           var _r4 = n(this, t);
-
           n(this, t, e.call(this, _r4));
         } else n(this, t, e);
-
         return this;
       }
     }, {
@@ -677,7 +556,7 @@
       value: function lighten() {
         var t = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : .25;
         var e = new h(this),
-            r = e.lightness;
+          r = e.lightness;
         return e.lightness = r * (1 + t), e;
       }
     }, {
@@ -685,7 +564,7 @@
       value: function darken() {
         var t = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : .25;
         var e = new h(this),
-            r = e.lightness;
+          r = e.lightness;
         return e.lightness = r * (1 - t), e;
       }
     }, {
@@ -694,7 +573,7 @@
         var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "lab";
         t = h.get(t);
         var r = this[(e = h.space(e)).id],
-            a = t[e.id];
+          a = t[e.id];
         return Math.sqrt(r.reduce(function (t, e, r) {
           return isNaN(e) || isNaN(a[r]) ? t : t + Math.pow(a[r] - e, 2);
         }, 0));
@@ -706,12 +585,10 @@
         e(r) && (r = {
           method: r
         });
-
         var _r5 = r,
-            _r5$method = _r5.method,
-            a = _r5$method === void 0 ? h.defaults.deltaE : _r5$method,
-            s = _objectWithoutProperties(_r5, _excluded);
-
+          _r5$method = _r5.method,
+          a = _r5$method === void 0 ? h.defaults.deltaE : _r5$method,
+          s = _objectWithoutProperties(_r5, _excluded);
         return t = h.get(t), this["deltaE" + a] ? this["deltaE" + a](t, s) : this.deltaE76(t);
       }
     }, {
@@ -732,52 +609,45 @@
       key: "contrast",
       value: function contrast(t) {
         var _ref2;
-
         t = h.get(t);
         var e = this.luminance,
-            r = t.luminance;
+          r = t.luminance;
         return r > e && (_ref2 = [r, e], e = _ref2[0], r = _ref2[1], _ref2), (e + .05) / (r + .05);
       }
     }, {
       key: "uv",
       get: function get() {
         var _this$xyz = _slicedToArray(this.xyz, 3),
-            t = _this$xyz[0],
-            e = _this$xyz[1],
-            r = _this$xyz[2],
-            a = t + 15 * e + 3 * r;
-
+          t = _this$xyz[0],
+          e = _this$xyz[1],
+          r = _this$xyz[2],
+          a = t + 15 * e + 3 * r;
         return [4 * t / a, 9 * e / a];
       }
     }, {
       key: "xy",
       get: function get() {
         var _this$xyz2 = _slicedToArray(this.xyz, 3),
-            t = _this$xyz2[0],
-            e = _this$xyz2[1],
-            r = _this$xyz2[2],
-            a = t + e + r;
-
+          t = _this$xyz2[0],
+          e = _this$xyz2[1],
+          r = _this$xyz2[2],
+          a = t + e + r;
         return [t / a, e / a];
       }
     }, {
       key: "getCoords",
       value: function getCoords() {
         var _ref3 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            t = _ref3.inGamut,
-            _ref3$precision = _ref3.precision,
-            e = _ref3$precision === void 0 ? h.defaults.precision : _ref3$precision;
-
+          t = _ref3.inGamut,
+          _ref3$precision = _ref3.precision,
+          e = _ref3$precision === void 0 ? h.defaults.precision : _ref3$precision;
         var r = this.coords;
-
         if (t && !this.inGamut() && (r = this.toGamut(!0 === t ? void 0 : t).coords), null != e) {
           var _t7 = this.space.coords ? Object.values(this.space.coords) : [];
-
           r = r.map(function (r, a) {
             return o(r, e, _t7[a]);
           });
         }
-
         return r;
       }
     }, {
@@ -791,64 +661,54 @@
       key: "toGamut",
       value: function toGamut() {
         var _ref4 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            _ref4$method = _ref4.method,
-            t = _ref4$method === void 0 ? h.defaults.gamutMapping : _ref4$method,
-            _ref4$space = _ref4.space,
-            r = _ref4$space === void 0 ? this.space : _ref4$space,
-            a = _ref4.inPlace;
-
+          _ref4$method = _ref4.method,
+          t = _ref4$method === void 0 ? h.defaults.gamutMapping : _ref4$method,
+          _ref4$space = _ref4.space,
+          r = _ref4$space === void 0 ? this.space : _ref4$space,
+          a = _ref4.inPlace;
         if (e(arguments[0]) && (r = arguments[0]), r = h.space(r), this.inGamut(r, {
           epsilon: 0
         })) return this;
         var s = this.to(r);
-
         if (t.indexOf(".") > 0 && !this.inGamut(r)) {
           var _e6 = s.toGamut({
             method: "clip",
             space: r
           });
-
           if (this.deltaE(_e6, {
             method: "2000"
           }) > 2) {
             var _i2 = i(t),
-                _i3 = _slicedToArray(_i2, 2),
-                _e7 = _i3[0],
-                _a4 = _i3[1],
-                _o = s.to(_e7),
-                _n = .01,
-                _c = _e7.coords[_a4][0],
-                _l = _o[_a4];
-
+              _i3 = _slicedToArray(_i2, 2),
+              _e7 = _i3[0],
+              _a4 = _i3[1],
+              _o = s.to(_e7),
+              _n = .01,
+              _c = _e7.coords[_a4][0],
+              _l = _o[_a4];
             for (; _l - _c > _n;) {
               var _t8 = _o.toGamut({
                 space: r,
                 method: "clip"
               });
-
               _o.deltaE(_t8, {
                 method: "2000"
               }) - 2 < _n ? _c = _o[_a4] : _l = _o[_a4], _o[_a4] = (_l + _c) / 2;
             }
-
             s = _o.to(r);
           } else s = _e6;
         }
-
         if ("clip" === t || !s.inGamut(r, {
           epsilon: 0
         })) {
           var _t9 = Object.values(r.coords);
-
           s.coords = s.coords.map(function (e, r) {
             var _t9$r = _slicedToArray(_t9[r], 2),
-                a = _t9$r[0],
-                s = _t9$r[1];
-
+              a = _t9$r[0],
+              s = _t9$r[1];
             return void 0 !== a && (e = Math.max(a, e)), void 0 !== s && (e = Math.min(e, s)), e;
           });
         }
-
         return r.id !== this.spaceId && (s = s.to(this.space)), a ? (this.coords = s.coords, this) : s;
       }
     }, {
@@ -860,10 +720,9 @@
       key: "to",
       value: function to(t) {
         var _ref5 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-            e = _ref5.inGamut;
-
+          e = _ref5.inGamut;
         var r = (t = h.space(t)).id,
-            a = new h(r, this[r], this.alpha);
+          a = new h(r, this[r], this.alpha);
         return e && a.toGamut({
           inPlace: !0
         }), a;
@@ -881,54 +740,42 @@
       key: "toString",
       value: function toString() {
         var _ref6 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            _ref6$precision = _ref6.precision,
-            t = _ref6$precision === void 0 ? h.defaults.precision : _ref6$precision,
-            r = _ref6.format,
-            a = _ref6.commas,
-            s = _ref6.inGamut,
-            _ref6$name = _ref6.name,
-            i = _ref6$name === void 0 ? "color" : _ref6$name,
-            n = _ref6.fallback;
-
+          _ref6$precision = _ref6.precision,
+          t = _ref6$precision === void 0 ? h.defaults.precision : _ref6$precision,
+          r = _ref6.format,
+          a = _ref6.commas,
+          s = _ref6.inGamut,
+          _ref6$name = _ref6.name,
+          i = _ref6$name === void 0 ? "color" : _ref6$name,
+          n = _ref6.fallback;
         var c = this.alpha < 1 ? " ".concat(a ? "," : "/", " ").concat(this.alpha) : "",
-            p = this.getCoords({
-          inGamut: s,
-          precision: t
-        });
+          p = this.getCoords({
+            inGamut: s,
+            precision: t
+          });
         p = p.map(function (t) {
           return t || 0;
         }), e(r) && "%" === r && (r = function r(e) {
           return o(e *= 100, t) + "%";
         }), "function" == typeof r && (p = p.map(r));
-
         var u = _toConsumableArray(p);
-
         "color" === i && u.unshift(this.space ? this.space.cssId || this.space.id : "XYZ");
         var d = "".concat(i, "(").concat(u.join(a ? ", " : " ")).concat(c, ")");
-
         if (n) {
           if (!l || "undefined" == typeof CSS || CSS.supports("color", d)) return d = new String(d), d.color = this, d;
-
           var _e8 = Array.isArray(n) ? n.slice() : h.defaults.fallbackSpaces;
-
-          for (var _r7, _a5 = 0; _r7 = _e8[_a5]; _a5++) {
-            if (h.spaces[_r7]) {
-              var _s = this.to(_r7);
-
-              if (d = _s.toString({
-                precision: t
-              }), CSS.supports("color", d)) return d = new String(d), d.color = _s, d;
-              _e8 === h.defaults.fallbackSpaces && (_e8.splice(_a5, 1), _a5--);
-            }
+          for (var _r6, _a5 = 0; _r6 = _e8[_a5]; _a5++) if (h.spaces[_r6]) {
+            var _s = this.to(_r6);
+            if (d = _s.toString({
+              precision: t
+            }), CSS.supports("color", d)) return d = new String(d), d.color = _s, d;
+            _e8 === h.defaults.fallbackSpaces && (_e8.splice(_a5, 1), _a5--);
           }
-
-          var _r6 = this.to("srgb");
-
-          d = new String(_r6.toString({
+          var _r7 = this.to("srgb");
+          d = new String(_r7.toString({
             commas: !0
-          })), d.color = _r6;
+          })), d.color = _r7;
         }
-
         return d;
       }
     }, {
@@ -942,22 +789,17 @@
       key: "inGamut",
       value: function inGamut(t, e) {
         var _ref7 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
-            _ref7$epsilon = _ref7.epsilon,
-            r = _ref7$epsilon === void 0 ? 75e-6 : _ref7$epsilon;
-
+          _ref7$epsilon = _ref7.epsilon,
+          r = _ref7$epsilon === void 0 ? 75e-6 : _ref7$epsilon;
         if ((t = h.space(t)).inGamut) return t.inGamut(e);
         {
           if (!t.coords) return !0;
-
           var _a6 = Object.values(t.coords);
-
           return e.every(function (t, e) {
             if (Number.isNaN(t)) return !0;
-
             var _a6$e = _slicedToArray(_a6[e], 2),
-                s = _a6$e[0],
-                o = _a6$e[1];
-
+              s = _a6$e[0],
+              o = _a6$e[1];
             return (void 0 === s || t >= s - r) && (void 0 === o || t <= o + r);
           });
         }
@@ -984,52 +826,41 @@
         };
         if (h.hooks.run("parse-start", e), e.color) return e.color;
         if (e.parsed = h.parseFunction(e.str), h.hooks.run("parse-function-start", e), e.color) return e.color;
-
         for (var _i4 = 0, _Object$values = Object.values(h.spaces); _i4 < _Object$values.length; _i4++) {
           var _t10 = _Object$values[_i4];
-
           if (_t10.parse) {
             var _r8 = _t10.parse(e.str, e.parsed);
-
             if (_r8) return _r8;
           }
         }
-
         var r = e.parsed && e.parsed.name;
-
         if (!/^color|^rgb/.test(r) && l && document.head) {
           var _a7 = document.head.style.color;
-
           if (document.head.style.color = "", document.head.style.color = t, document.head.style.color !== _a7) {
             var _s2 = getComputedStyle(document.head).color;
             document.head.style.color = _a7, _s2 && (t = _s2, e.parsed = h.parseFunction(_s2), r = e.parsed.name);
           }
         }
-
         if (e.parsed) {
           if ("rgb" === r || "rgba" === r) {
             var _t11 = e.parsed.args.map(function (t, e) {
               return e < 3 && !t.percentage ? t / 255 : +t;
             });
-
             return {
               spaceId: "srgb",
               coords: _t11.slice(0, 3),
               alpha: _t11[3]
             };
           }
-
           if ("color" === r) {
             var _t12 = e.parsed.args.shift().toLowerCase(),
-                _r9 = Object.values(h.spaces).find(function (e) {
-              return (e.cssId || e.id) === _t12;
-            });
-
+              _r9 = Object.values(h.spaces).find(function (e) {
+                return (e.cssId || e.id) === _t12;
+              });
             if (_r9) {
               var _t13 = Object.keys(_r9.coords).length,
-                  _a8 = e.parsed.rawArgs.indexOf("/") > 0 ? e.parsed.args.pop() : 1,
-                  _s3 = Array(_t13).fill(0);
-
+                _a8 = e.parsed.rawArgs.indexOf("/") > 0 ? e.parsed.args.pop() : 1,
+                _s3 = Array(_t13).fill(0);
               return _s3.forEach(function (t, r) {
                 return _s3[r] = e.parsed.args[r] || 0;
               }), {
@@ -1038,11 +869,9 @@
                 alpha: _a8
               };
             }
-
             throw new TypeError("Color space ".concat(_t12, " not found. Missing a plugin?"));
           }
         }
-
         throw new TypeError("Could not parse ".concat(t, " as a color. Missing a plugin?"));
       }
     }, {
@@ -1052,23 +881,17 @@
         t = t.trim();
         var e = /^-?[\d.]+$/;
         var r = t.match(/^([a-z]+)\((.+?)\)$/i);
-
         if (r) {
           var _t14 = r[2].match(/([-\w.]+(?:%|deg)?)/g);
-
           return _t14 = _t14.map(function (t) {
             if (/%$/.test(t)) {
               var _e9 = new Number(+t.slice(0, -1) / 100);
-
               return _e9.percentage = !0, _e9;
             }
-
             if (/deg$/.test(t)) {
               var _e10 = new Number(+t.slice(0, -3));
-
               return _e10.deg = !0, _e10;
             }
-
             return e.test(t) ? +t : t;
           }), {
             name: r[1].toLowerCase(),
@@ -1086,7 +909,7 @@
           return Number.isNaN(t) ? 0 : t;
         });
         var a = e.id,
-            s = r.id;
+          s = r.id;
         if (r.from && r.from[a]) return r.from[a](t);
         if (e.to && e.to[s]) return e.to[s](t);
         var o = e.toXYZ(t);
@@ -1098,20 +921,17 @@
         for (var _len3 = arguments.length, e = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
           e[_key3 - 1] = arguments[_key3];
         }
-
         return t instanceof h ? t : _construct(h, [t].concat(e));
       }
     }, {
       key: "space",
       value: function space(t) {
         var e = r(t);
-
         if ("string" === e) {
           var _e11 = h.spaces[t.toLowerCase()];
           if (!_e11) throw new TypeError("No color space found with id = \"".concat(t, "\""));
           return _e11;
         }
-
         if (t && "object" === e) return t;
         throw new TypeError(t + " is not a valid color space");
       }
@@ -1119,56 +939,43 @@
       key: "defineSpace",
       value: function defineSpace(_ref8) {
         var t = _ref8.id,
-            e = _ref8.inherits;
+          e = _ref8.inherits;
         var r = h.spaces[t] = arguments[0];
-
         if (e) {
           var _t15 = ["id", "parse", "instance", "properties"];
           var _a9 = h.spaces[e];
-
-          for (var _e12 in _a9) {
-            _t15.includes(_e12) || _e12 in r || s(r, _a9, _e12);
-          }
+          for (var _e12 in _a9) _t15.includes(_e12) || _e12 in r || s(r, _a9, _e12);
         }
-
         var o = r.coords;
-
         if (r.properties && a(h.prototype, r.properties), !r.fromXYZ && !r.toXYZ) {
           var _t16;
-
           if (r.from && r.to) {
             var _e13 = new Set(Object.keys(r.from)),
-                _a10 = new Set(Object.keys(r.to)),
-                _s4 = _toConsumableArray(_e13).filter(function (t) {
-              if (_a10.has(t)) {
-                var _e14 = h.spaces[t];
-                return _e14 && _e14.fromXYZ && _e14.toXYZ;
-              }
-            });
-
+              _a10 = new Set(Object.keys(r.to)),
+              _s4 = _toConsumableArray(_e13).filter(function (t) {
+                if (_a10.has(t)) {
+                  var _e14 = h.spaces[t];
+                  return _e14 && _e14.fromXYZ && _e14.toXYZ;
+                }
+              });
             _s4.length > 0 && (_t16 = h.spaces[_s4[0]]);
           }
-
           if (!_t16) throw new ReferenceError("No connection space found for ".concat(r.name, "."));
           Object.assign(r, {
             fromXYZ: function fromXYZ(e) {
               var r = _t16.fromXYZ(e);
-
               return this.from[_t16.id](r);
             },
             toXYZ: function toXYZ(e) {
               var r = this.to[_t16.id](e);
-
               return _t16.toXYZ(r);
             }
           });
         }
-
         var i = Object.keys(o);
         return Object.defineProperty(h.prototype, t, {
           get: function get() {
             var _this = this;
-
             var e = h.convert(this.coords, this.spaceId, t);
             return "undefined" == typeof Proxy ? e : new Proxy(e, {
               has: function has(t, e) {
@@ -1212,25 +1019,20 @@
       value: function statify() {
         var t = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
         t = t || Object.getOwnPropertyNames(h.prototype);
-
         var _iterator = _createForOfIteratorHelper(Object.getOwnPropertyNames(h.prototype)),
-            _step;
-
+          _step;
         try {
           var _loop = function _loop() {
             var t = _step.value;
             var e = Object.getOwnPropertyDescriptor(h.prototype, t);
             e.get || e.set || "function" != typeof e.value || t in h || (h[t] = function (e) {
               var _e15;
-
               for (var _len4 = arguments.length, r = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
                 r[_key4 - 1] = arguments[_key4];
               }
-
               return (_e15 = e = h.get(e))[t].apply(_e15, r);
             });
           };
-
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
             _loop();
           }
@@ -1241,25 +1043,20 @@
         }
       }
     }]);
-
     return h;
   }();
-
   Object.assign(h, {
     util: c,
     hooks: new ( /*#__PURE__*/function () {
       function _class() {
         _classCallCheck(this, _class);
       }
-
       _createClass(_class, [{
         key: "add",
         value: function add(t, e, r) {
           if ("string" == typeof arguments[0]) (Array.isArray(t) ? t : [t]).forEach(function (t) {
             this[t] = this[t] || [], e && this[t][r ? "unshift" : "push"](e);
-          }, this);else for (var t in arguments[0]) {
-            this.add(t, arguments[0][t], arguments[1]);
-          }
+          }, this);else for (var t in arguments[0]) this.add(t, arguments[0][t], arguments[1]);
         }
       }, {
         key: "run",
@@ -1269,7 +1066,6 @@
           });
         }
       }]);
-
       return _class;
     }())(),
     whites: {
@@ -1307,11 +1103,7 @@
       return t;
     }
   });
-
-  for (var _t17 in h.shortcuts) {
-    h.defineShortcut(_t17);
-  }
-
+  for (var _t17 in h.shortcuts) h.defineShortcut(_t17);
   h.statify(), h.defineSpace({
     id: "lab",
     name: "Lab",
@@ -1329,8 +1121,8 @@
     "κ": 24389 / 27,
     fromXYZ: function fromXYZ(t) {
       var e = this["κ"],
-          r = this["ε"],
-          a = this.white;
+        r = this["ε"],
+        a = this.white;
       var s = t.map(function (t, e) {
         return t / a[e];
       }).map(function (t) {
@@ -1340,8 +1132,8 @@
     },
     toXYZ: function toXYZ(t) {
       var e = this["κ"],
-          r = this["ε3"],
-          a = this.white;
+        r = this["ε3"],
+        a = this.white;
       var s = [];
       return s[1] = (t[0] + 16) / 116, s[0] = t[1] / 500 + s[1], s[2] = s[1] - t[2] / 200, [s[0] > r ? Math.pow(s[0], 3) : (116 * s[0] - 16) / e, t[0] > 8 ? Math.pow((t[0] + 16) / 116, 3) : t[0] / e, s[2] > r ? Math.pow(s[2], 3) : (116 * s[2] - 16) / e].map(function (t, e) {
         return t * a[e];
@@ -1349,7 +1141,6 @@
     },
     parse: function parse(t) {
       var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : h.parseFunction(t);
-
       if (e && "lab" === e.name) {
         var _t18 = e.args[0];
         return _t18.percentage && (e.args[0] = 100 * _t18), {
@@ -1362,9 +1153,8 @@
     instance: {
       toString: function toString() {
         var _ref9 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            t = _ref9.format,
-            e = _objectWithoutProperties(_ref9, _excluded2);
-
+          t = _ref9.format,
+          e = _objectWithoutProperties(_ref9, _excluded2);
         return t || (t = function t(_t19, e) {
           return 0 === e ? _t19 + "%" : _t19;
         }), h.prototype.toString.call(this, _objectSpread2({
@@ -1375,11 +1165,9 @@
     }
   });
   var p = [0, 360];
-
   function u(t) {
     return (t % 360 + 360) % 360;
   }
-
   p.isAngle = !0, h.defineSpace({
     id: "lch",
     name: "LCH",
@@ -1395,27 +1183,24 @@
     from: {
       lab: function lab(t) {
         var e,
-            _t20 = _slicedToArray(t, 3),
-            r = _t20[0],
-            a = _t20[1],
-            s = _t20[2];
-
+          _t20 = _slicedToArray(t, 3),
+          r = _t20[0],
+          a = _t20[1],
+          s = _t20[2];
         return e = Math.abs(a) < .02 && Math.abs(s) < .02 ? NaN : 180 * Math.atan2(s, a) / Math.PI, [r, Math.sqrt(Math.pow(a, 2) + Math.pow(s, 2)), u(e)];
       }
     },
     to: {
       lab: function lab(t) {
         var _t21 = _slicedToArray(t, 3),
-            e = _t21[0],
-            r = _t21[1],
-            a = _t21[2];
-
+          e = _t21[0],
+          r = _t21[1],
+          a = _t21[2];
         return r < 0 && (r = 0), isNaN(a) && (a = 0), [e, r * Math.cos(a * Math.PI / 180), r * Math.sin(a * Math.PI / 180)];
       }
     },
     parse: function parse(t) {
       var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : h.parseFunction(t);
-
       if (e && "lch" === e.name) {
         var _t22 = e.args[0];
         return _t22.percentage && (e.args[0] = 100 * _t22), {
@@ -1428,9 +1213,8 @@
     instance: {
       toString: function toString() {
         var _ref10 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            t = _ref10.format,
-            e = _objectWithoutProperties(_ref10, _excluded3);
-
+          t = _ref10.format,
+          e = _objectWithoutProperties(_ref10, _excluded3);
         return t || (t = function t(_t23, e) {
           return 0 === e ? _t23 + "%" : _t23;
         }), h.prototype.toString.call(this, _objectSpread2({
@@ -1451,14 +1235,14 @@
     toLinear: function toLinear(t) {
       return t.map(function (t) {
         var e = t < 0 ? -1 : 1,
-            r = Math.abs(t);
+          r = Math.abs(t);
         return r < .04045 ? t / 12.92 : e * Math.pow((r + .055) / 1.055, 2.4);
       });
     },
     toGamma: function toGamma(t) {
       return t.map(function (t) {
         var e = t < 0 ? -1 : 1,
-            r = Math.abs(t);
+          r = Math.abs(t);
         return r > .0031308 ? e * (1.055 * Math.pow(r, 1 / 2.4) - .055) : 12.92 * t;
       });
     },
@@ -1473,11 +1257,10 @@
     properties: {
       toHex: function toHex() {
         var _ref11 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            _ref11$alpha = _ref11.alpha,
-            t = _ref11$alpha === void 0 ? !0 : _ref11$alpha,
-            _ref11$collapse = _ref11.collapse,
-            e = _ref11$collapse === void 0 ? !0 : _ref11$collapse;
-
+          _ref11$alpha = _ref11.alpha,
+          t = _ref11$alpha === void 0 ? !0 : _ref11$alpha,
+          _ref11$collapse = _ref11.collapse,
+          e = _ref11$collapse === void 0 ? !0 : _ref11$collapse;
         var r = this.to("srgb", {
           inGamut: !0
         }).coords;
@@ -1491,22 +1274,19 @@
           return a ? (t / 17).toString(16) : t.toString(16).padStart(2, "0");
         }).join("");
       },
-
       get hex() {
         return this.toHex();
       }
-
     },
     instance: {
       toString: function toString() {
         var _ref12 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            _ref12$inGamut = _ref12.inGamut,
-            t = _ref12$inGamut === void 0 ? !0 : _ref12$inGamut,
-            e = _ref12.commas,
-            _ref12$format = _ref12.format,
-            r = _ref12$format === void 0 ? "%" : _ref12$format,
-            a = _objectWithoutProperties(_ref12, _excluded4);
-
+          _ref12$inGamut = _ref12.inGamut,
+          t = _ref12$inGamut === void 0 ? !0 : _ref12$inGamut,
+          e = _ref12.commas,
+          _ref12$format = _ref12.format,
+          r = _ref12$format === void 0 ? "%" : _ref12$format,
+          a = _objectWithoutProperties(_ref12, _excluded4);
         if (255 === r) r = function r(t) {
           return 255 * t;
         };else if ("hex" === r) return this.toHex(arguments[0]);
@@ -1558,55 +1338,47 @@
     from: {
       srgb: function srgb(t) {
         var e = Math.max.apply(Math, t),
-            r = Math.min.apply(Math, t),
-            _t24 = _slicedToArray(t, 3),
-            a = _t24[0],
-            s = _t24[1],
-            o = _t24[2],
-            i = NaN,
-            n = 0,
-            c = (r + e) / 2,
-            l = e - r;
-
+          r = Math.min.apply(Math, t),
+          _t24 = _slicedToArray(t, 3),
+          a = _t24[0],
+          s = _t24[1],
+          o = _t24[2],
+          i = NaN,
+          n = 0,
+          c = (r + e) / 2,
+          l = e - r;
         if (0 !== l) {
           switch (n = 0 === c || 1 === c ? 0 : (e - c) / Math.min(c, 1 - c), e) {
             case a:
               i = (s - o) / l + (s < o ? 6 : 0);
               break;
-
             case s:
               i = (o - a) / l + 2;
               break;
-
             case o:
               i = (a - s) / l + 4;
           }
-
           i *= 60;
         }
-
         return [i, 100 * n, 100 * c];
       }
     },
     to: {
       srgb: function srgb(t) {
         var _t25 = _slicedToArray(t, 3),
-            e = _t25[0],
-            r = _t25[1],
-            a = _t25[2];
-
+          e = _t25[0],
+          r = _t25[1],
+          a = _t25[2];
         function s(t) {
           var s = (t + e / 30) % 12,
-              o = r * Math.min(a, 1 - a);
+            o = r * Math.min(a, 1 - a);
           return a - o * Math.max(-1, Math.min(s - 3, 9 - s, 1));
         }
-
         return e %= 360, e < 0 && (e += 360), r /= 100, a /= 100, [s(0), s(8), s(4)];
       }
     },
     parse: function parse(t) {
       var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : h.parseFunction(t);
-
       if (e && /^hsla?$/.test(e.name)) {
         var _t26 = e.args;
         return _t26[1] *= 100, _t26[2] *= 100, {
@@ -1619,12 +1391,11 @@
     instance: {
       toString: function toString() {
         var _ref13 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-            _ref13.precision;
-            var e = _ref13.commas,
-            r = _ref13.format;
-            _ref13.inGamut;
-            var s = _objectWithoutProperties(_ref13, _excluded5);
-
+          _ref13.precision;
+          var e = _ref13.commas,
+          r = _ref13.format;
+          _ref13.inGamut;
+          var s = _objectWithoutProperties(_ref13, _excluded5);
         return r || (r = function r(t, e) {
           return e > 0 ? t + "%" : t;
         }), h.prototype.toString.call(this, _objectSpread2({
@@ -1651,16 +1422,15 @@
     from: {
       srgb: function srgb(t) {
         var e = h.spaces.hsl.from.srgb(t)[0],
-            r = Math.min.apply(Math, _toConsumableArray(t)),
-            a = 1 - Math.max.apply(Math, _toConsumableArray(t));
+          r = Math.min.apply(Math, _toConsumableArray(t)),
+          a = 1 - Math.max.apply(Math, _toConsumableArray(t));
         return r *= 100, a *= 100, [e, r, a];
       },
       hsv: function hsv(t) {
         var _t27 = _slicedToArray(t, 3),
-            e = _t27[0],
-            r = _t27[1],
-            a = _t27[2];
-
+          e = _t27[0],
+          r = _t27[1],
+          a = _t27[2];
         return [e, a * (100 - r) / 100, 100 - a];
       },
       hsl: function hsl(t) {
@@ -1671,33 +1441,24 @@
     to: {
       srgb: function srgb(t) {
         var _t28 = _slicedToArray(t, 3),
-            e = _t28[0],
-            r = _t28[1],
-            a = _t28[2];
-
+          e = _t28[0],
+          r = _t28[1],
+          a = _t28[2];
         r /= 100, a /= 100;
         var s = r + a;
-
         if (s >= 1) {
           var _t29 = r / s;
-
           return [_t29, _t29, _t29];
         }
-
         var o = h.spaces.hsl.to.srgb([e, 100, 50]);
-
-        for (var i = 0; i < 3; i++) {
-          o[i] *= 1 - r - a, o[i] += r;
-        }
-
+        for (var i = 0; i < 3; i++) o[i] *= 1 - r - a, o[i] += r;
         return o;
       },
       hsv: function hsv(t) {
         var _t30 = _slicedToArray(t, 3),
-            e = _t30[0],
-            r = _t30[1],
-            a = _t30[2];
-
+          e = _t30[0],
+          r = _t30[1],
+          a = _t30[2];
         r /= 100, a /= 100;
         var s = r + a;
         if (s >= 1) return [e, 0, r / s * 100];
@@ -1711,7 +1472,6 @@
     },
     parse: function parse(t) {
       var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : h.parseFunction(t);
-
       if (e && /^hwba?$/.test(e.name)) {
         var _t31 = e.args;
         return _t31[1] *= 100, _t31[2] *= 100, {
@@ -1724,11 +1484,10 @@
     instance: {
       toString: function toString() {
         var _ref14 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            t = _ref14.format;
-            _ref14.commas;
-            _ref14.inGamut;
-            var a = _objectWithoutProperties(_ref14, _excluded6);
-
+          t = _ref14.format;
+          _ref14.commas;
+          _ref14.inGamut;
+          var a = _objectWithoutProperties(_ref14, _excluded6);
         return t || (t = function t(_t32, e) {
           return e > 0 ? _t32 + "%" : _t32;
         }), h.prototype.toString.call(this, _objectSpread2({
@@ -1755,10 +1514,9 @@
     from: {
       hsl: function hsl(t) {
         var _t33 = _slicedToArray(t, 3),
-            e = _t33[0],
-            r = _t33[1],
-            a = _t33[2];
-
+          e = _t33[0],
+          r = _t33[1],
+          a = _t33[2];
         r /= 100, a /= 100;
         var s = a + r * Math.min(a, 1 - a);
         return [e, 0 === s ? 0 : 200 * (1 - a / s), 100 * s];
@@ -1767,10 +1525,9 @@
     to: {
       hsl: function hsl(t) {
         var _t34 = _slicedToArray(t, 3),
-            e = _t34[0],
-            r = _t34[1],
-            a = _t34[2];
-
+          e = _t34[0],
+          r = _t34[1],
+          a = _t34[2];
         r /= 100, a /= 100;
         var s = a * (1 - r / 2);
         return [e, 0 === s || 1 === s ? 0 : (a - s) / Math.min(s, 1 - s) * 100, 100 * s];
@@ -1826,14 +1583,14 @@
     "β": .018053968510807,
     toLinear: function toLinear(t) {
       var e = this["α"],
-          r = this["β"];
+        r = this["β"];
       return t.map(function (t) {
         return t < 4.5 * r ? t / 4.5 : Math.pow((t + e - 1) / e, 1 / .45);
       });
     },
     toGamma: function toGamma(t) {
       var e = this["α"],
-          r = this["β"];
+        r = this["β"];
       return t.map(function (t) {
         return t > r ? e * Math.pow(t, .45) - (e - 1) : 4.5 * t;
       });
@@ -1895,61 +1652,57 @@
     IabtoCone_M: [[1, .1386050432715393, .05804731615611886], [.9999999999999999, -.1386050432715393, -.05804731615611886], [.9999999999999998, -.09601924202631895, -.8118918960560388]],
     fromXYZ: function fromXYZ(e) {
       var r = this.b,
-          a = this.g,
-          s = this.n,
-          o = this.p,
-          i = this.c1,
-          n = this.c2,
-          c = this.c3,
-          l = this.d,
-          p = this.d0,
-          u = this.XYZtoCone_M,
-          d = this.ConetoIab_M;
-
+        a = this.g,
+        s = this.n,
+        o = this.p,
+        i = this.c1,
+        n = this.c2,
+        c = this.c3,
+        l = this.d,
+        p = this.d0,
+        u = this.XYZtoCone_M,
+        d = this.ConetoIab_M;
       var _h$spaces$absxyzd65$f = h.spaces.absxyzd65.fromXYZ(e),
-          _h$spaces$absxyzd65$f2 = _slicedToArray(_h$spaces$absxyzd65$f, 3),
-          m = _h$spaces$absxyzd65$f2[0],
-          f = _h$spaces$absxyzd65$f2[1],
-          g = _h$spaces$absxyzd65$f2[2],
-          M = t(u, [r * m - (r - 1) * g, a * f - (a - 1) * m, g]).map(function (t) {
-        return Math.pow((i + n * Math.pow(t / 1e4, s)) / (1 + c * Math.pow(t / 1e4, s)), o);
-      }),
-          _t35 = t(d, M),
-          _t36 = _slicedToArray(_t35, 3),
-          b = _t36[0],
-          w = _t36[1],
-          y = _t36[2];
-
+        _h$spaces$absxyzd65$f2 = _slicedToArray(_h$spaces$absxyzd65$f, 3),
+        m = _h$spaces$absxyzd65$f2[0],
+        f = _h$spaces$absxyzd65$f2[1],
+        g = _h$spaces$absxyzd65$f2[2],
+        M = t(u, [r * m - (r - 1) * g, a * f - (a - 1) * m, g]).map(function (t) {
+          return Math.pow((i + n * Math.pow(t / 1e4, s)) / (1 + c * Math.pow(t / 1e4, s)), o);
+        }),
+        _t35 = t(d, M),
+        _t36 = _slicedToArray(_t35, 3),
+        b = _t36[0],
+        w = _t36[1],
+        y = _t36[2];
       return [(1 + l) * b / (1 + l * b) - p, w, y];
     },
     toXYZ: function toXYZ(e) {
       var r = this.b,
-          a = this.g,
-          s = this.ninv,
-          o = this.pinv,
-          i = this.c1,
-          n = this.c2,
-          c = this.c3,
-          l = this.d,
-          p = this.d0,
-          u = this.ConetoXYZ_M,
-          d = this.IabtoCone_M;
-
+        a = this.g,
+        s = this.ninv,
+        o = this.pinv,
+        i = this.c1,
+        n = this.c2,
+        c = this.c3,
+        l = this.d,
+        p = this.d0,
+        u = this.ConetoXYZ_M,
+        d = this.IabtoCone_M;
       var _e16 = _slicedToArray(e, 3),
-          m = _e16[0],
-          f = _e16[1],
-          g = _e16[2],
-          M = t(d, [(m + p) / (1 + l - l * (m + p)), f, g]).map(function (t) {
-        return 1e4 * Math.pow((i - Math.pow(t, o)) / (c * Math.pow(t, o) - n), s);
-      }),
-          _t37 = t(u, M),
-          _t38 = _slicedToArray(_t37, 3),
-          b = _t38[0],
-          w = _t38[1],
-          y = _t38[2],
-          S = (b + (r - 1) * y) / r,
-          C = (w + (a - 1) * S) / a;
-
+        m = _e16[0],
+        f = _e16[1],
+        g = _e16[2],
+        M = t(d, [(m + p) / (1 + l - l * (m + p)), f, g]).map(function (t) {
+          return 1e4 * Math.pow((i - Math.pow(t, o)) / (c * Math.pow(t, o) - n), s);
+        }),
+        _t37 = t(u, M),
+        _t38 = _slicedToArray(_t37, 3),
+        b = _t38[0],
+        w = _t38[1],
+        y = _t38[2],
+        S = (b + (r - 1) * y) / r,
+        C = (w + (a - 1) * S) / a;
       return h.spaces.absxyzd65.toXYZ([S, C, y]);
     },
     parse: function parse(t) {
@@ -1963,9 +1716,8 @@
     instance: {
       toString: function toString() {
         var _ref15 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            t = _ref15.format,
-            e = _objectWithoutProperties(_ref15, _excluded7);
-
+          t = _ref15.format,
+          e = _objectWithoutProperties(_ref15, _excluded7);
         return h.prototype.toString.call(this, _objectSpread2({
           name: "jzazbz",
           format: t
@@ -1987,11 +1739,10 @@
     from: {
       jzazbz: function jzazbz(t) {
         var e,
-            _t39 = _slicedToArray(t, 3),
-            r = _t39[0],
-            a = _t39[1],
-            s = _t39[2];
-
+          _t39 = _slicedToArray(t, 3),
+          r = _t39[0],
+          a = _t39[1],
+          s = _t39[2];
         var o = 2e-4;
         return e = Math.abs(a) < o && Math.abs(s) < o ? NaN : 180 * Math.atan2(s, a) / Math.PI, [r, Math.sqrt(Math.pow(a, 2) + Math.pow(s, 2)), u(e)];
       }
@@ -2036,14 +1787,12 @@
     LMStoXYZ_M: [[2.0701800566956137, -1.326456876103021, .20661600684785517], [.3649882500326575, .6804673628522352, -.04542175307585323], [-.04959554223893211, -.04942116118675749, 1.1879959417328034]],
     fromXYZ: function fromXYZ(e) {
       var r = this.XYZtoLMS_M;
-
       var _h$spaces$absxyzd65$f3 = h.spaces.absxyzd65.fromXYZ(e),
-          _h$spaces$absxyzd65$f4 = _slicedToArray(_h$spaces$absxyzd65$f3, 3),
-          a = _h$spaces$absxyzd65$f4[0],
-          s = _h$spaces$absxyzd65$f4[1],
-          o = _h$spaces$absxyzd65$f4[2],
-          i = t(r, [a, s, o]);
-
+        _h$spaces$absxyzd65$f4 = _slicedToArray(_h$spaces$absxyzd65$f3, 3),
+        a = _h$spaces$absxyzd65$f4[0],
+        s = _h$spaces$absxyzd65$f4[1],
+        o = _h$spaces$absxyzd65$f4[2],
+        i = t(r, [a, s, o]);
       return this.LMStoICtCp(i);
     },
     toXYZ: function toXYZ(e) {
@@ -2053,22 +1802,22 @@
     },
     LMStoICtCp: function LMStoICtCp(e) {
       var r = this.LMStoIPT_M,
-          a = this.c1,
-          s = this.c2,
-          o = this.c3,
-          i = this.m1,
-          n = this.m2;
+        a = this.c1,
+        s = this.c2,
+        o = this.c3,
+        i = this.m1,
+        n = this.m2;
       return t(r, e.map(function (t) {
         return Math.pow((a + s * Math.pow(t / 1e4, i)) / (1 + o * Math.pow(t / 1e4, i)), n);
       }));
     },
     ICtCptoLMS: function ICtCptoLMS(e) {
       var r = this.IPTtoLMS_M,
-          a = this.c1,
-          s = this.c2,
-          o = this.c3,
-          i = this.im1,
-          n = this.im2;
+        a = this.c1,
+        s = this.c2,
+        o = this.c3,
+        i = this.im1,
+        n = this.im2;
       return t(r, e).map(function (t) {
         return 1e4 * Math.pow(Math.max(Math.pow(t, n) - a, 0) / (s - o * Math.pow(t, n)), i);
       });
@@ -2088,22 +1837,22 @@
     c3: 18.6875,
     toLinear: function toLinear(t) {
       var e = this.Yw,
-          r = this.ninv,
-          a = this.minv,
-          s = this.c1,
-          o = this.c2,
-          i = this.c3;
+        r = this.ninv,
+        a = this.minv,
+        s = this.c1,
+        o = this.c2,
+        i = this.c3;
       return t.map(function (t) {
         return 1e4 * Math.pow(Math.max(Math.pow(t, a) - s, 0) / (o - i * Math.pow(t, a)), r) / e;
       });
     },
     toGamma: function toGamma(t) {
       var e = this.Yw,
-          r = this.n,
-          a = this.m,
-          s = this.c1,
-          o = this.c2,
-          i = this.c3;
+        r = this.n,
+        a = this.m,
+        s = this.c1,
+        o = this.c2,
+        i = this.c3;
       return t.map(function (t) {
         var n = Math.max(t * e / 1e4, 0);
         return Math.pow((s + o * Math.pow(n, r)) / (1 + i * Math.pow(n, r)), a);
@@ -2128,7 +1877,7 @@
     LabtoLMS_M: [[.9999999984505198, .39633779217376786, .2158037580607588], [1.0000000088817609, -.10556134232365635, -.06385417477170591], [1.0000000546724108, -.08948418209496575, -1.2914855378640917]],
     fromXYZ: function fromXYZ(e) {
       var r = this.XYZtoLMS_M,
-          a = this.LMStoLab_M;
+        a = this.LMStoLab_M;
       var s = t(r, e);
       return t(a, s.map(function (t) {
         return Math.cbrt(t);
@@ -2136,7 +1885,7 @@
     },
     toXYZ: function toXYZ(e) {
       var r = this.LMStoXYZ_M,
-          a = this.LabtoLMS_M;
+        a = this.LabtoLMS_M;
       var s = t(a, e);
       return t(r, s.map(function (t) {
         return Math.pow(t, 3);
@@ -2157,11 +1906,10 @@
     from: {
       oklab: function oklab(t) {
         var e,
-            _t40 = _slicedToArray(t, 3),
-            r = _t40[0],
-            a = _t40[1],
-            s = _t40[2];
-
+          _t40 = _slicedToArray(t, 3),
+          r = _t40[0],
+          a = _t40[1],
+          s = _t40[2];
         var o = 2e-4;
         return e = Math.abs(a) < o && Math.abs(s) < o ? NaN : 180 * Math.atan2(s, a) / Math.PI, [r, Math.sqrt(Math.pow(a, 2) + Math.pow(s, 2)), u(e)];
       }
@@ -2169,12 +1917,11 @@
     to: {
       oklab: function oklab(t) {
         var e,
-            r,
-            _t41 = _slicedToArray(t, 3),
-            a = _t41[0],
-            s = _t41[1],
-            o = _t41[2];
-
+          r,
+          _t41 = _slicedToArray(t, 3),
+          a = _t41[0],
+          s = _t41[1],
+          o = _t41[2];
         return isNaN(o) ? (e = 0, r = 0) : (e = s * Math.cos(o * Math.PI / 180), r = s * Math.sin(o * Math.PI / 180)), [a, e, r];
       }
     },
@@ -2192,25 +1939,23 @@
     t.M || (t.M = h.adapt(t.W1, t.W2, t.options.method));
   }), h.defineCAT = function (_ref16) {
     var t = _ref16.id;
-        _ref16.toCone_M;
-        _ref16.fromCone_M;
+      _ref16.toCone_M;
+      _ref16.fromCone_M;
     h.CATs[t] = arguments[0];
   }, h.adapt = function (e, r) {
     var a = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "Bradford";
-
     var s = h.CATs[a],
-        _t42 = t(s.toCone_M, e),
-        _t43 = _slicedToArray(_t42, 3),
-        o = _t43[0],
-        i = _t43[1],
-        n = _t43[2],
-        _t44 = t(s.toCone_M, r),
-        _t45 = _slicedToArray(_t44, 3),
-        c = _t45[0],
-        l = _t45[1],
-        p = _t45[2],
-        u = t([[c / o, 0, 0], [0, l / i, 0], [0, 0, p / n]], s.toCone_M);
-
+      _t42 = t(s.toCone_M, e),
+      _t43 = _slicedToArray(_t42, 3),
+      o = _t43[0],
+      i = _t43[1],
+      n = _t43[2],
+      _t44 = t(s.toCone_M, r),
+      _t45 = _slicedToArray(_t44, 3),
+      c = _t45[0],
+      l = _t45[1],
+      p = _t45[2],
+      u = t([[c / o, 0, 0], [0, l / i, 0], [0, 0, p / n]], s.toCone_M);
     return t(s.fromCone_M, u);
   }, h.defineCAT({
     id: "von Kries",
@@ -2267,18 +2012,16 @@
       for (var _len5 = arguments.length, t = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
         t[_key5] = arguments[_key5];
       }
-
       return h.range.apply(h, [this].concat(t));
     },
     mix: function mix(t) {
       var _ref17;
-
       var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : .5;
       var a = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
       "object" === r(e) && (_ref17 = [.5, e], e = _ref17[0], a = _ref17[1], _ref17);
       var _a11 = a,
-          s = _a11.space,
-          o = _a11.outputSpace;
+        s = _a11.space,
+        o = _a11.outputSpace;
       return t = h.get(t), this.range(t, {
         space: s,
         outputSpace: o
@@ -2288,45 +2031,37 @@
       for (var _len6 = arguments.length, t = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
         t[_key6] = arguments[_key6];
       }
-
       return h.steps.apply(h, [this].concat(t));
     }
   };
-
   function m(t) {
     return "function" === r(t) && t.rangeArgs;
   }
-
   function f(t, e, r) {
     return isNaN(t) ? e : isNaN(e) ? t : t + (e - t) * r;
   }
-
   h.steps = function (t, e) {
     var _a$rangeArgs$colors;
-
     var r = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     var a;
     m(t) && ((a = t, r = e), (_a$rangeArgs$colors = _slicedToArray(a.rangeArgs.colors, 2), t = _a$rangeArgs$colors[0], e = _a$rangeArgs$colors[1]));
-
     var _r10 = r,
-        s = _r10.maxDeltaE,
-        o = _r10.deltaEMethod,
-        _r10$steps = _r10.steps,
-        i = _r10$steps === void 0 ? 2 : _r10$steps,
-        _r10$maxSteps = _r10.maxSteps,
-        n = _r10$maxSteps === void 0 ? 1e3 : _r10$maxSteps,
-        c = _objectWithoutProperties(_r10, _excluded8);
-
+      s = _r10.maxDeltaE,
+      o = _r10.deltaEMethod,
+      _r10$steps = _r10.steps,
+      i = _r10$steps === void 0 ? 2 : _r10$steps,
+      _r10$maxSteps = _r10.maxSteps,
+      n = _r10$maxSteps === void 0 ? 1e3 : _r10$maxSteps,
+      c = _objectWithoutProperties(_r10, _excluded8);
     a || (t = h.get(t), e = h.get(e), a = h.range(t, e, c));
     var l = this.deltaE(e),
-        p = s > 0 ? Math.max(i, Math.ceil(l / s) + 1) : i,
-        u = [];
+      p = s > 0 ? Math.max(i, Math.ceil(l / s) + 1) : i,
+      u = [];
     if (void 0 !== n && (p = Math.min(p, n)), 1 === p) u = [{
       p: .5,
       color: a(.5)
     }];else {
       var _t46 = 1 / (p - 1);
-
       u = Array.from({
         length: p
       }, function (e, r) {
@@ -2337,23 +2072,19 @@
         };
       });
     }
-
     if (s > 0) {
       var _t47 = u.reduce(function (t, e, r) {
         if (0 === r) return 0;
         var a = e.color.deltaE(u[r - 1].color, o);
         return Math.max(t, a);
       }, 0);
-
       for (; _t47 > s;) {
         _t47 = 0;
-
         for (var _e17 = 1; _e17 < u.length && u.length < n; _e17++) {
           var _r11 = u[_e17 - 1],
-              _s5 = u[_e17],
-              _o2 = (_s5.p + _r11.p) / 2,
-              _i5 = a(_o2);
-
+            _s5 = u[_e17],
+            _o2 = (_s5.p + _r11.p) / 2,
+            _i5 = a(_o2);
           _t47 = Math.max(_t47, _i5.deltaE(_r11.color), _i5.deltaE(_s5.color)), u.splice(_e17, 0, {
             p: _o2,
             color: a(_o2)
@@ -2361,50 +2092,40 @@
         }
       }
     }
-
     return u = u.map(function (t) {
       return t.color;
     }), u;
   }, h.range = function (t, e) {
     var r = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-
     if (m(t)) {
       var _r12 = t,
-          _a12 = e;
+        _a12 = e;
       return h.range.apply(h, _toConsumableArray(_r12.rangeArgs.colors).concat([_objectSpread2(_objectSpread2({}, _r12.rangeArgs.options), _a12)]));
     }
-
     var a = r.space,
-        s = r.outputSpace,
-        o = r.progression,
-        i = r.premultiplied;
+      s = r.outputSpace,
+      o = r.progression,
+      i = r.premultiplied;
     t = new h(t), e = new h(e);
     var n = {
       colors: [t, e],
       options: r
     };
-
     if (a = a ? h.space(a) : h.spaces[h.defaults.interpolationSpace] || t.space, s = s ? h.space(s) : t.space || a, t = t.to(a).toGamut(), e = e.to(a).toGamut(), a.coords.hue && a.coords.hue.isAngle) {
       var _s6 = r.hue = r.hue || "shorter";
-
       var _ref18 = function (t, e) {
         if ("raw" === t) return e;
-
         var _e$map = e.map(u),
-            _e$map2 = _slicedToArray(_e$map, 2),
-            r = _e$map2[0],
-            a = _e$map2[1],
-            s = a - r;
-
+          _e$map2 = _slicedToArray(_e$map, 2),
+          r = _e$map2[0],
+          a = _e$map2[1],
+          s = a - r;
         return "increasing" === t ? s < 0 && (a += 360) : "decreasing" === t ? s > 0 && (r += 360) : "longer" === t ? -180 < s && s < 180 && (s > 0 ? a += 360 : r += 360) : "shorter" === t && (s > 180 ? r += 360 : s < -180 && (a += 360)), [r, a];
       }(_s6, [t[a.id].hue, e[a.id].hue]);
-
       var _ref19 = _slicedToArray(_ref18, 2);
-
       t[a.id].hue = _ref19[0];
       e[a.id].hue = _ref19[1];
     }
-
     return i && (t.coords = t.coords.map(function (e) {
       return e * t.alpha;
     }), e.coords = e.coords.map(function (t) {
@@ -2412,10 +2133,10 @@
     })), Object.assign(function (r) {
       r = o ? o(r) : r;
       var n = t.coords.map(function (t, a) {
-        return f(t, e.coords[a], r);
-      }),
-          c = f(t.alpha, e.alpha, r),
-          l = new h(a, n, c);
+          return f(t, e.coords[a], r);
+        }),
+        c = f(t.alpha, e.alpha, r),
+        l = new h(a, n, c);
       return i && (l.coords = l.coords.map(function (t) {
         return t / c;
       })), s !== a && (l = l.to(s)), l;
@@ -2426,149 +2147,135 @@
     interpolationSpace: "lab"
   }), Object.assign(h.prototype, d), h.statify(Object.keys(d)), h.prototype.deltaECMC = function (t) {
     var _ref20 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-        _ref20$l = _ref20.l,
-        e = _ref20$l === void 0 ? 2 : _ref20$l,
-        _ref20$c = _ref20.c,
-        r = _ref20$c === void 0 ? 1 : _ref20$c;
-
+      _ref20$l = _ref20.l,
+      e = _ref20$l === void 0 ? 2 : _ref20$l,
+      _ref20$c = _ref20.c,
+      r = _ref20$c === void 0 ? 1 : _ref20$c;
     t = h.get(t);
-
     var _this$lab = _slicedToArray(this.lab, 3),
-        a = _this$lab[0],
-        s = _this$lab[1],
-        o = _this$lab[2],
-        i = this.chroma,
-        n = this.hue,
-        _t$lab = _slicedToArray(t.lab, 3),
-        c = _t$lab[0],
-        l = _t$lab[1],
-        p = _t$lab[2],
-        u = t.chroma;
-
+      a = _this$lab[0],
+      s = _this$lab[1],
+      o = _this$lab[2],
+      i = this.chroma,
+      n = this.hue,
+      _t$lab = _slicedToArray(t.lab, 3),
+      c = _t$lab[0],
+      l = _t$lab[1],
+      p = _t$lab[2],
+      u = t.chroma;
     i < 0 && (i = 0), u < 0 && (u = 0);
     var d = a - c,
-        m = i - u,
-        f = s - l,
-        g = o - p;
+      m = i - u,
+      f = s - l,
+      g = o - p;
     var M = Math.PI / 180;
     var b = Math.pow(f, 2) + Math.pow(g, 2) - Math.pow(m, 2),
-        w = .511;
+      w = .511;
     a >= 16 && (w = .040975 * a / (1 + .01765 * a));
     var y,
-        S = .0638 * i / (1 + .0131 * i) + .638;
+      S = .0638 * i / (1 + .0131 * i) + .638;
     Number.isNaN(n) && (n = 0), y = n >= 164 && n <= 345 ? .56 + Math.abs(.2 * Math.cos((n + 168) * M)) : .36 + Math.abs(.4 * Math.cos((n + 35) * M));
     var C = Math.pow(i, 4),
-        k = Math.sqrt(C / (C + 1900)),
-        Y = Math.pow(d / (e * w), 2);
+      k = Math.sqrt(C / (C + 1900)),
+      Y = Math.pow(d / (e * w), 2);
     return Y += Math.pow(m / (r * S), 2), Y += b / Math.pow(S * (k * y + 1 - k), 2), Math.sqrt(Y);
   }, h.statify(["deltaECMC"]), h.prototype.deltaE2000 = function (t) {
     var _ref21 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-        _ref21$kL = _ref21.kL,
-        e = _ref21$kL === void 0 ? 1 : _ref21$kL,
-        _ref21$kC = _ref21.kC,
-        r = _ref21$kC === void 0 ? 1 : _ref21$kC,
-        _ref21$kH = _ref21.kH,
-        a = _ref21$kH === void 0 ? 1 : _ref21$kH;
-
+      _ref21$kL = _ref21.kL,
+      e = _ref21$kL === void 0 ? 1 : _ref21$kL,
+      _ref21$kC = _ref21.kC,
+      r = _ref21$kC === void 0 ? 1 : _ref21$kC,
+      _ref21$kH = _ref21.kH,
+      a = _ref21$kH === void 0 ? 1 : _ref21$kH;
     t = h.get(t);
-
     var _this$lab2 = _slicedToArray(this.lab, 3),
-        s = _this$lab2[0],
-        o = _this$lab2[1],
-        i = _this$lab2[2],
-        n = this.chroma,
-        _t$lab2 = _slicedToArray(t.lab, 3),
-        c = _t$lab2[0],
-        l = _t$lab2[1],
-        p = _t$lab2[2],
-        u = t.chroma;
-
+      s = _this$lab2[0],
+      o = _this$lab2[1],
+      i = _this$lab2[2],
+      n = this.chroma,
+      _t$lab2 = _slicedToArray(t.lab, 3),
+      c = _t$lab2[0],
+      l = _t$lab2[1],
+      p = _t$lab2[2],
+      u = t.chroma;
     n < 0 && (n = 0), u < 0 && (u = 0);
     var d = (n + u) / 2,
-        m = Math.pow(d, 7);
+      m = Math.pow(d, 7);
     var f = Math.pow(25, 7);
     var g = .5 * (1 - Math.sqrt(m / (m + f))),
-        M = (1 + g) * o,
-        b = (1 + g) * l,
-        w = Math.sqrt(Math.pow(M, 2) + Math.pow(i, 2)),
-        y = Math.sqrt(Math.pow(b, 2) + Math.pow(p, 2));
+      M = (1 + g) * o,
+      b = (1 + g) * l,
+      w = Math.sqrt(Math.pow(M, 2) + Math.pow(i, 2)),
+      y = Math.sqrt(Math.pow(b, 2) + Math.pow(p, 2));
     var S = Math.PI,
-        C = 180 / S,
-        k = S / 180;
+      C = 180 / S,
+      k = S / 180;
     var Y = 0 === M && 0 === i ? 0 : Math.atan2(i, M),
-        z = 0 === b && 0 === p ? 0 : Math.atan2(p, b);
+      z = 0 === b && 0 === p ? 0 : Math.atan2(p, b);
     Y < 0 && (Y += 2 * S), z < 0 && (z += 2 * S), Y *= C, z *= C;
-
     var I,
-        X = c - s,
-        Z = y - w,
-        _ = z - Y,
-        v = Y + z,
-        G = Math.abs(_);
-
+      X = c - s,
+      Z = y - w,
+      _ = z - Y,
+      v = Y + z,
+      G = Math.abs(_);
     w * y == 0 ? I = 0 : G <= 180 ? I = _ : _ > 180 ? I = _ - 360 : _ < -180 ? I = _ + 360 : console.log("the unthinkable has happened");
     var x,
-        N = 2 * Math.sqrt(y * w) * Math.sin(I * k / 2),
-        L = (s + c) / 2,
-        j = (w + y) / 2,
-        O = Math.pow(j, 7);
+      N = 2 * Math.sqrt(y * w) * Math.sin(I * k / 2),
+      L = (s + c) / 2,
+      j = (w + y) / 2,
+      O = Math.pow(j, 7);
     x = w * y == 0 ? v : G <= 180 ? v / 2 : v < 360 ? (v + 360) / 2 : (v - 360) / 2;
     var A = Math.pow(L - 50, 2),
-        E = 1 + .015 * A / Math.sqrt(20 + A),
-        P = 1 + .045 * j,
-        D = 1;
+      E = 1 + .015 * A / Math.sqrt(20 + A),
+      P = 1 + .045 * j,
+      D = 1;
     D -= .17 * Math.cos((x - 30) * k), D += .24 * Math.cos(2 * x * k), D += .32 * Math.cos((3 * x + 6) * k), D -= .2 * Math.cos((4 * x - 63) * k);
     var q = 1 + .015 * j * D,
-        T = 30 * Math.exp(-1 * Math.pow((x - 275) / 25, 2)),
-        $ = 2 * Math.sqrt(O / (O + f)),
-        R = Math.pow(X / (e * E), 2);
+      T = 30 * Math.exp(-1 * Math.pow((x - 275) / 25, 2)),
+      $ = 2 * Math.sqrt(O / (O + f)),
+      R = Math.pow(X / (e * E), 2);
     return R += Math.pow(Z / (r * P), 2), R += Math.pow(N / (a * q), 2), R += -1 * Math.sin(2 * T * k) * $ * (Z / (r * P)) * (N / (a * q)), Math.sqrt(R);
   }, h.statify(["deltaE2000"]), h.prototype.deltaEJz = function (t) {
     t = h.get(t);
-
     var _this$jzczhz = _slicedToArray(this.jzczhz, 3),
-        e = _this$jzczhz[0],
-        r = _this$jzczhz[1],
-        a = _this$jzczhz[2],
-        _t$jzczhz = _slicedToArray(t.jzczhz, 3),
-        s = _t$jzczhz[0],
-        o = _t$jzczhz[1],
-        i = _t$jzczhz[2],
-        n = e - s,
-        c = r - o;
-
+      e = _this$jzczhz[0],
+      r = _this$jzczhz[1],
+      a = _this$jzczhz[2],
+      _t$jzczhz = _slicedToArray(t.jzczhz, 3),
+      s = _t$jzczhz[0],
+      o = _t$jzczhz[1],
+      i = _t$jzczhz[2],
+      n = e - s,
+      c = r - o;
     Number.isNaN(a) && Number.isNaN(i) ? (a = 0, i = 0) : Number.isNaN(a) ? a = i : Number.isNaN(i) && (i = a);
     var l = a - i,
-        p = 2 * Math.sqrt(r * o) * Math.sin(l * Math.PI / 180);
+      p = 2 * Math.sqrt(r * o) * Math.sin(l * Math.PI / 180);
     return Math.sqrt(Math.pow(n, 2) + Math.pow(c, 2) + Math.pow(p, 2));
   }, h.statify(["deltaEJz"]), h.prototype.deltaEITP = function (t) {
     t = h.get(t);
-
     var _this$ictcp = _slicedToArray(this.ictcp, 3),
-        e = _this$ictcp[0],
-        r = _this$ictcp[1],
-        a = _this$ictcp[2],
-        _t$ictcp = _slicedToArray(t.ictcp, 3),
-        s = _t$ictcp[0],
-        o = _t$ictcp[1],
-        i = _t$ictcp[2];
-
+      e = _this$ictcp[0],
+      r = _this$ictcp[1],
+      a = _this$ictcp[2],
+      _t$ictcp = _slicedToArray(t.ictcp, 3),
+      s = _t$ictcp[0],
+      o = _t$ictcp[1],
+      i = _t$ictcp[2];
     return 720 * Math.sqrt(Math.pow(e - s, 2) + .25 * Math.pow(r - o, 2) + Math.pow(a - i, 2));
   }, h.statify(["deltaEITP"]), h.prototype.deltaEOK = function (t) {
     var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     t = h.get(t);
-
     var _this$oklab = _slicedToArray(this.oklab, 3),
-        r = _this$oklab[0],
-        a = _this$oklab[1],
-        s = _this$oklab[2],
-        o = Math.sqrt(Math.pow(a, 2) + Math.pow(s, 2)),
-        _t$oklab = _slicedToArray(t.oklab, 3),
-        i = _t$oklab[0],
-        n = _t$oklab[1],
-        c = _t$oklab[2],
-        l = Math.sqrt(Math.pow(n, 2) + Math.pow(c, 2));
-
+      r = _this$oklab[0],
+      a = _this$oklab[1],
+      s = _this$oklab[2],
+      o = Math.sqrt(Math.pow(a, 2) + Math.pow(s, 2)),
+      _t$oklab = _slicedToArray(t.oklab, 3),
+      i = _t$oklab[0],
+      n = _t$oklab[1],
+      c = _t$oklab[2],
+      l = Math.sqrt(Math.pow(n, 2) + Math.pow(c, 2));
     e.ΔL = r - i, e.ΔC = o - l;
     var p = Math.pow(a - n, 2) + Math.pow(s - c, 2) - Math.pow(e.ΔC, 2);
     p < 0 && (p = 0), e.ΔH = Math.sqrt(p);
@@ -2727,57 +2434,46 @@
   };
   h.hooks.add("parse-start", function (t) {
     var e = t.str.toLowerCase(),
-        r = {
-      spaceId: "srgb",
-      coords: null,
-      alpha: 1
-    };
+      r = {
+        spaceId: "srgb",
+        coords: null,
+        alpha: 1
+      };
     "transparent" === e ? (r.coords = g.black, r.alpha = 0) : r.coords = g[e], r.coords && (t.color = r);
   });
 
   var _id = /*#__PURE__*/new WeakMap();
-
   var _obj = /*#__PURE__*/new WeakMap();
-
   var _filters$1 = /*#__PURE__*/new WeakMap();
-
   var Attribute = /*#__PURE__*/function () {
     function Attribute(id, obj) {
       _classCallCheck(this, Attribute);
-
       _classPrivateFieldInitSpec(this, _id, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _obj, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _filters$1, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldSet(this, _id, id);
-
       _classPrivateFieldSet(this, _obj, obj);
-
       _classPrivateFieldSet(this, _filters$1, []);
-    } // public Methods
+    }
 
-
+    // public Methods
     _createClass(Attribute, [{
       key: "fetchFiltersWithParentNode",
       value: function fetchFiltersWithParentNode(parentNode) {
         var _this = this;
-
         return new Promise(function (resolve, reject) {
           var filters = _classPrivateFieldGet(_this, _filters$1).filter(function (filter) {
             return filter.parentNode === parentNode;
           });
-
           if (filters.length > 0) {
             resolve(filters);
           } else {
@@ -2794,14 +2490,12 @@
               return responce.json();
             }).then(function (filters) {
               var _classPrivateFieldGet2;
-
               // set parent node
               if (parentNode) filters.forEach(function (filter) {
                 return filter.parentNode = parentNode;
-              }); // set filters
-
+              });
+              // set filters
               (_classPrivateFieldGet2 = _classPrivateFieldGet(_this, _filters$1)).push.apply(_classPrivateFieldGet2, _toConsumableArray(filters));
-
               resolve(filters);
             }).catch(function (error) {
               console.error(_this, error);
@@ -2816,8 +2510,9 @@
         return _classPrivateFieldGet(this, _filters$1).find(function (filter) {
           return filter.node === node;
         });
-      } // accessors
+      }
 
+      // accessors
     }, {
       key: "id",
       get: function get() {
@@ -2864,44 +2559,36 @@
         return _classPrivateFieldGet(this, _filters$1);
       }
     }]);
-
     return Attribute;
   }();
 
   var _categories = /*#__PURE__*/new WeakMap();
-
   var _attributes = /*#__PURE__*/new WeakMap();
-
   var _datasets = /*#__PURE__*/new WeakMap();
-
   var Records = /*#__PURE__*/function () {
     function Records() {
       _classCallCheck(this, Records);
-
       _classPrivateFieldInitSpec(this, _categories, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _attributes, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _datasets, {
         writable: true,
         value: void 0
       });
-    } // public methods
+    }
 
-
+    // public methods
     _createClass(Records, [{
       key: "setAttributes",
       value: function setAttributes(_ref) {
         var categories = _ref.categories,
-            attributes = _ref.attributes,
-            datasets = _ref.datasets;
-
+          attributes = _ref.attributes,
+          datasets = _ref.datasets;
         // define categories
         for (var i = 0; i < categories.length; i++) {
           var hue = 360 - 360 * i / categories.length + 130;
@@ -2917,25 +2604,22 @@
             return channel * 256;
           }).join(','), ")");
         }
+        _classPrivateFieldSet(this, _categories, Object.freeze(categories));
 
-        _classPrivateFieldSet(this, _categories, Object.freeze(categories)); // set attributes
-
-
+        // set attributes
         _classPrivateFieldSet(this, _attributes, Object.keys(attributes).map(function (id) {
           return new Attribute(id, attributes[id]);
-        })); // make stylesheet
+        }));
 
-
+        // make stylesheet
         var styleElm = document.createElement('style');
         document.head.appendChild(styleElm);
         var styleSheet = styleElm.sheet;
         styleSheet.insertRule(":root {\n      ".concat(categories.map(function (category) {
           return "\n        --color-category-".concat(category.id, ": ").concat(category.colorCSSValue, ";\n        --color-category-").concat(category.id, "-strong: ").concat(category.colorCSSStrongValue, ";\n        ");
         }).join(''), "\n    }"));
-
         var _iterator = _createForOfIteratorHelper(categories),
-            _step;
-
+          _step;
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var category = _step.value;
@@ -2943,14 +2627,14 @@
             styleSheet.insertRule("\n      ._category-background-color[data-category-id=\"".concat(category.id, "\"], [data-category-id=\"").concat(category.id, "\"] ._category-background-color {\n        background-color: var(--color-category-").concat(category.id, ");\n      }"));
             styleSheet.insertRule("\n      ._category-background-color-strong[data-category-id=\"".concat(category.id, "\"], [data-category-id=\"").concat(category.id, "\"] ._category-background-color-strong {\n        background-color: var(--color-category-").concat(category.id, "-strong);\n      }"));
             styleSheet.insertRule("\n      ._category-border-color[data-category-id=\"".concat(category.id, "\"], [data-category-id=\"").concat(category.id, "\"] ._category-border-color {\n        border-color: var(--color-category-").concat(category.id, ");\n      }"));
-          } // set datasets
+          }
 
+          // set datasets
         } catch (err) {
           _iterator.e(err);
         } finally {
           _iterator.f();
         }
-
         _classPrivateFieldSet(this, _datasets, datasets);
       }
     }, {
@@ -3000,10 +2684,8 @@
         var attribute = this.getAttribute(attributeId);
         var ancestors = [];
         var parent;
-
         do {
           var _parent;
-
           // find ancestors
           parent = attribute.filters.find(function (filter) {
             return filter.node === node;
@@ -3011,7 +2693,6 @@
           if (parent) ancestors.unshift(parent);
           node = (_parent = parent) === null || _parent === void 0 ? void 0 : _parent.parentNode;
         } while (parent);
-
         ancestors.pop();
         return ancestors;
       }
@@ -3019,8 +2700,9 @@
       key: "getDatasetLabel",
       value: function getDatasetLabel(dataset) {
         return _classPrivateFieldGet(this, _datasets)[dataset].label;
-      } // public accessors
+      }
 
+      // public accessors
     }, {
       key: "categories",
       get: function get() {
@@ -3032,73 +2714,60 @@
         return _classPrivateFieldGet(this, _attributes);
       }
     }]);
-
     return Records;
   }();
-
   var Records$1 = new Records();
 
   var _annotation = /*#__PURE__*/new WeakMap();
-
   var _categoryId = /*#__PURE__*/new WeakMap();
-
   var _dataset$1 = /*#__PURE__*/new WeakMap();
-
   var ConditionBase = /*#__PURE__*/function () {
     // <Attribute>
+
     function ConditionBase(attributeId) {
       _classCallCheck(this, ConditionBase);
-
       _defineProperty$1(this, "_attributeId", void 0);
-
       _defineProperty$1(this, "_ancestors", new Map());
-
       _classPrivateFieldInitSpec(this, _annotation, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _categoryId, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _dataset$1, {
         writable: true,
         value: void 0
       });
-
       this._attributeId = attributeId;
     }
+
     /**
      * 
      * @param {string} node 
      * @param {string} ancestors 
      */
-
-
     _createClass(ConditionBase, [{
       key: "setAncestors",
       value: function setAncestors(node, ancestors) {
         if (!node || !ancestors) return;
-
         this._ancestors.set(node, _toConsumableArray(ancestors));
       }
     }, {
       key: "getAncestors",
       value: function getAncestors(node) {
         var ancestors = this._ancestors.get(node);
-
         if (!ancestors) {
           ancestors = Records$1.getAncestors(this._attributeId, node).map(function (ancestor) {
             return ancestor.node;
           });
           this.setAncestors(node, ancestors);
         }
-
         return ancestors;
-      } // accessor
+      }
 
+      // accessor
     }, {
       key: "attributeId",
       get: function get() {
@@ -3116,7 +2785,6 @@
         if (!_classPrivateFieldGet(this, _categoryId)) {
           _classPrivateFieldSet(this, _categoryId, Records$1.getCategoryWithAttributeId(this.annotation.id).id);
         }
-
         return _classPrivateFieldGet(this, _categoryId);
       }
     }, {
@@ -3125,44 +2793,34 @@
         if (!_classPrivateFieldGet(this, _dataset$1)) {
           _classPrivateFieldSet(this, _dataset$1, this.annotation.dataset);
         }
-
         return _classPrivateFieldGet(this, _dataset$1);
       }
     }]);
-
     return ConditionBase;
   }();
 
   var _parentNode$1 = /*#__PURE__*/new WeakMap();
-
   var _filter = /*#__PURE__*/new WeakMap();
-
   var ConditionAnnotation = /*#__PURE__*/function (_ConditionBase) {
     _inherits(ConditionAnnotation, _ConditionBase);
-
     var _super = _createSuper(ConditionAnnotation);
-
     function ConditionAnnotation(attributeId, parentNode) {
       var _this;
-
       _classCallCheck(this, ConditionAnnotation);
-
       _this = _super.call(this, attributeId);
-
       _classPrivateFieldInitSpec(_assertThisInitialized(_this), _parentNode$1, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(_assertThisInitialized(_this), _filter, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldSet(_assertThisInitialized(_this), _parentNode$1, parentNode);
-
       return _this;
-    } // methods
+    }
+
+    // methods
 
     /**
      * 
@@ -3170,8 +2828,6 @@
      * @param {String} parentNode 
      * @return {Boolean}
      */
-
-
     _createClass(ConditionAnnotation, [{
       key: "isSameCondition",
       value: function isSameCondition(attributeId, parentNode) {
@@ -3191,15 +2847,14 @@
         var annotation = {
           attributeId: this._attributeId
         };
-
         if (_classPrivateFieldGet(this, _parentNode$1)) {
           annotation.parentNode = _classPrivateFieldGet(this, _parentNode$1);
           annotation.ancestors = this.ancestors;
         }
-
         return annotation;
-      } // accessor
+      }
 
+      // accessor
     }, {
       key: "parentNode",
       get: function get() {
@@ -3226,7 +2881,6 @@
         if (!_classPrivateFieldGet(this, _filter)) {
           _classPrivateFieldSet(this, _filter, Records$1.getFilter(this._attributeId, _classPrivateFieldGet(this, _parentNode$1)));
         }
-
         return _classPrivateFieldGet(this, _filter);
       }
     }, {
@@ -3237,57 +2891,47 @@
         };
         if (_classPrivateFieldGet(this, _parentNode$1)) query.node = _classPrivateFieldGet(this, _parentNode$1);
         return query;
-      } // static
+      }
 
+      // static
     }], [{
       key: "decodeURLSearchParams",
       value: function decodeURLSearchParams(searchParams) {
         var annotations = [];
         var parsed = JSON.parse(searchParams);
-
         if (parsed) {
           annotations.push.apply(annotations, _toConsumableArray(parsed.map(function (_ref) {
             var attributeId = _ref.attributeId,
-                parentNode = _ref.parentNode,
-                ancestors = _ref.ancestors;
+              parentNode = _ref.parentNode,
+              ancestors = _ref.ancestors;
             var annotation = new ConditionAnnotation(attributeId, parentNode);
             annotation.setAncestors(parentNode, ancestors);
             return annotation;
           })));
         }
-
         return annotations;
       }
     }]);
-
     return ConditionAnnotation;
   }(ConditionBase);
 
   var _nodes = /*#__PURE__*/new WeakMap();
-
   var ConditionFilter = /*#__PURE__*/function (_ConditionBase) {
     _inherits(ConditionFilter, _ConditionBase);
-
     var _super = _createSuper(ConditionFilter);
-
     function ConditionFilter(attributeId, nodes) {
       var _this;
-
       _classCallCheck(this, ConditionFilter);
-
       _this = _super.call(this, attributeId);
-
       _classPrivateFieldInitSpec(_assertThisInitialized(_this), _nodes, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldSet(_assertThisInitialized(_this), _nodes, nodes);
-
       return _this;
-    } // methods
+    }
 
-
+    // methods
     _createClass(ConditionFilter, [{
       key: "addNode",
       value: function addNode(node) {
@@ -3297,19 +2941,16 @@
       key: "removeNode",
       value: function removeNode(node) {
         var index = _classPrivateFieldGet(this, _nodes).indexOf(node);
-
         _classPrivateFieldGet(this, _nodes).splice(index, 1);
       }
     }, {
       key: "getURLParameter",
       value: function getURLParameter() {
         var _this2 = this;
-
         var values = {
           attributeId: this._attributeId,
           nodes: []
         };
-
         _classPrivateFieldGet(this, _nodes).forEach(function (node) {
           var node2 = {
             node: node
@@ -3320,10 +2961,10 @@
           if (ancestors.length > 0) node2.ancestors = ancestors;
           values.nodes.push(node2);
         });
-
         return values;
-      } // accessor
+      }
 
+      // accessor
     }, {
       key: "nodes",
       get: function get() {
@@ -3341,25 +2982,24 @@
           attribute: this._attributeId,
           nodes: this.nodes
         };
-      } // static
+      }
 
+      // static
     }], [{
       key: "decodeURLSearchParams",
       value: function decodeURLSearchParams(searchParams) {
         var filters = [];
         var parsed = JSON.parse(searchParams);
-
         if (parsed) {
           filters.push.apply(filters, _toConsumableArray(parsed.map(function (_ref) {
             var attributeId = _ref.attributeId,
-                nodes = _ref.nodes;
+              nodes = _ref.nodes;
             var cf = new ConditionFilter(attributeId, nodes.map(function (node) {
               return node.node;
             }));
             nodes.forEach(function (_ref2) {
               var node = _ref2.node,
-                  ancestors = _ref2.ancestors;
-
+                ancestors = _ref2.ancestors;
               if (ancestors) {
                 cf.setAncestors(node, ancestors);
               }
@@ -3367,24 +3007,17 @@
             return cf;
           })));
         }
-
         return filters;
       }
     }]);
-
     return ConditionFilter;
   }(ConditionBase);
 
   var _togoKey = /*#__PURE__*/new WeakMap();
-
   var _conditionAnnotations$1 = /*#__PURE__*/new WeakMap();
-
   var _conditionFilters$1 = /*#__PURE__*/new WeakMap();
-
   var _copyConditionAnnotations = /*#__PURE__*/new WeakSet();
-
   var _copyConditionFilters = /*#__PURE__*/new WeakSet();
-
   var DXCondition = /*#__PURE__*/function () {
     /**
      * 
@@ -3394,57 +3027,46 @@
      */
     function DXCondition(togoKey, _conditionAnnotations2, _conditionFilters2) {
       _classCallCheck(this, DXCondition);
-
       _classPrivateMethodInitSpec(this, _copyConditionFilters);
-
       _classPrivateMethodInitSpec(this, _copyConditionAnnotations);
-
       _classPrivateFieldInitSpec(this, _togoKey, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _conditionAnnotations$1, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _conditionFilters$1, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldSet(this, _togoKey, togoKey);
-
       _classPrivateFieldSet(this, _conditionAnnotations$1, _classPrivateMethodGet(this, _copyConditionAnnotations, _copyConditionAnnotations2).call(this, _conditionAnnotations2));
-
       _classPrivateFieldSet(this, _conditionFilters$1, _classPrivateMethodGet(this, _copyConditionFilters, _copyConditionFilters2).call(this, _conditionFilters2));
-    } // methods
+    }
+
+    // methods
 
     /**
      * 
      * @param {DXCondition} dxCondition 
      * @return Boolean
      */
-
-
     _createClass(DXCondition, [{
       key: "checkSameCondition",
       value: function checkSameCondition(dxCondition) {
         // annotations
         var matchAnnotations = false;
-
         if (this.conditionAnnotations.length === dxCondition.conditionAnnotations.length) {
           matchAnnotations = this.conditionAnnotations.every(function (conditionAnnotation) {
             return dxCondition.conditionAnnotations.findIndex(function (newConditionAnnotation) {
               return conditionAnnotation.attributeId === newConditionAnnotation.attributeId && conditionAnnotation.parentNode === newConditionAnnotation.parentNode;
             }) !== -1;
           });
-        } // values
-
-
+        }
+        // values
         var matchFilters = false;
-
         if (this.conditionFilters.length === dxCondition.conditionFilters.length) {
           matchFilters = this.conditionFilters.every(function (conditionFilter) {
             return dxCondition.conditionFilters.findIndex(function (newConditionFilter) {
@@ -3456,12 +3078,13 @@
             }) !== -1;
           });
         }
-
         return dxCondition.togoKey === this.togoKey && matchAnnotations && matchFilters;
       }
     }, {
       key: "togoKey",
-      get: // accessor
+      get:
+      // accessor
+
       function get() {
         return _classPrivateFieldGet(this, _togoKey);
       }
@@ -3490,16 +3113,13 @@
         });
       }
     }]);
-
     return DXCondition;
   }();
-
   function _copyConditionAnnotations2(conditionAnnotations) {
     return conditionAnnotations.map(function (conditionAnnotation) {
       return new ConditionAnnotation(conditionAnnotation.attributeId, conditionAnnotation.parentNode);
     });
   }
-
   function _copyConditionFilters2(conditionFilters) {
     return conditionFilters.map(function (conditionFilter) {
       return new ConditionFilter(conditionFilter.attributeId, _toConsumableArray(conditionFilter.nodes));
@@ -3507,136 +3127,119 @@
   }
 
   // TogoKey
-  var defineTogoKey = 'defineTogoKey'; // User IDs
+  var defineTogoKey = 'defineTogoKey';
 
+  // User IDs
   var setUserFilters = 'setUserFilters';
   var clearUserFilters = 'clearUserFilters';
-  var toggleErrorUserFilters = 'toggleErrorUserFilters'; // View mode
+  var toggleErrorUserFilters = 'toggleErrorUserFilters';
 
-  var changeViewModes = 'changeViewModes'; // Condition
+  // View mode
+  var changeViewModes = 'changeViewModes';
 
+  // Condition
   var mutateAnnotationCondition = 'mutateAnnotationCondition';
   var mutateFilterCondition = 'mutateFilterCondition';
   var mutateEstablishConditions = 'mutateEstablishConditions';
   var completeQueryParameter = 'completeQueryParameter';
   var restoreParameters = 'restoreParameters';
-  var clearCondition = 'clearCondition'; // Stanza
+  var clearCondition = 'clearCondition';
 
+  // Stanza
   var hideStanza = 'hideStanza';
 
+  // Popup
   var hidePopup = 'hidePopup';
   var showPopup = 'showPopup';
-  var movePopup = 'movePopup'; // Dragging
+  var movePopup = 'movePopup';
 
-  var dragElement = 'dragElement'; // Polling
+  // Dragging
+  var dragElement = 'dragElement';
 
+  // Polling
   var failedFetchTableDataIds = 'failedFetchTableDataIds';
-  var addNextRows = 'addNextRows'; // Table data
+  var addNextRows = 'addNextRows';
 
+  // Table data
   var selectTableData = 'selectTableData';
   var deleteTableData = 'deleteTableData';
-  var highlightCol = 'highlightCol'; // Track
+  var highlightCol = 'highlightCol';
 
+  // Track
   var enterAttributeFilterItemView = 'enterAttributeFilterItemView';
   var leaveAttributeFilterItemView = 'leaveAttributeFilterItemView';
-  var allTracksCollapse = 'allTracksCollapse'; // Statistics
+  var allTracksCollapse = 'allTracksCollapse';
 
-  var changeStatisticsViewMode = 'changeStatisticsViewMode'; // Column selector
+  // Statistics
+  var changeStatisticsViewMode = 'changeStatisticsViewMode';
 
-  var changeColumnSelectorSorter = 'changeColumnSelectorSorter'; // Collpase
+  // Column selector
+  var changeColumnSelectorSorter = 'changeColumnSelectorSorter';
 
+  // Collpase
   var collapsed = 'collapsed';
 
   var _conditionAnnotations = /*#__PURE__*/new WeakMap();
-
   var _conditionFilters = /*#__PURE__*/new WeakMap();
-
   var _dataset = /*#__PURE__*/new WeakMap();
-
   var _userIds = /*#__PURE__*/new WeakMap();
-
   var _isRestoredConditinoFromURLParameters = /*#__PURE__*/new WeakMap();
-
   var _preparingCounter = /*#__PURE__*/new WeakMap();
-
   var _postProcessing = /*#__PURE__*/new WeakSet();
-
   var _createSearchConditionFromURLParameters = /*#__PURE__*/new WeakSet();
-
   var _makeQueueOfGettingChildNodes = /*#__PURE__*/new WeakSet();
-
   var _progressQueueOfGettingChildNodes = /*#__PURE__*/new WeakSet();
-
   var _getChildNodes = /*#__PURE__*/new WeakSet();
-
   var _restoreConditions = /*#__PURE__*/new WeakSet();
-
   var _clearConditinos = /*#__PURE__*/new WeakSet();
-
   var ConditionBuilder = /*#__PURE__*/function () {
     // Array<ConditionAnnotation>
     // Array<ConditionFilter>
+
     function ConditionBuilder() {
       _classCallCheck(this, ConditionBuilder);
-
       _classPrivateMethodInitSpec(this, _clearConditinos);
-
       _classPrivateMethodInitSpec(this, _restoreConditions);
-
       _classPrivateMethodInitSpec(this, _getChildNodes);
-
       _classPrivateMethodInitSpec(this, _progressQueueOfGettingChildNodes);
-
       _classPrivateMethodInitSpec(this, _makeQueueOfGettingChildNodes);
-
       _classPrivateMethodInitSpec(this, _createSearchConditionFromURLParameters);
-
       _classPrivateMethodInitSpec(this, _postProcessing);
-
       _classPrivateFieldInitSpec(this, _conditionAnnotations, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _conditionFilters, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _dataset, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _userIds, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _isRestoredConditinoFromURLParameters, {
         writable: true,
         value: false
       });
-
       _classPrivateFieldInitSpec(this, _preparingCounter, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldSet(this, _conditionAnnotations, []);
-
       _classPrivateFieldSet(this, _conditionFilters, []);
-
       _classPrivateFieldSet(this, _preparingCounter, 0);
+      _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, false);
 
-      _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, false); // event listeners
-
-
+      // event listeners
       window.addEventListener('popstate', _classPrivateMethodGet(this, _createSearchConditionFromURLParameters, _createSearchConditionFromURLParameters2).bind(this));
       DefaultEventEmitter$1.addEventListener(clearCondition, _classPrivateMethodGet(this, _clearConditinos, _clearConditinos2).bind(this));
-    } // public methods
+    }
 
-
+    // public methods
     _createClass(ConditionBuilder, [{
       key: "init",
       value: function init() {
@@ -3646,36 +3249,31 @@
       key: "setSubject",
       value: function setSubject(dataset) {
         _classPrivateFieldSet(this, _dataset, dataset);
-
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
     }, {
       key: "setUserIds",
       value: function setUserIds() {
         var ids = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-
-        _classPrivateFieldSet(this, _userIds, ids.replace(/,/g, " ").split(/\s+/).join(',')); // post processing (permalink, evaluate)
-
-
+        _classPrivateFieldSet(this, _userIds, ids.replace(/,/g, " ").split(/\s+/).join(','));
+        // post processing (permalink, evaluate)
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
+
       /**
        * 
        * @param {ConditionAnnotation} conditionAnnotation 
        * @param {boolean} isFinal 
        */
-
     }, {
       key: "addAnnotation",
       value: function addAnnotation(conditionAnnotation) {
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
         // store
-        _classPrivateFieldGet(this, _conditionAnnotations).push(conditionAnnotation); // evaluate
-
-
-        if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
-
+        _classPrivateFieldGet(this, _conditionAnnotations).push(conditionAnnotation);
+        // evaluate
+        if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
+        // dispatch event
         var customEvent = new CustomEvent(mutateAnnotationCondition, {
           detail: {
             action: 'add',
@@ -3688,24 +3286,20 @@
       key: "addFilter",
       value: function addFilter(attributeId, node) {
         var isFinal = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-
         // find filter of same property
         var sameConditionFilter = _classPrivateFieldGet(this, _conditionFilters).find(function (conditionFilter) {
           return conditionFilter.attributeId === attributeId;
-        }); // store
-
-
+        });
+        // store
         if (sameConditionFilter) {
           sameConditionFilter.addNode(node);
         } else {
           var conditionFilter = new ConditionFilter(attributeId, [node]);
-
           _classPrivateFieldGet(this, _conditionFilters).push(conditionFilter);
-        } // evaluate
-
-
-        if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
-
+        }
+        // evaluate
+        if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
+        // dispatch event
         var customEvent = new CustomEvent(mutateFilterCondition, {
           detail: {
             action: 'add',
@@ -3715,30 +3309,26 @@
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
+
       /**
        * 
        * @param {ConditionAnnotation} conditionAnnotation 
        * @param {boolean} isFinal 
        * @returns 
        */
-
     }, {
       key: "removeAnnotation",
       value: function removeAnnotation(conditionAnnotation) {
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
         // remove from store
         var index = _classPrivateFieldGet(this, _conditionAnnotations).findIndex(function (conditionAnnotation2) {
           return conditionAnnotation2.isSameCondition(conditionAnnotation.attributeId, conditionAnnotation.parentNode);
         });
-
         if (index === -1) return;
-
-        var conditionAnnotation2 = _classPrivateFieldGet(this, _conditionAnnotations).splice(index, 1)[0]; // post processing (permalink, evaluate)
-
-
-        if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
-
+        var conditionAnnotation2 = _classPrivateFieldGet(this, _conditionAnnotations).splice(index, 1)[0];
+        // post processing (permalink, evaluate)
+        if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
+        // dispatch event
         var customEvent = new CustomEvent(mutateAnnotationCondition, {
           detail: {
             action: 'remove',
@@ -3751,7 +3341,6 @@
       key: "removeFilter",
       value: function removeFilter(attributeId, node) {
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-
         // remove from store
         var index = _classPrivateFieldGet(this, _conditionFilters).findIndex(function (conditionFilter) {
           if (conditionFilter.attributeId === attributeId) {
@@ -3761,11 +3350,10 @@
             return false;
           }
         });
-
-        if (index !== -1) _classPrivateFieldGet(this, _conditionFilters).splice(index, 1)[0]; // post processing (permalink, evaluate)
-
-        if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this); // dispatch event
-
+        if (index !== -1) _classPrivateFieldGet(this, _conditionFilters).splice(index, 1)[0];
+        // post processing (permalink, evaluate)
+        if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
+        // dispatch event
         var customEvent = new CustomEvent(mutateFilterCondition, {
           detail: {
             action: 'remove',
@@ -3775,47 +3363,41 @@
         });
         DefaultEventEmitter$1.dispatchEvent(customEvent);
       }
+
       /**
        * 
        * @param {ConditionAnnotation[]} annotations
        * @param {boolean} isFinal 
        */
-
     }, {
       key: "setAnnotation",
       value: function setAnnotation(annotations) {
         var _this = this;
-
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
         // delete existing properties
         while (_classPrivateFieldGet(this, _conditionAnnotations).length > 0) {
           this.removeAnnotation(_classPrivateFieldGet(this, _conditionAnnotations)[0], false);
         }
-
+        // set new properties
         annotations.forEach(function (conditionAnnotation) {
           return _this.addAnnotation(conditionAnnotation, false);
-        }); // post processing (permalink, evaluate)
-
+        });
+        // post processing (permalink, evaluate)
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
     }, {
       key: "setFilter",
       value: function setFilter(attributeId, nodes) {
         var _this2 = this;
-
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-
         var oldConditionFilter = _classPrivateFieldGet(this, _conditionFilters).find(function (conditionFilter) {
           return conditionFilter.attributeId === attributeId;
         });
-
         if (oldConditionFilter) {
           var originalFilters = Records$1.getAttribute(attributeId).filters;
           originalFilters.forEach(function (originalFilter) {
             var indexInNew = nodes.indexOf(originalFilter.node);
             var indexInOld = oldConditionFilter.nodes.indexOf(originalFilter.node);
-
             if (indexInNew !== -1) {
               // if new filter does not exist in old filters, add property filter
               if (indexInOld === -1) _this2.addFilter(attributeId, originalFilter.node, [], false);
@@ -3826,8 +3408,7 @@
           });
         } else {
           var _iterator = _createForOfIteratorHelper(nodes),
-              _step;
-
+            _step;
           try {
             for (_iterator.s(); !(_step = _iterator.n()).done;) {
               var node = _step.value;
@@ -3838,9 +3419,8 @@
           } finally {
             _iterator.f();
           }
-        } // post processing (permalink, evaluate)
-
-
+        }
+        // post processing (permalink, evaluate)
         if (isFinal) _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
     }, {
@@ -3861,27 +3441,24 @@
       key: "getSelectedNodes",
       value: function getSelectedNodes(attributeId) {
         var _nodes$annotations, _nodes$filters;
-
         var nodes = {
           annotations: [],
           filters: []
         };
-
         var conditionAnnotations = _classPrivateFieldGet(this, _conditionAnnotations).filter(function (conditionAnnotation) {
           return conditionAnnotation.attributeId === attributeId;
         });
-
         var conditionFilter = _classPrivateFieldGet(this, _conditionFilters).find(function (conditionFilter) {
           return conditionFilter.attributeId === attributeId;
         });
-
         if (conditionAnnotations) (_nodes$annotations = nodes.annotations).push.apply(_nodes$annotations, _toConsumableArray(conditionAnnotations.map(function (annotationCondiiton) {
           return annotationCondiiton.parentNode;
         })));
         if (conditionFilter) (_nodes$filters = nodes.filters).push.apply(_nodes$filters, _toConsumableArray(conditionFilter.nodes));
         return nodes;
-      } // public accessor
+      }
 
+      // public accessor
     }, {
       key: "currentDataset",
       get: function get() {
@@ -3891,42 +3468,40 @@
       key: "userIds",
       get: function get() {
         return !_classPrivateFieldGet(this, _userIds) ? [] : _classPrivateFieldGet(this, _userIds).split(',');
-      } // private methods
+      }
 
+      // private methods
     }]);
-
     return ConditionBuilder;
   }();
-
   function _postProcessing2() {
     var dontLeaveInHistory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-    if (!_classPrivateFieldGet(this, _isRestoredConditinoFromURLParameters)) return; // evaluate if search is possible
+    if (!_classPrivateFieldGet(this, _isRestoredConditinoFromURLParameters)) return;
 
+    // evaluate if search is possible
     var established = _classPrivateFieldGet(this, _dataset) && _classPrivateFieldGet(this, _conditionFilters).length > 0;
     var customEvent = new CustomEvent(mutateEstablishConditions, {
       detail: established
     });
-    DefaultEventEmitter$1.dispatchEvent(customEvent); // get hierarchic conditions
+    DefaultEventEmitter$1.dispatchEvent(customEvent);
 
+    // get hierarchic conditions
     var annotations = _classPrivateFieldGet(this, _conditionAnnotations).map(function (annotationCondiiton) {
       return annotationCondiiton.getURLParameter();
     });
-
     var filters = _classPrivateFieldGet(this, _conditionFilters).map(function (conditionFilter) {
       return conditionFilter.getURLParameter();
-    }); // generate permalink
+    });
 
-
+    // generate permalink
     var params = new URL(location).searchParams;
     params.set('dataset', _classPrivateFieldGet(this, _dataset));
     params.set('annotations', JSON.stringify(annotations));
     params.set('filters', JSON.stringify(filters));
     if (dontLeaveInHistory) window.history.pushState(null, '', "".concat(window.location.origin).concat(window.location.pathname, "?").concat(params.toString()));
   }
-
   function _createSearchConditionFromURLParameters2() {
     var _params$get;
-
     var isFirst = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     // get conditions with ancestors
     var params = new URL(location).searchParams;
@@ -3935,7 +3510,6 @@
       annotations: ConditionAnnotation.decodeURLSearchParams(params.get('annotations')),
       filters: ConditionFilter.decodeURLSearchParams(params.get('filters'))
     };
-
     if (isFirst) {
       // get child category ids
       _classPrivateMethodGet(this, _makeQueueOfGettingChildNodes, _makeQueueOfGettingChildNodes2).call(this, condition);
@@ -3943,11 +3517,9 @@
       _classPrivateMethodGet(this, _restoreConditions, _restoreConditions2).call(this, condition);
     }
   }
-
   function _makeQueueOfGettingChildNodes2(condition) {
     if (condition.dataset) _classPrivateFieldSet(this, _dataset, condition.dataset);
     var queue = [];
-
     var addQueue = function addQueue(attributeId, node, ancestors) {
       var ancestors2 = [node];
       if (ancestors) ancestors2.push.apply(ancestors2, _toConsumableArray(ancestors));
@@ -3962,7 +3534,6 @@
         }
       });
     };
-
     condition.annotations.forEach(function (annotation) {
       if (annotation.parentNode) addQueue(annotation.attributeId, annotation.parentNode, annotation.ancestors);
     });
@@ -3972,18 +3543,14 @@
         if (ancestors.length > 0) addQueue(filter.attributeId, node, ancestors);
       });
     });
-
     _classPrivateMethodGet(this, _progressQueueOfGettingChildNodes, _progressQueueOfGettingChildNodes2).call(this, condition, queue);
   }
-
   function _progressQueueOfGettingChildNodes2(condition, queue) {
     var _this3 = this;
-
     if (queue.length > 0) {
       var _queue$shift = queue.shift(),
-          attributeId = _queue$shift.attributeId,
-          node = _queue$shift.node;
-
+        attributeId = _queue$shift.attributeId,
+        node = _queue$shift.node;
       _classPrivateMethodGet(this, _getChildNodes, _getChildNodes2).call(this, attributeId, node).then(function () {
         return _classPrivateMethodGet(_this3, _progressQueueOfGettingChildNodes, _progressQueueOfGettingChildNodes2).call(_this3, condition, queue);
       });
@@ -3991,7 +3558,6 @@
       _classPrivateMethodGet(this, _restoreConditions, _restoreConditions2).call(this, condition);
     }
   }
-
   function _getChildNodes2(attributeId, node) {
     return new Promise(function (resolve, reject) {
       Records$1.fetchAttributeFilters(attributeId, node).then(function (filters) {
@@ -4001,21 +3567,17 @@
       });
     });
   }
-
   function _restoreConditions2(_ref) {
     var _this4 = this;
-
     var dataset = _ref.dataset;
-        _ref.userIds;
-        var annotations = _ref.annotations,
-        filters = _ref.filters;
+      _ref.userIds;
+      var annotations = _ref.annotations,
+      filters = _ref.filters;
+    _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true);
 
-    _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true); // restore conditions
-
-
-    _classPrivateFieldSet(this, _dataset, dataset); // this.#userIds = userIds;
-
-
+    // restore conditions
+    _classPrivateFieldSet(this, _dataset, dataset);
+    // this.#userIds = userIds;
     this.setAnnotation(annotations, false);
     Records$1.attributes.forEach(function (_ref2) {
       var id = _ref2.id;
@@ -4024,45 +3586,35 @@
       });
       var nodes = [];
       if (attribute) nodes.push.apply(nodes, _toConsumableArray(attribute.nodes));
-
       _this4.setFilter(id, nodes, false);
     });
-    this.finish(false); // dispatch event
+    this.finish(false);
 
+    // dispatch event
     var customEvent = new CustomEvent(restoreParameters);
     DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
-
   function _clearConditinos2() {
     while (_classPrivateFieldGet(this, _conditionAnnotations).length > 0) {
       this.removeAnnotation(_classPrivateFieldGet(this, _conditionAnnotations)[0], false);
     }
-
     while (_classPrivateFieldGet(this, _conditionFilters).length > 0) {
       var _classPrivateFieldGet2 = _classPrivateFieldGet(this, _conditionFilters)[0],
-          attributeId = _classPrivateFieldGet2.attributeId,
-          nodes = _classPrivateFieldGet2.nodes;
-
+        attributeId = _classPrivateFieldGet2.attributeId,
+        nodes = _classPrivateFieldGet2.nodes;
       while (nodes.length > 0) {
         this.removeFilter(attributeId, nodes[0], false);
       }
     }
-
     _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
   }
-
   var ConditionBuilder$1 = new ConditionBuilder();
 
   var POLLING_DURATION = 1000;
-
   var _condition = /*#__PURE__*/new WeakMap();
-
   var _ROOT$e = /*#__PURE__*/new WeakMap();
-
   var _LABELS = /*#__PURE__*/new WeakMap();
-
   var _make = /*#__PURE__*/new WeakSet();
-
   var StackingConditionView = /*#__PURE__*/function () {
     // #isRange;
 
@@ -4074,106 +3626,87 @@
      */
     function StackingConditionView(_container, type, condition) {
       var _this = this;
-
       _classCallCheck(this, StackingConditionView);
-
       _classPrivateMethodInitSpec(this, _make);
-
       _classPrivateFieldInitSpec(this, _condition, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _ROOT$e, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _LABELS, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldSet(this, _condition, condition);
+      var attribute = Records$1.getAttribute(condition.attributeId);
+      // this.#isRange = isRange;
 
-      var attribute = Records$1.getAttribute(condition.attributeId); // this.#isRange = isRange;
       // attributes
-
       _classPrivateFieldSet(this, _ROOT$e, document.createElement('div'));
-
       _classPrivateFieldGet(this, _ROOT$e).classList.add('stacking-condition-view');
-
       _classPrivateFieldGet(this, _ROOT$e).dataset.categoryId = condition.categoryId;
       _classPrivateFieldGet(this, _ROOT$e).dataset.attributeId = condition.attributeId;
-      if (condition.parentNode) _classPrivateFieldGet(this, _ROOT$e).dataset.parentNode = condition.parentNode; // make view
-
+      if (condition.parentNode) _classPrivateFieldGet(this, _ROOT$e).dataset.parentNode = condition.parentNode;
+      // make view
       var _label,
-          _ancestorLabels = [Records$1.getCategory(condition.categoryId).label];
-
+        _ancestorLabels = [Records$1.getCategory(condition.categoryId).label];
       switch (true) {
         case _classPrivateFieldGet(this, _condition) instanceof ConditionAnnotation:
           {
             if (condition.parentNode) {
               var getFilter = function getFilter() {
                 var filter = condition.filter;
-
                 if (filter) {
                   _label = "<div class=\"label _category-color\">".concat(filter.label, "</div>");
-
                   _ancestorLabels.push.apply(_ancestorLabels, [attribute.label].concat(_toConsumableArray(condition.ancestors.map(function (ancestor) {
                     return Records$1.getFilter(condition.attributeId, ancestor).label;
                   }))));
-
                   _classPrivateMethodGet(_this, _make, _make2).call(_this, _container, type, _ancestorLabels, _label);
                 } else {
                   setTimeout(getFilter, POLLING_DURATION);
                 }
               };
-
               getFilter();
             } else {
               _label = "<div class=\"label _category-color\">".concat(attribute.label, "</div>");
-
               _classPrivateMethodGet(this, _make, _make2).call(this, _container, type, _ancestorLabels, _label);
             }
           }
           break;
-
         case _classPrivateFieldGet(this, _condition) instanceof ConditionFilter:
           _label = "<ul class=\"labels\"></ul>";
-
           _ancestorLabels.push(attribute.label);
-
           _classPrivateMethodGet(this, _make, _make2).call(this, _container, type, _ancestorLabels, _label);
-
           break;
-      } // TODO: クリックイベントで当該要素を表示する
+      }
 
-    } // private methods
+      // TODO: クリックイベントで当該要素を表示する
+    }
 
-
+    // private methods
     _createClass(StackingConditionView, [{
       key: "addFilter",
-      value: // public methods
+      value:
+      // public methods
+
       function addFilter(node) {
         var _this2 = this;
-
         var getFilter = function getFilter() {
           var filter = Records$1.getFilter(_classPrivateFieldGet(_this2, _condition).attributeId, node);
-
           if (filter === undefined) {
             setTimeout(getFilter, POLLING_DURATION);
           } else {
-            _classPrivateFieldGet(_this2, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _category-background-color\" data-node=\"".concat(filter.node, "\">").concat(filter.label, "<div class=\"close-button-view\"></div></li>")); // attach event
-
-
+            _classPrivateFieldGet(_this2, _LABELS).insertAdjacentHTML('beforeend', "<li class=\"label _category-background-color\" data-node=\"".concat(filter.node, "\">").concat(filter.label, "<div class=\"close-button-view\"></div></li>"));
+            // attach event
             _classPrivateFieldGet(_this2, _LABELS).querySelector(':scope > .label:last-child').addEventListener('click', function (e) {
               e.stopPropagation();
               ConditionBuilder$1.removeFilter(_classPrivateFieldGet(_this2, _condition).attributeId, e.target.parentNode.dataset.node);
             });
           }
         };
-
         getFilter();
       }
     }, {
@@ -4188,10 +3721,8 @@
       value: function removeFilter(attributeId, node) {
         if (attributeId === _classPrivateFieldGet(this, _condition).attributeId) {
           _classPrivateFieldGet(this, _LABELS).removeChild(_classPrivateFieldGet(this, _LABELS).querySelector(":scope > [data-node=\"".concat(node, "\"")));
-
           if (_classPrivateFieldGet(this, _LABELS).childNodes.length === 0) {
             _classPrivateFieldGet(this, _ROOT$e).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$e));
-
             return true;
           } else {
             return false;
@@ -4206,24 +3737,19 @@
         return attributeId === _classPrivateFieldGet(this, _condition).attributeId;
       }
     }]);
-
     return StackingConditionView;
   }();
-
   function _make2(container, type, ancestorLabels, label) {
     var _this3 = this;
-
     _classPrivateFieldGet(this, _ROOT$e).innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <ul class=\"path\">\n      ".concat(ancestorLabels.map(function (ancestor) {
       return "<li>".concat(ancestor, "</li>");
     }).join(''), "\n    </ul>\n    ").concat(label);
-    container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$e)); // reference
-
+    container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$e));
+    // reference
     if (_classPrivateFieldGet(this, _condition) instanceof ConditionFilter) {
       _classPrivateFieldSet(this, _LABELS, _classPrivateFieldGet(this, _ROOT$e).querySelector(':scope > .labels'));
-
       var _iterator = _createForOfIteratorHelper(_classPrivateFieldGet(this, _condition).nodes),
-          _step;
-
+        _step;
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var node = _step.value;
@@ -4234,20 +3760,18 @@
       } finally {
         _iterator.f();
       }
-    } // event
+    }
 
-
+    // event
     _classPrivateFieldGet(this, _ROOT$e).querySelector(':scope > .close-button-view').addEventListener('click', function () {
       switch (true) {
         case _classPrivateFieldGet(_this3, _condition) instanceof ConditionAnnotation:
           // notify
           ConditionBuilder$1.removeAnnotation(new ConditionAnnotation(_classPrivateFieldGet(_this3, _condition).attributeId, _classPrivateFieldGet(_this3, _condition).parentNode));
           break;
-
         case _classPrivateFieldGet(_this3, _condition) instanceof ConditionFilter:
           var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(_this3, _LABELS).querySelectorAll(':scope > .label')),
-              _step2;
-
+            _step2;
           try {
             for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
               var _label2 = _step2.value;
@@ -4258,176 +3782,127 @@
           } finally {
             _iterator2.f();
           }
-
           break;
       }
     });
   }
 
   var _properties = /*#__PURE__*/new WeakMap();
-
   var _propertyFilters = /*#__PURE__*/new WeakMap();
-
   var _isDefined = /*#__PURE__*/new WeakMap();
-
   var _placeHolderExamples = /*#__PURE__*/new WeakMap();
-
   var _DATASET_KEY = /*#__PURE__*/new WeakMap();
-
   var _USER_IDS$1 = /*#__PURE__*/new WeakMap();
-
   var _ANNOTATIONS_CONDITIONS_CONTAINER = /*#__PURE__*/new WeakMap();
-
   var _FILTERS_CONDITIONS_CONTAINER = /*#__PURE__*/new WeakMap();
-
   var _EXEC_BUTTON = /*#__PURE__*/new WeakMap();
-
   var _defineDatasetKeys = /*#__PURE__*/new WeakSet();
-
   var _addAnnotation = /*#__PURE__*/new WeakSet();
-
   var _removeAnnotation = /*#__PURE__*/new WeakSet();
-
   var _addFilter = /*#__PURE__*/new WeakSet();
-
   var _removeFilter = /*#__PURE__*/new WeakSet();
-
   var ConditionBuilderView = /*#__PURE__*/_createClass(function ConditionBuilderView(elm) {
     var _this = this;
-
     _classCallCheck(this, ConditionBuilderView);
-
     _classPrivateMethodInitSpec(this, _removeFilter);
-
     _classPrivateMethodInitSpec(this, _addFilter);
-
     _classPrivateMethodInitSpec(this, _removeAnnotation);
-
     _classPrivateMethodInitSpec(this, _addAnnotation);
-
     _classPrivateMethodInitSpec(this, _defineDatasetKeys);
-
     _classPrivateFieldInitSpec(this, _properties, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _propertyFilters, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _isDefined, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _placeHolderExamples, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _DATASET_KEY, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _USER_IDS$1, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _ANNOTATIONS_CONDITIONS_CONTAINER, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _FILTERS_CONDITIONS_CONTAINER, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _EXEC_BUTTON, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldSet(this, _properties, []);
-
     _classPrivateFieldSet(this, _propertyFilters, []);
+    _classPrivateFieldSet(this, _isDefined, false);
 
-    _classPrivateFieldSet(this, _isDefined, false); // references
-
-
+    // references
     var conditionsContainer = elm.querySelector(':scope > .conditions');
-
     _classPrivateFieldSet(this, _DATASET_KEY, conditionsContainer.querySelector(':scope > [data-condition-type="dataset"] > .inner > select'));
-
     _classPrivateFieldSet(this, _USER_IDS$1, conditionsContainer.querySelector(':scope > [data-condition-type="ids"] > .inner > textarea'));
-
     var annotations = conditionsContainer.querySelector(':scope > .condition[data-condition-type="annotations"]');
-
     _classPrivateFieldSet(this, _ANNOTATIONS_CONDITIONS_CONTAINER, annotations.querySelector(':scope > .inner > .conditions'));
-
     var filters = conditionsContainer.querySelector(':scope > .condition[data-condition-type="filters"]');
-
     _classPrivateFieldSet(this, _FILTERS_CONDITIONS_CONTAINER, filters.querySelector(':scope > .inner > .conditions'));
+    _classPrivateFieldSet(this, _EXEC_BUTTON, elm.querySelector(':scope > footer > button.exec'));
 
-    _classPrivateFieldSet(this, _EXEC_BUTTON, elm.querySelector(':scope > footer > button.exec')); // attach event
-
-
+    // attach event
     filters.addEventListener('click', function () {
       return document.body.dataset.condition = 'filter';
     });
     annotations.addEventListener('click', function () {
       return document.body.dataset.condition = 'annotation';
     });
-
     _classPrivateFieldGet(this, _EXEC_BUTTON).addEventListener('click', function () {
       document.body.dataset.display = 'results';
       ConditionBuilder$1.makeQueryParameter();
     });
-
     elm.querySelector(':scope > footer > button.return').addEventListener('click', function () {
       document.body.dataset.display = 'properties';
     });
     elm.querySelector(':scope > header > button.rounded-button-view').addEventListener('click', function () {
       var customEvent = new CustomEvent(clearCondition);
       DefaultEventEmitter$1.dispatchEvent(customEvent);
-    }); // event listeners
+    });
 
+    // event listeners
     DefaultEventEmitter$1.addEventListener(mutateAnnotationCondition, function (_ref) {
       var _ref$detail = _ref.detail,
-          action = _ref$detail.action,
-          conditionAnnotation = _ref$detail.conditionAnnotation;
-
+        action = _ref$detail.action,
+        conditionAnnotation = _ref$detail.conditionAnnotation;
       switch (action) {
         case 'add':
           _classPrivateMethodGet(_this, _addAnnotation, _addAnnotation2).call(_this, conditionAnnotation);
-
           break;
-
         case 'remove':
           _classPrivateMethodGet(_this, _removeAnnotation, _removeAnnotation2).call(_this, conditionAnnotation);
-
           break;
       }
     });
     DefaultEventEmitter$1.addEventListener(mutateFilterCondition, function (_ref2) {
       var _ref2$detail = _ref2.detail,
-          action = _ref2$detail.action,
-          attributeId = _ref2$detail.attributeId,
-          node = _ref2$detail.node;
-
+        action = _ref2$detail.action,
+        attributeId = _ref2$detail.attributeId,
+        node = _ref2$detail.node;
       switch (action) {
         case 'add':
           _classPrivateMethodGet(_this, _addFilter, _addFilter2).call(_this, attributeId, node);
-
           break;
-
         case 'remove':
           _classPrivateMethodGet(_this, _removeFilter, _removeFilter2).call(_this, attributeId, node);
-
           break;
       }
     });
@@ -4435,37 +3910,32 @@
     DefaultEventEmitter$1.addEventListener(mutateEstablishConditions, function (e) {
       _classPrivateFieldGet(_this, _EXEC_BUTTON).disabled = !e.detail;
     });
-  } // private methods
-  );
+  }
 
+  // private methods
+  );
   function _defineDatasetKeys2(_ref3) {
     var _this2 = this;
-
     var datasets = _ref3.detail.datasets;
-
     _classPrivateFieldSet(this, _isDefined, true);
-
     _classPrivateFieldSet(this, _placeHolderExamples, Object.fromEntries(Object.keys(datasets).map(function (key) {
       return [key, datasets[key].examples];
-    }))); // make options
-
-
+    })));
+    // make options
     _classPrivateFieldGet(this, _DATASET_KEY).innerHTML = Object.keys(datasets).filter(function (key) {
       return datasets[key].target;
     }).map(function (key) {
       return "<option value=\"".concat(key, "\">").concat(datasets[key].label, "</option>");
     }).join('');
     _classPrivateFieldGet(this, _DATASET_KEY).disabled = false;
-    _classPrivateFieldGet(this, _DATASET_KEY).value = ConditionBuilder$1.currentDataset; // attach event
-
+    _classPrivateFieldGet(this, _DATASET_KEY).value = ConditionBuilder$1.currentDataset;
+    // attach event
     _classPrivateFieldGet(this, _DATASET_KEY).addEventListener('change', function (e) {
       ConditionBuilder$1.setSubject(e.target.value);
       _classPrivateFieldGet(_this2, _USER_IDS$1).placeholder = "e.g. ".concat(_classPrivateFieldGet(_this2, _placeHolderExamples)[e.target.value].join(', '));
-    }); // preset
-
-
+    });
+    // preset
     var dataset = ConditionBuilder$1.currentDataset;
-
     if (dataset && Array.from(_classPrivateFieldGet(this, _DATASET_KEY).options).map(function (option) {
       return option.value;
     }).indexOf(dataset) !== -1) {
@@ -4473,39 +3943,30 @@
     } else {
       _classPrivateFieldGet(this, _DATASET_KEY).options[0].selected = true;
     }
-
     _classPrivateFieldGet(this, _DATASET_KEY).dispatchEvent(new Event('change'));
   }
-
   function _addAnnotation2(conditionAnnotation) {
     // modifier
-    _classPrivateFieldGet(this, _ANNOTATIONS_CONDITIONS_CONTAINER).classList.remove('-empty'); // make view
-
-
+    _classPrivateFieldGet(this, _ANNOTATIONS_CONDITIONS_CONTAINER).classList.remove('-empty');
+    // make view
     _classPrivateFieldGet(this, _properties).push(new StackingConditionView(_classPrivateFieldGet(this, _ANNOTATIONS_CONDITIONS_CONTAINER), 'annotation', conditionAnnotation));
   }
-
   function _removeAnnotation2(conditionAnnotation) {
     // remove from array
     var index = _classPrivateFieldGet(this, _properties).findIndex(function (stackingConditionView) {
       return stackingConditionView.removeAnnotation(conditionAnnotation);
     });
-
-    _classPrivateFieldGet(this, _properties).splice(index, 1); // modifier
-
-
+    _classPrivateFieldGet(this, _properties).splice(index, 1);
+    // modifier
     if (_classPrivateFieldGet(this, _properties).length === 0) _classPrivateFieldGet(this, _ANNOTATIONS_CONDITIONS_CONTAINER).classList.add('-empty');
   }
-
   function _addFilter2(attributeId, node) {
     // modifier
-    _classPrivateFieldGet(this, _FILTERS_CONDITIONS_CONTAINER).classList.remove('-empty'); // find a condition view has same attribute id
-
-
+    _classPrivateFieldGet(this, _FILTERS_CONDITIONS_CONTAINER).classList.remove('-empty');
+    // find a condition view has same attribute id
     var stackingConditionView = _classPrivateFieldGet(this, _propertyFilters).find(function (stackingConditionView) {
       return stackingConditionView.sameAttribute(attributeId);
     });
-
     if (stackingConditionView) {
       // if it exists, add new node
       stackingConditionView.addFilter(node);
@@ -4514,15 +3975,13 @@
       _classPrivateFieldGet(this, _propertyFilters).push(new StackingConditionView(_classPrivateFieldGet(this, _FILTERS_CONDITIONS_CONTAINER), 'value', new ConditionFilter(attributeId, [node])));
     }
   }
-
   function _removeFilter2(attributeId, node) {
     // remove from array
     var index = _classPrivateFieldGet(this, _propertyFilters).findIndex(function (stackingConditionView) {
       return stackingConditionView.removeFilter(attributeId, node);
     });
-
-    if (index !== -1) _classPrivateFieldGet(this, _propertyFilters).splice(index, 1); // modifier
-
+    if (index !== -1) _classPrivateFieldGet(this, _propertyFilters).splice(index, 1);
+    // modifier
     if (_classPrivateFieldGet(this, _propertyFilters).length === 0) _classPrivateFieldGet(this, _FILTERS_CONDITIONS_CONTAINER).classList.add('-empty');
   }
 
@@ -4532,8 +3991,9 @@
     button.addEventListener('click', function () {
       elm.classList.toggle('-spread');
       button.classList.toggle('-spread');
-      content.classList.toggle('-spread'); // messaging
+      content.classList.toggle('-spread');
 
+      // messaging
       content.querySelectorAll('[data-capturing-collapse=true]').forEach(function (node) {
         node.dispatchEvent(new CustomEvent(collapsed, {
           detail: content.classList.contains('-spread')
@@ -4543,123 +4003,90 @@
   }
 
   var _label = /*#__PURE__*/new WeakMap();
-
   var _count = /*#__PURE__*/new WeakMap();
-
   var _mapped = /*#__PURE__*/new WeakMap();
-
   var _pvalue = /*#__PURE__*/new WeakMap();
-
   var _node = /*#__PURE__*/new WeakMap();
-
   var _index$1 = /*#__PURE__*/new WeakMap();
-
   var _ROOT$d = /*#__PURE__*/new WeakMap();
-
   var _INPUT_VALUE = /*#__PURE__*/new WeakMap();
-
   var _INPUT_KEY = /*#__PURE__*/new WeakMap();
-
   var _clearUserFilters = /*#__PURE__*/new WeakSet();
-
   var ColumnItemView = /*#__PURE__*/function () {
     function ColumnItemView(column, _ref, index, selectedNodes) {
       var _this = this;
-
       var count = _ref.count,
-          node = _ref.node,
-          tip = _ref.tip,
-          label = _ref.label;
-
+        node = _ref.node,
+        tip = _ref.tip,
+        label = _ref.label;
       _classCallCheck(this, ColumnItemView);
-
       _classPrivateMethodInitSpec(this, _clearUserFilters);
-
       _classPrivateFieldInitSpec(this, _label, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _count, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _mapped, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _pvalue, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _node, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _index$1, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _ROOT$d, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _INPUT_VALUE, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _INPUT_KEY, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldSet(this, _label, label);
-
       _classPrivateFieldSet(this, _count, count);
-
       _classPrivateFieldSet(this, _node, node);
+      _classPrivateFieldSet(this, _index$1, index);
 
-      _classPrivateFieldSet(this, _index$1, index); // make HTML
-
-
+      // make HTML
       _classPrivateFieldSet(this, _ROOT$d, document.createElement('tr'));
-
       _classPrivateFieldGet(this, _ROOT$d).classList.add('item');
-
       if (!tip) _classPrivateFieldGet(this, _ROOT$d).classList.add('-haschild');
       _classPrivateFieldGet(this, _ROOT$d).dataset.id = node;
       _classPrivateFieldGet(this, _ROOT$d).dataset.count = count;
       _classPrivateFieldGet(this, _ROOT$d).innerHTML = "\n    <td class=\"label\">\n      <label class=\"annotation\">\n        <input type=\"checkbox\" value=\"".concat(node, "\"").concat(!tip ? '' : ' disabled', "/>\n        ").concat(label, "\n      </label>\n      <label class=\"filter\">\n        <input type=\"checkbox\" value=\"").concat(node, "\"/>\n        ").concat(label, "\n      </label>\n    </td>\n    <td class=\"total\">").concat(count.toLocaleString(), "</td>\n    <td class=\"mapped\"></td>\n    <td class=\"pvalue\"></td>\n    <td class=\"drilldown\"></td>");
-
       _classPrivateFieldSet(this, _INPUT_VALUE, _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > td.label > label.filter > input'));
-
       _classPrivateFieldSet(this, _INPUT_KEY, _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > td.label > label.annotation > input'));
-
       if (selectedNodes.annotations.indexOf(node) !== -1) _classPrivateFieldGet(this, _INPUT_KEY).checked = true;
-      if (selectedNodes.filters.indexOf(node) !== -1) _classPrivateFieldGet(this, _INPUT_VALUE).checked = true; // even listener
+      if (selectedNodes.filters.indexOf(node) !== -1) _classPrivateFieldGet(this, _INPUT_VALUE).checked = true;
 
+      // even listener
       _classPrivateFieldGet(this, _INPUT_KEY).addEventListener('change', function (e) {
         var conditionAnnotation = new ConditionAnnotation(column.attributeId, node);
-
         if (e.target.checked) {
           ConditionBuilder$1.addAnnotation(conditionAnnotation);
         } else {
           ConditionBuilder$1.removeAnnotation(column.attributeId, node);
         }
       });
-
       DefaultEventEmitter$1.addEventListener(mutateAnnotationCondition, function (_ref2) {
         var _ref2$detail = _ref2.detail,
-            action = _ref2$detail.action,
-            conditionAnnotation = _ref2$detail.conditionAnnotation;
-
+          action = _ref2$detail.action,
+          conditionAnnotation = _ref2$detail.conditionAnnotation;
         if (action === 'remove') {
           if (column.attributeId === conditionAnnotation.attributeId) {
             if (conditionAnnotation.parentNode && node === conditionAnnotation.parentNode) {
@@ -4670,33 +4097,34 @@
       });
       DefaultEventEmitter$1.addEventListener(mutateFilterCondition, function (_ref3) {
         var detail = _ref3.detail;
-
         if (column.attributeId === detail.attributeId && node === detail.node) {
           _classPrivateFieldGet(_this, _INPUT_VALUE).checked = detail.action === 'add';
         }
       });
       DefaultEventEmitter$1.addEventListener(setUserFilters, function (_ref4) {
         var _ref4$detail = _ref4.detail,
-            attributeId = _ref4$detail.attributeId,
-            filters = _ref4$detail.filters;
+          attributeId = _ref4$detail.attributeId,
+          filters = _ref4$detail.filters;
         if (column.attributeId === attributeId) _this.setUserFilters(filters);
       });
-      DefaultEventEmitter$1.addEventListener(clearUserFilters, _classPrivateMethodGet(this, _clearUserFilters, _clearUserFilters2).bind(this)); // select/deselect a item (attribute) > label
+      DefaultEventEmitter$1.addEventListener(clearUserFilters, _classPrivateMethodGet(this, _clearUserFilters, _clearUserFilters2).bind(this));
 
-      _classPrivateFieldGet(this, _INPUT_VALUE).addEventListener('click', column.checkFilter.bind(column)); // drill down
+      // select/deselect a item (attribute) > label
+      _classPrivateFieldGet(this, _INPUT_VALUE).addEventListener('click', column.checkFilter.bind(column));
 
-
+      // drill down
       if (!tip) {
         var drilldown = _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .drilldown');
-
         drilldown.addEventListener('click', column.drillDown.bind(column));
       }
-    } // private methods
+    }
 
-
+    // private methods
     _createClass(ColumnItemView, [{
       key: "update",
-      value: // public methods
+      value:
+      // public methods
+
       function update(color, isLog10, max) {
         var count = isLog10 ? Math.log10(_classPrivateFieldGet(this, _count)) : _classPrivateFieldGet(this, _count);
         _classPrivateFieldGet(this, _ROOT$d).style.backgroundColor = "rgb(".concat(color.mix(App$1.colorWhite, 1 - count / max).coords.map(function (cood) {
@@ -4707,30 +4135,24 @@
       key: "setUserFilters",
       value: function setUserFilters(filters) {
         var _this2 = this;
-
         var filter = filters.find(function (filter) {
           return filter.node === _classPrivateFieldGet(_this2, _node);
         });
-
         if (filter) {
           var _filter$mapped, _filter$pvalue;
-
           _classPrivateFieldSet(this, _mapped, (_filter$mapped = filter.mapped) !== null && _filter$mapped !== void 0 ? _filter$mapped : null);
-
           _classPrivateFieldSet(this, _pvalue, (_filter$pvalue = filter.pvalue) !== null && _filter$pvalue !== void 0 ? _filter$pvalue : null);
-
           _classPrivateFieldGet(this, _ROOT$d).classList.add('-pinsticking');
-
           _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .mapped').textContent = filter.mapped ? filter.mapped.toLocaleString() : 0;
           _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .pvalue').textContent = filter.pvalue ? filter.pvalue.toExponential(2) : '';
           if (filter.mapped === 0) _classPrivateFieldGet(this, _ROOT$d).classList.remove('-pinsticking');else _classPrivateFieldGet(this, _ROOT$d).classList.add('-pinsticking');
         } else {
           _classPrivateFieldSet(this, _mapped, null);
-
           _classPrivateFieldSet(this, _pvalue, null);
         }
-      } // accessors
+      }
 
+      // accessors
     }, {
       key: "label",
       get: function get() {
@@ -4767,36 +4189,26 @@
         return _classPrivateFieldGet(this, _ROOT$d);
       }
     }]);
-
     return ColumnItemView;
   }();
-
   function _clearUserFilters2() {
     _classPrivateFieldGet(this, _ROOT$d).classList.remove('-pinsticking');
   }
 
   var SORTABLE_COLUMNS = ['label', 'total', 'mapped', 'pvalue'];
-
   var _status = /*#__PURE__*/new WeakMap();
-
   var _setDocument = /*#__PURE__*/new WeakSet();
-
   var ColumnSelectorSortManager = /*#__PURE__*/function () {
     function ColumnSelectorSortManager() {
       _classCallCheck(this, ColumnSelectorSortManager);
-
       _classPrivateMethodInitSpec(this, _setDocument);
-
       _classPrivateFieldInitSpec(this, _status, {
         writable: true,
         value: void 0
       });
-
       // get data from local strage
       var _column = window.localStorage.getItem('sortColumn');
-
       var status = window.localStorage.getItem('sortDirectionEachOfColumns');
-
       if (status) {
         _classPrivateFieldSet(this, _status, new Map(JSON.parse(status)));
       } else {
@@ -4804,14 +4216,15 @@
           return [column, ''];
         })));
       }
-
       _classPrivateMethodGet(this, _setDocument, _setDocument2).call(this, _column);
-    } // private methods
+    }
 
-
+    // private methods
     _createClass(ColumnSelectorSortManager, [{
       key: "setSort",
-      value: // public methods
+      value:
+      // public methods
+
       function setSort(column) {
         // set sort
         var direction = {
@@ -4819,24 +4232,24 @@
           asc: 'desc',
           desc: ''
         }[_classPrivateFieldGet(this, _status).get(column)];
-
         _classPrivateFieldGet(this, _status).set(column, direction);
+        _classPrivateMethodGet(this, _setDocument, _setDocument2).call(this, column);
 
-        _classPrivateMethodGet(this, _setDocument, _setDocument2).call(this, column); // dispatch event
-
-
+        // dispatch event
         var customEvent = new CustomEvent(changeColumnSelectorSorter, {
           detail: {
             column: column,
             direction: direction
           }
         });
-        DefaultEventEmitter$1.dispatchEvent(customEvent); // set local storage
+        DefaultEventEmitter$1.dispatchEvent(customEvent);
 
+        // set local storage
         window.localStorage.setItem('sortColumn', column);
         window.localStorage.setItem('sortDirectionEachOfColumns', JSON.stringify(Array.from(_classPrivateFieldGet(this, _status))));
-      } // accessors
+      }
 
+      // accessors
     }, {
       key: "sortableColumns",
       get: function get() {
@@ -4853,25 +4266,20 @@
         };
       }
     }]);
-
     return ColumnSelectorSortManager;
   }();
-
   function _setDocument2(column) {
     document.body.dataset.sortColumn = column;
     document.body.dataset.sortDirection = _classPrivateFieldGet(this, _status).get(column);
   }
-
   var ColumnSelectorSortManager$1 = new ColumnSelectorSortManager();
 
   var noprocessing = function noprocessing(parameter) {
     return parameter;
   };
-
   var stringify = function stringify(parameter) {
     return JSON.stringify(parameter);
   };
-
   var QUERY_TEMPRATES = {
     locate: {
       attribute: noprocessing,
@@ -4899,3427 +4307,92 @@
     return Object.fromEntries(map);
   }
 
-  function getDefaultExportFromCjs (x) {
-  	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-  }
-
-  var axios$3 = {exports: {}};
-
-  var axios$2 = {exports: {}};
-
-  var bind$2 = function bind(fn, thisArg) {
-    return function wrap() {
-      var args = new Array(arguments.length);
-      for (var i = 0; i < args.length; i++) {
-        args[i] = arguments[i];
-      }
-      return fn.apply(thisArg, args);
-    };
-  };
-
-  var bind$1 = bind$2;
-
-  // utils is a library of generic helper functions non-specific to axios
-
-  var toString = Object.prototype.toString;
-
-  // eslint-disable-next-line func-names
-  var kindOf = (function(cache) {
-    // eslint-disable-next-line func-names
-    return function(thing) {
-      var str = toString.call(thing);
-      return cache[str] || (cache[str] = str.slice(8, -1).toLowerCase());
-    };
-  })(Object.create(null));
-
-  function kindOfTest(type) {
-    type = type.toLowerCase();
-    return function isKindOf(thing) {
-      return kindOf(thing) === type;
-    };
-  }
-
-  /**
-   * Determine if a value is an Array
-   *
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is an Array, otherwise false
-   */
-  function isArray(val) {
-    return Array.isArray(val);
-  }
-
-  /**
-   * Determine if a value is undefined
-   *
-   * @param {Object} val The value to test
-   * @returns {boolean} True if the value is undefined, otherwise false
-   */
-  function isUndefined(val) {
-    return typeof val === 'undefined';
-  }
-
-  /**
-   * Determine if a value is a Buffer
-   *
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is a Buffer, otherwise false
-   */
-  function isBuffer(val) {
-    return val !== null && !isUndefined(val) && val.constructor !== null && !isUndefined(val.constructor)
-      && typeof val.constructor.isBuffer === 'function' && val.constructor.isBuffer(val);
-  }
-
-  /**
-   * Determine if a value is an ArrayBuffer
-   *
-   * @function
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is an ArrayBuffer, otherwise false
-   */
-  var isArrayBuffer = kindOfTest('ArrayBuffer');
-
-
-  /**
-   * Determine if a value is a view on an ArrayBuffer
-   *
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
-   */
-  function isArrayBufferView(val) {
-    var result;
-    if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
-      result = ArrayBuffer.isView(val);
-    } else {
-      result = (val) && (val.buffer) && (isArrayBuffer(val.buffer));
-    }
-    return result;
-  }
-
-  /**
-   * Determine if a value is a String
-   *
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is a String, otherwise false
-   */
-  function isString(val) {
-    return typeof val === 'string';
-  }
-
-  /**
-   * Determine if a value is a Number
-   *
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is a Number, otherwise false
-   */
-  function isNumber(val) {
-    return typeof val === 'number';
-  }
-
-  /**
-   * Determine if a value is an Object
-   *
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is an Object, otherwise false
-   */
-  function isObject(val) {
-    return val !== null && typeof val === 'object';
-  }
-
-  /**
-   * Determine if a value is a plain Object
-   *
-   * @param {Object} val The value to test
-   * @return {boolean} True if value is a plain Object, otherwise false
-   */
-  function isPlainObject(val) {
-    if (kindOf(val) !== 'object') {
-      return false;
-    }
-
-    var prototype = Object.getPrototypeOf(val);
-    return prototype === null || prototype === Object.prototype;
-  }
-
-  /**
-   * Determine if a value is a Date
-   *
-   * @function
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is a Date, otherwise false
-   */
-  var isDate = kindOfTest('Date');
-
-  /**
-   * Determine if a value is a File
-   *
-   * @function
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is a File, otherwise false
-   */
-  var isFile = kindOfTest('File');
-
-  /**
-   * Determine if a value is a Blob
-   *
-   * @function
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is a Blob, otherwise false
-   */
-  var isBlob = kindOfTest('Blob');
-
-  /**
-   * Determine if a value is a FileList
-   *
-   * @function
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is a File, otherwise false
-   */
-  var isFileList = kindOfTest('FileList');
-
-  /**
-   * Determine if a value is a Function
-   *
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is a Function, otherwise false
-   */
-  function isFunction(val) {
-    return toString.call(val) === '[object Function]';
-  }
-
-  /**
-   * Determine if a value is a Stream
-   *
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is a Stream, otherwise false
-   */
-  function isStream(val) {
-    return isObject(val) && isFunction(val.pipe);
-  }
-
-  /**
-   * Determine if a value is a FormData
-   *
-   * @param {Object} thing The value to test
-   * @returns {boolean} True if value is an FormData, otherwise false
-   */
-  function isFormData(thing) {
-    var pattern = '[object FormData]';
-    return thing && (
-      (typeof FormData === 'function' && thing instanceof FormData) ||
-      toString.call(thing) === pattern ||
-      (isFunction(thing.toString) && thing.toString() === pattern)
-    );
-  }
-
-  /**
-   * Determine if a value is a URLSearchParams object
-   * @function
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is a URLSearchParams object, otherwise false
-   */
-  var isURLSearchParams = kindOfTest('URLSearchParams');
-
-  /**
-   * Trim excess whitespace off the beginning and end of a string
-   *
-   * @param {String} str The String to trim
-   * @returns {String} The String freed of excess whitespace
-   */
-  function trim(str) {
-    return str.trim ? str.trim() : str.replace(/^\s+|\s+$/g, '');
-  }
-
-  /**
-   * Determine if we're running in a standard browser environment
-   *
-   * This allows axios to run in a web worker, and react-native.
-   * Both environments support XMLHttpRequest, but not fully standard globals.
-   *
-   * web workers:
-   *  typeof window -> undefined
-   *  typeof document -> undefined
-   *
-   * react-native:
-   *  navigator.product -> 'ReactNative'
-   * nativescript
-   *  navigator.product -> 'NativeScript' or 'NS'
-   */
-  function isStandardBrowserEnv() {
-    if (typeof navigator !== 'undefined' && (navigator.product === 'ReactNative' ||
-                                             navigator.product === 'NativeScript' ||
-                                             navigator.product === 'NS')) {
-      return false;
-    }
-    return (
-      typeof window !== 'undefined' &&
-      typeof document !== 'undefined'
-    );
-  }
-
-  /**
-   * Iterate over an Array or an Object invoking a function for each item.
-   *
-   * If `obj` is an Array callback will be called passing
-   * the value, index, and complete array for each item.
-   *
-   * If 'obj' is an Object callback will be called passing
-   * the value, key, and complete object for each property.
-   *
-   * @param {Object|Array} obj The object to iterate
-   * @param {Function} fn The callback to invoke for each item
-   */
-  function forEach(obj, fn) {
-    // Don't bother if no value provided
-    if (obj === null || typeof obj === 'undefined') {
-      return;
-    }
-
-    // Force an array if not already something iterable
-    if (typeof obj !== 'object') {
-      /*eslint no-param-reassign:0*/
-      obj = [obj];
-    }
-
-    if (isArray(obj)) {
-      // Iterate over array values
-      for (var i = 0, l = obj.length; i < l; i++) {
-        fn.call(null, obj[i], i, obj);
-      }
-    } else {
-      // Iterate over object keys
-      for (var key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-          fn.call(null, obj[key], key, obj);
-        }
-      }
-    }
-  }
-
-  /**
-   * Accepts varargs expecting each argument to be an object, then
-   * immutably merges the properties of each object and returns result.
-   *
-   * When multiple objects contain the same key the later object in
-   * the arguments list will take precedence.
-   *
-   * Example:
-   *
-   * ```js
-   * var result = merge({foo: 123}, {foo: 456});
-   * console.log(result.foo); // outputs 456
-   * ```
-   *
-   * @param {Object} obj1 Object to merge
-   * @returns {Object} Result of all merge properties
-   */
-  function merge(/* obj1, obj2, obj3, ... */) {
-    var result = {};
-    function assignValue(val, key) {
-      if (isPlainObject(result[key]) && isPlainObject(val)) {
-        result[key] = merge(result[key], val);
-      } else if (isPlainObject(val)) {
-        result[key] = merge({}, val);
-      } else if (isArray(val)) {
-        result[key] = val.slice();
-      } else {
-        result[key] = val;
-      }
-    }
-
-    for (var i = 0, l = arguments.length; i < l; i++) {
-      forEach(arguments[i], assignValue);
-    }
-    return result;
-  }
-
-  /**
-   * Extends object a by mutably adding to it the properties of object b.
-   *
-   * @param {Object} a The object to be extended
-   * @param {Object} b The object to copy properties from
-   * @param {Object} thisArg The object to bind function to
-   * @return {Object} The resulting value of object a
-   */
-  function extend(a, b, thisArg) {
-    forEach(b, function assignValue(val, key) {
-      if (thisArg && typeof val === 'function') {
-        a[key] = bind$1(val, thisArg);
-      } else {
-        a[key] = val;
-      }
-    });
-    return a;
-  }
-
-  /**
-   * Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
-   *
-   * @param {string} content with BOM
-   * @return {string} content value without BOM
-   */
-  function stripBOM(content) {
-    if (content.charCodeAt(0) === 0xFEFF) {
-      content = content.slice(1);
-    }
-    return content;
-  }
-
-  /**
-   * Inherit the prototype methods from one constructor into another
-   * @param {function} constructor
-   * @param {function} superConstructor
-   * @param {object} [props]
-   * @param {object} [descriptors]
-   */
-
-  function inherits(constructor, superConstructor, props, descriptors) {
-    constructor.prototype = Object.create(superConstructor.prototype, descriptors);
-    constructor.prototype.constructor = constructor;
-    props && Object.assign(constructor.prototype, props);
-  }
-
-  /**
-   * Resolve object with deep prototype chain to a flat object
-   * @param {Object} sourceObj source object
-   * @param {Object} [destObj]
-   * @param {Function} [filter]
-   * @returns {Object}
-   */
-
-  function toFlatObject(sourceObj, destObj, filter) {
-    var props;
-    var i;
-    var prop;
-    var merged = {};
-
-    destObj = destObj || {};
-
-    do {
-      props = Object.getOwnPropertyNames(sourceObj);
-      i = props.length;
-      while (i-- > 0) {
-        prop = props[i];
-        if (!merged[prop]) {
-          destObj[prop] = sourceObj[prop];
-          merged[prop] = true;
-        }
-      }
-      sourceObj = Object.getPrototypeOf(sourceObj);
-    } while (sourceObj && (!filter || filter(sourceObj, destObj)) && sourceObj !== Object.prototype);
-
-    return destObj;
-  }
-
-  /*
-   * determines whether a string ends with the characters of a specified string
-   * @param {String} str
-   * @param {String} searchString
-   * @param {Number} [position= 0]
-   * @returns {boolean}
-   */
-  function endsWith(str, searchString, position) {
-    str = String(str);
-    if (position === undefined || position > str.length) {
-      position = str.length;
-    }
-    position -= searchString.length;
-    var lastIndex = str.indexOf(searchString, position);
-    return lastIndex !== -1 && lastIndex === position;
-  }
-
-
-  /**
-   * Returns new array from array like object
-   * @param {*} [thing]
-   * @returns {Array}
-   */
-  function toArray(thing) {
-    if (!thing) return null;
-    var i = thing.length;
-    if (isUndefined(i)) return null;
-    var arr = new Array(i);
-    while (i-- > 0) {
-      arr[i] = thing[i];
-    }
-    return arr;
-  }
-
-  // eslint-disable-next-line func-names
-  var isTypedArray = (function(TypedArray) {
-    // eslint-disable-next-line func-names
-    return function(thing) {
-      return TypedArray && thing instanceof TypedArray;
-    };
-  })(typeof Uint8Array !== 'undefined' && Object.getPrototypeOf(Uint8Array));
-
-  var utils$b = {
-    isArray: isArray,
-    isArrayBuffer: isArrayBuffer,
-    isBuffer: isBuffer,
-    isFormData: isFormData,
-    isArrayBufferView: isArrayBufferView,
-    isString: isString,
-    isNumber: isNumber,
-    isObject: isObject,
-    isPlainObject: isPlainObject,
-    isUndefined: isUndefined,
-    isDate: isDate,
-    isFile: isFile,
-    isBlob: isBlob,
-    isFunction: isFunction,
-    isStream: isStream,
-    isURLSearchParams: isURLSearchParams,
-    isStandardBrowserEnv: isStandardBrowserEnv,
-    forEach: forEach,
-    merge: merge,
-    extend: extend,
-    trim: trim,
-    stripBOM: stripBOM,
-    inherits: inherits,
-    toFlatObject: toFlatObject,
-    kindOf: kindOf,
-    kindOfTest: kindOfTest,
-    endsWith: endsWith,
-    toArray: toArray,
-    isTypedArray: isTypedArray,
-    isFileList: isFileList
-  };
-
-  var utils$a = utils$b;
-
-  function encode(val) {
-    return encodeURIComponent(val).
-      replace(/%3A/gi, ':').
-      replace(/%24/g, '$').
-      replace(/%2C/gi, ',').
-      replace(/%20/g, '+').
-      replace(/%5B/gi, '[').
-      replace(/%5D/gi, ']');
-  }
-
-  /**
-   * Build a URL by appending params to the end
-   *
-   * @param {string} url The base of the url (e.g., http://www.google.com)
-   * @param {object} [params] The params to be appended
-   * @returns {string} The formatted url
-   */
-  var buildURL$1 = function buildURL(url, params, paramsSerializer) {
-    /*eslint no-param-reassign:0*/
-    if (!params) {
-      return url;
-    }
-
-    var serializedParams;
-    if (paramsSerializer) {
-      serializedParams = paramsSerializer(params);
-    } else if (utils$a.isURLSearchParams(params)) {
-      serializedParams = params.toString();
-    } else {
-      var parts = [];
-
-      utils$a.forEach(params, function serialize(val, key) {
-        if (val === null || typeof val === 'undefined') {
-          return;
-        }
-
-        if (utils$a.isArray(val)) {
-          key = key + '[]';
-        } else {
-          val = [val];
-        }
-
-        utils$a.forEach(val, function parseValue(v) {
-          if (utils$a.isDate(v)) {
-            v = v.toISOString();
-          } else if (utils$a.isObject(v)) {
-            v = JSON.stringify(v);
-          }
-          parts.push(encode(key) + '=' + encode(v));
-        });
-      });
-
-      serializedParams = parts.join('&');
-    }
-
-    if (serializedParams) {
-      var hashmarkIndex = url.indexOf('#');
-      if (hashmarkIndex !== -1) {
-        url = url.slice(0, hashmarkIndex);
-      }
-
-      url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
-    }
-
-    return url;
-  };
-
-  var utils$9 = utils$b;
-
-  function InterceptorManager$1() {
-    this.handlers = [];
-  }
-
-  /**
-   * Add a new interceptor to the stack
-   *
-   * @param {Function} fulfilled The function to handle `then` for a `Promise`
-   * @param {Function} rejected The function to handle `reject` for a `Promise`
-   *
-   * @return {Number} An ID used to remove interceptor later
-   */
-  InterceptorManager$1.prototype.use = function use(fulfilled, rejected, options) {
-    this.handlers.push({
-      fulfilled: fulfilled,
-      rejected: rejected,
-      synchronous: options ? options.synchronous : false,
-      runWhen: options ? options.runWhen : null
-    });
-    return this.handlers.length - 1;
-  };
-
-  /**
-   * Remove an interceptor from the stack
-   *
-   * @param {Number} id The ID that was returned by `use`
-   */
-  InterceptorManager$1.prototype.eject = function eject(id) {
-    if (this.handlers[id]) {
-      this.handlers[id] = null;
-    }
-  };
-
-  /**
-   * Iterate over all the registered interceptors
-   *
-   * This method is particularly useful for skipping over any
-   * interceptors that may have become `null` calling `eject`.
-   *
-   * @param {Function} fn The function to call for each interceptor
-   */
-  InterceptorManager$1.prototype.forEach = function forEach(fn) {
-    utils$9.forEach(this.handlers, function forEachHandler(h) {
-      if (h !== null) {
-        fn(h);
-      }
-    });
-  };
-
-  var InterceptorManager_1 = InterceptorManager$1;
-
-  var utils$8 = utils$b;
-
-  var normalizeHeaderName$1 = function normalizeHeaderName(headers, normalizedName) {
-    utils$8.forEach(headers, function processHeader(value, name) {
-      if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
-        headers[normalizedName] = value;
-        delete headers[name];
-      }
-    });
-  };
-
-  var utils$7 = utils$b;
-
-  /**
-   * Create an Error with the specified message, config, error code, request and response.
-   *
-   * @param {string} message The error message.
-   * @param {string} [code] The error code (for example, 'ECONNABORTED').
-   * @param {Object} [config] The config.
-   * @param {Object} [request] The request.
-   * @param {Object} [response] The response.
-   * @returns {Error} The created error.
-   */
-  function AxiosError$2(message, code, config, request, response) {
-    Error.call(this);
-    this.message = message;
-    this.name = 'AxiosError';
-    code && (this.code = code);
-    config && (this.config = config);
-    request && (this.request = request);
-    response && (this.response = response);
-  }
-
-  utils$7.inherits(AxiosError$2, Error, {
-    toJSON: function toJSON() {
-      return {
-        // Standard
-        message: this.message,
-        name: this.name,
-        // Microsoft
-        description: this.description,
-        number: this.number,
-        // Mozilla
-        fileName: this.fileName,
-        lineNumber: this.lineNumber,
-        columnNumber: this.columnNumber,
-        stack: this.stack,
-        // Axios
-        config: this.config,
-        code: this.code,
-        status: this.response && this.response.status ? this.response.status : null
-      };
-    }
-  });
-
-  var prototype = AxiosError$2.prototype;
-  var descriptors = {};
-
-  [
-    'ERR_BAD_OPTION_VALUE',
-    'ERR_BAD_OPTION',
-    'ECONNABORTED',
-    'ETIMEDOUT',
-    'ERR_NETWORK',
-    'ERR_FR_TOO_MANY_REDIRECTS',
-    'ERR_DEPRECATED',
-    'ERR_BAD_RESPONSE',
-    'ERR_BAD_REQUEST',
-    'ERR_CANCELED'
-  // eslint-disable-next-line func-names
-  ].forEach(function(code) {
-    descriptors[code] = {value: code};
-  });
-
-  Object.defineProperties(AxiosError$2, descriptors);
-  Object.defineProperty(prototype, 'isAxiosError', {value: true});
-
-  // eslint-disable-next-line func-names
-  AxiosError$2.from = function(error, code, config, request, response, customProps) {
-    var axiosError = Object.create(prototype);
-
-    utils$7.toFlatObject(error, axiosError, function filter(obj) {
-      return obj !== Error.prototype;
-    });
-
-    AxiosError$2.call(axiosError, error.message, code, config, request, response);
-
-    axiosError.name = error.name;
-
-    customProps && Object.assign(axiosError, customProps);
-
-    return axiosError;
-  };
-
-  var AxiosError_1 = AxiosError$2;
-
-  var transitional = {
-    silentJSONParsing: true,
-    forcedJSONParsing: true,
-    clarifyTimeoutError: false
-  };
-
-  var utils$6 = utils$b;
-
-  /**
-   * Convert a data object to FormData
-   * @param {Object} obj
-   * @param {?Object} [formData]
-   * @returns {Object}
-   **/
-
-  function toFormData$1(obj, formData) {
-    // eslint-disable-next-line no-param-reassign
-    formData = formData || new FormData();
-
-    var stack = [];
-
-    function convertValue(value) {
-      if (value === null) return '';
-
-      if (utils$6.isDate(value)) {
-        return value.toISOString();
-      }
-
-      if (utils$6.isArrayBuffer(value) || utils$6.isTypedArray(value)) {
-        return typeof Blob === 'function' ? new Blob([value]) : Buffer.from(value);
-      }
-
-      return value;
-    }
-
-    function build(data, parentKey) {
-      if (utils$6.isPlainObject(data) || utils$6.isArray(data)) {
-        if (stack.indexOf(data) !== -1) {
-          throw Error('Circular reference detected in ' + parentKey);
-        }
-
-        stack.push(data);
-
-        utils$6.forEach(data, function each(value, key) {
-          if (utils$6.isUndefined(value)) return;
-          var fullKey = parentKey ? parentKey + '.' + key : key;
-          var arr;
-
-          if (value && !parentKey && typeof value === 'object') {
-            if (utils$6.endsWith(key, '{}')) {
-              // eslint-disable-next-line no-param-reassign
-              value = JSON.stringify(value);
-            } else if (utils$6.endsWith(key, '[]') && (arr = utils$6.toArray(value))) {
-              // eslint-disable-next-line func-names
-              arr.forEach(function(el) {
-                !utils$6.isUndefined(el) && formData.append(fullKey, convertValue(el));
-              });
-              return;
-            }
-          }
-
-          build(value, fullKey);
-        });
-
-        stack.pop();
-      } else {
-        formData.append(parentKey, convertValue(data));
-      }
-    }
-
-    build(obj);
-
-    return formData;
-  }
-
-  var toFormData_1 = toFormData$1;
-
-  var settle;
-  var hasRequiredSettle;
-
-  function requireSettle () {
-  	if (hasRequiredSettle) return settle;
-  	hasRequiredSettle = 1;
-
-  	var AxiosError = AxiosError_1;
-
-  	/**
-  	 * Resolve or reject a Promise based on response status.
-  	 *
-  	 * @param {Function} resolve A function that resolves the promise.
-  	 * @param {Function} reject A function that rejects the promise.
-  	 * @param {object} response The response.
-  	 */
-  	settle = function settle(resolve, reject, response) {
-  	  var validateStatus = response.config.validateStatus;
-  	  if (!response.status || !validateStatus || validateStatus(response.status)) {
-  	    resolve(response);
-  	  } else {
-  	    reject(new AxiosError(
-  	      'Request failed with status code ' + response.status,
-  	      [AxiosError.ERR_BAD_REQUEST, AxiosError.ERR_BAD_RESPONSE][Math.floor(response.status / 100) - 4],
-  	      response.config,
-  	      response.request,
-  	      response
-  	    ));
-  	  }
-  	};
-  	return settle;
-  }
-
-  var cookies;
-  var hasRequiredCookies;
-
-  function requireCookies () {
-  	if (hasRequiredCookies) return cookies;
-  	hasRequiredCookies = 1;
-
-  	var utils = utils$b;
-
-  	cookies = (
-  	  utils.isStandardBrowserEnv() ?
-
-  	  // Standard browser envs support document.cookie
-  	    (function standardBrowserEnv() {
-  	      return {
-  	        write: function write(name, value, expires, path, domain, secure) {
-  	          var cookie = [];
-  	          cookie.push(name + '=' + encodeURIComponent(value));
-
-  	          if (utils.isNumber(expires)) {
-  	            cookie.push('expires=' + new Date(expires).toGMTString());
-  	          }
-
-  	          if (utils.isString(path)) {
-  	            cookie.push('path=' + path);
-  	          }
-
-  	          if (utils.isString(domain)) {
-  	            cookie.push('domain=' + domain);
-  	          }
-
-  	          if (secure === true) {
-  	            cookie.push('secure');
-  	          }
-
-  	          document.cookie = cookie.join('; ');
-  	        },
-
-  	        read: function read(name) {
-  	          var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
-  	          return (match ? decodeURIComponent(match[3]) : null);
-  	        },
-
-  	        remove: function remove(name) {
-  	          this.write(name, '', Date.now() - 86400000);
-  	        }
-  	      };
-  	    })() :
-
-  	  // Non standard browser env (web workers, react-native) lack needed support.
-  	    (function nonStandardBrowserEnv() {
-  	      return {
-  	        write: function write() {},
-  	        read: function read() { return null; },
-  	        remove: function remove() {}
-  	      };
-  	    })()
-  	);
-  	return cookies;
-  }
-
-  /**
-   * Determines whether the specified URL is absolute
-   *
-   * @param {string} url The URL to test
-   * @returns {boolean} True if the specified URL is absolute, otherwise false
-   */
-  var isAbsoluteURL$1 = function isAbsoluteURL(url) {
-    // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
-    // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
-    // by any combination of letters, digits, plus, period, or hyphen.
-    return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
-  };
-
-  /**
-   * Creates a new URL by combining the specified URLs
-   *
-   * @param {string} baseURL The base URL
-   * @param {string} relativeURL The relative URL
-   * @returns {string} The combined URL
-   */
-  var combineURLs$1 = function combineURLs(baseURL, relativeURL) {
-    return relativeURL
-      ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
-      : baseURL;
-  };
-
-  var isAbsoluteURL = isAbsoluteURL$1;
-  var combineURLs = combineURLs$1;
-
-  /**
-   * Creates a new URL by combining the baseURL with the requestedURL,
-   * only when the requestedURL is not already an absolute URL.
-   * If the requestURL is absolute, this function returns the requestedURL untouched.
-   *
-   * @param {string} baseURL The base URL
-   * @param {string} requestedURL Absolute or relative URL to combine
-   * @returns {string} The combined full path
-   */
-  var buildFullPath$1 = function buildFullPath(baseURL, requestedURL) {
-    if (baseURL && !isAbsoluteURL(requestedURL)) {
-      return combineURLs(baseURL, requestedURL);
-    }
-    return requestedURL;
-  };
-
-  var parseHeaders;
-  var hasRequiredParseHeaders;
-
-  function requireParseHeaders () {
-  	if (hasRequiredParseHeaders) return parseHeaders;
-  	hasRequiredParseHeaders = 1;
-
-  	var utils = utils$b;
-
-  	// Headers whose duplicates are ignored by node
-  	// c.f. https://nodejs.org/api/http.html#http_message_headers
-  	var ignoreDuplicateOf = [
-  	  'age', 'authorization', 'content-length', 'content-type', 'etag',
-  	  'expires', 'from', 'host', 'if-modified-since', 'if-unmodified-since',
-  	  'last-modified', 'location', 'max-forwards', 'proxy-authorization',
-  	  'referer', 'retry-after', 'user-agent'
-  	];
-
-  	/**
-  	 * Parse headers into an object
-  	 *
-  	 * ```
-  	 * Date: Wed, 27 Aug 2014 08:58:49 GMT
-  	 * Content-Type: application/json
-  	 * Connection: keep-alive
-  	 * Transfer-Encoding: chunked
-  	 * ```
-  	 *
-  	 * @param {String} headers Headers needing to be parsed
-  	 * @returns {Object} Headers parsed into an object
-  	 */
-  	parseHeaders = function parseHeaders(headers) {
-  	  var parsed = {};
-  	  var key;
-  	  var val;
-  	  var i;
-
-  	  if (!headers) { return parsed; }
-
-  	  utils.forEach(headers.split('\n'), function parser(line) {
-  	    i = line.indexOf(':');
-  	    key = utils.trim(line.substr(0, i)).toLowerCase();
-  	    val = utils.trim(line.substr(i + 1));
-
-  	    if (key) {
-  	      if (parsed[key] && ignoreDuplicateOf.indexOf(key) >= 0) {
-  	        return;
-  	      }
-  	      if (key === 'set-cookie') {
-  	        parsed[key] = (parsed[key] ? parsed[key] : []).concat([val]);
-  	      } else {
-  	        parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
-  	      }
-  	    }
-  	  });
-
-  	  return parsed;
-  	};
-  	return parseHeaders;
-  }
-
-  var isURLSameOrigin;
-  var hasRequiredIsURLSameOrigin;
-
-  function requireIsURLSameOrigin () {
-  	if (hasRequiredIsURLSameOrigin) return isURLSameOrigin;
-  	hasRequiredIsURLSameOrigin = 1;
-
-  	var utils = utils$b;
-
-  	isURLSameOrigin = (
-  	  utils.isStandardBrowserEnv() ?
-
-  	  // Standard browser envs have full support of the APIs needed to test
-  	  // whether the request URL is of the same origin as current location.
-  	    (function standardBrowserEnv() {
-  	      var msie = /(msie|trident)/i.test(navigator.userAgent);
-  	      var urlParsingNode = document.createElement('a');
-  	      var originURL;
-
-  	      /**
-  	    * Parse a URL to discover it's components
-  	    *
-  	    * @param {String} url The URL to be parsed
-  	    * @returns {Object}
-  	    */
-  	      function resolveURL(url) {
-  	        var href = url;
-
-  	        if (msie) {
-  	        // IE needs attribute set twice to normalize properties
-  	          urlParsingNode.setAttribute('href', href);
-  	          href = urlParsingNode.href;
-  	        }
-
-  	        urlParsingNode.setAttribute('href', href);
-
-  	        // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
-  	        return {
-  	          href: urlParsingNode.href,
-  	          protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
-  	          host: urlParsingNode.host,
-  	          search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
-  	          hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
-  	          hostname: urlParsingNode.hostname,
-  	          port: urlParsingNode.port,
-  	          pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
-  	            urlParsingNode.pathname :
-  	            '/' + urlParsingNode.pathname
-  	        };
-  	      }
-
-  	      originURL = resolveURL(window.location.href);
-
-  	      /**
-  	    * Determine if a URL shares the same origin as the current location
-  	    *
-  	    * @param {String} requestURL The URL to test
-  	    * @returns {boolean} True if URL shares the same origin, otherwise false
-  	    */
-  	      return function isURLSameOrigin(requestURL) {
-  	        var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
-  	        return (parsed.protocol === originURL.protocol &&
-  	            parsed.host === originURL.host);
-  	      };
-  	    })() :
-
-  	  // Non standard browser envs (web workers, react-native) lack needed support.
-  	    (function nonStandardBrowserEnv() {
-  	      return function isURLSameOrigin() {
-  	        return true;
-  	      };
-  	    })()
-  	);
-  	return isURLSameOrigin;
-  }
-
-  var CanceledError_1;
-  var hasRequiredCanceledError;
-
-  function requireCanceledError () {
-  	if (hasRequiredCanceledError) return CanceledError_1;
-  	hasRequiredCanceledError = 1;
-
-  	var AxiosError = AxiosError_1;
-  	var utils = utils$b;
-
-  	/**
-  	 * A `CanceledError` is an object that is thrown when an operation is canceled.
-  	 *
-  	 * @class
-  	 * @param {string=} message The message.
-  	 */
-  	function CanceledError(message) {
-  	  // eslint-disable-next-line no-eq-null,eqeqeq
-  	  AxiosError.call(this, message == null ? 'canceled' : message, AxiosError.ERR_CANCELED);
-  	  this.name = 'CanceledError';
-  	}
-
-  	utils.inherits(CanceledError, AxiosError, {
-  	  __CANCEL__: true
-  	});
-
-  	CanceledError_1 = CanceledError;
-  	return CanceledError_1;
-  }
-
-  var parseProtocol;
-  var hasRequiredParseProtocol;
-
-  function requireParseProtocol () {
-  	if (hasRequiredParseProtocol) return parseProtocol;
-  	hasRequiredParseProtocol = 1;
-
-  	parseProtocol = function parseProtocol(url) {
-  	  var match = /^([-+\w]{1,25})(:?\/\/|:)/.exec(url);
-  	  return match && match[1] || '';
-  	};
-  	return parseProtocol;
-  }
-
-  var xhr;
-  var hasRequiredXhr;
-
-  function requireXhr () {
-  	if (hasRequiredXhr) return xhr;
-  	hasRequiredXhr = 1;
-
-  	var utils = utils$b;
-  	var settle = requireSettle();
-  	var cookies = requireCookies();
-  	var buildURL = buildURL$1;
-  	var buildFullPath = buildFullPath$1;
-  	var parseHeaders = requireParseHeaders();
-  	var isURLSameOrigin = requireIsURLSameOrigin();
-  	var transitionalDefaults = transitional;
-  	var AxiosError = AxiosError_1;
-  	var CanceledError = requireCanceledError();
-  	var parseProtocol = requireParseProtocol();
-
-  	xhr = function xhrAdapter(config) {
-  	  return new Promise(function dispatchXhrRequest(resolve, reject) {
-  	    var requestData = config.data;
-  	    var requestHeaders = config.headers;
-  	    var responseType = config.responseType;
-  	    var onCanceled;
-  	    function done() {
-  	      if (config.cancelToken) {
-  	        config.cancelToken.unsubscribe(onCanceled);
-  	      }
-
-  	      if (config.signal) {
-  	        config.signal.removeEventListener('abort', onCanceled);
-  	      }
-  	    }
-
-  	    if (utils.isFormData(requestData) && utils.isStandardBrowserEnv()) {
-  	      delete requestHeaders['Content-Type']; // Let the browser set it
-  	    }
-
-  	    var request = new XMLHttpRequest();
-
-  	    // HTTP basic authentication
-  	    if (config.auth) {
-  	      var username = config.auth.username || '';
-  	      var password = config.auth.password ? unescape(encodeURIComponent(config.auth.password)) : '';
-  	      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
-  	    }
-
-  	    var fullPath = buildFullPath(config.baseURL, config.url);
-
-  	    request.open(config.method.toUpperCase(), buildURL(fullPath, config.params, config.paramsSerializer), true);
-
-  	    // Set the request timeout in MS
-  	    request.timeout = config.timeout;
-
-  	    function onloadend() {
-  	      if (!request) {
-  	        return;
-  	      }
-  	      // Prepare the response
-  	      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
-  	      var responseData = !responseType || responseType === 'text' ||  responseType === 'json' ?
-  	        request.responseText : request.response;
-  	      var response = {
-  	        data: responseData,
-  	        status: request.status,
-  	        statusText: request.statusText,
-  	        headers: responseHeaders,
-  	        config: config,
-  	        request: request
-  	      };
-
-  	      settle(function _resolve(value) {
-  	        resolve(value);
-  	        done();
-  	      }, function _reject(err) {
-  	        reject(err);
-  	        done();
-  	      }, response);
-
-  	      // Clean up request
-  	      request = null;
-  	    }
-
-  	    if ('onloadend' in request) {
-  	      // Use onloadend if available
-  	      request.onloadend = onloadend;
-  	    } else {
-  	      // Listen for ready state to emulate onloadend
-  	      request.onreadystatechange = function handleLoad() {
-  	        if (!request || request.readyState !== 4) {
-  	          return;
-  	        }
-
-  	        // The request errored out and we didn't get a response, this will be
-  	        // handled by onerror instead
-  	        // With one exception: request that using file: protocol, most browsers
-  	        // will return status as 0 even though it's a successful request
-  	        if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
-  	          return;
-  	        }
-  	        // readystate handler is calling before onerror or ontimeout handlers,
-  	        // so we should call onloadend on the next 'tick'
-  	        setTimeout(onloadend);
-  	      };
-  	    }
-
-  	    // Handle browser request cancellation (as opposed to a manual cancellation)
-  	    request.onabort = function handleAbort() {
-  	      if (!request) {
-  	        return;
-  	      }
-
-  	      reject(new AxiosError('Request aborted', AxiosError.ECONNABORTED, config, request));
-
-  	      // Clean up request
-  	      request = null;
-  	    };
-
-  	    // Handle low level network errors
-  	    request.onerror = function handleError() {
-  	      // Real errors are hidden from us by the browser
-  	      // onerror should only fire if it's a network error
-  	      reject(new AxiosError('Network Error', AxiosError.ERR_NETWORK, config, request, request));
-
-  	      // Clean up request
-  	      request = null;
-  	    };
-
-  	    // Handle timeout
-  	    request.ontimeout = function handleTimeout() {
-  	      var timeoutErrorMessage = config.timeout ? 'timeout of ' + config.timeout + 'ms exceeded' : 'timeout exceeded';
-  	      var transitional = config.transitional || transitionalDefaults;
-  	      if (config.timeoutErrorMessage) {
-  	        timeoutErrorMessage = config.timeoutErrorMessage;
-  	      }
-  	      reject(new AxiosError(
-  	        timeoutErrorMessage,
-  	        transitional.clarifyTimeoutError ? AxiosError.ETIMEDOUT : AxiosError.ECONNABORTED,
-  	        config,
-  	        request));
-
-  	      // Clean up request
-  	      request = null;
-  	    };
-
-  	    // Add xsrf header
-  	    // This is only done if running in a standard browser environment.
-  	    // Specifically not if we're in a web worker, or react-native.
-  	    if (utils.isStandardBrowserEnv()) {
-  	      // Add xsrf header
-  	      var xsrfValue = (config.withCredentials || isURLSameOrigin(fullPath)) && config.xsrfCookieName ?
-  	        cookies.read(config.xsrfCookieName) :
-  	        undefined;
-
-  	      if (xsrfValue) {
-  	        requestHeaders[config.xsrfHeaderName] = xsrfValue;
-  	      }
-  	    }
-
-  	    // Add headers to the request
-  	    if ('setRequestHeader' in request) {
-  	      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
-  	        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
-  	          // Remove Content-Type if data is undefined
-  	          delete requestHeaders[key];
-  	        } else {
-  	          // Otherwise add header to the request
-  	          request.setRequestHeader(key, val);
-  	        }
-  	      });
-  	    }
-
-  	    // Add withCredentials to request if needed
-  	    if (!utils.isUndefined(config.withCredentials)) {
-  	      request.withCredentials = !!config.withCredentials;
-  	    }
-
-  	    // Add responseType to request if needed
-  	    if (responseType && responseType !== 'json') {
-  	      request.responseType = config.responseType;
-  	    }
-
-  	    // Handle progress if needed
-  	    if (typeof config.onDownloadProgress === 'function') {
-  	      request.addEventListener('progress', config.onDownloadProgress);
-  	    }
-
-  	    // Not all browsers support upload events
-  	    if (typeof config.onUploadProgress === 'function' && request.upload) {
-  	      request.upload.addEventListener('progress', config.onUploadProgress);
-  	    }
-
-  	    if (config.cancelToken || config.signal) {
-  	      // Handle cancellation
-  	      // eslint-disable-next-line func-names
-  	      onCanceled = function(cancel) {
-  	        if (!request) {
-  	          return;
-  	        }
-  	        reject(!cancel || (cancel && cancel.type) ? new CanceledError() : cancel);
-  	        request.abort();
-  	        request = null;
-  	      };
-
-  	      config.cancelToken && config.cancelToken.subscribe(onCanceled);
-  	      if (config.signal) {
-  	        config.signal.aborted ? onCanceled() : config.signal.addEventListener('abort', onCanceled);
-  	      }
-  	    }
-
-  	    if (!requestData) {
-  	      requestData = null;
-  	    }
-
-  	    var protocol = parseProtocol(fullPath);
-
-  	    if (protocol && [ 'http', 'https', 'file' ].indexOf(protocol) === -1) {
-  	      reject(new AxiosError('Unsupported protocol ' + protocol + ':', AxiosError.ERR_BAD_REQUEST, config));
-  	      return;
-  	    }
-
-
-  	    // Send the request
-  	    request.send(requestData);
-  	  });
-  	};
-  	return xhr;
-  }
-
-  var followRedirects = {exports: {}};
-
-  var https;
-  var hasRequiredHttps;
-
-  function requireHttps () {
-  	if (hasRequiredHttps) return https;
-  	hasRequiredHttps = 1;
-  	https = requireFollowRedirects().https;
-  	return https;
-  }
-
-  var debug_1;
-  var hasRequiredDebug;
-
-  function requireDebug () {
-  	if (hasRequiredDebug) return debug_1;
-  	hasRequiredDebug = 1;
-  	var debug;
-
-  	debug_1 = function () {
-  	  if (!debug) {
-  	    try {
-  	      /* eslint global-require: off */
-  	      debug = requireDebug()("follow-redirects");
-  	    }
-  	    catch (error) { /* */ }
-  	    if (typeof debug !== "function") {
-  	      debug = function () { /* */ };
-  	    }
-  	  }
-  	  debug.apply(null, arguments);
-  	};
-  	return debug_1;
-  }
-
-  var hasRequiredFollowRedirects;
-
-  function requireFollowRedirects () {
-  	if (hasRequiredFollowRedirects) return followRedirects.exports;
-  	hasRequiredFollowRedirects = 1;
-  	var url = require$$0__default["default"];
-  	var URL = url.URL;
-  	var http = requireHttp();
-  	var https = requireHttps();
-  	var Writable = require$$3__default["default"].Writable;
-  	var assert = require$$4__default["default"];
-  	var debug = requireDebug();
-
-  	// Create handlers that pass events from native requests
-  	var events = ["abort", "aborted", "connect", "error", "socket", "timeout"];
-  	var eventHandlers = Object.create(null);
-  	events.forEach(function (event) {
-  	  eventHandlers[event] = function (arg1, arg2, arg3) {
-  	    this._redirectable.emit(event, arg1, arg2, arg3);
-  	  };
-  	});
-
-  	// Error types with codes
-  	var RedirectionError = createErrorType(
-  	  "ERR_FR_REDIRECTION_FAILURE",
-  	  "Redirected request failed"
-  	);
-  	var TooManyRedirectsError = createErrorType(
-  	  "ERR_FR_TOO_MANY_REDIRECTS",
-  	  "Maximum number of redirects exceeded"
-  	);
-  	var MaxBodyLengthExceededError = createErrorType(
-  	  "ERR_FR_MAX_BODY_LENGTH_EXCEEDED",
-  	  "Request body larger than maxBodyLength limit"
-  	);
-  	var WriteAfterEndError = createErrorType(
-  	  "ERR_STREAM_WRITE_AFTER_END",
-  	  "write after end"
-  	);
-
-  	// An HTTP(S) request that can be redirected
-  	function RedirectableRequest(options, responseCallback) {
-  	  // Initialize the request
-  	  Writable.call(this);
-  	  this._sanitizeOptions(options);
-  	  this._options = options;
-  	  this._ended = false;
-  	  this._ending = false;
-  	  this._redirectCount = 0;
-  	  this._redirects = [];
-  	  this._requestBodyLength = 0;
-  	  this._requestBodyBuffers = [];
-
-  	  // Attach a callback if passed
-  	  if (responseCallback) {
-  	    this.on("response", responseCallback);
-  	  }
-
-  	  // React to responses of native requests
-  	  var self = this;
-  	  this._onNativeResponse = function (response) {
-  	    self._processResponse(response);
-  	  };
-
-  	  // Perform the first request
-  	  this._performRequest();
-  	}
-  	RedirectableRequest.prototype = Object.create(Writable.prototype);
-
-  	RedirectableRequest.prototype.abort = function () {
-  	  abortRequest(this._currentRequest);
-  	  this.emit("abort");
-  	};
-
-  	// Writes buffered data to the current native request
-  	RedirectableRequest.prototype.write = function (data, encoding, callback) {
-  	  // Writing is not allowed if end has been called
-  	  if (this._ending) {
-  	    throw new WriteAfterEndError();
-  	  }
-
-  	  // Validate input and shift parameters if necessary
-  	  if (!(typeof data === "string" || typeof data === "object" && ("length" in data))) {
-  	    throw new TypeError("data should be a string, Buffer or Uint8Array");
-  	  }
-  	  if (typeof encoding === "function") {
-  	    callback = encoding;
-  	    encoding = null;
-  	  }
-
-  	  // Ignore empty buffers, since writing them doesn't invoke the callback
-  	  // https://github.com/nodejs/node/issues/22066
-  	  if (data.length === 0) {
-  	    if (callback) {
-  	      callback();
-  	    }
-  	    return;
-  	  }
-  	  // Only write when we don't exceed the maximum body length
-  	  if (this._requestBodyLength + data.length <= this._options.maxBodyLength) {
-  	    this._requestBodyLength += data.length;
-  	    this._requestBodyBuffers.push({ data: data, encoding: encoding });
-  	    this._currentRequest.write(data, encoding, callback);
-  	  }
-  	  // Error when we exceed the maximum body length
-  	  else {
-  	    this.emit("error", new MaxBodyLengthExceededError());
-  	    this.abort();
-  	  }
-  	};
-
-  	// Ends the current native request
-  	RedirectableRequest.prototype.end = function (data, encoding, callback) {
-  	  // Shift parameters if necessary
-  	  if (typeof data === "function") {
-  	    callback = data;
-  	    data = encoding = null;
-  	  }
-  	  else if (typeof encoding === "function") {
-  	    callback = encoding;
-  	    encoding = null;
-  	  }
-
-  	  // Write data if needed and end
-  	  if (!data) {
-  	    this._ended = this._ending = true;
-  	    this._currentRequest.end(null, null, callback);
-  	  }
-  	  else {
-  	    var self = this;
-  	    var currentRequest = this._currentRequest;
-  	    this.write(data, encoding, function () {
-  	      self._ended = true;
-  	      currentRequest.end(null, null, callback);
-  	    });
-  	    this._ending = true;
-  	  }
-  	};
-
-  	// Sets a header value on the current native request
-  	RedirectableRequest.prototype.setHeader = function (name, value) {
-  	  this._options.headers[name] = value;
-  	  this._currentRequest.setHeader(name, value);
-  	};
-
-  	// Clears a header value on the current native request
-  	RedirectableRequest.prototype.removeHeader = function (name) {
-  	  delete this._options.headers[name];
-  	  this._currentRequest.removeHeader(name);
-  	};
-
-  	// Global timeout for all underlying requests
-  	RedirectableRequest.prototype.setTimeout = function (msecs, callback) {
-  	  var self = this;
-
-  	  // Destroys the socket on timeout
-  	  function destroyOnTimeout(socket) {
-  	    socket.setTimeout(msecs);
-  	    socket.removeListener("timeout", socket.destroy);
-  	    socket.addListener("timeout", socket.destroy);
-  	  }
-
-  	  // Sets up a timer to trigger a timeout event
-  	  function startTimer(socket) {
-  	    if (self._timeout) {
-  	      clearTimeout(self._timeout);
-  	    }
-  	    self._timeout = setTimeout(function () {
-  	      self.emit("timeout");
-  	      clearTimer();
-  	    }, msecs);
-  	    destroyOnTimeout(socket);
-  	  }
-
-  	  // Stops a timeout from triggering
-  	  function clearTimer() {
-  	    // Clear the timeout
-  	    if (self._timeout) {
-  	      clearTimeout(self._timeout);
-  	      self._timeout = null;
-  	    }
-
-  	    // Clean up all attached listeners
-  	    self.removeListener("abort", clearTimer);
-  	    self.removeListener("error", clearTimer);
-  	    self.removeListener("response", clearTimer);
-  	    if (callback) {
-  	      self.removeListener("timeout", callback);
-  	    }
-  	    if (!self.socket) {
-  	      self._currentRequest.removeListener("socket", startTimer);
-  	    }
-  	  }
-
-  	  // Attach callback if passed
-  	  if (callback) {
-  	    this.on("timeout", callback);
-  	  }
-
-  	  // Start the timer if or when the socket is opened
-  	  if (this.socket) {
-  	    startTimer(this.socket);
-  	  }
-  	  else {
-  	    this._currentRequest.once("socket", startTimer);
-  	  }
-
-  	  // Clean up on events
-  	  this.on("socket", destroyOnTimeout);
-  	  this.on("abort", clearTimer);
-  	  this.on("error", clearTimer);
-  	  this.on("response", clearTimer);
-
-  	  return this;
-  	};
-
-  	// Proxy all other public ClientRequest methods
-  	[
-  	  "flushHeaders", "getHeader",
-  	  "setNoDelay", "setSocketKeepAlive",
-  	].forEach(function (method) {
-  	  RedirectableRequest.prototype[method] = function (a, b) {
-  	    return this._currentRequest[method](a, b);
-  	  };
-  	});
-
-  	// Proxy all public ClientRequest properties
-  	["aborted", "connection", "socket"].forEach(function (property) {
-  	  Object.defineProperty(RedirectableRequest.prototype, property, {
-  	    get: function () { return this._currentRequest[property]; },
-  	  });
-  	});
-
-  	RedirectableRequest.prototype._sanitizeOptions = function (options) {
-  	  // Ensure headers are always present
-  	  if (!options.headers) {
-  	    options.headers = {};
-  	  }
-
-  	  // Since http.request treats host as an alias of hostname,
-  	  // but the url module interprets host as hostname plus port,
-  	  // eliminate the host property to avoid confusion.
-  	  if (options.host) {
-  	    // Use hostname if set, because it has precedence
-  	    if (!options.hostname) {
-  	      options.hostname = options.host;
-  	    }
-  	    delete options.host;
-  	  }
-
-  	  // Complete the URL object when necessary
-  	  if (!options.pathname && options.path) {
-  	    var searchPos = options.path.indexOf("?");
-  	    if (searchPos < 0) {
-  	      options.pathname = options.path;
-  	    }
-  	    else {
-  	      options.pathname = options.path.substring(0, searchPos);
-  	      options.search = options.path.substring(searchPos);
-  	    }
-  	  }
-  	};
-
-
-  	// Executes the next native request (initial or redirect)
-  	RedirectableRequest.prototype._performRequest = function () {
-  	  // Load the native protocol
-  	  var protocol = this._options.protocol;
-  	  var nativeProtocol = this._options.nativeProtocols[protocol];
-  	  if (!nativeProtocol) {
-  	    this.emit("error", new TypeError("Unsupported protocol " + protocol));
-  	    return;
-  	  }
-
-  	  // If specified, use the agent corresponding to the protocol
-  	  // (HTTP and HTTPS use different types of agents)
-  	  if (this._options.agents) {
-  	    var scheme = protocol.slice(0, -1);
-  	    this._options.agent = this._options.agents[scheme];
-  	  }
-
-  	  // Create the native request and set up its event handlers
-  	  var request = this._currentRequest =
-  	        nativeProtocol.request(this._options, this._onNativeResponse);
-  	  request._redirectable = this;
-  	  for (var event of events) {
-  	    request.on(event, eventHandlers[event]);
-  	  }
-
-  	  // RFC7230§5.3.1: When making a request directly to an origin server, […]
-  	  // a client MUST send only the absolute path […] as the request-target.
-  	  this._currentUrl = /^\//.test(this._options.path) ?
-  	    url.format(this._options) :
-  	    // When making a request to a proxy, […]
-  	    // a client MUST send the target URI in absolute-form […].
-  	    this._currentUrl = this._options.path;
-
-  	  // End a redirected request
-  	  // (The first request must be ended explicitly with RedirectableRequest#end)
-  	  if (this._isRedirect) {
-  	    // Write the request entity and end
-  	    var i = 0;
-  	    var self = this;
-  	    var buffers = this._requestBodyBuffers;
-  	    (function writeNext(error) {
-  	      // Only write if this request has not been redirected yet
-  	      /* istanbul ignore else */
-  	      if (request === self._currentRequest) {
-  	        // Report any write errors
-  	        /* istanbul ignore if */
-  	        if (error) {
-  	          self.emit("error", error);
-  	        }
-  	        // Write the next buffer if there are still left
-  	        else if (i < buffers.length) {
-  	          var buffer = buffers[i++];
-  	          /* istanbul ignore else */
-  	          if (!request.finished) {
-  	            request.write(buffer.data, buffer.encoding, writeNext);
-  	          }
-  	        }
-  	        // End the request if `end` has been called on us
-  	        else if (self._ended) {
-  	          request.end();
-  	        }
-  	      }
-  	    }());
-  	  }
-  	};
-
-  	// Processes a response from the current native request
-  	RedirectableRequest.prototype._processResponse = function (response) {
-  	  // Store the redirected response
-  	  var statusCode = response.statusCode;
-  	  if (this._options.trackRedirects) {
-  	    this._redirects.push({
-  	      url: this._currentUrl,
-  	      headers: response.headers,
-  	      statusCode: statusCode,
-  	    });
-  	  }
-
-  	  // RFC7231§6.4: The 3xx (Redirection) class of status code indicates
-  	  // that further action needs to be taken by the user agent in order to
-  	  // fulfill the request. If a Location header field is provided,
-  	  // the user agent MAY automatically redirect its request to the URI
-  	  // referenced by the Location field value,
-  	  // even if the specific status code is not understood.
-
-  	  // If the response is not a redirect; return it as-is
-  	  var location = response.headers.location;
-  	  if (!location || this._options.followRedirects === false ||
-  	      statusCode < 300 || statusCode >= 400) {
-  	    response.responseUrl = this._currentUrl;
-  	    response.redirects = this._redirects;
-  	    this.emit("response", response);
-
-  	    // Clean up
-  	    this._requestBodyBuffers = [];
-  	    return;
-  	  }
-
-  	  // The response is a redirect, so abort the current request
-  	  abortRequest(this._currentRequest);
-  	  // Discard the remainder of the response to avoid waiting for data
-  	  response.destroy();
-
-  	  // RFC7231§6.4: A client SHOULD detect and intervene
-  	  // in cyclical redirections (i.e., "infinite" redirection loops).
-  	  if (++this._redirectCount > this._options.maxRedirects) {
-  	    this.emit("error", new TooManyRedirectsError());
-  	    return;
-  	  }
-
-  	  // Store the request headers if applicable
-  	  var requestHeaders;
-  	  var beforeRedirect = this._options.beforeRedirect;
-  	  if (beforeRedirect) {
-  	    requestHeaders = Object.assign({
-  	      // The Host header was set by nativeProtocol.request
-  	      Host: response.req.getHeader("host"),
-  	    }, this._options.headers);
-  	  }
-
-  	  // RFC7231§6.4: Automatic redirection needs to done with
-  	  // care for methods not known to be safe, […]
-  	  // RFC7231§6.4.2–3: For historical reasons, a user agent MAY change
-  	  // the request method from POST to GET for the subsequent request.
-  	  var method = this._options.method;
-  	  if ((statusCode === 301 || statusCode === 302) && this._options.method === "POST" ||
-  	      // RFC7231§6.4.4: The 303 (See Other) status code indicates that
-  	      // the server is redirecting the user agent to a different resource […]
-  	      // A user agent can perform a retrieval request targeting that URI
-  	      // (a GET or HEAD request if using HTTP) […]
-  	      (statusCode === 303) && !/^(?:GET|HEAD)$/.test(this._options.method)) {
-  	    this._options.method = "GET";
-  	    // Drop a possible entity and headers related to it
-  	    this._requestBodyBuffers = [];
-  	    removeMatchingHeaders(/^content-/i, this._options.headers);
-  	  }
-
-  	  // Drop the Host header, as the redirect might lead to a different host
-  	  var currentHostHeader = removeMatchingHeaders(/^host$/i, this._options.headers);
-
-  	  // If the redirect is relative, carry over the host of the last request
-  	  var currentUrlParts = url.parse(this._currentUrl);
-  	  var currentHost = currentHostHeader || currentUrlParts.host;
-  	  var currentUrl = /^\w+:/.test(location) ? this._currentUrl :
-  	    url.format(Object.assign(currentUrlParts, { host: currentHost }));
-
-  	  // Determine the URL of the redirection
-  	  var redirectUrl;
-  	  try {
-  	    redirectUrl = url.resolve(currentUrl, location);
-  	  }
-  	  catch (cause) {
-  	    this.emit("error", new RedirectionError(cause));
-  	    return;
-  	  }
-
-  	  // Create the redirected request
-  	  debug("redirecting to", redirectUrl);
-  	  this._isRedirect = true;
-  	  var redirectUrlParts = url.parse(redirectUrl);
-  	  Object.assign(this._options, redirectUrlParts);
-
-  	  // Drop confidential headers when redirecting to a less secure protocol
-  	  // or to a different domain that is not a superdomain
-  	  if (redirectUrlParts.protocol !== currentUrlParts.protocol &&
-  	     redirectUrlParts.protocol !== "https:" ||
-  	     redirectUrlParts.host !== currentHost &&
-  	     !isSubdomain(redirectUrlParts.host, currentHost)) {
-  	    removeMatchingHeaders(/^(?:authorization|cookie)$/i, this._options.headers);
-  	  }
-
-  	  // Evaluate the beforeRedirect callback
-  	  if (typeof beforeRedirect === "function") {
-  	    var responseDetails = {
-  	      headers: response.headers,
-  	      statusCode: statusCode,
-  	    };
-  	    var requestDetails = {
-  	      url: currentUrl,
-  	      method: method,
-  	      headers: requestHeaders,
-  	    };
-  	    try {
-  	      beforeRedirect(this._options, responseDetails, requestDetails);
-  	    }
-  	    catch (err) {
-  	      this.emit("error", err);
-  	      return;
-  	    }
-  	    this._sanitizeOptions(this._options);
-  	  }
-
-  	  // Perform the redirected request
-  	  try {
-  	    this._performRequest();
-  	  }
-  	  catch (cause) {
-  	    this.emit("error", new RedirectionError(cause));
-  	  }
-  	};
-
-  	// Wraps the key/value object of protocols with redirect functionality
-  	function wrap(protocols) {
-  	  // Default settings
-  	  var exports = {
-  	    maxRedirects: 21,
-  	    maxBodyLength: 10 * 1024 * 1024,
-  	  };
-
-  	  // Wrap each protocol
-  	  var nativeProtocols = {};
-  	  Object.keys(protocols).forEach(function (scheme) {
-  	    var protocol = scheme + ":";
-  	    var nativeProtocol = nativeProtocols[protocol] = protocols[scheme];
-  	    var wrappedProtocol = exports[scheme] = Object.create(nativeProtocol);
-
-  	    // Executes a request, following redirects
-  	    function request(input, options, callback) {
-  	      // Parse parameters
-  	      if (typeof input === "string") {
-  	        var urlStr = input;
-  	        try {
-  	          input = urlToOptions(new URL(urlStr));
-  	        }
-  	        catch (err) {
-  	          /* istanbul ignore next */
-  	          input = url.parse(urlStr);
-  	        }
-  	      }
-  	      else if (URL && (input instanceof URL)) {
-  	        input = urlToOptions(input);
-  	      }
-  	      else {
-  	        callback = options;
-  	        options = input;
-  	        input = { protocol: protocol };
-  	      }
-  	      if (typeof options === "function") {
-  	        callback = options;
-  	        options = null;
-  	      }
-
-  	      // Set defaults
-  	      options = Object.assign({
-  	        maxRedirects: exports.maxRedirects,
-  	        maxBodyLength: exports.maxBodyLength,
-  	      }, input, options);
-  	      options.nativeProtocols = nativeProtocols;
-
-  	      assert.equal(options.protocol, protocol, "protocol mismatch");
-  	      debug("options", options);
-  	      return new RedirectableRequest(options, callback);
-  	    }
-
-  	    // Executes a GET request, following redirects
-  	    function get(input, options, callback) {
-  	      var wrappedRequest = wrappedProtocol.request(input, options, callback);
-  	      wrappedRequest.end();
-  	      return wrappedRequest;
-  	    }
-
-  	    // Expose the properties on the wrapped protocol
-  	    Object.defineProperties(wrappedProtocol, {
-  	      request: { value: request, configurable: true, enumerable: true, writable: true },
-  	      get: { value: get, configurable: true, enumerable: true, writable: true },
-  	    });
-  	  });
-  	  return exports;
-  	}
-
-  	/* istanbul ignore next */
-  	function noop() { /* empty */ }
-
-  	// from https://github.com/nodejs/node/blob/master/lib/internal/url.js
-  	function urlToOptions(urlObject) {
-  	  var options = {
-  	    protocol: urlObject.protocol,
-  	    hostname: urlObject.hostname.startsWith("[") ?
-  	      /* istanbul ignore next */
-  	      urlObject.hostname.slice(1, -1) :
-  	      urlObject.hostname,
-  	    hash: urlObject.hash,
-  	    search: urlObject.search,
-  	    pathname: urlObject.pathname,
-  	    path: urlObject.pathname + urlObject.search,
-  	    href: urlObject.href,
-  	  };
-  	  if (urlObject.port !== "") {
-  	    options.port = Number(urlObject.port);
-  	  }
-  	  return options;
-  	}
-
-  	function removeMatchingHeaders(regex, headers) {
-  	  var lastValue;
-  	  for (var header in headers) {
-  	    if (regex.test(header)) {
-  	      lastValue = headers[header];
-  	      delete headers[header];
-  	    }
-  	  }
-  	  return (lastValue === null || typeof lastValue === "undefined") ?
-  	    undefined : String(lastValue).trim();
-  	}
-
-  	function createErrorType(code, defaultMessage) {
-  	  function CustomError(cause) {
-  	    Error.captureStackTrace(this, this.constructor);
-  	    if (!cause) {
-  	      this.message = defaultMessage;
-  	    }
-  	    else {
-  	      this.message = defaultMessage + ": " + cause.message;
-  	      this.cause = cause;
-  	    }
-  	  }
-  	  CustomError.prototype = new Error();
-  	  CustomError.prototype.constructor = CustomError;
-  	  CustomError.prototype.name = "Error [" + code + "]";
-  	  CustomError.prototype.code = code;
-  	  return CustomError;
-  	}
-
-  	function abortRequest(request) {
-  	  for (var event of events) {
-  	    request.removeListener(event, eventHandlers[event]);
-  	  }
-  	  request.on("error", noop);
-  	  request.abort();
-  	}
-
-  	function isSubdomain(subdomain, domain) {
-  	  const dot = subdomain.length - domain.length - 1;
-  	  return dot > 0 && subdomain[dot] === "." && subdomain.endsWith(domain);
-  	}
-
-  	// Exports
-  	followRedirects.exports = wrap({ http: http, https: https });
-  	followRedirects.exports.wrap = wrap;
-  	return followRedirects.exports;
-  }
-
-  var data;
-  var hasRequiredData;
-
-  function requireData () {
-  	if (hasRequiredData) return data;
-  	hasRequiredData = 1;
-  	data = {
-  	  "version": "0.27.2"
-  	};
-  	return data;
-  }
-
-  var http_1;
-  var hasRequiredHttp;
-
-  function requireHttp () {
-  	if (hasRequiredHttp) return http_1;
-  	hasRequiredHttp = 1;
-
-  	var utils = utils$b;
-  	var settle = requireSettle();
-  	var buildFullPath = buildFullPath$1;
-  	var buildURL = buildURL$1;
-  	var http = requireHttp();
-  	var https = require$$5__default["default"];
-  	var httpFollow = requireFollowRedirects().http;
-  	var httpsFollow = requireFollowRedirects().https;
-  	var url = require$$0__default["default"];
-  	var zlib = require$$8__default["default"];
-  	var VERSION = requireData().version;
-  	var transitionalDefaults = transitional;
-  	var AxiosError = AxiosError_1;
-  	var CanceledError = requireCanceledError();
-
-  	var isHttps = /https:?/;
-
-  	var supportedProtocols = [ 'http:', 'https:', 'file:' ];
-
-  	/**
-  	 *
-  	 * @param {http.ClientRequestArgs} options
-  	 * @param {AxiosProxyConfig} proxy
-  	 * @param {string} location
-  	 */
-  	function setProxy(options, proxy, location) {
-  	  options.hostname = proxy.host;
-  	  options.host = proxy.host;
-  	  options.port = proxy.port;
-  	  options.path = location;
-
-  	  // Basic proxy authorization
-  	  if (proxy.auth) {
-  	    var base64 = Buffer.from(proxy.auth.username + ':' + proxy.auth.password, 'utf8').toString('base64');
-  	    options.headers['Proxy-Authorization'] = 'Basic ' + base64;
-  	  }
-
-  	  // If a proxy is used, any redirects must also pass through the proxy
-  	  options.beforeRedirect = function beforeRedirect(redirection) {
-  	    redirection.headers.host = redirection.host;
-  	    setProxy(redirection, proxy, redirection.href);
-  	  };
-  	}
-
-  	/*eslint consistent-return:0*/
-  	http_1 = function httpAdapter(config) {
-  	  return new Promise(function dispatchHttpRequest(resolvePromise, rejectPromise) {
-  	    var onCanceled;
-  	    function done() {
-  	      if (config.cancelToken) {
-  	        config.cancelToken.unsubscribe(onCanceled);
-  	      }
-
-  	      if (config.signal) {
-  	        config.signal.removeEventListener('abort', onCanceled);
-  	      }
-  	    }
-  	    var resolve = function resolve(value) {
-  	      done();
-  	      resolvePromise(value);
-  	    };
-  	    var rejected = false;
-  	    var reject = function reject(value) {
-  	      done();
-  	      rejected = true;
-  	      rejectPromise(value);
-  	    };
-  	    var data = config.data;
-  	    var headers = config.headers;
-  	    var headerNames = {};
-
-  	    Object.keys(headers).forEach(function storeLowerName(name) {
-  	      headerNames[name.toLowerCase()] = name;
-  	    });
-
-  	    // Set User-Agent (required by some servers)
-  	    // See https://github.com/axios/axios/issues/69
-  	    if ('user-agent' in headerNames) {
-  	      // User-Agent is specified; handle case where no UA header is desired
-  	      if (!headers[headerNames['user-agent']]) {
-  	        delete headers[headerNames['user-agent']];
-  	      }
-  	      // Otherwise, use specified value
-  	    } else {
-  	      // Only set header if it hasn't been set in config
-  	      headers['User-Agent'] = 'axios/' + VERSION;
-  	    }
-
-  	    // support for https://www.npmjs.com/package/form-data api
-  	    if (utils.isFormData(data) && utils.isFunction(data.getHeaders)) {
-  	      Object.assign(headers, data.getHeaders());
-  	    } else if (data && !utils.isStream(data)) {
-  	      if (Buffer.isBuffer(data)) ; else if (utils.isArrayBuffer(data)) {
-  	        data = Buffer.from(new Uint8Array(data));
-  	      } else if (utils.isString(data)) {
-  	        data = Buffer.from(data, 'utf-8');
-  	      } else {
-  	        return reject(new AxiosError(
-  	          'Data after transformation must be a string, an ArrayBuffer, a Buffer, or a Stream',
-  	          AxiosError.ERR_BAD_REQUEST,
-  	          config
-  	        ));
-  	      }
-
-  	      if (config.maxBodyLength > -1 && data.length > config.maxBodyLength) {
-  	        return reject(new AxiosError(
-  	          'Request body larger than maxBodyLength limit',
-  	          AxiosError.ERR_BAD_REQUEST,
-  	          config
-  	        ));
-  	      }
-
-  	      // Add Content-Length header if data exists
-  	      if (!headerNames['content-length']) {
-  	        headers['Content-Length'] = data.length;
-  	      }
-  	    }
-
-  	    // HTTP basic authentication
-  	    var auth = undefined;
-  	    if (config.auth) {
-  	      var username = config.auth.username || '';
-  	      var password = config.auth.password || '';
-  	      auth = username + ':' + password;
-  	    }
-
-  	    // Parse url
-  	    var fullPath = buildFullPath(config.baseURL, config.url);
-  	    var parsed = url.parse(fullPath);
-  	    var protocol = parsed.protocol || supportedProtocols[0];
-
-  	    if (supportedProtocols.indexOf(protocol) === -1) {
-  	      return reject(new AxiosError(
-  	        'Unsupported protocol ' + protocol,
-  	        AxiosError.ERR_BAD_REQUEST,
-  	        config
-  	      ));
-  	    }
-
-  	    if (!auth && parsed.auth) {
-  	      var urlAuth = parsed.auth.split(':');
-  	      var urlUsername = urlAuth[0] || '';
-  	      var urlPassword = urlAuth[1] || '';
-  	      auth = urlUsername + ':' + urlPassword;
-  	    }
-
-  	    if (auth && headerNames.authorization) {
-  	      delete headers[headerNames.authorization];
-  	    }
-
-  	    var isHttpsRequest = isHttps.test(protocol);
-  	    var agent = isHttpsRequest ? config.httpsAgent : config.httpAgent;
-
-  	    try {
-  	      buildURL(parsed.path, config.params, config.paramsSerializer).replace(/^\?/, '');
-  	    } catch (err) {
-  	      var customErr = new Error(err.message);
-  	      customErr.config = config;
-  	      customErr.url = config.url;
-  	      customErr.exists = true;
-  	      reject(customErr);
-  	    }
-
-  	    var options = {
-  	      path: buildURL(parsed.path, config.params, config.paramsSerializer).replace(/^\?/, ''),
-  	      method: config.method.toUpperCase(),
-  	      headers: headers,
-  	      agent: agent,
-  	      agents: { http: config.httpAgent, https: config.httpsAgent },
-  	      auth: auth
-  	    };
-
-  	    if (config.socketPath) {
-  	      options.socketPath = config.socketPath;
-  	    } else {
-  	      options.hostname = parsed.hostname;
-  	      options.port = parsed.port;
-  	    }
-
-  	    var proxy = config.proxy;
-  	    if (!proxy && proxy !== false) {
-  	      var proxyEnv = protocol.slice(0, -1) + '_proxy';
-  	      var proxyUrl = process.env[proxyEnv] || process.env[proxyEnv.toUpperCase()];
-  	      if (proxyUrl) {
-  	        var parsedProxyUrl = url.parse(proxyUrl);
-  	        var noProxyEnv = process.env.no_proxy || process.env.NO_PROXY;
-  	        var shouldProxy = true;
-
-  	        if (noProxyEnv) {
-  	          var noProxy = noProxyEnv.split(',').map(function trim(s) {
-  	            return s.trim();
-  	          });
-
-  	          shouldProxy = !noProxy.some(function proxyMatch(proxyElement) {
-  	            if (!proxyElement) {
-  	              return false;
-  	            }
-  	            if (proxyElement === '*') {
-  	              return true;
-  	            }
-  	            if (proxyElement[0] === '.' &&
-  	                parsed.hostname.substr(parsed.hostname.length - proxyElement.length) === proxyElement) {
-  	              return true;
-  	            }
-
-  	            return parsed.hostname === proxyElement;
-  	          });
-  	        }
-
-  	        if (shouldProxy) {
-  	          proxy = {
-  	            host: parsedProxyUrl.hostname,
-  	            port: parsedProxyUrl.port,
-  	            protocol: parsedProxyUrl.protocol
-  	          };
-
-  	          if (parsedProxyUrl.auth) {
-  	            var proxyUrlAuth = parsedProxyUrl.auth.split(':');
-  	            proxy.auth = {
-  	              username: proxyUrlAuth[0],
-  	              password: proxyUrlAuth[1]
-  	            };
-  	          }
-  	        }
-  	      }
-  	    }
-
-  	    if (proxy) {
-  	      options.headers.host = parsed.hostname + (parsed.port ? ':' + parsed.port : '');
-  	      setProxy(options, proxy, protocol + '//' + parsed.hostname + (parsed.port ? ':' + parsed.port : '') + options.path);
-  	    }
-
-  	    var transport;
-  	    var isHttpsProxy = isHttpsRequest && (proxy ? isHttps.test(proxy.protocol) : true);
-  	    if (config.transport) {
-  	      transport = config.transport;
-  	    } else if (config.maxRedirects === 0) {
-  	      transport = isHttpsProxy ? https : http;
-  	    } else {
-  	      if (config.maxRedirects) {
-  	        options.maxRedirects = config.maxRedirects;
-  	      }
-  	      if (config.beforeRedirect) {
-  	        options.beforeRedirect = config.beforeRedirect;
-  	      }
-  	      transport = isHttpsProxy ? httpsFollow : httpFollow;
-  	    }
-
-  	    if (config.maxBodyLength > -1) {
-  	      options.maxBodyLength = config.maxBodyLength;
-  	    }
-
-  	    if (config.insecureHTTPParser) {
-  	      options.insecureHTTPParser = config.insecureHTTPParser;
-  	    }
-
-  	    // Create the request
-  	    var req = transport.request(options, function handleResponse(res) {
-  	      if (req.aborted) return;
-
-  	      // uncompress the response body transparently if required
-  	      var stream = res;
-
-  	      // return the last request in case of redirects
-  	      var lastRequest = res.req || req;
-
-
-  	      // if no content, is HEAD request or decompress disabled we should not decompress
-  	      if (res.statusCode !== 204 && lastRequest.method !== 'HEAD' && config.decompress !== false) {
-  	        switch (res.headers['content-encoding']) {
-  	        /*eslint default-case:0*/
-  	        case 'gzip':
-  	        case 'compress':
-  	        case 'deflate':
-  	        // add the unzipper to the body stream processing pipeline
-  	          stream = stream.pipe(zlib.createUnzip());
-
-  	          // remove the content-encoding in order to not confuse downstream operations
-  	          delete res.headers['content-encoding'];
-  	          break;
-  	        }
-  	      }
-
-  	      var response = {
-  	        status: res.statusCode,
-  	        statusText: res.statusMessage,
-  	        headers: res.headers,
-  	        config: config,
-  	        request: lastRequest
-  	      };
-
-  	      if (config.responseType === 'stream') {
-  	        response.data = stream;
-  	        settle(resolve, reject, response);
-  	      } else {
-  	        var responseBuffer = [];
-  	        var totalResponseBytes = 0;
-  	        stream.on('data', function handleStreamData(chunk) {
-  	          responseBuffer.push(chunk);
-  	          totalResponseBytes += chunk.length;
-
-  	          // make sure the content length is not over the maxContentLength if specified
-  	          if (config.maxContentLength > -1 && totalResponseBytes > config.maxContentLength) {
-  	            // stream.destoy() emit aborted event before calling reject() on Node.js v16
-  	            rejected = true;
-  	            stream.destroy();
-  	            reject(new AxiosError('maxContentLength size of ' + config.maxContentLength + ' exceeded',
-  	              AxiosError.ERR_BAD_RESPONSE, config, lastRequest));
-  	          }
-  	        });
-
-  	        stream.on('aborted', function handlerStreamAborted() {
-  	          if (rejected) {
-  	            return;
-  	          }
-  	          stream.destroy();
-  	          reject(new AxiosError(
-  	            'maxContentLength size of ' + config.maxContentLength + ' exceeded',
-  	            AxiosError.ERR_BAD_RESPONSE,
-  	            config,
-  	            lastRequest
-  	          ));
-  	        });
-
-  	        stream.on('error', function handleStreamError(err) {
-  	          if (req.aborted) return;
-  	          reject(AxiosError.from(err, null, config, lastRequest));
-  	        });
-
-  	        stream.on('end', function handleStreamEnd() {
-  	          try {
-  	            var responseData = responseBuffer.length === 1 ? responseBuffer[0] : Buffer.concat(responseBuffer);
-  	            if (config.responseType !== 'arraybuffer') {
-  	              responseData = responseData.toString(config.responseEncoding);
-  	              if (!config.responseEncoding || config.responseEncoding === 'utf8') {
-  	                responseData = utils.stripBOM(responseData);
-  	              }
-  	            }
-  	            response.data = responseData;
-  	          } catch (err) {
-  	            reject(AxiosError.from(err, null, config, response.request, response));
-  	          }
-  	          settle(resolve, reject, response);
-  	        });
-  	      }
-  	    });
-
-  	    // Handle errors
-  	    req.on('error', function handleRequestError(err) {
-  	      // @todo remove
-  	      // if (req.aborted && err.code !== AxiosError.ERR_FR_TOO_MANY_REDIRECTS) return;
-  	      reject(AxiosError.from(err, null, config, req));
-  	    });
-
-  	    // set tcp keep alive to prevent drop connection by peer
-  	    req.on('socket', function handleRequestSocket(socket) {
-  	      // default interval of sending ack packet is 1 minute
-  	      socket.setKeepAlive(true, 1000 * 60);
-  	    });
-
-  	    // Handle request timeout
-  	    if (config.timeout) {
-  	      // This is forcing a int timeout to avoid problems if the `req` interface doesn't handle other types.
-  	      var timeout = parseInt(config.timeout, 10);
-
-  	      if (isNaN(timeout)) {
-  	        reject(new AxiosError(
-  	          'error trying to parse `config.timeout` to int',
-  	          AxiosError.ERR_BAD_OPTION_VALUE,
-  	          config,
-  	          req
-  	        ));
-
-  	        return;
-  	      }
-
-  	      // Sometime, the response will be very slow, and does not respond, the connect event will be block by event loop system.
-  	      // And timer callback will be fired, and abort() will be invoked before connection, then get "socket hang up" and code ECONNRESET.
-  	      // At this time, if we have a large number of request, nodejs will hang up some socket on background. and the number will up and up.
-  	      // And then these socket which be hang up will devoring CPU little by little.
-  	      // ClientRequest.setTimeout will be fired on the specify milliseconds, and can make sure that abort() will be fired after connect.
-  	      req.setTimeout(timeout, function handleRequestTimeout() {
-  	        req.abort();
-  	        var transitional = config.transitional || transitionalDefaults;
-  	        reject(new AxiosError(
-  	          'timeout of ' + timeout + 'ms exceeded',
-  	          transitional.clarifyTimeoutError ? AxiosError.ETIMEDOUT : AxiosError.ECONNABORTED,
-  	          config,
-  	          req
-  	        ));
-  	      });
-  	    }
-
-  	    if (config.cancelToken || config.signal) {
-  	      // Handle cancellation
-  	      // eslint-disable-next-line func-names
-  	      onCanceled = function(cancel) {
-  	        if (req.aborted) return;
-
-  	        req.abort();
-  	        reject(!cancel || (cancel && cancel.type) ? new CanceledError() : cancel);
-  	      };
-
-  	      config.cancelToken && config.cancelToken.subscribe(onCanceled);
-  	      if (config.signal) {
-  	        config.signal.aborted ? onCanceled() : config.signal.addEventListener('abort', onCanceled);
-  	      }
-  	    }
-
-
-  	    // Send the request
-  	    if (utils.isStream(data)) {
-  	      data.on('error', function handleStreamError(err) {
-  	        reject(AxiosError.from(err, config, null, req));
-  	      }).pipe(req);
-  	    } else {
-  	      req.end(data);
-  	    }
-  	  });
-  	};
-  	return http_1;
-  }
-
-  var FormData$1 = {exports: {}};
-
-  /* eslint-env browser */
-
-  var browser;
-  var hasRequiredBrowser;
-
-  function requireBrowser () {
-  	if (hasRequiredBrowser) return browser;
-  	hasRequiredBrowser = 1;
-  	browser = typeof self == 'object' ? self.FormData : window.FormData;
-  	return browser;
-  }
-
-  var hasRequiredFormData;
-
-  function requireFormData () {
-  	if (hasRequiredFormData) return FormData$1.exports;
-  	hasRequiredFormData = 1;
-  	(function (module) {
-  		// eslint-disable-next-line strict
-  		module.exports = requireBrowser();
-  } (FormData$1));
-  	return FormData$1.exports;
-  }
-
-  var utils$5 = utils$b;
-  var normalizeHeaderName = normalizeHeaderName$1;
-  var AxiosError$1 = AxiosError_1;
-  var transitionalDefaults = transitional;
-  var toFormData = toFormData_1;
-
-  var DEFAULT_CONTENT_TYPE = {
-    'Content-Type': 'application/x-www-form-urlencoded'
-  };
-
-  function setContentTypeIfUnset(headers, value) {
-    if (!utils$5.isUndefined(headers) && utils$5.isUndefined(headers['Content-Type'])) {
-      headers['Content-Type'] = value;
-    }
-  }
-
-  function getDefaultAdapter() {
-    var adapter;
-    if (typeof XMLHttpRequest !== 'undefined') {
-      // For browsers use XHR adapter
-      adapter = requireXhr();
-    } else if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
-      // For node use HTTP adapter
-      adapter = requireHttp();
-    }
-    return adapter;
-  }
-
-  function stringifySafely(rawValue, parser, encoder) {
-    if (utils$5.isString(rawValue)) {
-      try {
-        (parser || JSON.parse)(rawValue);
-        return utils$5.trim(rawValue);
-      } catch (e) {
-        if (e.name !== 'SyntaxError') {
-          throw e;
-        }
-      }
-    }
-
-    return (encoder || JSON.stringify)(rawValue);
-  }
-
-  var defaults$3 = {
-
-    transitional: transitionalDefaults,
-
-    adapter: getDefaultAdapter(),
-
-    transformRequest: [function transformRequest(data, headers) {
-      normalizeHeaderName(headers, 'Accept');
-      normalizeHeaderName(headers, 'Content-Type');
-
-      if (utils$5.isFormData(data) ||
-        utils$5.isArrayBuffer(data) ||
-        utils$5.isBuffer(data) ||
-        utils$5.isStream(data) ||
-        utils$5.isFile(data) ||
-        utils$5.isBlob(data)
-      ) {
-        return data;
-      }
-      if (utils$5.isArrayBufferView(data)) {
-        return data.buffer;
-      }
-      if (utils$5.isURLSearchParams(data)) {
-        setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
-        return data.toString();
-      }
-
-      var isObjectPayload = utils$5.isObject(data);
-      var contentType = headers && headers['Content-Type'];
-
-      var isFileList;
-
-      if ((isFileList = utils$5.isFileList(data)) || (isObjectPayload && contentType === 'multipart/form-data')) {
-        var _FormData = this.env && this.env.FormData;
-        return toFormData(isFileList ? {'files[]': data} : data, _FormData && new _FormData());
-      } else if (isObjectPayload || contentType === 'application/json') {
-        setContentTypeIfUnset(headers, 'application/json');
-        return stringifySafely(data);
-      }
-
-      return data;
-    }],
-
-    transformResponse: [function transformResponse(data) {
-      var transitional = this.transitional || defaults$3.transitional;
-      var silentJSONParsing = transitional && transitional.silentJSONParsing;
-      var forcedJSONParsing = transitional && transitional.forcedJSONParsing;
-      var strictJSONParsing = !silentJSONParsing && this.responseType === 'json';
-
-      if (strictJSONParsing || (forcedJSONParsing && utils$5.isString(data) && data.length)) {
-        try {
-          return JSON.parse(data);
-        } catch (e) {
-          if (strictJSONParsing) {
-            if (e.name === 'SyntaxError') {
-              throw AxiosError$1.from(e, AxiosError$1.ERR_BAD_RESPONSE, this, null, this.response);
-            }
-            throw e;
-          }
-        }
-      }
-
-      return data;
-    }],
-
-    /**
-     * A timeout in milliseconds to abort a request. If set to 0 (default) a
-     * timeout is not created.
-     */
-    timeout: 0,
-
-    xsrfCookieName: 'XSRF-TOKEN',
-    xsrfHeaderName: 'X-XSRF-TOKEN',
-
-    maxContentLength: -1,
-    maxBodyLength: -1,
-
-    env: {
-      FormData: requireFormData()
-    },
-
-    validateStatus: function validateStatus(status) {
-      return status >= 200 && status < 300;
-    },
-
-    headers: {
-      common: {
-        'Accept': 'application/json, text/plain, */*'
-      }
-    }
-  };
-
-  utils$5.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
-    defaults$3.headers[method] = {};
-  });
-
-  utils$5.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-    defaults$3.headers[method] = utils$5.merge(DEFAULT_CONTENT_TYPE);
-  });
-
-  var defaults_1 = defaults$3;
-
-  var utils$4 = utils$b;
-  var defaults$2 = defaults_1;
-
-  /**
-   * Transform the data for a request or a response
-   *
-   * @param {Object|String} data The data to be transformed
-   * @param {Array} headers The headers for the request or response
-   * @param {Array|Function} fns A single function or Array of functions
-   * @returns {*} The resulting transformed data
-   */
-  var transformData$1 = function transformData(data, headers, fns) {
-    var context = this || defaults$2;
-    /*eslint no-param-reassign:0*/
-    utils$4.forEach(fns, function transform(fn) {
-      data = fn.call(context, data, headers);
-    });
-
-    return data;
-  };
-
-  var isCancel$1;
-  var hasRequiredIsCancel;
-
-  function requireIsCancel () {
-  	if (hasRequiredIsCancel) return isCancel$1;
-  	hasRequiredIsCancel = 1;
-
-  	isCancel$1 = function isCancel(value) {
-  	  return !!(value && value.__CANCEL__);
-  	};
-  	return isCancel$1;
-  }
-
-  var utils$3 = utils$b;
-  var transformData = transformData$1;
-  var isCancel = requireIsCancel();
-  var defaults$1 = defaults_1;
-  var CanceledError = requireCanceledError();
-
-  /**
-   * Throws a `CanceledError` if cancellation has been requested.
-   */
-  function throwIfCancellationRequested(config) {
-    if (config.cancelToken) {
-      config.cancelToken.throwIfRequested();
-    }
-
-    if (config.signal && config.signal.aborted) {
-      throw new CanceledError();
-    }
-  }
-
-  /**
-   * Dispatch a request to the server using the configured adapter.
-   *
-   * @param {object} config The config that is to be used for the request
-   * @returns {Promise} The Promise to be fulfilled
-   */
-  var dispatchRequest$1 = function dispatchRequest(config) {
-    throwIfCancellationRequested(config);
-
-    // Ensure headers exist
-    config.headers = config.headers || {};
-
-    // Transform request data
-    config.data = transformData.call(
-      config,
-      config.data,
-      config.headers,
-      config.transformRequest
-    );
-
-    // Flatten headers
-    config.headers = utils$3.merge(
-      config.headers.common || {},
-      config.headers[config.method] || {},
-      config.headers
-    );
-
-    utils$3.forEach(
-      ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
-      function cleanHeaderConfig(method) {
-        delete config.headers[method];
-      }
-    );
-
-    var adapter = config.adapter || defaults$1.adapter;
-
-    return adapter(config).then(function onAdapterResolution(response) {
-      throwIfCancellationRequested(config);
-
-      // Transform response data
-      response.data = transformData.call(
-        config,
-        response.data,
-        response.headers,
-        config.transformResponse
-      );
-
-      return response;
-    }, function onAdapterRejection(reason) {
-      if (!isCancel(reason)) {
-        throwIfCancellationRequested(config);
-
-        // Transform response data
-        if (reason && reason.response) {
-          reason.response.data = transformData.call(
-            config,
-            reason.response.data,
-            reason.response.headers,
-            config.transformResponse
-          );
-        }
-      }
-
-      return Promise.reject(reason);
-    });
-  };
-
-  var utils$2 = utils$b;
-
-  /**
-   * Config-specific merge-function which creates a new config-object
-   * by merging two configuration objects together.
-   *
-   * @param {Object} config1
-   * @param {Object} config2
-   * @returns {Object} New object resulting from merging config2 to config1
-   */
-  var mergeConfig$2 = function mergeConfig(config1, config2) {
-    // eslint-disable-next-line no-param-reassign
-    config2 = config2 || {};
-    var config = {};
-
-    function getMergedValue(target, source) {
-      if (utils$2.isPlainObject(target) && utils$2.isPlainObject(source)) {
-        return utils$2.merge(target, source);
-      } else if (utils$2.isPlainObject(source)) {
-        return utils$2.merge({}, source);
-      } else if (utils$2.isArray(source)) {
-        return source.slice();
-      }
-      return source;
-    }
-
-    // eslint-disable-next-line consistent-return
-    function mergeDeepProperties(prop) {
-      if (!utils$2.isUndefined(config2[prop])) {
-        return getMergedValue(config1[prop], config2[prop]);
-      } else if (!utils$2.isUndefined(config1[prop])) {
-        return getMergedValue(undefined, config1[prop]);
-      }
-    }
-
-    // eslint-disable-next-line consistent-return
-    function valueFromConfig2(prop) {
-      if (!utils$2.isUndefined(config2[prop])) {
-        return getMergedValue(undefined, config2[prop]);
-      }
-    }
-
-    // eslint-disable-next-line consistent-return
-    function defaultToConfig2(prop) {
-      if (!utils$2.isUndefined(config2[prop])) {
-        return getMergedValue(undefined, config2[prop]);
-      } else if (!utils$2.isUndefined(config1[prop])) {
-        return getMergedValue(undefined, config1[prop]);
-      }
-    }
-
-    // eslint-disable-next-line consistent-return
-    function mergeDirectKeys(prop) {
-      if (prop in config2) {
-        return getMergedValue(config1[prop], config2[prop]);
-      } else if (prop in config1) {
-        return getMergedValue(undefined, config1[prop]);
-      }
-    }
-
-    var mergeMap = {
-      'url': valueFromConfig2,
-      'method': valueFromConfig2,
-      'data': valueFromConfig2,
-      'baseURL': defaultToConfig2,
-      'transformRequest': defaultToConfig2,
-      'transformResponse': defaultToConfig2,
-      'paramsSerializer': defaultToConfig2,
-      'timeout': defaultToConfig2,
-      'timeoutMessage': defaultToConfig2,
-      'withCredentials': defaultToConfig2,
-      'adapter': defaultToConfig2,
-      'responseType': defaultToConfig2,
-      'xsrfCookieName': defaultToConfig2,
-      'xsrfHeaderName': defaultToConfig2,
-      'onUploadProgress': defaultToConfig2,
-      'onDownloadProgress': defaultToConfig2,
-      'decompress': defaultToConfig2,
-      'maxContentLength': defaultToConfig2,
-      'maxBodyLength': defaultToConfig2,
-      'beforeRedirect': defaultToConfig2,
-      'transport': defaultToConfig2,
-      'httpAgent': defaultToConfig2,
-      'httpsAgent': defaultToConfig2,
-      'cancelToken': defaultToConfig2,
-      'socketPath': defaultToConfig2,
-      'responseEncoding': defaultToConfig2,
-      'validateStatus': mergeDirectKeys
-    };
-
-    utils$2.forEach(Object.keys(config1).concat(Object.keys(config2)), function computeConfigValue(prop) {
-      var merge = mergeMap[prop] || mergeDeepProperties;
-      var configValue = merge(prop);
-      (utils$2.isUndefined(configValue) && merge !== mergeDirectKeys) || (config[prop] = configValue);
-    });
-
-    return config;
-  };
-
-  var VERSION = requireData().version;
-  var AxiosError = AxiosError_1;
-
-  var validators$1 = {};
-
-  // eslint-disable-next-line func-names
-  ['object', 'boolean', 'number', 'function', 'string', 'symbol'].forEach(function(type, i) {
-    validators$1[type] = function validator(thing) {
-      return typeof thing === type || 'a' + (i < 1 ? 'n ' : ' ') + type;
-    };
-  });
-
-  var deprecatedWarnings = {};
-
-  /**
-   * Transitional option validator
-   * @param {function|boolean?} validator - set to false if the transitional option has been removed
-   * @param {string?} version - deprecated version / removed since version
-   * @param {string?} message - some message with additional info
-   * @returns {function}
-   */
-  validators$1.transitional = function transitional(validator, version, message) {
-    function formatMessage(opt, desc) {
-      return '[Axios v' + VERSION + '] Transitional option \'' + opt + '\'' + desc + (message ? '. ' + message : '');
-    }
-
-    // eslint-disable-next-line func-names
-    return function(value, opt, opts) {
-      if (validator === false) {
-        throw new AxiosError(
-          formatMessage(opt, ' has been removed' + (version ? ' in ' + version : '')),
-          AxiosError.ERR_DEPRECATED
-        );
-      }
-
-      if (version && !deprecatedWarnings[opt]) {
-        deprecatedWarnings[opt] = true;
-        // eslint-disable-next-line no-console
-        console.warn(
-          formatMessage(
-            opt,
-            ' has been deprecated since v' + version + ' and will be removed in the near future'
-          )
-        );
-      }
-
-      return validator ? validator(value, opt, opts) : true;
-    };
-  };
-
-  /**
-   * Assert object's properties type
-   * @param {object} options
-   * @param {object} schema
-   * @param {boolean?} allowUnknown
-   */
-
-  function assertOptions(options, schema, allowUnknown) {
-    if (typeof options !== 'object') {
-      throw new AxiosError('options must be an object', AxiosError.ERR_BAD_OPTION_VALUE);
-    }
-    var keys = Object.keys(options);
-    var i = keys.length;
-    while (i-- > 0) {
-      var opt = keys[i];
-      var validator = schema[opt];
-      if (validator) {
-        var value = options[opt];
-        var result = value === undefined || validator(value, opt, options);
-        if (result !== true) {
-          throw new AxiosError('option ' + opt + ' must be ' + result, AxiosError.ERR_BAD_OPTION_VALUE);
-        }
-        continue;
-      }
-      if (allowUnknown !== true) {
-        throw new AxiosError('Unknown option ' + opt, AxiosError.ERR_BAD_OPTION);
-      }
-    }
-  }
-
-  var validator$1 = {
-    assertOptions: assertOptions,
-    validators: validators$1
-  };
-
-  var utils$1 = utils$b;
-  var buildURL = buildURL$1;
-  var InterceptorManager = InterceptorManager_1;
-  var dispatchRequest = dispatchRequest$1;
-  var mergeConfig$1 = mergeConfig$2;
-  var buildFullPath = buildFullPath$1;
-  var validator = validator$1;
-
-  var validators = validator.validators;
-  /**
-   * Create a new instance of Axios
-   *
-   * @param {Object} instanceConfig The default config for the instance
-   */
-  function Axios$1(instanceConfig) {
-    this.defaults = instanceConfig;
-    this.interceptors = {
-      request: new InterceptorManager(),
-      response: new InterceptorManager()
-    };
-  }
-
-  /**
-   * Dispatch a request
-   *
-   * @param {Object} config The config specific for this request (merged with this.defaults)
-   */
-  Axios$1.prototype.request = function request(configOrUrl, config) {
-    /*eslint no-param-reassign:0*/
-    // Allow for axios('example/url'[, config]) a la fetch API
-    if (typeof configOrUrl === 'string') {
-      config = config || {};
-      config.url = configOrUrl;
-    } else {
-      config = configOrUrl || {};
-    }
-
-    config = mergeConfig$1(this.defaults, config);
-
-    // Set config.method
-    if (config.method) {
-      config.method = config.method.toLowerCase();
-    } else if (this.defaults.method) {
-      config.method = this.defaults.method.toLowerCase();
-    } else {
-      config.method = 'get';
-    }
-
-    var transitional = config.transitional;
-
-    if (transitional !== undefined) {
-      validator.assertOptions(transitional, {
-        silentJSONParsing: validators.transitional(validators.boolean),
-        forcedJSONParsing: validators.transitional(validators.boolean),
-        clarifyTimeoutError: validators.transitional(validators.boolean)
-      }, false);
-    }
-
-    // filter out skipped interceptors
-    var requestInterceptorChain = [];
-    var synchronousRequestInterceptors = true;
-    this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
-      if (typeof interceptor.runWhen === 'function' && interceptor.runWhen(config) === false) {
-        return;
-      }
-
-      synchronousRequestInterceptors = synchronousRequestInterceptors && interceptor.synchronous;
-
-      requestInterceptorChain.unshift(interceptor.fulfilled, interceptor.rejected);
-    });
-
-    var responseInterceptorChain = [];
-    this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
-      responseInterceptorChain.push(interceptor.fulfilled, interceptor.rejected);
-    });
-
-    var promise;
-
-    if (!synchronousRequestInterceptors) {
-      var chain = [dispatchRequest, undefined];
-
-      Array.prototype.unshift.apply(chain, requestInterceptorChain);
-      chain = chain.concat(responseInterceptorChain);
-
-      promise = Promise.resolve(config);
-      while (chain.length) {
-        promise = promise.then(chain.shift(), chain.shift());
-      }
-
-      return promise;
-    }
-
-
-    var newConfig = config;
-    while (requestInterceptorChain.length) {
-      var onFulfilled = requestInterceptorChain.shift();
-      var onRejected = requestInterceptorChain.shift();
-      try {
-        newConfig = onFulfilled(newConfig);
-      } catch (error) {
-        onRejected(error);
-        break;
-      }
-    }
-
-    try {
-      promise = dispatchRequest(newConfig);
-    } catch (error) {
-      return Promise.reject(error);
-    }
-
-    while (responseInterceptorChain.length) {
-      promise = promise.then(responseInterceptorChain.shift(), responseInterceptorChain.shift());
-    }
-
-    return promise;
-  };
-
-  Axios$1.prototype.getUri = function getUri(config) {
-    config = mergeConfig$1(this.defaults, config);
-    var fullPath = buildFullPath(config.baseURL, config.url);
-    return buildURL(fullPath, config.params, config.paramsSerializer);
-  };
-
-  // Provide aliases for supported request methods
-  utils$1.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
-    /*eslint func-names:0*/
-    Axios$1.prototype[method] = function(url, config) {
-      return this.request(mergeConfig$1(config || {}, {
-        method: method,
-        url: url,
-        data: (config || {}).data
-      }));
-    };
-  });
-
-  utils$1.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-    /*eslint func-names:0*/
-
-    function generateHTTPMethod(isForm) {
-      return function httpMethod(url, data, config) {
-        return this.request(mergeConfig$1(config || {}, {
-          method: method,
-          headers: isForm ? {
-            'Content-Type': 'multipart/form-data'
-          } : {},
-          url: url,
-          data: data
-        }));
-      };
-    }
-
-    Axios$1.prototype[method] = generateHTTPMethod();
-
-    Axios$1.prototype[method + 'Form'] = generateHTTPMethod(true);
-  });
-
-  var Axios_1 = Axios$1;
-
-  var CancelToken_1;
-  var hasRequiredCancelToken;
-
-  function requireCancelToken () {
-  	if (hasRequiredCancelToken) return CancelToken_1;
-  	hasRequiredCancelToken = 1;
-
-  	var CanceledError = requireCanceledError();
-
-  	/**
-  	 * A `CancelToken` is an object that can be used to request cancellation of an operation.
-  	 *
-  	 * @class
-  	 * @param {Function} executor The executor function.
-  	 */
-  	function CancelToken(executor) {
-  	  if (typeof executor !== 'function') {
-  	    throw new TypeError('executor must be a function.');
-  	  }
-
-  	  var resolvePromise;
-
-  	  this.promise = new Promise(function promiseExecutor(resolve) {
-  	    resolvePromise = resolve;
-  	  });
-
-  	  var token = this;
-
-  	  // eslint-disable-next-line func-names
-  	  this.promise.then(function(cancel) {
-  	    if (!token._listeners) return;
-
-  	    var i;
-  	    var l = token._listeners.length;
-
-  	    for (i = 0; i < l; i++) {
-  	      token._listeners[i](cancel);
-  	    }
-  	    token._listeners = null;
-  	  });
-
-  	  // eslint-disable-next-line func-names
-  	  this.promise.then = function(onfulfilled) {
-  	    var _resolve;
-  	    // eslint-disable-next-line func-names
-  	    var promise = new Promise(function(resolve) {
-  	      token.subscribe(resolve);
-  	      _resolve = resolve;
-  	    }).then(onfulfilled);
-
-  	    promise.cancel = function reject() {
-  	      token.unsubscribe(_resolve);
-  	    };
-
-  	    return promise;
-  	  };
-
-  	  executor(function cancel(message) {
-  	    if (token.reason) {
-  	      // Cancellation has already been requested
-  	      return;
-  	    }
-
-  	    token.reason = new CanceledError(message);
-  	    resolvePromise(token.reason);
-  	  });
-  	}
-
-  	/**
-  	 * Throws a `CanceledError` if cancellation has been requested.
-  	 */
-  	CancelToken.prototype.throwIfRequested = function throwIfRequested() {
-  	  if (this.reason) {
-  	    throw this.reason;
-  	  }
-  	};
-
-  	/**
-  	 * Subscribe to the cancel signal
-  	 */
-
-  	CancelToken.prototype.subscribe = function subscribe(listener) {
-  	  if (this.reason) {
-  	    listener(this.reason);
-  	    return;
-  	  }
-
-  	  if (this._listeners) {
-  	    this._listeners.push(listener);
-  	  } else {
-  	    this._listeners = [listener];
-  	  }
-  	};
-
-  	/**
-  	 * Unsubscribe from the cancel signal
-  	 */
-
-  	CancelToken.prototype.unsubscribe = function unsubscribe(listener) {
-  	  if (!this._listeners) {
-  	    return;
-  	  }
-  	  var index = this._listeners.indexOf(listener);
-  	  if (index !== -1) {
-  	    this._listeners.splice(index, 1);
-  	  }
-  	};
-
-  	/**
-  	 * Returns an object that contains a new `CancelToken` and a function that, when called,
-  	 * cancels the `CancelToken`.
-  	 */
-  	CancelToken.source = function source() {
-  	  var cancel;
-  	  var token = new CancelToken(function executor(c) {
-  	    cancel = c;
-  	  });
-  	  return {
-  	    token: token,
-  	    cancel: cancel
-  	  };
-  	};
-
-  	CancelToken_1 = CancelToken;
-  	return CancelToken_1;
-  }
-
-  var spread;
-  var hasRequiredSpread;
-
-  function requireSpread () {
-  	if (hasRequiredSpread) return spread;
-  	hasRequiredSpread = 1;
-
-  	/**
-  	 * Syntactic sugar for invoking a function and expanding an array for arguments.
-  	 *
-  	 * Common use case would be to use `Function.prototype.apply`.
-  	 *
-  	 *  ```js
-  	 *  function f(x, y, z) {}
-  	 *  var args = [1, 2, 3];
-  	 *  f.apply(null, args);
-  	 *  ```
-  	 *
-  	 * With `spread` this example can be re-written.
-  	 *
-  	 *  ```js
-  	 *  spread(function(x, y, z) {})([1, 2, 3]);
-  	 *  ```
-  	 *
-  	 * @param {Function} callback
-  	 * @returns {Function}
-  	 */
-  	spread = function spread(callback) {
-  	  return function wrap(arr) {
-  	    return callback.apply(null, arr);
-  	  };
-  	};
-  	return spread;
-  }
-
-  var isAxiosError;
-  var hasRequiredIsAxiosError;
-
-  function requireIsAxiosError () {
-  	if (hasRequiredIsAxiosError) return isAxiosError;
-  	hasRequiredIsAxiosError = 1;
-
-  	var utils = utils$b;
-
-  	/**
-  	 * Determines whether the payload is an error thrown by Axios
-  	 *
-  	 * @param {*} payload The value to test
-  	 * @returns {boolean} True if the payload is an error thrown by Axios, otherwise false
-  	 */
-  	isAxiosError = function isAxiosError(payload) {
-  	  return utils.isObject(payload) && (payload.isAxiosError === true);
-  	};
-  	return isAxiosError;
-  }
-
-  var utils = utils$b;
-  var bind = bind$2;
-  var Axios = Axios_1;
-  var mergeConfig = mergeConfig$2;
-  var defaults = defaults_1;
-
-  /**
-   * Create an instance of Axios
-   *
-   * @param {Object} defaultConfig The default config for the instance
-   * @return {Axios} A new instance of Axios
-   */
-  function createInstance(defaultConfig) {
-    var context = new Axios(defaultConfig);
-    var instance = bind(Axios.prototype.request, context);
-
-    // Copy axios.prototype to instance
-    utils.extend(instance, Axios.prototype, context);
-
-    // Copy context to instance
-    utils.extend(instance, context);
-
-    // Factory for creating new instances
-    instance.create = function create(instanceConfig) {
-      return createInstance(mergeConfig(defaultConfig, instanceConfig));
-    };
-
-    return instance;
-  }
-
-  // Create the default instance to be exported
-  var axios$1 = createInstance(defaults);
-
-  // Expose Axios class to allow class inheritance
-  axios$1.Axios = Axios;
-
-  // Expose Cancel & CancelToken
-  axios$1.CanceledError = requireCanceledError();
-  axios$1.CancelToken = requireCancelToken();
-  axios$1.isCancel = requireIsCancel();
-  axios$1.VERSION = requireData().version;
-  axios$1.toFormData = toFormData_1;
-
-  // Expose AxiosError class
-  axios$1.AxiosError = AxiosError_1;
-
-  // alias for CanceledError for backward compatibility
-  axios$1.Cancel = axios$1.CanceledError;
-
-  // Expose all/spread
-  axios$1.all = function all(promises) {
-    return Promise.all(promises);
-  };
-  axios$1.spread = requireSpread();
-
-  // Expose isAxiosError
-  axios$1.isAxiosError = requireIsAxiosError();
-
-  axios$2.exports = axios$1;
-
-  // Allow use of default import syntax in TypeScript
-  axios$2.exports.default = axios$1;
-
-  (function (module) {
-  	module.exports = axios$2.exports;
-  } (axios$3));
-
-  var axios = /*@__PURE__*/getDefaultExportFromCjs(axios$3.exports);
-
+  // import axios from 'axios';
   var _depth = /*#__PURE__*/new WeakMap();
-
   var _selector = /*#__PURE__*/new WeakMap();
-
   var _max = /*#__PURE__*/new WeakMap();
-
   var _parentNode = /*#__PURE__*/new WeakMap();
-
   var _columnItemViews = /*#__PURE__*/new WeakMap();
-
   var _cachedUserFilters = /*#__PURE__*/new WeakMap();
-
   var _ROOT$c = /*#__PURE__*/new WeakMap();
-
   var _TBODY$1 = /*#__PURE__*/new WeakMap();
-
   var _draw$1 = /*#__PURE__*/new WeakSet();
-
   var _update$2 = /*#__PURE__*/new WeakSet();
-
   var _sort = /*#__PURE__*/new WeakSet();
-
   var _heatmap = /*#__PURE__*/new WeakSet();
-
   var _getUserFilters = /*#__PURE__*/new WeakSet();
-
   var _existed = /*#__PURE__*/new WeakMap();
-
   var ColumnView = /*#__PURE__*/function () {
     function ColumnView(selector, _filters, depth, parentNode) {
       var _this = this;
-
       _classCallCheck(this, ColumnView);
-
       _classPrivateFieldInitSpec(this, _existed, {
         get: _get_existed,
         set: void 0
       });
-
       _classPrivateMethodInitSpec(this, _getUserFilters);
-
       _classPrivateMethodInitSpec(this, _heatmap);
-
       _classPrivateMethodInitSpec(this, _sort);
-
       _classPrivateMethodInitSpec(this, _update$2);
-
       _classPrivateMethodInitSpec(this, _draw$1);
-
       _classPrivateFieldInitSpec(this, _depth, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _selector, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _max, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _parentNode, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _columnItemViews, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _cachedUserFilters, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _ROOT$c, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _TBODY$1, {
         writable: true,
         value: void 0
       });
-
       // set members
       _classPrivateFieldSet(this, _depth, depth);
-
       _classPrivateFieldSet(this, _selector, selector);
-
       _classPrivateFieldSet(this, _parentNode, parentNode);
+      _classPrivateFieldSet(this, _cachedUserFilters, new Map());
 
-      _classPrivateFieldSet(this, _cachedUserFilters, new Map()); // draw
+      // draw
+      _classPrivateMethodGet(this, _draw$1, _draw2$1).call(this, _filters);
 
-
-      _classPrivateMethodGet(this, _draw$1, _draw2$1).call(this, _filters); // even listener
-
-
+      // even listener
       DefaultEventEmitter$1.addEventListener(changeViewModes, _classPrivateMethodGet(this, _update$2, _update2$2).bind(this));
       DefaultEventEmitter$1.addEventListener(changeColumnSelectorSorter, _classPrivateMethodGet(this, _update$2, _update2$2).bind(this));
-
       _classPrivateFieldGet(this, _ROOT$c).addEventListener(collapsed, function (e) {
         if (e.detail) _classPrivateMethodGet(_this, _update$2, _update2$2).call(_this);
       });
     }
-
     _createClass(ColumnView, [{
       key: "appended",
-      value: // public Methods
+      value:
+      // public Methods
+
       function appended() {
         var _this2 = this;
+        _classPrivateMethodGet(this, _update$2, _update2$2).call(this);
 
-        _classPrivateMethodGet(this, _update$2, _update2$2).call(this); // user IDs
-
-
+        // user IDs
         if (document.body.classList.contains('-showuserids') && ConditionBuilder$1.userIds.length > 0) {
           _classPrivateMethodGet(this, _getUserFilters, _getUserFilters2).call(this, _classPrivateFieldGet(this, _selector).attributeId, _classPrivateFieldGet(this, _parentNode)).then(function (filters) {
             _classPrivateFieldGet(_this2, _columnItemViews).forEach(function (columnItemView) {
@@ -8336,19 +4409,15 @@
         var ancestors = [];
         var parentNode;
         var column = checkbox.closest('.column');
-
         do {
           var _column;
-
           // find ancestors
           parentNode = (_column = column) === null || _column === void 0 ? void 0 : _column.dataset.parentNode;
-
           if (parentNode) {
             ancestors.unshift(parentNode);
             column = column.previousElementSibling;
           }
         } while (parentNode);
-
         if (checkbox.checked) {
           // add
           ConditionBuilder$1.addFilter(this.attributeId, checkbox.value, ancestors);
@@ -8356,18 +4425,19 @@
           // remove
           ConditionBuilder$1.removeFilter(this.attributeId, checkbox.value);
         }
-      } // checkKey(e) {
-      // }
+      }
 
+      // checkKey(e) {
+      // }
     }, {
       key: "drillDown",
       value: function drillDown(e) {
         var itemNode = e.target.closest('tr');
         itemNode.classList.add('-selected');
-
         _classPrivateFieldGet(this, _selector).drillDown(itemNode.dataset.id, _classPrivateFieldGet(this, _depth));
-      } // accessors
+      }
 
+      // accessors
     }, {
       key: "depth",
       get: function get() {
@@ -8389,42 +4459,29 @@
         return _classPrivateFieldGet(this, _ROOT$c);
       }
     }]);
-
     return ColumnView;
   }();
-
   function _draw2$1(filters) {
     var _classPrivateFieldGet2,
-        _this3 = this;
-
+      _this3 = this;
     // make column
     _classPrivateFieldSet(this, _ROOT$c, document.createElement('div'));
-
     _classPrivateFieldGet(this, _ROOT$c).classList.add('column');
-
     _classPrivateFieldGet(this, _ROOT$c).dataset.capturingCollapse = true;
     _classPrivateFieldGet(this, _ROOT$c).dataset.parentNode = (_classPrivateFieldGet2 = _classPrivateFieldGet(this, _parentNode)) !== null && _classPrivateFieldGet2 !== void 0 ? _classPrivateFieldGet2 : '';
-
     _classPrivateFieldSet(this, _max, 0);
-
     _classPrivateFieldGet(this, _ROOT$c).innerHTML = "\n    <table>\n      <thead>\n        <tr class=\"header\">\n          <th class=\"label\">Values</th>\n          <th class=\"total\">Total</th>\n          <th class=\"mapped\">Mapped</th>\n          <th class=\"pvalue\">p-value</th>\n          <th class=\"drilldown\"></th>\n        </tr>\n      </thead>\n      <tbody></tbody>\n    </table>";
-
     _classPrivateFieldSet(this, _TBODY$1, _classPrivateFieldGet(this, _ROOT$c).querySelector(':scope > table > tbody'));
-
     var selectedNodes = ConditionBuilder$1.getSelectedNodes(this.attributeId);
-
     _classPrivateFieldSet(this, _columnItemViews, filters.map(function (filter, index) {
-      _classPrivateFieldSet(_this3, _max, Math.max(_classPrivateFieldGet(_this3, _max), filter.count)); // add item
-
-
+      _classPrivateFieldSet(_this3, _max, Math.max(_classPrivateFieldGet(_this3, _max), filter.count));
+      // add item
       var columnItemView = new ColumnItemView(_this3, filter, index, selectedNodes);
-
       _classPrivateFieldGet(_this3, _TBODY$1).append(columnItemView.rootNode);
-
       return columnItemView;
-    })); // attach sort function
+    }));
 
-
+    // attach sort function
     var theadCells = Array.from(_classPrivateFieldGet(this, _ROOT$c).querySelectorAll(':scope > table > thead > tr > th'));
     ColumnSelectorSortManager$1.sortableColumns.forEach(function (sortableColumn) {
       var cell = theadCells.find(function (cell) {
@@ -8433,7 +4490,6 @@
       cell.classList.add('-sortable');
       cell.insertAdjacentHTML('beforeend', "<div class=\"sorter\" data-column=\"".concat(sortableColumn, "\"></div>"));
     });
-
     _classPrivateFieldGet(this, _ROOT$c).querySelectorAll(':scope > table > thead > tr > .-sortable').forEach(function (sortable) {
       sortable.addEventListener('click', function (_ref) {
         var target = _ref.target;
@@ -8442,20 +4498,16 @@
       });
     });
   }
-
   function _update2$2() {
     if (_classPrivateFieldGet(this, _selector).isShowing && _classPrivateFieldGet(this, _existed)) {
       _classPrivateMethodGet(this, _sort, _sort2).call(this);
-
       _classPrivateMethodGet(this, _heatmap, _heatmap2).call(this);
     }
   }
-
   function _sort2() {
     var _this4 = this;
-
-    var sortDescriptor = ColumnSelectorSortManager$1.sortDescriptor; // sorted by 'label' or 'total (= count)'
-
+    var sortDescriptor = ColumnSelectorSortManager$1.sortDescriptor;
+    // sorted by 'label' or 'total (= count)'
     var column = {
       '': 'index',
       label: 'label',
@@ -8463,14 +4515,12 @@
       mapped: 'mapped',
       pvalue: 'pvalue'
     }[sortDescriptor.column];
-
     var items = _classPrivateFieldGet(this, _columnItemViews).map(function (columnItemView) {
       return {
         index: columnItemView.index,
         filter: columnItemView[column]
       };
     });
-
     switch (sortDescriptor.column) {
       case 'label':
         items.sort(function (a, b) {
@@ -8479,11 +4529,9 @@
             b = _ref2[0];
             a = _ref2[1];
           }
-
           return a.filter > b.filter ? 1 : -1;
         });
         break;
-
       case 'total':
       case 'mapped':
       case 'pvalue':
@@ -8493,32 +4541,26 @@
             b = _ref3[0];
             a = _ref3[1];
           }
-
           return b.filter - a.filter;
         });
         break;
-    } // if (sortDescriptor.direction === 'desc') items.reverse();
+    }
+    // if (sortDescriptor.direction === 'desc') items.reverse();
     // replace
-
-
     items.forEach(function (item) {
       _classPrivateFieldGet(_this4, _TBODY$1).append(_classPrivateFieldGet(_this4, _columnItemViews)[item.index].rootNode);
     });
   }
-
   function _heatmap2() {
     var isLog10 = App$1.viewModes.log10;
     var max = isLog10 && _classPrivateFieldGet(this, _max) > 1 ? Math.log10(_classPrivateFieldGet(this, _max)) : _classPrivateFieldGet(this, _max);
     var category = Records$1.getCategoryWithAttributeId(this.attributeId);
-
     _classPrivateFieldGet(this, _columnItemViews).forEach(function (columnItemView) {
       columnItemView.update(category.color, isLog10, max);
     });
   }
-
   function _getUserFilters2(attribute, node) {
     var _this5 = this;
-
     return new Promise(function (resolve, reject) {
       var parameter = getApiParameter('locate', {
         attribute: attribute,
@@ -8526,182 +4568,134 @@
         dataset: ConditionBuilder$1.currentDataset,
         queries: ConditionBuilder$1.userIds
       });
-
       var filters = _classPrivateFieldGet(_this5, _cachedUserFilters).get(parameter);
-
       if (filters) {
         resolve(filters);
       } else {
         axios.post(App$1.getApiUrl('locate'), parameter).then(function (response) {
           _classPrivateFieldGet(_this5, _cachedUserFilters).set(parameter, response.data);
-
           resolve(response.data);
         });
       }
     });
   }
-
   function _get_existed() {
     return _classPrivateFieldGet(this, _ROOT$c).parentNode !== null;
   }
 
   var _attribute$3 = /*#__PURE__*/new WeakMap();
-
   var _items$1 = /*#__PURE__*/new WeakMap();
-
   var _columnViews = /*#__PURE__*/new WeakMap();
-
   var _currentColumnViews = /*#__PURE__*/new WeakMap();
-
   var _ROOT$b = /*#__PURE__*/new WeakMap();
-
   var _CONTAINER$1 = /*#__PURE__*/new WeakMap();
-
   var _LOADING_VIEW$2 = /*#__PURE__*/new WeakMap();
-
   var _CONTAINED_VIEW = /*#__PURE__*/new WeakMap();
-
   var _setItems = /*#__PURE__*/new WeakSet();
-
   var _getColumn = /*#__PURE__*/new WeakSet();
-
   var _makeCoumnView = /*#__PURE__*/new WeakSet();
-
   var _setSubColumn = /*#__PURE__*/new WeakSet();
-
   var _appendSubColumn = /*#__PURE__*/new WeakSet();
-
   var _setSelectedFilter = /*#__PURE__*/new WeakSet();
-
   var ColumnSelectorView = /*#__PURE__*/function () {
     function ColumnSelectorView(elm, attribute, _items2) {
       _classCallCheck(this, ColumnSelectorView);
-
       _classPrivateMethodInitSpec(this, _setSelectedFilter);
-
       _classPrivateMethodInitSpec(this, _appendSubColumn);
-
       _classPrivateMethodInitSpec(this, _setSubColumn);
-
       _classPrivateMethodInitSpec(this, _makeCoumnView);
-
       _classPrivateMethodInitSpec(this, _getColumn);
-
       _classPrivateMethodInitSpec(this, _setItems);
-
       _classPrivateFieldInitSpec(this, _attribute$3, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _items$1, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _columnViews, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _currentColumnViews, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _ROOT$b, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _CONTAINER$1, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _LOADING_VIEW$2, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _CONTAINED_VIEW, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldSet(this, _attribute$3, attribute);
-
       _classPrivateFieldSet(this, _items$1, {});
-
       _classPrivateFieldSet(this, _columnViews, []);
+      _classPrivateFieldSet(this, _currentColumnViews, []);
 
-      _classPrivateFieldSet(this, _currentColumnViews, []); // make container
-
-
+      // make container
       elm.innerHTML = "\n    <div class=\"column-selector-view\">\n      <div class=\"columns\">\n        <div class=\"inner\"></div>\n      </div>\n      <div class=\"loading-view\"></div>\n    </div>";
-
       _classPrivateFieldSet(this, _ROOT$b, elm.querySelector(':scope > .column-selector-view'));
-
       _classPrivateFieldSet(this, _CONTAINER$1, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .columns > .inner'));
-
       _classPrivateFieldSet(this, _LOADING_VIEW$2, _classPrivateFieldGet(this, _ROOT$b).querySelector(':scope > .loading-view'));
-
       _classPrivateFieldSet(this, _CONTAINED_VIEW, _classPrivateFieldGet(this, _ROOT$b).closest('.attribute-track-view'));
-
       var _depth = 0;
+      _classPrivateMethodGet(this, _setItems, _setItems2).call(this, _items2, _depth);
 
-      _classPrivateMethodGet(this, _setItems, _setItems2).call(this, _items2, _depth); // make root column
-
-
+      // make root column
       var _columnView = _classPrivateMethodGet(this, _makeCoumnView, _makeCoumnView2).call(this, _items2, _depth);
-
       _classPrivateMethodGet(this, _appendSubColumn, _appendSubColumn2).call(this, _columnView, _depth);
-    } // private methods
+    }
 
-
+    // private methods
     _createClass(ColumnSelectorView, [{
       key: "drillDown",
-      value: // public methods
+      value:
+      // public methods
+
       function drillDown(node, depth) {
         var _this = this;
-
         // delete an existing lower columns
         if (_classPrivateFieldGet(this, _currentColumnViews).length > depth + 1) {
           for (var depth2 = depth + 1; depth2 < _classPrivateFieldGet(this, _currentColumnViews).length; depth2++) {
             var column = _classPrivateFieldGet(this, _currentColumnViews)[depth2];
-
             if (column.rootNode.parentNode) column.rootNode.remove();
           }
-        } // deselect siblings
-
-
+        }
+        // deselect siblings
         var selectedItemKeys = Object.keys(_classPrivateFieldGet(this, _items$1)).filter(function (id) {
           return _classPrivateFieldGet(_this, _items$1)[id].selected && _classPrivateFieldGet(_this, _items$1)[id].depth >= depth;
         });
-
         var _iterator = _createForOfIteratorHelper(selectedItemKeys),
-            _step;
-
+          _step;
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var _classPrivateFieldGet2;
-
             var key = _step.value;
             _classPrivateFieldGet(this, _items$1)[key].selected = false;
             (_classPrivateFieldGet2 = _classPrivateFieldGet(this, _currentColumnViews)[depth].rootNode.querySelector("[data-id=\"".concat(key, "\"]"))) === null || _classPrivateFieldGet2 === void 0 ? void 0 : _classPrivateFieldGet2.classList.remove('-selected');
-          } // get lower column
-
+          }
+          // get lower column
         } catch (err) {
           _iterator.e(err);
         } finally {
           _iterator.f();
         }
-
         _classPrivateMethodGet(this, _setSelectedFilter, _setSelectedFilter2).call(this, node, true);
-
         _classPrivateMethodGet(this, _setSubColumn, _setSubColumn2).call(this, node, depth + 1);
-      } // accessors
+      }
 
+      // accessors
     }, {
       key: "attributeId",
       get: function get() {
@@ -8723,14 +4717,11 @@
         return _classPrivateFieldGet(this, _CONTAINED_VIEW).classList.contains('-spread');
       }
     }]);
-
     return ColumnSelectorView;
   }();
-
   function _setItems2(items, depth) {
     var _iterator2 = _createForOfIteratorHelper(items),
-        _step2;
-
+      _step2;
     try {
       for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
         var item = _step2.value;
@@ -8745,23 +4736,18 @@
       _iterator2.f();
     }
   }
-
   function _getColumn2(node, depth) {
     var _this2 = this;
-
     return new Promise(function (resolve, reject) {
       var columnView = _classPrivateFieldGet(_this2, _columnViews).find(function (columnView) {
         return columnView.parentNode === node;
       });
-
       if (columnView) {
         resolve(columnView);
       } else {
         Records$1.fetchAttributeFilters(_classPrivateFieldGet(_this2, _attribute$3).id, node).then(function (filters) {
           _classPrivateMethodGet(_this2, _setItems, _setItems2).call(_this2, filters, depth);
-
           var columnView = _classPrivateMethodGet(_this2, _makeCoumnView, _makeCoumnView2).call(_this2, filters, depth, node);
-
           resolve(columnView);
         }).catch(function (error) {
           reject(error);
@@ -8769,42 +4755,30 @@
       }
     });
   }
-
   function _makeCoumnView2(filters, depth, parentNode) {
     var columnView = new ColumnView(this, filters, depth, parentNode);
-
     _classPrivateFieldGet(this, _columnViews).push(columnView);
-
     return columnView;
   }
-
   function _setSubColumn2(node, depth) {
     var _this3 = this;
-
     _classPrivateFieldGet(this, _LOADING_VIEW$2).classList.add('-shown');
-
     _classPrivateMethodGet(this, _getColumn, _getColumn2).call(this, node, depth).then(function (column) {
       _classPrivateMethodGet(_this3, _appendSubColumn, _appendSubColumn2).call(_this3, column, depth);
-
       _classPrivateFieldGet(_this3, _LOADING_VIEW$2).classList.remove('-shown');
     }).catch(function (error) {
       // TODO: エラー処理
       _classPrivateFieldGet(_this3, _LOADING_VIEW$2).classList.remove('-shown');
-
       console.error(error);
       throw Error(error);
     });
   }
-
   function _appendSubColumn2(columnView, depth) {
     _classPrivateFieldGet(this, _currentColumnViews)[depth] = columnView;
-
     _classPrivateFieldGet(this, _CONTAINER$1).append(columnView.rootNode);
-
-    columnView.appended(); // scroll
-
+    columnView.appended();
+    // scroll
     var left = _classPrivateFieldGet(this, _CONTAINER$1).scrollWidth - _classPrivateFieldGet(this, _CONTAINER$1).clientWidth;
-
     if (left > 0) {
       _classPrivateFieldGet(this, _CONTAINER$1).scrollTo({
         top: 0,
@@ -8813,84 +4787,64 @@
       });
     }
   }
-
   function _setSelectedFilter2(node, selected) {
     _classPrivateFieldGet(this, _items$1)[node].selected = selected;
   }
 
   var _target = /*#__PURE__*/new WeakMap();
-
   var _selection = /*#__PURE__*/new WeakMap();
-
   var _unit = /*#__PURE__*/new WeakMap();
-
   var _SELECTING_AREA = /*#__PURE__*/new WeakMap();
-
   var _SELECTOR_BARS = /*#__PURE__*/new WeakMap();
-
   var _defineSelection = /*#__PURE__*/new WeakSet();
-
   var _defineInteraction = /*#__PURE__*/new WeakSet();
-
   var _update$1 = /*#__PURE__*/new WeakSet();
-
   var HistogramRangeSelectorController = /*#__PURE__*/function () {
     function HistogramRangeSelectorController(target, _selector) {
       _classCallCheck(this, HistogramRangeSelectorController);
-
       _classPrivateMethodInitSpec(this, _update$1);
-
       _classPrivateMethodInitSpec(this, _defineInteraction);
-
       _classPrivateMethodInitSpec(this, _defineSelection);
-
       _classPrivateFieldInitSpec(this, _target, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _selection, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _unit, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _SELECTING_AREA, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _SELECTOR_BARS, {
         writable: true,
         value: void 0
       });
-
       // definition
       _classPrivateFieldSet(this, _target, target);
-
       _classPrivateFieldSet(this, _unit, 100 / target.items.length);
-
       _classPrivateFieldSet(this, _selection, {});
+      _classPrivateMethodGet(this, _defineSelection, _defineSelection2).call(this);
 
-      _classPrivateMethodGet(this, _defineSelection, _defineSelection2).call(this); // reference
-
-
+      // reference
       _classPrivateFieldSet(this, _SELECTING_AREA, _selector.querySelector(':scope > .inner > .selectingarea'));
+      _classPrivateFieldSet(this, _SELECTOR_BARS, _selector.querySelectorAll(':scope > .inner > .overview > .bar'));
 
-      _classPrivateFieldSet(this, _SELECTOR_BARS, _selector.querySelectorAll(':scope > .inner > .overview > .bar')); // interaction
-
-
+      // interaction
       _classPrivateMethodGet(this, _defineInteraction, _defineInteraction2).call(this, _selector);
-    } // private methods
+    }
 
-
+    // private methods
     _createClass(HistogramRangeSelectorController, [{
       key: "start",
-      get: // accessor
+      get:
+      // accessor
+
       function get() {
         return _classPrivateFieldGet(this, _selection).start;
       }
@@ -8908,25 +4862,20 @@
       key: "selectedItems",
       get: function get() {
         var _this = this;
-
         var items = [];
-
         if (this.width !== 0) {
           items.push.apply(items, _toConsumableArray(_classPrivateFieldGet(this, _target).items.filter(function (item_, index) {
             if (_this.start <= index && index < _this.end) return true;else return false;
           })));
         }
-
         return items;
       }
     }]);
-
     return HistogramRangeSelectorController;
   }();
-
   function _defineSelection2() {
     var selectionStart = 0,
-        selectionEnd = 0;
+      selectionEnd = 0;
     var self = this;
     Object.defineProperties(_classPrivateFieldGet(this, _selection), {
       start: {
@@ -8936,7 +4885,6 @@
         set: function set(value) {
           if (selectionStart !== value) {
             selectionStart = value;
-
             _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
           }
         }
@@ -8948,7 +4896,6 @@
         set: function set(value) {
           if (selectionEnd !== value) {
             selectionEnd = value;
-
             _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
           }
         }
@@ -8959,32 +4906,29 @@
         },
         set: function set(_ref) {
           var _ref2 = _slicedToArray(_ref, 2),
-              start = _ref2[0],
-              end = _ref2[1];
-
+            start = _ref2[0],
+            end = _ref2[1];
           if (selectionStart !== start || selectionEnd !== end) {
             selectionStart = start;
             selectionEnd = end;
-
             _classPrivateMethodGet(self, _update$1, _update2$1).call(self);
           }
         }
       }
     });
   }
-
   function _defineInteraction2(selector) {
     var _this2 = this;
-
     var isMouseDown = false,
-        startX,
-        initialStart,
-        initialEnd,
-        initialWidth,
-        totalWidth,
-        interactionType,
-        direction; // references
+      startX,
+      initialStart,
+      initialEnd,
+      initialWidth,
+      totalWidth,
+      interactionType,
+      direction;
 
+    // references
     var selectorController = selector.querySelector(':scope > .inner > .controller');
     var handlesArray = Array.from(_classPrivateFieldGet(this, _SELECTING_AREA).querySelectorAll(':scope > .handle'));
     ({
@@ -8995,31 +4939,31 @@
         return handle.dataset.direction === 'end';
       })
     });
-
     var init = function init(e) {
       e.stopImmediatePropagation();
       totalWidth = selectorController.getBoundingClientRect().width;
       isMouseDown = true;
       var x = e.x - selectorController.getBoundingClientRect().x;
       startX = x / totalWidth * 100;
-    }; // make selecting area
+    };
 
-
+    // make selecting area
     selectorController.addEventListener('mousedown', function (e) {
       interactionType = 'make';
       selector.classList.add('-makingarea');
       init(e);
-    }); // drag selecting area
+    });
 
+    // drag selecting area
     _classPrivateFieldGet(this, _SELECTING_AREA).addEventListener('mousedown', function (e) {
       interactionType = 'drag';
       selector.classList.add('-draggingarea');
       initialStart = _this2.start;
       initialWidth = _this2.width;
       init(e);
-    }); // resize selecting area
+    });
 
-
+    // resize selecting area
     handlesArray.forEach(function (handle) {
       return handle.addEventListener('mousedown', function (e) {
         interactionType = 'resize';
@@ -9029,20 +4973,19 @@
         initialEnd = _this2.end;
         init(e);
       });
-    }); // dragging behavior
+    });
 
+    // dragging behavior
     selectorController.addEventListener('mousemove', function (e) {
       if (isMouseDown) {
         var range;
         var x = e.layerX / totalWidth * 100;
-
         switch (interactionType) {
           case 'make':
             {
               // calculate selection range
               var selectedWidth = x - startX;
               var start, end;
-
               if (selectedWidth > 0) {
                 start = startX;
                 end = x;
@@ -9050,58 +4993,46 @@
                 start = x;
                 end = startX;
               }
-
               range = [Math.floor(start / _classPrivateFieldGet(_this2, _unit)), Math.ceil(end / _classPrivateFieldGet(_this2, _unit))];
             }
             break;
-
           case 'drag':
             {
               var translation = (x - startX) / _classPrivateFieldGet(_this2, _unit);
-
               if (translation < -.5) translation = Math.floor(translation + .5);else if (.5 < translation) translation = Math.ceil(translation - .5);else translation = 0;
               translation -= initialStart + translation < 0 ? initialStart + translation : 0;
               translation -= initialStart + translation + initialWidth > _classPrivateFieldGet(_this2, _target).items.length ? initialStart + translation + initialWidth - _classPrivateFieldGet(_this2, _target).items.length : 0;
               range = [initialStart + translation, initialStart + translation + initialWidth];
             }
             break;
-
           case 'resize':
             {
               var _start = initialStart,
-                  _end = initialEnd;
-
+                _end = initialEnd;
               switch (direction) {
                 case 'start':
                   _start += Math.floor((x - startX) / _classPrivateFieldGet(_this2, _unit) + .5);
-
                   if (_end < _start) {
                     var _ref3 = [_end, _start];
                     _start = _ref3[0];
                     _end = _ref3[1];
                   }
-
                   break;
-
                 case 'end':
                   _end += Math.ceil((x - startX) / _classPrivateFieldGet(_this2, _unit) - .5);
-
                   if (_end < _start) {
                     var _ref4 = [_end, _start];
                     _start = _ref4[0];
                     _end = _ref4[1];
                   }
-
                   break;
               }
-
               if (_start < 0) _start = 0;
               if (_classPrivateFieldGet(_this2, _target).items.length < _end) _end = _classPrivateFieldGet(_this2, _target).items.length;
               range = [_start, _end];
             }
             break;
         }
-
         _classPrivateFieldGet(_this2, _selection).range = range;
       }
     });
@@ -9111,26 +5042,21 @@
         selector.classList.remove('-draggingarea');
         selector.classList.remove('-resizingarea');
         isMouseDown = false;
-
         _classPrivateMethodGet(_this2, _update$1, _update2$1).call(_this2);
       }
     });
   }
-
   function _update2$1() {
     var _this3 = this;
-
     // selecting area
     _classPrivateFieldGet(this, _SELECTING_AREA).style.left = this.start * _classPrivateFieldGet(this, _unit) + '%';
-    _classPrivateFieldGet(this, _SELECTING_AREA).style.width = (this.end - this.start) * _classPrivateFieldGet(this, _unit) + '%'; // overview
-
+    _classPrivateFieldGet(this, _SELECTING_AREA).style.width = (this.end - this.start) * _classPrivateFieldGet(this, _unit) + '%';
+    // overview
     _classPrivateFieldGet(this, _SELECTOR_BARS).forEach(function (bar, index) {
       if (_this3.start <= index && index < _this3.end) bar.classList.add('-selected');else bar.classList.remove('-selected');
     });
-
-    _classPrivateFieldGet(this, _target).update(); // set condition
-
-
+    _classPrivateFieldGet(this, _target).update();
+    // set condition
     ConditionBuilder$1.setFilter(_classPrivateFieldGet(this, _target).attributeId, this.selectedItems.map(function (item) {
       return item.node;
     }), false);
@@ -9141,7 +5067,6 @@
    * @param {Color} baseColor
    * @param {Color} tintColor
    */
-
   function colorTintByHue(baseColor, hue) {
     return baseColor.mix(new h('hsv', [hue, 70, 50]), 0.15).set({
       lightness: function lightness(_lightness) {
@@ -9151,10 +5076,9 @@
   }
   function createPopupEvent(uniqueEntry, newEvent) {
     var _uniqueEntry$getAttri = uniqueEntry.getAttribute('data-order').split(','),
-        _uniqueEntry$getAttri2 = _slicedToArray(_uniqueEntry$getAttri, 2),
-        x = _uniqueEntry$getAttri2[0],
-        y = _uniqueEntry$getAttri2[1];
-
+      _uniqueEntry$getAttri2 = _slicedToArray(_uniqueEntry$getAttri, 2),
+      x = _uniqueEntry$getAttri2[0],
+      y = _uniqueEntry$getAttri2[1];
     var customEvent = new CustomEvent(newEvent, {
       detail: {
         keys: {
@@ -9176,84 +5100,60 @@
   }
 
   var NUM_OF_GRID = 4;
-
   var _items = /*#__PURE__*/new WeakMap();
-
   var _attribute$2 = /*#__PURE__*/new WeakMap();
-
   var _selectorController = /*#__PURE__*/new WeakMap();
-
   var _OVERVIEW_CONTAINER$1 = /*#__PURE__*/new WeakMap();
-
   var _ROOT$a = /*#__PURE__*/new WeakMap();
-
   var _GRIDS = /*#__PURE__*/new WeakMap();
-
   var _indicateFilter = /*#__PURE__*/new WeakSet();
-
   var HistogramRangeSelectorView = /*#__PURE__*/function () {
     function HistogramRangeSelectorView(elm, attribute, items) {
       var _this = this;
-
       _classCallCheck(this, HistogramRangeSelectorView);
-
       _classPrivateMethodInitSpec(this, _indicateFilter);
-
       _classPrivateFieldInitSpec(this, _items, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _attribute$2, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _selectorController, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _OVERVIEW_CONTAINER$1, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _ROOT$a, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _GRIDS, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldSet(this, _attribute$2, attribute);
-
       var category = Records$1.getCategoryWithAttributeId(_classPrivateFieldGet(this, _attribute$2).id);
-
       _classPrivateFieldSet(this, _items, items.map(function (item) {
         return Object.assign({}, item);
-      })); // make container
+      }));
 
-
+      // make container
       elm.innerHTML = "\n    <div class=\"histogram-range-selector-view\">\n      <div class=\"selector\">\n        <div class=\"inner\">\n          <div class=\"overview\"></div>\n          <div class=\"controller\"></div>\n          <div class=\"selectingarea\">\n            <div class=\"handle\" data-direction=\"start\"></div>\n            <div class=\"handle\" data-direction=\"end\"></div>\n          </div>\n        </div>\n      </div>\n      <div class=\"histogram\">\n        <div class=\"graph\"></div>\n        <div class=\"gridcontainer\">\n          ".concat('<div class="grid"><p class="label"></p></div>'.repeat(NUM_OF_GRID), "\n        </div>\n        <svg class=\"additionalline\"></svg>\n      </div>");
-
       _classPrivateFieldSet(this, _ROOT$a, elm.querySelector(':scope > .histogram-range-selector-view'));
-
       var histogram = _classPrivateFieldGet(this, _ROOT$a).querySelector(':scope > .histogram');
-
       var selector = _classPrivateFieldGet(this, _ROOT$a).querySelector(':scope > .selector > .inner');
+      var overview = selector.querySelector(':scope > .overview');
 
-      var overview = selector.querySelector(':scope > .overview'); // make graph
-
+      // make graph
       var max = Math.max.apply(Math, _toConsumableArray(_classPrivateFieldGet(this, _items).map(function (item) {
         return item.count;
       })));
-
       var width = 100 / _classPrivateFieldGet(this, _items).length;
-
       overview.innerHTML = _classPrivateFieldGet(this, _items).map(function (item) {
         return "<div\n      class=\"bar _category-background-color\"\n      data-node=\"".concat(item.node, "\"\n      data-count=\"").concat(item.count, "\"\n      style=\"width: ").concat(width, "%; height: ").concat(item.count / max * 100, "%;\"></div>");
       }).join('');
@@ -9262,28 +5162,30 @@
         return "<div class=\"bar\" data-node=\"".concat(item.node, "\" data-count=\"").concat(item.count, "\">\n      <div class=\"actual\" style=\"background-color: rgb(").concat(colorTintByHue(category.color, 360 * index / _classPrivateFieldGet(_this, _items).length).coords.map(function (cood) {
           return cood * 256;
         }).join(','), ");\"></div>\n      <p class=\"label\">").concat(item.label, "</p>\n    </div>");
-      }).join(''); // reference
+      }).join('');
 
+      // reference
       histogram.querySelectorAll(':scope > .graph > .bar').forEach(function (item, index) {
         return _classPrivateFieldGet(_this, _items)[index].elm = item;
       });
+      _classPrivateFieldSet(this, _GRIDS, histogram.querySelectorAll(':scope > .gridcontainer > .grid'));
 
-      _classPrivateFieldSet(this, _GRIDS, histogram.querySelectorAll(':scope > .gridcontainer > .grid')); // event
-
-
+      // event
       DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
         return _this.update();
-      }); // this.#setupRangeSelector();
+      });
 
+      // this.#setupRangeSelector();
       _classPrivateFieldSet(this, _selectorController, new HistogramRangeSelectorController(this, _classPrivateFieldGet(this, _ROOT$a).querySelector(':scope > .selector')));
-
       this.update();
-    } // private methods
+    }
 
-
+    // private methods
     _createClass(HistogramRangeSelectorView, [{
       key: "update",
-      value: // public methods
+      value:
+      // public methods
+
       function update() {
         var selectedItems = _classPrivateFieldGet(this, _selectorController).width === 0 ? _classPrivateFieldGet(this, _items) : _classPrivateFieldGet(this, _selectorController).selectedItems;
         var max = Math.max.apply(Math, _toConsumableArray(selectedItems.map(function (item) {
@@ -9291,18 +5193,18 @@
         })));
         var isLog10 = App$1.viewModes.log10;
         var processedMax = isLog10 ? Math.log10(max) : max;
-        var width = 100 / selectedItems.length; // grid
+        var width = 100 / selectedItems.length;
 
+        // grid
         var digits = String(Math.ceil(max)).length;
         var unit = Number(String(max).charAt(0).padEnd(digits, '0')) / NUM_OF_GRID;
-
         _classPrivateFieldGet(this, _GRIDS).forEach(function (grid, index) {
           var scale = unit * index;
           grid.style.bottom = "".concat((isLog10 ? Math.log10(scale) : scale) / processedMax * 100, "%");
           grid.querySelector(':scope > .label').textContent = scale.toLocaleString();
-        }); // graph
+        });
 
-
+        // graph
         _classPrivateFieldGet(this, _items).forEach(function (item) {
           if (selectedItems.indexOf(item) === -1) {
             item.elm.classList.add('-filtered');
@@ -9313,8 +5215,9 @@
             item.elm.querySelector(':scope > .actual').style.height = "".concat(height, "%");
           }
         });
-      } // public accessor
+      }
 
+      // public accessor
     }, {
       key: "items",
       get: function get() {
@@ -9326,76 +5229,54 @@
         return _classPrivateFieldGet(this, _attribute$2).id;
       }
     }]);
-
     return HistogramRangeSelectorView;
   }();
 
   var MIN_PIN_SIZE = 12;
   var MAX_PIN_SIZE = 24;
   var RANGE_PIN_SIZE = MAX_PIN_SIZE - MIN_PIN_SIZE;
-
   var _attribute$1 = /*#__PURE__*/new WeakMap();
-
   var _filters = /*#__PURE__*/new WeakMap();
-
   var _userFilters = /*#__PURE__*/new WeakMap();
-
   var _ROOT$9 = /*#__PURE__*/new WeakMap();
-
   var _update = /*#__PURE__*/new WeakSet();
-
   var _plotUserIdFilters = /*#__PURE__*/new WeakSet();
-
   var _clearUserIdFilters = /*#__PURE__*/new WeakSet();
-
   var TrackOverviewCategorical = /*#__PURE__*/_createClass(function TrackOverviewCategorical(elm, attribute, filters) {
     var _this = this;
-
     _classCallCheck(this, TrackOverviewCategorical);
-
     _classPrivateMethodInitSpec(this, _clearUserIdFilters);
-
     _classPrivateMethodInitSpec(this, _plotUserIdFilters);
-
     _classPrivateMethodInitSpec(this, _update);
-
     _classPrivateFieldInitSpec(this, _attribute$1, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _filters, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _userFilters, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _ROOT$9, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldSet(this, _ROOT$9, elm);
-
     _classPrivateFieldSet(this, _attribute$1, attribute);
-
     _classPrivateFieldSet(this, _filters, filters.map(function (filter) {
       return Object.assign({}, filter);
     }));
+    var category = Records$1.getCategoryWithAttributeId(_classPrivateFieldGet(this, _attribute$1).id);
 
-    var category = Records$1.getCategoryWithAttributeId(_classPrivateFieldGet(this, _attribute$1).id); // make overview
+    // make overview
     // TODO: ヒストグラムは別処理
-
     var _sum = filters.reduce(function (acc, filter) {
       return acc + filter.count;
     }, 0);
-
     var _width = 100 / filters.length;
-
     var selectedFilters = ConditionBuilder$1.getSelectedNodes(attribute.id).filters;
     elm.innerHTML = _classPrivateFieldGet(this, _filters).map(function (filter, index) {
       filter.countLog10 = filter.count === 0 ? 0 : Math.log10(filter.count);
@@ -9407,27 +5288,24 @@
     elm.querySelectorAll(':scope > .track-filter-view').forEach(function (elm, index) {
       // reference
       var filter = _classPrivateFieldGet(_this, _filters)[index];
-
       filter.elm = elm;
       filter.pin = elm.querySelector(':scope > .pin');
-      filter.icon = filter.pin.querySelector(':scope > .material-icons'); // attach event: show tooltip
+      filter.icon = filter.pin.querySelector(':scope > .material-icons');
 
+      // attach event: show tooltip
       var label = "<span class=\"_category-color\" data-category-id=\"".concat(category.id, "\">").concat(filter.label, "</span>");
       elm.addEventListener('mouseenter', function () {
         var _classPrivateFieldGet2;
-
         var values = [];
         var userFilter = (_classPrivateFieldGet2 = _classPrivateFieldGet(_this, _userFilters)) === null || _classPrivateFieldGet2 === void 0 ? void 0 : _classPrivateFieldGet2.find(function (userFilter) {
           return userFilter.node === filter.node;
         });
-
         if (userFilter !== null && userFilter !== void 0 && userFilter.mapped) {
           // does not have user filter
           values.push({
             key: 'Count',
             value: "".concat(filter.userFilterCount.toLocaleString(), " / ").concat(filter.count.toLocaleString())
           });
-
           if (userFilter !== null && userFilter !== void 0 && userFilter.pvalue) {
             values.push({
               key: 'P-value',
@@ -9441,7 +5319,6 @@
             value: filter.count.toLocaleString()
           });
         }
-
         var customEvent = new CustomEvent(enterAttributeFilterItemView, {
           detail: {
             label: label,
@@ -9454,8 +5331,9 @@
       elm.addEventListener('mouseleave', function () {
         var customEvent = new CustomEvent(leaveAttributeFilterItemView);
         DefaultEventEmitter$1.dispatchEvent(customEvent);
-      }); // attach event: select/deselect a filter
+      });
 
+      // attach event: select/deselect a filter
       elm.addEventListener('click', function () {
         if (elm.classList.contains('-selected')) {
           elm.classList.remove('-selected');
@@ -9465,14 +5343,14 @@
           ConditionBuilder$1.addFilter(_classPrivateFieldGet(_this, _attribute$1).id, filter.node);
         }
       });
-    }); // event listener
+    });
 
+    // event listener
     DefaultEventEmitter$1.addEventListener(mutateFilterCondition, function (_ref) {
       var _ref$detail = _ref.detail,
-          action = _ref$detail.action,
-          attributeId = _ref$detail.attributeId,
-          node = _ref$detail.node;
-
+        action = _ref$detail.action,
+        attributeId = _ref$detail.attributeId,
+        node = _ref$detail.node;
       if (_classPrivateFieldGet(_this, _attribute$1).id === attributeId) {
         _classPrivateFieldGet(_this, _filters).forEach(function (filter) {
           if (filter.node === node) {
@@ -9480,7 +5358,6 @@
               case 'add':
                 filter.elm.classList.add('-selected');
                 break;
-
               case 'remove':
                 filter.elm.classList.remove('-selected');
                 break;
@@ -9498,23 +5375,18 @@
     DefaultEventEmitter$1.addEventListener(clearUserFilters, function (e) {
       return _classPrivateMethodGet(_this, _clearUserIdFilters, _clearUserIdFilters2).call(_this, e.detail);
     });
-
     _classPrivateMethodGet(this, _update, _update2).call(this, App$1.viewModes);
   });
-
   function _update2(viewModes) {
     var isLog10 = viewModes.log10;
-
     var sum = _classPrivateFieldGet(this, _filters).reduce(function (acc, filter) {
       return acc + (isLog10 ? filter.countLog10 : filter.count);
     }, 0);
-
     var max = Math.max.apply(Math, _toConsumableArray(_classPrivateFieldGet(this, _filters).map(function (filter) {
       return filter.count;
     })));
     max = isLog10 ? Math.log10(max) : max;
     var left = 0;
-
     _classPrivateFieldGet(this, _filters).forEach(function (filter) {
       var width = (isLog10 ? filter.count === 0 ? 0 : Math.log10(filter.count) : filter.count) / sum * 100;
       filter.elm.style.backgroundColor = "rgb(".concat(filter.baseColor.mix(App$1.colorSilver, 1 - (isLog10 ? filter.countLog10 : filter.count) / max).coords.map(function (cood) {
@@ -9525,49 +5397,40 @@
       left += width;
     });
   }
-
   function _plotUserIdFilters2(detail) {
     if (_classPrivateFieldGet(this, _attribute$1).id === detail.attributeId) {
       _classPrivateFieldGet(this, _ROOT$9).classList.add('-pinsticking');
+      _classPrivateFieldSet(this, _userFilters, detail.filters);
 
-      _classPrivateFieldSet(this, _userFilters, detail.filters); // mapping
-
-
+      // mapping
       _classPrivateFieldGet(this, _filters).forEach(function (filter) {
         var userFilter = detail.filters.find(function (userFilter) {
           return userFilter.node === filter.node;
         });
-
         if (userFilter !== null && userFilter !== void 0 && userFilter.mapped) {
-          filter.elm.classList.add('-pinsticking'); // pin
-
+          filter.elm.classList.add('-pinsticking');
+          // pin
           var ratio,
-              pvalueGreaterThan = 1;
+            pvalueGreaterThan = 1;
           ratio = userFilter.mapped / filter.count;
           ratio = ratio > 1 ? 1 : ratio;
-
           if (userFilter.pvalue) {
             switch (true) {
               case userFilter.pvalue < 0.001:
                 pvalueGreaterThan = '<0.001';
                 break;
-
               case userFilter.pvalue < 0.005:
                 pvalueGreaterThan = '<0.005';
                 break;
-
               case userFilter.pvalue < 0.01:
                 pvalueGreaterThan = '<0.01';
                 break;
-
               case userFilter.pvalue < 0.05:
                 pvalueGreaterThan = '<0.05';
                 break;
-
               case userFilter.pvalue < 0.1:
                 pvalueGreaterThan = '<0.1';
                 break;
-
               case userFilter.pvalue < 1:
                 pvalueGreaterThan = '<1';
                 break;
@@ -9575,7 +5438,6 @@
           } else {
             pvalueGreaterThan = 1;
           }
-
           var size = MIN_PIN_SIZE + RANGE_PIN_SIZE * ratio;
           filter.pin.style.width = size + 'px';
           filter.pin.style.height = size + 'px';
@@ -9588,152 +5450,110 @@
       });
     }
   }
-
   function _clearUserIdFilters2() {
     _classPrivateFieldGet(this, _filters).forEach(function (filter) {
       return filter.elm.classList.remove('-pinsticking');
     });
-
     _classPrivateFieldSet(this, _userFilters, undefined);
   }
 
   var _attribute = /*#__PURE__*/new WeakMap();
-
   var _ROOT$8 = /*#__PURE__*/new WeakMap();
-
   var _LOADING_VIEW$1 = /*#__PURE__*/new WeakMap();
-
   var _SELECT_CONTAINER = /*#__PURE__*/new WeakMap();
-
   var _OVERVIEW_CONTAINER = /*#__PURE__*/new WeakMap();
-
   var _CHECKBOX_ALL_PROPERTIES = /*#__PURE__*/new WeakMap();
-
   var _COLLAPSE_BUTTON = /*#__PURE__*/new WeakMap();
-
   var _makeFilters = /*#__PURE__*/new WeakSet();
-
   var _showError = /*#__PURE__*/new WeakSet();
-
   var _clearError = /*#__PURE__*/new WeakSet();
-
   var AttributeTrackView = /*#__PURE__*/_createClass(function AttributeTrackView(attributeId, container, positionRate) {
     var _this = this;
-
     _classCallCheck(this, AttributeTrackView);
-
     _classPrivateMethodInitSpec(this, _clearError);
-
     _classPrivateMethodInitSpec(this, _showError);
-
     _classPrivateMethodInitSpec(this, _makeFilters);
-
     _classPrivateFieldInitSpec(this, _attribute, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _ROOT$8, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _LOADING_VIEW$1, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _SELECT_CONTAINER, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _OVERVIEW_CONTAINER, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _CHECKBOX_ALL_PROPERTIES, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _COLLAPSE_BUTTON, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldSet(this, _attribute, Records$1.getAttribute(attributeId));
-
     _classPrivateFieldSet(this, _ROOT$8, document.createElement('div'));
-
     container.insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$8));
     var category = Records$1.getCategoryWithAttributeId(attributeId);
-
     _classPrivateFieldGet(this, _ROOT$8).classList.add('attribute-track-view', '-preparing', 'collapse-view');
-
     _classPrivateFieldGet(this, _ROOT$8).dataset.categoryId = category.id;
-    _classPrivateFieldGet(this, _ROOT$8).dataset.collapse = attributeId; // make html
+    _classPrivateFieldGet(this, _ROOT$8).dataset.collapse = attributeId;
 
+    // make html
     _classPrivateFieldGet(this, _ROOT$8).innerHTML = "\n    <div class=\"row -upper\">\n      <div class=\"left definition\">\n        <div class=\"collapsebutton\" data-collapse=\"".concat(attributeId, "\">\n          <input type=\"checkbox\" class=\"mapping\">\n          <h2 class=\"title _category-color\">").concat(_classPrivateFieldGet(this, _attribute).label, "</h2>\n        </div>\n      </div>\n      <div class=\"right filters\">\n        <div class=\"overview _category-background-color\">\n          <ul class=\"inner\"></ul>\n          <div class=\"loading-view -shown\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"row -lower collapsingcontent\" data-collapse=\"").concat(attributeId, "\">\n      <div class=\"left\">\n        <dl class=\"specification\">\n          <dd>").concat(_classPrivateFieldGet(this, _attribute).description, "</dd>\n        </dl>\n        ").concat(_classPrivateFieldGet(this, _attribute).source.map(function (source) {
       return "\n        <dl class=\"source\">\n          <dt>Original data</dt>\n            <dd><a href=\"".concat(source.url, "\" target=\"_blank\">").concat(source.label, "</a></dd>\n            ").concat(source.version ? "<dt>Version</dt><dd>".concat(source.version, "</dd>") : '', "\n            ").concat(source.updated ? "<dt>Last updated</dt><dd>".concat(source.updated, "</dd>") : '', "\n        </dl>");
     }).join(''), "\n      </div>\n      <div class=\"right selector\"></div>\n    </div>");
-
     var filtersContainer = _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .row.-upper > .filters');
-
     _classPrivateFieldSet(this, _OVERVIEW_CONTAINER, filtersContainer.querySelector(':scope > .overview > .inner'));
-
     _classPrivateFieldSet(this, _LOADING_VIEW$1, filtersContainer.querySelector(':scope > .overview > .loading-view'));
-
     _classPrivateFieldSet(this, _SELECT_CONTAINER, _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .row.-lower > .selector'));
+    _classPrivateFieldSet(this, _COLLAPSE_BUTTON, _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .row.-upper > .left > .collapsebutton'));
 
-    _classPrivateFieldSet(this, _COLLAPSE_BUTTON, _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .row.-upper > .left > .collapsebutton')); // collapse
+    // collapse
+    collapseView(_classPrivateFieldGet(this, _ROOT$8));
 
-
-    collapseView(_classPrivateFieldGet(this, _ROOT$8)); // select/deselect a property
-
+    // select/deselect a property
     _classPrivateFieldSet(this, _CHECKBOX_ALL_PROPERTIES, _classPrivateFieldGet(this, _ROOT$8).querySelector(':scope > .row.-upper > .left > .collapsebutton > input.mapping'));
-
     _classPrivateFieldGet(this, _CHECKBOX_ALL_PROPERTIES).addEventListener('click', function (e) {
       e.stopPropagation();
-
       if (_classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked) {
         // add
         ConditionBuilder$1.addAnnotation(new ConditionAnnotation(attributeId));
-
         _classPrivateFieldGet(_this, _ROOT$8).classList.add('-allselected');
       } else {
         // remove
         ConditionBuilder$1.removeAnnotation(new ConditionAnnotation(attributeId));
-
         _classPrivateFieldGet(_this, _ROOT$8).classList.remove('-allselected');
       }
-    }); // event listener
-
-
+    });
+    // event listener
     DefaultEventEmitter$1.addEventListener(mutateAnnotationCondition, function (_ref) {
       var _ref$detail = _ref.detail,
-          action = _ref$detail.action,
-          conditionAnnotation = _ref$detail.conditionAnnotation;
+        action = _ref$detail.action,
+        conditionAnnotation = _ref$detail.conditionAnnotation;
       if (conditionAnnotation.parentNode !== undefined) return;
-
       switch (action) {
         case 'add':
           if (conditionAnnotation.attributeId === attributeId) {
             _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = true;
-
             _classPrivateFieldGet(_this, _ROOT$8).classList.add('-allselected');
           }
-
           break;
-
         case 'remove':
           if (conditionAnnotation.attributeId === attributeId) {
             _classPrivateFieldGet(_this, _CHECKBOX_ALL_PROPERTIES).checked = false;
-
             _classPrivateFieldGet(_this, _ROOT$8).classList.remove('-allselected');
           }
-
           break;
       }
     });
@@ -9751,70 +5571,61 @@
     DefaultEventEmitter$1.addEventListener(toggleErrorUserFilters, function (e) {
       if (e.detail.mode === 'show') {
         if (e.detail.attributeId !== attributeId) return;
-
         _classPrivateMethodGet(_this, _showError, _showError2).call(_this, e.detail.message, true);
       } else if (e.detail.mode === 'hide') _classPrivateMethodGet(_this, _clearError, _clearError2).call(_this);
-    }); // get property data
+    });
 
+    // get property data
     Records$1.fetchAttributeFilters(attributeId).then(function (filters) {
       return _classPrivateMethodGet(_this, _makeFilters, _makeFilters2).call(_this, filters);
     }).catch(function (error) {
       console.error(error);
-
       _classPrivateMethodGet(_this, _showError, _showError2).call(_this, error);
     }).finally(function () {
       _classPrivateFieldGet(_this, _LOADING_VIEW$1).classList.remove('-shown');
     });
-  } // private methods
+  }
+
+  // private methods
   );
-
   function _makeFilters2(filters) {
-    _classPrivateFieldGet(this, _ROOT$8).classList.remove('-preparing'); // make overview
+    _classPrivateFieldGet(this, _ROOT$8).classList.remove('-preparing');
 
+    // make overview
+    new TrackOverviewCategorical(_classPrivateFieldGet(this, _OVERVIEW_CONTAINER), _classPrivateFieldGet(this, _attribute), filters);
 
-    new TrackOverviewCategorical(_classPrivateFieldGet(this, _OVERVIEW_CONTAINER), _classPrivateFieldGet(this, _attribute), filters); // make selector view
-
+    // make selector view
     switch (_classPrivateFieldGet(this, _attribute).datamodel) {
       case 'classification':
         new ColumnSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _attribute), filters);
         break;
-
       case 'distribution':
         new HistogramRangeSelectorView(_classPrivateFieldGet(this, _SELECT_CONTAINER), _classPrivateFieldGet(this, _attribute), filters);
         break;
     }
   }
-
   function _showError2(error) {
     var _classPrivateFieldGet2;
-
     var inUserIDs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     if (inUserIDs && (_classPrivateFieldGet2 = _classPrivateFieldGet(this, _OVERVIEW_CONTAINER).nextElementSibling) !== null && _classPrivateFieldGet2 !== void 0 && _classPrivateFieldGet2.classList.contains('error')) return;
-
     var prop = _classPrivateFieldGet(this, _attribute).api;
-
     _classPrivateFieldGet(this, _OVERVIEW_CONTAINER).insertAdjacentHTML('afterEnd', "<div class=\"".concat(inUserIDs ? 'map-ids ' : '', "error\">").concat(error, " - <a href=\"").concat(prop, "\" target=\"_blank\">").concat(prop, "</a></div>"));
-
     if (inUserIDs) _classPrivateFieldGet(this, _OVERVIEW_CONTAINER).classList.add('-hidden');
   }
-
   function _clearError2() {
     var _classPrivateFieldGet3;
-
     _classPrivateFieldGet(this, _OVERVIEW_CONTAINER).classList.remove('-hidden');
-
     (_classPrivateFieldGet3 = _classPrivateFieldGet(this, _OVERVIEW_CONTAINER).parentNode.querySelector(':scope > .map-ids.error')) === null || _classPrivateFieldGet3 === void 0 ? void 0 : _classPrivateFieldGet3.remove();
   }
 
   var CategoryView = /*#__PURE__*/_createClass(function CategoryView(category, elm) {
     _classCallCheck(this, CategoryView);
-
     elm.classList.add('category-view');
-    elm.innerHTML = "\n    <h3 class=\"title _category-background-color-strong\" data-category-id=\"".concat(category.id, "\">\n      <span>").concat(category.label, "</span>\n    </h3>\n    <div class=\"attributes\"></div>"); // make tracks
+    elm.innerHTML = "\n    <h3 class=\"title _category-background-color-strong\" data-category-id=\"".concat(category.id, "\">\n      <span>").concat(category.label, "</span>\n    </h3>\n    <div class=\"attributes\"></div>");
 
+    // make tracks
     var attributes = category.attributes;
     var attributesContainer = elm.querySelector(':scope > .attributes');
-
     for (var i = 0; i < attributes.length; i++) {
       var attribute = attributes[i];
       new AttributeTrackView(attribute, attributesContainer, i / attributes.length);
@@ -9822,98 +5633,74 @@
   });
 
   var _index = /*#__PURE__*/new WeakMap();
-
   var _attributeId = /*#__PURE__*/new WeakMap();
-
   var _tableData$2 = /*#__PURE__*/new WeakMap();
-
   var _referenceFilters = /*#__PURE__*/new WeakMap();
-
   var _BARS = /*#__PURE__*/new WeakMap();
-
   var _ROOT$7 = /*#__PURE__*/new WeakMap();
-
   var _ROOT_NODE = /*#__PURE__*/new WeakMap();
-
   var _draw = /*#__PURE__*/new WeakSet();
-
   var _failedFetchTableDataIds = /*#__PURE__*/new WeakSet();
-
   var StatisticsView = /*#__PURE__*/function () {
     function StatisticsView(statisticsRootNode, elm, tableData, index, condition) {
       _classCallCheck(this, StatisticsView);
-
       _classPrivateMethodInitSpec(this, _failedFetchTableDataIds);
-
       _classPrivateMethodInitSpec(this, _draw);
-
       _classPrivateFieldInitSpec(this, _index, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _attributeId, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _tableData$2, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _referenceFilters, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _BARS, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _ROOT$7, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _ROOT_NODE, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldSet(this, _index, index);
-
       _classPrivateFieldSet(this, _attributeId, condition.attributeId);
-
       _classPrivateFieldSet(this, _tableData$2, tableData);
-
       _classPrivateFieldSet(this, _ROOT_NODE, statisticsRootNode);
-
       _classPrivateFieldSet(this, _ROOT$7, elm);
-
       elm.classList.add('statistics-view');
-      elm.dataset.categoryId = condition.categoryId; // make HTML
+      elm.dataset.categoryId = condition.categoryId;
 
-      elm.innerHTML = "\n    <div class=\"statistics\">\n      <div class=\"bars\"></div>\n    </div>\n    <div class=\"loading-view -shown\"></div>\n    "; // display order of bar chart
+      // make HTML
+      elm.innerHTML = "\n    <div class=\"statistics\">\n      <div class=\"bars\"></div>\n    </div>\n    <div class=\"loading-view -shown\"></div>\n    ";
 
+      // display order of bar chart
       if (condition.parentNode) {
         _classPrivateFieldSet(this, _referenceFilters, Records$1.getFiltersWithParentNode(_classPrivateFieldGet(this, _attributeId), condition.parentNode));
       } else {
         _classPrivateFieldSet(this, _referenceFilters, Records$1.getAttribute(_classPrivateFieldGet(this, _attributeId)).filters);
-      } // references
+      }
 
-
+      // references
       var container = elm.querySelector(':scope > .statistics');
+      _classPrivateFieldSet(this, _BARS, container.querySelector(':scope > .bars'));
 
-      _classPrivateFieldSet(this, _BARS, container.querySelector(':scope > .bars')); // event listener
-
-
+      // event listener
       DefaultEventEmitter$1.addEventListener(addNextRows, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
       DefaultEventEmitter$1.addEventListener(changeStatisticsViewMode, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
       DefaultEventEmitter$1.addEventListener(failedFetchTableDataIds, _classPrivateMethodGet(this, _failedFetchTableDataIds, _failedFetchTableDataIds2).bind(this));
     }
-
     _createClass(StatisticsView, [{
       key: "destroy",
       value: function destroy() {
@@ -9921,37 +5708,31 @@
         DefaultEventEmitter$1.removeEventListener(changeStatisticsViewMode, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
         DefaultEventEmitter$1.removeEventListener(failedFetchTableDataIds, _classPrivateMethodGet(this, _failedFetchTableDataIds, _failedFetchTableDataIds2).bind(this));
       }
+
       /**
        * @param {TableData} detail.tableData
        * @param {Array} detail.rows
        * @param {Boolean} detail.done
        */
-
     }]);
-
     return StatisticsView;
   }();
-
   function _draw2(e) {
     var _this = this,
-        _e$detail;
-
+      _e$detail;
     var flattenedAttributes = _classPrivateFieldGet(this, _tableData$2).data.map(function (datum) {
       return datum.attributes[_classPrivateFieldGet(_this, _index)];
     }).map(function (attribute) {
       return attribute.items;
     }).flat();
-
     var uniquedAttributes = _.uniqWith(flattenedAttributes, function (a, b) {
       return a.entry === b.entry && a.node === b.node;
     });
-
     var hitVlues = [];
-
     _classPrivateFieldGet(this, _referenceFilters).forEach(function (_ref) {
       var node = _ref.node,
-          label = _ref.label,
-          count = _ref.count;
+        label = _ref.label,
+        count = _ref.count;
       var filtered = uniquedAttributes.filter(function (attribute) {
         return attribute.node === node;
       });
@@ -9962,15 +5743,12 @@
         count: count,
         hitCount: filtered.length
       });
-    }); // max
+    });
 
-
+    // max
     var countMax;
-
     var isOnlyHitCount = _classPrivateFieldGet(this, _ROOT_NODE).classList.contains('-onlyhitcount');
-
     var isStretch = !isOnlyHitCount && _classPrivateFieldGet(this, _ROOT_NODE).classList.contains('-stretch');
-
     if (isOnlyHitCount) {
       countMax = Math.max.apply(Math, _toConsumableArray(hitVlues.map(function (filter) {
         return filter.hitCount;
@@ -9980,15 +5758,12 @@
         return filter.count;
       })));
     }
-
     hitVlues.reduce(function (lastBar, _ref2) {
       var node = _ref2.node,
-          label = _ref2.label,
-          count = _ref2.count,
-          hitCount = _ref2.hitCount;
-
+        label = _ref2.label,
+        count = _ref2.count,
+        hitCount = _ref2.hitCount;
       var bar = _classPrivateFieldGet(_this, _BARS).querySelector(":scope > .bar[data-node=\"".concat(node, "\"]"));
-
       if (bar === null) {
         // add bar
         bar = document.createElement('div');
@@ -9996,20 +5771,17 @@
         bar.dataset.node = node;
         bar.setAttribute('title', label);
         bar.innerHTML = "\n        <div class=\"wholebar\"></div>\n        <div class=\"hitbar _category-background-color-strong\">\n          <div class=\"filter\"></div>\n        </div>\n        <div class=\"label\">".concat(label, "</div>");
-
         if (lastBar) {
           lastBar.after(bar);
         } else {
           _classPrivateFieldGet(_this, _BARS).append(bar);
         }
-      } // styling
-
-
+      }
+      // styling
       bar.querySelector(':scope > .wholebar').style.height = "".concat(count / countMax * 100, "%");
       var hitbar = bar.querySelector(':scope > .hitbar');
       var hitCountLabel = hitbar.querySelector(':scope > .filter');
       var hitbarHeight;
-
       if (isStretch) {
         hitbarHeight = hitCount / count;
         hitCountLabel.textContent = "".concat(Math.round(hitCount / count * 100), "%");
@@ -10017,167 +5789,116 @@
         hitbarHeight = hitCount / countMax;
         hitCountLabel.textContent = hitCount.toLocaleString();
       }
-
       hitbar.style.height = "".concat(hitbarHeight * 100, "%");
-
       if (hitbarHeight < 0.5) {
         hitCountLabel.classList.add('-below');
       } else {
         hitCountLabel.classList.remove('-below');
       }
-
       return bar;
     }, undefined);
-
     if (e !== null && e !== void 0 && (_e$detail = e.detail) !== null && _e$detail !== void 0 && _e$detail.done) {
       _classPrivateFieldGet(this, _ROOT$7).classList.add('-completed');
-
       _classPrivateFieldGet(this, _ROOT$7).querySelector(':scope > .loading-view').classList.remove('-shown');
     }
   }
-
   function _failedFetchTableDataIds2() {
     _classPrivateFieldGet(this, _ROOT$7).querySelector(':scope > .loading-view').classList.remove('-shown');
   }
 
   var _intersctionObserver = /*#__PURE__*/new WeakMap();
-
   var _tableData$1 = /*#__PURE__*/new WeakMap();
-
   var _header$1 = /*#__PURE__*/new WeakMap();
-
   var _hea___der = /*#__PURE__*/new WeakMap();
-
   var _statisticsViews = /*#__PURE__*/new WeakMap();
-
   var _ROOT$6 = /*#__PURE__*/new WeakMap();
-
   var _THEAD = /*#__PURE__*/new WeakMap();
-
   var _THEAD_SUB = /*#__PURE__*/new WeakMap();
-
   var _STATS = /*#__PURE__*/new WeakMap();
-
   var _TBODY = /*#__PURE__*/new WeakMap();
-
   var _TABLE_END = /*#__PURE__*/new WeakMap();
-
   var _LOADING_VIEW = /*#__PURE__*/new WeakMap();
-
   var _enterTableEnd = /*#__PURE__*/new WeakSet();
-
   var _setupTable = /*#__PURE__*/new WeakSet();
-
   var _addTableRows = /*#__PURE__*/new WeakSet();
-
   var _failed = /*#__PURE__*/new WeakSet();
-
   var _colHighlight = /*#__PURE__*/new WeakSet();
-
   var ResultsTable = /*#__PURE__*/_createClass(function ResultsTable(elm) {
     var _this = this,
-        _controller$querySele;
-
+      _controller$querySele;
     _classCallCheck(this, ResultsTable);
-
     _classPrivateMethodInitSpec(this, _colHighlight);
-
     _classPrivateMethodInitSpec(this, _failed);
-
     _classPrivateMethodInitSpec(this, _addTableRows);
-
     _classPrivateMethodInitSpec(this, _setupTable);
-
     _classPrivateMethodInitSpec(this, _enterTableEnd);
-
     _classPrivateFieldInitSpec(this, _intersctionObserver, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _tableData$1, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _header$1, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _hea___der, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _statisticsViews, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _ROOT$6, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _THEAD, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _THEAD_SUB, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _STATS, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _TBODY, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _TABLE_END, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _LOADING_VIEW, {
       writable: true,
       value: void 0
     });
+    _classPrivateFieldSet(this, _statisticsViews, []);
 
-    _classPrivateFieldSet(this, _statisticsViews, []); // references
-
-
+    // references
     _classPrivateFieldSet(this, _ROOT$6, elm);
-
     var TABLE = elm.querySelector(':scope > .body > table');
-
     _classPrivateFieldSet(this, _THEAD, TABLE.querySelector(':scope > thead > tr.header'));
-
     _classPrivateFieldSet(this, _THEAD_SUB, TABLE.querySelector(':scope > thead > tr.subheader'));
-
     _classPrivateFieldSet(this, _STATS, TABLE.querySelector(':scope > thead > tr.statistics'));
-
     _classPrivateFieldSet(this, _TBODY, TABLE.querySelector(':scope > tbody'));
-
     _classPrivateFieldSet(this, _TABLE_END, elm.querySelector(':scope > .body > .tableend'));
+    _classPrivateFieldSet(this, _LOADING_VIEW, _classPrivateFieldGet(this, _TABLE_END).querySelector(':scope > .loading-view'));
 
-    _classPrivateFieldSet(this, _LOADING_VIEW, _classPrivateFieldGet(this, _TABLE_END).querySelector(':scope > .loading-view')); // get next data automatically
-
-
+    // get next data automatically
     _classPrivateFieldSet(this, _intersctionObserver, new IntersectionObserver(function (entries) {
       var _iterator = _createForOfIteratorHelper(entries),
-          _step;
-
+        _step;
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var entry = _step.value;
-
           if (entry.target === _classPrivateFieldGet(_this, _TABLE_END)) {
             if (entry.isIntersecting) {
               _classPrivateMethodGet(_this, _enterTableEnd, _enterTableEnd2).call(_this);
@@ -10189,9 +5910,9 @@
       } finally {
         _iterator.f();
       }
-    })); // event listener
+    }));
 
-
+    // event listener
     DefaultEventEmitter$1.addEventListener(selectTableData, function (e) {
       return _classPrivateMethodGet(_this, _setupTable, _setupTable2).call(_this, e.detail);
     });
@@ -10203,15 +5924,15 @@
     });
     DefaultEventEmitter$1.addEventListener(highlightCol, function (e) {
       _classPrivateMethodGet(_this, _colHighlight, _colHighlight2).call(_this, e.detail);
-    }); // turnoff intersection observer after display transition
+    });
 
+    // turnoff intersection observer after display transition
     var mutationObserver = new MutationObserver(function (mutations) {
       mutations.forEach(function (mutation) {
         if (mutation.type === 'attributes' && mutation.attributeName === 'data-display') {
           if (mutation.target.dataset.display !== 'results') {
-            _classPrivateFieldGet(_this, _intersctionObserver).unobserve(_classPrivateFieldGet(_this, _TABLE_END)); // deselect table data
-
-
+            _classPrivateFieldGet(_this, _intersctionObserver).unobserve(_classPrivateFieldGet(_this, _TABLE_END));
+            // deselect table data
             _classPrivateFieldGet(_this, _tableData$1).deselect();
           }
         }
@@ -10219,35 +5940,26 @@
     });
     mutationObserver.observe(document.querySelector('body'), {
       attributes: true
-    }); // statistics
+    });
 
+    // statistics
     var controller = _classPrivateFieldGet(this, _STATS).querySelector(':scope > th.controller > .inner');
-
     controller.querySelectorAll(':scope > label > input').forEach(function (radio) {
       radio.addEventListener('change', function () {
         switch (radio.value) {
           case 'hits_all':
             _classPrivateFieldGet(_this, _STATS).classList.remove('-onlyhitcount');
-
             _classPrivateFieldGet(_this, _STATS).classList.remove('-stretch');
-
             break;
-
           case 'hits_all_percentage':
             _classPrivateFieldGet(_this, _STATS).classList.remove('-onlyhitcount');
-
             _classPrivateFieldGet(_this, _STATS).classList.add('-stretch');
-
             break;
-
           case 'hits_only':
             _classPrivateFieldGet(_this, _STATS).classList.add('-onlyhitcount');
-
             _classPrivateFieldGet(_this, _STATS).classList.remove('-stretch');
-
             break;
         }
-
         var customEvent = new CustomEvent(changeStatisticsViewMode);
         DefaultEventEmitter$1.dispatchEvent(customEvent);
         window.localStorage.setItem('statistics_view_moe', radio.value);
@@ -10255,59 +5967,53 @@
     });
     var statisticsViewMoe = window.localStorage.getItem('statistics_view_moe');
     (_controller$querySele = controller.querySelector(":scope > label > input[value=\"".concat(statisticsViewMoe, "\"]"))) === null || _controller$querySele === void 0 ? void 0 : _controller$querySele.dispatchEvent(new MouseEvent('click'));
-  } // private methods
-  );
-
-  function _enterTableEnd2() {
-    _classPrivateFieldGet(this, _intersctionObserver).unobserve(_classPrivateFieldGet(this, _TABLE_END));
-
-    _classPrivateFieldGet(this, _tableData$1).next();
   }
 
+  // private methods
+  );
+  function _enterTableEnd2() {
+    _classPrivateFieldGet(this, _intersctionObserver).unobserve(_classPrivateFieldGet(this, _TABLE_END));
+    _classPrivateFieldGet(this, _tableData$1).next();
+  }
   function _setupTable2(tableData) {
     var _this2 = this;
-
     // reset
     _classPrivateFieldSet(this, _tableData$1, tableData);
-
     _classPrivateFieldGet(this, _intersctionObserver).unobserve(_classPrivateFieldGet(this, _TABLE_END));
-
     _classPrivateFieldSet(this, _header$1, [].concat(_toConsumableArray(tableData.dxCondition.conditionFilters.map(function (_ref) {
       var categoryId = _ref.categoryId,
-          attributeId = _ref.attributeId;
+        attributeId = _ref.attributeId;
       return {
         categoryId: categoryId,
         attributeId: attributeId
       };
     })), _toConsumableArray(tableData.dxCondition.conditionAnnotations.map(function (_ref2) {
       var categoryId = _ref2.categoryId,
-          attributeId = _ref2.attributeId;
+        attributeId = _ref2.attributeId;
       return {
         categoryId: categoryId,
         attributeId: attributeId
       };
     }))));
-
     _classPrivateFieldGet(this, _ROOT$6).classList.remove('-complete');
-
     _classPrivateFieldGet(this, _THEAD).innerHTML = '';
     _classPrivateFieldGet(this, _TBODY).innerHTML = '';
-
     _classPrivateFieldGet(this, _LOADING_VIEW).classList.add('-shown');
+    DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza));
 
-    DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hideStanza)); // make table header
+    // make table header
+    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getDatasetLabel(tableData.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      ");
 
-    _classPrivateFieldGet(this, _THEAD).innerHTML = "\n      <th rowspan=\"2\">\n        <div class=\"inner\">\n          <div class=\"togo-key-view\">".concat(Records$1.getDatasetLabel(tableData.togoKey), "</div>\n        </div>\n      </th>\n      <th colspan=\"100%\">\n        <div class=\"inner -noborder\"></div>\n      </th>\n      "); // makte table sub header
-
+    // makte table sub header
     _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    ".concat(tableData.dxCondition.conditionFilters.map(function (conditionFilter) {
       return "\n          <th>\n            <div class=\"inner _category-background-color\" data-category-id=\"".concat(conditionFilter.categoryId, "\">\n              <div class=\"togo-key-view\">").concat(Records$1.getDatasetLabel(conditionFilter.dataset), "</div>\n              <span>").concat(conditionFilter.label, "</span>\n            </div>\n          </th>");
     }).join(''), "\n    ").concat(tableData.dxCondition.conditionAnnotations.map(function (conditionAnnotation) {
       return "\n          <th>\n            <div class=\"inner _category-color\" data-category-id=\"".concat(conditionAnnotation.categoryId, "\">\n              <div class=\"togo-key-view\">").concat(Records$1.getDatasetLabel(conditionAnnotation.dataset), "</div>\n              <span>").concat(conditionAnnotation.label, "</span>\n            </div>\n          </th>");
-    }).join('')); // make stats
+    }).join(''));
 
+    // make stats
     var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _STATS).querySelectorAll(':scope > td')),
-        _step2;
-
+      _step2;
     try {
       for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
         var td = _step2.value;
@@ -10318,10 +6024,8 @@
     } finally {
       _iterator2.f();
     }
-
     var _iterator3 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _statisticsViews)),
-        _step3;
-
+      _step3;
     try {
       for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
         var statisticsView = _step3.value;
@@ -10332,30 +6036,25 @@
     } finally {
       _iterator3.f();
     }
-
     _classPrivateFieldSet(this, _statisticsViews, []);
-
     _classPrivateFieldGet(this, _tableData$1).dxCondition;
     var conditions = [].concat(_toConsumableArray(_classPrivateFieldGet(this, _tableData$1).dxCondition.conditionFilters), _toConsumableArray(_classPrivateFieldGet(this, _tableData$1).dxCondition.conditionAnnotations));
     conditions.forEach(function (condition, index) {
       var td = document.createElement('td');
       td.innerHTML = '<div class="inner"><div></div></div>';
-
       _classPrivateFieldGet(_this2, _STATS).append(td);
-
       _classPrivateFieldGet(_this2, _statisticsViews).push(new StatisticsView(_classPrivateFieldGet(_this2, _STATS), td.querySelector(':scope > .inner > div'), tableData, index, condition));
     });
   }
-
   function _addTableRows2(_ref3) {
     var _this3 = this;
-
     var done = _ref3.done,
-        offset = _ref3.offset,
-        rows = _ref3.rows,
-        tableData = _ref3.tableData;
-    if (_classPrivateFieldGet(this, _tableData$1) !== tableData) return; // make table
+      offset = _ref3.offset,
+      rows = _ref3.rows,
+      tableData = _ref3.tableData;
+    if (_classPrivateFieldGet(this, _tableData$1) !== tableData) return;
 
+    // make table
     _classPrivateFieldGet(this, _TBODY).insertAdjacentHTML('beforeend', rows.map(function (row, index) {
       return "\n          <tr\n            data-index=\"".concat(offset + index, "\"\n            data-togo-id=\"").concat(row.index.entry, "\">\n            <td>\n              <div class=\"inner\">\n                <ul>\n                  <div\n                    class=\"togo-key-view primarykey\"\n                    data-key=\"").concat(tableData.togoKey, "\"\n                    data-order=\"").concat([0, offset + index], "\"\n                    data-sub-order=\"0\"\n                    data-subject-id=\"primary\"\n                    data-unique-entry-id=\"").concat(row.index.entry, "\">").concat(row.index.entry, "\n                  </div>\n                  <span>").concat(row.index.label, "</span>\n                </ul>\n              </div<\n            </td>\n            ").concat(row.attributes.map(function (column, columnIndex) {
         if (column) {
@@ -10366,38 +6065,33 @@
           return "<td><div class=\"inner -empty\"></div></td>";
         }
       }).join(''), "\n          </tr>");
-    }).join('')); // turn off auto-loading after last line is displayed
+    }).join(''));
 
-
+    // turn off auto-loading after last line is displayed
     if (done) {
       _classPrivateFieldGet(this, _ROOT$6).classList.add('-complete');
-
       _classPrivateFieldGet(this, _LOADING_VIEW).classList.remove('-shown');
     } else {
       _classPrivateFieldGet(this, _ROOT$6).classList.remove('-complete');
-
       _classPrivateFieldGet(this, _LOADING_VIEW).classList.add('-shown');
-
       _classPrivateFieldGet(this, _intersctionObserver).observe(_classPrivateFieldGet(this, _TABLE_END));
-    } // Naming needs improvement but hierarcy for Popup screen is like below
+    }
+
+    // Naming needs improvement but hierarcy for Popup screen is like below
     // Togo-key   (Uniprot)                        | primaryKey
     //  → Subject  (Gene)                          | category
     //    → Main-Category  (Expressed in tissues)  | attribute
     //      → Sub-Category  (Thyroid Gland)        |
     //        → Unique-Entry (ENSG00000139304)     | node ?
-
-
     rows.forEach(function (row, index) {
       var actualIndex = offset + index;
-
       var tr = _classPrivateFieldGet(_this3, _TBODY).querySelector(":scope > tr[data-index=\"".concat(actualIndex, "\"]"));
-
       var uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(function (uniqueEntry) {
         uniqueEntry.addEventListener('click', function () {
           createPopupEvent(uniqueEntry, showPopup);
-        }); // remove highlight on mouseleave only when there is no popup
-
+        });
+        // remove highlight on mouseleave only when there is no popup
         var td = uniqueEntry.closest('td');
         td.addEventListener('mouseenter', function () {
           var customEvent = new CustomEvent(highlightCol, {
@@ -10415,17 +6109,13 @@
       });
     });
   }
-
   function _failed2(tableData) {
     _classPrivateFieldGet(this, _ROOT$6).classList.add('-complete');
-
     _classPrivateFieldGet(this, _LOADING_VIEW).classList.remove('-shown');
   }
-
   function _colHighlight2(colIndex) {
     _classPrivateFieldGet(this, _TBODY).querySelectorAll('[data-order]').forEach(function (element) {
       var td = element.closest('td');
-
       if (element.getAttribute('data-order').split(',')[0] === colIndex) {
         if (!td.classList.contains('.-selected')) {
           td.classList.add('-selected');
@@ -10437,31 +6127,24 @@
   }
 
   var _templates = /*#__PURE__*/new WeakMap();
-
   var _isReady = /*#__PURE__*/new WeakMap();
-
   var StanzaManager = /*#__PURE__*/function () {
     function StanzaManager() {
       _classCallCheck(this, StanzaManager);
-
       _classPrivateFieldInitSpec(this, _templates, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _isReady, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldSet(this, _isReady, false);
     }
-
     _createClass(StanzaManager, [{
       key: "init",
       value: function init(data) {
         var _this = this;
-
         // embed modules
         var head = document.querySelector('head');
         data.stanzas.forEach(function (stanza) {
@@ -10470,8 +6153,9 @@
           script.setAttribute('src', stanza);
           script.setAttribute('async', 1);
           head.appendChild(script);
-        }); // fetch templates
+        });
 
+        // fetch templates
         Promise.all(Object.keys(data.templates).map(function (key) {
           return fetch(data.templates[key]);
         })).then(function (responces) {
@@ -10483,16 +6167,15 @@
           _classPrivateFieldSet(_this, _templates, Object.fromEntries(Object.keys(data.templates).map(function (stanza, index) {
             return [stanza, templates[index]];
           })));
-
           _classPrivateFieldSet(_this, _isReady, true);
         });
       }
+
       /**˝
        * @param {String} key  key of Database used to get template
        * @param {String} id  ID of dataset
        * @returns {String} HTML
        */
-
     }, {
       key: "draw",
       value: function draw(key, id) {
@@ -10504,10 +6187,8 @@
         return _classPrivateFieldGet(this, _isReady);
       }
     }]);
-
     return StanzaManager;
   }();
-
   var StanzaManager$1 = new StanzaManager();
 
   var x = 0;
@@ -10517,7 +6198,6 @@
     y = view.y;
     document.addEventListener('mousemove', elementDrag);
     document.addEventListener('mouseup', closeDrag);
-
     function elementDrag(e) {
       var dx = e.clientX - x;
       var dy = e.clientY - y;
@@ -10527,7 +6207,6 @@
       x = e.clientX;
       y = e.clientY;
     }
-
     function closeDrag() {
       document.removeEventListener('mousemove', elementDrag);
       document.removeEventListener('mouseup', closeDrag);
@@ -10535,100 +6214,62 @@
   }
 
   var _ROOT$5 = /*#__PURE__*/new WeakMap();
-
   var _RESULTS_TABLE = /*#__PURE__*/new WeakMap();
-
   var _RESULT_MODAL = /*#__PURE__*/new WeakMap();
-
   var _exit_button = /*#__PURE__*/new WeakMap();
-
   var _popup_top = /*#__PURE__*/new WeakMap();
-
   var _popup_left = /*#__PURE__*/new WeakMap();
-
   var _showPopup = /*#__PURE__*/new WeakSet();
-
   var _popup = /*#__PURE__*/new WeakSet();
-
   var _header = /*#__PURE__*/new WeakSet();
-
   var _container = /*#__PURE__*/new WeakSet();
-
   var _stanzas = /*#__PURE__*/new WeakSet();
-
   var _arrow = /*#__PURE__*/new WeakSet();
-
   var _setHighlight = /*#__PURE__*/new WeakSet();
-
   var _handleKeydown = /*#__PURE__*/new WeakMap();
-
   var _arrowFuncs = /*#__PURE__*/new WeakMap();
-
   var _setMovementArrow = /*#__PURE__*/new WeakSet();
-
   var _getTargetEntry = /*#__PURE__*/new WeakSet();
-
   var _entriesByAxes = /*#__PURE__*/new WeakSet();
-
   var _hidePopup = /*#__PURE__*/new WeakSet();
-
   var ResultDetailModal = /*#__PURE__*/_createClass(function ResultDetailModal() {
     var _this = this;
-
     _classCallCheck(this, ResultDetailModal);
-
     _classPrivateMethodInitSpec(this, _hidePopup);
-
     _classPrivateMethodInitSpec(this, _entriesByAxes);
-
     _classPrivateMethodInitSpec(this, _getTargetEntry);
-
     _classPrivateMethodInitSpec(this, _setMovementArrow);
-
     _classPrivateMethodInitSpec(this, _setHighlight);
-
     _classPrivateMethodInitSpec(this, _arrow);
-
     _classPrivateMethodInitSpec(this, _stanzas);
-
     _classPrivateMethodInitSpec(this, _container);
-
     _classPrivateMethodInitSpec(this, _header);
-
     _classPrivateMethodInitSpec(this, _popup);
-
     _classPrivateMethodInitSpec(this, _showPopup);
-
     _classPrivateFieldInitSpec(this, _ROOT$5, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _RESULTS_TABLE, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _RESULT_MODAL, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _exit_button, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _popup_top, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _popup_left, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _handleKeydown, {
       writable: true,
       value: function value(e) {
@@ -10636,12 +6277,10 @@
           DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hidePopup));
         } else if (_classPrivateFieldGet(_this, _arrowFuncs).has(e.key)) {
           e.preventDefault();
-
           _classPrivateFieldGet(_this, _RESULT_MODAL).querySelector(".arrow.-".concat(e.key.replace('Arrow', '').toLowerCase())).click();
         }
       }
     });
-
     _classPrivateFieldInitSpec(this, _arrowFuncs, {
       writable: true,
       value: new Map([['ArrowLeft', function (x, y) {
@@ -10656,26 +6295,22 @@
         return [x, y + 1];
       }]])
     });
-
     _classPrivateFieldSet(this, _ROOT$5, document.createElement('section'));
-
     _classPrivateFieldGet(this, _ROOT$5).id = 'ResultDetailModal';
-    document.querySelector('body').insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$5)); // references
+    document.querySelector('body').insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$5));
 
+    // references
     _classPrivateFieldSet(this, _RESULTS_TABLE, document.querySelector('#ResultsTable'));
-
     _classPrivateFieldSet(this, _RESULT_MODAL, document.querySelector('#ResultDetailModal'));
-
     _classPrivateFieldSet(this, _exit_button, document.createElement('div'));
+    _classPrivateFieldGet(this, _exit_button).className = 'close-button-view';
 
-    _classPrivateFieldGet(this, _exit_button).className = 'close-button-view'; // attach event
-
+    // attach event
     DefaultEventEmitter$1.addEventListener(showPopup, function (e) {
       _classPrivateMethodGet(_this, _showPopup, _showPopup2).call(_this, e);
     });
     DefaultEventEmitter$1.addEventListener(movePopup, function (e) {
       _classPrivateMethodGet(_this, _hidePopup, _hidePopup2).call(_this, false);
-
       _classPrivateMethodGet(_this, _showPopup, _showPopup2).call(_this, e);
     });
     DefaultEventEmitter$1.addEventListener(dragElement, function (e) {
@@ -10684,30 +6319,23 @@
     DefaultEventEmitter$1.addEventListener(hidePopup, function () {
       _classPrivateMethodGet(_this, _hidePopup, _hidePopup2).call(_this);
     });
-
     _classPrivateFieldGet(this, _RESULT_MODAL).addEventListener('click', function (e) {
       if (e.target !== e.currentTarget) return;
       DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hidePopup));
     });
-
     _classPrivateFieldGet(this, _exit_button).addEventListener('click', function () {
       DefaultEventEmitter$1.dispatchEvent(new CustomEvent(hidePopup));
     });
-  } // bind this on handleKeydown so it will keep listening to same event during the whole popup
+  }
+  // bind this on handleKeydown so it will keep listening to same event during the whole popup
   );
-
   function _showPopup2(e) {
     _classPrivateMethodGet(this, _setHighlight, _setHighlight2).call(this, e.detail.properties.dataX, e.detail.properties.dataY, e.detail.properties.dataSubOrder);
-
     _classPrivateFieldSet(this, _handleKeydown, _classPrivateFieldGet(this, _handleKeydown).bind(this));
-
     document.addEventListener('keydown', _classPrivateFieldGet(this, _handleKeydown));
-
     _classPrivateFieldGet(this, _RESULT_MODAL).appendChild(_classPrivateMethodGet(this, _popup, _popup2).call(this, e.detail));
-
     _classPrivateFieldGet(this, _RESULT_MODAL).classList.add('backdrop');
   }
-
   function _popup2(detail) {
     _classPrivateFieldGet(this, _ROOT$5).dataset.categoryId = detail.keys.subjectId;
     var popup = document.createElement('div');
@@ -10718,15 +6346,14 @@
     popup.appendChild(_classPrivateMethodGet(this, _container, _container2).call(this, detail.keys, detail.properties));
     return popup;
   }
-
   function _header2(keys, props) {
     var category = Records$1.getCategory(keys.subjectId);
     var attribute = Records$1.getAttribute(keys.mainCategoryId);
     var isPrimaryKey = props.isPrimaryKey;
     var mainCategory = isPrimaryKey ? '' : Records$1.getAttribute(keys.mainCategoryId);
     var categoryLabel = isPrimaryKey ? keys.dataKey : "<span class=\"category _category-background-color-strong\">".concat(category.label, "</span>");
-    var attributeLable = "<span class=\"attribute\">".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, "</span>"); // for continuous value (distribution), do not output label
-
+    var attributeLable = "<span class=\"attribute\">".concat(isPrimaryKey ? keys.uniqueEntryId : mainCategory.label, "</span>");
+    // for continuous value (distribution), do not output label
     var subCategory = isPrimaryKey ? '' : Records$1.getFilter(keys.mainCategoryId, keys.subCategoryId);
     var valueLabel = (attribute === null || attribute === void 0 ? void 0 : attribute.datamodel) !== 'distribution' && subCategory !== null && subCategory !== void 0 && subCategory.label ? "<span class=\"value\">".concat(subCategory.label, "</span>") : '';
     var header = document.createElement('header');
@@ -10746,10 +6373,8 @@
     });
     return header;
   }
-
   function _container2(keys, props) {
     var _this2 = this;
-
     var container = document.createElement('div');
     container.className = 'container';
     ['Up', 'Right', 'Down', 'Left'].forEach(function (direction) {
@@ -10758,23 +6383,19 @@
     container.appendChild(_classPrivateMethodGet(this, _stanzas, _stanzas2).call(this, keys.uniqueEntryId, keys.dataKey));
     return container;
   }
-
   function _stanzas2(uniqueEntryId, dataKey) {
     var stanzas = document.createElement('div');
     stanzas.className = 'stanzas';
     stanzas.innerHTML += StanzaManager$1.draw(dataKey, uniqueEntryId);
     stanzas.querySelectorAll('script').forEach(function (scriptElement) {
       var _script = document.createElement('script');
-
       _script.textContent = scriptElement.textContent;
       scriptElement.replaceWith(_script);
     });
     return stanzas;
   }
-
   function _arrow2(direction, props) {
     var _this3 = this;
-
     var arrow = document.createElement('div');
     arrow.classList.add('arrow', "-".concat(direction.toLowerCase()));
     arrow.addEventListener('click', function (e) {
@@ -10785,15 +6406,12 @@
         curInternalIndex: parseInt(props.dataSubOrder),
         getTargetAxes: _classPrivateFieldGet(_this3, _arrowFuncs).get('Arrow' + direction)
       };
-
       _classPrivateMethodGet(_this3, _setMovementArrow, _setMovementArrow2).call(_this3, arrowMovement);
     });
     return arrow;
   }
-
   function _setHighlight2(x, y, subOrder) {
     var entry = _classPrivateMethodGet(this, _entriesByAxes, _entriesByAxes2).call(this, x, y, subOrder);
-
     var tr = entry.closest('tr');
     entry.classList.add('-selected');
     tr.classList.add('-selected');
@@ -10802,11 +6420,9 @@
     });
     DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
-
   function _setMovementArrow2(movement) {
     try {
       var targetEntry = _classPrivateMethodGet(this, _getTargetEntry, _getTargetEntry2).call(this, movement);
-
       targetEntry.scrollIntoView({
         block: 'center'
       });
@@ -10815,113 +6431,86 @@
       console.log('Movement out of bounds');
     }
   }
-
   function _getTargetEntry2(move) {
     // Check if there are multiple entries in the current cell when going up or down
     if (['Down', 'Up'].includes(move.dir)) {
       var allCurEntries = _classPrivateMethodGet(this, _entriesByAxes, _entriesByAxes2).call(this, move.curX, move.curY);
-
-      var targetInternalIndex = move.getTargetAxes(move.curInternalIndex)[1]; // movement inside cell
-
+      var targetInternalIndex = move.getTargetAxes(move.curInternalIndex)[1];
+      // movement inside cell
       if (allCurEntries[targetInternalIndex]) {
         return allCurEntries[targetInternalIndex];
       }
-    } // default: target outside of current cell
-
-
+    }
+    // default: target outside of current cell
     var _move$getTargetAxes = move.getTargetAxes(move.curX, move.curY),
-        _move$getTargetAxes2 = _slicedToArray(_move$getTargetAxes, 2),
-        targetX = _move$getTargetAxes2[0],
-        targetY = _move$getTargetAxes2[1];
-
+      _move$getTargetAxes2 = _slicedToArray(_move$getTargetAxes, 2),
+      targetX = _move$getTargetAxes2[0],
+      targetY = _move$getTargetAxes2[1];
     var allTargetEntries = _classPrivateMethodGet(this, _entriesByAxes, _entriesByAxes2).call(this, targetX, targetY);
-
     var targetIndex = move.dir === 'Up' ? allTargetEntries.length - 1 : 0;
     return allTargetEntries[targetIndex];
   }
-
   function _entriesByAxes2(x, y, subOrder) {
     if (subOrder === undefined) {
       return _classPrivateFieldGet(this, _RESULTS_TABLE).querySelectorAll("[data-order = '".concat(x, ",").concat(y, "']"));
     }
-
     return _classPrivateFieldGet(this, _RESULTS_TABLE).querySelector("[data-order = '".concat(x, ",").concat(y, "'][data-sub-order = '").concat(subOrder, "']"));
   }
-
   function _hidePopup2() {
     var exitingPopup = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-
     // reset popup to the center if it is shown for first time
     // keep moved axes if user has dragged popup while moving with arrows
     var popupStyle = _classPrivateFieldGet(this, _RESULT_MODAL).querySelector('.popup').style;
-
     _classPrivateFieldSet(this, _popup_top, exitingPopup ? '' : popupStyle.top);
-
     _classPrivateFieldSet(this, _popup_left, exitingPopup ? '' : popupStyle.left);
-
     _classPrivateFieldGet(this, _RESULT_MODAL).classList.remove('backdrop');
-
     _classPrivateFieldGet(this, _RESULT_MODAL).innerHTML = '';
-
     _classPrivateFieldGet(this, _RESULTS_TABLE).querySelectorAll('.-selected').forEach(function (entry) {
       return entry.classList.remove('-selected');
     });
-
     document.removeEventListener('keydown', _classPrivateFieldGet(this, _handleKeydown));
   }
 
   var _ROOT$4 = /*#__PURE__*/new WeakMap();
-
   var _CONTAINER = /*#__PURE__*/new WeakMap();
-
   var BalloonView = /*#__PURE__*/_createClass(function BalloonView() {
     var _this = this;
-
     _classCallCheck(this, BalloonView);
-
     _classPrivateFieldInitSpec(this, _ROOT$4, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _CONTAINER, {
       writable: true,
       value: void 0
     });
-
     // make element
     _classPrivateFieldSet(this, _ROOT$4, document.createElement('div'));
-
     _classPrivateFieldGet(this, _ROOT$4).className = 'balloon-view';
     document.querySelector('body').insertAdjacentElement('beforeend', _classPrivateFieldGet(this, _ROOT$4));
     _classPrivateFieldGet(this, _ROOT$4).innerHTML = '<div class="container"></div>';
+    _classPrivateFieldSet(this, _CONTAINER, _classPrivateFieldGet(this, _ROOT$4).querySelector(':scope > .container'));
 
-    _classPrivateFieldSet(this, _CONTAINER, _classPrivateFieldGet(this, _ROOT$4).querySelector(':scope > .container')); // event listener
-
-
+    // event listener
     DefaultEventEmitter$1.addEventListener(enterAttributeFilterItemView, function (_ref) {
       var _ref$detail = _ref.detail,
-          elm = _ref$detail.elm,
-          label = _ref$detail.label,
-          values = _ref$detail.values;
+        elm = _ref$detail.elm,
+        label = _ref$detail.label,
+        values = _ref$detail.values;
       _classPrivateFieldGet(_this, _CONTAINER).innerHTML = "\n        <header>".concat(label, "</header>\n        ").concat(values.map(function (value) {
         return "<dl>\n          <dt>".concat(value.key, ":</dt>\n          <dd>").concat(value.value, "</dd>\n        </dl>");
-      }).join('')); // geography
-
+      }).join(''));
+      // geography
       var rect = elm.getBoundingClientRect();
       var isBelow = window.innerHeight * .3 > rect.top;
       _classPrivateFieldGet(_this, _ROOT$4).style.left = rect.left + rect.width * .5 + 'px';
-
       if (isBelow) {
         _classPrivateFieldGet(_this, _ROOT$4).classList.add('-below');
-
         _classPrivateFieldGet(_this, _ROOT$4).style.top = rect.bottom + 'px';
       } else {
         _classPrivateFieldGet(_this, _ROOT$4).classList.remove('-below');
-
         _classPrivateFieldGet(_this, _ROOT$4).style.top = rect.top + 'px';
       }
-
       _classPrivateFieldGet(_this, _ROOT$4).classList.add('-showing');
     });
     DefaultEventEmitter$1.addEventListener(leaveAttributeFilterItemView, function () {
@@ -10936,35 +6525,20 @@
     SIMPLE: 'simple',
     DETAILED: 'detailed'
   };
-
   var _ROOT$3 = /*#__PURE__*/new WeakMap();
-
   var _TEXT_OFFSET = /*#__PURE__*/new WeakMap();
-
   var _TEXT_TOTAL = /*#__PURE__*/new WeakMap();
-
   var _TEXT_STATUS = /*#__PURE__*/new WeakMap();
-
   var _BAR = /*#__PURE__*/new WeakMap();
-
   var _totalDuration = /*#__PURE__*/new WeakMap();
-
   var _total = /*#__PURE__*/new WeakMap();
-
   var _mode = /*#__PURE__*/new WeakMap();
-
   var _updateAmount = /*#__PURE__*/new WeakSet();
-
   var _updateBarWidth = /*#__PURE__*/new WeakSet();
-
   var _remainingTimeInSec = /*#__PURE__*/new WeakSet();
-
   var _timeString = /*#__PURE__*/new WeakSet();
-
   var _updateTime = /*#__PURE__*/new WeakSet();
-
   var _setMessage = /*#__PURE__*/new WeakSet();
-
   var ProgressIndicator = /*#__PURE__*/function () {
     /**
      * @param { HTMLElement } elm
@@ -10972,154 +6546,114 @@
      */
     function ProgressIndicator(elm) {
       var mode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : MODE.DETAILED;
-
       _classCallCheck(this, ProgressIndicator);
-
       _classPrivateMethodInitSpec(this, _setMessage);
-
       _classPrivateMethodInitSpec(this, _updateTime);
-
       _classPrivateMethodInitSpec(this, _timeString);
-
       _classPrivateMethodInitSpec(this, _remainingTimeInSec);
-
       _classPrivateMethodInitSpec(this, _updateBarWidth);
-
       _classPrivateMethodInitSpec(this, _updateAmount);
-
       _classPrivateFieldInitSpec(this, _ROOT$3, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _TEXT_OFFSET, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _TEXT_TOTAL, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _TEXT_STATUS, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _BAR, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _totalDuration, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _total, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _mode, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldSet(this, _mode, mode);
-
       elm.classList.add('progress-indicator', "-".concat(mode));
       var loadingIcon = mode === MODE.SIMPLE ? '<span class="material-icons-outlined -rotating">autorenew</span>' : '';
       var counter = mode === MODE.DETAILED ? "<div class=\"amount-of-data\">\n          <span class=\"offset\">0</span>\n          <span class=\"total\"></span>\n      </div>" : '';
       elm.innerHTML = " \n      <div class=\"text\">\n        ".concat(counter, "\n        <div class=\"status\">\n          ").concat(loadingIcon, "\n        </div>\n      </div>\n      <div class=\"progress\">\n        <div class=\"bar\"></div>\n      </div>");
-
       _classPrivateFieldSet(this, _ROOT$3, elm);
-
       _classPrivateFieldSet(this, _BAR, elm.querySelector(':scope > .progress > .bar'));
-
       _classPrivateFieldSet(this, _TEXT_STATUS, elm.querySelector(':scope > .text > .status'));
-
       _classPrivateFieldSet(this, _total, 0);
-
       if (mode === MODE.SIMPLE) return;
-
       _classPrivateFieldSet(this, _TEXT_OFFSET, elm.querySelector(':scope > .text > .amount-of-data > .offset'));
-
       _classPrivateFieldSet(this, _TEXT_TOTAL, elm.querySelector(':scope > .text > .amount-of-data > .total'));
-
       _classPrivateFieldSet(this, _totalDuration, 0);
     }
-    /* private methods */
 
+    /* private methods */
     /**
      * @param { number } offset
      */
-
-
     _createClass(ProgressIndicator, [{
       key: "updateProgressBar",
-      value:
-      /* public accessors */
+      value: /* public accessors */
 
       /**
        * @param { {offset: number, startTime: number} } progressInfo
        */
       function updateProgressBar(_ref) {
         var _ref$offset = _ref.offset,
-            offset = _ref$offset === void 0 ? 0 : _ref$offset,
-            startTime = _ref.startTime;
-
+          offset = _ref$offset === void 0 ? 0 : _ref$offset,
+          startTime = _ref.startTime;
         _classPrivateMethodGet(this, _updateBarWidth, _updateBarWidth2).call(this, offset);
-
         if (_classPrivateFieldGet(this, _mode) === MODE.SIMPLE || !startTime) return;
-
         _classPrivateMethodGet(this, _updateAmount, _updateAmount2).call(this, offset);
-
         _classPrivateMethodGet(this, _updateTime, _updateTime2).call(this, offset, startTime);
       }
+
       /**
        * @param { string } message
        * @param { number } total
        * @param { boolean } isError
        */
-
     }, {
       key: "setIndicator",
       value: function setIndicator() {
         var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
         var total = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
         var isError = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-
         _classPrivateFieldSet(this, _total, total);
-
         if (_classPrivateFieldGet(this, _mode) === MODE.SIMPLE) _classPrivateMethodGet(this, _setMessage, _setMessage2).call(this, message, isError);else if (_classPrivateFieldGet(this, _mode) === MODE.DETAILED) _classPrivateFieldGet(this, _TEXT_TOTAL).textContent = "/ ".concat(_classPrivateFieldGet(this, _total).toString());
       }
     }, {
       key: "reset",
       value: function reset() {
         this.setIndicator();
-
         _classPrivateMethodGet(this, _updateBarWidth, _updateBarWidth2).call(this);
       }
     }]);
-
     return ProgressIndicator;
   }();
-
   function _updateAmount2(offset) {
     _classPrivateFieldGet(this, _TEXT_OFFSET).textContent = "".concat(offset.toString());
   }
-
   function _updateBarWidth2() {
     var offset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     _classPrivateFieldGet(this, _BAR).style.width = offset / _classPrivateFieldGet(this, _total) ? "".concat(offset / _classPrivateFieldGet(this, _total) * 100, "%") : '0%';
   }
-
   function _remainingTimeInSec2(durationPerItem, itemsLeft) {
     return durationPerItem * itemsLeft / 1000 || 0;
   }
-
   function _timeString2(time) {
     if (time <= 0) return '0 sec.';
     var h, m, s;
@@ -11128,15 +6662,11 @@
     s = Math.floor(time % 3600 % 60);
     return h > 0 ? "".concat(h, " hr.") : m > 0 ? "".concat(m, " min.") : "".concat(s, " sec.");
   }
-
   function _updateTime2(offset, startTime) {
     _classPrivateFieldSet(this, _totalDuration, _classPrivateFieldGet(this, _totalDuration) + (Date.now() - startTime));
-
     var remainingTime = _classPrivateMethodGet(this, _remainingTimeInSec, _remainingTimeInSec2).call(this, _classPrivateFieldGet(this, _totalDuration) / offset, _classPrivateFieldGet(this, _total) - offset);
-
     _classPrivateFieldGet(this, _TEXT_STATUS).innerHTML = _classPrivateMethodGet(this, _timeString, _timeString2).call(this, remainingTime);
   }
-
   function _setMessage2(message, isError) {
     _classPrivateFieldGet(this, _TEXT_STATUS).childNodes[0].nodeValue = message;
     isError ? _classPrivateFieldGet(this, _ROOT$3).classList.add('error') : _classPrivateFieldGet(this, _ROOT$3).classList.remove('error');
@@ -11144,16 +6674,18 @@
 
   var mixin = {};
 
+  // import axios from 'axios';
+
   var LIMIT = 100;
   var downloadUrls = new Map();
   var timeOutError$1 = 'ECONNABORTED';
+
   /**
    * @typedef { Object } Mode
    * @property { string } label
    * @property { string } icon
    * @property { string } dataButton
    */
-
   var dataButtonModes = new Map([['edit', {
     label: 'Edit',
     icon: 'edit',
@@ -11183,234 +6715,116 @@
     icon: '',
     dataButton: ''
   }]]);
-
   var _dxCondition = /*#__PURE__*/new WeakMap();
-
   var _queryIds = /*#__PURE__*/new WeakMap();
-
   var _rows = /*#__PURE__*/new WeakMap();
-
   var _source$1 = /*#__PURE__*/new WeakMap();
-
   var _isLoading = /*#__PURE__*/new WeakMap();
-
   var _isCompleted = /*#__PURE__*/new WeakMap();
-
   var _ROOT$2 = /*#__PURE__*/new WeakMap();
-
   var _STATUS = /*#__PURE__*/new WeakMap();
-
   var _progressIndicator$1 = /*#__PURE__*/new WeakMap();
-
   var _CONTROLLER = /*#__PURE__*/new WeakMap();
-
   var _BUTTON_LEFT = /*#__PURE__*/new WeakMap();
-
   var _BUTTON_RIGHT = /*#__PURE__*/new WeakMap();
-
   var _deleteCondition = /*#__PURE__*/new WeakSet();
-
   var _makeDataButton = /*#__PURE__*/new WeakSet();
-
   var _updateDataButton = /*#__PURE__*/new WeakSet();
-
   var _dataButtonPauseOrResume = /*#__PURE__*/new WeakSet();
-
   var _dataButtonEdit = /*#__PURE__*/new WeakSet();
-
   var _dataButtonRetry = /*#__PURE__*/new WeakSet();
-
   var _dataButtonEvent = /*#__PURE__*/new WeakSet();
-
   var _setDownloadButtons = /*#__PURE__*/new WeakSet();
-
   var _setJsonUrl = /*#__PURE__*/new WeakSet();
-
   var _setTsvUrl = /*#__PURE__*/new WeakSet();
-
   var _handleError = /*#__PURE__*/new WeakSet();
-
   var _displayError = /*#__PURE__*/new WeakSet();
-
   var _getQueryIds = /*#__PURE__*/new WeakSet();
-
   var _getProperties = /*#__PURE__*/new WeakSet();
-
   var _complete$1 = /*#__PURE__*/new WeakSet();
-
   var TableData = /*#__PURE__*/function () {
     function TableData(dxCondition, elm) {
-      var _this = this;
-
       _classCallCheck(this, TableData);
-
       _classPrivateMethodInitSpec(this, _complete$1);
-
       _classPrivateMethodInitSpec(this, _getProperties);
-
       _classPrivateMethodInitSpec(this, _getQueryIds);
-
       _classPrivateMethodInitSpec(this, _displayError);
-
       _classPrivateMethodInitSpec(this, _handleError);
-
       _classPrivateMethodInitSpec(this, _setTsvUrl);
-
       _classPrivateMethodInitSpec(this, _setJsonUrl);
-
       _classPrivateMethodInitSpec(this, _setDownloadButtons);
-
       _classPrivateMethodInitSpec(this, _dataButtonEvent);
-
       _classPrivateMethodInitSpec(this, _dataButtonRetry);
-
       _classPrivateMethodInitSpec(this, _dataButtonEdit);
-
       _classPrivateMethodInitSpec(this, _dataButtonPauseOrResume);
-
       _classPrivateMethodInitSpec(this, _updateDataButton);
-
       _classPrivateMethodInitSpec(this, _makeDataButton);
-
       _classPrivateMethodInitSpec(this, _deleteCondition);
-
       _classPrivateFieldInitSpec(this, _dxCondition, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _queryIds, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _rows, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _source$1, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _isLoading, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _isCompleted, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _ROOT$2, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _STATUS, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _progressIndicator$1, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _CONTROLLER, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _BUTTON_LEFT, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _BUTTON_RIGHT, {
         writable: true,
         value: void 0
       });
-
-      var cancelToken = axios.CancelToken;
-
-      _classPrivateFieldSet(this, _source$1, cancelToken.source());
-
-      _classPrivateFieldSet(this, _isLoading, false);
-
-      _classPrivateFieldSet(this, _isCompleted, false);
-
-      _classPrivateFieldSet(this, _dxCondition, dxCondition);
-
-      _classPrivateFieldSet(this, _queryIds, []);
-
-      _classPrivateFieldSet(this, _rows, []); // view
-
-
-      elm.classList.add('table-data-controller-view');
-      elm.dataset.status = 'load ids';
-      elm.innerHTML = "\n    <div class=\"close-button-view\"></div>\n    <div class=\"conditions\">\n      <div class=\"condition\">\n        <p title=\"".concat(dxCondition.togoKey, "\">").concat(Records$1.getDatasetLabel(dxCondition.togoKey), "</p>\n      </div>\n      ").concat(_classPrivateFieldGet(this, _dxCondition).conditionFilters.map(function (conditionFilter) {
-        var label = Records$1.getAttribute(conditionFilter.attributeId).label;
-        return "<div class=\"condition _category-background-color\" data-category-id=\"".concat(conditionFilter.categoryId, "\">\n              <p title=\"").concat(label, "\">").concat(label, "</p>\n            </div>");
-      }).join(''), "\n      ").concat(_classPrivateFieldGet(this, _dxCondition).conditionAnnotations.map(function (conditionAnnotation) {
-        return "<div class=\"condition _category-color\" data-category-id=\"".concat(conditionAnnotation.categoryId, "\">\n              <p title=\"").concat(conditionAnnotation.label, "\">").concat(conditionAnnotation.label, "</p>\n            </div>");
-      }).join(''), "\n    </div>\n    <div class=\"status\">\n      <p>Getting ID list</p>\n      <span class=\"material-icons-outlined -rotating\">autorenew</span>\n    </div>\n    <div class=\"-border\">\n    </div>\n    <div class=\"controller\">\n    </div>\n    "); // reference
-
-      _classPrivateFieldSet(this, _ROOT$2, elm);
-
-      _classPrivateFieldSet(this, _STATUS, elm.querySelector(':scope > .status > p'));
-
-      _classPrivateFieldSet(this, _progressIndicator$1, new ProgressIndicator(elm.querySelector(':scope > .status + div')));
-
-      _classPrivateFieldSet(this, _CONTROLLER, elm.querySelector(':scope > .controller'));
-
-      _classPrivateFieldGet(this, _CONTROLLER).appendChild(_classPrivateMethodGet(this, _makeDataButton, _makeDataButton2).call(this, 'left'));
-
-      _classPrivateFieldGet(this, _CONTROLLER).appendChild(_classPrivateMethodGet(this, _makeDataButton, _makeDataButton2).call(this, 'right', dataButtonModes.get('edit')));
-
-      _classPrivateFieldSet(this, _BUTTON_LEFT, elm.querySelector(':scope > .controller > .button.left'));
-
-      _classPrivateFieldSet(this, _BUTTON_RIGHT, elm.querySelector(':scope > .controller > .button.right')); // events
-
-
-      elm.addEventListener('click', function () {
-        if (elm.classList.contains('-current')) return;
-
-        _this.select();
-      }); // delete
-
-      _classPrivateFieldGet(this, _ROOT$2).querySelector(':scope > .close-button-view').addEventListener('click', function (e) {
-        _classPrivateMethodGet(_this, _deleteCondition, _deleteCondition2).call(_this, e);
-      });
-
-      ConditionBuilder$1.finish();
-      this.select();
-
-      _classPrivateFieldGet(this, _ROOT$2).classList.toggle('-fetching');
-
-      _classPrivateMethodGet(this, _getQueryIds, _getQueryIds2).call(this);
+      return;
     }
+
     /* private methods */
-
-
     _createClass(TableData, [{
       key: "select",
-      value:
-      /* public methods */
+      value: /* public methods */
       function select() {
-        _classPrivateFieldGet(this, _ROOT$2).classList.add('-current'); // dispatch event
-
-
+        _classPrivateFieldGet(this, _ROOT$2).classList.add('-current');
+        // dispatch event
         var customEvent1 = new CustomEvent(selectTableData, {
           detail: this
         });
-        DefaultEventEmitter$1.dispatchEvent(customEvent1); // send rows
-
+        DefaultEventEmitter$1.dispatchEvent(customEvent1);
+        // send rows
         if (_classPrivateFieldGet(this, _ROOT$2).dataset.status !== 'load ids') {
           var done = this.offset >= _classPrivateFieldGet(this, _queryIds).length;
-
           var customEvent2 = new CustomEvent(addNextRows, {
             detail: {
               tableData: this,
@@ -11431,11 +6845,10 @@
       key: "next",
       value: function next() {
         if (_classPrivateFieldGet(this, _isLoading)) return;
-
         _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
       }
-      /* public accessors */
 
+      /* public accessors */
     }, {
       key: "offset",
       get: function get() {
@@ -11462,29 +6875,10 @@
         return _classPrivateFieldGet(this, _rows).length / _classPrivateFieldGet(this, _queryIds).length;
       }
     }]);
-
     return TableData;
   }();
-
-  function _deleteCondition2(e) {
-    e.stopPropagation();
-    var customEvent = new CustomEvent(deleteTableData, {
-      detail: this
-    });
-    DefaultEventEmitter$1.dispatchEvent(customEvent); // abort fetch
-
-    _classPrivateFieldGet(this, _source$1).cancel('user cancel'); // delete element
-
-
-    _classPrivateFieldGet(this, _ROOT$2).parentNode.removeChild(_classPrivateFieldGet(this, _ROOT$2)); // transition
-
-
-    document.querySelector('body').dataset.display = 'properties';
-  }
-
   function _makeDataButton2(className) {
     var _this2 = this;
-
     var mode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
     var button = document.createElement('div');
     button.innerHTML = "\n      <a>\n        <span class=\"material-icons-outlined\"></span>\n        <span class=\"label\"></span>\n      </a>";
@@ -11495,132 +6889,105 @@
     });
     return button;
   }
-
   function _updateDataButton2(target, mode, urlType) {
     target.dataset.button = mode.dataButton;
     var anchor = target.querySelector(':scope > a');
     anchor.querySelector(':scope > .material-icons-outlined').innerText = mode.icon;
     anchor.querySelector(':scope > .label').innerText = mode.label;
-
     if (urlType) {
       var url = downloadUrls.get(urlType);
       anchor.setAttribute('href', url);
       var timeStamp = new Date();
       var _ref = [timeStamp.toISOString().slice(0, 10).replaceAll('-', ''), timeStamp.toLocaleTimeString().replaceAll(':', '')],
-          date = _ref[0],
-          time = _ref[1];
+        date = _ref[0],
+        time = _ref[1];
       anchor.setAttribute('download', "togodx-".concat(date, "-").concat(time, ".").concat(urlType));
     }
   }
-
   function _dataButtonPauseOrResume2(e) {
     e.stopPropagation();
-
     _classPrivateFieldGet(this, _ROOT$2).classList.toggle('-fetching');
-
     _classPrivateFieldGet(this, _STATUS).classList.toggle('-flickering');
-
     var modeToChangeTo = _classPrivateFieldGet(this, _isLoading) ? 'resume' : 'pause';
-
     _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, e.currentTarget, dataButtonModes.get(modeToChangeTo));
-
     _classPrivateFieldSet(this, _isLoading, !_classPrivateFieldGet(this, _isLoading));
-
     _classPrivateFieldGet(this, _STATUS).textContent = _classPrivateFieldGet(this, _isLoading) ? 'Getting data' : 'Awaiting';
     if (_classPrivateFieldGet(this, _isLoading)) _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);
   }
-
   function _dataButtonEdit2(e) {
     var _this3 = this;
-
-    e.stopPropagation(); // property (attribute)
-
+    e.stopPropagation();
+    // property (attribute)
     ConditionBuilder$1.setAnnotation(_classPrivateFieldGet(this, _dxCondition).conditionAnnotations.map(function (conditionAnnotation) {
       return conditionAnnotation;
-    }), false); // attribute (classification/distribution)
-
+    }), false);
+    // attribute (classification/distribution)
     Records$1.attributes.forEach(function (_ref2) {
       var id = _ref2.id;
-
       var conditionFilter = _classPrivateFieldGet(_this3, _dxCondition).conditionFilters.find(function (conditionFilter) {
         return conditionFilter.attributeId === id;
       });
-
       var nodes = [];
       if (conditionFilter) nodes.push.apply(nodes, _toConsumableArray(conditionFilter.nodes));
       ConditionBuilder$1.setFilter(id, nodes, false);
     });
   }
-
   function _dataButtonRetry2() {
     _classPrivateFieldGet(this, _STATUS).classList.remove('-error');
-
     _classPrivateFieldGet(this, _ROOT$2).classList.toggle('-fetching');
-
     _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, _classPrivateFieldGet(this, _BUTTON_LEFT), dataButtonModes.get('empty'));
-
     var partiallyLoaded = _classPrivateFieldGet(this, _queryIds).length > 0;
     var message = partiallyLoaded ? 'Getting data' : 'Getting ID list';
     _classPrivateFieldGet(this, _STATUS).textContent = message;
     if (partiallyLoaded) _classPrivateMethodGet(this, _getProperties, _getProperties2).call(this);else _classPrivateMethodGet(this, _getQueryIds, _getQueryIds2).call(this);
   }
-
   function _dataButtonEvent2(e) {
     var button = e.currentTarget;
     var mode = button.dataset.button;
-
     switch (mode) {
       case 'edit':
         _classPrivateMethodGet(this, _dataButtonEdit, _dataButtonEdit2).call(this, e);
-
         break;
-
       case 'resume':
       case 'pause':
         _classPrivateMethodGet(this, _dataButtonPauseOrResume, _dataButtonPauseOrResume2).call(this, e);
-
         break;
-
       case 'retry':
         _classPrivateMethodGet(this, _dataButtonRetry, _dataButtonRetry2).call(this);
-
         break;
     }
   }
-
   function _setDownloadButtons2() {
     _classPrivateMethodGet(this, _setTsvUrl, _setTsvUrl2).call(this);
-
     _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, _classPrivateFieldGet(this, _BUTTON_LEFT), dataButtonModes.get('tsv'), 'tsv');
-
     _classPrivateMethodGet(this, _setJsonUrl, _setJsonUrl2).call(this);
-
     var middleButton = _classPrivateMethodGet(this, _makeDataButton, _makeDataButton2).call(this, 'middle', 'json');
-
     _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, middleButton, dataButtonModes.get('json'), 'json');
-
     _classPrivateFieldGet(this, _CONTROLLER).insertBefore(middleButton, _classPrivateFieldGet(this, _BUTTON_RIGHT));
   }
-
   function _setJsonUrl2() {
     var jsonBlob = new Blob([JSON.stringify(_classPrivateFieldGet(this, _rows), null, 2)], {
       type: 'application/json'
     });
     downloadUrls.set('json', URL.createObjectURL(jsonBlob));
   }
-
   function _setTsvUrl2() {
     var _this4 = this;
-
     var tsv = [['orig_dataset', 'orig_entry', 'orig_label', 'dest_dataset', 'dest_entry', 'node', 'value'].join('\t')].concat(_toConsumableArray(_classPrivateFieldGet(this, _rows).map(function (row) {
       return row.attributes.map(function (attribute) {
         return attribute.items.map(function (item) {
-          return [_classPrivateFieldGet(_this4, _dxCondition).togoKey, // orig_dataset
-          row.index.entry, // orig_entry
-          row.index.label, // orig_label
-          item.dataset, // dest_dataset
-          item.entry, // dest_entry
-          attribute.id, // node
+          return [_classPrivateFieldGet(_this4, _dxCondition).togoKey,
+          // orig_dataset
+          row.index.entry,
+          // orig_entry
+          row.index.label,
+          // orig_label
+          item.dataset,
+          // dest_dataset
+          item.entry,
+          // dest_entry
+          attribute.id,
+          // node
           item.label // value
           ].join('\t');
         });
@@ -11633,41 +7000,29 @@
     var tsvUrl = URL.createObjectURL(tsvBlob);
     downloadUrls.set('tsv', tsvUrl);
   }
-
   function _handleError2(err) {
     var _err$response, _err$response2, _err$response3;
-
     if (axios.isCancel && err.message === 'user cancel') return;
     var code = (_err$response = err.response) === null || _err$response === void 0 ? void 0 : _err$response.status;
     var message = ((_err$response2 = err.response) === null || _err$response2 === void 0 ? void 0 : _err$response2.statusText) || err.message;
-
     _classPrivateMethodGet(this, _displayError, _displayError2).call(this, message, code);
-
     if (((_err$response3 = err.response) === null || _err$response3 === void 0 ? void 0 : _err$response3.status) === 500 | err.code === timeOutError$1) {
       _classPrivateMethodGet(this, _updateDataButton, _updateDataButton2).call(this, _classPrivateFieldGet(this, _BUTTON_LEFT), dataButtonModes.get('retry'));
-
       return;
     }
-
     _classPrivateFieldGet(this, _BUTTON_LEFT).remove();
   }
-
   function _displayError2(message, code) {
     _classPrivateFieldGet(this, _STATUS).classList.add('-error');
-
     _classPrivateFieldGet(this, _STATUS).textContent = code ? "".concat(message, " (").concat(code, ")") : message;
-
     _classPrivateFieldGet(this, _ROOT$2).classList.toggle('-fetching');
-
     var customEvent = new CustomEvent(failedFetchTableDataIds, {
       detail: this
     });
     DefaultEventEmitter$1.dispatchEvent(customEvent);
   }
-
   function _getQueryIds2() {
     var _this5 = this;
-
     axios.post(App$1.getApiUrl('aggregate'), getApiParameter('aggregate', {
       dataset: _classPrivateFieldGet(this, _dxCondition).togoKey,
       filters: _classPrivateFieldGet(this, _dxCondition).queryFilters,
@@ -11676,10 +7031,8 @@
       cancelToken: _classPrivateFieldGet(this, _source$1).token
     }).then(function (response) {
       _classPrivateFieldSet(_this5, _queryIds, response.data);
-
       if (_classPrivateFieldGet(_this5, _queryIds).length <= 0) {
         _classPrivateMethodGet(_this5, _complete$1, _complete2$1).call(_this5, false);
-
         var customEvent = new CustomEvent(addNextRows, {
           detail: {
             tableData: _this5,
@@ -11691,27 +7044,19 @@
         DefaultEventEmitter$1.dispatchEvent(customEvent);
         return;
       }
-
       _classPrivateFieldGet(_this5, _ROOT$2).dataset.status = 'load rows';
       _classPrivateFieldGet(_this5, _STATUS).textContent = 'Getting data';
-
       _classPrivateFieldGet(_this5, _progressIndicator$1).setIndicator(undefined, _classPrivateFieldGet(_this5, _queryIds).length);
-
       _classPrivateMethodGet(_this5, _updateDataButton, _updateDataButton2).call(_this5, _classPrivateFieldGet(_this5, _BUTTON_LEFT), dataButtonModes.get('pause'));
-
       _classPrivateMethodGet(_this5, _getProperties, _getProperties2).call(_this5);
     }).catch(function (error) {
       console.error(error);
-
       _classPrivateMethodGet(_this5, _handleError, _handleError2).call(_this5, error);
     });
   }
-
   function _getProperties2() {
     var _this6 = this;
-
     _classPrivateFieldSet(this, _isLoading, true);
-
     var startTime = Date.now();
     axios.post(App$1.getApiUrl('dataframe'), getApiParameter('dataframe', {
       dataset: _classPrivateFieldGet(this, _dxCondition).togoKey,
@@ -11722,19 +7067,15 @@
       cancelToken: _classPrivateFieldGet(this, _source$1).token
     }).then(function (response) {
       var _classPrivateFieldGet2;
-
       var offset = _this6.offset;
-
       (_classPrivateFieldGet2 = _classPrivateFieldGet(_this6, _rows)).push.apply(_classPrivateFieldGet2, _toConsumableArray(response.data));
-
       _classPrivateFieldSet(_this6, _isCompleted, _this6.offset >= _classPrivateFieldGet(_this6, _queryIds).length);
-
       _classPrivateFieldGet(_this6, _progressIndicator$1).updateProgressBar({
         offset: _this6.offset,
         startTime: startTime
-      }); // dispatch event
+      });
 
-
+      // dispatch event
       var customEvent2 = new CustomEvent(addNextRows, {
         detail: {
           tableData: _this6,
@@ -11743,79 +7084,58 @@
           done: _classPrivateFieldGet(_this6, _isCompleted)
         }
       });
-      DefaultEventEmitter$1.dispatchEvent(customEvent2); // turn off after finished
-
+      DefaultEventEmitter$1.dispatchEvent(customEvent2);
+      // turn off after finished
       if (_classPrivateFieldGet(_this6, _isCompleted)) {
         _classPrivateMethodGet(_this6, _complete$1, _complete2$1).call(_this6);
-
         return;
       }
-
       if (_classPrivateFieldGet(_this6, _isLoading)) _classPrivateMethodGet(_this6, _getProperties, _getProperties2).call(_this6);
     }).catch(function (error) {
       _classPrivateMethodGet(_this6, _handleError, _handleError2).call(_this6, error);
     });
   }
-
   function _complete2$1() {
     var withData = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
     _classPrivateFieldGet(this, _ROOT$2).dataset.status = 'complete';
     _classPrivateFieldGet(this, _STATUS).textContent = withData ? 'Complete' : 'No Data Found';
-
     _classPrivateFieldGet(this, _ROOT$2).classList.remove('-fetching');
-
     _classPrivateFieldGet(this, _STATUS).classList.remove('-flickering');
-
     if (withData) _classPrivateMethodGet(this, _setDownloadButtons, _setDownloadButtons2).call(this);
   }
   Object.assign(TableData.prototype, mixin);
 
   var _tableData = /*#__PURE__*/new WeakMap();
-
   var _ROOT$1 = /*#__PURE__*/new WeakMap();
-
   var _CONDITIONS_CONTAINER = /*#__PURE__*/new WeakMap();
-
   var _setTableData = /*#__PURE__*/new WeakSet();
-
   var _selectTableData = /*#__PURE__*/new WeakSet();
-
   var _deleteTableData = /*#__PURE__*/new WeakSet();
-
   var ConditionsController = /*#__PURE__*/_createClass(function ConditionsController(_elm) {
     var _this = this;
-
     _classCallCheck(this, ConditionsController);
-
     _classPrivateMethodInitSpec(this, _deleteTableData);
-
     _classPrivateMethodInitSpec(this, _selectTableData);
-
     _classPrivateMethodInitSpec(this, _setTableData);
-
     _classPrivateFieldInitSpec(this, _tableData, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _ROOT$1, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _CONDITIONS_CONTAINER, {
       writable: true,
       value: void 0
     });
+    _classPrivateFieldSet(this, _tableData, []);
 
-    _classPrivateFieldSet(this, _tableData, []); // references
-
-
+    // references
     _classPrivateFieldSet(this, _ROOT$1, _elm);
+    _classPrivateFieldSet(this, _CONDITIONS_CONTAINER, _elm.querySelector(':scope > .conditions'));
 
-    _classPrivateFieldSet(this, _CONDITIONS_CONTAINER, _elm.querySelector(':scope > .conditions')); // event listener
-
-
+    // event listener
     DefaultEventEmitter$1.addEventListener(completeQueryParameter, function (e) {
       return _classPrivateMethodGet(_this, _setTableData, _setTableData2).call(_this, e.detail);
     });
@@ -11824,54 +7144,47 @@
     });
     DefaultEventEmitter$1.addEventListener(deleteTableData, function (e) {
       return _classPrivateMethodGet(_this, _deleteTableData, _deleteTableData2).call(_this, e.detail);
-    }); // observe number of conditions
+    });
 
+    // observe number of conditions
     var config = {
       attributes: false,
       childList: true,
       subtree: false
     };
-
     var callback = function callback(mutationsList, observer) {
       _classPrivateFieldGet(_this, _ROOT$1).dataset.numberOfConditions = _classPrivateFieldGet(_this, _CONDITIONS_CONTAINER).childNodes.length;
     };
-
     var observer = new MutationObserver(callback);
     observer.observe(_classPrivateFieldGet(this, _CONDITIONS_CONTAINER), config);
   }
+
   /* private methods */
 
   /**
-   * 
-   * @param {DXCondition} dxCondition 
-   */
-  );
-
+   *
+   * @param {DXCondition} dxCondition
+   */);
   function _setTableData2(dxCondition) {
     // find matching condition from already existing conditions
     var sameConditionTableData = _classPrivateFieldGet(this, _tableData).find(function (tableData) {
       return tableData.dxCondition.checkSameCondition(dxCondition);
     });
-
     if (sameConditionTableData) {
       // use existing table data
       sameConditionTableData.select();
     } else {
       // make new table data
       var elm = document.createElement('div');
-
       _classPrivateFieldGet(this, _CONDITIONS_CONTAINER).insertAdjacentElement('afterbegin', elm);
-
       _classPrivateFieldGet(this, _tableData).push(new TableData(dxCondition, elm));
     }
   }
-
   function _selectTableData2(selectedTableData) {
-    document.body.dataset.display = 'results'; // deselect
-
+    document.body.dataset.display = 'results';
+    // deselect
     var _iterator = _createForOfIteratorHelper(_classPrivateFieldGet(this, _tableData)),
-        _step;
-
+      _step;
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done;) {
         var tableData = _step.value;
@@ -11883,10 +7196,8 @@
       _iterator.f();
     }
   }
-
   function _deleteTableData2(tableData) {
     var index = _classPrivateFieldGet(this, _tableData).indexOf(tableData);
-
     _classPrivateFieldGet(this, _tableData).splice(index, 1);
   }
 
@@ -12118,6 +7429,8 @@
    *        A function to determine if the error can be retried
    * @param {Function} [defaultOptions.retryDelay=noDelay]
    *        A function to determine the delay between retry requests
+   * @param {Function} [defaultOptions.onRetry=()=>{}]
+   *        A function to get notified when a retry occurs
    */
 
 
@@ -12160,7 +7473,8 @@
           retries = 3,
           retryCondition = isNetworkOrIdempotentRequestError,
           retryDelay = noDelay,
-          shouldResetTimeout = false
+          shouldResetTimeout = false,
+          onRetry = () => {}
         } = getRequestOptions(config, defaultOptions);
         var currentState = getCurrentState(config);
 
@@ -12178,6 +7492,7 @@
           }
 
           config.transformRequest = [data => data];
+          onRetry(currentState.retryCount, error, config);
           return new Promise(resolve => setTimeout(() => resolve(axios(config)), delay));
         }
 
@@ -12198,93 +7513,60 @@
   axiosRetry.isRetryableError = isRetryableError;
 
   var timeOutError = 'ECONNABORTED';
-
   var _ROOT = /*#__PURE__*/new WeakMap();
-
   var _BODY = /*#__PURE__*/new WeakMap();
-
   var _USER_IDS = /*#__PURE__*/new WeakMap();
-
   var _progressIndicator = /*#__PURE__*/new WeakMap();
-
   var _source = /*#__PURE__*/new WeakMap();
-
   var _offset = /*#__PURE__*/new WeakMap();
-
   var _errorCount = /*#__PURE__*/new WeakMap();
-
   var _fetch = /*#__PURE__*/new WeakSet();
-
   var _prepareProgressIndicator = /*#__PURE__*/new WeakSet();
-
   var _getAttribute = /*#__PURE__*/new WeakSet();
-
   var _handleProp = /*#__PURE__*/new WeakSet();
-
   var _complete = /*#__PURE__*/new WeakSet();
-
   var _resetCounters = /*#__PURE__*/new WeakSet();
-
   var _reset = /*#__PURE__*/new WeakSet();
-
   var _clear = /*#__PURE__*/new WeakSet();
-
   var UploadUserIDsView = /*#__PURE__*/_createClass(function UploadUserIDsView(elm) {
     var _this = this;
-
     _classCallCheck(this, UploadUserIDsView);
-
     _classPrivateMethodInitSpec(this, _clear);
-
     _classPrivateMethodInitSpec(this, _reset);
-
     _classPrivateMethodInitSpec(this, _resetCounters);
-
     _classPrivateMethodInitSpec(this, _complete);
-
     _classPrivateMethodInitSpec(this, _handleProp);
-
     _classPrivateMethodInitSpec(this, _getAttribute);
-
     _classPrivateMethodInitSpec(this, _prepareProgressIndicator);
-
     _classPrivateMethodInitSpec(this, _fetch);
-
     _classPrivateFieldInitSpec(this, _ROOT, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _BODY, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _USER_IDS, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _progressIndicator, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _source, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _offset, {
       writable: true,
       value: void 0
     });
-
     _classPrivateFieldInitSpec(this, _errorCount, {
       writable: true,
       value: void 0
     });
-
     // TODO: set axios settings in common file
     // TODO: set 'user cancel' as a const in axios setting file
     axios.defaults.timeout = 120000;
@@ -12296,94 +7578,70 @@
       },
       retryCondition: function retryCondition(error) {
         var _error$response;
-
         return error.code === timeOutError || [500, 503].includes((_error$response = error.response) === null || _error$response === void 0 ? void 0 : _error$response.status);
       }
     });
-
     _classPrivateFieldSet(this, _ROOT, elm);
-
     _classPrivateFieldSet(this, _offset, 0);
-
     _classPrivateFieldSet(this, _errorCount, 0);
-
     _classPrivateFieldSet(this, _BODY, document.querySelector('body'));
-
     var inner = elm.querySelector(':scope > .inner');
-
     _classPrivateFieldSet(this, _USER_IDS, inner.querySelector(':scope > textarea'));
-
     elm.appendChild(document.createElement('div'));
+    _classPrivateFieldSet(this, _progressIndicator, new ProgressIndicator(elm.lastChild, 'simple'));
 
-    _classPrivateFieldSet(this, _progressIndicator, new ProgressIndicator(elm.lastChild, 'simple')); // attach events
-
-
+    // attach events
     inner.querySelector(':scope > .title > .button > button').addEventListener('click', function () {
       _classPrivateFieldGet(_this, _USER_IDS).value = _classPrivateFieldGet(_this, _USER_IDS).placeholder.replace('e.g. ', '');
-
       _classPrivateFieldGet(_this, _USER_IDS).dispatchEvent(new Event('change'));
-
       submitButton.dispatchEvent(new Event('click'));
     });
     var buttons = inner.querySelector(':scope > .buttons');
     var submitButton = buttons.querySelector(':scope > button:nth-child(1)');
     submitButton.addEventListener('click', function (e) {
-      e.stopPropagation(); // clear after 2nd execution
-
+      e.stopPropagation();
+      // clear after 2nd execution
       if (_classPrivateFieldGet(_this, _source)) _classPrivateMethodGet(_this, _reset, _reset2).call(_this, true);
-
       _classPrivateMethodGet(_this, _fetch, _fetch2).call(_this);
-
       return false;
     });
     buttons.querySelector(':scope > button:nth-child(2)').addEventListener('click', function (e) {
       e.stopPropagation();
-
       _classPrivateMethodGet(_this, _clear, _clear2).call(_this);
-
       return false;
-    }); // event listeners
+    });
 
+    // event listeners
     _classPrivateFieldGet(this, _USER_IDS).addEventListener('change', function () {
       ConditionBuilder$1.setUserIds(_classPrivateFieldGet(_this, _USER_IDS).value);
-    }); // this.#USER_IDS.addEventListener('keyup', e => {
+    });
+    // this.#USER_IDS.addEventListener('keyup', e => {
     //   if (e.keyCode === 13) this.#fetch();
     // });
-
-
     DefaultEventEmitter$1.addEventListener(clearCondition, _classPrivateMethodGet(this, _clear, _clear2).bind(this));
-  } // private methods
-  );
+  }
 
+  // private methods
+  );
   function _fetch2() {
     var _this2 = this;
-
     if (_classPrivateFieldGet(this, _USER_IDS).value === '') return;
-
     _classPrivateMethodGet(this, _prepareProgressIndicator, _prepareProgressIndicator2).call(this);
-
     Records$1.attributes.forEach(function (attribute) {
       // TODO: この処理は Attribute に移行
       _classPrivateMethodGet(_this2, _getAttribute, _getAttribute2).call(_this2, attribute);
     });
   }
-
   function _prepareProgressIndicator2() {
     // reset axios cancellation
     var CancelToken = axios.CancelToken;
-
     _classPrivateFieldSet(this, _source, CancelToken.source());
-
     _classPrivateFieldGet(this, _ROOT).classList.add('-fetching');
-
     _classPrivateFieldGet(this, _ROOT).dataset.status = '';
-
     _classPrivateFieldGet(this, _progressIndicator).setIndicator('In progress', Records$1.attributes.length);
   }
-
   function _getAttribute2(_ref) {
     var _this3 = this;
-
     var id = _ref.id;
     axios.post(App$1.getApiUrl('locate'), getApiParameter('locate', {
       attribute: id,
@@ -12394,10 +7652,9 @@
       cancelToken: _classPrivateFieldGet(this, _source).token
     }).then(function (response) {
       _classPrivateFieldGet(_this3, _BODY).classList.add('-showuserids');
+      _classPrivateMethodGet(_this3, _handleProp, _handleProp2).call(_this3);
 
-      _classPrivateMethodGet(_this3, _handleProp, _handleProp2).call(_this3); // dispatch event
-
-
+      // dispatch event
       var customEvent = new CustomEvent(setUserFilters, {
         detail: {
           attributeId: id,
@@ -12407,7 +7664,6 @@
       DefaultEventEmitter$1.dispatchEvent(customEvent);
     }).catch(function (error) {
       var _this$errorCount;
-
       if (axios.isCancel && error.message === 'user cancel') return;
       var customEvent = new CustomEvent(toggleErrorUserFilters, {
         detail: {
@@ -12417,9 +7673,7 @@
         }
       });
       DefaultEventEmitter$1.dispatchEvent(customEvent);
-
       _classPrivateMethodGet(_this3, _handleProp, _handleProp2).call(_this3);
-
       _classPrivateFieldSet(_this3, _errorCount, (_this$errorCount = _classPrivateFieldGet(_this3, _errorCount), _this$errorCount++, _this$errorCount));
     }).then(function () {
       if (_classPrivateFieldGet(_this3, _offset) >= Records$1.attributes.length) {
@@ -12427,38 +7681,27 @@
       }
     });
   }
-
   function _handleProp2() {
     _classPrivateFieldSet(this, _offset, _classPrivateFieldGet(this, _offset) + 1);
-
     _classPrivateFieldGet(this, _progressIndicator).updateProgressBar({
       offset: _classPrivateFieldGet(this, _offset)
     });
   }
-
   function _complete2() {
     var withError = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     var msg = withError ? "Failed to map IDs for ".concat(_classPrivateFieldGet(this, _errorCount), " attribute").concat(_classPrivateFieldGet(this, _errorCount) > 1 ? 's' : '') : 'Mapping completed';
-
     _classPrivateFieldGet(this, _progressIndicator).setIndicator(msg, undefined, withError);
-
     _classPrivateFieldGet(this, _ROOT).dataset.status = 'complete';
   }
-
   function _resetCounters2() {
     _classPrivateFieldSet(this, _offset, 0);
-
     _classPrivateFieldSet(this, _errorCount, 0);
   }
-
   function _reset2() {
     var _classPrivateFieldGet2;
-
     var isPreparing = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     (_classPrivateFieldGet2 = _classPrivateFieldGet(this, _source)) === null || _classPrivateFieldGet2 === void 0 ? void 0 : _classPrivateFieldGet2.cancel('user cancel');
-
     _classPrivateMethodGet(this, _resetCounters, _resetCounters2).call(this);
-
     var customEvent = new CustomEvent(clearUserFilters);
     DefaultEventEmitter$1.dispatchEvent(customEvent);
     var customEvent2 = new CustomEvent(toggleErrorUserFilters, {
@@ -12467,114 +7710,79 @@
       }
     });
     DefaultEventEmitter$1.dispatchEvent(customEvent2);
-
     _classPrivateFieldGet(this, _progressIndicator).reset();
-
     _classPrivateFieldGet(this, _BODY).classList.remove('-showuserids');
-
     if (isPreparing) return;
     ConditionBuilder$1.setUserIds();
     _classPrivateFieldGet(this, _USER_IDS).value = '';
   }
-
   function _clear2() {
     _classPrivateMethodGet(this, _reset, _reset2).call(this);
-
     _classPrivateMethodGet(this, _complete, _complete2).call(this);
   }
 
   var _viewModes = /*#__PURE__*/new WeakMap();
-
   var _backend = /*#__PURE__*/new WeakMap();
-
   var _colorWhite = /*#__PURE__*/new WeakMap();
-
   var _colorLightGray = /*#__PURE__*/new WeakMap();
-
   var _colorSilver = /*#__PURE__*/new WeakMap();
-
   var _colorGray = /*#__PURE__*/new WeakMap();
-
   var _colorDarkGray = /*#__PURE__*/new WeakMap();
-
   var _colorLampBlack = /*#__PURE__*/new WeakMap();
-
   var _makeCategoryViews = /*#__PURE__*/new WeakSet();
-
   var _defineAllTracksCollapseButton = /*#__PURE__*/new WeakSet();
-
   var App = /*#__PURE__*/function () {
     function App() {
       _classCallCheck(this, App);
-
       _classPrivateMethodInitSpec(this, _defineAllTracksCollapseButton);
-
       _classPrivateMethodInitSpec(this, _makeCategoryViews);
-
       _classPrivateFieldInitSpec(this, _viewModes, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _backend, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _colorWhite, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _colorLightGray, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _colorSilver, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _colorGray, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _colorDarkGray, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldInitSpec(this, _colorLampBlack, {
         writable: true,
         value: void 0
       });
-
       _classPrivateFieldSet(this, _colorWhite, new h('white').to('srgb'));
-
       _classPrivateFieldSet(this, _colorLightGray, new h('--color-light-gray').to('srgb'));
-
       _classPrivateFieldSet(this, _colorLightGray, new h('--color-light-gray').to('srgb'));
-
       _classPrivateFieldSet(this, _colorSilver, new h('--color-silver').to('srgb'));
-
       _classPrivateFieldSet(this, _colorGray, new h('--color-gray').to('srgb'));
-
       _classPrivateFieldSet(this, _colorDarkGray, new h('--color-dark-gray').to('srgb'));
-
       _classPrivateFieldSet(this, _colorLampBlack, new h('--color-lamp-black').to('srgb'));
     }
-
     _createClass(App, [{
       key: "ready",
       value: function ready(config) {
         var _this = this;
-
-        var body = document.body; // view modes
-
+        var body = document.body;
+        // view modes
         _classPrivateFieldSet(this, _viewModes, {});
-
         document.querySelectorAll('#Properties > .inner > .header > nav .viewmodecontroller input[type="checkbox"]').forEach(function (checkbox) {
           _classPrivateFieldGet(_this, _viewModes)[checkbox.value] = checkbox.checked;
           checkbox.addEventListener('click', function () {
@@ -12585,53 +7793,51 @@
             });
             DefaultEventEmitter$1.dispatchEvent(customEvent);
           });
-        }); // events
-
+        });
+        // events
         DefaultEventEmitter$1.addEventListener(restoreParameters, function () {
           document.querySelector('#App > .loading-view').classList.remove('-shown');
-        }); // set up views
-
+        });
+        // // set up views
         new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
         new ConditionsController(document.querySelector('#Conditions'));
         new ResultsTable(document.querySelector('#ResultsTable'));
         new ResultDetailModal();
         new BalloonView();
-        new UploadUserIDsView(document.querySelector('#UploadUserIDsView')); // load config json
-
+        new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
+        // // load config json
         Promise.all([fetch(config.TEMPLATES), fetch(config.BACKEND), fetch(config.ATTRIBUTES)]).then(function (responces) {
           return Promise.all(responces.map(function (responce) {
             return responce.json();
           }));
         }).then(function (_ref) {
           var _ref2 = _slicedToArray(_ref, 3),
-              templates = _ref2[0],
-              backend = _ref2[1],
-              attributes = _ref2[2];
-
-          Records$1.setAttributes(attributes); // define primary keys
-
+            templates = _ref2[0],
+            backend = _ref2[1],
+            attributes = _ref2[2];
+          Records$1.setAttributes(attributes);
+          // define primary keys
           var customEvent = new CustomEvent(defineTogoKey, {
             detail: {
               datasets: attributes.datasets
             }
           });
-          DefaultEventEmitter$1.dispatchEvent(customEvent); // initialize stanza manager
-
-          StanzaManager$1.init(templates); // aggregate
-
+          DefaultEventEmitter$1.dispatchEvent(customEvent);
+          // initialize stanza manager
+          StanzaManager$1.init(templates);
+          // aggregate
           _classPrivateFieldSet(_this, _backend, Object.freeze(backend));
-
           _classPrivateMethodGet(_this, _makeCategoryViews, _makeCategoryViews2).call(_this);
-
           _classPrivateMethodGet(_this, _defineAllTracksCollapseButton, _defineAllTracksCollapseButton2).call(_this);
-
           ConditionBuilder$1.init();
         });
-      } // private methods
+      }
 
+      // // private methods
     }, {
       key: "getApiUrl",
-      value: // public methods
+      value:
+      // public methods
 
       /**
        *
@@ -12640,13 +7846,15 @@
        */
       function getApiUrl(api) {
         return _classPrivateFieldGet(this, _backend)[api].url;
-      } // accessor
+      }
 
+      // accessor
     }, {
       key: "viewModes",
       get: function get() {
         return _classPrivateFieldGet(this, _viewModes);
-      } // get aggregate() {
+      }
+      // get aggregate() {
       //   return this.#backend.aggregate.url;
       // }
       // get dataframe() {
@@ -12655,7 +7863,6 @@
       // get locate() {
       //   return this.#backend.locate.url;
       // }
-
     }, {
       key: "colorWhite",
       get: function get() {
@@ -12687,10 +7894,8 @@
         return _classPrivateFieldGet(this, _colorLampBlack);
       }
     }]);
-
     return App;
   }();
-
   function _makeCategoryViews2() {
     var conceptsContainer = document.querySelector('#Properties > .inner > .concepts');
     Records$1.categories.forEach(function (category) {
@@ -12699,12 +7904,10 @@
       conceptsContainer.insertAdjacentElement('beforeend', elm);
     });
   }
-
   function _defineAllTracksCollapseButton2() {
     var collapsebutton = document.querySelector('#Properties > .inner > header > .title > h2.collapsebutton');
     collapsebutton.addEventListener('click', function (e) {
       var customEvent = new CustomEvent(allTracksCollapse);
-
       if (collapsebutton.classList.contains('-spread')) {
         collapsebutton.classList.remove('-spread');
         customEvent = new CustomEvent(allTracksCollapse, {
@@ -12716,11 +7919,9 @@
           detail: true
         });
       }
-
       DefaultEventEmitter$1.dispatchEvent(customEvent);
     });
   }
-
   var App$1 = new App();
 
   fetch('./config.json').then(function (response) {
@@ -12730,5 +7931,5 @@
     App$1.ready(api);
   });
 
-}));
+})();
 //# sourceMappingURL=main.js.map
