@@ -4,7 +4,7 @@ import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import {getApiParameter} from '../functions/queryTemplates';
 import ProgressIndicator from './ProgressIndicator';
-import ConditionAnnotation from './ConditionAnnotation';
+// import ConditionAnnotation from './ConditionAnnotation';
 import {mixin} from './TableDataMixin.js';
 import * as event from '../events';
 // import axios from 'axios';

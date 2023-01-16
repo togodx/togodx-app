@@ -1,8 +1,7 @@
-import Records from "./Records";
-import ColumnView from "./ColumnView";
+import Records from './Records';
+import ColumnView from './ColumnView';
 
 export default class ColumnSelectorView {
-
   #attribute;
   #items;
   #columnViews;
@@ -13,7 +12,6 @@ export default class ColumnSelectorView {
   #CONTAINED_VIEW;
 
   constructor(elm, attribute, items) {
-
     this.#attribute = attribute;
     this.#items = {};
     this.#columnViews = [];
@@ -40,7 +38,6 @@ export default class ColumnSelectorView {
     this.#appendSubColumn(columnView, depth);
   }
 
-
   // private methods
 
   #setItems(items, depth) {
@@ -48,13 +45,15 @@ export default class ColumnSelectorView {
       this.#items[item.node] = {
         depth,
         selected: false,
-      }
+      };
     }
   }
 
   #getColumn(node, depth) {
     return new Promise((resolve, reject) => {
-      const columnView = this.#columnViews.find(columnView => columnView.parentNode === node);
+      const columnView = this.#columnViews.find(
+        columnView => columnView.parentNode === node
+      );
       if (columnView) {
         resolve(columnView);
       } else {
@@ -87,7 +86,7 @@ export default class ColumnSelectorView {
       .catch(error => {
         // TODO: エラー処理
         this.#LOADING_VIEW.classList.remove('-shown');
-        console.error(error)
+        console.error(error);
         throw Error(error);
       });
   }
@@ -102,37 +101,43 @@ export default class ColumnSelectorView {
       this.#CONTAINER.scrollTo({
         top: 0,
         left: left,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
-    };
+    }
   }
 
   #setSelectedFilter(node, selected) {
     this.#items[node].selected = selected;
   }
 
-
   // public methods
 
   drillDown(node, depth) {
     // delete an existing lower columns
     if (this.#currentColumnViews.length > depth + 1) {
-      for (let depth2 = depth + 1; depth2 < this.#currentColumnViews.length; depth2++) {
+      for (
+        let depth2 = depth + 1;
+        depth2 < this.#currentColumnViews.length;
+        depth2++
+      ) {
         const column = this.#currentColumnViews[depth2];
         if (column.rootNode.parentNode) column.rootNode.remove();
       }
     }
     // deselect siblings
-    const selectedItemKeys = Object.keys(this.#items).filter(id => this.#items[id].selected && this.#items[id].depth >= depth);
+    const selectedItemKeys = Object.keys(this.#items).filter(
+      id => this.#items[id].selected && this.#items[id].depth >= depth
+    );
     for (const key of selectedItemKeys) {
       this.#items[key].selected = false;
-      this.#currentColumnViews[depth].rootNode.querySelector(`[data-id="${key}"]`)?.classList.remove('-selected');
+      this.#currentColumnViews[depth].rootNode
+        .querySelector(`[data-id="${key}"]`)
+        ?.classList.remove('-selected');
     }
     // get lower column
     this.#setSelectedFilter(node, true);
     this.#setSubColumn(node, depth + 1);
   }
-
 
   // accessors
 
@@ -151,5 +156,4 @@ export default class ColumnSelectorView {
   get isShowing() {
     return this.#CONTAINED_VIEW.classList.contains('-spread');
   }
-
 }

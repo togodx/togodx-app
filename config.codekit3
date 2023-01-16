@@ -1426,7 +1426,7 @@
         "optionString" : "{'exceptMethods': []}"
       },
       "comma-dangle" : {
-        "active" : 1,
+        "active" : 0,
         "optionString" : "'never'"
       },
       "comma-spacing" : {

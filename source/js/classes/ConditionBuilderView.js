@@ -1,11 +1,11 @@
 import ConditionBuilder from './ConditionBuilder';
 import DefaultEventEmitter from './DefaultEventEmitter';
 import StackingConditionView from './StackingConditionView';
-import ConditionAnnotation from './ConditionAnnotation';
+// import ConditionAnnotation from './ConditionAnnotation';
 import ConditionFilter from './ConditionFilter';
 import * as event from '../events';
 
-const POLLING_DURATION = 100;
+// const POLLING_DURATION = 100;
 
 export default class ConditionBuilderView {
   #properties;

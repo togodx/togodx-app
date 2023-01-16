@@ -402,6 +402,7 @@
     _excluded6 = ["format", "commas", "inGamut"],
     _excluded7 = ["format"],
     _excluded8 = ["maxDeltaE", "deltaEMethod", "steps", "maxSteps"];
+  /* eslint-disable */
   function t(t, e) {
     var r = t.length;
     Array.isArray(t[0]) || (t = [t]), Array.isArray(e[0]) || (e = e.map(function (t) {
@@ -3255,15 +3256,15 @@
       key: "setUserIds",
       value: function setUserIds() {
         var ids = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-        _classPrivateFieldSet(this, _userIds, ids.replace(/,/g, " ").split(/\s+/).join(','));
+        _classPrivateFieldSet(this, _userIds, ids.replace(/,/g, ' ').split(/\s+/).join(','));
         // post processing (permalink, evaluate)
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
 
       /**
-       * 
-       * @param {ConditionAnnotation} conditionAnnotation 
-       * @param {boolean} isFinal 
+       *
+       * @param {ConditionAnnotation} conditionAnnotation
+       * @param {boolean} isFinal
        */
     }, {
       key: "addAnnotation",
@@ -3311,10 +3312,10 @@
       }
 
       /**
-       * 
-       * @param {ConditionAnnotation} conditionAnnotation 
-       * @param {boolean} isFinal 
-       * @returns 
+       *
+       * @param {ConditionAnnotation} conditionAnnotation
+       * @param {boolean} isFinal
+       * @returns
        */
     }, {
       key: "removeAnnotation",
@@ -3365,9 +3366,9 @@
       }
 
       /**
-       * 
+       *
        * @param {ConditionAnnotation[]} annotations
-       * @param {boolean} isFinal 
+       * @param {boolean} isFinal
        */
     }, {
       key: "setAnnotation",
@@ -3560,7 +3561,7 @@
   }
   function _getChildNodes2(attributeId, node) {
     return new Promise(function (resolve, reject) {
-      Records$1.fetchAttributeFilters(attributeId, node).then(function (filters) {
+      Records$1.fetchAttributeFilters(attributeId, node).then(function () {
         resolve();
       }).catch(function (error) {
         reject(error);
@@ -3787,6 +3788,7 @@
     });
   }
 
+  // const POLLING_DURATION = 100;
   var _properties = /*#__PURE__*/new WeakMap();
   var _propertyFilters = /*#__PURE__*/new WeakMap();
   var _isDefined = /*#__PURE__*/new WeakMap();
@@ -4931,14 +4933,11 @@
     // references
     var selectorController = selector.querySelector(':scope > .inner > .controller');
     var handlesArray = Array.from(_classPrivateFieldGet(this, _SELECTING_AREA).querySelectorAll(':scope > .handle'));
-    ({
-      left: handlesArray.filter(function (handle) {
-        return handle.dataset.direction === 'start';
-      }),
-      right: handlesArray.filter(function (handle) {
-        return handle.dataset.direction === 'end';
-      })
-    });
+    // const handles = {
+    //   left: handlesArray.filter(handle => handle.dataset.direction === 'start'),
+    //   right: handlesArray.filter(handle => handle.dataset.direction === 'end')
+    // };
+
     var init = function init(e) {
       e.stopImmediatePropagation();
       totalWidth = selectorController.getBoundingClientRect().width;
@@ -4999,7 +4998,7 @@
           case 'drag':
             {
               var translation = (x - startX) / _classPrivateFieldGet(_this2, _unit);
-              if (translation < -.5) translation = Math.floor(translation + .5);else if (.5 < translation) translation = Math.ceil(translation - .5);else translation = 0;
+              if (translation < -0.5) translation = Math.floor(translation + 0.5);else if (0.5 < translation) translation = Math.ceil(translation - 0.5);else translation = 0;
               translation -= initialStart + translation < 0 ? initialStart + translation : 0;
               translation -= initialStart + translation + initialWidth > _classPrivateFieldGet(_this2, _target).items.length ? initialStart + translation + initialWidth - _classPrivateFieldGet(_this2, _target).items.length : 0;
               range = [initialStart + translation, initialStart + translation + initialWidth];
@@ -5011,7 +5010,7 @@
                 _end = initialEnd;
               switch (direction) {
                 case 'start':
-                  _start += Math.floor((x - startX) / _classPrivateFieldGet(_this2, _unit) + .5);
+                  _start += Math.floor((x - startX) / _classPrivateFieldGet(_this2, _unit) + 0.5);
                   if (_end < _start) {
                     var _ref3 = [_end, _start];
                     _start = _ref3[0];
@@ -5019,7 +5018,7 @@
                   }
                   break;
                 case 'end':
-                  _end += Math.ceil((x - startX) / _classPrivateFieldGet(_this2, _unit) - .5);
+                  _end += Math.ceil((x - startX) / _classPrivateFieldGet(_this2, _unit) - 0.5);
                   if (_end < _start) {
                     var _ref4 = [_end, _start];
                     _start = _ref4[0];
@@ -5171,7 +5170,7 @@
       _classPrivateFieldSet(this, _GRIDS, histogram.querySelectorAll(':scope > .gridcontainer > .grid'));
 
       // event
-      DefaultEventEmitter$1.addEventListener(changeViewModes, function (e) {
+      DefaultEventEmitter$1.addEventListener(changeViewModes, function () {
         return _this.update();
       });
 
@@ -6109,7 +6108,7 @@
       });
     });
   }
-  function _failed2(tableData) {
+  function _failed2() {
     _classPrivateFieldGet(this, _ROOT$6).classList.add('-complete');
     _classPrivateFieldGet(this, _LOADING_VIEW).classList.remove('-shown');
   }
@@ -6398,7 +6397,7 @@
     var _this3 = this;
     var arrow = document.createElement('div');
     arrow.classList.add('arrow', "-".concat(direction.toLowerCase()));
-    arrow.addEventListener('click', function (e) {
+    arrow.addEventListener('click', function () {
       var arrowMovement = {
         dir: direction,
         curX: parseInt(props.dataX),
@@ -6428,7 +6427,7 @@
       });
       createPopupEvent(targetEntry, movePopup);
     } catch (error) {
-      console.log('Movement out of bounds');
+      console.error('Movement out of bounds');
     }
   }
   function _getTargetEntry2(move) {
@@ -7207,7 +7206,7 @@
       childList: true,
       subtree: false
     };
-    var callback = function callback(mutationsList, observer) {
+    var callback = function callback() {
       _classPrivateFieldGet(_this, _ROOT$1).dataset.numberOfConditions = _classPrivateFieldGet(_this, _CONDITIONS_CONTAINER).childNodes.length;
     };
     var observer = new MutationObserver(callback);
@@ -7778,7 +7777,6 @@
 
   var GlobalToolBar = /*#__PURE__*/_createClass(function GlobalToolBar(elm) {
     _classCallCheck(this, GlobalToolBar);
-    console.log(elm);
     var buttons = _toConsumableArray(elm.querySelectorAll(':scope > ul > li > button'));
     var filter = buttons.find(function (button) {
       return button.dataset.button === 'filter';
@@ -7982,7 +7980,7 @@
   }
   function _defineAllTracksCollapseButton2() {
     var collapsebutton = document.querySelector('#Properties > .inner > header > .title > h2.collapsebutton');
-    collapsebutton.addEventListener('click', function (e) {
+    collapsebutton.addEventListener('click', function () {
       var customEvent = new CustomEvent(allTracksCollapse);
       if (collapsebutton.classList.contains('-spread')) {
         collapsebutton.classList.remove('-spread');

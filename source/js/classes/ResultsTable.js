@@ -323,7 +323,7 @@ export default class ResultsTable {
     });
   }
 
-  #failed(tableData) {
+  #failed() {
     this.#ROOT.classList.add('-complete');
     this.#LOADING_VIEW.classList.remove('-shown');
   }

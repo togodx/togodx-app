@@ -1,7 +1,5 @@
 export default class GlobalToolBar {
   constructor(elm) {
-    console.log(elm);
-
     const buttons = [...elm.querySelectorAll(':scope > ul > li > button')];
     const filter = buttons.find(button => button.dataset.button === 'filter');
     const annotation = buttons.find(

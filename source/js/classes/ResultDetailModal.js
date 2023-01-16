@@ -89,14 +89,17 @@ export default class ResultDetailModal {
     const categoryLabel = isPrimaryKey
       ? keys.dataKey
       : `<span class="category _category-background-color-strong">${category.label}</span>`;
-    const attributeLable = `<span class="attribute">${isPrimaryKey ? keys.uniqueEntryId : mainCategory.label}</span>`;
+    const attributeLable = `<span class="attribute">${
+      isPrimaryKey ? keys.uniqueEntryId : mainCategory.label
+    }</span>`;
     // for continuous value (distribution), do not output label
     const subCategory = isPrimaryKey
       ? ''
       : Records.getFilter(keys.mainCategoryId, keys.subCategoryId);
-    const valueLabel = attribute?.datamodel !== 'distribution' && subCategory?.label
-      ? `<span class="value">${subCategory.label}</span>`
-      : '';
+    const valueLabel =
+      attribute?.datamodel !== 'distribution' && subCategory?.label
+        ? `<span class="value">${subCategory.label}</span>`
+        : '';
     const header = document.createElement('header');
     header.innerHTML = `
       <div class="label">
@@ -149,7 +152,7 @@ export default class ResultDetailModal {
   #arrow(direction, props) {
     const arrow = document.createElement('div');
     arrow.classList.add('arrow', `-${direction.toLowerCase()}`);
-    arrow.addEventListener('click', e => {
+    arrow.addEventListener('click', () => {
       const arrowMovement = {
         dir: direction,
         curX: parseInt(props.dataX),
@@ -221,7 +224,7 @@ export default class ResultDetailModal {
       targetEntry.scrollIntoView({block: 'center'});
       createPopupEvent(targetEntry, event.movePopup);
     } catch (error) {
-      console.log('Movement out of bounds');
+      console.error('Movement out of bounds');
     }
   }
 

@@ -109,7 +109,7 @@ class App {
     const collapsebutton = document.querySelector(
       '#Properties > .inner > header > .title > h2.collapsebutton'
     );
-    collapsebutton.addEventListener('click', e => {
+    collapsebutton.addEventListener('click', () => {
       let customEvent = new CustomEvent(event.allTracksCollapse);
       if (collapsebutton.classList.contains('-spread')) {
         collapsebutton.classList.remove('-spread');
