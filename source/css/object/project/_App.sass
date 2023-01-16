@@ -1,16 +1,17 @@
 #App
+  width: 100%
+  min-width: var(--min-width-app)
   height: 100%
   overflow: hidden
   > .inner
     height: 100%
-    width: calc(200vw - var(--width-condition))
+    width: calc((max(100vw, var(--min-width-app)) - var(--width-condition)) * 2)
     display: flex
     transition: transform var(--transition-wipe)
     overflow: hidden
     background-color: var(--color-lamp-black)
     body[data-display="results"] &
-      // transform: translateX(calc(max(100vw, var(--min-width-app)) * -1 + var(--width-condition)))
-      transform: translateX(calc(-100vw + var(--width-condition)))
+      transform: translateX(calc(min(100vw, var(--min-width-app)) * -1 + var(--width-condition)))
   > .loading-view
     position: fixed
     top: var(--height-header)

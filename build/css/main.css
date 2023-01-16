@@ -421,6 +421,7 @@ template {
 }
 html, body {
   height: 100%;
+  min-width: var(--min-width-app);
 }
 
 html {
@@ -428,11 +429,11 @@ html {
 }
 
 body {
-  min-width: var(--min-width-app);
   font-family: "Roboto Condensed", sans-serif;
   font-size: 1.2rem;
   line-height: 1.5;
   background-color: var(--color-gray);
+  overflow: hidden;
 }
 body[data-page=top][data-display=results] [data-hidden-by=results], body[data-page=top][data-display=properties] [data-hidden-by=properties] {
   display: none;
@@ -1677,12 +1678,14 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
 }
 
 #App {
+  width: 100%;
+  min-width: var(--min-width-app);
   height: 100%;
   overflow: hidden;
 }
 #App > .inner {
   height: 100%;
-  width: calc(200vw - var(--width-condition));
+  width: calc((max(100vw, var(--min-width-app)) - var(--width-condition)) * 2);
   display: flex;
   transition: -webkit-transform var(--transition-wipe);
   transition: transform var(--transition-wipe);
@@ -1691,8 +1694,8 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   background-color: var(--color-lamp-black);
 }
 body[data-display=results] #App > .inner {
-  -webkit-transform: translateX(calc(-100vw + var(--width-condition)));
-          transform: translateX(calc(-100vw + var(--width-condition)));
+  -webkit-transform: translateX(calc(min(100vw, var(--min-width-app)) * -1 + var(--width-condition)));
+          transform: translateX(calc(min(100vw, var(--min-width-app)) * -1 + var(--width-condition)));
 }
 #App > .loading-view {
   position: fixed;
@@ -1909,7 +1912,8 @@ body[data-condition=annotation] #ConditionBuilder > .conditions > [data-conditio
 }
 
 #Properties {
-  width: calc(100vw - var(--width-condition) - var(--width-global-tool-bar));
+  --width-offset: calc(var(--width-condition) + var(--width-global-tool-bar));
+  width: calc(min(100vw, var(--min-width-app)) - var(--width-offset));
   overflow: auto;
   position: relative;
   display: flex;
@@ -1997,12 +2001,11 @@ body[data-condition=annotation] #ConditionBuilder > .conditions > [data-conditio
 
 #Results {
   --height-header: calc(var(--height-track) - var(--padding-track-block-start) * 2 + .2rem);
-  width: calc(100vw - var(--width-condition));
-  min-width: calc(var(--min-width-app) - var(--width-condition));
+  width: calc(min(100vw, var(--min-width-app)) - var(--width-condition));
+  overflow: auto;
 }
 #Results > .inner {
   height: 100%;
-  overflow-y: auto;
 }
 #Results > .inner > section {
   transition: height var(--transition-instant);
