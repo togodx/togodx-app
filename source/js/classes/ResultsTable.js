@@ -23,12 +23,12 @@ export default class ResultsTable {
 
     // references
     this.#ROOT = elm;
-    const TABLE = elm.querySelector(':scope > .body > table');
+    const TABLE = elm.querySelector(':scope > table');
     this.#THEAD = TABLE.querySelector(':scope > thead > tr.header');
     this.#THEAD_SUB = TABLE.querySelector(':scope > thead > tr.subheader');
     this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics');
     this.#TBODY = TABLE.querySelector(':scope > tbody');
-    this.#TABLE_END = elm.querySelector(':scope > .body > .tableend');
+    this.#TABLE_END = elm.querySelector(':scope > .tableend');
     this.#LOADING_VIEW = this.#TABLE_END.querySelector(
       ':scope > .loading-view'
     );

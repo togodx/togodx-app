@@ -573,6 +573,21 @@
       "pg" : 0,
       "sct" : 0
     },
+    "\/source\/css\/object\/project\/_ResultsView.sass" : {
+      "aP" : 1,
+      "bl" : 0,
+      "co" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 2,
+      "ma" : 1,
+      "oA" : 1,
+      "oAP" : "\/build\/css\/object\/project\/_ResultsView.css",
+      "oF" : 0,
+      "oS" : 1,
+      "pg" : 0,
+      "sct" : 0
+    },
     "\/source\/css\/stanza.sass" : {
       "aP" : 1,
       "bl" : 0,
@@ -881,6 +896,17 @@
       "sC" : 3,
       "tS" : 1
     },
+    "\/source\/js\/classes\/ResultsView.js" : {
+      "bF" : 4,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/classes\/ResultsView.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
     "\/source\/js\/classes\/StackingConditionView.js" : {
       "bF" : 4,
       "ft" : 64,
@@ -954,17 +980,6 @@
       "mi" : 0,
       "oA" : 1,
       "oAP" : "\/build\/js\/classes\/UploadUserIDsView.js",
-      "oF" : 0,
-      "sC" : 3,
-      "tS" : 1
-    },
-    "\/source\/js\/components\/ResultsView.js" : {
-      "bF" : 4,
-      "ft" : 64,
-      "ma" : 1,
-      "mi" : 0,
-      "oA" : 1,
-      "oAP" : "\/build\/js\/components\/ResultsView.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 1

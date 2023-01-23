@@ -225,6 +225,14 @@ class ConditionBuilder {
     return !this.#userIds ? [] : this.#userIds.split(',');
   }
 
+  get dxCondition() {
+    return new DXCondition(
+      this.#dataset,
+      this.#conditionAnnotations,
+      this.#conditionFilters
+    );
+  }
+
   // private methods
 
   #postProcessing(dontLeaveInHistory = true) {

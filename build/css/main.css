@@ -368,11 +368,12 @@ template {
   --z-track-item-selected-hover: 6;
   --z-track-pin-hover: 7;
   --z-fixed-area: 7;
-  --z-header: 8;
-  --z-track-balloon: 9;
-  --z-modal-window-backdrop: 10;
-  --z-modal-window: 11;
-  --z-app-loading-view: 12;
+  --z-results: 8;
+  --z-header: 9;
+  --z-track-balloon: 10;
+  --z-modal-window-backdrop: 11;
+  --z-modal-window: 12;
+  --z-app-loading-view: 13;
   --shadow-shallow: 0 .1rem .1rem rgba(0,0,0,.3);
   --shadow-normal: 0 .2rem .2rem rgba(0,0,0,.3);
   --opacity-disabled: .4;
@@ -2026,145 +2027,6 @@ body[data-condition=filter] #GlobalToolBar > .switch > li > button[data-button=f
   border-style: none;
 }
 
-#Results {
-  --height-header: calc(var(--height-track) - var(--padding-track-block-start) * 2 + .2rem);
-  width: calc(100vw - var(--width-condition));
-  overflow: auto;
-}
-#Results > .inner {
-  height: 100%;
-}
-#Results > .inner > section {
-  transition: height var(--transition-instant);
-}
-
-@media (max-width: var(--min-width-app)) {
-  #Results {
-    width: calc(var(--min-width-app) - var(--width-condition));
-  }
-}
-#ResultsTable {
-  --thheight: 0.8rem;
-}
-#ResultsTable > .body > table {
-  width: 100%;
-  height: 100%;
-  font-size: 1.2rem;
-  line-height: 1.2;
-  background-color: white;
-}
-#ResultsTable > .body > table th, #ResultsTable > .body > table td {
-  padding: 0;
-}
-#ResultsTable > .body > table th > .inner, #ResultsTable > .body > table td > .inner {
-  padding: var(--padding-track-block-start) var(--padding-track-inline-start);
-}
-#ResultsTable > .body > table > thead {
-  height: 100%;
-}
-#ResultsTable > .body > table > thead > tr {
-  height: 100%;
-}
-#ResultsTable > .body > table > thead > tr > th, #ResultsTable > .body > table > thead > tr td {
-  height: 100%;
-}
-#ResultsTable > .body > table > thead > tr > th > .inner, #ResultsTable > .body > table > thead > tr td > .inner {
-  height: 100%;
-}
-#ResultsTable > .body > table > thead > tr.header, #ResultsTable > .body > table > thead > tr.subheader {
-  font-weight: bold;
-  white-space: nowrap;
-}
-#ResultsTable > .body > table > thead > tr.header > th, #ResultsTable > .body > table > thead > tr.subheader > th {
-  position: -webkit-sticky;
-  position: sticky;
-  z-index: var(--z-results-header);
-  line-height: 1.5rem;
-}
-#ResultsTable > .body > table > thead > tr.header > th > .inner, #ResultsTable > .body > table > thead > tr.subheader > th > .inner {
-  border-bottom: solid 0.1rem var(--color-black);
-}
-#ResultsTable > .body > table > thead > tr.header > th > .inner.-noborder, #ResultsTable > .body > table > thead > tr.subheader > th > .inner.-noborder {
-  border: none;
-}
-#ResultsTable > .body > table > thead > tr.header.header > th, #ResultsTable > .body > table > thead > tr.subheader.header > th {
-  top: 0;
-}
-#ResultsTable > .body > table > thead > tr.header.header > th:nth-child(1) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(1) > .inner {
-  height: calc(var(--thheight) * 4);
-  padding-top: calc(var(--thheight) * 0.5 + var(--padding-track-block-start));
-}
-#ResultsTable > .body > table > thead > tr.header.header > th:nth-child(1) > .inner, #ResultsTable > .body > table > thead > tr.header.header > th:nth-child(2) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(1) > .inner, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(2) > .inner {
-  background-color: var(--color-lamp-black);
-}
-#ResultsTable > .body > table > thead > tr.header.header > th:nth-child(1) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.header.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(1) > .inner > .togo-key-view, #ResultsTable > .body > table > thead > tr.subheader.header > th:nth-child(2) > .inner > .togo-key-view {
-  background-color: var(--color-dark-gray);
-}
-#ResultsTable > .body > table > thead > tr.header.subheader > th, #ResultsTable > .body > table > thead > tr.subheader.subheader > th {
-  top: var(--thheight);
-}
-#ResultsTable > .body > table > thead > tr.header.subheader > th > .inner._category-color, #ResultsTable > .body > table > thead > tr.subheader.subheader > th > .inner._category-color {
-  background-color: white;
-}
-#ResultsTable > .body > table > thead > tr.statistics > th.controller > .inner > label {
-  display: block;
-  white-space: nowrap;
-}
-#ResultsTable > .body > table > thead > tr.statistics > th.controller > .inner > label > input {
-  vertical-align: bottom;
-  margin-right: 0.4rem;
-}
-#ResultsTable > .body > table > thead > tr.statistics.-onlyhitcount > th.controller > .inner > label.stretch {
-  opacity: 0.4;
-  pointer-events: none;
-}
-#ResultsTable > .body > table > thead > tr.statistics > td > .inner {
-  background-color: white;
-}
-#ResultsTable > .body > table > tbody > tr {
-  border-bottom: solid 0.1rem var(--color-separator);
-  position: relative;
-  background-color: white;
-  transition: border var(--transition-instant), box-shadow var(--transition-instant);
-}
-#ResultsTable > .body > table > tbody > tr:hover, #ResultsTable > .body > table > tbody > tr.-selected {
-  background-color: var(--color-selected);
-}
-#ResultsTable > .body > table > tbody > tr > th, #ResultsTable > .body > table > tbody > tr > td {
-  vertical-align: top;
-}
-#ResultsTable > .body > table > tbody > tr > th {
-  font-weight: normal;
-}
-#ResultsTable > .body > table > tbody > tr > td.-selected {
-  background-color: var(--color-selected);
-}
-#ResultsTable > .body > table > tbody > tr > td > .inner > ul {
-  margin: 0;
-  -webkit-padding-start: 0;
-          padding-inline-start: 0;
-  list-style: none;
-  max-height: 10.2rem;
-  overflow-y: auto;
-}
-#ResultsTable > .body > table > tbody > tr > td > .inner > ul .togo-key-view {
-  cursor: pointer;
-}
-#ResultsTable > .body > table > tbody > tr > td > .inner > ul .togo-key-view:hover, #ResultsTable > .body > table > tbody > tr > td > .inner > ul .togo-key-view.-selected {
-  background-color: var(--color-lamp-black);
-}
-#ResultsTable > .body > table > tbody > tr > td > .inner > ul > li + li {
-  -webkit-margin-before: 0.2rem;
-          margin-block-start: 0.2rem;
-}
-#ResultsTable > .body > .tableend {
-  height: 8rem;
-  position: relative;
-}
-#ResultsTable.-complete > .body > .tableend {
-  display: none;
-}
-
 #ResultDetailModal {
   --padding-side: 1.2rem;
   --height-header: 3rem;
@@ -2350,6 +2212,165 @@ body[data-condition=filter] #GlobalToolBar > .switch > li > button[data-button=f
 }
 #ResultDetailModal.backdrop[data-category-id=primary] > .popup > header {
   background-color: var(--color-gray);
+}
+
+#Results {
+  --height-header: calc(var(--height-track) - var(--padding-track-block-start) * 2 + .2rem);
+  width: calc(100vw - var(--width-condition));
+  overflow: auto;
+}
+#Results > .inner {
+  height: 100%;
+}
+#Results > .inner > section {
+  transition: height var(--transition-instant);
+}
+
+@media (max-width: var(--min-width-app)) {
+  #Results {
+    width: calc(var(--min-width-app) - var(--width-condition));
+  }
+}
+#ResultsTable, #ResultsView {
+  --thheight: 0.8rem;
+}
+#ResultsTable > table, #ResultsView > table {
+  width: 100%;
+  height: 100%;
+  font-size: 1.2rem;
+  line-height: 1.2;
+  background-color: white;
+}
+#ResultsTable > table th, #ResultsTable > table td, #ResultsView > table th, #ResultsView > table td {
+  padding: 0;
+}
+#ResultsTable > table th > .inner, #ResultsTable > table td > .inner, #ResultsView > table th > .inner, #ResultsView > table td > .inner {
+  padding: var(--padding-track-block-start) var(--padding-track-inline-start);
+}
+#ResultsTable > table > thead, #ResultsView > table > thead {
+  height: 100%;
+}
+#ResultsTable > table > thead > tr, #ResultsView > table > thead > tr {
+  height: 100%;
+}
+#ResultsTable > table > thead > tr > th, #ResultsTable > table > thead > tr td, #ResultsView > table > thead > tr > th, #ResultsView > table > thead > tr td {
+  height: 100%;
+}
+#ResultsTable > table > thead > tr > th > .inner, #ResultsTable > table > thead > tr td > .inner, #ResultsView > table > thead > tr > th > .inner, #ResultsView > table > thead > tr td > .inner {
+  height: 100%;
+}
+#ResultsTable > table > thead > tr.header, #ResultsTable > table > thead > tr.subheader, #ResultsView > table > thead > tr.header, #ResultsView > table > thead > tr.subheader {
+  font-weight: bold;
+  white-space: nowrap;
+}
+#ResultsTable > table > thead > tr.header > th, #ResultsTable > table > thead > tr.subheader > th, #ResultsView > table > thead > tr.header > th, #ResultsView > table > thead > tr.subheader > th {
+  position: -webkit-sticky;
+  position: sticky;
+  z-index: var(--z-results-header);
+  line-height: 1.5rem;
+}
+#ResultsTable > table > thead > tr.header > th > .inner, #ResultsTable > table > thead > tr.subheader > th > .inner, #ResultsView > table > thead > tr.header > th > .inner, #ResultsView > table > thead > tr.subheader > th > .inner {
+  border-bottom: solid 0.1rem var(--color-black);
+}
+#ResultsTable > table > thead > tr.header > th > .inner.-noborder, #ResultsTable > table > thead > tr.subheader > th > .inner.-noborder, #ResultsView > table > thead > tr.header > th > .inner.-noborder, #ResultsView > table > thead > tr.subheader > th > .inner.-noborder {
+  border: none;
+}
+#ResultsTable > table > thead > tr.header.header > th, #ResultsTable > table > thead > tr.subheader.header > th, #ResultsView > table > thead > tr.header.header > th, #ResultsView > table > thead > tr.subheader.header > th {
+  top: 0;
+}
+#ResultsTable > table > thead > tr.header.header > th:nth-child(1) > .inner, #ResultsTable > table > thead > tr.subheader.header > th:nth-child(1) > .inner, #ResultsView > table > thead > tr.header.header > th:nth-child(1) > .inner, #ResultsView > table > thead > tr.subheader.header > th:nth-child(1) > .inner {
+  height: calc(var(--thheight) * 4);
+  padding-top: calc(var(--thheight) * 0.5 + var(--padding-track-block-start));
+}
+#ResultsTable > table > thead > tr.header.header > th:nth-child(1) > .inner, #ResultsTable > table > thead > tr.header.header > th:nth-child(2) > .inner, #ResultsTable > table > thead > tr.subheader.header > th:nth-child(1) > .inner, #ResultsTable > table > thead > tr.subheader.header > th:nth-child(2) > .inner, #ResultsView > table > thead > tr.header.header > th:nth-child(1) > .inner, #ResultsView > table > thead > tr.header.header > th:nth-child(2) > .inner, #ResultsView > table > thead > tr.subheader.header > th:nth-child(1) > .inner, #ResultsView > table > thead > tr.subheader.header > th:nth-child(2) > .inner {
+  background-color: var(--color-lamp-black);
+}
+#ResultsTable > table > thead > tr.header.header > th:nth-child(1) > .inner > .togo-key-view, #ResultsTable > table > thead > tr.header.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsTable > table > thead > tr.subheader.header > th:nth-child(1) > .inner > .togo-key-view, #ResultsTable > table > thead > tr.subheader.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsView > table > thead > tr.header.header > th:nth-child(1) > .inner > .togo-key-view, #ResultsView > table > thead > tr.header.header > th:nth-child(2) > .inner > .togo-key-view, #ResultsView > table > thead > tr.subheader.header > th:nth-child(1) > .inner > .togo-key-view, #ResultsView > table > thead > tr.subheader.header > th:nth-child(2) > .inner > .togo-key-view {
+  background-color: var(--color-dark-gray);
+}
+#ResultsTable > table > thead > tr.header.subheader > th, #ResultsTable > table > thead > tr.subheader.subheader > th, #ResultsView > table > thead > tr.header.subheader > th, #ResultsView > table > thead > tr.subheader.subheader > th {
+  top: var(--thheight);
+}
+#ResultsTable > table > thead > tr.header.subheader > th > .inner._category-color, #ResultsTable > table > thead > tr.subheader.subheader > th > .inner._category-color, #ResultsView > table > thead > tr.header.subheader > th > .inner._category-color, #ResultsView > table > thead > tr.subheader.subheader > th > .inner._category-color {
+  background-color: white;
+}
+#ResultsTable > table > thead > tr.statistics > th.controller > .inner > label, #ResultsView > table > thead > tr.statistics > th.controller > .inner > label {
+  display: block;
+  white-space: nowrap;
+}
+#ResultsTable > table > thead > tr.statistics > th.controller > .inner > label > input, #ResultsView > table > thead > tr.statistics > th.controller > .inner > label > input {
+  vertical-align: bottom;
+  margin-right: 0.4rem;
+}
+#ResultsTable > table > thead > tr.statistics.-onlyhitcount > th.controller > .inner > label.stretch, #ResultsView > table > thead > tr.statistics.-onlyhitcount > th.controller > .inner > label.stretch {
+  opacity: 0.4;
+  pointer-events: none;
+}
+#ResultsTable > table > thead > tr.statistics > td > .inner, #ResultsView > table > thead > tr.statistics > td > .inner {
+  background-color: white;
+}
+#ResultsTable > table > tbody > tr, #ResultsView > table > tbody > tr {
+  border-bottom: solid 0.1rem var(--color-separator);
+  position: relative;
+  background-color: white;
+  transition: border var(--transition-instant), box-shadow var(--transition-instant);
+}
+#ResultsTable > table > tbody > tr:hover, #ResultsTable > table > tbody > tr.-selected, #ResultsView > table > tbody > tr:hover, #ResultsView > table > tbody > tr.-selected {
+  background-color: var(--color-selected);
+}
+#ResultsTable > table > tbody > tr > th, #ResultsTable > table > tbody > tr > td, #ResultsView > table > tbody > tr > th, #ResultsView > table > tbody > tr > td {
+  vertical-align: top;
+}
+#ResultsTable > table > tbody > tr > th, #ResultsView > table > tbody > tr > th {
+  font-weight: normal;
+}
+#ResultsTable > table > tbody > tr > td.-selected, #ResultsView > table > tbody > tr > td.-selected {
+  background-color: var(--color-selected);
+}
+#ResultsTable > table > tbody > tr > td > .inner > ul, #ResultsView > table > tbody > tr > td > .inner > ul {
+  margin: 0;
+  -webkit-padding-start: 0;
+          padding-inline-start: 0;
+  list-style: none;
+  max-height: 10.2rem;
+  overflow-y: auto;
+}
+#ResultsTable > table > tbody > tr > td > .inner > ul .togo-key-view, #ResultsView > table > tbody > tr > td > .inner > ul .togo-key-view {
+  cursor: pointer;
+}
+#ResultsTable > table > tbody > tr > td > .inner > ul .togo-key-view:hover, #ResultsTable > table > tbody > tr > td > .inner > ul .togo-key-view.-selected, #ResultsView > table > tbody > tr > td > .inner > ul .togo-key-view:hover, #ResultsView > table > tbody > tr > td > .inner > ul .togo-key-view.-selected {
+  background-color: var(--color-lamp-black);
+}
+#ResultsTable > table > tbody > tr > td > .inner > ul > li + li, #ResultsView > table > tbody > tr > td > .inner > ul > li + li {
+  -webkit-margin-before: 0.2rem;
+          margin-block-start: 0.2rem;
+}
+#ResultsTable > .tableend, #ResultsView > .tableend {
+  height: 8rem;
+  position: relative;
+}
+#ResultsTable.-complete > .tableend, #ResultsView.-complete > .tableend {
+  display: none;
+}
+
+#ResultsView {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: var(--z-results);
+  background-color: rgba(51, 50, 48, 0.8666666667);
+}
+#ResultsView > header {
+  color: white;
+  font-size: 1.4rem;
+  font-weight: bold;
+  padding: 0.4rem 0 0.2rem;
+}
+#ResultsView > table {
+  height: auto;
+}
+#ResultsView > table > thead > tr.statistics {
+  display: none;
 }
 
 /*# sourceMappingURL=main.css.map */

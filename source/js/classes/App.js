@@ -11,7 +11,7 @@ import UploadUserIDsView from './UploadUserIDsView';
 import GlobalToolBar from './GlobalToolBar';
 import Color from './Color';
 import StanzaManager from './StanzaManager';
-import ResultsView from '../components/ResultsView';
+import ResultsView from './ResultsView';
 import * as event from '../events';
 
 class App {
@@ -67,6 +67,7 @@ class App {
     new BalloonView();
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
     new GlobalToolBar(document.querySelector('#GlobalToolBar'));
+    new ResultsView(document.querySelector('#ResultsView'));
     // load config json
     Promise.all([
       fetch(config.TEMPLATES),

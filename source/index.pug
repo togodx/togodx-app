@@ -46,100 +46,120 @@ block main
                     .item Area
                     .item.-current Heatmap
           section.concepts
-        //-
-          section.concept-view
-            h3.title
-              span Gene
-            .properties
-              .attribute-track-view.collapse-view(data-concept="gene" data-collapse="gene")
-                .collapsebutton(data-collapse="gene")
-                header.title Type
-                .items
-                  ul.overview
-                    li.item
-                      p Digestive
-                    li.item
-                      p Endocrine
-                    li.item
-                      p Nerve
-                    li.item
-                      p Urinary
-                    li.item
-                      p Circulatory
-                    li.item
-                      p Respiratory
-                    li.item
-                      p Genital
-                    li.item
-                      p Integumentary
-                    li.item
-                      p Locomotorium
-                    li.item
-                      p Others
-                  .selector.collapsing(data-collapse="gene")
-                    .column-selector-view
-                      ul.column
-                        li.item
-                          label
-                            input(type="checkbox" name="depth1")
-                            span.label Digestive
-                            span.count 11,673
-                        li.item
-                          label
-                            input(type="checkbox" name="depth1")
-                            span.label Endocrine
-                            span.count 12,800
-                        li.item
-                          label
-                            input(type="checkbox" name="depth1")
-                            span.label Nerve
-                            span.count 14,579
-                        li.item
-                          label
-                            input(type="checkbox" name="depth1")
-                            span.label Urinary
-                            span.count 8,329
-                        li.item
-                          label
-                            input(type="checkbox" name="depth1")
-                            span.label Circulatory
-                            span.count 8,283
-                        li.item
-                          label
-                            input(type="checkbox" name="depth1")
-                            span.label Respiratory
-                            span.count 2,704
-                        li.item.-selecting
-                          label
-                            input(type="checkbox" name="depth1" checked)
-                            span.label Genital
-                            span.count 5,861
-                        li.item
-                          label
-                            input(type="checkbox" name="depth1")
-                            span.label Integumentary
-                            span.count 20,784
-                        li.item
-                          label
-                            input(type="checkbox" name="depth1")
-                            span.label Locomotorium
-                            span.count 1,105
-                        li.item
-                          label
-                            input(type="checkbox" name="depth1")
-                            span.label Others
-                            span.count 10,154
-                      ul.column
-                        li.item
-                          label
-                            input(type="checkbox" name="depth2")
-                            span.label Testis
-                            span.count 18,718
-                        li.item
-                          label
-                            input(type="checkbox" name="depth2")
-                            span.label Prostate
-                            span.count 2,066
+          //-
+            section.concept-view
+              h3.title
+                span Gene
+              .properties
+                .attribute-track-view.collapse-view(data-concept="gene" data-collapse="gene")
+                  .collapsebutton(data-collapse="gene")
+                  header.title Type
+                  .items
+                    ul.overview
+                      li.item
+                        p Digestive
+                      li.item
+                        p Endocrine
+                      li.item
+                        p Nerve
+                      li.item
+                        p Urinary
+                      li.item
+                        p Circulatory
+                      li.item
+                        p Respiratory
+                      li.item
+                        p Genital
+                      li.item
+                        p Integumentary
+                      li.item
+                        p Locomotorium
+                      li.item
+                        p Others
+                    .selector.collapsing(data-collapse="gene")
+                      .column-selector-view
+                        ul.column
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Digestive
+                              span.count 11,673
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Endocrine
+                              span.count 12,800
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Nerve
+                              span.count 14,579
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Urinary
+                              span.count 8,329
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Circulatory
+                              span.count 8,283
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Respiratory
+                              span.count 2,704
+                          li.item.-selecting
+                            label
+                              input(type="checkbox" name="depth1" checked)
+                              span.label Genital
+                              span.count 5,861
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Integumentary
+                              span.count 20,784
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Locomotorium
+                              span.count 1,105
+                          li.item
+                            label
+                              input(type="checkbox" name="depth1")
+                              span.label Others
+                              span.count 10,154
+                        ul.column
+                          li.item
+                            label
+                              input(type="checkbox" name="depth2")
+                              span.label Testis
+                              span.count 18,718
+                          li.item
+                            label
+                              input(type="checkbox" name="depth2")
+                              span.label Prostate
+                              span.count 2,066
+          section#ResultsView
+            header
+              span
+            table
+              thead
+                tr.statistics
+                  th.controller
+                    .inner
+                      label
+                        input(type="radio" name="statistics_mode" value="hits_all" checked)
+                        span Hits/All
+                      label
+                        input(type="radio" name="statistics_mode" value="hits_all_percentage")
+                        span Hits/All (%)
+                      label
+                        input(type="radio" name="statistics_mode" value="hits_only")
+                        span Hits only
+                tr.header
+                tr.subheader
+              tbody
 
       section#Results
         .inner
@@ -158,76 +178,75 @@ block main
             //-     //- .button.-download
             //-     //-   span.material-icons-outlined file_download
             //-     //-   | Download
-            .body
-              table
-                thead
-                  tr.statistics
-                    th.controller
-                      .inner
-                        label
-                          input(type="radio" name="statistics_mode" value="hits_all" checked)
-                          span Hits/All
-                        label
-                          input(type="radio" name="statistics_mode" value="hits_all_percentage")
-                          span Hits/All (%)
-                        label
-                          input(type="radio" name="statistics_mode" value="hits_only")
-                          span Hits only
-                  tr.header
-                  tr.subheader
-                  //-
-                    th Foo
-                    th Baa
-                    th Baz
-                    th Qux
-                    th Quux
-                    th Quuux
-                tbody
+            table
+              thead
+                tr.statistics
+                  th.controller
+                    .inner
+                      label
+                        input(type="radio" name="statistics_mode" value="hits_all" checked)
+                        span Hits/All
+                      label
+                        input(type="radio" name="statistics_mode" value="hits_all_percentage")
+                        span Hits/All (%)
+                      label
+                        input(type="radio" name="statistics_mode" value="hits_only")
+                        span Hits only
+                tr.header
+                tr.subheader
                 //-
-                  tr
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                  tr
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                  tr
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                  tr
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                  tr
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                  tr
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-                    td hoge
-              .tableend
-                .loading-view
+                  th Foo
+                  th Baa
+                  th Baz
+                  th Qux
+                  th Quux
+                  th Quuux
+              tbody
+              //-
+                tr
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                tr
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                tr
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                tr
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                tr
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                tr
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+                  td hoge
+            .tableend
+              .loading-view
 
     section#FixedArea
 

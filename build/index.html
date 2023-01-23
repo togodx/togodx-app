@@ -69,37 +69,60 @@
               </nav>
             </header>
             <section class="concepts"></section>
+            <section id="ResultsView">
+              <header><span></span></header>
+              <table>
+                <thead>
+                  <tr class="statistics">
+                    <th class="controller">
+                      <div class="inner">
+                        <label>
+                          <input type="radio" name="statistics_mode" value="hits_all" checked><span>Hits/All</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="statistics_mode" value="hits_all_percentage"><span>Hits/All (%)</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="statistics_mode" value="hits_only"><span>Hits only</span>
+                        </label>
+                      </div>
+                    </th>
+                  </tr>
+                  <tr class="header"></tr>
+                  <tr class="subheader"></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </section>
           </div>
         </section>
         <section id="Results">
           <div class="inner">
             <section id="ResultsTable">
-              <div class="body">
-                <table>
-                  <thead>
-                    <tr class="statistics">
-                      <th class="controller">
-                        <div class="inner">
-                          <label>
-                            <input type="radio" name="statistics_mode" value="hits_all" checked><span>Hits/All</span>
-                          </label>
-                          <label>
-                            <input type="radio" name="statistics_mode" value="hits_all_percentage"><span>Hits/All (%)</span>
-                          </label>
-                          <label>
-                            <input type="radio" name="statistics_mode" value="hits_only"><span>Hits only</span>
-                          </label>
-                        </div>
-                      </th>
-                    </tr>
-                    <tr class="header"></tr>
-                    <tr class="subheader"></tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
-                <div class="tableend">
-                  <div class="loading-view"></div>
-                </div>
+              <table>
+                <thead>
+                  <tr class="statistics">
+                    <th class="controller">
+                      <div class="inner">
+                        <label>
+                          <input type="radio" name="statistics_mode" value="hits_all" checked><span>Hits/All</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="statistics_mode" value="hits_all_percentage"><span>Hits/All (%)</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="statistics_mode" value="hits_only"><span>Hits only</span>
+                        </label>
+                      </div>
+                    </th>
+                  </tr>
+                  <tr class="header"></tr>
+                  <tr class="subheader"></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <div class="tableend">
+                <div class="loading-view"></div>
               </div>
             </section>
           </div>

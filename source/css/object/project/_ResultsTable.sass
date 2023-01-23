@@ -1,107 +1,105 @@
-#ResultsTable
+#ResultsTable, #ResultsView
   --thheight: 0.8rem
-  > .body
-    > table
-      width: 100%
+  > table
+    width: 100%
+    height: 100%
+    font-size: 1.2rem
+    line-height: 1.2
+    background-color: white
+    th, td
+      padding: 0
+      > .inner
+        padding: var(--padding-track-block-start) var(--padding-track-inline-start)
+    > thead
       height: 100%
-      font-size: 1.2rem
-      line-height: 1.2
-      background-color: white
-      th, td
-        padding: 0
-        > .inner
-          padding: var(--padding-track-block-start) var(--padding-track-inline-start)
-      > thead
+      > tr
         height: 100%
-        > tr
+        > th, td
           height: 100%
-          > th, td
+          > .inner
             height: 100%
+        &.header, &.subheader
+          font-weight: bold
+          white-space: nowrap
+          > th
+            position: sticky
+            z-index: var(--z-results-header)
+            line-height: 1.5rem
             > .inner
-              height: 100%
-          &.header, &.subheader
-            font-weight: bold
-            white-space: nowrap
+              border-bottom: solid .1rem var(--color-black)
+              &.-noborder
+                border: none
+          &.header
             > th
-              position: sticky
-              z-index: var(--z-results-header)
-              line-height: 1.5rem
-              > .inner
-                border-bottom: solid .1rem var(--color-black)
-                &.-noborder
-                  border: none
-            &.header
-              > th
-                top: 0
-                &:nth-child(1)
-                  > .inner
-                    height: calc(var(--thheight) * 4)
-                    padding-top: calc(var(--thheight) * 0.5 + var(--padding-track-block-start))
-                &:nth-child(1), &:nth-child(2)
-                  > .inner
-                    background-color: var(--color-lamp-black)
-                    > .togo-key-view
-                      background-color: var(--color-dark-gray)
-            &.subheader
-              > th
-                top: var(--thheight)
+              top: 0
+              &:nth-child(1)
                 > .inner
-                  &._category-color
-                    background-color: white
-          &.statistics
+                  height: calc(var(--thheight) * 4)
+                  padding-top: calc(var(--thheight) * 0.5 + var(--padding-track-block-start))
+              &:nth-child(1), &:nth-child(2)
+                > .inner
+                  background-color: var(--color-lamp-black)
+                  > .togo-key-view
+                    background-color: var(--color-dark-gray)
+          &.subheader
+            > th
+              top: var(--thheight)
+              > .inner
+                &._category-color
+                  background-color: white
+        &.statistics
+          > th.controller
+            > .inner
+              > label
+                display: block
+                white-space: nowrap
+                > input
+                  vertical-align: bottom
+                  margin-right: .4rem
+          &.-onlyhitcount
             > th.controller
               > .inner
-                > label
-                  display: block
-                  white-space: nowrap
-                  > input
-                    vertical-align: bottom
-                    margin-right: .4rem
-            &.-onlyhitcount
-              > th.controller
-                > .inner
-                  > label.stretch
-                    opacity: .4
-                    pointer-events: none
-            > td
-              // position: sticky
-              // top: calc(var(--padding-track-block-start) * 2 + 1.6rem)
-              > .inner
-                background-color: white
-                // border-bottom: solid .1rem var(--color-black)
-      > tbody
-        > tr
-          border-bottom: solid .1rem var(--color-separator)
-          position: relative
-          background-color: white
-          transition: border var(--transition-instant), box-shadow var(--transition-instant)
-          &:hover, &.-selected
-            background-color: var(--color-selected)
-          > th, > td
-            vertical-align: top
-          > th
-            font-weight: normal
+                > label.stretch
+                  opacity: .4
+                  pointer-events: none
           > td
-            &.-selected
-              background-color: var(--color-selected)
+            // position: sticky
+            // top: calc(var(--padding-track-block-start) * 2 + 1.6rem)
             > .inner
-              > ul
-                margin: 0
-                padding-inline-start: 0
-                list-style: none
-                max-height: 10.2rem
-                overflow-y: auto
-                .togo-key-view
-                  cursor: pointer
-                  &:hover, &.-selected
-                    background-color: var(--color-lamp-black)
-                > li
-                  + li
-                    margin-block-start: .2rem
-    > .tableend
-      height: 8rem
-      position: relative
+              background-color: white
+              // border-bottom: solid .1rem var(--color-black)
+    > tbody
+      > tr
+        border-bottom: solid .1rem var(--color-separator)
+        position: relative
+        background-color: white
+        transition: border var(--transition-instant), box-shadow var(--transition-instant)
+        &:hover, &.-selected
+          background-color: var(--color-selected)
+        > th, > td
+          vertical-align: top
+        > th
+          font-weight: normal
+        > td
+          &.-selected
+            background-color: var(--color-selected)
+          > .inner
+            > ul
+              margin: 0
+              padding-inline-start: 0
+              list-style: none
+              max-height: 10.2rem
+              overflow-y: auto
+              .togo-key-view
+                cursor: pointer
+                &:hover, &.-selected
+                  background-color: var(--color-lamp-black)
+              > li
+                + li
+                  margin-block-start: .2rem
+  > .tableend
+    height: 8rem
+    position: relative
   &.-complete
-    > .body
-      > .tableend
-        display: none
+    > .tableend
+      display: none
