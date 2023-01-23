@@ -11,6 +11,7 @@ import UploadUserIDsView from './UploadUserIDsView';
 import GlobalToolBar from './GlobalToolBar';
 import Color from './Color';
 import StanzaManager from './StanzaManager';
+import ResultsView from '../components/ResultsView';
 import * as event from '../events';
 
 class App {

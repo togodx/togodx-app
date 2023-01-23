@@ -7794,6 +7794,20 @@
     });
   });
 
+  var ResultsView = /*#__PURE__*/function (_HTMLElement) {
+    _inherits(ResultsView, _HTMLElement);
+    var _super = _createSuper(ResultsView);
+    function ResultsView() {
+      var _this;
+      _classCallCheck(this, ResultsView);
+      _this = _super.call(this);
+      console.log(123);
+      return _this;
+    }
+    return _createClass(ResultsView);
+  }( /*#__PURE__*/_wrapNativeSuper(HTMLElement));
+  customElements.define('results-view', ResultsView);
+
   var _viewModes = /*#__PURE__*/new WeakMap();
   var _backend = /*#__PURE__*/new WeakMap();
   var _colorWhite = /*#__PURE__*/new WeakMap();
