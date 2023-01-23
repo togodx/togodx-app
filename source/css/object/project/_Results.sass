@@ -1,7 +1,7 @@
 #Results
   --height-header: calc(var(--height-track) - var(--padding-track-block-start) * 2 + .2rem)
 
-  width: calc(min(100vw, var(--min-width-app)) - var(--width-condition))
+  width: calc(100vw - var(--width-condition))
   overflow: auto
   > .inner
     height: 100%
@@ -65,3 +65,7 @@
     //   height: var(--height-header)
     //   + section#ResultsTable
     //     height: calc(100vh - var(--height-header))
+
+@media (max-width: var(--min-width-app))
+  #Results
+    width: calc(var(--min-width-app) - var(--width-condition))
