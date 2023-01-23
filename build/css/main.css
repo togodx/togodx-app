@@ -1692,8 +1692,8 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   background-color: var(--color-lamp-black);
 }
 body[data-display=results] #App > .inner {
-  -webkit-transform: translateX(calc(min(100vw, var(--min-width-app)) * -1 + var(--width-condition)));
-          transform: translateX(calc(min(100vw, var(--min-width-app)) * -1 + var(--width-condition)));
+  -webkit-transform: translateX(calc(-100vw + var(--width-condition)));
+          transform: translateX(calc(-100vw + var(--width-condition)));
 }
 #App > .loading-view {
   position: fixed;
@@ -1702,6 +1702,12 @@ body[data-display=results] #App > .inner {
   z-index: var(--z-app-loading-view);
 }
 
+@media (max-width: var(--min-width-app)) {
+  body[data-display=results] #App > .inner {
+    -webkit-transform: translateX(calc(var(--min-width-app) * -1 + var(--width-condition)));
+            transform: translateX(calc(var(--min-width-app) * -1 + var(--width-condition)));
+  }
+}
 #ConditionBuilder {
   --radius: .4rem;
   --background-color: #FFFFFFCC;
@@ -1929,7 +1935,7 @@ body[data-condition=filter] #GlobalToolBar > .switch > li > button[data-button=f
 
 #Properties {
   --width-offset: calc(var(--width-condition) + var(--width-global-tool-bar));
-  width: calc(min(100vw, var(--min-width-app)) - var(--width-offset));
+  width: calc(100vw - var(--width-offset));
   overflow: auto;
   position: relative;
   display: flex;
@@ -1993,6 +1999,11 @@ body[data-condition=filter] #GlobalToolBar > .switch > li > button[data-button=f
   display: none;
 }
 
+@media (max-width: var(--min-width-app)) {
+  #Properties {
+    width: calc(var(--min-width-app) - var(--width-offset));
+  }
+}
 #ReportsPageView {
   width: 102.4rem;
   margin: auto;
@@ -2017,7 +2028,7 @@ body[data-condition=filter] #GlobalToolBar > .switch > li > button[data-button=f
 
 #Results {
   --height-header: calc(var(--height-track) - var(--padding-track-block-start) * 2 + .2rem);
-  width: calc(min(100vw, var(--min-width-app)) - var(--width-condition));
+  width: calc(100vw - var(--width-condition));
   overflow: auto;
 }
 #Results > .inner {
@@ -2027,6 +2038,11 @@ body[data-condition=filter] #GlobalToolBar > .switch > li > button[data-button=f
   transition: height var(--transition-instant);
 }
 
+@media (max-width: var(--min-width-app)) {
+  #Results {
+    width: calc(var(--min-width-app) - var(--width-condition));
+  }
+}
 #ResultsTable {
   --thheight: 0.8rem;
 }
