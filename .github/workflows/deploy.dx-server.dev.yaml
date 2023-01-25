@@ -24,7 +24,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-        run: |
+
+      - run: |
           cd ./app
           npm ci
           npm run build
