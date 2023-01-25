@@ -7,10 +7,12 @@
   "version": "1.0.0",
   "private": true,
   "name": "codekit-project",
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "vite": "^4.0.4"
+  },
   "license": "UNLICENSED",
   "scripts": {},
   "description": "CodeKit created this starter package.json file. You should customize it appropriately. (If you intend to publish this project on npm, add an entry in the 'repository' field and remove the 'private' attribute, below.)",
-  "optionalDependencies": {},
   "author": ""
 }

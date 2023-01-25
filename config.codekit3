@@ -7,7 +7,7 @@
       "uuidString" : "7991C1D7-6492-458D-9C02-BC735FAAC5AC"
     }
   ],
-  "creatorBuild" : "34434",
+  "creatorBuild" : "34448",
   "files" : {
     "\/.github\/workflows\/deploy.dx-server.dev.yaml" : {
       "cB" : 0,
@@ -1038,6 +1038,17 @@
       "oF" : 0,
       "sC" : 3,
       "tS" : 1
+    },
+    "\/vite.config.js" : {
+      "bF" : 6,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 0,
+      "oAP" : "\/build\/vite.config.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
     }
   },
   "hooks" : [
@@ -1568,6 +1579,10 @@
         "active" : 0,
         "optionString" : "'always', {exceptAfterSingleLine: false}"
       },
+      "logical-assignment-operators" : {
+        "active" : 0,
+        "optionString" : "'always',  {'enforceForIfStatements': false}"
+      },
       "max-classes-per-file" : {
         "active" : 0,
         "optionString" : "1"
@@ -1728,6 +1743,9 @@
       "no-empty-pattern" : {
         "active" : 1
       },
+      "no-empty-static-block" : {
+        "active" : 0
+      },
       "no-eq-null" : {
         "active" : 0
       },
@@ -1866,6 +1884,9 @@
         "active" : 0
       },
       "no-new-func" : {
+        "active" : 0
+      },
+      "no-new-native-nonconstructor" : {
         "active" : 0
       },
       "no-new-object" : {
@@ -2682,7 +2703,7 @@
       },
       "comments" : {
         "active" : 0,
-        "flagValue" : -1
+        "flagValue" : 1
       },
       "comparisons" : {
         "active" : 1,
