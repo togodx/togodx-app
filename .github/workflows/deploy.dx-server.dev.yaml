@@ -20,15 +20,14 @@ jobs:
           fetch-depth: 1
           path: app
 
-      - name: "Install Node"
+      - name: "Install Node & build vite.js app"
         uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: |
+        run: |
           cd ./app
           npm ci
           npm run build
-          cd ..
 
       - name: "Copy config.dx-server-dev.json"
         run: |
