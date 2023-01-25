@@ -1,6 +1,7 @@
 import { resolve } from "path";
 import { defineConfig } from "vite";
 import vitePluginPug from "./plugins/vite-plugin-pug";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 
 export default defineConfig({
   root: "source",
@@ -13,5 +14,15 @@ export default defineConfig({
       },
     },
   },
-  plugins: [vitePluginPug()],
+  plugins: [
+    vitePluginPug(),
+    viteStaticCopy({
+      targets: [
+        {
+          src: "./js/config.json",
+          dest: ".",
+        },
+      ],
+    }),
+  ],
 });

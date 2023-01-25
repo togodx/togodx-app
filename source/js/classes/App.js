@@ -24,11 +24,6 @@ class App {
   #colorLampBlack;
 
   constructor() {
-    console.log(
-      getComputedStyle(document.documentElement).getPropertyValue(
-        '--color-silver'
-      )
-    );
     this.#colorWhite = new Color('white').to('srgb');
     this.#colorLightGray = new Color('--color-light-gray').to('srgb');
     this.#colorSilver = new Color('--color-silver').to('srgb');
