@@ -8,7 +8,7 @@ import ResultDetailModal from './ResultDetailModal';
 import BalloonView from './BalloonView';
 import ConditionsController from './ConditionsController';
 import UploadUserIDsView from './UploadUserIDsView';
-import Color from './Color';
+import Color from 'colorjs.io';
 import StanzaManager from './StanzaManager';
 import * as event from '../events';
 
