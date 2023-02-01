@@ -7,7 +7,7 @@
       "uuidString" : "7991C1D7-6492-458D-9C02-BC735FAAC5AC"
     }
   ],
-  "creatorBuild" : "34365",
+  "creatorBuild" : "34448",
   "files" : {
     "\/.github\/workflows\/deploy.dx-server.dev.yaml" : {
       "cB" : 0,
@@ -39,6 +39,14 @@
       "oAP" : "\/build\/build",
       "oF" : 0
     },
+    "\/build.zip" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/build\/build.zip",
+      "oF" : 0
+    },
     "\/docs\/index.md" : {
       "cB" : 0,
       "cS" : 0,
@@ -57,6 +65,14 @@
       "pME" : 1,
       "rFN" : 0,
       "uCM" : 0
+    },
+    "\/frontend\/build\/api.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/build\/frontend\/build\/api-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
     },
     "\/frontend\/node_modules" : {
       "ft" : 65536,
@@ -1341,7 +1357,7 @@
     ],
     "esLintConfigFileHandlingType" : 0,
     "esLintECMAVersion" : 0,
-    "esLintEnvironmentsMask" : 1,
+    "esLintEnvironmentsMask" : 17,
     "esLintRules" : {
       "accessor-pairs" : {
         "active" : 0,
@@ -1552,6 +1568,10 @@
         "active" : 0,
         "optionString" : "'always', {exceptAfterSingleLine: false}"
       },
+      "logical-assignment-operators" : {
+        "active" : 0,
+        "optionString" : "'always',  {'enforceForIfStatements': false}"
+      },
       "max-classes-per-file" : {
         "active" : 0,
         "optionString" : "1"
@@ -1712,6 +1732,9 @@
       "no-empty-pattern" : {
         "active" : 1
       },
+      "no-empty-static-block" : {
+        "active" : 0
+      },
       "no-eq-null" : {
         "active" : 0
       },
@@ -1743,7 +1766,8 @@
         "active" : 1
       },
       "no-fallthrough" : {
-        "active" : 1
+        "active" : 1,
+        "optionString" : "{'allowEmptyCase': false}"
       },
       "no-floating-decimal" : {
         "active" : 0
@@ -1851,6 +1875,9 @@
       "no-new-func" : {
         "active" : 0
       },
+      "no-new-native-nonconstructor" : {
+        "active" : 0
+      },
       "no-new-object" : {
         "active" : 0
       },
@@ -1905,7 +1932,8 @@
         "optionString" : "'event', 'fdescribe'"
       },
       "no-restricted-imports" : {
-        "active" : 0
+        "active" : 0,
+        "optionString" : ""
       },
       "no-restricted-properties" : {
         "active" : 0,
@@ -2533,6 +2561,7 @@
       "createDeclarationFile" : 0,
       "jsxMode" : 0,
       "minifierStyle" : 0,
+      "moduleDetectionType" : 0,
       "moduleResolutionType" : 0,
       "moduleType" : 2,
       "removeComments" : 0,
@@ -2544,7 +2573,7 @@
     ],
     "npmAbbreviatedPath" : "",
     "npmCreatePackageLock" : 1,
-    "npmInstallOptionalDependencies" : 0,
+    "npmInstallOptionalDependencies" : 1,
     "npmSaveExactVersion" : 0,
     "npmTargetDependencyListType" : 1,
     "overrideExternalServerCSS" : 0,
@@ -2663,7 +2692,7 @@
       },
       "comments" : {
         "active" : 0,
-        "flagValue" : -1
+        "flagValue" : 1
       },
       "comparisons" : {
         "active" : 1,

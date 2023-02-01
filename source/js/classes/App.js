@@ -1,19 +1,18 @@
-import DefaultEventEmitter from "./DefaultEventEmitter";
+import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilderView from './ConditionBuilderView';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import CategoryView from './CategoryView';
 import ResultsTable from './ResultsTable';
-import ResultDetailModal from "./ResultDetailModal";
+import ResultDetailModal from './ResultDetailModal';
 import BalloonView from './BalloonView';
-import ConditionsController from "./ConditionsController";
-import UploadUserIDsView from "./UploadUserIDsView";
-import Color from "./Color";
-import StanzaManager from "./StanzaManager";
-import * as event from '../events'
+import ConditionsController from './ConditionsController';
+import UploadUserIDsView from './UploadUserIDsView';
+import Color from './Color';
+import StanzaManager from './StanzaManager';
+import * as event from '../events';
 
 class App {
-
   #viewModes;
   #backend;
 
@@ -35,26 +34,30 @@ class App {
   }
 
   ready(config) {
-
     const body = document.body;
-
     // view modes
     this.#viewModes = {};
-    document.querySelectorAll('#Properties > .header > nav .viewmodecontroller input[type="checkbox"]').forEach(checkbox => {
-      this.#viewModes[checkbox.value] = checkbox.checked;
-      checkbox.addEventListener('click', () => {
-        if (checkbox.value === 'heatmap')  body.dataset.heatmap = checkbox.checked;
+    document
+      .querySelectorAll(
+        '#Properties > .header > nav .viewmodecontroller input[type="checkbox"]'
+      )
+      .forEach(checkbox => {
         this.#viewModes[checkbox.value] = checkbox.checked;
-        const customEvent = new CustomEvent(event.changeViewModes, {detail: this.#viewModes});
-        DefaultEventEmitter.dispatchEvent(customEvent);
+        checkbox.addEventListener('click', () => {
+          if (checkbox.value === 'heatmap')
+            body.dataset.heatmap = checkbox.checked;
+          this.#viewModes[checkbox.value] = checkbox.checked;
+          const customEvent = new CustomEvent(event.changeViewModes, {
+            detail: this.#viewModes,
+          });
+          DefaultEventEmitter.dispatchEvent(customEvent);
+        });
       });
-    });
 
     // events
     DefaultEventEmitter.addEventListener(event.restoreParameters, () => {
       document.querySelector('#App > .loading-view').classList.remove('-shown');
     });
-
     // set up views
     new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
     new ConditionsController(document.querySelector('#Conditions'));
@@ -62,34 +65,29 @@ class App {
     new ResultDetailModal();
     new BalloonView();
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
-
     // load config json
     Promise.all([
       fetch(config.TEMPLATES),
       fetch(config.BACKEND),
-      fetch(config.ATTRIBUTES)
+      fetch(config.ATTRIBUTES),
     ])
       .then(responces => {
-        return Promise.all(responces.map(responce => responce.json()))
+        return Promise.all(responces.map(responce => responce.json()));
       })
       .then(([templates, backend, attributes]) => {
         Records.setAttributes(attributes);
-
         // define primary keys
-        const customEvent = new CustomEvent(event.defineTogoKey, {detail: {datasets: attributes.datasets}});
+        const customEvent = new CustomEvent(event.defineTogoKey, {
+          detail: {datasets: attributes.datasets},
+        });
         DefaultEventEmitter.dispatchEvent(customEvent);
-
         // initialize stanza manager
         StanzaManager.init(templates);
-
         // aggregate
         this.#backend = Object.freeze(backend);
-
         this.#makeCategoryViews();
         this.#defineAllTracksCollapseButton();
-
         ConditionBuilder.init();
-
       });
   }
 
@@ -105,7 +103,9 @@ class App {
   }
 
   #defineAllTracksCollapseButton() {
-    const collapsebutton = document.querySelector('#Properties > header > .title > h2.collapsebutton');
+    const collapsebutton = document.querySelector(
+      '#Properties > header > .title > h2.collapsebutton'
+    );
     collapsebutton.addEventListener('click', e => {
       let customEvent = new CustomEvent(event.allTracksCollapse);
       if (collapsebutton.classList.contains('-spread')) {
@@ -122,9 +122,9 @@ class App {
   // public methods
 
   /**
-   * 
+   *
    * @param {String} api 'aggregate' or 'dataframe' or 'locate'
-   * @returns 
+   * @returns
    */
   getApiUrl(api) {
     return this.#backend[api].url;
@@ -161,7 +161,6 @@ class App {
   get colorLampBlack() {
     return this.#colorLampBlack;
   }
-
 }
 
 export default new App();
