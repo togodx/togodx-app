@@ -3374,7 +3374,6 @@
       value: function setAnnotation(annotations) {
         var _this = this;
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-        console.log(annotations);
         // delete existing properties
         while (_classPrivateFieldGet(this, _conditionAnnotations).length > 0) {
           this.removeAnnotation(_classPrivateFieldGet(this, _conditionAnnotations)[0], false);
@@ -3391,7 +3390,6 @@
       value: function setFilter(attributeId, nodes) {
         var _this2 = this;
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-        console.log(attributeId, nodes);
         var oldConditionFilter = _classPrivateFieldGet(this, _conditionFilters).find(function (conditionFilter) {
           return conditionFilter.attributeId === attributeId;
         });
@@ -3571,11 +3569,10 @@
   }
   function _restoreConditions2(_ref) {
     var _this4 = this;
-    var dataset = _ref.dataset,
-      userIds = _ref.userIds,
-      annotations = _ref.annotations,
+    var dataset = _ref.dataset;
+      _ref.userIds;
+      var annotations = _ref.annotations,
       filters = _ref.filters;
-    console.log(dataset, userIds, annotations, filters);
     _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true);
 
     // restore conditions
@@ -3622,10 +3619,10 @@
     // #isRange;
 
     /**
-     * 
-     * @param {HTMLElement} container 
+     *
+     * @param {HTMLElement} container
      * @param {String} type: 'property' or 'filter'
-     * @param {conditionAnnotation|conditionFilter} condition 
+     * @param {conditionAnnotation|conditionFilter} condition
      */
     function StackingConditionView(_container, type, condition) {
       var _this = this;
@@ -3661,14 +3658,14 @@
           {
             if (condition.parentNode) {
               var getFilter = function getFilter() {
-                var filter = condition.filter;
-                if (filter) {
+                try {
+                  var filter = condition.filter;
                   _label = "<div class=\"label _category-color\">".concat(filter.label, "</div>");
                   _ancestorLabels.push.apply(_ancestorLabels, [attribute.label].concat(_toConsumableArray(condition.ancestors.map(function (ancestor) {
                     return Records$1.getFilter(condition.attributeId, ancestor).label;
                   }))));
                   _classPrivateMethodGet(_this, _make, _make2).call(_this, _container, type, _ancestorLabels, _label);
-                } else {
+                } catch (e) {
                   setTimeout(getFilter, POLLING_DURATION);
                 }
               };
@@ -5972,7 +5969,6 @@
 
     // makte table sub header
     _classPrivateFieldGet(this, _THEAD_SUB).innerHTML = "\n    ".concat(tableData.dxCondition.conditionFilters.map(function (conditionFilter) {
-      console.log(conditionFilter);
       return "\n          <th>\n            <div class=\"inner _category-background-color\" data-category-id=\"".concat(conditionFilter.categoryId, "\">\n              <div class=\"togo-key-view\">").concat(Records$1.getDatasetLabel(conditionFilter.dataset), "</div>\n              <span>").concat(conditionFilter.label, "</span>\n            </div>\n          </th>");
     }).join(''), "\n    ").concat(tableData.dxCondition.conditionAnnotations.map(function (conditionAnnotation) {
       return "\n          <th>\n            <div class=\"inner _category-color\" data-category-id=\"".concat(conditionAnnotation.categoryId, "\">\n              <div class=\"togo-key-view\">").concat(Records$1.getDatasetLabel(conditionAnnotation.dataset), "</div>\n              <span>").concat(conditionAnnotation.label, "</span>\n            </div>\n          </th>");

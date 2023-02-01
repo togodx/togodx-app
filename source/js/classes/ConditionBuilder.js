@@ -136,7 +136,6 @@ class ConditionBuilder {
    * @param {boolean} isFinal
    */
   setAnnotation(annotations, isFinal = true) {
-    console.log(annotations);
     // delete existing properties
     while (this.#conditionAnnotations.length > 0) {
       this.removeAnnotation(this.#conditionAnnotations[0], false);
@@ -150,7 +149,6 @@ class ConditionBuilder {
   }
 
   setFilter(attributeId, nodes, isFinal = true) {
-    console.log(attributeId, nodes);
     const oldConditionFilter = this.#conditionFilters.find(
       conditionFilter => conditionFilter.attributeId === attributeId
     );
@@ -340,7 +338,6 @@ class ConditionBuilder {
   }
 
   #restoreConditions({dataset, userIds, annotations, filters}) {
-    console.log(dataset, userIds, annotations, filters);
     this.#isRestoredConditinoFromURLParameters = true;
 
     // restore conditions
