@@ -55,9 +55,10 @@ class App {
       });
 
     // events
-    DefaultEventEmitter.addEventListener(event.restoreParameters, () => {
-      document.querySelector('#App > .loading-view').classList.remove('-shown');
-    });
+    DefaultEventEmitter.addEventListener(
+      event.restoreParameters,
+      this.#draw.bind(this)
+    );
     // set up views
     new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
     new ConditionsController(document.querySelector('#Conditions'));
@@ -85,13 +86,19 @@ class App {
         StanzaManager.init(templates);
         // aggregate
         this.#backend = Object.freeze(backend);
-        this.#makeCategoryViews();
-        this.#defineAllTracksCollapseButton();
+        // this.#makeCategoryViews();
+        // this.#defineAllTracksCollapseButton();
         ConditionBuilder.init();
       });
   }
 
   // private methods
+
+  #draw() {
+    this.#makeCategoryViews();
+    this.#defineAllTracksCollapseButton();
+    document.querySelector('#App > .loading-view').classList.remove('-shown');
+  }
 
   #makeCategoryViews() {
     const conceptsContainer = document.querySelector('#Properties > .concepts');

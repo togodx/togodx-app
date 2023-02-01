@@ -3255,15 +3255,15 @@
       key: "setUserIds",
       value: function setUserIds() {
         var ids = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-        _classPrivateFieldSet(this, _userIds, ids.replace(/,/g, " ").split(/\s+/).join(','));
+        _classPrivateFieldSet(this, _userIds, ids.replace(/,/g, ' ').split(/\s+/).join(','));
         // post processing (permalink, evaluate)
         _classPrivateMethodGet(this, _postProcessing, _postProcessing2).call(this);
       }
 
       /**
-       * 
-       * @param {ConditionAnnotation} conditionAnnotation 
-       * @param {boolean} isFinal 
+       *
+       * @param {ConditionAnnotation} conditionAnnotation
+       * @param {boolean} isFinal
        */
     }, {
       key: "addAnnotation",
@@ -3311,10 +3311,10 @@
       }
 
       /**
-       * 
-       * @param {ConditionAnnotation} conditionAnnotation 
-       * @param {boolean} isFinal 
-       * @returns 
+       *
+       * @param {ConditionAnnotation} conditionAnnotation
+       * @param {boolean} isFinal
+       * @returns
        */
     }, {
       key: "removeAnnotation",
@@ -3365,15 +3365,16 @@
       }
 
       /**
-       * 
+       *
        * @param {ConditionAnnotation[]} annotations
-       * @param {boolean} isFinal 
+       * @param {boolean} isFinal
        */
     }, {
       key: "setAnnotation",
       value: function setAnnotation(annotations) {
         var _this = this;
         var isFinal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+        console.log(annotations);
         // delete existing properties
         while (_classPrivateFieldGet(this, _conditionAnnotations).length > 0) {
           this.removeAnnotation(_classPrivateFieldGet(this, _conditionAnnotations)[0], false);
@@ -3390,6 +3391,7 @@
       value: function setFilter(attributeId, nodes) {
         var _this2 = this;
         var isFinal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+        console.log(attributeId, nodes);
         var oldConditionFilter = _classPrivateFieldGet(this, _conditionFilters).find(function (conditionFilter) {
           return conditionFilter.attributeId === attributeId;
         });
@@ -3569,10 +3571,11 @@
   }
   function _restoreConditions2(_ref) {
     var _this4 = this;
-    var dataset = _ref.dataset;
-      _ref.userIds;
-      var annotations = _ref.annotations,
+    var dataset = _ref.dataset,
+      userIds = _ref.userIds,
+      annotations = _ref.annotations,
       filters = _ref.filters;
+    console.log(dataset, userIds, annotations, filters);
     _classPrivateFieldSet(this, _isRestoredConditinoFromURLParameters, true);
 
     // restore conditions
@@ -4045,6 +4048,8 @@
         writable: true,
         value: void 0
       });
+      // console.log(column, count, node, tip, label, index, selectedNodes);
+
       _classPrivateFieldSet(this, _label, label);
       _classPrivateFieldSet(this, _count, count);
       _classPrivateFieldSet(this, _node, node);
@@ -4288,7 +4293,7 @@
   var _cachedUserFilters = /*#__PURE__*/new WeakMap();
   var _ROOT$c = /*#__PURE__*/new WeakMap();
   var _TBODY$1 = /*#__PURE__*/new WeakMap();
-  var _draw$1 = /*#__PURE__*/new WeakSet();
+  var _draw$2 = /*#__PURE__*/new WeakSet();
   var _update$2 = /*#__PURE__*/new WeakSet();
   var _sort = /*#__PURE__*/new WeakSet();
   var _heatmap = /*#__PURE__*/new WeakSet();
@@ -4306,7 +4311,7 @@
       _classPrivateMethodInitSpec(this, _heatmap);
       _classPrivateMethodInitSpec(this, _sort);
       _classPrivateMethodInitSpec(this, _update$2);
-      _classPrivateMethodInitSpec(this, _draw$1);
+      _classPrivateMethodInitSpec(this, _draw$2);
       _classPrivateFieldInitSpec(this, _depth, {
         writable: true,
         value: void 0
@@ -4346,7 +4351,7 @@
       _classPrivateFieldSet(this, _cachedUserFilters, new Map());
 
       // draw
-      _classPrivateMethodGet(this, _draw$1, _draw2$1).call(this, _filters);
+      _classPrivateMethodGet(this, _draw$2, _draw2$2).call(this, _filters);
 
       // even listener
       DefaultEventEmitter$1.addEventListener(changeViewModes, _classPrivateMethodGet(this, _update$2, _update2$2).bind(this));
@@ -4433,7 +4438,7 @@
     }]);
     return ColumnView;
   }();
-  function _draw2$1(filters) {
+  function _draw2$2(filters) {
     var _classPrivateFieldGet2,
       _this3 = this;
     // make column
@@ -5597,14 +5602,14 @@
   var _BARS = /*#__PURE__*/new WeakMap();
   var _ROOT$7 = /*#__PURE__*/new WeakMap();
   var _ROOT_NODE = /*#__PURE__*/new WeakMap();
-  var _draw = /*#__PURE__*/new WeakSet();
+  var _draw$1 = /*#__PURE__*/new WeakSet();
   var _failedFetchTableDataIds = /*#__PURE__*/new WeakSet();
   var StatisticsView = /*#__PURE__*/function () {
     function StatisticsView(statisticsRootNode, elm, tableData, index, condition) {
       var _this = this;
       _classCallCheck(this, StatisticsView);
       _classPrivateMethodInitSpec(this, _failedFetchTableDataIds);
-      _classPrivateMethodInitSpec(this, _draw);
+      _classPrivateMethodInitSpec(this, _draw$1);
       _classPrivateFieldInitSpec(this, _index, {
         writable: true,
         value: void 0
@@ -5659,15 +5664,15 @@
       _classPrivateFieldSet(this, _BARS, container.querySelector(':scope > .bars'));
 
       // event listener
-      DefaultEventEmitter$1.addEventListener(addNextRows, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
-      DefaultEventEmitter$1.addEventListener(changeStatisticsViewMode, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+      DefaultEventEmitter$1.addEventListener(addNextRows, _classPrivateMethodGet(this, _draw$1, _draw2$1).bind(this));
+      DefaultEventEmitter$1.addEventListener(changeStatisticsViewMode, _classPrivateMethodGet(this, _draw$1, _draw2$1).bind(this));
       DefaultEventEmitter$1.addEventListener(failedFetchTableDataIds, _classPrivateMethodGet(this, _failedFetchTableDataIds, _failedFetchTableDataIds2).bind(this));
     }
     _createClass(StatisticsView, [{
       key: "destroy",
       value: function destroy() {
-        DefaultEventEmitter$1.removeEventListener(addNextRows, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
-        DefaultEventEmitter$1.removeEventListener(changeStatisticsViewMode, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
+        DefaultEventEmitter$1.removeEventListener(addNextRows, _classPrivateMethodGet(this, _draw$1, _draw2$1).bind(this));
+        DefaultEventEmitter$1.removeEventListener(changeStatisticsViewMode, _classPrivateMethodGet(this, _draw$1, _draw2$1).bind(this));
         DefaultEventEmitter$1.removeEventListener(failedFetchTableDataIds, _classPrivateMethodGet(this, _failedFetchTableDataIds, _failedFetchTableDataIds2).bind(this));
       }
 
@@ -5679,7 +5684,7 @@
     }]);
     return StatisticsView;
   }();
-  function _draw2(e) {
+  function _draw2$1(e) {
     var _this2 = this,
       _e$detail;
     var flattenedAttributes = _classPrivateFieldGet(this, _tableData$2).data.map(function (datum) {
@@ -7728,6 +7733,7 @@
   var _colorGray = /*#__PURE__*/new WeakMap();
   var _colorDarkGray = /*#__PURE__*/new WeakMap();
   var _colorLampBlack = /*#__PURE__*/new WeakMap();
+  var _draw = /*#__PURE__*/new WeakSet();
   var _makeCategoryViews = /*#__PURE__*/new WeakSet();
   var _defineAllTracksCollapseButton = /*#__PURE__*/new WeakSet();
   var App = /*#__PURE__*/function () {
@@ -7735,6 +7741,7 @@
       _classCallCheck(this, App);
       _classPrivateMethodInitSpec(this, _defineAllTracksCollapseButton);
       _classPrivateMethodInitSpec(this, _makeCategoryViews);
+      _classPrivateMethodInitSpec(this, _draw);
       _classPrivateFieldInitSpec(this, _viewModes, {
         writable: true,
         value: void 0
@@ -7795,9 +7802,7 @@
         });
 
         // events
-        DefaultEventEmitter$1.addEventListener(restoreParameters, function () {
-          document.querySelector('#App > .loading-view').classList.remove('-shown');
-        });
+        DefaultEventEmitter$1.addEventListener(restoreParameters, _classPrivateMethodGet(this, _draw, _draw2).bind(this));
         // set up views
         new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
         new ConditionsController(document.querySelector('#Conditions'));
@@ -7827,8 +7832,8 @@
           StanzaManager$1.init(templates);
           // aggregate
           _classPrivateFieldSet(_this, _backend, Object.freeze(backend));
-          _classPrivateMethodGet(_this, _makeCategoryViews, _makeCategoryViews2).call(_this);
-          _classPrivateMethodGet(_this, _defineAllTracksCollapseButton, _defineAllTracksCollapseButton2).call(_this);
+          // this.#makeCategoryViews();
+          // this.#defineAllTracksCollapseButton();
           ConditionBuilder$1.init();
         });
       }
@@ -7896,6 +7901,11 @@
     }]);
     return App;
   }();
+  function _draw2() {
+    _classPrivateMethodGet(this, _makeCategoryViews, _makeCategoryViews2).call(this);
+    _classPrivateMethodGet(this, _defineAllTracksCollapseButton, _defineAllTracksCollapseButton2).call(this);
+    document.querySelector('#App > .loading-view').classList.remove('-shown');
+  }
   function _makeCategoryViews2() {
     var conceptsContainer = document.querySelector('#Properties > .concepts');
     Records$1.categories.forEach(function (category) {
