@@ -5601,6 +5601,7 @@
   var _failedFetchTableDataIds = /*#__PURE__*/new WeakSet();
   var StatisticsView = /*#__PURE__*/function () {
     function StatisticsView(statisticsRootNode, elm, tableData, index, condition) {
+      var _this = this;
       _classCallCheck(this, StatisticsView);
       _classPrivateMethodInitSpec(this, _failedFetchTableDataIds);
       _classPrivateMethodInitSpec(this, _draw);
@@ -5645,7 +5646,10 @@
 
       // display order of bar chart
       if (condition.parentNode) {
-        _classPrivateFieldSet(this, _referenceFilters, Records$1.getFiltersWithParentNode(_classPrivateFieldGet(this, _attributeId), condition.parentNode));
+        _classPrivateFieldSet(this, _referenceFilters, []);
+        Records$1.fetchAttributeFilters(_classPrivateFieldGet(this, _attributeId), condition.parentNode).then(function (filters) {
+          return _classPrivateFieldSet(_this, _referenceFilters, filters);
+        });
       } else {
         _classPrivateFieldSet(this, _referenceFilters, Records$1.getAttribute(_classPrivateFieldGet(this, _attributeId)).filters);
       }
@@ -5676,10 +5680,10 @@
     return StatisticsView;
   }();
   function _draw2(e) {
-    var _this = this,
+    var _this2 = this,
       _e$detail;
     var flattenedAttributes = _classPrivateFieldGet(this, _tableData$2).data.map(function (datum) {
-      return datum.attributes[_classPrivateFieldGet(_this, _index)];
+      return datum.attributes[_classPrivateFieldGet(_this2, _index)];
     }).map(function (attribute) {
       return attribute.items;
     }).flat();
@@ -5721,7 +5725,7 @@
         label = _ref2.label,
         count = _ref2.count,
         hitCount = _ref2.hitCount;
-      var bar = _classPrivateFieldGet(_this, _BARS).querySelector(":scope > .bar[data-node=\"".concat(node, "\"]"));
+      var bar = _classPrivateFieldGet(_this2, _BARS).querySelector(":scope > .bar[data-node=\"".concat(node, "\"]"));
       if (bar === null) {
         // add bar
         bar = document.createElement('div');
@@ -5731,7 +5735,7 @@
         if (lastBar) {
           lastBar.after(bar);
         } else {
-          _classPrivateFieldGet(_this, _BARS).append(bar);
+          _classPrivateFieldGet(_this2, _BARS).append(bar);
         }
       }
       // styling
@@ -5747,7 +5751,7 @@
         hitCountLabel.textContent = hitCount.toLocaleString();
       }
       hitbar.style.height = "".concat(hitbarHeight * 100, "%");
-      if (hitbarHeight < .5) {
+      if (hitbarHeight < 0.5) {
         hitCountLabel.classList.add('-below');
       } else {
         hitCountLabel.classList.remove('-below');

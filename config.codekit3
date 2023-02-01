@@ -39,14 +39,6 @@
       "oAP" : "\/build\/build",
       "oF" : 0
     },
-    "\/build.zip" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/build\/build.zip",
-      "oF" : 0
-    },
     "\/docs\/index.md" : {
       "cB" : 0,
       "cS" : 0,
