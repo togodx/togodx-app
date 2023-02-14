@@ -25,14 +25,6 @@
       "oAP" : "\/build\/.github\/workflows\/release.yaml",
       "oF" : 0
     },
-    "\/.gitignore" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/build\/.gitignore",
-      "oF" : 0
-    },
     "\/build" : {
       "ft" : 65536,
       "oA" : 1,
@@ -65,12 +57,6 @@
       "oF" : 0,
       "oO" : 0,
       "oS" : 1
-    },
-    "\/frontend\/node_modules" : {
-      "ft" : 65536,
-      "oA" : 2,
-      "oAP" : "\/build\/frontend\/node_modules",
-      "oF" : 0
     },
     "\/node_modules" : {
       "ft" : 65536,
@@ -1407,7 +1393,7 @@
         "optionString" : "{'exceptMethods': []}"
       },
       "comma-dangle" : {
-        "active" : 1,
+        "active" : 0,
         "optionString" : "'never'"
       },
       "comma-spacing" : {

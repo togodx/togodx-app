@@ -1,5 +1,4 @@
 export default class Attribute {
-
   #id;
   #obj;
   #filters;
@@ -10,41 +9,39 @@ export default class Attribute {
     this.#filters = [];
   }
 
-
   // public Methods
 
   fetchFiltersWithParentNode(parentNode) {
     return new Promise((resolve, reject) => {
-      const filters = this.#filters.filter(filter => filter.parentNode === parentNode);
+      const filters = this.#filters.filter(
+        filter => filter.parentNode === parentNode
+      );
       if (filters.length > 0) {
         resolve(filters);
       } else {
         const body = {};
         if (parentNode) body.node = parentNode;
         if (this.order) body.order = this.order;
-        fetch(
-          this.api,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-          }
-        )
-        .then(responce => responce.json())
-        .then(filters => {
-
-          // set parent node
-          if (parentNode) filters.forEach(filter => filter.parentNode = parentNode);
-          // set filters
-          this.#filters.push(...filters);
-          resolve(filters);
+        fetch(this.api, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
         })
-        .catch(error => {
-          console.error(this, error);
-          reject(error);
-        });
+          .then(responce => responce.json())
+          .then(filters => {
+            // set parent node
+            if (parentNode)
+              filters.forEach(filter => (filter.parentNode = parentNode));
+            // set filters
+            this.#filters.push(...filters);
+            resolve(filters);
+          })
+          .catch(error => {
+            console.error(this, error);
+            reject(error);
+          });
       }
     });
   }
@@ -90,5 +87,4 @@ export default class Attribute {
   get filters() {
     return this.#filters;
   }
-
 }

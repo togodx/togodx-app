@@ -5648,9 +5648,9 @@
 
       // display order of bar chart
       if (condition.parentNode) {
-        _classPrivateFieldSet(this, _referenceFilters, []);
         Records$1.fetchAttributeFilters(_classPrivateFieldGet(this, _attributeId), condition.parentNode).then(function (filters) {
-          return _classPrivateFieldSet(_this, _referenceFilters, filters);
+          _classPrivateFieldSet(_this, _referenceFilters, filters);
+          _classPrivateMethodGet(_this, _draw$1, _draw2$1).call(_this);
         });
       } else {
         _classPrivateFieldSet(this, _referenceFilters, Records$1.getAttribute(_classPrivateFieldGet(this, _attributeId)).filters);
@@ -5683,6 +5683,7 @@
   }();
   function _draw2$1(e) {
     var _this2 = this,
+      _classPrivateFieldGet2,
       _e$detail;
     var flattenedAttributes = _classPrivateFieldGet(this, _tableData$2).data.map(function (datum) {
       return datum.attributes[_classPrivateFieldGet(_this2, _index)];
@@ -5693,7 +5694,7 @@
       return a.entry === b.entry && a.node === b.node;
     });
     var hitVlues = [];
-    _classPrivateFieldGet(this, _referenceFilters).forEach(function (_ref) {
+    (_classPrivateFieldGet2 = _classPrivateFieldGet(this, _referenceFilters)) === null || _classPrivateFieldGet2 === void 0 ? void 0 : _classPrivateFieldGet2.forEach(function (_ref) {
       var node = _ref.node,
         label = _ref.label,
         count = _ref.count;
@@ -7434,6 +7435,8 @@
    *        A function to determine if the error can be retried
    * @param {Function} [defaultOptions.retryDelay=noDelay]
    *        A function to determine the delay between retry requests
+   * @param {Function} [defaultOptions.onRetry=()=>{}]
+   *        A function to get notified when a retry occurs
    */
 
 
@@ -7476,7 +7479,8 @@
           retries = 3,
           retryCondition = isNetworkOrIdempotentRequestError,
           retryDelay = noDelay,
-          shouldResetTimeout = false
+          shouldResetTimeout = false,
+          onRetry = () => {}
         } = getRequestOptions(config, defaultOptions);
         var currentState = getCurrentState(config);
 
@@ -7494,6 +7498,7 @@
           }
 
           config.transformRequest = [data => data];
+          onRetry(currentState.retryCount, error, config);
           return new Promise(resolve => setTimeout(() => resolve(axios(config)), delay));
         }
 
