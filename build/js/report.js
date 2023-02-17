@@ -2881,8 +2881,8 @@
 
   var StanzaManager$1 = new StanzaManager();
 
-  var PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/properties.json';
-  var TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/develop/config/togosite-human/templates.json';
+  var PROPERTIES = 'https://raw.githubusercontent.com/dbcls/togosite/main/config/togosite-human/properties.json';
+  var TEMPLATES = 'https://raw.githubusercontent.com/dbcls/togosite/main/config/togosite-human/templates.json';
 
   var _drawStanzas = new WeakSet();
 

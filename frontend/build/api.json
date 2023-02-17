@@ -1,0 +1,5 @@
+{
+  "PROPERTIES": "https://raw.githubusercontent.com/dbcls/togosite/main/config/togosite-human/properties.json",
+  "TEMPLATES": "https://raw.githubusercontent.com/dbcls/togosite/main/config/togosite-human/templates.json",
+  "AGGREGATE": "https://raw.githubusercontent.com/dbcls/togosite/main/config/togosite-human/aggregate.json"
+}
