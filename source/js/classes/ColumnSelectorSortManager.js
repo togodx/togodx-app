@@ -1,14 +1,12 @@
-import DefaultEventEmitter from "./DefaultEventEmitter";
+import DefaultEventEmitter from './DefaultEventEmitter';
 import * as event from '../events';
 
-const SORTABLE_COLUMNS = ['label', 'total'];
+const SORTABLE_COLUMNS = ['label', 'total', 'mapped', 'pvalue'];
 
 class ColumnSelectorSortManager {
-
   #status;
 
   constructor() {
-
     // get data from local strage
     const column = window.localStorage.getItem('sortColumn');
     const status = window.localStorage.getItem('sortDirectionEachOfColumns');
@@ -18,9 +16,7 @@ class ColumnSelectorSortManager {
       this.#status = new Map(SORTABLE_COLUMNS.map(column => [column, '']));
     }
     this.#setDocument(column);
-
   }
-
 
   // private methods
 
@@ -29,29 +25,31 @@ class ColumnSelectorSortManager {
     document.body.dataset.sortDirection = this.#status.get(column);
   }
 
-
   // public methods
 
   setSort(column) {
-
     // set sort
-    const direction = ({
+    const direction = {
       '': 'asc',
       asc: 'desc',
-      desc: ''
-    })[this.#status.get(column)];
+      desc: '',
+    }[this.#status.get(column)];
     this.#status.set(column, direction);
     this.#setDocument(column);
 
     // dispatch event
-    const customEvent = new CustomEvent(event.changeColumnSelectorSorter, {detail: {column, direction}});
+    const customEvent = new CustomEvent(event.changeColumnSelectorSorter, {
+      detail: {column, direction},
+    });
     DefaultEventEmitter.dispatchEvent(customEvent);
 
     // set local storage
     window.localStorage.setItem('sortColumn', column);
-    window.localStorage.setItem('sortDirectionEachOfColumns', JSON.stringify(Array.from(this.#status)));
+    window.localStorage.setItem(
+      'sortDirectionEachOfColumns',
+      JSON.stringify(Array.from(this.#status))
+    );
   }
-
 
   // accessors
 
@@ -60,11 +58,13 @@ class ColumnSelectorSortManager {
   }
 
   get sortDescriptor() {
-    const column = document.body.dataset.sortDirection === '' ? '' : document.body.dataset.sortColumn;
+    const column =
+      document.body.dataset.sortDirection === ''
+        ? ''
+        : document.body.dataset.sortColumn;
     const direction = document.body.dataset.sortDirection;
     return {column, direction};
   }
-
 }
 
 export default new ColumnSelectorSortManager();

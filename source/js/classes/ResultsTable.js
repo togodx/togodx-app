@@ -157,7 +157,6 @@ export default class ResultsTable {
     this.#THEAD_SUB.innerHTML = `
     ${tableData.dxCondition.conditionFilters
       .map(conditionFilter => {
-        console.log(conditionFilter);
         return `
           <th>
             <div class="inner _category-background-color" data-category-id="${
@@ -217,7 +216,7 @@ export default class ResultsTable {
   }
 
   #addTableRows({done, offset, rows, tableData}) {
-    this.#tableData = tableData;
+    if (this.#tableData !== tableData) return;
 
     // make table
     this.#TBODY.insertAdjacentHTML(

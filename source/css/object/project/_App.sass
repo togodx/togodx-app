@@ -8,7 +8,7 @@
     display: flex
     transition: transform var(--transition-wipe)
     body[data-display="results"] &
-      transform: translateX(calc(-100vw + var(--width-condition)))
+      transform: translateX(calc(max(100vw, var(--min-width-app)) * -1 + var(--width-condition)))
   > .loading-view
     position: fixed
     top: var(--height-header)

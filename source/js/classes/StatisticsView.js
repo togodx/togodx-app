@@ -1,9 +1,8 @@
-import DefaultEventEmitter from "./DefaultEventEmitter";
+import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
 import * as event from '../events';
 
 export default class StatisticsView {
-
   #index;
   #attributeId;
   #tableData;
@@ -13,7 +12,6 @@ export default class StatisticsView {
   #ROOT_NODE;
 
   constructor(statisticsRootNode, elm, tableData, index, condition) {
-
     this.#index = index;
     this.#attributeId = condition.attributeId;
     this.#tableData = tableData;
@@ -33,7 +31,10 @@ export default class StatisticsView {
 
     // display order of bar chart
     if (condition.parentNode) {
-      this.#referenceFilters = Records.getFiltersWithParentNode(this.#attributeId, condition.parentNode);
+      this.#referenceFilters = Records.getFiltersWithParentNode(
+        this.#attributeId,
+        condition.parentNode
+      );
     } else {
       this.#referenceFilters = Records.getAttribute(this.#attributeId).filters;
     }
@@ -43,15 +44,33 @@ export default class StatisticsView {
     this.#BARS = container.querySelector(':scope > .bars');
 
     // event listener
-    DefaultEventEmitter.addEventListener(event.addNextRows, this.#draw.bind(this));
-    DefaultEventEmitter.addEventListener(event.changeStatisticsViewMode, this.#draw.bind(this));
-    DefaultEventEmitter.addEventListener(event.failedFetchTableDataIds, this.#failedFetchTableDataIds.bind(this));
+    DefaultEventEmitter.addEventListener(
+      event.addNextRows,
+      this.#draw.bind(this)
+    );
+    DefaultEventEmitter.addEventListener(
+      event.changeStatisticsViewMode,
+      this.#draw.bind(this)
+    );
+    DefaultEventEmitter.addEventListener(
+      event.failedFetchTableDataIds,
+      this.#failedFetchTableDataIds.bind(this)
+    );
   }
 
   destroy() {
-    DefaultEventEmitter.removeEventListener(event.addNextRows, this.#draw.bind(this));
-    DefaultEventEmitter.removeEventListener(event.changeStatisticsViewMode, this.#draw.bind(this));
-    DefaultEventEmitter.removeEventListener(event.failedFetchTableDataIds, this.#failedFetchTableDataIds.bind(this));
+    DefaultEventEmitter.removeEventListener(
+      event.addNextRows,
+      this.#draw.bind(this)
+    );
+    DefaultEventEmitter.removeEventListener(
+      event.changeStatisticsViewMode,
+      this.#draw.bind(this)
+    );
+    DefaultEventEmitter.removeEventListener(
+      event.failedFetchTableDataIds,
+      this.#failedFetchTableDataIds.bind(this)
+    );
   }
 
   /**
@@ -60,28 +79,32 @@ export default class StatisticsView {
    * @param {Boolean} detail.done
    */
   #draw(e) {
-
     const flattenedAttributes = this.#tableData.data
       .map(datum => datum.attributes[this.#index])
       .map(attribute => attribute.items)
       .flat();
     const uniquedAttributes = _.uniqWith(flattenedAttributes, (a, b) => {
       return a.entry === b.entry && a.node === b.node;
-    })
+    });
     const hitVlues = [];
     this.#referenceFilters.forEach(({node, label, count}) => {
-      const filtered = uniquedAttributes.filter(attribute => attribute.node === node);
+      const filtered = uniquedAttributes.filter(
+        attribute => attribute.node === node
+      );
       if (filtered.length === 0) return;
       hitVlues.push({
-        node, label, count,
-        hitCount: filtered.length
-      })
+        node,
+        label,
+        count,
+        hitCount: filtered.length,
+      });
     });
 
     // max
     let countMax;
     const isOnlyHitCount = this.#ROOT_NODE.classList.contains('-onlyhitcount');
-    const isStretch = !isOnlyHitCount && this.#ROOT_NODE.classList.contains('-stretch');
+    const isStretch =
+      !isOnlyHitCount && this.#ROOT_NODE.classList.contains('-stretch');
     if (isOnlyHitCount) {
       countMax = Math.max(...hitVlues.map(filter => filter.hitCount));
     } else {
@@ -95,6 +118,7 @@ export default class StatisticsView {
         bar = document.createElement('div');
         bar.classList.add('bar');
         bar.dataset.node = node;
+        bar.setAttribute('title', label);
         bar.innerHTML = `
         <div class="wholebar"></div>
         <div class="hitbar _category-background-color-strong">
@@ -108,19 +132,21 @@ export default class StatisticsView {
         }
       }
       // styling
-      bar.querySelector(':scope > .wholebar').style.height = `${count / countMax * 100}%`;
+      bar.querySelector(':scope > .wholebar').style.height = `${
+        (count / countMax) * 100
+      }%`;
       const hitbar = bar.querySelector(':scope > .hitbar');
       const hitCountLabel = hitbar.querySelector(':scope > .filter');
       let hitbarHeight;
       if (isStretch) {
         hitbarHeight = hitCount / count;
-        hitCountLabel.textContent = `${Math.round(hitCount / count * 100)}%`;
+        hitCountLabel.textContent = `${Math.round((hitCount / count) * 100)}%`;
       } else {
         hitbarHeight = hitCount / countMax;
         hitCountLabel.textContent = hitCount.toLocaleString();
       }
       hitbar.style.height = `${hitbarHeight * 100}%`;
-      if (hitbarHeight < .5) {
+      if (hitbarHeight < 0.5) {
         hitCountLabel.classList.add('-below');
       } else {
         hitCountLabel.classList.remove('-below');
@@ -130,13 +156,15 @@ export default class StatisticsView {
 
     if (e?.detail?.done) {
       this.#ROOT.classList.add('-completed');
-      this.#ROOT.querySelector(':scope > .loading-view').classList.remove('-shown');
+      this.#ROOT
+        .querySelector(':scope > .loading-view')
+        .classList.remove('-shown');
     }
-
   }
 
   #failedFetchTableDataIds() {
-    this.#ROOT.querySelector(':scope > .loading-view').classList.remove('-shown');
+    this.#ROOT
+      .querySelector(':scope > .loading-view')
+      .classList.remove('-shown');
   }
-
 }
