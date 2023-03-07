@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "axios": "^1.2.2",
-    "axios-retry": "^3.3.1"
+    "axios-retry": "^3.3.1",
     "colorjs.io": "0.0.7",
     "lodash": "^4.17.21"
   },
