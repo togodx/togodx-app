@@ -7,7 +7,7 @@ import ProgressIndicator from './ProgressIndicator';
 import ConditionAnnotation from './ConditionAnnotation';
 import {mixin} from './TableDataMixin.js';
 import * as event from '../events';
-// import axios from 'axios';
+import axios from 'axios';
 
 const LIMIT = 100;
 const downloadUrls = new Map();
