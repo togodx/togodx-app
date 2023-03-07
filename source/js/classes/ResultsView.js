@@ -21,7 +21,7 @@ export default class ResultsView {
   constructor(elm) {
     this.#ROOT = elm;
     this.#HEADER = elm.querySelector(':scope > header > span');
-    const TABLE = elm.querySelector(':scope > table');
+    const TABLE = elm.querySelector(':scope > .inner > table');
     this.#THEAD = TABLE.querySelector(':scope > thead > tr.header');
     this.#THEAD_SUB = TABLE.querySelector(':scope > thead > tr.subheader');
     this.#TBODY = TABLE.querySelector(':scope > tbody');

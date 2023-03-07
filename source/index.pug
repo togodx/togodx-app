@@ -141,23 +141,24 @@ block main
           section#ResultsView
             header
               span
-            table
-              thead
-                tr.statistics
-                  th.controller
-                    .inner
-                      label
-                        input(type="radio" name="statistics_mode" value="hits_all" checked)
-                        span Hits/All
-                      label
-                        input(type="radio" name="statistics_mode" value="hits_all_percentage")
-                        span Hits/All (%)
-                      label
-                        input(type="radio" name="statistics_mode" value="hits_only")
-                        span Hits only
-                tr.header
-                tr.subheader
-              tbody
+            .inner
+              table
+                thead
+                  tr.statistics
+                    th.controller
+                      .inner
+                        label
+                          input(type="radio" name="statistics_mode" value="hits_all" checked)
+                          span Hits/All
+                        label
+                          input(type="radio" name="statistics_mode" value="hits_all_percentage")
+                          span Hits/All (%)
+                        label
+                          input(type="radio" name="statistics_mode" value="hits_only")
+                          span Hits only
+                  tr.header
+                  tr.subheader
+                tbody
 
       section#Results
         .inner
