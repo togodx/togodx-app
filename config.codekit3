@@ -80,6 +80,25 @@
       "oO" : 0,
       "oS" : 1
     },
+    "\/README.md" : {
+      "cB" : 0,
+      "cS" : 0,
+      "eF" : 1,
+      "eL" : 1,
+      "ema" : 1,
+      "eSQ" : 1,
+      "ft" : 4096,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/build\/README.html",
+      "oF" : 0,
+      "oFM" : 0,
+      "oS" : 0,
+      "pHT" : 0,
+      "pME" : 1,
+      "rFN" : 0,
+      "uCM" : 0
+    },
     "\/source\/_include\/_layout.pug" : {
       "cB" : 0,
       "cOD" : 1,
@@ -611,7 +630,7 @@
       "oS" : 1
     },
     "\/source\/js\/classes\/App.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -622,7 +641,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/Attribute.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -633,7 +652,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/AttributeTrackView.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -644,7 +663,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/BalloonView.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -655,7 +674,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/CategoryView.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -666,7 +685,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/Color.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -677,7 +696,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/ColumnItemView.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -688,7 +707,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/ColumnSelectorSortManager.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -699,7 +718,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/ColumnSelectorView.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -710,7 +729,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/ColumnView.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -721,7 +740,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/ConditionAnnotation.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -732,7 +751,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/ConditionBase.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -743,7 +762,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/ConditionBuilder.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -754,7 +773,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/ConditionBuilderView.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -765,7 +784,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/ConditionFilter.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -776,7 +795,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/ConditionsController.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -787,7 +806,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/DefaultEventEmitter.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -798,7 +817,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/DXCondition.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -809,7 +828,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/HistogramRangeSelectorController.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -820,7 +839,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/HistogramRangeSelectorView.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -831,7 +850,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/ProgressIndicator.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -842,7 +861,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/Records.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -853,7 +872,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/ResultDetailModal.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -864,7 +883,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/ResultsTable.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -875,7 +894,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/StackingConditionView.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -886,7 +905,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/StanzaManager.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -897,7 +916,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/StatisticsView.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -908,7 +927,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/TableData.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -918,8 +937,19 @@
       "sC" : 3,
       "tS" : 1
     },
+    "\/source\/js\/classes\/TableDataMixin.js" : {
+      "bF" : 6,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/classes\/TableDataMixin.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
+    },
     "\/source\/js\/classes\/TrackOverviewCategorical.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -930,7 +960,7 @@
       "tS" : 1
     },
     "\/source\/js\/classes\/UploadUserIDsView.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -941,7 +971,7 @@
       "tS" : 1
     },
     "\/source\/js\/events.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -952,7 +982,7 @@
       "tS" : 1
     },
     "\/source\/js\/functions\/collapseView.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -963,7 +993,7 @@
       "tS" : 1
     },
     "\/source\/js\/functions\/dragView.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -974,7 +1004,7 @@
       "tS" : 1
     },
     "\/source\/js\/functions\/queryTemplates.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -985,7 +1015,7 @@
       "tS" : 1
     },
     "\/source\/js\/functions\/util.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -996,7 +1026,7 @@
       "tS" : 1
     },
     "\/source\/js\/main.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -1007,7 +1037,7 @@
       "tS" : 1
     },
     "\/source\/js\/types.js" : {
-      "bF" : 4,
+      "bF" : 6,
       "ft" : 64,
       "ma" : 1,
       "mi" : 0,
@@ -2370,7 +2400,7 @@
       "autoOutputPathReplace1" : "",
       "autoOutputPathReplace2" : "",
       "autoOutputPathStyle" : 0,
-      "bundleFormat" : 4,
+      "bundleFormat" : 6,
       "minifierStyle" : 0,
       "sourceMapStyle" : 1,
       "syntaxCheckerStyle" : 3,

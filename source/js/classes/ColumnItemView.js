@@ -7,6 +7,8 @@ import * as event from '../events';
 export default class ColumnItemView {
   #label;
   #count;
+  #mapped;
+  #pvalue;
   #node;
   #index;
   #ROOT;
@@ -132,6 +134,8 @@ export default class ColumnItemView {
   setUserFilters(filters) {
     const filter = filters.find(filter => filter.node === this.#node);
     if (filter) {
+      this.#mapped = filter.mapped ?? null;
+      this.#pvalue = filter.pvalue ?? null;
       this.#ROOT.classList.add('-pinsticking');
       this.#ROOT.querySelector(':scope > .mapped').textContent = filter.mapped
         ? filter.mapped.toLocaleString()
@@ -152,6 +156,14 @@ export default class ColumnItemView {
 
   get count() {
     return this.#count;
+  }
+
+  get mapped() {
+    return this.#mapped;
+  }
+
+  get pvalue() {
+    return this.#pvalue;
   }
 
   get index() {

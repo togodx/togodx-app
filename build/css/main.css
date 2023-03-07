@@ -432,9 +432,6 @@ body {
   line-height: 1.5;
   background-color: var(--color-gray);
 }
-body[data-page=top] {
-  overflow: hidden;
-}
 body[data-page=top][data-display=results] [data-hidden-by=results], body[data-page=top][data-display=properties] [data-hidden-by=properties] {
   display: none;
   opacity: 0;
@@ -811,6 +808,24 @@ body[data-sort-column=total][data-sort-direction=asc] .column-selector-view > .c
   opacity: 1;
 }
 body[data-sort-column=total][data-sort-direction=desc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.total > .sorter::after {
+  opacity: 1;
+}
+body[data-sort-column=mapped][data-sort-direction=asc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.mapped, body[data-sort-column=mapped][data-sort-direction=desc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.mapped {
+  background-color: var(--color-lamp-black);
+}
+body[data-sort-column=mapped][data-sort-direction=asc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.mapped > .sorter::before {
+  opacity: 1;
+}
+body[data-sort-column=mapped][data-sort-direction=desc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.mapped > .sorter::after {
+  opacity: 1;
+}
+body[data-sort-column=pvalue][data-sort-direction=asc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.pvalue, body[data-sort-column=pvalue][data-sort-direction=desc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.pvalue {
+  background-color: var(--color-lamp-black);
+}
+body[data-sort-column=pvalue][data-sort-direction=asc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.pvalue > .sorter::before {
+  opacity: 1;
+}
+body[data-sort-column=pvalue][data-sort-direction=desc] .column-selector-view > .columns > .inner > .column > table > thead > .header > th.pvalue > .sorter::after {
   opacity: 1;
 }
 .column-selector-view > .columns > .inner > .column > table > tbody > tr > .label {
@@ -1326,6 +1341,7 @@ body.-showuserids .column-selector-view > .columns > .inner > .column > table > 
   margin: calc(var(--padding-track-block-start) * -1) calc(var(--padding-track-inline-start) * -1);
   padding: var(--padding-block-start) 1.5rem var(--padding-block-end) 0.8rem;
   position: relative;
+  overflow: hidden;
 }
 .statistics-view > .statistics {
   text-align: left;
@@ -1668,8 +1684,8 @@ body[data-display=results] .table-data-controller-view > .controller > .button[d
   transition: transform var(--transition-wipe), -webkit-transform var(--transition-wipe);
 }
 body[data-display=results] #App > .inner {
-  -webkit-transform: translateX(calc(-100vw + var(--width-condition)));
-          transform: translateX(calc(-100vw + var(--width-condition)));
+  -webkit-transform: translateX(calc(max(100vw, var(--min-width-app)) * -1 + var(--width-condition)));
+          transform: translateX(calc(max(100vw, var(--min-width-app)) * -1 + var(--width-condition)));
 }
 #App > .loading-view {
   position: fixed;
@@ -1943,6 +1959,7 @@ body[data-display=results] #ConditionBuilder > .conditions > #ConditionTogoKey {
 #Results {
   --height-header: calc(var(--height-track) - var(--padding-track-block-start) * 2 + .2rem);
   width: calc(100vw - var(--width-condition));
+  min-width: calc(var(--min-width-app) - var(--width-condition));
 }
 #Results > .inner {
   height: 100%;

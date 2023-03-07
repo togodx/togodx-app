@@ -121,6 +121,7 @@ export default class StatisticsView {
         bar = document.createElement('div');
         bar.classList.add('bar');
         bar.dataset.node = node;
+        bar.setAttribute('title', label);
         bar.innerHTML = `
         <div class="wholebar"></div>
         <div class="hitbar _category-background-color-strong">

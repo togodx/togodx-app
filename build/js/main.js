@@ -1,5 +1,16 @@
-(function () {
-  'use strict';
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('https'), require('url'), require('stream'), require('assert'), require('zlib')) :
+  typeof define === 'function' && define.amd ? define(['https', 'url', 'stream', 'assert', 'zlib'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.require$$5, global.require$$0, global.require$$3, global.require$$4, global.require$$8));
+})(this, (function (require$$5, require$$0, require$$3, require$$4, require$$8) { 'use strict';
+
+  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+  var require$$5__default = /*#__PURE__*/_interopDefaultLegacy(require$$5);
+  var require$$0__default = /*#__PURE__*/_interopDefaultLegacy(require$$0);
+  var require$$3__default = /*#__PURE__*/_interopDefaultLegacy(require$$3);
+  var require$$4__default = /*#__PURE__*/_interopDefaultLegacy(require$$4);
+  var require$$8__default = /*#__PURE__*/_interopDefaultLegacy(require$$8);
 
   function _iterableToArrayLimit(arr, i) {
     var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"];
@@ -4129,10 +4140,20 @@
           return filter.node === _classPrivateFieldGet(_this2, _node);
         });
         if (filter) {
+          var _filter$mapped, _filter$pvalue;
+
+          _classPrivateFieldSet(this, _mapped, (_filter$mapped = filter.mapped) !== null && _filter$mapped !== void 0 ? _filter$mapped : null);
+
+          _classPrivateFieldSet(this, _pvalue, (_filter$pvalue = filter.pvalue) !== null && _filter$pvalue !== void 0 ? _filter$pvalue : null);
+
           _classPrivateFieldGet(this, _ROOT$d).classList.add('-pinsticking');
           _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .mapped').textContent = filter.mapped ? filter.mapped.toLocaleString() : '';
           _classPrivateFieldGet(this, _ROOT$d).querySelector(':scope > .pvalue').textContent = filter.pvalue ? filter.pvalue.toExponential(2) : '';
           if (filter.mapped === 0) _classPrivateFieldGet(this, _ROOT$d).classList.remove('-pinsticking');else _classPrivateFieldGet(this, _ROOT$d).classList.add('-pinsticking');
+        } else {
+          _classPrivateFieldSet(this, _mapped, null);
+
+          _classPrivateFieldSet(this, _pvalue, null);
         }
       }
 
@@ -4485,7 +4506,9 @@
     var column = {
       '': 'index',
       label: 'label',
-      total: 'count'
+      total: 'count',
+      mapped: 'mapped',
+      pvalue: 'pvalue'
     }[sortDescriptor.column];
     var items = _classPrivateFieldGet(this, _columnItemViews).map(function (columnItemView) {
       return {
@@ -4496,11 +4519,25 @@
     switch (sortDescriptor.column) {
       case 'label':
         items.sort(function (a, b) {
+          if (sortDescriptor.direction === 'desc') {
+            var _ref2 = [a, b];
+            b = _ref2[0];
+            a = _ref2[1];
+          }
+
           return a.filter > b.filter ? 1 : -1;
         });
         break;
       case 'total':
+      case 'mapped':
+      case 'pvalue':
         items.sort(function (a, b) {
+          if (sortDescriptor.direction === 'desc') {
+            var _ref3 = [a, b];
+            b = _ref3[0];
+            a = _ref3[1];
+          }
+
           return b.filter - a.filter;
         });
         break;
@@ -5734,6 +5771,7 @@
         bar = document.createElement('div');
         bar.classList.add('bar');
         bar.dataset.node = node;
+        bar.setAttribute('title', label);
         bar.innerHTML = "\n        <div class=\"wholebar\"></div>\n        <div class=\"hitbar _category-background-color-strong\">\n          <div class=\"filter\"></div>\n        </div>\n        <div class=\"label\">".concat(label, "</div>");
         if (lastBar) {
           lastBar.after(bar);
@@ -6832,6 +6870,7 @@
           var customEvent2 = new CustomEvent(addNextRows, {
             detail: {
               tableData: this,
+              offset: 0,
               rows: _classPrivateFieldGet(this, _rows),
               done: done
             }
@@ -7110,6 +7149,7 @@
     _classPrivateFieldGet(this, _STATUS).classList.remove('-flickering');
     if (withData) _classPrivateMethodGet(this, _setDownloadButtons, _setDownloadButtons2).call(this);
   }
+  Object.assign(TableData.prototype, mixin);
 
   var _tableData = /*#__PURE__*/new WeakMap();
   var _ROOT$1 = /*#__PURE__*/new WeakMap();
@@ -7303,7 +7343,7 @@
   }
   /**
    * @param  {Error}  error
-   * @return {boolean}
+   * @return {boolean | Promise}
    */
 
   function isNetworkOrIdempotentRequestError(error) {
@@ -7446,9 +7486,8 @@
 
       if (typeof shouldRetryOrPromise === 'object') {
         try {
-          var shouldRetryPromiseResult = yield shouldRetryOrPromise; // keep return true unless shouldRetryPromiseResult return false for compatibility
-
-          return shouldRetryPromiseResult !== false;
+          yield shouldRetryOrPromise;
+          return true;
         } catch (_err) {
           return false;
         }
@@ -7942,5 +7981,5 @@
     App$1.ready(api);
   });
 
-})();
+}));
 //# sourceMappingURL=main.js.map
