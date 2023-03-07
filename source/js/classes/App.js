@@ -34,7 +34,6 @@ class App {
 
   ready(config) {
     const body = document.body;
-
     // view modes
     this.#viewModes = {};
     document
@@ -55,10 +54,10 @@ class App {
       });
 
     // events
-    DefaultEventEmitter.addEventListener(event.restoreParameters, () => {
-      document.querySelector('#App > .loading-view').classList.remove('-shown');
-    });
-
+    DefaultEventEmitter.addEventListener(
+      event.restoreParameters,
+      this.#draw.bind(this)
+    );
     // set up views
     new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
     new ConditionsController(document.querySelector('#Conditions'));
@@ -66,7 +65,6 @@ class App {
     new ResultDetailModal();
     new BalloonView();
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
-
     // load config json
     Promise.all([
       fetch(config.TEMPLATES),
@@ -78,27 +76,28 @@ class App {
       })
       .then(([templates, backend, attributes]) => {
         Records.setAttributes(attributes);
-
         // define primary keys
         const customEvent = new CustomEvent(event.defineTogoKey, {
           detail: {datasets: attributes.datasets},
         });
         DefaultEventEmitter.dispatchEvent(customEvent);
-
         // initialize stanza manager
         StanzaManager.init(templates);
-
         // aggregate
         this.#backend = Object.freeze(backend);
-
-        this.#makeCategoryViews();
-        this.#defineAllTracksCollapseButton();
-
+        // this.#makeCategoryViews();
+        // this.#defineAllTracksCollapseButton();
         ConditionBuilder.init();
       });
   }
 
   // private methods
+
+  #draw() {
+    this.#makeCategoryViews();
+    this.#defineAllTracksCollapseButton();
+    document.querySelector('#App > .loading-view').classList.remove('-shown');
+  }
 
   #makeCategoryViews() {
     const conceptsContainer = document.querySelector('#Properties > .concepts');

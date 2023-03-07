@@ -16,6 +16,8 @@ export default class ColumnItemView {
   #INPUT_KEY;
 
   constructor(column, {count, node, tip, label}, index, selectedNodes) {
+    // console.log(column, count, node, tip, label, index, selectedNodes);
+
     this.#label = label;
     this.#count = count;
     this.#node = node;
@@ -137,15 +139,12 @@ export default class ColumnItemView {
       this.#ROOT.classList.add('-pinsticking');
       this.#ROOT.querySelector(':scope > .mapped').textContent = filter.mapped
         ? filter.mapped.toLocaleString()
-        : 0;
+        : '';
       this.#ROOT.querySelector(':scope > .pvalue').textContent = filter.pvalue
         ? filter.pvalue.toExponential(2)
         : '';
       if (filter.mapped === 0) this.#ROOT.classList.remove('-pinsticking');
       else this.#ROOT.classList.add('-pinsticking');
-    } else {
-      this.#mapped = null;
-      this.#pvalue = null;
     }
   }
 

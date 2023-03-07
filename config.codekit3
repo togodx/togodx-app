@@ -50,6 +50,14 @@
       "rFN" : 0,
       "uCM" : 0
     },
+    "\/frontend\/build\/api.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/build\/frontend\/build\/api-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
     "\/node_modules" : {
       "ft" : 65536,
       "oA" : 2,
@@ -1368,7 +1376,7 @@
     ],
     "esLintConfigFileHandlingType" : 0,
     "esLintECMAVersion" : 0,
-    "esLintEnvironmentsMask" : 1,
+    "esLintEnvironmentsMask" : 17,
     "esLintRules" : {
       "accessor-pairs" : {
         "active" : 0,
@@ -1426,7 +1434,7 @@
         "optionString" : "{'exceptMethods': []}"
       },
       "comma-dangle" : {
-        "active" : 1,
+        "active" : 0,
         "optionString" : "'never'"
       },
       "comma-spacing" : {
@@ -2584,7 +2592,7 @@
     ],
     "npmAbbreviatedPath" : "",
     "npmCreatePackageLock" : 1,
-    "npmInstallOptionalDependencies" : 0,
+    "npmInstallOptionalDependencies" : 1,
     "npmSaveExactVersion" : 0,
     "npmTargetDependencyListType" : 1,
     "overrideExternalServerCSS" : 0,

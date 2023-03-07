@@ -6,7 +6,7 @@ import App from './App';
 import Records from './Records';
 import * as event from '../events';
 import {getApiParameter} from '../functions/queryTemplates';
-import axios from 'axios';
+// import axios from 'axios';
 
 export default class ColumnView {
   #depth;
