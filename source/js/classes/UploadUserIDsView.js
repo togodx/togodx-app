@@ -5,7 +5,7 @@ import App from './App';
 import * as event from '../events';
 import {getApiParameter} from '../functions/queryTemplates';
 import ProgressIndicator from './ProgressIndicator';
-// import axios from 'axios';
+import axios from 'axios';
 import axiosRetry from 'axios-retry';
 
 const timeOutError = 'ECONNABORTED';
@@ -31,7 +31,7 @@ export default class UploadUserIDsView {
       },
       retryCondition: error => {
         return (
-          (error.code === timeOutError) ||
+          error.code === timeOutError ||
           [500, 503].includes(error.response?.status)
         );
       },
@@ -48,21 +48,22 @@ export default class UploadUserIDsView {
     this.#progressIndicator = new ProgressIndicator(elm.lastChild, 'simple');
 
     // attach events
-    elm.querySelector(':scope > .title > .button > button').addEventListener('click', () => {
-      this.#USER_IDS.value = this.#USER_IDS.placeholder.replace('e.g. ', '');
-      this.#USER_IDS.dispatchEvent(new Event('change'));
-      submitButton.dispatchEvent(new Event('click'));
-    });
+    elm
+      .querySelector(':scope > .title > .button > button')
+      .addEventListener('click', () => {
+        this.#USER_IDS.value = this.#USER_IDS.placeholder.replace('e.g. ', '');
+        this.#USER_IDS.dispatchEvent(new Event('change'));
+        submitButton.dispatchEvent(new Event('click'));
+      });
     const buttons = elm.querySelector(':scope > .buttons');
     const submitButton = buttons.querySelector(':scope > button:nth-child(1)');
-    submitButton
-      .addEventListener('click', e => {
-        e.stopPropagation();
-        // clear after 2nd execution
-        if (this.#source) this.#reset(true);
-        this.#fetch();
-        return false;
-      });
+    submitButton.addEventListener('click', e => {
+      e.stopPropagation();
+      // clear after 2nd execution
+      if (this.#source) this.#reset(true);
+      this.#fetch();
+      return false;
+    });
     buttons
       .querySelector(':scope > button:nth-child(2)')
       .addEventListener('click', e => {
@@ -83,7 +84,6 @@ export default class UploadUserIDsView {
       this.#clear.bind(this)
     );
   }
-
 
   // private methods
 
@@ -117,7 +117,7 @@ export default class UploadUserIDsView {
           attribute: id,
           node: '',
           dataset: ConditionBuilder.currentDataset,
-          queries: ConditionBuilder.userIds
+          queries: ConditionBuilder.userIds,
         }),
         {
           cancelToken: this.#source.token,
@@ -131,7 +131,7 @@ export default class UploadUserIDsView {
         const customEvent = new CustomEvent(event.setUserFilters, {
           detail: {
             attributeId: id,
-            filters: response.data
+            filters: response.data,
           },
         });
         DefaultEventEmitter.dispatchEvent(customEvent);
