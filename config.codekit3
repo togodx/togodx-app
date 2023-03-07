@@ -1060,6 +1060,17 @@
       "oF" : 0,
       "sC" : 3,
       "tS" : 1
+    },
+    "\/vite.config.js" : {
+      "bF" : 6,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 0,
+      "oA" : 0,
+      "oAP" : "\/build\/vite.config.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 1
     }
   },
   "hooks" : [

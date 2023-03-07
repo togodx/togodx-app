@@ -4,6 +4,7 @@ import Records from './Records';
 import App from './App';
 import * as event from '../events';
 import {getApiParameter} from '../functions/queryTemplates';
+import axios from 'axios';
 
 const NUM_OF_PREVIEW = 5;
 

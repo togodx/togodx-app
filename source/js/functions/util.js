@@ -1,4 +1,4 @@
-import Color from '../classes/Color';
+import Color from 'colorjs.io';
 import DefaultEventEmitter from '../classes/DefaultEventEmitter';
 
 /**

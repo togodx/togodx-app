@@ -9,7 +9,7 @@ import BalloonView from './BalloonView';
 import ConditionsController from './ConditionsController';
 import UploadUserIDsView from './UploadUserIDsView';
 import GlobalToolBar from './GlobalToolBar';
-import Color from './Color';
+import Color from 'colorjs.io';
 import StanzaManager from './StanzaManager';
 import ResultsView from './ResultsView';
 import * as event from '../events';
@@ -27,7 +27,6 @@ class App {
 
   constructor() {
     this.#colorWhite = new Color('white').to('srgb');
-    this.#colorLightGray = new Color('--color-light-gray').to('srgb');
     this.#colorLightGray = new Color('--color-light-gray').to('srgb');
     this.#colorSilver = new Color('--color-silver').to('srgb');
     this.#colorGray = new Color('--color-gray').to('srgb');

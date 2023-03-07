@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "TogoDX",
+  "short_name": "TogoDX",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "TogoDX (Togo Data eXplorer)は、知識グラフ(Knowledge graph)化された様々なデータベースを統合的に探索するためのフレームワークです。"
+}

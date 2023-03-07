@@ -1,4 +1,4 @@
-import Color from './Color';
+import Color from 'colorjs.io';
 import Attribute from './Attribute';
 
 class Records {
