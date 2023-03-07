@@ -31,10 +31,13 @@ export default class StatisticsView {
 
     // display order of bar chart
     if (condition.parentNode) {
-      this.#referenceFilters = Records.getFiltersWithParentNode(
+      Records.fetchAttributeFilters(
         this.#attributeId,
         condition.parentNode
-      );
+      ).then(filters => {
+        this.#referenceFilters = filters;
+        this.#draw();
+      });
     } else {
       this.#referenceFilters = Records.getAttribute(this.#attributeId).filters;
     }
@@ -87,7 +90,7 @@ export default class StatisticsView {
       return a.entry === b.entry && a.node === b.node;
     });
     const hitVlues = [];
-    this.#referenceFilters.forEach(({node, label, count}) => {
+    this.#referenceFilters?.forEach(({node, label, count}) => {
       const filtered = uniquedAttributes.filter(
         attribute => attribute.node === node
       );
