@@ -1,11 +1,11 @@
-#Properties
+#MainArea
   --width-offset: calc(var(--width-condition) + var(--width-global-tool-bar))
 
   width: calc(100vw - var(--width-offset))
   overflow: auto
   position: relative
   display: flex
-  > .inner
+  > #Properties
     flex-grow: 1
     min-width: 100rem
     > .header
@@ -54,5 +54,5 @@
                 display: none
 
 @media (max-width: var(--min-width-app))
-  #Properties
+  #MainArea
     width: calc(var(--min-width-app) - var(--width-offset))

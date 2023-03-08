@@ -7870,7 +7870,7 @@
         var body = document.body;
         // view modes
         _classPrivateFieldSet(this, _viewModes, {});
-        document.querySelectorAll('#Properties > .inner > .header > nav .viewmodecontroller input[type="checkbox"]').forEach(function (checkbox) {
+        document.querySelectorAll('#Properties > .header > nav .viewmodecontroller input[type="checkbox"]').forEach(function (checkbox) {
           _classPrivateFieldGet(_this, _viewModes)[checkbox.value] = checkbox.checked;
           checkbox.addEventListener('click', function () {
             if (checkbox.value === 'heatmap') body.dataset.heatmap = checkbox.checked;
@@ -7985,7 +7985,7 @@
     return App;
   }();
   function _makeCategoryViews2() {
-    var conceptsContainer = document.querySelector('#Properties > .inner > .concepts');
+    var conceptsContainer = document.querySelector('#Properties > .concepts');
     Records$1.categories.forEach(function (category) {
       var elm = document.createElement('section');
       new CategoryView(category, elm);
@@ -7993,7 +7993,7 @@
     });
   }
   function _defineAllTracksCollapseButton2() {
-    var collapsebutton = document.querySelector('#Properties > .inner > header > .title > h2.collapsebutton');
+    var collapsebutton = document.querySelector('#Properties > header > .title > h2.collapsebutton');
     collapsebutton.addEventListener('click', function () {
       var customEvent = new CustomEvent(allTracksCollapse);
       if (collapsebutton.classList.contains('-spread')) {

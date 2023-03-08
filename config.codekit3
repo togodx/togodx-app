@@ -25,6 +25,14 @@
       "oAP" : "\/build\/.github\/workflows\/release.yaml",
       "oF" : 0
     },
+    "\/.node-version" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/build\/.node-version",
+      "oF" : 0
+    },
     "\/build" : {
       "ft" : 65536,
       "oA" : 1,
@@ -498,7 +506,7 @@
       "pg" : 0,
       "sct" : 0
     },
-    "\/source\/css\/object\/project\/_Properties.sass" : {
+    "\/source\/css\/object\/project\/_MainArea.sass" : {
       "aP" : 1,
       "bl" : 0,
       "co" : 0,
@@ -507,7 +515,7 @@
       "ft" : 2,
       "ma" : 1,
       "oA" : 1,
-      "oAP" : "\/build\/css\/object\/project\/_Properties.css",
+      "oAP" : "\/build\/css\/object\/project\/_MainArea.css",
       "oF" : 0,
       "oS" : 1,
       "pg" : 0,
@@ -968,6 +976,14 @@
       "oF" : 0,
       "sC" : 3,
       "tS" : 1
+    },
+    "\/source\/js\/config.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/build\/js\/config-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
     },
     "\/source\/js\/events.js" : {
       "bF" : 4,

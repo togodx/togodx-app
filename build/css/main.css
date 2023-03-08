@@ -1933,18 +1933,18 @@ body[data-condition=filter] #GlobalToolBar > .switch > li > button[data-button=f
   display: inline-block;
 }
 
-#Properties {
+#MainArea {
   --width-offset: calc(var(--width-condition) + var(--width-global-tool-bar));
   width: calc(100vw - var(--width-offset));
   overflow: auto;
   position: relative;
   display: flex;
 }
-#Properties > .inner {
+#MainArea > #Properties {
   flex-grow: 1;
   min-width: 100rem;
 }
-#Properties > .inner > .header {
+#MainArea > #Properties > .header {
   padding: var(--padding-track-block-start) var(--padding-track-inline-start);
   display: flex;
   align-items: center;
@@ -1957,50 +1957,50 @@ body[data-condition=filter] #GlobalToolBar > .switch > li > button[data-button=f
   color: white;
   z-index: var(--z-track-tracks-header);
 }
-#Properties > .inner > .header > .title > * {
+#MainArea > #Properties > .header > .title > * {
   font-size: 1.2rem;
   margin-bottom: 0;
   display: inline-block;
 }
-#Properties > .inner > .header > .title > .properties {
+#MainArea > #Properties > .header > .title > .properties {
   padding-left: calc(var(--width-track-column-subject) - var(--padding-track-inline-start) + 1.4rem);
   width: calc(var(--width-track-column-subject) + var(--width-track-column-property) - var(--padding-track-inline-start));
 }
-#Properties > .inner > .header > .title > .collapsebutton::before {
+#MainArea > #Properties > .header > .title > .collapsebutton::before {
   left: 1.4rem;
   top: 2px;
   border-color: white;
 }
-#Properties > .inner > .header > nav {
+#MainArea > #Properties > .header > nav {
   flex-grow: 1;
   text-align: right;
 }
-#Properties > .inner > .header > nav > ul {
+#MainArea > #Properties > .header > nav > ul {
   list-style: none;
   margin-bottom: 0;
 }
-#Properties > .inner > .header > nav > ul > li {
+#MainArea > #Properties > .header > nav > ul > li {
   display: inline-block;
 }
-#Properties > .inner > .header > nav > ul > li + li {
+#MainArea > #Properties > .header > nav > ul > li + li {
   margin-left: 1.4rem;
 }
-#Properties > .inner > .header > nav > ul > li > label {
+#MainArea > #Properties > .header > nav > ul > li > label {
   margin-bottom: 0;
 }
-#Properties > .inner > .header > nav > ul > li > label + label {
+#MainArea > #Properties > .header > nav > ul > li > label + label {
   margin-left: 0.8rem;
 }
-#Properties > .inner > .header > nav > ul > li > label > input[type=checkbox] {
+#MainArea > #Properties > .header > nav > ul > li > label > input[type=checkbox] {
   vertical-align: middle;
   margin-right: 0.4rem;
 }
-#Properties > .inner > .header > nav > ul > li.viewmodecontroller > .area, #Properties > .inner > .header > nav > ul > li.viewmodecontroller > .heatmap {
+#MainArea > #Properties > .header > nav > ul > li.viewmodecontroller > .area, #MainArea > #Properties > .header > nav > ul > li.viewmodecontroller > .heatmap {
   display: none;
 }
 
 @media (max-width: var(--min-width-app)) {
-  #Properties {
+  #MainArea {
     width: calc(var(--min-width-app) - var(--width-offset));
   }
 }
