@@ -40,7 +40,7 @@ class App {
     this.#viewModes = {};
     document
       .querySelectorAll(
-        '#Properties > .inner > .header > nav .viewmodecontroller input[type="checkbox"]'
+        '#Properties > .header > nav .viewmodecontroller input[type="checkbox"]'
       )
       .forEach(checkbox => {
         this.#viewModes[checkbox.value] = checkbox.checked;
@@ -96,9 +96,7 @@ class App {
   // private methods
 
   #makeCategoryViews() {
-    const conceptsContainer = document.querySelector(
-      '#Properties > .inner > .concepts'
-    );
+    const conceptsContainer = document.querySelector('#Properties > .concepts');
     Records.categories.forEach(category => {
       const elm = document.createElement('section');
       new CategoryView(category, elm);
@@ -108,7 +106,7 @@ class App {
 
   #defineAllTracksCollapseButton() {
     const collapsebutton = document.querySelector(
-      '#Properties > .inner > header > .title > h2.collapsebutton'
+      '#Properties > header > .title > h2.collapsebutton'
     );
     collapsebutton.addEventListener('click', () => {
       let customEvent = new CustomEvent(event.allTracksCollapse);
