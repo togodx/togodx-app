@@ -7,6 +7,10 @@ import {getApiParameter} from '../functions/queryTemplates';
 import axios from 'axios';
 
 const NUM_OF_PREVIEW = 5;
+const mode = {
+  preview: 0,
+  show: 1,
+};
 
 export default class ResultsView {
   #ROOT;
@@ -17,6 +21,7 @@ export default class ResultsView {
   #TABLE_END;
   #source;
   #header;
+  #mode; // 'preview' or 'show'
 
   constructor(elm) {
     this.#ROOT = elm;
@@ -28,6 +33,7 @@ export default class ResultsView {
     this.#TABLE_END = elm.querySelector(':scope > .tableend');
     const cancelToken = axios.CancelToken;
     this.#source = cancelToken.source();
+    this.#mode = mode.preview;
 
     // event listeners
     DefaultEventEmitter.addEventListener(
@@ -40,6 +46,7 @@ export default class ResultsView {
     console.log(this);
     const dxCondition = ConditionBuilder.dxCondition;
     console.log(dxCondition);
+    document.body.dataset.numberOfResults = 0;
     axios
       .post(
         App.getApiUrl('aggregate'),
@@ -123,6 +130,7 @@ export default class ResultsView {
 
   #getProperties(dxCondition, ids) {
     console.log(dxCondition);
+    document.body.dataset.numberOfResults = ids.length;
     const previewIds = ids.slice(0, NUM_OF_PREVIEW);
     axios
       .post(

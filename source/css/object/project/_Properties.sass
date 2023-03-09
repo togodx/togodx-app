@@ -1,0 +1,50 @@
+#Properties
+  overflow: auto
+  // flex-grow: 1
+  // min-width: 100rem
+  > .header, > .concepts
+    min-width: 100rem
+  > .header
+    padding: var(--padding-track-block-start) var(--padding-track-inline-start)
+    display: flex
+    align-items: center
+    height: var(--height-properties-header)
+    line-height: calc(var(--height-properties-header) - var(--padding-track-block-start) * 2)
+    position: sticky
+    top: 0
+    background-color: var(--color-lamp-black)
+    color: white
+    z-index: var(--z-track-tracks-header)
+    > .title
+      > *
+        font-size: 1.2rem
+        margin-bottom: 0
+        display: inline-block
+      > .properties
+        padding-left: calc(var(--width-track-column-subject) - var(--padding-track-inline-start) + 1.4rem)
+        width: calc(var(--width-track-column-subject) + var(--width-track-column-property) - var(--padding-track-inline-start))
+      > .collapsebutton
+        &::before
+          left: 1.4rem
+          top: 2px
+          border-color: white
+    > nav
+      flex-grow: 1
+      text-align: right
+      > ul
+        list-style: none
+        margin-bottom: 0
+        > li
+          display: inline-block
+          + li
+            margin-left: 1.4rem
+          > label
+            margin-bottom: 0
+            + label
+              margin-left: .8rem
+            > input[type="checkbox"]
+              vertical-align: middle
+              margin-right: .4rem
+          &.viewmodecontroller
+            > .area, > .heatmap
+              display: none
