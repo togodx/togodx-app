@@ -43,9 +43,7 @@ export default class ResultsView {
   }
 
   #mutatedConditions() {
-    console.log(this);
     const dxCondition = ConditionBuilder.dxCondition;
-    console.log(dxCondition);
     document.body.dataset.numberOfResults = 0;
     axios
       .post(
@@ -58,7 +56,6 @@ export default class ResultsView {
         {cancelToken: this.#source.token}
       )
       .then(response => {
-        console.log(response);
         this.#header = [
           ...dxCondition.conditionFilters.map(({categoryId, attributeId}) => {
             return {categoryId, attributeId};
@@ -69,7 +66,6 @@ export default class ResultsView {
             }
           ),
         ];
-        console.log(this.#header);
         this.#makeTableHeader(dxCondition, response.data);
         this.#getProperties(dxCondition, response.data);
       });
@@ -81,7 +77,6 @@ export default class ResultsView {
       ids.length < 2 ? 'y' : 'ies'
     }`;
     // make table header
-    console.log(dxCondition);
     this.#THEAD.innerHTML = `
       <th rowspan="2">
         <div class="inner">
@@ -129,7 +124,6 @@ export default class ResultsView {
   }
 
   #getProperties(dxCondition, ids) {
-    console.log(dxCondition);
     document.body.dataset.numberOfResults = ids.length;
     const previewIds = ids.slice(0, NUM_OF_PREVIEW);
     axios
@@ -144,7 +138,6 @@ export default class ResultsView {
         {cancelToken: this.#source.token}
       )
       .then(response => {
-        console.log(response);
         this.#makeTableBody(dxCondition, response.data);
       });
   }
