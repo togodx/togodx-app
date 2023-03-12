@@ -1,17 +1,34 @@
 #ResultsView
-  // position: fixed
   bottom: 0
   // width: 100%
   z-index: var(--z-results)
-  background-color: #333230DD
-  // [data-number-of-results="0"] &
-  //   height: var(--height-results-header)
+  background-color: var(--color-lamp-black)
   > header
     --padding: calc(var(--height-results-header) - 1lh)
     color: white
     font-size: 1.4rem
     font-weight: bold
     padding: calc(var(--padding) * 0.7) 0 calc(var(--padding) * 0.3)
+    position: relative
+    > .collapsenotchbutton
+      position: absolute
+      top: -.5rem
+      width: 3.2rem
+      height: 3.2rem
+      left: calc(50% - 1.6rem)
+      border-radius: 1.6rem
+      background-color: var(--color-lamp-black)
+      cursor: pointer
+      &::before
+        content: ""
+        width: .8rem
+        height: .8rem
+        border-top: solid .2rem white
+        border-right: solid .2rem white
+        display: block
+        position: absolute
+        translate: 1.2rem .8rem
+        rotate: -0.125turn
   > .inner
     background-color: white
     > table

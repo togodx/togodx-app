@@ -1,5 +1,12 @@
 #MainArea
   --width-offset: calc(var(--width-condition) + var(--width-global-tool-bar))
+
+  width: calc(100vw - var(--width-offset))
+  position: relative
+  display: flex
+  flex-direction: column
+  height: 100%
+
   --height-results-header: 2.8rem
   --height-results-thead-row: 2.4rem
   --height-results-thead-row-first-cell: 2.8rem
@@ -16,14 +23,8 @@
   [data-number-of-results="4"] &
     --height-results: calc(var(--height-results-header) + var(--height-results-thead-row-first-cell) + (var(--height-results-tbody-row) + 1px) * 4)
 
-    width: calc(100vw - var(--width-offset))
-    position: relative
-    display: flex
-    flex-direction: column
-    height: 100%
-
-  > section
-    overflow: auto
+  // > section
+  //   overflow: auto
   > #Properties
     height: calc(100% - var(--height-results))
   > #ResultsView
