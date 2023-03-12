@@ -19,6 +19,8 @@
       border-radius: 1.6rem
       background-color: var(--color-lamp-black)
       cursor: pointer
+      [data-number-of-results="0"] &
+        pointer-events: none
       &::before
         content: ""
         width: .8rem
@@ -29,6 +31,11 @@
         position: absolute
         translate: 1.2rem .8rem
         rotate: -0.125turn
+        transition: rotate var(--transition-wipe)
+        [data-display="results"] &
+          rotate: .375turn
+        [data-number-of-results="0"] &
+          opacity: .3
   > .inner
     background-color: white
     > table

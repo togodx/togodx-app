@@ -7,25 +7,34 @@ import {getApiParameter} from '../functions/queryTemplates';
 import axios from 'axios';
 
 const NUM_OF_PREVIEW = 5;
-const mode = {
-  preview: 0,
-  show: 1,
-};
+// const mode = {
+//   preview: 0,
+//   show: 1,
+// };
+const displayMap = new Map([
+  ['properties', 'results'],
+  ['results', 'properties'],
+]);
 
 export default class ResultsView {
   #ROOT;
   #HEADER;
+  #COLLAPSE_BUTTON;
   #THEAD;
   #THEAD_SUB;
   #TBODY;
   #TABLE_END;
   #source;
   #header;
-  #mode; // 'preview' or 'show'
+  // #mode; // 'preview' or 'show'
 
   constructor(elm) {
     this.#ROOT = elm;
-    this.#HEADER = elm.querySelector(':scope > header > span');
+    const header = elm.querySelector(':scope > header');
+    this.#HEADER = header.querySelector(':scope > span');
+    this.#COLLAPSE_BUTTON = header.querySelector(
+      ':scope > .collapsenotchbutton'
+    );
     const TABLE = elm.querySelector(':scope > .inner > table');
     this.#THEAD = TABLE.querySelector(':scope > thead > tr.header');
     this.#THEAD_SUB = TABLE.querySelector(':scope > thead > tr.subheader');
@@ -33,7 +42,15 @@ export default class ResultsView {
     this.#TABLE_END = elm.querySelector(':scope > .tableend');
     const cancelToken = axios.CancelToken;
     this.#source = cancelToken.source();
-    this.#mode = mode.preview;
+    // this.#mode = mode.preview;
+
+    // attach event
+    this.#COLLAPSE_BUTTON.addEventListener('click', () => {
+      const currentDisplay = document.body.dataset.display;
+      document.body.dataset.display = displayMap.get(currentDisplay);
+      if (currentDisplay === 'properties')
+        ConditionBuilder.makeQueryParameter();
+    });
 
     // event listeners
     DefaultEventEmitter.addEventListener(
