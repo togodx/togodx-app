@@ -121,18 +121,7 @@ export default class ResultsTable {
     // reset
     this.#tableData = tableData;
     this.#intersctionObserver.unobserve(this.#TABLE_END);
-    this.#header = [
-      ...tableData.dxCondition.conditionFilters.map(
-        ({categoryId, attributeId}) => {
-          return {categoryId, attributeId};
-        }
-      ),
-      ...tableData.dxCondition.conditionAnnotations.map(
-        ({categoryId, attributeId}) => {
-          return {categoryId, attributeId};
-        }
-      ),
-    ];
+    this.#header = tableData.dxCondition.tableHeader;
     this.#ROOT.classList.remove('-complete');
     this.#THEAD.innerHTML = '';
     this.#TBODY.innerHTML = '';

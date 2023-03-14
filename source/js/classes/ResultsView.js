@@ -1,5 +1,6 @@
 import ConditionBuilder from './ConditionBuilder';
 import DefaultEventEmitter from './DefaultEventEmitter';
+import StatisticsView from './StatisticsView';
 import Records from './Records';
 import App from './App';
 import * as event from '../events';
@@ -7,16 +8,13 @@ import {getApiParameter} from '../functions/queryTemplates';
 import axios from 'axios';
 
 const NUM_OF_PREVIEW = 5;
-// const mode = {
-//   preview: 0,
-//   show: 1,
-// };
 const displayMap = new Map([
   ['properties', 'results'],
   ['results', 'properties'],
 ]);
 
 export default class ResultsView {
+  #statisticsViews;
   #ROOT;
   #HEADER;
   #COLLAPSE_BUTTON;
@@ -26,7 +24,7 @@ export default class ResultsView {
   #TABLE_END;
   #source;
   #header;
-  // #mode; // 'preview' or 'show'
+  #preview;
 
   constructor(elm) {
     this.#ROOT = elm;
@@ -42,7 +40,6 @@ export default class ResultsView {
     this.#TABLE_END = elm.querySelector(':scope > .tableend');
     const cancelToken = axios.CancelToken;
     this.#source = cancelToken.source();
-    // this.#mode = mode.preview;
 
     // attach event
     this.#COLLAPSE_BUTTON.addEventListener('click', () => {
@@ -55,44 +52,36 @@ export default class ResultsView {
     // event listeners
     DefaultEventEmitter.addEventListener(
       event.mutateEstablishConditions,
-      this.#mutatedConditions.bind(this)
+      this.#makePreview.bind(this)
     );
+    // DefaultEventEmitter.addEventListener(event.selectTableData, e =>
+    //   this.#setupTable(e.detail)
+    // );
+    // DefaultEventEmitter.addEventListener(event.addNextRows, e =>
+    //   this.#addTableRows(e.detail)
+    // );
+    // DefaultEventEmitter.addEventListener(event.failedFetchTableDataIds, e =>
+    //   this.#failed(e.detail)
+    // );
+    // DefaultEventEmitter.addEventListener(event.highlightCol, e => {
+    //   this.#colHighlight(e.detail);
+    // });
   }
 
-  #mutatedConditions() {
+  async #makePreview() {
     const dxCondition = ConditionBuilder.dxCondition;
-    document.body.dataset.numberOfResults = 0;
-    axios
-      .post(
-        App.getApiUrl('aggregate'),
-        getApiParameter('aggregate', {
-          dataset: dxCondition.togoKey,
-          filters: dxCondition.queryFilters,
-          queries: ConditionBuilder.userIds,
-        }),
-        {cancelToken: this.#source.token}
-      )
-      .then(response => {
-        this.#header = [
-          ...dxCondition.conditionFilters.map(({categoryId, attributeId}) => {
-            return {categoryId, attributeId};
-          }),
-          ...dxCondition.conditionAnnotations.map(
-            ({categoryId, attributeId}) => {
-              return {categoryId, attributeId};
-            }
-          ),
-        ];
-        this.#makeTableHeader(dxCondition, response.data);
-        this.#getProperties(dxCondition, response.data);
-      });
-  }
-
-  #makeTableHeader(dxCondition, ids) {
-    // header
+    // get IDs
+    const ids = await dxCondition.ids;
+    this.#header = dxCondition.tableHeader;
+    // make table header
     this.#HEADER.innerHTML = `Found ${ids.length.toLocaleString()} entit${
       ids.length < 2 ? 'y' : 'ies'
     }`;
+    this.#makeTableHeader(dxCondition);
+    this.#getProperties(dxCondition, ids);
+  }
+
+  #makeTableHeader(dxCondition) {
     // make table header
     this.#THEAD.innerHTML = `
       <th rowspan="2">
