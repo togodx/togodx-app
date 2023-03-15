@@ -142,6 +142,9 @@ block main
         section#ResultsView
           header
             span
+              | Found 
+              span.count 0 entries
+              | .
             .collapsenotchbutton
           .inner
             table
@@ -161,6 +164,8 @@ block main
                 tr.header
                 tr.subheader
               tbody
+            .tableend
+              .loading-view
 
       section#Results
         .inner

@@ -12,32 +12,46 @@ const displayMap = new Map([
   ['properties', 'results'],
   ['results', 'properties'],
 ]);
+const prMapEntry = new Map([
+  ['one', 'entry'],
+  ['other', 'entries'],
+]);
 
 export default class ResultsView {
+  #intersctionObserver;
+  #tableData;
   #statisticsViews;
+  #source;
+  #header;
   #ROOT;
-  #HEADER;
+  #NUMBER_OF_ENTRIES;
   #COLLAPSE_BUTTON;
   #THEAD;
   #THEAD_SUB;
+  #STATS;
   #TBODY;
   #TABLE_END;
-  #source;
-  #header;
-  #preview;
+  #LOADING_VIEW;
 
   constructor(elm) {
     this.#ROOT = elm;
     const header = elm.querySelector(':scope > header');
-    this.#HEADER = header.querySelector(':scope > span');
+    this.#NUMBER_OF_ENTRIES = header.querySelector(
+      ':scope > span > span.count'
+    );
     this.#COLLAPSE_BUTTON = header.querySelector(
       ':scope > .collapsenotchbutton'
     );
-    const TABLE = elm.querySelector(':scope > .inner > table');
+    const inner = elm.querySelector(':scope > .inner');
+    const TABLE = inner.querySelector(':scope > table');
     this.#THEAD = TABLE.querySelector(':scope > thead > tr.header');
     this.#THEAD_SUB = TABLE.querySelector(':scope > thead > tr.subheader');
+    this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics');
     this.#TBODY = TABLE.querySelector(':scope > tbody');
-    this.#TABLE_END = elm.querySelector(':scope > .tableend');
+    this.#TABLE_END = inner.querySelector(':scope > .tableend');
+    this.#LOADING_VIEW = this.#TABLE_END.querySelector(
+      ':scope > .loading-view'
+    );
     const cancelToken = axios.CancelToken;
     this.#source = cancelToken.source();
 
@@ -54,9 +68,9 @@ export default class ResultsView {
       event.mutateEstablishConditions,
       this.#makePreview.bind(this)
     );
-    // DefaultEventEmitter.addEventListener(event.selectTableData, e =>
-    //   this.#setupTable(e.detail)
-    // );
+    DefaultEventEmitter.addEventListener(event.selectTableData, e =>
+      this.#setupTable(e.detail)
+    );
     // DefaultEventEmitter.addEventListener(event.addNextRows, e =>
     //   this.#addTableRows(e.detail)
     // );
@@ -74,9 +88,9 @@ export default class ResultsView {
     const ids = await dxCondition.ids;
     this.#header = dxCondition.tableHeader;
     // make table header
-    this.#HEADER.innerHTML = `Found ${ids.length.toLocaleString()} entit${
-      ids.length < 2 ? 'y' : 'ies'
-    }`;
+    this.#NUMBER_OF_ENTRIES.innerHTML = `${ids.length.toLocaleString()} ${prMapEntry.get(
+      new Intl.PluralRules('en-US').select(ids.length)
+    )}`;
     this.#makeTableHeader(dxCondition);
     this.#getProperties(dxCondition, ids);
   }
@@ -127,6 +141,35 @@ export default class ResultsView {
           </th>`
       )
       .join('')}`;
+  }
+
+  #makeStats(dxCondition) {
+    for (const td of this.#STATS.querySelectorAll(':scope > td')) {
+      td.remove();
+    }
+    for (const statisticsView of this.#statisticsViews) {
+      statisticsView.destroy();
+    }
+    this.#statisticsViews = [];
+    this.#tableData.dxCondition;
+    const conditions = [
+      ...this.#tableData.dxCondition.conditionFilters,
+      ...this.#tableData.dxCondition.conditionAnnotations,
+    ];
+    conditions.forEach((condition, index) => {
+      const td = document.createElement('td');
+      td.innerHTML = '<div class="inner"><div></div></div>';
+      this.#STATS.append(td);
+      this.#statisticsViews.push(
+        new StatisticsView(
+          this.#STATS,
+          td.querySelector(':scope > .inner > div'),
+          tableData,
+          index,
+          condition
+        )
+      );
+    });
   }
 
   #getProperties(dxCondition, ids) {
@@ -203,5 +246,69 @@ export default class ResultsView {
       </tr>`;
       })
       .join('');
+  }
+
+  #setupTable(tableData) {
+    // reset
+    this.#tableData = tableData;
+    this.#intersctionObserver.unobserve(this.#TABLE_END);
+    this.#header = tableData.dxCondition.tableHeader;
+    this.#ROOT.classList.remove('-complete');
+    this.#THEAD.innerHTML = '';
+    this.#TBODY.innerHTML = '';
+    this.#LOADING_VIEW.classList.add('-shown');
+    DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
+
+    this.#makeTableHeader(tableData.dxCondition);
+    this.#makeStats(tableData.dxCondition);
+
+    // // make table header
+    // this.#THEAD.innerHTML = `
+    //   <th rowspan="2">
+    //     <div class="inner">
+    //       <div class="togo-key-view">${Records.getDatasetLabel(
+    //         tableData.togoKey
+    //       )}</div>
+    //     </div>
+    //   </th>
+    //   <th colspan="100%">
+    //     <div class="inner -noborder"></div>
+    //   </th>
+    //   `;
+
+    // // makte table sub header
+    // this.#THEAD_SUB.innerHTML = `
+    // ${tableData.dxCondition.conditionFilters
+    //   .map(conditionFilter => {
+    //     return `
+    //       <th>
+    //         <div class="inner _category-background-color" data-category-id="${
+    //           conditionFilter.categoryId
+    //         }">
+    //           <div class="togo-key-view">${Records.getDatasetLabel(
+    //             conditionFilter.dataset
+    //           )}</div>
+    //           <span>${conditionFilter.label}</span>
+    //         </div>
+    //       </th>`;
+    //   })
+    //   .join('')}
+    // ${tableData.dxCondition.conditionAnnotations
+    //   .map(
+    //     conditionAnnotation => `
+    //       <th>
+    //         <div class="inner _category-color" data-category-id="${
+    //           conditionAnnotation.categoryId
+    //         }">
+    //           <div class="togo-key-view">${Records.getDatasetLabel(
+    //             conditionAnnotation.dataset
+    //           )}</div>
+    //           <span>${conditionAnnotation.label}</span>
+    //         </div>
+    //       </th>`
+    //   )
+    //   .join('')}`;
+
+    // make stats
   }
 }
