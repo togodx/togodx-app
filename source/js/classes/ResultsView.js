@@ -34,6 +34,9 @@ export default class ResultsView {
   #LOADING_VIEW;
 
   constructor(elm) {
+    this.#statisticsViews = [];
+
+    // references
     this.#ROOT = elm;
     const header = elm.querySelector(':scope > header');
     this.#NUMBER_OF_ENTRIES = header.querySelector(
@@ -54,6 +57,17 @@ export default class ResultsView {
     );
     const cancelToken = axios.CancelToken;
     this.#source = cancelToken.source();
+
+    // get next data automatically
+    this.#intersctionObserver = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (entry.target === this.#TABLE_END) {
+          if (entry.isIntersecting) {
+            this.#enterTableEnd();
+          }
+        }
+      }
+    });
 
     // attach event
     this.#COLLAPSE_BUTTON.addEventListener('click', () => {
@@ -80,6 +94,13 @@ export default class ResultsView {
     // DefaultEventEmitter.addEventListener(event.highlightCol, e => {
     //   this.#colHighlight(e.detail);
     // });
+  }
+
+  // private methods
+
+  #enterTableEnd() {
+    this.#intersctionObserver.unobserve(this.#TABLE_END);
+    this.#tableData.next();
   }
 
   async #makePreview() {
@@ -164,7 +185,7 @@ export default class ResultsView {
         new StatisticsView(
           this.#STATS,
           td.querySelector(':scope > .inner > div'),
-          tableData,
+          this.#tableData,
           index,
           condition
         )

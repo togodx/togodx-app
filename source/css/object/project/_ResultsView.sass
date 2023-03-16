@@ -37,10 +37,22 @@
         [data-number-of-results="0"] &
           opacity: .3
   > .inner
-    background-color: white
+    // background-color: white
     > table
       height: auto
       > thead
         > tr
           &.statistics
-            display: none
+            color: white
+            > th
+              vertical-align: top
+            > td
+              > .inner
+                height: auto
+                transition: height var(--transition-wipe), padding var(--transition-wipe)
+            > th, > td
+              > .inner
+                [data-display="properties"] &
+                  // display: none
+                  height: 0
+                  padding: 0

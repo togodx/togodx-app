@@ -122,7 +122,7 @@ export default class StatisticsView {
         bar.setAttribute('title', label);
         bar.innerHTML = `
         <div class="wholebar"></div>
-        <div class="hitbar _category-background-color-strong">
+        <div class="hitbar _category-background-color">
           <div class="filter"></div>
         </div>
         <div class="label">${label}</div>`;

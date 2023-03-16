@@ -31,7 +31,7 @@
           height: 0%
           transition: height var(--transition-wipe), opacity var(--transition-wipe)
         > .wholebar
-          background-color: var(--color-light-gray)
+          background-color: var(--color-dark-gray)
           .-stretch &
             height: 100% !important
           .-onlyhitcount &
@@ -39,7 +39,7 @@
             opacity: 0
         > .hitbar
           > .filter
-            color: white
+            color: var(--color-lamp-black)
             position: absolute
             top: 0
             left: 0
@@ -52,7 +52,7 @@
             pointer-events: none
             text-align: left
             &.-below
-              color: var(--color-lamp-black)
+              color: white
               text-align: right
               top: calc(0rem - var(--height-statistics))
         > .label
@@ -63,5 +63,7 @@
           transform-origin: 0% 0%
           transform: translate(-.2rem, 1.3rem) rotate(30deg)
   > .loading-view
+    color: var(--color-lamp-black)
+    background-color: #0006
     &.-shown
       background-color: var(--color-translucent-lamp-black1)
