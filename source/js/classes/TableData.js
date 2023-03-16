@@ -1,14 +1,11 @@
-import App from './App';
 import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
-import {getApiParameter} from '../functions/queryTemplates';
 import ProgressIndicator from './ProgressIndicator';
 // import ConditionAnnotation from './ConditionAnnotation';
 import * as event from '../events';
 import axios from 'axios';
 
-const LIMIT = 100;
 const downloadUrls = new Map();
 const timeOutError = 'ECONNABORTED';
 
@@ -407,13 +404,13 @@ export default class TableData {
       this.#handleError(error);
     });
     if (this.total <= 0) {
+      // retry case
       this.#completed(false);
       const customEvent = new CustomEvent(event.addNextRows, {
         detail: {
-          tableData: this,
+          dxCondition: this.#dxCondition,
           offset: 0,
-          rows: [],
-          done: true,
+          nextRows: [],
         },
       });
       DefaultEventEmitter.dispatchEvent(customEvent);
@@ -430,7 +427,7 @@ export default class TableData {
     this.#isLoading = true;
     const startTime = Date.now();
 
-    const rows = await this.#dxCondition
+    const nextRows = await this.#dxCondition
       .getNextProperties()
       .catch(error => this.#handleError(error));
     // const offset = this.offset;
@@ -442,10 +439,9 @@ export default class TableData {
     // dispatch event
     const customEvent = new CustomEvent(event.addNextRows, {
       detail: {
-        tableData: this,
+        dxCondition: this.#dxCondition,
         offset: this.offset,
-        rows,
-        done: this.#dxCondition.isPropertiesLoaded,
+        nextRows,
       },
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
@@ -477,13 +473,11 @@ export default class TableData {
     DefaultEventEmitter.dispatchEvent(customEvent1);
     // send rows
     if (this.#ROOT.dataset.status !== 'load ids') {
-      const done = this.offset >= this.total;
       const customEvent2 = new CustomEvent(event.addNextRows, {
         detail: {
-          tableData: this,
+          dxCondition: this.#dxCondition,
           offset: 0,
-          rows: this.data,
-          done,
+          nextRows: this.data,
         },
       });
       DefaultEventEmitter.dispatchEvent(customEvent2);

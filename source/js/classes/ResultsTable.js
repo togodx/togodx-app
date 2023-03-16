@@ -204,13 +204,13 @@ export default class ResultsTable {
     });
   }
 
-  #addTableRows({done, offset, rows, tableData}) {
-    if (this.#tableData !== tableData) return;
+  #addTableRows({dxCondition, offset, nextRows}) {
+    // if (this.#tableData !== tableData) return;
 
     // make table
     this.#TBODY.insertAdjacentHTML(
       'beforeend',
-      rows
+      nextRows
         .map((row, index) => {
           return `
           <tr
@@ -221,7 +221,7 @@ export default class ResultsTable {
                 <ul>
                   <div
                     class="togo-key-view primarykey"
-                    data-key="${tableData.togoKey}"
+                    data-key="${dxCondition.togoKey}"
                     data-order="${[0, offset + index]}"
                     data-sub-order="0"
                     data-subject-id="primary"
@@ -268,7 +268,7 @@ export default class ResultsTable {
     );
 
     // turn off auto-loading after last line is displayed
-    if (done) {
+    if (dxCondition.isPropertiesLoaded) {
       this.#ROOT.classList.add('-complete');
       this.#LOADING_VIEW.classList.remove('-shown');
     } else {
@@ -283,7 +283,7 @@ export default class ResultsTable {
     //    → Main-Category  (Expressed in tissues)  | attribute
     //      → Sub-Category  (Thyroid Gland)        |
     //        → Unique-Entry (ENSG00000139304)     | node ?
-    rows.forEach((row, index) => {
+    nextRows.forEach((row, index) => {
       const actualIndex = offset + index;
       const tr = this.#TBODY.querySelector(
         `:scope > tr[data-index="${actualIndex}"]`

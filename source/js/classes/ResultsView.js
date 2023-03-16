@@ -2,9 +2,7 @@ import ConditionBuilder from './ConditionBuilder';
 import DefaultEventEmitter from './DefaultEventEmitter';
 import StatisticsView from './StatisticsView';
 import Records from './Records';
-import App from './App';
 import * as event from '../events';
-import {getApiParameter} from '../functions/queryTemplates';
 import axios from 'axios';
 
 const NUM_OF_PREVIEW = 5;
@@ -21,7 +19,6 @@ export default class ResultsView {
   #intersctionObserver;
   #tableData;
   #statisticsViews;
-  #source;
   #header;
   #ROOT;
   #NUMBER_OF_ENTRIES;
@@ -55,8 +52,6 @@ export default class ResultsView {
     this.#LOADING_VIEW = this.#TABLE_END.querySelector(
       ':scope > .loading-view'
     );
-    const cancelToken = axios.CancelToken;
-    this.#source = cancelToken.source();
 
     // get next data automatically
     this.#intersctionObserver = new IntersectionObserver(entries => {
@@ -104,6 +99,7 @@ export default class ResultsView {
   }
 
   async #makePreview() {
+    this.#TBODY.innerHTML = '';
     const dxCondition = ConditionBuilder.dxCondition;
     // get IDs
     const ids = await dxCondition.ids;
@@ -115,17 +111,28 @@ export default class ResultsView {
     this.#makeTableHeader(dxCondition);
     // make rows
     document.body.dataset.numberOfResults = ids.length;
-    const properties = await dxCondition.getNextProperties(NUM_OF_PREVIEW);
-    this.#makeTableBody(dxCondition, properties);
+    const nextRows = await dxCondition.getNextProperties(NUM_OF_PREVIEW);
+    this.#addNextRows({
+      dxCondition,
+      offset: 0,
+      nextRows,
+    });
   }
 
-  #makeTableBody(dxCondition, rows) {
+  // #addNextRows(e) {
+  //   console.log(e);
+  // }
+
+  #addNextRows({dxCondition, offset, nextRows}) {
     // make table
-    this.#TBODY.innerHTML = rows
-      .map((row, index) => {
-        return `
+    this.#TBODY.insertAdjacentHTML(
+      'beforeend',
+      nextRows
+        .map((row, index) => {
+          const actualIndex = offset + index;
+          return `
       <tr
-        data-index="${index}"
+        data-index="${actualIndex}"
         data-togo-id="${row.index.entry}">
         <td>
           <div class="inner">
@@ -133,7 +140,7 @@ export default class ResultsView {
               <div
                 class="togo-key-view primarykey"
                 data-key="${dxCondition.togoKey}"
-                data-order="${[0, index]}"
+                data-order="${[0, actualIndex]}"
                 data-sub-order="0"
                 data-subject-id="primary"
                 data-unique-entry-id="${row.index.entry}">${row.index.entry}
@@ -152,7 +159,7 @@ export default class ResultsView {
                   <li>
                     <div
                       class="togo-key-view"
-                      data-order="${[columnIndex + 1, index]}"
+                      data-order="${[columnIndex + 1, actualIndex]}"
                       data-sub-order="${itemIndex}"
                       data-key="${item.dataset}"
                       data-subject-id="${this.#header[columnIndex].categoryId}"
@@ -172,8 +179,9 @@ export default class ResultsView {
           })
           .join('')}
       </tr>`;
-      })
-      .join('');
+        })
+        .join('')
+    );
   }
 
   #setupTable(tableData) {
