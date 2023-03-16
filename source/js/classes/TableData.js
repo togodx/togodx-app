@@ -406,88 +406,64 @@ export default class TableData {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  #getQueryIds() {
-    axios
-      .post(
-        App.getApiUrl('aggregate'),
-        getApiParameter('aggregate', {
-          dataset: this.#dxCondition.togoKey,
-          filters: this.#dxCondition.queryFilters,
-          queries: ConditionBuilder.userIds,
-        }),
-        {cancelToken: this.#source.token}
-      )
-      .then(response => {
-        this.#queryIds = response.data;
+  async #getQueryIds() {
+    // get IDs
+    this.#queryIds = await this.#dxCondition.ids.catch(error => {
+      console.error(error);
+      this.#handleError(error);
+    });
 
-        if (this.#queryIds.length <= 0) {
-          this.#complete(false);
-          const customEvent = new CustomEvent(event.addNextRows, {
-            detail: {
-              tableData: this,
-              offset: 0,
-              rows: [],
-              done: true,
-            },
-          });
-          DefaultEventEmitter.dispatchEvent(customEvent);
-          return;
-        }
-        this.#ROOT.dataset.status = 'load rows';
-        this.#STATUS.textContent = 'Getting data';
-        this.#progressIndicator.setIndicator(undefined, this.#queryIds.length);
-        this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
-        this.#getProperties();
-      })
-      .catch(error => {
-        console.error(error);
-        this.#handleError(error);
+    if (this.#queryIds.length <= 0) {
+      this.#complete(false);
+      const customEvent = new CustomEvent(event.addNextRows, {
+        detail: {
+          tableData: this,
+          offset: 0,
+          rows: [],
+          done: true,
+        },
       });
+      DefaultEventEmitter.dispatchEvent(customEvent);
+      return;
+    }
+    this.#ROOT.dataset.status = 'load rows';
+    this.#STATUS.textContent = 'Getting data';
+    this.#progressIndicator.setIndicator(undefined, this.#queryIds.length);
+    this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
+    this.#getProperties();
   }
 
-  #getProperties() {
+  async #getProperties() {
     this.#isLoading = true;
     const startTime = Date.now();
-    axios
-      .post(
-        App.getApiUrl('dataframe'),
-        getApiParameter('dataframe', {
-          dataset: this.#dxCondition.togoKey,
-          filters: this.#dxCondition.queryFilters,
-          annotations: this.#dxCondition.queryAnnotations,
-          queries: this.#queryIds.slice(this.offset, this.offset + LIMIT),
-        }),
-        {cancelToken: this.#source.token}
-      )
-      .then(response => {
-        const offset = this.offset;
-        this.#rows.push(...response.data);
-        this.#isCompleted = this.offset >= this.#queryIds.length;
-        this.#progressIndicator.updateProgressBar({
-          offset: this.offset,
-          startTime,
-        });
 
-        // dispatch event
-        const customEvent2 = new CustomEvent(event.addNextRows, {
-          detail: {
-            tableData: this,
-            offset,
-            rows: response.data,
-            done: this.#isCompleted,
-          },
-        });
-        DefaultEventEmitter.dispatchEvent(customEvent2);
-        // turn off after finished
-        if (this.#isCompleted) {
-          this.#complete();
-          return;
-        }
-        if (this.#isLoading) this.#getProperties();
-      })
-      .catch(error => {
-        this.#handleError(error);
-      });
+    const rows = await this.#dxCondition
+      .getNextProperties()
+      .catch(error => this.#handleError(error));
+    const offset = this.offset;
+    this.#rows.push(...rows);
+    this.#isCompleted = this.offset >= this.#queryIds.length;
+    this.#progressIndicator.updateProgressBar({
+      offset: this.offset,
+      startTime,
+    });
+
+    // dispatch event
+    const customEvent2 = new CustomEvent(event.addNextRows, {
+      detail: {
+        tableData: this,
+        offset,
+        rows,
+        done: this.#isCompleted,
+      },
+    });
+    DefaultEventEmitter.dispatchEvent(customEvent2);
+    // turn off after finished
+    if (this.#isCompleted) {
+      this.#complete();
+      return;
+    }
+    if (this.#isLoading) this.#getProperties();
   }
 
   /**

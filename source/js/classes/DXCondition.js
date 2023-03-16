@@ -94,7 +94,7 @@ export default class DXCondition {
           dataset: this.togoKey,
           filters: this.queryFilters,
           annotations: this.queryAnnotations,
-          queries: this.ids.slice(this.offset, this.offset + limit),
+          queries: this.#ids.slice(this.offset, this.offset + limit),
         })
         // {cancelToken: this.#source.token}
       )
