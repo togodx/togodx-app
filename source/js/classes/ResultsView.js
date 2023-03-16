@@ -113,103 +113,10 @@ export default class ResultsView {
       new Intl.PluralRules('en-US').select(ids.length)
     )}`;
     this.#makeTableHeader(dxCondition);
-    this.#getProperties(dxCondition, ids);
-  }
-
-  #makeTableHeader(dxCondition) {
-    // make table header
-    this.#THEAD.innerHTML = `
-      <th rowspan="2">
-        <div class="inner">
-          <div class="togo-key-view">${Records.getDatasetLabel(
-            dxCondition.togoKey
-          )}</div>
-        </div>
-      </th>
-      <th colspan="100%">
-        <div class="inner -noborder"></div>
-      </th>
-      `;
-    // makte table sub header
-    this.#THEAD_SUB.innerHTML = `
-    ${dxCondition.conditionFilters
-      .map(conditionFilter => {
-        return `
-          <th>
-            <div class="inner _category-background-color" data-category-id="${
-              conditionFilter.categoryId
-            }">
-              <div class="togo-key-view">${Records.getDatasetLabel(
-                conditionFilter.dataset
-              )}</div>
-              <span>${conditionFilter.label}</span>
-            </div>
-          </th>`;
-      })
-      .join('')}
-    ${dxCondition.conditionAnnotations
-      .map(
-        conditionAnnotation => `
-          <th>
-            <div class="inner _category-color" data-category-id="${
-              conditionAnnotation.categoryId
-            }">
-              <div class="togo-key-view">${Records.getDatasetLabel(
-                conditionAnnotation.dataset
-              )}</div>
-              <span>${conditionAnnotation.label}</span>
-            </div>
-          </th>`
-      )
-      .join('')}`;
-  }
-
-  #makeStats(dxCondition) {
-    for (const td of this.#STATS.querySelectorAll(':scope > td')) {
-      td.remove();
-    }
-    for (const statisticsView of this.#statisticsViews) {
-      statisticsView.destroy();
-    }
-    this.#statisticsViews = [];
-    this.#tableData.dxCondition;
-    const conditions = [
-      ...this.#tableData.dxCondition.conditionFilters,
-      ...this.#tableData.dxCondition.conditionAnnotations,
-    ];
-    conditions.forEach((condition, index) => {
-      const td = document.createElement('td');
-      td.innerHTML = '<div class="inner"><div></div></div>';
-      this.#STATS.append(td);
-      this.#statisticsViews.push(
-        new StatisticsView(
-          this.#STATS,
-          td.querySelector(':scope > .inner > div'),
-          this.#tableData,
-          index,
-          condition
-        )
-      );
-    });
-  }
-
-  #getProperties(dxCondition, ids) {
+    // make rows
     document.body.dataset.numberOfResults = ids.length;
-    const previewIds = ids.slice(0, NUM_OF_PREVIEW);
-    axios
-      .post(
-        App.getApiUrl('dataframe'),
-        getApiParameter('dataframe', {
-          dataset: dxCondition.togoKey,
-          filters: dxCondition.queryFilters,
-          annotations: dxCondition.queryAnnotations,
-          queries: previewIds,
-        }),
-        {cancelToken: this.#source.token}
-      )
-      .then(response => {
-        this.#makeTableBody(dxCondition, response.data);
-      });
+    const properties = await dxCondition.getNextProperties(NUM_OF_PREVIEW);
+    this.#makeTableBody(dxCondition, properties);
   }
 
   #makeTableBody(dxCondition, rows) {
@@ -282,54 +189,82 @@ export default class ResultsView {
 
     this.#makeTableHeader(tableData.dxCondition);
     this.#makeStats(tableData.dxCondition);
+  }
 
-    // // make table header
-    // this.#THEAD.innerHTML = `
-    //   <th rowspan="2">
-    //     <div class="inner">
-    //       <div class="togo-key-view">${Records.getDatasetLabel(
-    //         tableData.togoKey
-    //       )}</div>
-    //     </div>
-    //   </th>
-    //   <th colspan="100%">
-    //     <div class="inner -noborder"></div>
-    //   </th>
-    //   `;
+  #makeTableHeader(dxCondition) {
+    // make table header
+    this.#THEAD.innerHTML = `
+      <th rowspan="2">
+        <div class="inner">
+          <div class="togo-key-view">${Records.getDatasetLabel(
+            dxCondition.togoKey
+          )}</div>
+        </div>
+      </th>
+      <th colspan="100%">
+        <div class="inner -noborder"></div>
+      </th>
+      `;
+    // makte table sub header
+    this.#THEAD_SUB.innerHTML = `
+    ${dxCondition.conditionFilters
+      .map(conditionFilter => {
+        return `
+          <th>
+            <div class="inner _category-background-color" data-category-id="${
+              conditionFilter.categoryId
+            }">
+              <div class="togo-key-view">${Records.getDatasetLabel(
+                conditionFilter.dataset
+              )}</div>
+              <span>${conditionFilter.label}</span>
+            </div>
+          </th>`;
+      })
+      .join('')}
+    ${dxCondition.conditionAnnotations
+      .map(
+        conditionAnnotation => `
+          <th>
+            <div class="inner _category-color" data-category-id="${
+              conditionAnnotation.categoryId
+            }">
+              <div class="togo-key-view">${Records.getDatasetLabel(
+                conditionAnnotation.dataset
+              )}</div>
+              <span>${conditionAnnotation.label}</span>
+            </div>
+          </th>`
+      )
+      .join('')}`;
+  }
 
-    // // makte table sub header
-    // this.#THEAD_SUB.innerHTML = `
-    // ${tableData.dxCondition.conditionFilters
-    //   .map(conditionFilter => {
-    //     return `
-    //       <th>
-    //         <div class="inner _category-background-color" data-category-id="${
-    //           conditionFilter.categoryId
-    //         }">
-    //           <div class="togo-key-view">${Records.getDatasetLabel(
-    //             conditionFilter.dataset
-    //           )}</div>
-    //           <span>${conditionFilter.label}</span>
-    //         </div>
-    //       </th>`;
-    //   })
-    //   .join('')}
-    // ${tableData.dxCondition.conditionAnnotations
-    //   .map(
-    //     conditionAnnotation => `
-    //       <th>
-    //         <div class="inner _category-color" data-category-id="${
-    //           conditionAnnotation.categoryId
-    //         }">
-    //           <div class="togo-key-view">${Records.getDatasetLabel(
-    //             conditionAnnotation.dataset
-    //           )}</div>
-    //           <span>${conditionAnnotation.label}</span>
-    //         </div>
-    //       </th>`
-    //   )
-    //   .join('')}`;
-
-    // make stats
+  #makeStats(dxCondition) {
+    for (const td of this.#STATS.querySelectorAll(':scope > td')) {
+      td.remove();
+    }
+    for (const statisticsView of this.#statisticsViews) {
+      statisticsView.destroy();
+    }
+    this.#statisticsViews = [];
+    dxCondition;
+    const conditions = [
+      ...dxCondition.conditionFilters,
+      ...dxCondition.conditionAnnotations,
+    ];
+    conditions.forEach((condition, index) => {
+      const td = document.createElement('td');
+      td.innerHTML = '<div class="inner"><div></div></div>';
+      this.#STATS.append(td);
+      this.#statisticsViews.push(
+        new StatisticsView(
+          this.#STATS,
+          td.querySelector(':scope > .inner > div'),
+          this.#tableData,
+          index,
+          condition
+        )
+      );
+    });
   }
 }

@@ -5,12 +5,14 @@ import App from './App';
 import axios from 'axios';
 import {getApiParameter} from '../functions/queryTemplates';
 
+const LIMIT = 100;
+
 export default class DXCondition {
   #togoKey;
   #conditionAnnotations;
   #conditionFilters;
   #ids;
-  #rows;
+  #properties;
 
   /**
    *
@@ -23,7 +25,7 @@ export default class DXCondition {
     this.#conditionAnnotations =
       this.#copyConditionAnnotations(conditionAnnotations);
     this.#conditionFilters = this.#copyConditionFilters(conditionFilters);
-    this.#rows = [];
+    this.#properties = [];
   }
 
   // methods
@@ -84,6 +86,24 @@ export default class DXCondition {
     );
   }
 
+  getNextProperties(limit = LIMIT) {
+    return axios
+      .post(
+        App.getApiUrl('dataframe'),
+        getApiParameter('dataframe', {
+          dataset: this.togoKey,
+          filters: this.queryFilters,
+          annotations: this.queryAnnotations,
+          queries: this.ids.slice(this.offset, this.offset + limit),
+        })
+        // {cancelToken: this.#source.token}
+      )
+      .then(res => {
+        this.#properties.push(...res.data);
+        return res.data;
+      });
+  }
+
   #copyConditionAnnotations(conditionAnnotations) {
     return conditionAnnotations.map(
       conditionAnnotation =>
@@ -127,6 +147,14 @@ export default class DXCondition {
     return this.#conditionAnnotations.map(
       conditionAnnotations => conditionAnnotations.query
     );
+  }
+
+  get offset() {
+    return this.#properties.length;
+  }
+
+  get isPropertiesLoaded() {
+    return this.offset >= this.#ids?.length;
   }
 
   get ids() {
