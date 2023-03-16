@@ -153,6 +153,10 @@ export default class DXCondition {
     return this.#properties.length;
   }
 
+  get properties() {
+    return [...this.#properties];
+  }
+
   get isPropertiesLoaded() {
     return this.offset >= this.#ids?.length;
   }

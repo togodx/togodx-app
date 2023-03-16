@@ -79,11 +79,8 @@ const dataButtonModes = new Map([
 
 export default class TableData {
   #dxCondition;
-  #queryIds;
-  #rows;
   #source;
   #isLoading;
-  #isCompleted;
   #ROOT;
   #STATUS;
   #progressIndicator;
@@ -96,10 +93,7 @@ export default class TableData {
     this.#source = cancelToken.source();
 
     this.#isLoading = false;
-    this.#isCompleted = false;
     this.#dxCondition = dxCondition;
-    this.#queryIds = [];
-    this.#rows = [];
 
     // view
     elm.classList.add('table-data-controller-view');
@@ -285,7 +279,7 @@ export default class TableData {
     this.#ROOT.classList.toggle('-fetching');
     this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('empty'));
 
-    const partiallyLoaded = this.#queryIds.length > 0;
+    const partiallyLoaded = this.#dxCondition.ids.length > 0;
     const message = partiallyLoaded ? 'Getting data' : 'Getting ID list';
     this.#STATUS.textContent = message;
 
@@ -330,7 +324,7 @@ export default class TableData {
   }
 
   #setJsonUrl() {
-    const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {
+    const jsonBlob = new Blob([JSON.stringify(this.data, null, 2)], {
       type: 'application/json',
     });
     downloadUrls.set('json', URL.createObjectURL(jsonBlob));
@@ -347,7 +341,7 @@ export default class TableData {
         'node',
         'value',
       ].join('\t'),
-      ...this.#rows
+      ...this.data
         .map(row => {
           return row.attributes
             .map(attribute => {
@@ -408,13 +402,12 @@ export default class TableData {
 
   async #getQueryIds() {
     // get IDs
-    this.#queryIds = await this.#dxCondition.ids.catch(error => {
+    await this.#dxCondition.ids.catch(error => {
       console.error(error);
       this.#handleError(error);
     });
-
-    if (this.#queryIds.length <= 0) {
-      this.#complete(false);
+    if (this.total <= 0) {
+      this.#completed(false);
       const customEvent = new CustomEvent(event.addNextRows, {
         detail: {
           tableData: this,
@@ -428,7 +421,7 @@ export default class TableData {
     }
     this.#ROOT.dataset.status = 'load rows';
     this.#STATUS.textContent = 'Getting data';
-    this.#progressIndicator.setIndicator(undefined, this.#queryIds.length);
+    this.#progressIndicator.setIndicator(undefined, this.total);
     this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
     this.#getProperties();
   }
@@ -440,27 +433,25 @@ export default class TableData {
     const rows = await this.#dxCondition
       .getNextProperties()
       .catch(error => this.#handleError(error));
-    const offset = this.offset;
-    this.#rows.push(...rows);
-    this.#isCompleted = this.offset >= this.#queryIds.length;
+    // const offset = this.offset;
     this.#progressIndicator.updateProgressBar({
       offset: this.offset,
       startTime,
     });
 
     // dispatch event
-    const customEvent2 = new CustomEvent(event.addNextRows, {
+    const customEvent = new CustomEvent(event.addNextRows, {
       detail: {
         tableData: this,
-        offset,
+        offset: this.offset,
         rows,
-        done: this.#isCompleted,
+        done: this.#dxCondition.isPropertiesLoaded,
       },
     });
-    DefaultEventEmitter.dispatchEvent(customEvent2);
+    DefaultEventEmitter.dispatchEvent(customEvent);
     // turn off after finished
-    if (this.#isCompleted) {
-      this.#complete();
+    if (this.#dxCondition.isPropertiesLoaded) {
+      this.#completed();
       return;
     }
     if (this.#isLoading) this.#getProperties();
@@ -469,7 +460,7 @@ export default class TableData {
   /**
    * @param { boolean } withData
    */
-  #complete(withData = true) {
+  #completed(withData = true) {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = withData ? 'Complete' : 'No Data Found';
     this.#ROOT.classList.remove('-fetching');
@@ -486,12 +477,12 @@ export default class TableData {
     DefaultEventEmitter.dispatchEvent(customEvent1);
     // send rows
     if (this.#ROOT.dataset.status !== 'load ids') {
-      const done = this.offset >= this.#queryIds.length;
+      const done = this.offset >= this.total;
       const customEvent2 = new CustomEvent(event.addNextRows, {
         detail: {
           tableData: this,
           offset: 0,
-          rows: this.#rows,
+          rows: this.data,
           done,
         },
       });
@@ -510,7 +501,10 @@ export default class TableData {
 
   /* public accessors */
   get offset() {
-    return this.#rows.length;
+    return this.#dxCondition.offset;
+  }
+  get total() {
+    return this.#dxCondition.ids?.length;
   }
   get togoKey() {
     return this.#dxCondition.togoKey;
@@ -519,9 +513,9 @@ export default class TableData {
     return this.#dxCondition;
   }
   get data() {
-    return this.#rows;
+    return [...this.#dxCondition.properties];
   }
   get rateOfProgress() {
-    return this.#rows.length / this.#queryIds.length;
+    return this.offset / this.total;
   }
 }
