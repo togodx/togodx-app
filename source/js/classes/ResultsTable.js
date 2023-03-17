@@ -68,7 +68,8 @@ export default class ResultsTable {
           if (mutation.target.dataset.display !== 'results') {
             this.#intersctionObserver.unobserve(this.#TABLE_END);
             // deselect table data
-            this.#tableData.deselect();
+            console.log(this.#tableData);
+            this.#tableData?.deselect();
           }
         }
       });

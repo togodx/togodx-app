@@ -3,7 +3,6 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import StatisticsView from './StatisticsView';
 import Records from './Records';
 import * as event from '../events';
-import axios from 'axios';
 
 const NUM_OF_PREVIEW = 5;
 const displayMap = new Map([
@@ -100,43 +99,50 @@ export default class ResultsView {
   }
 
   async #makePreview() {
-    this.#TBODY.innerHTML = '';
-    this.#previewDxCondition = ConditionBuilder.dxCondition;
-    // get IDs
-    const ids = await this.#previewDxCondition.ids;
-    this.#header = this.#previewDxCondition.tableHeader;
-    // make table header
-    this.#NUMBER_OF_ENTRIES.innerHTML = `${ids.length.toLocaleString()} ${prMapEntry.get(
-      new Intl.PluralRules('en-US').select(ids.length)
-    )}`;
-    this.#makeTableHeader(this.#previewDxCondition);
-    // make rows
-    document.body.dataset.numberOfResults = ids.length;
-    const nextRows = await this.#previewDxCondition.getNextProperties(
-      NUM_OF_PREVIEW
-    );
-    this.#addNextRows({
-      dxCondition: this.#previewDxCondition,
-      offset: 0,
-      nextRows,
-      flag: 'preview',
-      isAutoLoading: false,
-    });
+    console.log(document.body.dataset.display);
+    if ((document.body.dataset.display = 'properties')) {
+      this.#TBODY.innerHTML = '';
+      this.#previewDxCondition = ConditionBuilder.dxCondition;
+      // get IDs
+      const ids = await this.#previewDxCondition.ids;
+      this.#header = this.#previewDxCondition.tableHeader;
+      // make table header
+      this.#NUMBER_OF_ENTRIES.innerHTML = `${ids.length.toLocaleString()} ${prMapEntry.get(
+        new Intl.PluralRules('en-US').select(ids.length)
+      )}`;
+      this.#makeTableHeader(this.#previewDxCondition);
+      // make rows
+      document.body.dataset.numberOfResults = ids.length;
+      const nextRows = await this.#previewDxCondition.getNextProperties(
+        NUM_OF_PREVIEW
+      );
+      this.#addNextRows({
+        dxCondition: this.#previewDxCondition,
+        offset: 0,
+        nextRows,
+        flag: 'preview',
+        isAutoLoading: false,
+        isPreview: true,
+      });
+    }
   }
 
   #setupTable(tableData) {
-    // reset
-    this.#tableData = tableData;
-    this.#intersctionObserver.unobserve(this.#TABLE_END);
-    this.#header = tableData.dxCondition.tableHeader;
-    this.#ROOT.classList.remove('-complete');
-    this.#THEAD.innerHTML = '';
-    this.#TBODY.innerHTML = '';
-    this.#LOADING_VIEW.classList.add('-shown');
-    DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
+    console.log(document.body.dataset.display);
+    if ((document.body.dataset.display = 'results')) {
+      // reset
+      this.#tableData = tableData;
+      this.#intersctionObserver.unobserve(this.#TABLE_END);
+      this.#header = tableData.dxCondition.tableHeader;
+      this.#ROOT.classList.remove('-complete');
+      this.#THEAD.innerHTML = '';
+      this.#TBODY.innerHTML = '';
+      this.#LOADING_VIEW.classList.add('-shown');
+      DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
 
-    this.#makeTableHeader(tableData.dxCondition);
-    this.#makeStats(tableData.dxCondition);
+      this.#makeTableHeader(tableData.dxCondition);
+      this.#makeStats(tableData.dxCondition);
+    }
   }
 
   #makeTableHeader(dxCondition) {
@@ -216,19 +222,37 @@ export default class ResultsView {
     });
   }
 
-  #addNextRows({dxCondition, offset, nextRows, flag, isAutoLoading = true}) {
+  #addNextRows({
+    dxCondition,
+    offset,
+    nextRows,
+    flag,
+    isAutoLoading = true,
+    isPreview = false,
+  }) {
     console.log(dxCondition);
     console.log(flag);
+    console.log(document.body.dataset.display);
+    console.log('isPreview', isPreview);
     console.log(dxCondition === this.#tableData?.dxCondition);
     console.log(dxCondition === this.#previewDxCondition);
-    // make table
-    this.#TBODY.insertAdjacentHTML(
-      'beforeend',
-      nextRows
-        .map((row, index) => {
-          const actualIndex = offset + index;
-          console.log(row);
-          return `
+    const isValidPreview =
+      document.body.dataset.display === 'properties' && isPreview;
+    const isValidResults =
+      document.body.dataset.display === 'results' &&
+      !isPreview &&
+      dxCondition === this.#tableData?.dxCondition;
+    console.log(isValidPreview, isValidResults);
+
+    if (isValidPreview || isValidResults) {
+      // make table
+      this.#TBODY.insertAdjacentHTML(
+        'beforeend',
+        nextRows
+          .map((row, index) => {
+            const actualIndex = offset + index;
+            console.log(row);
+            return `
       <tr
         data-index="${actualIndex}"
         data-togo-id="${row.index.entry}">
@@ -277,9 +301,10 @@ export default class ResultsView {
           })
           .join('')}
       </tr>`;
-        })
-        .join('')
-    );
+          })
+          .join('')
+      );
+    }
 
     if (!isAutoLoading) return;
     // turn off auto-loading after last line is displayed
