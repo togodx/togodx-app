@@ -33,6 +33,8 @@
     height: calc(100% - var(--height-results))
   > #ResultsView
     height: var(--height-results)
+    > .inner
+      height: calc(var(--height-results) - var(--height-results-thead-row-first-cell))
 
 @media (max-width: var(--min-width-app))
   #MainArea

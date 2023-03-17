@@ -20,6 +20,7 @@ export default class ResultsView {
   #tableData;
   #statisticsViews;
   #header;
+  #previewDxCondition;
   #ROOT;
   #NUMBER_OF_ENTRIES;
   #COLLAPSE_BUTTON;
@@ -80,9 +81,9 @@ export default class ResultsView {
     DefaultEventEmitter.addEventListener(event.selectTableData, e =>
       this.#setupTable(e.detail)
     );
-    // DefaultEventEmitter.addEventListener(event.addNextRows, e =>
-    //   this.#addTableRows(e.detail)
-    // );
+    DefaultEventEmitter.addEventListener(event.addNextRows, e =>
+      this.#addNextRows(e.detail)
+    );
     // DefaultEventEmitter.addEventListener(event.failedFetchTableDataIds, e =>
     //   this.#failed(e.detail)
     // );
@@ -100,88 +101,27 @@ export default class ResultsView {
 
   async #makePreview() {
     this.#TBODY.innerHTML = '';
-    const dxCondition = ConditionBuilder.dxCondition;
+    this.#previewDxCondition = ConditionBuilder.dxCondition;
     // get IDs
-    const ids = await dxCondition.ids;
-    this.#header = dxCondition.tableHeader;
+    const ids = await this.#previewDxCondition.ids;
+    this.#header = this.#previewDxCondition.tableHeader;
     // make table header
     this.#NUMBER_OF_ENTRIES.innerHTML = `${ids.length.toLocaleString()} ${prMapEntry.get(
       new Intl.PluralRules('en-US').select(ids.length)
     )}`;
-    this.#makeTableHeader(dxCondition);
+    this.#makeTableHeader(this.#previewDxCondition);
     // make rows
     document.body.dataset.numberOfResults = ids.length;
-    const nextRows = await dxCondition.getNextProperties(NUM_OF_PREVIEW);
+    const nextRows = await this.#previewDxCondition.getNextProperties(
+      NUM_OF_PREVIEW
+    );
     this.#addNextRows({
-      dxCondition,
+      dxCondition: this.#previewDxCondition,
       offset: 0,
       nextRows,
+      flag: 'preview',
+      isAutoLoading: false,
     });
-  }
-
-  // #addNextRows(e) {
-  //   console.log(e);
-  // }
-
-  #addNextRows({dxCondition, offset, nextRows}) {
-    // make table
-    this.#TBODY.insertAdjacentHTML(
-      'beforeend',
-      nextRows
-        .map((row, index) => {
-          const actualIndex = offset + index;
-          return `
-      <tr
-        data-index="${actualIndex}"
-        data-togo-id="${row.index.entry}">
-        <td>
-          <div class="inner">
-            <ul>
-              <div
-                class="togo-key-view primarykey"
-                data-key="${dxCondition.togoKey}"
-                data-order="${[0, actualIndex]}"
-                data-sub-order="0"
-                data-subject-id="primary"
-                data-unique-entry-id="${row.index.entry}">${row.index.entry}
-              </div>
-              <span>${row.index.label}</span>
-            </ul>
-          </div<
-        </td>
-        ${row.attributes
-          .map((column, columnIndex) => {
-            if (column) {
-              return `
-              <td><div class="inner"><ul>${column.items
-                .map((item, itemIndex) => {
-                  return `
-                  <li>
-                    <div
-                      class="togo-key-view"
-                      data-order="${[columnIndex + 1, actualIndex]}"
-                      data-sub-order="${itemIndex}"
-                      data-key="${item.dataset}"
-                      data-subject-id="${this.#header[columnIndex].categoryId}"
-                      data-main-category-id="${
-                        this.#header[columnIndex].attributeId
-                      }"
-                      data-sub-category-id="${item.node}"
-                      data-unique-entry-id="${item.entry}"
-                      >${item.entry}</div>
-                    <span>${item.label}</span>
-                  </li>`;
-                })
-                .join('')}</ul></div></td>`;
-            } else {
-              return `<td><div class="inner -empty"></div></td>`;
-            }
-          })
-          .join('')}
-      </tr>`;
-        })
-        .join('')
-    );
   }
 
   #setupTable(tableData) {
@@ -274,5 +214,78 @@ export default class ResultsView {
         )
       );
     });
+  }
+
+  #addNextRows({dxCondition, offset, nextRows, flag, isAutoLoading = true}) {
+    console.log(dxCondition);
+    console.log(flag);
+    console.log(dxCondition === this.#tableData?.dxCondition);
+    console.log(dxCondition === this.#previewDxCondition);
+    // make table
+    this.#TBODY.insertAdjacentHTML(
+      'beforeend',
+      nextRows
+        .map((row, index) => {
+          const actualIndex = offset + index;
+          console.log(row);
+          return `
+      <tr
+        data-index="${actualIndex}"
+        data-togo-id="${row.index.entry}">
+        <td>
+          <div class="inner">
+            <ul>
+              <div
+                class="togo-key-view primarykey"
+                data-key="${dxCondition.togoKey}"
+                data-order="${[0, actualIndex]}"
+                data-sub-order="0"
+                data-subject-id="primary"
+                data-unique-entry-id="${row.index.entry}">${row.index.entry}
+              </div>
+              <span>${row.index.label}</span>
+            </ul>
+          </div<
+        </td>
+        ${row.attributes
+          .map((column, columnIndex) => {
+            if (column) {
+              return `
+              <td><div class="inner"><ul>${column.items
+                .map((item, itemIndex) => {
+                  return `
+                  <li>
+                    <div
+                      class="togo-key-view"
+                      data-order="${[columnIndex + 1, actualIndex]}"
+                      data-sub-order="${itemIndex}"
+                      data-key="${item.dataset}"
+                      data-subject-id="${this.#header[columnIndex].categoryId}"
+                      data-main-category-id="${
+                        this.#header[columnIndex].attributeId
+                      }"
+                      data-sub-category-id="${item.node}"
+                      data-unique-entry-id="${item.entry}"
+                      >${item.entry}</div>
+                    <span>${item.label}</span>
+                  </li>`;
+                })
+                .join('')}</ul></div></td>`;
+            } else {
+              return `<td><div class="inner -empty"></div></td>`;
+            }
+          })
+          .join('')}
+      </tr>`;
+        })
+        .join('')
+    );
+
+    if (!isAutoLoading) return;
+    // turn off auto-loading after last line is displayed
+    const isLoaded = dxCondition.isPropertiesLoaded;
+    this.#ROOT.classList.toggle('-complete', isLoaded);
+    this.#LOADING_VIEW.classList.toggle('-shown', !isLoaded);
+    if (!isLoaded) this.#intersctionObserver.observe(this.#TABLE_END);
   }
 }

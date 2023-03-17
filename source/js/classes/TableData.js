@@ -399,10 +399,11 @@ export default class TableData {
 
   async #getQueryIds() {
     // get IDs
-    await this.#dxCondition.ids.catch(error => {
-      console.error(error);
-      this.#handleError(error);
-    });
+    await this.#dxCondition.ids;
+    // await this.#dxCondition.ids.catch(error => {
+    //   console.error(error);
+    //   this.#handleError(error);
+    // });
     if (this.total <= 0) {
       // retry case
       this.#completed(false);
@@ -411,6 +412,7 @@ export default class TableData {
           dxCondition: this.#dxCondition,
           offset: 0,
           nextRows: [],
+          flag: 'tableData, gutQueryIds',
         },
       });
       DefaultEventEmitter.dispatchEvent(customEvent);
@@ -442,6 +444,7 @@ export default class TableData {
         dxCondition: this.#dxCondition,
         offset: this.offset,
         nextRows,
+        flag: 'tableData, getProperties',
       },
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
@@ -478,6 +481,7 @@ export default class TableData {
           dxCondition: this.#dxCondition,
           offset: 0,
           nextRows: this.data,
+          flag: 'tableData, select',
         },
       });
       DefaultEventEmitter.dispatchEvent(customEvent2);

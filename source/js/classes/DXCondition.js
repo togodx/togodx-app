@@ -6,8 +6,12 @@ import axios from 'axios';
 import {getApiParameter} from '../functions/queryTemplates';
 
 const LIMIT = 100;
+let idCounter = 0;
+
+// TODO: キャッシュの機構を作る
 
 export default class DXCondition {
+  #id;
   #togoKey;
   #conditionAnnotations;
   #conditionFilters;
@@ -21,6 +25,8 @@ export default class DXCondition {
    * @param {ConditionFilter[]} conditionFilters
    */
   constructor(togoKey, conditionAnnotations, conditionFilters) {
+    this.#id = idCounter++;
+    console.log(this.#id);
     this.#togoKey = togoKey;
     this.#conditionAnnotations =
       this.#copyConditionAnnotations(conditionAnnotations);
@@ -162,6 +168,7 @@ export default class DXCondition {
   }
 
   get ids() {
+    // console.trace(this.#id, this.#ids ? [...this.#ids] : undefined);
     if (this.#ids) {
       return this.#ids;
     } else {
