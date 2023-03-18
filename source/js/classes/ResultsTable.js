@@ -54,7 +54,7 @@ export default class ResultsTable {
     DefaultEventEmitter.addEventListener(event.failedFetchTableDataIds, e =>
       this.#failed(e.detail)
     );
-    DefaultEventEmitter.addEventListener(event.highlightCol, e => {
+    DefaultEventEmitter.addEventListener(event.highlightColumn, e => {
       this.#colHighlight(e.detail);
     });
 
@@ -297,7 +297,7 @@ export default class ResultsTable {
         // remove highlight on mouseleave only when there is no popup
         const td = uniqueEntry.closest('td');
         td.addEventListener('mouseenter', () => {
-          const customEvent = new CustomEvent(event.highlightCol, {
+          const customEvent = new CustomEvent(event.highlightColumn, {
             detail: uniqueEntry.getAttribute('data-order').split(',')[0],
           });
           DefaultEventEmitter.dispatchEvent(customEvent);

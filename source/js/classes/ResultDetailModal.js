@@ -173,7 +173,7 @@ export default class ResultDetailModal {
     entry.classList.add('-selected');
     tr.classList.add('-selected');
 
-    const customEvent = new CustomEvent(event.highlightCol, {
+    const customEvent = new CustomEvent(event.highlightColumn, {
       detail: x,
     });
     DefaultEventEmitter.dispatchEvent(customEvent);

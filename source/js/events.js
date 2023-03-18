@@ -36,7 +36,7 @@ export const addNextRows = 'addNextRows';
 // Table data
 export const selectTableData = 'selectTableData';
 export const deleteTableData = 'deleteTableData';
-export const highlightCol = 'highlightCol';
+export const highlightColumn = 'highlightColumn';
 
 // Track
 export const enterAttributeFilterItemView = 'enterAttributeFilterItemView';

@@ -24,6 +24,7 @@ export default class ResultsView {
   #ROOT;
   #NUMBER_OF_ENTRIES;
   #COLLAPSE_BUTTON;
+  #COLGROUP;
   #THEAD;
   #THEAD_SUB;
   #STATS;
@@ -45,6 +46,7 @@ export default class ResultsView {
     );
     const inner = elm.querySelector(':scope > .inner');
     const TABLE = inner.querySelector(':scope > table');
+    this.#COLGROUP = TABLE.querySelector(':scope > colgroup');
     this.#THEAD = TABLE.querySelector(':scope > thead > tr.header');
     this.#THEAD_SUB = TABLE.querySelector(':scope > thead > tr.subheader');
     this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics');
@@ -87,9 +89,9 @@ export default class ResultsView {
     // DefaultEventEmitter.addEventListener(event.failedFetchTableDataIds, e =>
     //   this.#failed(e.detail)
     // );
-    // DefaultEventEmitter.addEventListener(event.highlightCol, e => {
-    //   this.#colHighlight(e.detail);
-    // });
+    DefaultEventEmitter.addEventListener(event.highlightColumn, e => {
+      this.#highlightColumn(e.detail);
+    });
   }
 
   // private methods
@@ -144,6 +146,12 @@ export default class ResultsView {
   }
 
   #makeTableHeader(dxCondition) {
+    // make column group
+    this.#COLGROUP.innerHTML = '<col></col>'.repeat(
+      dxCondition.conditionFilters.length +
+        dxCondition.conditionAnnotations.length +
+        1
+    );
     // make table header
     this.#THEAD.innerHTML = `
       <th rowspan="2">
@@ -247,5 +255,11 @@ export default class ResultsView {
       this.#ROOT.classList.add('-complete');
       this.#LOADING_VIEW.classList.remove('-shown');
     }
+  }
+
+  #highlightColumn({x, isEnter}) {
+    this.#COLGROUP
+      .querySelector(`:scope > col:nth-child(${x + 1})`)
+      .classList.toggle('-selected', isEnter);
   }
 }

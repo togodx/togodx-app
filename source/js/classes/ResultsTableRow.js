@@ -1,3 +1,4 @@
+import DefaultEventEmitter from './DefaultEventEmitter';
 import {createPopupEvent} from '../functions/util';
 import * as event from '../events';
 
@@ -22,33 +23,74 @@ export default class ResultsTableRow {
       ...row.attributes,
     ].map((column, columnIndex) => {
       const td = document.createElement('td');
+      td.dataset.x = columnIndex;
+      td.dataset.y = index;
       td.innerHTML = `<div class="inner">
         <ul>
         ${column.items
           .map(
             (item, itemIndex) => `<li>
-          <div class="togo-key-view${columnIndex === 0 ? ' primarykey' : ''}"
-            data-order="${[columnIndex, index]}"
-            data-sub-order="${itemIndex}"
-            data-key="${item.dataset}"
-            data-subject-id="${
-              columnIndex === 0 ? 'primary' : header[columnIndex - 1].categoryId
-            }"
-            ${
-              columnIndex === 0
-                ? ''
-                : `data-main-category-id="${
-                    header[columnIndex - 1].attributeId
-                  }" data-sub-category-id="${item.node}"`
-            }
-            data-unique-entry-id="${item.entry}"
-            >${item.entry}</div>
-          <span>${item.label}</span>
+            <div class="togo-key-view${columnIndex === 0 ? ' primarykey' : ''}"
+              data-order="${[columnIndex, index]}"
+              data-x="${[columnIndex]}"
+              data-y="${[index]}"
+              data-sub-order="${itemIndex}"
+              data-y2="${itemIndex}"
+              data-key="${item.dataset}"
+              data-dataset="${item.dataset}"
+              data-subject-id="${
+                columnIndex === 0
+                  ? 'primary'
+                  : header[columnIndex - 1].categoryId
+              }"
+              data-category-id="${
+                columnIndex === 0
+                  ? 'primary'
+                  : header[columnIndex - 1].categoryId
+              }"
+              ${
+                columnIndex === 0
+                  ? ''
+                  : `data-main-category-id="${
+                      header[columnIndex - 1].attributeId
+                    }" data-sub-category-id="${item.node}"`
+              }
+              ${
+                columnIndex === 0
+                  ? ''
+                  : `data-attribute-id="${
+                      header[columnIndex - 1].attributeId
+                    }" data-node="${item.node}"`
+              }
+              data-entry="${item.entry}"
+              data-unique-entry-id="${item.entry}"
+              >${item.entry}</div>
+            <span>${item.label}</span>
           </li>`
           )
           .join('')}
         </ul>
       </div>`;
+
+      // remove highlight on mouseleave only when there is no popup
+      td.addEventListener('mouseenter', () => {
+        const customEvent = new CustomEvent(event.highlightColumn, {
+          detail: {
+            x: +td.dataset.x,
+            isEnter: true,
+          },
+        });
+        DefaultEventEmitter.dispatchEvent(customEvent);
+      });
+      td.addEventListener('mouseleave', () => {
+        const customEvent = new CustomEvent(event.highlightColumn, {
+          detail: {
+            x: +td.dataset.x,
+            isEnter: false,
+          },
+        });
+        DefaultEventEmitter.dispatchEvent(customEvent);
+      });
 
       // naming needs improvement but hierarcy for Popup screen is like below
       td.querySelectorAll('.togo-key-view').forEach(togoKeyView => {

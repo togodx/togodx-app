@@ -1,6 +1,5 @@
 #ResultsView
   bottom: 0
-  // width: 100%
   z-index: var(--z-results)
   background-color: var(--color-lamp-black)
   > header
@@ -37,14 +36,19 @@
         [data-number-of-results="0"] &
           opacity: .3
   > .inner
-    // background-color: white
     overflow: auto
     > table
       height: auto
+      background-color: white
+      > colgroup
+        > col
+          &.-selected
+            background-color: var(--color-selected)
       > thead
         > tr
           &.statistics
             color: white
+            background-color: var(--color-lamp-black)
             > th
               vertical-align: top
             > td
