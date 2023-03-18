@@ -428,10 +428,10 @@ export default class TableData {
     this.#isLoading = true;
     const startTime = Date.now();
 
+    const offset = this.offset;
     const nextRows = await this.#dxCondition
       .getNextProperties()
       .catch(error => this.#handleError(error));
-    // const offset = this.offset;
     this.#progressIndicator.updateProgressBar({
       offset: this.offset,
       startTime,
@@ -441,7 +441,7 @@ export default class TableData {
     const customEvent = new CustomEvent(event.addNextRows, {
       detail: {
         dxCondition: this.#dxCondition,
-        offset: this.offset,
+        offset,
         nextRows,
       },
     });

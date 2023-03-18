@@ -2,6 +2,7 @@ import ConditionBuilder from './ConditionBuilder';
 import DefaultEventEmitter from './DefaultEventEmitter';
 import StatisticsView from './StatisticsView';
 import Records from './Records';
+import ResultsTableRow from './ResultsTableRow';
 import * as event from '../events';
 
 const NUM_OF_PREVIEW = 5;
@@ -230,59 +231,13 @@ export default class ResultsView {
     if (isValidPreview || isValidResults) {
       // make table
       const rows = nextRows.map((row, index) => {
-        const actualIndex = offset + index;
-        const tr = document.createElement('tr');
-        tr.dataset.index = actualIndex;
-        tr.dataset.togoId = row.index.entry;
-        tr.dataset.entry = row.index.entry;
-        const tds = [
-          {
-            items: [
-              {
-                dataset: dxCondition.togoKey,
-                entry: row.index.entry,
-                label: row.index.label,
-              },
-            ],
-          },
-          ...row.attributes,
-        ].map((column, columnIndex) => {
-          const td = document.createElement('td');
-          td.innerHTML = `<div class="inner">
-            <ul>
-            ${column.items
-              .map(
-                (item, itemIndex) => `<li>
-              <div class="togo-key-view${
-                columnIndex === 0 ? ' primarykey' : ''
-              }"
-                data-order="${[columnIndex, actualIndex]}"
-                data-sub-order="${itemIndex}"
-                data-key="${item.dataset}"
-                data-subject-id="${
-                  columnIndex === 0
-                    ? 'primary'
-                    : this.#header[columnIndex - 1].categoryId
-                }"
-                ${
-                  columnIndex === 0
-                    ? ''
-                    : `data-main-category-id="${
-                        this.#header[columnIndex - 1].attributeId
-                      }" data-sub-category-id="${item.node}"`
-                }
-                data-unique-entry-id="${item.entry}"
-                >${item.entry}</div>
-              <span>${item.label}</span>
-              </li>`
-              )
-              .join('')}
-            </ul>
-          </div>`;
-          return td;
-        });
-        tr.append(...tds);
-        return tr;
+        const tr = new ResultsTableRow(
+          offset + index,
+          dxCondition.togoKey,
+          this.#header,
+          row
+        );
+        return tr.elm;
       });
       this.#TBODY.append(...rows);
     }
