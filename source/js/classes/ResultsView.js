@@ -235,69 +235,53 @@ export default class ResultsView {
         tr.dataset.index = actualIndex;
         tr.dataset.togoId = row.index.entry;
         tr.dataset.entry = row.index.entry;
-        tr.innerHTML = `
-        <td>
-          <div class="inner">
+        const tds = [
+          {
+            items: [
+              {
+                dataset: dxCondition.togoKey,
+                entry: row.index.entry,
+                label: row.index.label,
+              },
+            ],
+          },
+          ...row.attributes,
+        ].map((column, columnIndex) => {
+          const td = document.createElement('td');
+          td.innerHTML = `<div class="inner">
             <ul>
-              <div
-                class="togo-key-view primarykey"
-                data-key="${dxCondition.togoKey}"
-                data-togo-key="${dxCondition.togoKey}"
-                data-order="${[0, actualIndex]}"
-                data-column-order="0"
-                data-row-order="${actualIndex}"
-                data-sub-order="0"
-                data-order-in-cell="0"
-                data-subject-id="primary"
-                data-category-id="primary"
-                data-entry="${row.index.entry}"
-                data-unique-entry-id="${row.index.entry}">${
-          row.index.entry
-        }</div>
-              <span>${row.index.label}</span>
+            ${column.items
+              .map(
+                (item, itemIndex) => `<li>
+              <div class="togo-key-view${
+                columnIndex === 0 ? ' primarykey' : ''
+              }"
+                data-order="${[columnIndex, actualIndex]}"
+                data-sub-order="${itemIndex}"
+                data-key="${item.dataset}"
+                data-subject-id="${
+                  columnIndex === 0
+                    ? 'primary'
+                    : this.#header[columnIndex - 1].categoryId
+                }"
+                ${
+                  columnIndex === 0
+                    ? ''
+                    : `data-main-category-id="${
+                        this.#header[columnIndex - 1].attributeId
+                      }" data-sub-category-id="${item.node}"`
+                }
+                data-unique-entry-id="${item.entry}"
+                >${item.entry}</div>
+              <span>${item.label}</span>
+              </li>`
+              )
+              .join('')}
             </ul>
-          </div<
-        </td>
-        ${row.attributes
-          .map((column, columnIndex) => {
-            if (column) {
-              console.log(column);
-              return `
-              <td><div class="inner"><ul>${column.items
-                .map((item, itemIndex) => {
-                  return `
-                  <li>
-                    <div
-                      class="togo-key-view"
-                      data-order="${[columnIndex + 1, actualIndex]}"
-                      data-column-order="${[columnIndex + 1]}"
-                      data-row-order="${[actualIndex]}"
-                      data-sub-order="${itemIndex}"
-                      data-order-in-cell="${itemIndex}"
-                      data-key="${item.dataset}"
-                      data-dataset="${item.dataset}"
-                      data-subject-id="${this.#header[columnIndex].categoryId}"
-                      data-category-id="${this.#header[columnIndex].categoryId}"
-                      data-main-category-id="${
-                        this.#header[columnIndex].attributeId
-                      }"
-                      data-attribute-id="${
-                        this.#header[columnIndex].attributeId
-                      }"
-                      data-sub-category-id="${item.node}"
-                      data-node-id="${item.node}"
-                      data-entry="${item.entry}"
-                      data-unique-entry-id="${item.entry}"
-                      >${item.entry}</div>
-                    <span>${item.label}</span>
-                  </li>`;
-                })
-                .join('')}</ul></div></td>`;
-            } else {
-              return `<td><div class="inner -empty"></div></td>`;
-            }
-          })
-          .join('')}`;
+          </div>`;
+          return td;
+        });
+        tr.append(...tds);
         return tr;
       });
       this.#TBODY.append(...rows);
