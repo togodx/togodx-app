@@ -21,7 +21,7 @@ export default class ResultDetailModal {
       .insertAdjacentElement('beforeend', this.#ROOT);
 
     // references
-    this.#RESULTS_TABLE = document.querySelector('#ResultsTable');
+    this.#RESULTS_TABLE = document.querySelector('#ResultsView');
     this.#RESULT_MODAL = document.querySelector('#ResultDetailModal');
     this.#exit_button = document.createElement('div');
     this.#exit_button.className = 'close-button-view';

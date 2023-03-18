@@ -1,8 +1,10 @@
+import {createPopupEvent} from '../functions/util';
+import * as event from '../events';
+
 export default class ResultsTableRow {
   #ROOT;
 
   constructor(index, dataset, header, row) {
-    console.log(row);
     this.#ROOT = document.createElement('tr');
     this.#ROOT.dataset.index = index;
     this.#ROOT.dataset.togoId = row.index.entry;
@@ -47,6 +49,14 @@ export default class ResultsTableRow {
           .join('')}
         </ul>
       </div>`;
+
+      // naming needs improvement but hierarcy for Popup screen is like below
+      td.querySelectorAll('.togo-key-view').forEach(togoKeyView => {
+        togoKeyView.addEventListener('click', () => {
+          createPopupEvent(togoKeyView, event.showPopup);
+        });
+      });
+
       return td;
     });
     this.#ROOT.append(...tds);
