@@ -412,7 +412,6 @@ export default class TableData {
           dxCondition: this.#dxCondition,
           offset: 0,
           nextRows: [],
-          flag: 'tableData, gutQueryIds',
         },
       });
       DefaultEventEmitter.dispatchEvent(customEvent);
@@ -444,7 +443,6 @@ export default class TableData {
         dxCondition: this.#dxCondition,
         offset: this.offset,
         nextRows,
-        flag: 'tableData, getProperties',
       },
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
@@ -481,7 +479,6 @@ export default class TableData {
           dxCondition: this.#dxCondition,
           offset: 0,
           nextRows: this.data,
-          flag: 'tableData, select',
         },
       });
       DefaultEventEmitter.dispatchEvent(customEvent2);

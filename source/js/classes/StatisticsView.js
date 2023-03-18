@@ -155,7 +155,7 @@ export default class StatisticsView {
       return bar;
     }, undefined);
 
-    if (e?.detail?.done) {
+    if (e?.detail?.dxCondition.isPropertiesLoaded) {
       this.#ROOT.classList.add('-completed');
       this.#ROOT
         .querySelector(':scope > .loading-view')

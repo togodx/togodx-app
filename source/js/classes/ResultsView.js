@@ -99,7 +99,6 @@ export default class ResultsView {
   }
 
   async #makePreview() {
-    console.log(document.body.dataset.display);
     if ((document.body.dataset.display = 'properties')) {
       this.#TBODY.innerHTML = '';
       this.#previewDxCondition = ConditionBuilder.dxCondition;
@@ -120,7 +119,6 @@ export default class ResultsView {
         dxCondition: this.#previewDxCondition,
         offset: 0,
         nextRows,
-        flag: 'preview',
         isAutoLoading: false,
         isPreview: true,
       });
@@ -128,7 +126,6 @@ export default class ResultsView {
   }
 
   #setupTable(tableData) {
-    console.log(document.body.dataset.display);
     if ((document.body.dataset.display = 'results')) {
       // reset
       this.#tableData = tableData;
@@ -222,51 +219,41 @@ export default class ResultsView {
     });
   }
 
-  #addNextRows({
-    dxCondition,
-    offset,
-    nextRows,
-    flag,
-    isAutoLoading = true,
-    isPreview = false,
-  }) {
-    console.log(dxCondition);
-    console.log(flag);
-    console.log(document.body.dataset.display);
-    console.log('isPreview', isPreview);
-    console.log(dxCondition === this.#tableData?.dxCondition);
-    console.log(dxCondition === this.#previewDxCondition);
+  #addNextRows({dxCondition, offset, nextRows, isPreview = false}) {
     const isValidPreview =
       document.body.dataset.display === 'properties' && isPreview;
     const isValidResults =
       document.body.dataset.display === 'results' &&
       !isPreview &&
       dxCondition === this.#tableData?.dxCondition;
-    console.log(isValidPreview, isValidResults);
 
     if (isValidPreview || isValidResults) {
       // make table
-      this.#TBODY.insertAdjacentHTML(
-        'beforeend',
-        nextRows
-          .map((row, index) => {
-            const actualIndex = offset + index;
-            console.log(row);
-            return `
-      <tr
-        data-index="${actualIndex}"
-        data-togo-id="${row.index.entry}">
+      const rows = nextRows.map((row, index) => {
+        const actualIndex = offset + index;
+        const tr = document.createElement('tr');
+        tr.dataset.index = actualIndex;
+        tr.dataset.togoId = row.index.entry;
+        tr.dataset.entry = row.index.entry;
+        tr.innerHTML = `
         <td>
           <div class="inner">
             <ul>
               <div
                 class="togo-key-view primarykey"
                 data-key="${dxCondition.togoKey}"
+                data-togo-key="${dxCondition.togoKey}"
                 data-order="${[0, actualIndex]}"
+                data-column-order="0"
+                data-row-order="${actualIndex}"
                 data-sub-order="0"
+                data-order-in-cell="0"
                 data-subject-id="primary"
-                data-unique-entry-id="${row.index.entry}">${row.index.entry}
-              </div>
+                data-category-id="primary"
+                data-entry="${row.index.entry}"
+                data-unique-entry-id="${row.index.entry}">${
+          row.index.entry
+        }</div>
               <span>${row.index.label}</span>
             </ul>
           </div<
@@ -274,6 +261,7 @@ export default class ResultsView {
         ${row.attributes
           .map((column, columnIndex) => {
             if (column) {
+              console.log(column);
               return `
               <td><div class="inner"><ul>${column.items
                 .map((item, itemIndex) => {
@@ -282,13 +270,23 @@ export default class ResultsView {
                     <div
                       class="togo-key-view"
                       data-order="${[columnIndex + 1, actualIndex]}"
+                      data-column-order="${[columnIndex + 1]}"
+                      data-row-order="${[actualIndex]}"
                       data-sub-order="${itemIndex}"
+                      data-order-in-cell="${itemIndex}"
                       data-key="${item.dataset}"
+                      data-dataset="${item.dataset}"
                       data-subject-id="${this.#header[columnIndex].categoryId}"
+                      data-category-id="${this.#header[columnIndex].categoryId}"
                       data-main-category-id="${
                         this.#header[columnIndex].attributeId
                       }"
+                      data-attribute-id="${
+                        this.#header[columnIndex].attributeId
+                      }"
                       data-sub-category-id="${item.node}"
+                      data-node-id="${item.node}"
+                      data-entry="${item.entry}"
                       data-unique-entry-id="${item.entry}"
                       >${item.entry}</div>
                     <span>${item.label}</span>
@@ -299,18 +297,16 @@ export default class ResultsView {
               return `<td><div class="inner -empty"></div></td>`;
             }
           })
-          .join('')}
-      </tr>`;
-          })
-          .join('')
-      );
+          .join('')}`;
+        return tr;
+      });
+      this.#TBODY.append(...rows);
     }
 
-    if (!isAutoLoading) return;
     // turn off auto-loading after last line is displayed
-    const isLoaded = dxCondition.isPropertiesLoaded;
-    this.#ROOT.classList.toggle('-complete', isLoaded);
-    this.#LOADING_VIEW.classList.toggle('-shown', !isLoaded);
-    if (!isLoaded) this.#intersctionObserver.observe(this.#TABLE_END);
+    if (isPreview || dxCondition.isPropertiesLoaded) {
+      this.#ROOT.classList.add('-complete');
+      this.#LOADING_VIEW.classList.remove('-shown');
+    }
   }
 }

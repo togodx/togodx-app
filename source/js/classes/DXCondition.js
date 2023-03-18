@@ -26,7 +26,6 @@ export default class DXCondition {
    */
   constructor(togoKey, conditionAnnotations, conditionFilters) {
     this.#id = idCounter++;
-    console.log(this.#id);
     this.#togoKey = togoKey;
     this.#conditionAnnotations =
       this.#copyConditionAnnotations(conditionAnnotations);
