@@ -9,9 +9,11 @@ export default class ResultDetailModal {
   #ROOT;
   #RESULTS_TABLE;
   #RESULT_MODAL;
-  #exit_button;
+  #EXIT_BUTTON;
+  #popupPosition;
   #popup_top;
   #popup_left;
+  #handleKeydown;
 
   constructor() {
     this.#ROOT = document.createElement('section');
@@ -23,82 +25,94 @@ export default class ResultDetailModal {
     // references
     this.#RESULTS_TABLE = document.querySelector('#ResultsView');
     this.#RESULT_MODAL = document.querySelector('#ResultDetailModal');
-    this.#exit_button = document.createElement('div');
-    this.#exit_button.className = 'close-button-view';
+    this.#EXIT_BUTTON = document.createElement('div');
+    this.#EXIT_BUTTON.className = 'close-button-view';
+
+    this.#popupPosition = {x: 0, y: 0};
 
     // attach event
-    DefaultEventEmitter.addEventListener(event.showPopup, e => {
-      this.#showPopup(e);
+    DefaultEventEmitter.addEventListener(event.showStanza, e => {
+      this.#showStanza(e);
     });
 
-    DefaultEventEmitter.addEventListener(event.movePopup, e => {
-      this.#hidePopup(false);
-      this.#showPopup(e);
+    DefaultEventEmitter.addEventListener(event.moveStanza, e => {
+      this.#hideStanza(false);
+      this.#showStanza(e);
     });
 
     DefaultEventEmitter.addEventListener(event.dragElement, e => {
       dragView(e.detail);
     });
 
-    DefaultEventEmitter.addEventListener(event.hidePopup, () => {
-      this.#hidePopup();
+    DefaultEventEmitter.addEventListener(event.hideStanza, () => {
+      this.#hideStanza();
     });
 
     this.#RESULT_MODAL.addEventListener('click', e => {
       if (e.target !== e.currentTarget) return;
-      DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hidePopup));
+      DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
     });
 
-    this.#exit_button.addEventListener('click', () => {
-      DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hidePopup));
+    this.#EXIT_BUTTON.addEventListener('click', () => {
+      DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
     });
   }
+
   // bind this on handleKeydown so it will keep listening to same event during the whole popup
-  #showPopup(e) {
-    this.#setHighlight(
-      e.detail.properties.dataX,
-      e.detail.properties.dataY,
-      e.detail.properties.dataSubOrder
-    );
-    this.#handleKeydown = this.#handleKeydown.bind(this);
+  #showStanza(e) {
+    const togoKeyView = e.detail.togoKeyView;
+    // highlight
+    const tr = togoKeyView.closest('tr');
+    togoKeyView.classList.add('-selected');
+    tr.classList.add('-selected');
+    const customEvent = new CustomEvent(event.highlightColumn, {
+      detail: {
+        x: +togoKeyView.dataset.x,
+        isEnter: true,
+      },
+    });
+    DefaultEventEmitter.dispatchEvent(customEvent);
+    // key event
+    this.#handleKeydown = this.#keydown.bind(this);
     document.addEventListener('keydown', this.#handleKeydown);
 
     this.#RESULT_MODAL.appendChild(this.#popup(e.detail));
     this.#RESULT_MODAL.classList.add('backdrop');
   }
+
   // HTML elements
   #popup(detail) {
-    this.#ROOT.dataset.categoryId = detail.keys.subjectId;
+    this.#ROOT.dataset.categoryId = detail.togoKeyView.dataset.categoryId;
     const popup = document.createElement('div');
     popup.className = 'popup';
+    console.log(this.#popup_left, this.#popup_top);
     popup.style.left = this.#popup_left;
     popup.style.top = this.#popup_top;
-    popup.appendChild(this.#header(detail.keys, detail.properties));
-    popup.appendChild(this.#container(detail.keys, detail.properties));
-
+    popup.appendChild(this.#header(detail.togoKeyView));
+    popup.appendChild(this.#container(detail.togoKeyView));
     return popup;
   }
 
-  #header(keys, props) {
-    const category = Records.getCategory(keys.subjectId);
-    const attribute = Records.getAttribute(keys.mainCategoryId);
-    const isPrimaryKey = props.isPrimaryKey;
-    const mainCategory = isPrimaryKey
-      ? ''
-      : Records.getAttribute(keys.mainCategoryId);
+  #header(togoKeyView) {
+    const category = Records.getCategory(togoKeyView.dataset.categoryId);
+    const attribute = Records.getAttribute(togoKeyView.dataset.attributeId);
+    const isPrimaryKey = togoKeyView.classList.contains('primarykey');
     const categoryLabel = isPrimaryKey
-      ? keys.dataKey
+      ? togoKeyView.dataset.dataset
       : `<span class="category _category-background-color-strong">${category.label}</span>`;
     const attributeLable = `<span class="attribute">${
-      isPrimaryKey ? keys.uniqueEntryId : mainCategory.label
+      isPrimaryKey ? togoKeyView.dataset.entry : attribute.label
     }</span>`;
     // for continuous value (distribution), do not output label
-    const subCategory = isPrimaryKey
+    const filter = isPrimaryKey
       ? ''
-      : Records.getFilter(keys.mainCategoryId, keys.subCategoryId);
+      : Records.getFilter(
+          togoKeyView.dataset.attributeId,
+          togoKeyView.dataset.node
+        );
     const valueLabel =
-      attribute?.datamodel !== 'distribution' && subCategory?.label
-        ? `<span class="value">${subCategory.label}</span>`
+      attribute?.datamodel !== 'distribution' && filter?.label
+        ? `<span class="value">${filter.label}</span>`
         : '';
     const header = document.createElement('header');
     header.innerHTML = `
@@ -110,7 +124,7 @@ export default class ResultDetailModal {
       <div/>
     `;
     header.classList.add('_category-background-color');
-    header.lastElementChild.appendChild(this.#exit_button);
+    header.lastElementChild.appendChild(this.#EXIT_BUTTON);
     header.addEventListener('mousedown', e => {
       const customEvent = new CustomEvent(event.dragElement, {
         detail: {
@@ -126,21 +140,22 @@ export default class ResultDetailModal {
     return header;
   }
 
-  #container(keys, props) {
+  #container(togoKeyView) {
     const container = document.createElement('div');
     container.className = 'container';
     ['Up', 'Right', 'Down', 'Left'].forEach(direction => {
-      container.appendChild(this.#arrow(direction, props));
+      container.appendChild(this.#arrow(direction, togoKeyView));
     });
-    container.appendChild(this.#stanzas(keys.uniqueEntryId, keys.dataKey));
-
+    container.appendChild(
+      this.#stanzas(togoKeyView.dataset.entry, togoKeyView.dataset.dataset)
+    );
     return container;
   }
 
-  #stanzas(uniqueEntryId, dataKey) {
+  #stanzas(entry, dataset) {
     const stanzas = document.createElement('div');
     stanzas.className = 'stanzas';
-    stanzas.innerHTML += StanzaManager.draw(dataKey, uniqueEntryId);
+    stanzas.innerHTML += StanzaManager.draw(dataset, entry);
     stanzas.querySelectorAll('script').forEach(scriptElement => {
       const _script = document.createElement('script');
       _script.textContent = scriptElement.textContent;
@@ -149,72 +164,40 @@ export default class ResultDetailModal {
     return stanzas;
   }
 
-  #arrow(direction, props) {
+  #arrow(direction, togoKeyView) {
     const arrow = document.createElement('div');
     arrow.classList.add('arrow', `-${direction.toLowerCase()}`);
     arrow.addEventListener('click', () => {
       const arrowMovement = {
         dir: direction,
-        curX: parseInt(props.dataX),
-        curY: parseInt(props.dataY),
-        curInternalIndex: parseInt(props.dataSubOrder),
+        curX: parseInt(togoKeyView.dataset.x),
+        curY: parseInt(togoKeyView.dataset.y),
+        curInternalIndex: parseInt(togoKeyView.dataset.y2),
         getTargetAxes: this.#arrowFuncs.get('Arrow' + direction),
       };
       this.#setMovementArrow(arrowMovement);
     });
-
     return arrow;
   }
 
   // Events, functions
-  #setHighlight(x, y, subOrder) {
-    const entry = this.#entriesByAxes(x, y, subOrder);
-    const tr = entry.closest('tr');
-    entry.classList.add('-selected');
-    tr.classList.add('-selected');
 
-    const customEvent = new CustomEvent(event.highlightColumn, {
-      detail: x,
-    });
-    DefaultEventEmitter.dispatchEvent(customEvent);
-  }
-
-  #handleKeydown = e => {
+  #keydown(e) {
     if (e.key == 'Escape') {
-      DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hidePopup));
+      DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
     } else if (this.#arrowFuncs.has(e.key)) {
       e.preventDefault();
       this.#RESULT_MODAL
         .querySelector(`.arrow.-${e.key.replace('Arrow', '').toLowerCase()}`)
         .click();
     }
-  };
+  }
 
   #arrowFuncs = new Map([
-    [
-      'ArrowLeft',
-      function (x, y) {
-        return [x - 1, y];
-      },
-    ],
-    [
-      'ArrowRight',
-      function (x, y) {
-        return [x + 1, y];
-      },
-    ],
-    [
-      'ArrowUp',
-      function (x, y = x) {
-        return [x, y - 1];
-      },
-    ],
-    [
-      'ArrowDown',
-      function (x, y = x) {
-        return [x, y + 1];
-      },
-    ],
+    ['ArrowLeft', (x, y) => [x - 1, y]],
+    ['ArrowRight', (x, y) => [x + 1, y]],
+    ['ArrowUp', (x, y = x) => [x, y - 1]],
+    ['ArrowDown', (x, y = x) => [x, y + 1]],
   ]);
 
   #setMovementArrow(movement) {
@@ -222,7 +205,7 @@ export default class ResultDetailModal {
       const targetEntry = this.#getTargetEntry(movement);
 
       targetEntry.scrollIntoView({block: 'center'});
-      createPopupEvent(targetEntry, event.movePopup);
+      createPopupEvent(targetEntry, event.moveStanza);
     } catch (error) {
       console.error('Movement out of bounds');
     }
@@ -231,7 +214,7 @@ export default class ResultDetailModal {
   #getTargetEntry(move) {
     // Check if there are multiple entries in the current cell when going up or down
     if (['Down', 'Up'].includes(move.dir)) {
-      const allCurEntries = this.#entriesByAxes(move.curX, move.curY);
+      const allCurEntries = this.#getTogoKeysViewByAxes(move.curX, move.curY);
       const targetInternalIndex = move.getTargetAxes(move.curInternalIndex)[1];
       // movement inside cell
       if (allCurEntries[targetInternalIndex]) {
@@ -240,22 +223,24 @@ export default class ResultDetailModal {
     }
     // default: target outside of current cell
     const [targetX, targetY] = move.getTargetAxes(move.curX, move.curY);
-    const allTargetEntries = this.#entriesByAxes(targetX, targetY);
+    const allTargetEntries = this.#getTogoKeysViewByAxes(targetX, targetY);
     const targetIndex = move.dir === 'Up' ? allTargetEntries.length - 1 : 0;
 
     return allTargetEntries[targetIndex];
   }
 
-  #entriesByAxes(x, y, subOrder) {
-    if (subOrder === undefined) {
-      return this.#RESULTS_TABLE.querySelectorAll(`[data-order = '${x},${y}']`);
-    }
+  #getTogoKeysViewByAxes(x, y) {
+    return this.#RESULTS_TABLE.querySelectorAll(
+      `.togo-key-view[data-x='${x}'][data-y='${y}']`
+    );
+  }
+  #getTogoKeyViewByAxes(x, y, y2) {
     return this.#RESULTS_TABLE.querySelector(
-      `[data-order = '${x},${y}'][data-sub-order = '${subOrder}']`
+      `.togo-key-view[data-x='${x}'][data-y='${y}'][data-y2='${y2}']`
     );
   }
 
-  #hidePopup(exitingPopup = true) {
+  #hideStanza(exitingPopup = true) {
     // reset popup to the center if it is shown for first time
     // keep moved axes if user has dragged popup while moving with arrows
     const popupStyle = this.#RESULT_MODAL.querySelector('.popup').style;

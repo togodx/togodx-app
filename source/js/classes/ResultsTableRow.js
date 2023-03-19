@@ -95,7 +95,7 @@ export default class ResultsTableRow {
       // naming needs improvement but hierarcy for Popup screen is like below
       td.querySelectorAll('.togo-key-view').forEach(togoKeyView => {
         togoKeyView.addEventListener('click', () => {
-          createPopupEvent(togoKeyView, event.showPopup);
+          createPopupEvent(togoKeyView, event.showStanza);
         });
       });
 

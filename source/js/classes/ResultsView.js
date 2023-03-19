@@ -86,12 +86,12 @@ export default class ResultsView {
     DefaultEventEmitter.addEventListener(event.addNextRows, e =>
       this.#addNextRows(e.detail)
     );
-    // DefaultEventEmitter.addEventListener(event.failedFetchTableDataIds, e =>
-    //   this.#failed(e.detail)
-    // );
     DefaultEventEmitter.addEventListener(event.highlightColumn, e => {
       this.#highlightColumn(e.detail);
     });
+    DefaultEventEmitter.addEventListener(event.failedFetchTableDataIds, e =>
+      this.#failed(e.detail)
+    );
   }
 
   // private methods
@@ -261,5 +261,10 @@ export default class ResultsView {
     this.#COLGROUP
       .querySelector(`:scope > col:nth-child(${x + 1})`)
       .classList.toggle('-selected', isEnter);
+  }
+
+  #failed() {
+    this.#ROOT.classList.add('-complete');
+    this.#LOADING_VIEW.classList.remove('-shown');
   }
 }

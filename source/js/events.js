@@ -20,11 +20,7 @@ export const clearCondition = 'clearCondition';
 // Stanza
 export const hideStanza = 'hideStanza';
 export const showStanza = 'showStanza';
-
-// Popup
-export const hidePopup = 'hidePopup';
-export const showPopup = 'showPopup';
-export const movePopup = 'movePopup';
+export const moveStanza = 'moveStanza';
 
 // Dragging
 export const dragElement = 'dragElement';

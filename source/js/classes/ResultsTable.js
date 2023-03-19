@@ -292,7 +292,7 @@ export default class ResultsTable {
       const uniqueEntries = tr.querySelectorAll('.togo-key-view');
       uniqueEntries.forEach(uniqueEntry => {
         uniqueEntry.addEventListener('click', () => {
-          createPopupEvent(uniqueEntry, event.showPopup);
+          createPopupEvent(uniqueEntry, event.showStanza);
         });
         // remove highlight on mouseleave only when there is no popup
         const td = uniqueEntry.closest('td');
