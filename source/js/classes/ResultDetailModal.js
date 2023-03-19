@@ -199,41 +199,37 @@ export default class ResultDetailModal {
 
   #setMovementArrow(movement) {
     try {
-      const targetEntry = this.#getTargetEntry(movement);
-
-      targetEntry.scrollIntoView({block: 'center'});
-      createPopupEvent(targetEntry, event.moveStanza);
+      const targetTogoKeyView = this.#getTargetTogoKeyView(movement);
+      targetTogoKeyView.scrollIntoView({block: 'center'});
+      createPopupEvent(targetTogoKeyView, event.moveStanza);
     } catch (error) {
       console.error('Movement out of bounds');
     }
   }
 
-  #getTargetEntry(move) {
+  #getTargetTogoKeyView(move) {
     // Check if there are multiple entries in the current cell when going up or down
     if (['Down', 'Up'].includes(move.dir)) {
-      const allCurEntries = this.#getTogoKeysViewByAxes(move.curX, move.curY);
+      const currentTogoKeyViews = this.#getTogoKeysViewByAxes(
+        move.curX,
+        move.curY
+      );
       const targetInternalIndex = move.getTargetAxes(move.curInternalIndex)[1];
       // movement inside cell
-      if (allCurEntries[targetInternalIndex]) {
-        return allCurEntries[targetInternalIndex];
+      if (currentTogoKeyViews[targetInternalIndex]) {
+        return currentTogoKeyViews[targetInternalIndex];
       }
     }
     // default: target outside of current cell
     const [targetX, targetY] = move.getTargetAxes(move.curX, move.curY);
-    const allTargetEntries = this.#getTogoKeysViewByAxes(targetX, targetY);
-    const targetIndex = move.dir === 'Up' ? allTargetEntries.length - 1 : 0;
-
-    return allTargetEntries[targetIndex];
+    const targetTogoKeyViews = this.#getTogoKeysViewByAxes(targetX, targetY);
+    const targetIndex = move.dir === 'Up' ? targetTogoKeyViews.length - 1 : 0;
+    return targetTogoKeyViews[targetIndex];
   }
 
   #getTogoKeysViewByAxes(x, y) {
     return this.#RESULTS_TABLE.querySelectorAll(
       `.togo-key-view[data-x='${x}'][data-y='${y}']`
-    );
-  }
-  #getTogoKeyViewByAxes(x, y, y2) {
-    return this.#RESULTS_TABLE.querySelector(
-      `.togo-key-view[data-x='${x}'][data-y='${y}'][data-y2='${y2}']`
     );
   }
 
