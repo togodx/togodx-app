@@ -11,8 +11,6 @@ export default class ResultDetailModal {
   #RESULT_MODAL;
   #EXIT_BUTTON;
   #popupPosition;
-  #popup_top;
-  #popup_left;
   #handleKeydown;
 
   constructor() {
@@ -28,7 +26,7 @@ export default class ResultDetailModal {
     this.#EXIT_BUTTON = document.createElement('div');
     this.#EXIT_BUTTON.className = 'close-button-view';
 
-    this.#popupPosition = {x: 0, y: 0};
+    this.#popupPosition = {x: undefined, y: undefined};
 
     // attach event
     DefaultEventEmitter.addEventListener(event.showStanza, e => {
@@ -85,9 +83,8 @@ export default class ResultDetailModal {
     this.#ROOT.dataset.categoryId = detail.togoKeyView.dataset.categoryId;
     const popup = document.createElement('div');
     popup.className = 'popup';
-    console.log(this.#popup_left, this.#popup_top);
-    popup.style.left = this.#popup_left;
-    popup.style.top = this.#popup_top;
+    popup.style.left = this.#popupPosition.x;
+    popup.style.top = this.#popupPosition.y;
     popup.appendChild(this.#header(detail.togoKeyView));
     popup.appendChild(this.#container(detail.togoKeyView));
     return popup;
@@ -244,8 +241,8 @@ export default class ResultDetailModal {
     // reset popup to the center if it is shown for first time
     // keep moved axes if user has dragged popup while moving with arrows
     const popupStyle = this.#RESULT_MODAL.querySelector('.popup').style;
-    this.#popup_top = exitingPopup ? '' : popupStyle.top;
-    this.#popup_left = exitingPopup ? '' : popupStyle.left;
+    this.#popupPosition.y = exitingPopup ? '' : popupStyle.top;
+    this.#popupPosition.x = exitingPopup ? '' : popupStyle.left;
 
     this.#RESULT_MODAL.classList.remove('backdrop');
     this.#RESULT_MODAL.innerHTML = '';
