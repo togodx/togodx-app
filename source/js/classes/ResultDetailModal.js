@@ -236,9 +236,9 @@ export default class ResultDetailModal {
   #hideStanza(exitingPopup = true) {
     // reset popup to the center if it is shown for first time
     // keep moved axes if user has dragged popup while moving with arrows
-    const popupStyle = this.#RESULT_MODAL.querySelector('.popup').style;
-    this.#popupPosition.y = exitingPopup ? '' : popupStyle.top;
-    this.#popupPosition.x = exitingPopup ? '' : popupStyle.left;
+    const popupStyle = this.#RESULT_MODAL.querySelector('.popup')?.style;
+    this.#popupPosition.y = exitingPopup ? '' : popupStyle?.top;
+    this.#popupPosition.x = exitingPopup ? '' : popupStyle?.left;
 
     this.#RESULT_MODAL.classList.remove('backdrop');
     this.#RESULT_MODAL.innerHTML = '';

@@ -31,18 +31,10 @@ export default class ResultsTableRow {
           .map(
             (item, itemIndex) => `<li>
             <div class="togo-key-view${columnIndex === 0 ? ' primarykey' : ''}"
-              data-order="${[columnIndex, index]}"
               data-x="${[columnIndex]}"
               data-y="${[index]}"
-              data-sub-order="${itemIndex}"
               data-y2="${itemIndex}"
-              data-key="${item.dataset}"
               data-dataset="${item.dataset}"
-              data-subject-id="${
-                columnIndex === 0
-                  ? 'primary'
-                  : header[columnIndex - 1].categoryId
-              }"
               data-category-id="${
                 columnIndex === 0
                   ? 'primary'
@@ -51,20 +43,12 @@ export default class ResultsTableRow {
               ${
                 columnIndex === 0
                   ? ''
-                  : `data-main-category-id="${
-                      header[columnIndex - 1].attributeId
-                    }" data-sub-category-id="${item.node}"`
-              }
-              ${
-                columnIndex === 0
-                  ? ''
                   : `data-attribute-id="${
                       header[columnIndex - 1].attributeId
                     }" data-node="${item.node}"`
               }
               data-entry="${item.entry}"
-              data-unique-entry-id="${item.entry}"
-              >${item.entry}</div>
+            >${item.entry}</div>
             <span>${item.label}</span>
           </li>`
           )
