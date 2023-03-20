@@ -66,9 +66,7 @@ export default class ResultDetailModal {
     const td = togoKeyView.closest('td');
     td.classList.add('-highlighting');
     // highlight
-    // const tr = togoKeyView.closest('tr');
     // togoKeyView.classList.add('-selected');
-    // tr.classList.add('-selected');
     const customEvent = new CustomEvent(event.highlightColumn, {
       detail: {
         x: +togoKeyView.dataset.x,

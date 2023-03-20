@@ -259,12 +259,19 @@ export default class ResultsView {
   }
 
   #highlightColumn({x, isEnter, oldCell, newCell}) {
-    if (oldCell.x)
+    if (oldCell.x) {
       this.#COLGROUP
         .querySelector(`:scope > col:nth-child(${+oldCell.x + 1})`)
         .classList.remove('-selected');
+      this.#TBODY
+        .querySelector(`:scope > tr[data-index="${oldCell.y}"]`)
+        .classList.remove('-selected');
+    }
     this.#COLGROUP
       .querySelector(`:scope > col:nth-child(${+newCell.x + 1})`)
+      .classList.add('-selected');
+    this.#TBODY
+      .querySelector(`:scope > tr[data-index="${newCell.y}"]`)
       .classList.add('-selected');
   }
 
