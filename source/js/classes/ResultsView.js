@@ -242,6 +242,7 @@ export default class ResultsView {
         const tr = new ResultsTableRow(
           offset + index,
           dxCondition.togoKey,
+          this.#TBODY,
           this.#header,
           row
         );
@@ -257,10 +258,14 @@ export default class ResultsView {
     }
   }
 
-  #highlightColumn({x, isEnter}) {
+  #highlightColumn({x, isEnter, oldCell, newCell}) {
+    if (oldCell.x)
+      this.#COLGROUP
+        .querySelector(`:scope > col:nth-child(${+oldCell.x + 1})`)
+        .classList.remove('-selected');
     this.#COLGROUP
-      .querySelector(`:scope > col:nth-child(${x + 1})`)
-      .classList.toggle('-selected', isEnter);
+      .querySelector(`:scope > col:nth-child(${+newCell.x + 1})`)
+      .classList.add('-selected');
   }
 
   #failed() {

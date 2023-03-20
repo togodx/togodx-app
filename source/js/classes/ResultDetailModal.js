@@ -8,6 +8,7 @@ import * as event from '../events';
 export default class ResultDetailModal {
   #ROOT;
   #RESULTS_TABLE;
+  #TBODY;
   #RESULT_MODAL;
   #EXIT_BUTTON;
   #popupPosition;
@@ -22,6 +23,7 @@ export default class ResultDetailModal {
 
     // references
     this.#RESULTS_TABLE = document.querySelector('#ResultsView');
+    this.#TBODY = this.#RESULTS_TABLE.querySelector('tbody');
     this.#RESULT_MODAL = document.querySelector('#ResultDetailModal');
     this.#EXIT_BUTTON = document.createElement('div');
     this.#EXIT_BUTTON.className = 'close-button-view';
@@ -59,14 +61,26 @@ export default class ResultDetailModal {
   // bind this on handleKeydown so it will keep listening to same event during the whole popup
   #showStanza(e) {
     const togoKeyView = e.detail.togoKeyView;
+    const oldTd = this.#TBODY.querySelector('td.-highlighting');
+    oldTd?.classList.remove('-highlighting');
+    const td = togoKeyView.closest('td');
+    td.classList.add('-highlighting');
     // highlight
-    const tr = togoKeyView.closest('tr');
-    togoKeyView.classList.add('-selected');
-    tr.classList.add('-selected');
+    // const tr = togoKeyView.closest('tr');
+    // togoKeyView.classList.add('-selected');
+    // tr.classList.add('-selected');
     const customEvent = new CustomEvent(event.highlightColumn, {
       detail: {
         x: +togoKeyView.dataset.x,
         isEnter: true,
+        oldCell: {
+          x: +oldTd.dataset.x,
+          y: +oldTd.dataset.y,
+        },
+        newCell: {
+          x: +td.dataset.x,
+          y: +td.dataset.y,
+        },
       },
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
