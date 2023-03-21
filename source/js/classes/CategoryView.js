@@ -2,8 +2,10 @@ import AttributeTrackView from './AttributeTrackView.js';
 
 export default class CategoryView {
   #attributeTrackViews;
+  #ROOT;
 
   constructor(category, elm) {
+    this.#ROOT = elm;
     elm.classList.add('category-view');
     elm.innerHTML = `
     <h3 class="title _category-background-color-strong" data-category-id="${category.id}">
@@ -26,6 +28,15 @@ export default class CategoryView {
       .querySelector(':scope > h3 > .collapsebutton')
       .addEventListener('click', () => {
         elm.classList.toggle('-editing');
+        this.#setupButtons();
       });
+  }
+
+  #setupButtons() {
+    if (this.#ROOT.querySelector(':scope > .buttons')) return;
+    this.#ROOT.insertAdjacentHTML(
+      'beforeend',
+      '<div class="buttons"><button class="rounded-button-view">OK</button><button class="rounded-button-view">Cancel</button></div>'
+    );
   }
 }
