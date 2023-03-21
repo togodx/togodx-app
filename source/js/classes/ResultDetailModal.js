@@ -66,7 +66,7 @@ export default class ResultDetailModal {
     const td = togoKeyView.closest('td');
     td.classList.add('-highlighting');
     // highlight
-    // togoKeyView.classList.add('-selected');
+    togoKeyView.classList.add('-selected');
     const customEvent = new CustomEvent(event.highlightColumn, {
       detail: {
         x: +togoKeyView.dataset.x,
@@ -255,8 +255,8 @@ export default class ResultDetailModal {
     this.#RESULT_MODAL.classList.remove('backdrop');
     this.#RESULT_MODAL.innerHTML = '';
     this.#RESULTS_TABLE
-      .querySelectorAll('.-selected')
-      .forEach(entry => entry.classList.remove('-selected'));
+      .querySelector('.togo-key-view.-selected')
+      ?.classList.remove('-selected');
     document.removeEventListener('keydown', this.#handleKeydown);
   }
 }
