@@ -1,5 +1,6 @@
 .category-view
   display: flex
+  position: relative
   background-color: var(--color-gray)
   > .title
     margin: 0
@@ -36,11 +37,11 @@
         background-color: white
       &::before
         width: .6rem
-        height: .2rem
+        height: .15rem
         top: .4rem
         left: .2rem
       &::after
-        width: .2rem
+        width: .15rem
         height: .6rem
         top: .2rem
         left: .4rem
@@ -48,3 +49,30 @@
     width: calc(100% - var(--width-track-column-subject))
   + .category-view
     margin-top: 1px
+  > .backdrop
+    position: fixed
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    opacity: 0
+    background-color: rgba(0, 0, 0, .5)
+    pointer-events: none
+  &.-editing
+    z-index: var(--z-modal-window)
+    > .title
+      > .collapsebutton
+        &::before
+          width: .3rem
+          top: .45rem
+          left: .15rem
+          rotate: 45deg
+        &::after
+          height: .7rem
+          top: .15rem
+          left: .55rem
+          rotate: 45deg
+    > .backdrop
+      z-index: -1
+      opacity: 1
+      pointer-events: auto

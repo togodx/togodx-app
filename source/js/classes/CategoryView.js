@@ -1,6 +1,8 @@
 import AttributeTrackView from './AttributeTrackView.js';
 
 export default class CategoryView {
+  #attributeTrackViews;
+
   constructor(category, elm) {
     elm.classList.add('category-view');
     elm.innerHTML = `
@@ -8,18 +10,22 @@ export default class CategoryView {
       <span class="label">${category.label}</span>
       <span class="collapsebutton"></span>
     </h3>
-    <div class="attributes"></div>`;
+    <div class="attributes"></div>
+    <div class="backdrop"></div>`;
 
     // make tracks
     const attributes = category.attributes;
-    const attributesContainer = elm.querySelector(':scope > .attributes');
-    for (let i = 0; i < attributes.length; i++) {
-      const attribute = attributes[i];
-      new AttributeTrackView(
-        attribute,
-        attributesContainer,
-        i / attributes.length
-      );
-    }
+    const container = elm.querySelector(':scope > .attributes');
+    this.#attributeTrackViews = attributes.map(
+      (attribute, i) =>
+        new AttributeTrackView(attribute, container, i / attributes.length)
+    );
+
+    // event
+    elm
+      .querySelector(':scope > h3 > .collapsebutton')
+      .addEventListener('click', () => {
+        elm.classList.toggle('-editing');
+      });
   }
 }
