@@ -255,8 +255,8 @@ export default class ResultDetailModal {
     this.#RESULT_MODAL.classList.remove('backdrop');
     this.#RESULT_MODAL.innerHTML = '';
     this.#RESULTS_TABLE
-      .querySelector('.togo-key-view.-selected')
-      ?.classList.remove('-selected');
+      .querySelectorAll('.togo-key-view.-selected')
+      .forEach(entry => entry.classList.remove('-selected'));
     document.removeEventListener('keydown', this.#handleKeydown);
   }
 }

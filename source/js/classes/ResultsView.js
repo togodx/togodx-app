@@ -257,14 +257,21 @@ export default class ResultsView {
   }
 
   #highlightColumn({x, isEnter, oldCell, newCell}) {
-    if (oldCell.x) {
-      this.#COLGROUP
-        .querySelector(`:scope > col:nth-child(${+oldCell.x + 1})`)
-        .classList.remove('-selected');
-      this.#TBODY
-        .querySelector(`:scope > tr[data-index="${oldCell.y}"]`)
-        .classList.remove('-selected');
-    }
+    // TODO: ハイライト関係の最適化
+    // if (oldCell.x) {
+    //   this.#COLGROUP
+    //     .querySelector(`:scope > col:nth-child(${+oldCell.x + 1})`)
+    //     .classList.remove('-selected');
+    //   this.#TBODY
+    //     .querySelector(`:scope > tr[data-index="${oldCell.y}"]`)
+    //     .classList.remove('-selected');
+    // }
+    this.#COLGROUP
+      .querySelectorAll(`:scope > col.-selected`)
+      .forEach(col => col.classList.remove('-selected'));
+    this.#TBODY
+      .querySelectorAll(`:scope > tr.-selected`)
+      .forEach(tr => tr.classList.remove('-selected'));
     this.#COLGROUP
       .querySelector(`:scope > col:nth-child(${+newCell.x + 1})`)
       .classList.add('-selected');
