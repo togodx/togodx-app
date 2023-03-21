@@ -48,7 +48,7 @@ export default class ResultsView {
     const TABLE = inner.querySelector(':scope > table');
     this.#COLGROUP = TABLE.querySelector(':scope > colgroup');
     this.#THEAD = TABLE.querySelector(':scope > thead > tr.header');
-    this.#THEAD_SUB = TABLE.querySelector(':scope > thead > tr.subheader');
+    // this.#THEAD_SUB = TABLE.querySelector(':scope > thead > tr.subheader');
     this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics');
     this.#TBODY = TABLE.querySelector(':scope > tbody');
     this.#TABLE_END = inner.querySelector(':scope > .tableend');
@@ -154,49 +154,47 @@ export default class ResultsView {
     );
     // make table header
     this.#THEAD.innerHTML = `
-      <th rowspan="2">
+      <th>
         <div class="inner">
           <div class="togo-key-view">${Records.getDatasetLabel(
             dxCondition.togoKey
           )}</div>
         </div>
       </th>
-      <th colspan="100%">
-        <div class="inner -noborder"></div>
-      </th>
+      ${dxCondition.conditionFilters
+        .map(conditionFilter => {
+          return `
+            <th>
+              <div class="inner _category-background-color" data-category-id="${
+                conditionFilter.categoryId
+              }">
+                <div class="togo-key-view">${Records.getDatasetLabel(
+                  conditionFilter.dataset
+                )}</div>
+                <span>${conditionFilter.label}</span>
+              </div>
+            </th>`;
+        })
+        .join('')}
+      ${dxCondition.conditionAnnotations
+        .map(
+          conditionAnnotation => `
+            <th>
+              <div class="inner _category-color" data-category-id="${
+                conditionAnnotation.categoryId
+              }">
+                <div class="togo-key-view">${Records.getDatasetLabel(
+                  conditionAnnotation.dataset
+                )}</div>
+                <span>${conditionAnnotation.label}</span>
+              </div>
+            </th>`
+        )
+        .join('')}
       `;
     // makte table sub header
-    this.#THEAD_SUB.innerHTML = `
-    ${dxCondition.conditionFilters
-      .map(conditionFilter => {
-        return `
-          <th>
-            <div class="inner _category-background-color" data-category-id="${
-              conditionFilter.categoryId
-            }">
-              <div class="togo-key-view">${Records.getDatasetLabel(
-                conditionFilter.dataset
-              )}</div>
-              <span>${conditionFilter.label}</span>
-            </div>
-          </th>`;
-      })
-      .join('')}
-    ${dxCondition.conditionAnnotations
-      .map(
-        conditionAnnotation => `
-          <th>
-            <div class="inner _category-color" data-category-id="${
-              conditionAnnotation.categoryId
-            }">
-              <div class="togo-key-view">${Records.getDatasetLabel(
-                conditionAnnotation.dataset
-              )}</div>
-              <span>${conditionAnnotation.label}</span>
-            </div>
-          </th>`
-      )
-      .join('')}`;
+    //     this.#THEAD_SUB.innerHTML = `
+    // `;
   }
 
   #makeStats(dxCondition) {

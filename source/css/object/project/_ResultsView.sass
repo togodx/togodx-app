@@ -18,6 +18,9 @@
       border-radius: 1.6rem
       background-color: var(--color-lamp-black)
       cursor: pointer
+      transition: top var(--transition-wipe)
+      [data-display="results"] &
+        top: .2rem
       [data-number-of-results="0"] &
         pointer-events: none
       &::before
@@ -36,7 +39,6 @@
         [data-number-of-results="0"] &
           opacity: .3
   > .inner
-    --thheight: 0.8rem
     --padding: calc((var(--height-results-thead-row) - var(--height-togo-key-view)) * 0.5)
     overflow: auto
     > table
@@ -61,56 +63,37 @@
           > th, td
             height: 100%
             > .inner
-              // height: 100%
               height: var(--height-results-thead-row)
               padding-top: var(--padding)
               padding-bottom: var(--padding)
-          &.header, &.subheader
+          &.header
             font-weight: bold
             white-space: nowrap
             > th
               position: sticky
+              top: 0
               z-index: var(--z-results-header)
               line-height: 1.5rem
               > .inner
                 border-bottom: solid .1rem var(--color-black)
-                &.-noborder
-                  border: none
-          &.header
-            > th
-              --height-diff: calc(var(--height-results-thead-row-first-cell) - var(--height-results-thead-row))
-              top: 0
-              > .inner
-                background-color: var(--color-lamp-black)
+                &._category-color
+                  background-color: white
                 > .togo-key-view
                   background-color: var(--color-dark-gray)
               &:first-child
                 > .inner
-                  padding-top: calc(var(--padding) + var(--height-diff))
-                  height: var(--height-results-thead-row-first-cell)
-              &:not(:first-child)
-                > .inner
-                  padding: 0
-                  height: var(--height-diff)
-          &.subheader
-            > th
-              top: var(--thheight)
-              > .inner
-                &._category-color
-                  background-color: white
+                  background-color: var(--color-lamp-black)
           &.statistics
             color: white
             background-color: var(--color-lamp-black)
             > th
               vertical-align: top
-            > td
+            > th, > td
               > .inner
                 height: auto
                 transition: height var(--transition-wipe), padding var(--transition-wipe)
-            > th, > td
-              > .inner
+                overflow: hidden
                 [data-display="properties"] &
-                  // display: none
                   height: 0
                   padding: 0
             > th.controller
@@ -131,7 +114,6 @@
         > tr
           border-bottom: solid .1rem var(--color-separator)
           position: relative
-          // background-color: white
           transition: border var(--transition-instant), box-shadow var(--transition-instant)
           &:hover, &.-selected
             background-color: var(--color-selected)

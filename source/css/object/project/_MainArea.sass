@@ -9,32 +9,27 @@
 
   --height-results-header: 2.8rem
   --height-results-thead-row: 2.4rem
-  --height-results-thead-row-first-cell: 2.8rem
   --height-results-tbody-row: 2.2rem
-  --height-results: calc(var(--height-results-header) + var(--height-results-thead-row-first-cell) + (var(--height-results-tbody-row) + 1px) * 5)
+  --height-results: calc(var(--height-results-header) + var(--height-results-thead-row) + (var(--height-results-tbody-row) + 1px) * 5)
   [data-number-of-results="0"] &
     --height-results: var(--height-results-header)
   [data-number-of-results="1"] &
-    --height-results: calc(var(--height-results-header) + var(--height-results-thead-row-first-cell) + var(--height-results-tbody-row) + 1px)
+    --height-results: calc(var(--height-results-header) + var(--height-results-thead-row) + var(--height-results-tbody-row) + 1px)
   [data-number-of-results="2"] &
-    --height-results: calc(var(--height-results-header) + var(--height-results-thead-row-first-cell) + (var(--height-results-tbody-row) + 1px) * 2)
+    --height-results: calc(var(--height-results-header) + var(--height-results-thead-row) + (var(--height-results-tbody-row) + 1px) * 2)
   [data-number-of-results="3"] &
-    --height-results: calc(var(--height-results-header) + var(--height-results-thead-row-first-cell) + (var(--height-results-tbody-row) + 1px) * 3)
+    --height-results: calc(var(--height-results-header) + var(--height-results-thead-row) + (var(--height-results-tbody-row) + 1px) * 3)
   [data-number-of-results="4"] &
-    --height-results: calc(var(--height-results-header) + var(--height-results-thead-row-first-cell) + (var(--height-results-tbody-row) + 1px) * 4)
+    --height-results: calc(var(--height-results-header) + var(--height-results-thead-row) + (var(--height-results-tbody-row) + 1px) * 4)
   [data-display="results"] &
     --height-results: 100%
 
-  // > section
-  //   overflow: auto
   > #Properties, > #ResultsView
     transition: height var(--transition-wipe)
   > #Properties
     height: calc(100% - var(--height-results))
   > #ResultsView
     height: var(--height-results)
-    > .inner
-      height: calc(var(--height-results) - var(--height-results-thead-row-first-cell))
 
 @media (max-width: var(--min-width-app))
   #MainArea
