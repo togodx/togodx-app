@@ -1,4 +1,5 @@
 import AttributeTrackView from './AttributeTrackView.js';
+import {hiddenAttributes} from '../functions/localStorage.js';
 
 export default class CategoryView {
   #attributeTrackViews;
@@ -23,7 +24,6 @@ export default class CategoryView {
       (attribute, i) =>
         new AttributeTrackView(attribute, container, i / attributes.length)
     );
-    console.log(this.#attributeTrackViews);
 
     // event
     elm
@@ -46,8 +46,30 @@ export default class CategoryView {
       buttons.forEach((button, i) => {
         button.addEventListener('click', e => {
           switch (i) {
-            case 0: // ok
-              // set local storage
+            case 0:
+              {
+                // ok
+                // set local storage
+                const hiddenAttributes2 =
+                  JSON.parse(window.localStorage.getItem(hiddenAttributes)) ||
+                  [];
+                this.#attributeTrackViews.forEach(attributeTrackView => {
+                  const index = hiddenAttributes2.indexOf(
+                    attributeTrackView.id
+                  );
+                  if (index === -1) {
+                    if (!attributeTrackView.visibility)
+                      hiddenAttributes2.push(attributeTrackView.id);
+                  } else {
+                    if (attributeTrackView.visibility)
+                      hiddenAttributes2.splice(index, 1);
+                  }
+                });
+                window.localStorage.setItem(
+                  hiddenAttributes,
+                  JSON.stringify(hiddenAttributes2)
+                );
+              }
               break;
             case 1: // cancel
               // return to state
@@ -65,12 +87,10 @@ export default class CategoryView {
     // aggregate status
     this.#lastStatus = new Map();
     this.#attributeTrackViews.forEach(attributeTrackView => {
-      console.log(attributeTrackView);
       this.#lastStatus.set(
         attributeTrackView.id,
         attributeTrackView.visibility
       );
     });
-    console.log(this.#lastStatus);
   }
 }
