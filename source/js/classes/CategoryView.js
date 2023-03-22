@@ -2,6 +2,7 @@ import AttributeTrackView from './AttributeTrackView.js';
 
 export default class CategoryView {
   #attributeTrackViews;
+  #lastStatus;
   #ROOT;
 
   constructor(category, elm) {
@@ -22,21 +23,54 @@ export default class CategoryView {
       (attribute, i) =>
         new AttributeTrackView(attribute, container, i / attributes.length)
     );
+    console.log(this.#attributeTrackViews);
 
     // event
     elm
       .querySelector(':scope > h3 > .collapsebutton')
       .addEventListener('click', () => {
-        elm.classList.toggle('-editing');
+        elm.classList.add('-editing');
         this.#setupButtons();
       });
   }
 
   #setupButtons() {
-    if (this.#ROOT.querySelector(':scope > .buttons')) return;
-    this.#ROOT.insertAdjacentHTML(
-      'beforeend',
-      '<div class="buttons"><button class="rounded-button-view">OK</button><button class="rounded-button-view">Cancel</button></div>'
-    );
+    if (!this.#ROOT.querySelector(':scope > .buttons')) {
+      // make buttons
+      this.#ROOT.insertAdjacentHTML(
+        'beforeend',
+        '<div class="buttons"><button class="rounded-button-view">OK</button><button class="rounded-button-view">Cancel</button></div>'
+      );
+      // event
+      const buttons = this.#ROOT.querySelectorAll(':scope > .buttons > button');
+      buttons.forEach((button, i) => {
+        button.addEventListener('click', e => {
+          switch (i) {
+            case 0: // ok
+              // set local storage
+              break;
+            case 1: // cancel
+              // return to state
+              this.#attributeTrackViews.forEach(attributeTrackView => {
+                attributeTrackView.visibility = this.#lastStatus.get(
+                  attributeTrackView.id
+                );
+              });
+              break;
+          }
+          this.#ROOT.classList.remove('-editing');
+        });
+      });
+    }
+    // aggregate status
+    this.#lastStatus = new Map();
+    this.#attributeTrackViews.forEach(attributeTrackView => {
+      console.log(attributeTrackView);
+      this.#lastStatus.set(
+        attributeTrackView.id,
+        attributeTrackView.visibility
+      );
+    });
+    console.log(this.#lastStatus);
   }
 }

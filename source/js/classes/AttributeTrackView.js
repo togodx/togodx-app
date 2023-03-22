@@ -92,7 +92,6 @@ export default class AttributeTrackView {
     this.#CHECKBOX_VISIBILITY = this.#COLLAPSE_BUTTON.querySelector(
       ':scope > input.visibility'
     );
-    console.log(this.#CHECKBOX_VISIBILITY);
 
     // collapse
     collapseView(this.#ROOT);
@@ -118,8 +117,7 @@ export default class AttributeTrackView {
         '-hidden',
         !this.#CHECKBOX_VISIBILITY.checked
       );
-      if (this.#CHECKBOX_VISIBILITY.checked) {
-      }
+      // TODO: If :has() is supported in Firefox in the future, stop using the -hidden class
     });
 
     // event listener
@@ -227,5 +225,18 @@ export default class AttributeTrackView {
     this.#OVERVIEW_CONTAINER.parentNode
       .querySelector(':scope > .map-ids.error')
       ?.remove();
+  }
+
+  // accessor
+  get id() {
+    return this.#attribute.id;
+  }
+  get visibility() {
+    return this.#CHECKBOX_VISIBILITY.checked;
+  }
+  set visibility(visible) {
+    this.#CHECKBOX_VISIBILITY.checked = visible;
+    this.#ROOT.classList.toggle('-hidden', !visible);
+    // TODO: If :has() is supported in Firefox in the future, stop using the -hidden class
   }
 }

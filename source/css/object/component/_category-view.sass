@@ -74,16 +74,20 @@
     z-index: var(--z-modal-window)
     > .title
       > .collapsebutton
-        &::before
-          width: .3rem
-          top: .45rem
-          left: .15rem
-          rotate: 45deg
-        &::after
-          height: .7rem
-          top: .15rem
-          left: .55rem
-          rotate: 45deg
+        pointer-events: none
+        opacity: .4
+    // > .title
+    //   > .collapsebutton
+    //     &::before
+    //       width: .3rem
+    //       top: .45rem
+    //       left: .15rem
+    //       rotate: 45deg
+    //     &::after
+    //       height: .7rem
+    //       top: .15rem
+    //       left: .55rem
+    //       rotate: 45deg
     > .backdrop
       z-index: -1
       opacity: 1
