@@ -44,6 +44,13 @@
             margin-right: .4rem
             [data-condition="annotation"] &
               display: inherit
+            .category-view.-editing &
+              display: none
+          > .visibility
+            display: none
+            margin-right: .4rem
+            .category-view.-editing &
+              display: inherit
       > .right
         > .overview
           height: var(--height-track)
@@ -104,3 +111,8 @@
     > .row.-lower
       content-visibility: visible
       user-select: auto
+  &.-hidden
+    display: none
+    .category-view.-editing &
+      display: inherit
+      opacity: .4

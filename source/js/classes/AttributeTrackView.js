@@ -15,6 +15,7 @@ export default class AttributeTrackView {
   #SELECT_CONTAINER;
   #OVERVIEW_CONTAINER;
   #CHECKBOX_ALL_PROPERTIES;
+  #CHECKBOX_VISIBILITY;
   #COLLAPSE_BUTTON;
 
   constructor(attributeId, container, positionRate) {
@@ -36,6 +37,7 @@ export default class AttributeTrackView {
       <div class="left definition">
         <div class="collapsebutton" data-collapse="${attributeId}">
           <input type="checkbox" class="mapping">
+          <input type="checkbox" class="visibility" checked>
           <h2 class="title _category-color">${this.#attribute.label}</h2>
         </div>
       </div>
@@ -71,29 +73,31 @@ export default class AttributeTrackView {
       </div>
       <div class="right selector"></div>
     </div>`;
-    const filtersContainer = this.#ROOT.querySelector(
-      ':scope > .row.-upper > .filters'
-    );
-    this.#OVERVIEW_CONTAINER = filtersContainer.querySelector(
-      ':scope > .overview > .inner'
-    );
-    this.#LOADING_VIEW = filtersContainer.querySelector(
-      ':scope > .overview > .loading-view'
-    );
+
+    // references
+
+    const rowupper = this.#ROOT.querySelector(':scope > .row.-upper');
+    const overview = rowupper.querySelector(':scope > .filters > .overview');
+    this.#OVERVIEW_CONTAINER = overview.querySelector(':scope > .inner');
+    this.#LOADING_VIEW = overview.querySelector(':scope > .loading-view');
     this.#SELECT_CONTAINER = this.#ROOT.querySelector(
       ':scope > .row.-lower > .selector'
     );
-    this.#COLLAPSE_BUTTON = this.#ROOT.querySelector(
-      ':scope > .row.-upper > .left > .collapsebutton'
+    this.#COLLAPSE_BUTTON = rowupper.querySelector(
+      ':scope > .left > .collapsebutton'
     );
+    this.#CHECKBOX_ALL_PROPERTIES = this.#COLLAPSE_BUTTON.querySelector(
+      ':scope > input.mapping'
+    );
+    this.#CHECKBOX_VISIBILITY = this.#COLLAPSE_BUTTON.querySelector(
+      ':scope > input.visibility'
+    );
+    console.log(this.#CHECKBOX_VISIBILITY);
 
     // collapse
     collapseView(this.#ROOT);
 
     // select/deselect a property
-    this.#CHECKBOX_ALL_PROPERTIES = this.#ROOT.querySelector(
-      ':scope > .row.-upper > .left > .collapsebutton > input.mapping'
-    );
     this.#CHECKBOX_ALL_PROPERTIES.addEventListener('click', e => {
       e.stopPropagation();
       if (this.#CHECKBOX_ALL_PROPERTIES.checked) {
@@ -106,6 +110,18 @@ export default class AttributeTrackView {
         this.#ROOT.classList.remove('-allselected');
       }
     });
+
+    // visibility
+    this.#CHECKBOX_VISIBILITY.addEventListener('click', e => {
+      e.stopPropagation();
+      this.#ROOT.classList.toggle(
+        '-hidden',
+        !this.#CHECKBOX_VISIBILITY.checked
+      );
+      if (this.#CHECKBOX_VISIBILITY.checked) {
+      }
+    });
+
     // event listener
     DefaultEventEmitter.addEventListener(
       event.mutateAnnotationCondition,
