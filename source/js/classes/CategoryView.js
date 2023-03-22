@@ -6,7 +6,7 @@ export default class CategoryView {
   #lastStatus;
   #ROOT;
 
-  constructor(category, elm) {
+  constructor(category, elm, hiddenAttributes) {
     this.#ROOT = elm;
     elm.classList.add('category-view');
     elm.innerHTML = `
@@ -22,7 +22,12 @@ export default class CategoryView {
     const container = elm.querySelector(':scope > .attributes');
     this.#attributeTrackViews = attributes.map(
       (attribute, i) =>
-        new AttributeTrackView(attribute, container, i / attributes.length)
+        new AttributeTrackView(
+          attribute,
+          container,
+          hiddenAttributes.indexOf(attribute) !== -1,
+          i / attributes.length
+        )
     );
 
     // event
@@ -46,9 +51,8 @@ export default class CategoryView {
       buttons.forEach((button, i) => {
         button.addEventListener('click', e => {
           switch (i) {
-            case 0:
+            case 0: // ok
               {
-                // ok
                 // set local storage
                 const hiddenAttributes2 =
                   JSON.parse(window.localStorage.getItem(hiddenAttributes)) ||
