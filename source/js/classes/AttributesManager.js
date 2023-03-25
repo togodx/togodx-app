@@ -21,6 +21,22 @@ class AttributesManager {
   containsInDisplayedAttributes(id) {
     return this.#displayedAttributes.indexOf(id) >= 0;
   }
+
+  update(map) {
+    map.forEach((isDisplay, id) => {
+      const index = this.#displayedAttributes.indexOf(id);
+      if (index === -1) {
+        if (isDisplay) this.#displayedAttributes.push(id);
+      } else {
+        if (!isDisplay) this.#displayedAttributes.splice(index, 1);
+      }
+    });
+    console.log(this.#displayedAttributes);
+    window.localStorage.setItem(
+      displayedAttributes,
+      JSON.stringify(this.#displayedAttributes)
+    );
+  }
 }
 
 export default new AttributesManager();

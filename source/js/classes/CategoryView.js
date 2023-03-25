@@ -3,10 +3,10 @@ import AttributesManager from './AttributesManager';
 
 export default class CategoryView {
   #attributeTrackViews;
-  #lastStatus;
+  #lastState;
   #ROOT;
 
-  constructor(category, elm, hiddenAttributes) {
+  constructor(category, elm) {
     this.#ROOT = elm;
     elm.classList.add('category-view');
     elm.innerHTML = `
@@ -35,66 +35,52 @@ export default class CategoryView {
       .querySelector(':scope > h3 > .collapsebutton')
       .addEventListener('click', () => {
         elm.classList.add('-editing');
-        this.#setupButtons();
+        this.#enterAttributesDisplaySettingMode();
       });
   }
 
-  #setupButtons() {
-    if (!this.#ROOT.querySelector(':scope > .buttons')) {
-      // make buttons
-      this.#ROOT.insertAdjacentHTML(
-        'beforeend',
-        '<div class="buttons"><button class="rounded-button-view">OK</button><button class="rounded-button-view">Cancel</button></div>'
-      );
-      // event
-      const buttons = this.#ROOT.querySelectorAll(':scope > .buttons > button');
-      buttons.forEach((button, i) => {
-        button.addEventListener('click', e => {
-          switch (i) {
-            case 0: // ok
-              {
-                // set local storage
-                const hiddenAttributes2 =
-                  JSON.parse(window.localStorage.getItem(hiddenAttributes)) ||
-                  [];
-                this.#attributeTrackViews.forEach(attributeTrackView => {
-                  const index = hiddenAttributes2.indexOf(
-                    attributeTrackView.id
-                  );
-                  if (index === -1) {
-                    if (!attributeTrackView.visibility)
-                      hiddenAttributes2.push(attributeTrackView.id);
-                  } else {
-                    if (attributeTrackView.visibility)
-                      hiddenAttributes2.splice(index, 1);
-                  }
-                });
-                window.localStorage.setItem(
-                  hiddenAttributes,
-                  JSON.stringify(hiddenAttributes2)
-                );
-              }
-              break;
-            case 1: // cancel
-              // return to state
-              this.#attributeTrackViews.forEach(attributeTrackView => {
-                attributeTrackView.visibility = this.#lastStatus.get(
-                  attributeTrackView.id
-                );
-              });
-              break;
-          }
-          this.#ROOT.classList.remove('-editing');
-        });
-      });
-    }
+  #enterAttributesDisplaySettingMode() {
+    if (!this.#ROOT.querySelector(':scope > .buttons')) this.#makeButtons();
     // aggregate status
-    this.#lastStatus = new Map();
-    this.#attributeTrackViews.forEach(attributeTrackView => {
-      this.#lastStatus.set(
-        attributeTrackView.id,
-        attributeTrackView.visibility
-      );
+    this.#lastState = this.#makeAttributesDisplayStateMap();
+  }
+
+  #makeButtons() {
+    // make buttons
+    this.#ROOT.insertAdjacentHTML(
+      'beforeend',
+      '<div class="buttons"><button class="rounded-button-view">OK</button><button class="rounded-button-view">Cancel</button></div>'
+    );
+    // event
+    const buttons = this.#ROOT.querySelectorAll(':scope > .buttons > button');
+    buttons.forEach((button, i) => {
+      button.addEventListener('click', e => {
+        switch (i) {
+          case 0: // ok
+            {
+              // set local storage
+              AttributesManager.update(this.#makeAttributesDisplayStateMap());
+            }
+            break;
+          case 1: // cancel
+            // return to state
+            this.#attributeTrackViews.forEach(attributeTrackView => {
+              attributeTrackView.visibility = this.#lastState.get(
+                attributeTrackView.id
+              );
+            });
+            break;
+        }
+        this.#ROOT.classList.remove('-editing');
+      });
     });
+  }
+
+  #makeAttributesDisplayStateMap() {
+    const stateMap = new Map();
+    this.#attributeTrackViews.forEach(attributeTrackView => {
+      stateMap.set(attributeTrackView.id, attributeTrackView.visibility);
+    });
+    return stateMap;
   }
 }
