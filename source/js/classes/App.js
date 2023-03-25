@@ -13,7 +13,6 @@ import StanzaManager from './StanzaManager';
 import ResultsView from './ResultsView';
 import AttributesManager from './AttributesManager';
 import * as event from '../events';
-import {hiddenAttributes} from '../functions/localStorage.js';
 
 class App {
   #viewModes;
@@ -100,14 +99,12 @@ class App {
   // private methods
 
   #makeCategoryViews() {
-    const hiddenAttributes2 =
-      JSON.parse(window.localStorage.getItem(hiddenAttributes)) || [];
     const conceptsContainer = document.querySelector(
       '#Properties > .inner > .concepts'
     );
     Records.categories.forEach(category => {
       const elm = document.createElement('section');
-      new CategoryView(category, elm, hiddenAttributes2);
+      new CategoryView(category, elm);
       conceptsContainer.insertAdjacentElement('beforeend', elm);
     });
   }

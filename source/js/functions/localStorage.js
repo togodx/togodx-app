@@ -1,1 +1,1 @@
-export const hiddenAttributes = 'hiddenAttributes';
+export const displayedAttributes = 'displayedAttributes';

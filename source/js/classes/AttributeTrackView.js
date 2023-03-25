@@ -18,7 +18,7 @@ export default class AttributeTrackView {
   #CHECKBOX_VISIBILITY;
   #COLLAPSE_BUTTON;
 
-  constructor(attributeId, container, hidden, positionRate) {
+  constructor(attributeId, container, displayed, positionRate) {
     this.#attribute = Records.getAttribute(attributeId);
     this.#ROOT = document.createElement('div');
     container.insertAdjacentElement('beforeend', this.#ROOT);
@@ -92,7 +92,7 @@ export default class AttributeTrackView {
     this.#CHECKBOX_VISIBILITY = this.#COLLAPSE_BUTTON.querySelector(
       ':scope > input.visibility'
     );
-    if (hidden) {
+    if (!displayed) {
       this.#CHECKBOX_VISIBILITY.ckecked = false;
       this.#ROOT.classList.add('-hidden');
     }

@@ -1,5 +1,5 @@
 import AttributeTrackView from './AttributeTrackView.js';
-import {hiddenAttributes} from '../functions/localStorage.js';
+import AttributesManager from './AttributesManager';
 
 export default class CategoryView {
   #attributeTrackViews;
@@ -25,7 +25,7 @@ export default class CategoryView {
         new AttributeTrackView(
           attribute,
           container,
-          hiddenAttributes.indexOf(attribute) !== -1,
+          AttributesManager.containsInDisplayedAttributes(attribute),
           i / attributes.length
         )
     );
