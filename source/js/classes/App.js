@@ -11,6 +11,7 @@ import GlobalToolBar from './GlobalToolBar';
 import Color from 'colorjs.io';
 import StanzaManager from './StanzaManager';
 import ResultsView from './ResultsView';
+import AttributesManager from './AttributesManager';
 import * as event from '../events';
 import {hiddenAttributes} from '../functions/localStorage.js';
 
@@ -68,12 +69,7 @@ class App {
     new ResultsView(document.querySelector('#ResultsView'));
 
     // standard displayed attributes
-    const standardDisplayedAttributes = config.DISPLAYED_ATTRIBUTES
-      ? await this.#getStandardDisplayedAttributes(
-          config.DISPLAYED_ATTRIBUTES
-        ).catch(() => undefined)
-      : undefined;
-    console.log(standardDisplayedAttributes);
+    await AttributesManager.init(config.DISPLAYED_ATTRIBUTES);
 
     // load config json
     Promise.all([
@@ -102,12 +98,6 @@ class App {
   }
 
   // private methods
-
-  #getStandardDisplayedAttributes(url) {
-    return fetch(url)
-      .then(res => res.json())
-      .then(json => json);
-  }
 
   #makeCategoryViews() {
     const hiddenAttributes2 =
