@@ -7,14 +7,19 @@ class AttributesManager {
 
   async init(api) {
     // Determine display attribute information. If data is available in local storage, use it; if not, query the API.
-    const storagedData = window.localStorage.getItem(displayedAttributes);
-    this.#displayedAttributes =
-      JSON.parse(storagedData) || api
+    const storagedData = JSON.parse(
+      window.localStorage.getItem(displayedAttributes)
+    );
+    if (storagedData) {
+      this.#displayedAttributes = storagedData;
+    } else {
+      this.#displayedAttributes = api
         ? await fetch(api)
             .then(res => res.json())
             .then(json => json)
             .catch(() => undefined)
         : undefined;
+    }
   }
 
   // Returns whether the attribute is included in the display attribute list.
