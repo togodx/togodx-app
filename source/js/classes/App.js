@@ -34,7 +34,7 @@ class App {
     this.#colorLampBlack = new Color('--color-lamp-black').to('srgb');
   }
 
-  ready(config) {
+  async ready(config) {
     const body = document.body;
     // view modes
     this.#viewModes = {};
@@ -66,6 +66,15 @@ class App {
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
     new GlobalToolBar(document.querySelector('#GlobalToolBar'));
     new ResultsView(document.querySelector('#ResultsView'));
+
+    // standard displayed attributes
+    const standardDisplayedAttributes = config.DISPLAYED_ATTRIBUTES
+      ? await this.#getStandardDisplayedAttributes(
+          config.DISPLAYED_ATTRIBUTES
+        ).catch(() => undefined)
+      : undefined;
+    console.log(standardDisplayedAttributes);
+
     // load config json
     Promise.all([
       fetch(config.TEMPLATES),
@@ -93,6 +102,12 @@ class App {
   }
 
   // private methods
+
+  #getStandardDisplayedAttributes(url) {
+    return fetch(url)
+      .then(res => res.json())
+      .then(json => json);
+  }
 
   #makeCategoryViews() {
     const hiddenAttributes2 =
