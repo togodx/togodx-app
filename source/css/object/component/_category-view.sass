@@ -1,8 +1,8 @@
 .category-view
-  display: flex
   position: relative
   background-color: var(--color-gray)
-  padding-left: var(--width-track-column-subject)
+  + .category-view
+    margin-top: .2rem
   > .title
     margin: 0
     width: var(--width-track-column-subject)
@@ -56,8 +56,8 @@
         left: .4rem
   > .attributes
     width: calc(100% - var(--width-track-column-subject))
-  + .category-view
-    margin-top: 1px
+    position: relative
+    left: var(--width-track-column-subject)
   > .backdrop
     position: fixed
     top: 0
