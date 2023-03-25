@@ -37,7 +37,9 @@ export default class AttributeTrackView {
       <div class="left definition">
         <div class="collapsebutton" data-collapse="${attributeId}">
           <input type="checkbox" class="mapping">
-          <input type="checkbox" class="visibility" checked>
+          <input type="checkbox" class="visibility"${
+            displayed ? ' checked' : ''
+          }>
           <h2 class="title _category-color">${this.#attribute.label}</h2>
         </div>
       </div>
