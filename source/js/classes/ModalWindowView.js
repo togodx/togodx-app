@@ -17,7 +17,7 @@ export default class ModalWindowView {
         <h2 class="title"></h2>
         <div class="close-button-view"></div>
       </header>
-      <div class="container"></div>
+      <div class="body"></div>
     </div>`;
 
     this.#popupPosition = {x: undefined, y: undefined};
@@ -29,7 +29,7 @@ export default class ModalWindowView {
     const closeButton = this.#HEADER.querySelector(
       ':scope > .close-button-view'
     );
-    this.#BODY = this.#WINDOW.querySelector(':scope > .container');
+    this.#BODY = this.#WINDOW.querySelector(':scope > .body');
 
     // attach event
     closeButton.addEventListener('click', () => this._close());

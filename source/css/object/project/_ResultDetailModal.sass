@@ -1,4 +1,9 @@
 #ResultDetailModal
+  --margin-stanza: 2rem
+  --width-arrow: 1.2rem
+  --height-arrow: .6rem
+  --inline-start-arrow: calc((var(--margin-stanza) - var(--height-arrow)) * .5)
+  --block-start-arrow: calc(50% - (var(--width-arrow) * .5))
   &.-opened
     > .window
       > header
@@ -68,11 +73,11 @@
           background-color: var(--color-hover)
           &::before
             opacity: 1
-      > .container
+      > .body
         display: flex
         overflow: hidden
         > .stanzas
-          margin: var(--margin-stanza)
+          padding: calc(var(--margin-stanza) - var(--padding-side))
           overflow: auto
           width: 100%
           > .stanza

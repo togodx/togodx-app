@@ -23,7 +23,7 @@ export default class SettingsView extends ModalWindowView {
 
     this._TITLE.textContent = 'Settings';
     this._BODY.innerHTML = `<section>
-      <h3>Attribute set</h3>
+      <h3><span>Attributes set</span></h3>
       <section>
         <h4>Select set</h4>
         <select id="SettingsAttributeSelectSets">
@@ -32,6 +32,14 @@ export default class SettingsView extends ModalWindowView {
             .map(set => `<option value="${set.label}">${set.label}</option>`)
             .join('')}
         </select>
+      </section>
+      <section>
+        <h4>Import set</h4>
+        <input type="file" id="SettingsAttributeImportSet" accept=".json" />
+      </section>
+      <section>
+        <h4>Export set</h4>
+        <button id="SettingsAttributeExportSet">Export</button>
       </section>
     </section>`;
 
