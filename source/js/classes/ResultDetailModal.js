@@ -16,6 +16,7 @@ export default class ResultDetailModal extends ModalWindowView {
     super();
 
     this._ROOT.id = 'ResultDetailModal';
+    this._HEADER.classList.add('_category-background-color');
 
     // references
     this.#RESULTS_TABLE = document.querySelector('#ResultsTable');
@@ -70,7 +71,7 @@ export default class ResultDetailModal extends ModalWindowView {
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
 
-    this._show();
+    this._open();
 
     // key event
     this.#handleKeydown = this.#keydown.bind(this);
@@ -80,7 +81,7 @@ export default class ResultDetailModal extends ModalWindowView {
     this._ROOT.dataset.categoryId = e.detail.togoKeyView.dataset.categoryId;
     modalWindow.appendChild(this.#header(e.detail.togoKeyView));
     modalWindow.appendChild(this.#container(e.detail.togoKeyView));
-    this._ROOT.classList.add('-backdropping');
+    this._ROOT.classList.add('-opened');
   }
 
   #header(togoKeyView) {
@@ -104,8 +105,7 @@ export default class ResultDetailModal extends ModalWindowView {
       attribute?.datamodel !== 'distribution' && filter?.label
         ? `<span class="value">${filter.label}</span>`
         : '';
-    const header = document.createElement('header');
-    header.innerHTML = `
+    this._HEADER.innerHTML = `
       <div class="label">
         ${categoryLabel}
         ${attributeLable}
@@ -113,33 +113,30 @@ export default class ResultDetailModal extends ModalWindowView {
       </div>
       <div/>
     `;
-    header.classList.add('_category-background-color');
     // header.lastElementChild.appendChild(this.#EXIT_BUTTON);
-    header.addEventListener('mousedown', e => {
-      const customEvent = new CustomEvent(event.dragElement, {
-        detail: {
-          x: e.clientX,
-          y: e.clientY,
-          container: header.parentElement,
-          dragableElement: header,
-        },
-      });
-      DefaultEventEmitter.dispatchEvent(customEvent);
-    });
+    // header.addEventListener('mousedown', e => {
+    //   const customEvent = new CustomEvent(event.dragElement, {
+    //     detail: {
+    //       x: e.clientX,
+    //       y: e.clientY,
+    //       container: header.parentElement,
+    //       dragableElement: header,
+    //     },
+    //   });
+    //   DefaultEventEmitter.dispatchEvent(customEvent);
+    // });
 
-    return header;
+    return this._HEADER;
   }
 
   #container(togoKeyView) {
-    const container = document.createElement('div');
-    container.className = 'container';
     ['Up', 'Right', 'Down', 'Left'].forEach(direction => {
-      container.appendChild(this.#arrow(direction, togoKeyView));
+      this._BODY.appendChild(this.#arrow(direction, togoKeyView));
     });
-    container.appendChild(
+    this._BODY.appendChild(
       this.#stanzas(togoKeyView.dataset.entry, togoKeyView.dataset.dataset)
     );
-    return container;
+    return this._BODY;
   }
 
   #stanzas(entry, dataset) {
@@ -226,7 +223,6 @@ export default class ResultDetailModal extends ModalWindowView {
 
   _close(exitingPopup = true) {
     super._close(exitingPopup);
-    console.log('extended close');
     this.#RESULTS_TABLE
       .querySelectorAll('.togo-key-view.-selected')
       .forEach(entry => entry.classList.remove('-selected'));

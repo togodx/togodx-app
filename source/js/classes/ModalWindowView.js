@@ -2,6 +2,8 @@ export default class ModalWindowView {
   #ROOT;
   #EXIT_BUTTON;
   #WINDOW;
+  #HEADER;
+  #BODY;
   #popupPosition;
   #handleKeydown;
 
@@ -9,29 +11,33 @@ export default class ModalWindowView {
     this.#ROOT = document.createElement('section');
     this.#ROOT.classList.add('modal-window-view');
     document.querySelector('body').append(this.#ROOT);
+    this.#ROOT.innerHTML = `<div class="window">
+      <header></header>
+      <div class="container"></div>
+    </div>`;
 
     this.#EXIT_BUTTON = document.createElement('div');
     this.#EXIT_BUTTON.className = 'close-button-view';
-
     this.#EXIT_BUTTON.addEventListener('click', () => {
+      this._hide();
       // DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
     });
 
     this.#popupPosition = {x: undefined, y: undefined};
+
+    this.#WINDOW = this.#ROOT.querySelector(':scope > .window');
+    this.#HEADER = this.#WINDOW.querySelector(':scope > header');
+    this.#BODY = this.#WINDOW.querySelector(':scope > .container');
   }
 
   // protected methods
 
   _getWindow() {
-    const popup = document.createElement('div');
-    popup.className = 'window';
-    popup.style.left = this.#popupPosition.x;
-    popup.style.top = this.#popupPosition.y;
-    this._ROOT.appendChild(popup);
-    return popup;
+    // this.#WINDOW.textContent = '';
+    return this.#WINDOW;
   }
 
-  _show() {
+  _open() {
     // key event
     this.#handleKeydown = this.#keydown.bind(this);
     document.addEventListener('keydown', this.#handleKeydown);
@@ -44,13 +50,22 @@ export default class ModalWindowView {
     this.#popupPosition.y = exitingPopup ? '' : popupStyle?.top;
     this.#popupPosition.x = exitingPopup ? '' : popupStyle?.left;
 
-    this._ROOT.classList.remove('-backdropping');
-    this._ROOT.innerHTML = '';
+    this._ROOT.classList.remove('-opened');
+    this.#HEADER.textContent = '';
+    this.#BODY.textContent = '';
     document.removeEventListener('keydown', this.#handleKeydown);
   }
 
   get _ROOT() {
     return this.#ROOT;
+  }
+
+  get _HEADER() {
+    return this.#HEADER;
+  }
+
+  get _BODY() {
+    return this.#BODY;
   }
 
   // private methods
