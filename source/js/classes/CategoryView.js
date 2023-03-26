@@ -36,6 +36,9 @@ export default class CategoryView {
       .addEventListener('click', () => {
         elm.classList.add('-editing');
         this.#enterAttributesDisplaySettingMode();
+        this.#attributeTrackViews.forEach(attributeTrackView =>
+          attributeTrackView.makeFilters()
+        );
       });
   }
 

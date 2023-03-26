@@ -10,6 +10,7 @@ import * as event from '../events';
 
 export default class AttributeTrackView {
   #attribute;
+  #madeFilters;
   #ROOT;
   #LOADING_VIEW;
   #SELECT_CONTAINER;
@@ -20,6 +21,7 @@ export default class AttributeTrackView {
 
   constructor(attributeId, container, displayed, positionRate) {
     this.#attribute = Records.getAttribute(attributeId);
+    this.#madeFilters = false;
     this.#ROOT = document.createElement('div');
     container.insertAdjacentElement('beforeend', this.#ROOT);
     const category = Records.getCategoryWithAttributeId(attributeId);
@@ -166,22 +168,25 @@ export default class AttributeTrackView {
       } else if (e.detail.mode === 'hide') this.#clearError();
     });
 
-    // get property data
-    Records.fetchAttributeFilters(attributeId)
-      .then(filters => this.#makeFilters(filters))
-      .catch(error => {
-        console.error(error);
-        this.#showError(error);
-      })
-      .finally(() => {
-        this.#LOADING_VIEW.classList.remove('-shown');
-      });
+    // make filters
+    if (displayed) this.makeFilters();
   }
 
-  // private methods
+  // public methods
 
-  #makeFilters(filters) {
+  async makeFilters() {
+    if (this.#madeFilters) return;
+    this.#madeFilters = true;
+
+    const filters = await Records.fetchAttributeFilters(
+      this.#attribute.id
+    ).catch(err => {
+      console.error(err);
+      this.#showError(err);
+    });
+    this.#LOADING_VIEW.classList.remove('-shown');
     this.#ROOT.classList.remove('-preparing');
+    if (!filters) return;
 
     // make overview
     new TrackOverviewCategorical(
@@ -208,6 +213,8 @@ export default class AttributeTrackView {
         break;
     }
   }
+
+  // private methods
 
   #showError(error, inUserIDs = false) {
     if (
