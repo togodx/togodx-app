@@ -33,16 +33,10 @@ export default class ModalWindowView {
 
     // attach event
     closeButton.addEventListener('click', () => this._close());
-
     this.#HEADER.addEventListener('mousedown', this.#startDrag.bind(this));
   }
 
   // protected methods
-
-  _getWindow() {
-    // this.#WINDOW.textContent = '';
-    return this.#WINDOW;
-  }
 
   _open() {
     // key event
@@ -65,6 +59,10 @@ export default class ModalWindowView {
 
   get _ROOT() {
     return this.#ROOT;
+  }
+
+  get _WINDOW() {
+    return this.#WINDOW;
   }
 
   get _HEADER() {

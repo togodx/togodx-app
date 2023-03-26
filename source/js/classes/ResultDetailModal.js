@@ -6,16 +6,28 @@ import {createPopupEvent} from '../functions/util';
 import * as event from '../events';
 
 export default class ResultDetailModal extends ModalWindowView {
-  // #ROOT;
+  #STANZA;
   #RESULTS_TABLE;
   #TBODY;
   #handleKeydown;
+  #currentTogoKeyView;
 
   constructor() {
     super();
 
     this._ROOT.id = 'ResultDetailModal';
     this._HEADER.classList.add('_category-background-color');
+
+    // make arrow
+    const makeArrow = direction => {
+      const arrow = document.createElement('div');
+      arrow.classList.add('arrow', `-${direction.toLowerCase()}`);
+      arrow.addEventListener('click', () => this.#move(direction));
+      return arrow;
+    };
+    ['Up', 'Right', 'Down', 'Left'].forEach(direction => {
+      this._WINDOW.append(makeArrow(direction));
+    });
 
     // references
     this.#RESULTS_TABLE = document.querySelector('#ResultsTable');
@@ -35,6 +47,7 @@ export default class ResultDetailModal extends ModalWindowView {
       this._close();
     });
 
+    // event listen
     this._ROOT.addEventListener('click', e => {
       if (e.target !== e.currentTarget) return;
       DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
@@ -43,16 +56,16 @@ export default class ResultDetailModal extends ModalWindowView {
 
   // bind this on handleKeydown so it will keep listening to same event during the whole popup
   #showStanza(e) {
-    const togoKeyView = e.detail.togoKeyView;
+    this.#currentTogoKeyView = e.detail.togoKeyView;
     const oldTd = this.#TBODY.querySelector('td.-highlighting');
     oldTd?.classList.remove('-highlighting');
-    const td = togoKeyView.closest('td');
+    const td = this.#currentTogoKeyView.closest('td');
     td.classList.add('-highlighting');
     // highlight
-    togoKeyView.classList.add('-selected');
+    this.#currentTogoKeyView.classList.add('-selected');
     const customEvent = new CustomEvent(event.highlightColumn, {
       detail: {
-        x: +togoKeyView.dataset.x,
+        x: +this.#currentTogoKeyView.dataset.x,
         isEnter: true,
         oldCell: {
           x: +oldTd.dataset.x,
@@ -72,10 +85,9 @@ export default class ResultDetailModal extends ModalWindowView {
     this.#handleKeydown = this.#keydown.bind(this);
     document.addEventListener('keydown', this.#handleKeydown);
 
-    const modalWindow = this._getWindow();
-    this._ROOT.dataset.categoryId = e.detail.togoKeyView.dataset.categoryId;
-    this.#setHeader(e.detail.togoKeyView);
-    modalWindow.appendChild(this.#container(e.detail.togoKeyView));
+    this._ROOT.dataset.categoryId = this.#currentTogoKeyView.dataset.categoryId;
+    this.#setHeader(this.#currentTogoKeyView);
+    this.#setBody(this.#currentTogoKeyView);
     this._ROOT.classList.add('-opened');
   }
 
@@ -107,14 +119,10 @@ export default class ResultDetailModal extends ModalWindowView {
     `;
   }
 
-  #container(togoKeyView) {
-    ['Up', 'Right', 'Down', 'Left'].forEach(direction => {
-      this._BODY.appendChild(this.#arrow(direction, togoKeyView));
-    });
+  #setBody(togoKeyView) {
     this._BODY.appendChild(
       this.#stanzas(togoKeyView.dataset.entry, togoKeyView.dataset.dataset)
     );
-    return this._BODY;
   }
 
   #stanzas(entry, dataset) {
@@ -129,26 +137,10 @@ export default class ResultDetailModal extends ModalWindowView {
     return stanzas;
   }
 
-  #arrow(direction, togoKeyView) {
-    const arrow = document.createElement('div');
-    arrow.classList.add('arrow', `-${direction.toLowerCase()}`);
-    arrow.addEventListener('click', () => {
-      const arrowMovement = {
-        dir: direction,
-        curX: parseInt(togoKeyView.dataset.x),
-        curY: parseInt(togoKeyView.dataset.y),
-        curInternalIndex: parseInt(togoKeyView.dataset.y2),
-        getTargetAxes: this.#arrowFuncs.get('Arrow' + direction),
-      };
-      this.#setMovementArrow(arrowMovement);
-    });
-    return arrow;
-  }
-
   // Events, functions
 
   #keydown(e) {
-    if (this.#arrowFuncs.has(e.key)) {
+    if (this.#arrowFunctions.has(e.key)) {
       e.preventDefault();
       this._ROOT
         .querySelector(`.arrow.-${e.key.replace('Arrow', '').toLowerCase()}`)
@@ -156,40 +148,41 @@ export default class ResultDetailModal extends ModalWindowView {
     }
   }
 
-  #arrowFuncs = new Map([
+  #arrowFunctions = new Map([
     ['ArrowLeft', (x, y) => [x - 1, y]],
     ['ArrowRight', (x, y) => [x + 1, y]],
     ['ArrowUp', (x, y = x) => [x, y - 1]],
     ['ArrowDown', (x, y = x) => [x, y + 1]],
   ]);
 
-  #setMovementArrow(movement) {
+  #move(direction) {
     try {
-      const targetTogoKeyView = this.#getTargetTogoKeyView(movement);
+      const targetTogoKeyView = this.#getTargetTogoKeyView(direction);
       targetTogoKeyView.scrollIntoView({block: 'center'});
       createPopupEvent(targetTogoKeyView, event.moveStanza);
     } catch (error) {
-      console.error('Movement out of bounds');
+      console.error(error, 'Movement out of bounds');
     }
   }
 
-  #getTargetTogoKeyView(move) {
+  #getTargetTogoKeyView(direction) {
+    const x = +this.#currentTogoKeyView.dataset.x;
+    const y = +this.#currentTogoKeyView.dataset.y;
+    const y2 = +this.#currentTogoKeyView.dataset.y2;
+    const getTargetAxes = this.#arrowFunctions.get('Arrow' + direction);
     // Check if there are multiple entries in the current cell when going up or down
-    if (['Down', 'Up'].includes(move.dir)) {
-      const currentTogoKeyViews = this.#getTogoKeysViewByAxes(
-        move.curX,
-        move.curY
-      );
-      const targetInternalIndex = move.getTargetAxes(move.curInternalIndex)[1];
+    if (['Down', 'Up'].includes(direction)) {
+      const currentTogoKeyViews = this.#getTogoKeysViewByAxes(x, y);
+      const targetInternalIndex = getTargetAxes(y2)[1];
       // movement inside cell
       if (currentTogoKeyViews[targetInternalIndex]) {
         return currentTogoKeyViews[targetInternalIndex];
       }
     }
     // default: target outside of current cell
-    const [targetX, targetY] = move.getTargetAxes(move.curX, move.curY);
+    const [targetX, targetY] = getTargetAxes(x, y);
     const targetTogoKeyViews = this.#getTogoKeysViewByAxes(targetX, targetY);
-    const targetIndex = move.dir === 'Up' ? targetTogoKeyViews.length - 1 : 0;
+    const targetIndex = direction === 'Up' ? targetTogoKeyViews.length - 1 : 0;
     return targetTogoKeyViews[targetIndex];
   }
 

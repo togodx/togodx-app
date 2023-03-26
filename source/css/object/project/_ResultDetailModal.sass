@@ -12,62 +12,62 @@
             font-weight: bold
           > .attribute
             font-weight: bold
+      > .arrow
+        position: absolute
+        border-color: var(--color-lamp-black)
+        cursor: pointer
+        &.-up, &.-right, &.-down, &.-left
+          transition: background var(--transition-instant)
+          &::before
+            content: ""
+            position: absolute
+            opacity: .5
+            transition: opacity var(--transition-instant)
+        &.-up, &.-down
+          left: 0
+          width: 100%
+          height: var(--margin-stanza)
+          &::before
+            left: var(--block-start-arrow)
+        &.-right, &.-left
+          top: 0
+          width: var(--margin-stanza)
+          height: 100%
+          &::before
+            top: var(--block-start-arrow)
+        &.-up
+          top: 3rem
+          &::before
+            border-left: calc(var(--width-arrow) * .5) solid transparent
+            border-right: calc(var(--width-arrow) * .5) solid transparent
+            border-bottom: var(--height-arrow) solid
+            top: var(--inline-start-arrow)
+        &.-right
+          right: 0
+          &::before
+            border-top: calc(var(--width-arrow) * .5) solid transparent
+            border-bottom: calc(var(--width-arrow) * .5) solid transparent
+            border-left: var(--height-arrow) solid
+            right: var(--inline-start-arrow)
+        &.-down
+          bottom: 0
+          &::before
+            border-left: calc(var(--width-arrow) * .5) solid transparent
+            border-right: calc(var(--width-arrow) * .5) solid transparent
+            border-top: var(--height-arrow) solid
+            bottom: var(--inline-start-arrow)
+        &.-left
+          left: 0
+          &::before
+            border-top: calc(var(--width-arrow) * .5) solid transparent
+            border-bottom: calc(var(--width-arrow) * .5) solid transparent
+            border-right: var(--height-arrow) solid
+            left: var(--inline-start-arrow)
+        &:hover
+          background-color: var(--color-hover)
+          &::before
+            opacity: 1
       > .container
-        > .arrow
-          position: absolute
-          border-color: var(--color-lamp-black)
-          cursor: pointer
-          &.-up, &.-right, &.-down, &.-left
-            transition: background var(--transition-instant)
-            &::before
-              content: ""
-              position: absolute
-              opacity: .5
-              transition: opacity var(--transition-instant)
-          &.-up, &.-down
-            left: 0
-            width: 100%
-            height: var(--margin-stanza)
-            &::before
-              left: var(--block-start-arrow)
-          &.-right, &.-left
-            top: 0
-            width: var(--margin-stanza)
-            height: 100%
-            &::before
-              top: var(--block-start-arrow)
-          &.-up
-            top: 0
-            &::before
-              border-left: calc(var(--width-arrow) * .5) solid transparent
-              border-right: calc(var(--width-arrow) * .5) solid transparent
-              border-bottom: var(--height-arrow) solid
-              top: var(--inline-start-arrow)
-          &.-right
-            right: 0
-            &::before
-              border-top: calc(var(--width-arrow) * .5) solid transparent
-              border-bottom: calc(var(--width-arrow) * .5) solid transparent
-              border-left: var(--height-arrow) solid
-              right: var(--inline-start-arrow)
-          &.-down
-            bottom: 0
-            &::before
-              border-left: calc(var(--width-arrow) * .5) solid transparent
-              border-right: calc(var(--width-arrow) * .5) solid transparent
-              border-top: var(--height-arrow) solid
-              bottom: var(--inline-start-arrow)
-          &.-left
-            left: 0
-            &::before
-              border-top: calc(var(--width-arrow) * .5) solid transparent
-              border-bottom: calc(var(--width-arrow) * .5) solid transparent
-              border-right: var(--height-arrow) solid
-              left: var(--inline-start-arrow)
-          &:hover
-            background-color: var(--color-hover)
-            &::before
-              opacity: 1
         > .stanzas
           margin: var(--margin-stanza)
           padding: 0 .8rem .8rem
