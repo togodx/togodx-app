@@ -46,21 +46,6 @@
       body[data-display="results"] &
         pointer-events: none
         opacity: .5
-    > [data-condition-type="filters"], > [data-condition-type="annotations"]
-      transition: opacity var(--transition-instant)
-      opacity: .8
-      background-color: var(--background-color-inactive)
-      cursor: pointer
-      &:hover
-        background-color: var(--background-color)
-    > [data-condition-type="filters"]
-      body[data-condition="filter"] &
-        opacity: 1
-        background-color: var(--background-color)
-    > [data-condition-type="annotations"]
-      body[data-condition="annotation"] &
-        opacity: 1
-        background-color: var(--background-color)
     > [data-condition-type="ids"]
       > .inner
         > textarea

@@ -28,7 +28,6 @@ export default class ConditionBuilderView {
     this.#SWITCH_BUTTONS = elm.querySelectorAll(
       ':scope > .switch-button-view > button'
     );
-    console.log(this.#SWITCH_BUTTONS);
     const conditionsContainer = elm.querySelector(':scope > .conditions');
     this.#DATASET_KEY = conditionsContainer.querySelector(
       ':scope > [data-condition-type="dataset"] > .inner > select'
@@ -36,17 +35,11 @@ export default class ConditionBuilderView {
     this.#USER_IDS = conditionsContainer.querySelector(
       ':scope > [data-condition-type="ids"] > .inner > textarea'
     );
-    const annotations = conditionsContainer.querySelector(
-      ':scope > .condition[data-condition-type="annotations"]'
+    this.#ANNOTATIONS_CONDITIONS_CONTAINER = conditionsContainer.querySelector(
+      ':scope > .condition[data-condition-type="annotations"] > .inner > .conditions'
     );
-    this.#ANNOTATIONS_CONDITIONS_CONTAINER = annotations.querySelector(
-      ':scope > .inner > .conditions'
-    );
-    const filters = conditionsContainer.querySelector(
-      ':scope > .condition[data-condition-type="filters"]'
-    );
-    this.#FILTERS_CONDITIONS_CONTAINER = filters.querySelector(
-      ':scope > .inner > .conditions'
+    this.#FILTERS_CONDITIONS_CONTAINER = conditionsContainer.querySelector(
+      ':scope > .condition[data-condition-type="filters"] > .inner > .conditions'
     );
     this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
 
@@ -60,14 +53,6 @@ export default class ConditionBuilderView {
         document.body.dataset.condition = button.value;
       });
     });
-    filters.addEventListener(
-      'click',
-      () => (document.body.dataset.condition = 'filter')
-    );
-    annotations.addEventListener(
-      'click',
-      () => (document.body.dataset.condition = 'annotation')
-    );
     this.#EXEC_BUTTON.addEventListener('click', () => {
       document.body.dataset.display = 'results';
       ConditionBuilder.makeQueryParameter();
