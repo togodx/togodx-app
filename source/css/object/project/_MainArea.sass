@@ -24,11 +24,11 @@
   [data-display="results"] &
     --height-results: 100%
 
-  > #Properties, > #ResultsView
+  > #Properties, > #ResultsTable
     transition: height var(--transition-wipe)
   > #Properties
     height: calc(100% - var(--height-results))
-  > #ResultsView
+  > #ResultsTable
     height: var(--height-results)
 
 @media (max-width: var(--min-width-app))

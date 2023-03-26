@@ -15,7 +15,7 @@ const prMapEntry = new Map([
   ['other', 'entries'],
 ]);
 
-export default class ResultsView {
+export default class ResultsTable {
   #intersctionObserver;
   #tableData;
   #statisticsViews;

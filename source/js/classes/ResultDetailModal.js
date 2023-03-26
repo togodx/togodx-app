@@ -22,7 +22,7 @@ export default class ResultDetailModal {
       .insertAdjacentElement('beforeend', this.#ROOT);
 
     // references
-    this.#RESULTS_TABLE = document.querySelector('#ResultsView');
+    this.#RESULTS_TABLE = document.querySelector('#ResultsTable');
     this.#TBODY = this.#RESULTS_TABLE.querySelector('tbody');
     this.#RESULT_MODAL = document.querySelector('#ResultDetailModal');
     this.#EXIT_BUTTON = document.createElement('div');

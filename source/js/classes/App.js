@@ -9,7 +9,7 @@ import ConditionsController from './ConditionsController';
 import UploadUserIDsView from './UploadUserIDsView';
 import Color from 'colorjs.io';
 import StanzaManager from './StanzaManager';
-import ResultsView from './ResultsView';
+import ResultsTable from './ResultsTable';
 import AttributesManager from './AttributesManager';
 import * as event from '../events';
 
@@ -63,7 +63,7 @@ class App {
     new ResultDetailModal();
     new BalloonView();
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
-    new ResultsView(document.querySelector('#ResultsView'));
+    new ResultsTable(document.querySelector('#ResultsTable'));
 
     // standard displayed attributes
     await AttributesManager.init(config.DISPLAYED_ATTRIBUTES);
