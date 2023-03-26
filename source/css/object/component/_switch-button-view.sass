@@ -9,26 +9,23 @@
   background-color: var(--color-lamp-black)
   border-radius: calc(1lh + 6px)
   box-shadow: 0 2px 2px #000 inset
-  > li
+  > button
     flex-grow: 1
     text-align: center
     border-radius: 1lh
-    > button
-      border: none
-      background-color: transparent
-      color: white
-      font-weight: bold
-      width: 100%
-      > .material-icons, > .material-icons-outlined
-        font-size: 1.4em
-        vertical-align: middle
-        position: relative
-        top: -.0em
-        margin-right: .2em
+    border: none
+    background-color: transparent
+    color: white
+    font-weight: bold
+    width: 100%
+    > .material-icons, > .material-icons-outlined
+      font-size: 1.4em
+      vertical-align: middle
+      position: relative
+      top: -.0em
+      margin-right: .2em
     &.-active
       background-color: white
       color: var(--color-lamp-black)
-      > button
+      > .material-icons, > .material-icons-outlined
         color: var(--color-lamp-black)
-        > .material-icons, > .material-icons-outlined
-          color: var(--color-lamp-black)

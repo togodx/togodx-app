@@ -12,6 +12,7 @@ export default class ConditionBuilderView {
   #propertyFilters;
   #isDefined;
   #placeHolderExamples;
+  #SWITCH_BUTTONS;
   #DATASET_KEY;
   #USER_IDS;
   #ANNOTATIONS_CONDITIONS_CONTAINER;
@@ -24,6 +25,10 @@ export default class ConditionBuilderView {
     this.#isDefined = false;
 
     // references
+    this.#SWITCH_BUTTONS = elm.querySelectorAll(
+      ':scope > .switch-button-view > button'
+    );
+    console.log(this.#SWITCH_BUTTONS);
     const conditionsContainer = elm.querySelector(':scope > .conditions');
     this.#DATASET_KEY = conditionsContainer.querySelector(
       ':scope > [data-condition-type="dataset"] > .inner > select'
@@ -46,6 +51,15 @@ export default class ConditionBuilderView {
     this.#EXEC_BUTTON = elm.querySelector(':scope > footer > button.exec');
 
     // attach event
+    this.#SWITCH_BUTTONS.forEach(button => {
+      button.addEventListener('click', () => {
+        this.#SWITCH_BUTTONS.forEach(button =>
+          button.classList.remove('-active')
+        );
+        button.classList.add('-active');
+        document.body.dataset.condition = button.value;
+      });
+    });
     filters.addEventListener(
       'click',
       () => (document.body.dataset.condition = 'filter')

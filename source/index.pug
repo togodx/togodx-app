@@ -186,15 +186,13 @@ block main
           header(data-hidden-by="results")
             h2.title Condition builder
             button.rounded-button-view.-verysmall.-outline(type="button") Clear
-          ul.switch-button-view
-            li.-active
-              button(data-button="filter" title="Add filters")
-                span.material-icons filter_alt
-                | Filter
-            li
-              button(data-button="annotation" title="Map attributes")
-                span.material-icons format_list_bulleted
-                | Attribute
+          .switch-button-view
+            button.-active(data-button="filter" title="Add filters" value="filter")
+              span.material-icons filter_alt
+              | Filter
+            button(data-button="annotation" title="Map attributes" value="annotation")
+              span.material-icons format_list_bulleted
+              | Annotation
             
           .conditions(data-hidden-by="results")
             .condition(data-condition-type="dataset")
