@@ -2,6 +2,7 @@ import {displayedAttributes} from '../functions/localStorage.js';
 
 class AttributesManager {
   #displayedAttributes;
+  #sets;
 
   constructor() {}
 
@@ -16,7 +17,10 @@ class AttributesManager {
       this.#displayedAttributes = api
         ? await fetch(api)
             .then(res => res.json())
-            .then(json => json)
+            .then(json => {
+              this.#sets = json.sets;
+              return this.#sets.find(set => (set.label = 'Default'))?.set;
+            })
             .catch(() => undefined)
         : undefined;
     }
@@ -41,6 +45,10 @@ class AttributesManager {
       displayedAttributes,
       JSON.stringify(this.#displayedAttributes)
     );
+  }
+
+  get sets() {
+    return this.#sets;
   }
 }
 
