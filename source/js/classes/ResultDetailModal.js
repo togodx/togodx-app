@@ -1,3 +1,4 @@
+import ModalWindowView from './ModalWindowView';
 import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
 import StanzaManager from './StanzaManager';
@@ -5,26 +6,23 @@ import {createPopupEvent} from '../functions/util';
 import {dragView} from '../functions/dragView';
 import * as event from '../events';
 
-export default class ResultDetailModal {
-  #ROOT;
+export default class ResultDetailModal extends ModalWindowView {
+  // #ROOT;
   #RESULTS_TABLE;
   #TBODY;
-  #RESULT_MODAL;
   #EXIT_BUTTON;
   #popupPosition;
   #handleKeydown;
 
   constructor() {
-    this.#ROOT = document.createElement('section');
-    this.#ROOT.id = 'ResultDetailModal';
-    document
-      .querySelector('body')
-      .insertAdjacentElement('beforeend', this.#ROOT);
+    super();
+
+    this.ROOT.id = 'ResultDetailModal';
 
     // references
     this.#RESULTS_TABLE = document.querySelector('#ResultsTable');
     this.#TBODY = this.#RESULTS_TABLE.querySelector('tbody');
-    this.#RESULT_MODAL = document.querySelector('#ResultDetailModal');
+    this.ROOT = document.querySelector('#ResultDetailModal');
     this.#EXIT_BUTTON = document.createElement('div');
     this.#EXIT_BUTTON.className = 'close-button-view';
 
@@ -48,7 +46,7 @@ export default class ResultDetailModal {
       this.#hideStanza();
     });
 
-    this.#RESULT_MODAL.addEventListener('click', e => {
+    this.ROOT.addEventListener('click', e => {
       if (e.target !== e.currentTarget) return;
       DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
     });
@@ -86,13 +84,13 @@ export default class ResultDetailModal {
     this.#handleKeydown = this.#keydown.bind(this);
     document.addEventListener('keydown', this.#handleKeydown);
 
-    this.#RESULT_MODAL.appendChild(this.#popup(e.detail));
-    this.#RESULT_MODAL.classList.add('backdrop');
+    this.ROOT.appendChild(this.#popup(e.detail));
+    this.ROOT.classList.add('backdrop');
   }
 
   // HTML elements
   #popup(detail) {
-    this.#ROOT.dataset.categoryId = detail.togoKeyView.dataset.categoryId;
+    this.ROOT.dataset.categoryId = detail.togoKeyView.dataset.categoryId;
     const popup = document.createElement('div');
     popup.className = 'popup';
     popup.style.left = this.#popupPosition.x;
@@ -196,9 +194,9 @@ export default class ResultDetailModal {
       DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
     } else if (this.#arrowFuncs.has(e.key)) {
       e.preventDefault();
-      this.#RESULT_MODAL
-        .querySelector(`.arrow.-${e.key.replace('Arrow', '').toLowerCase()}`)
-        .click();
+      this.ROOT.querySelector(
+        `.arrow.-${e.key.replace('Arrow', '').toLowerCase()}`
+      ).click();
     }
   }
 
@@ -248,12 +246,12 @@ export default class ResultDetailModal {
   #hideStanza(exitingPopup = true) {
     // reset popup to the center if it is shown for first time
     // keep moved axes if user has dragged popup while moving with arrows
-    const popupStyle = this.#RESULT_MODAL.querySelector('.popup')?.style;
+    const popupStyle = this.ROOT.querySelector('.popup')?.style;
     this.#popupPosition.y = exitingPopup ? '' : popupStyle?.top;
     this.#popupPosition.x = exitingPopup ? '' : popupStyle?.left;
 
-    this.#RESULT_MODAL.classList.remove('backdrop');
-    this.#RESULT_MODAL.innerHTML = '';
+    this.ROOT.classList.remove('backdrop');
+    this.ROOT.innerHTML = '';
     this.#RESULTS_TABLE
       .querySelectorAll('.togo-key-view.-selected')
       .forEach(entry => entry.classList.remove('-selected'));
