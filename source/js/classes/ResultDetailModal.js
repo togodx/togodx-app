@@ -27,7 +27,7 @@ export default class ResultDetailModal extends ModalWindowView {
     });
 
     DefaultEventEmitter.addEventListener(event.moveStanza, e => {
-      this.#hideStanza(false);
+      this._close(false);
       this.#showStanza(e);
     });
 
@@ -36,7 +36,7 @@ export default class ResultDetailModal extends ModalWindowView {
     });
 
     DefaultEventEmitter.addEventListener(event.hideStanza, () => {
-      this.#hideStanza();
+      this._close();
     });
 
     this._ROOT.addEventListener('click', e => {
@@ -69,16 +69,17 @@ export default class ResultDetailModal extends ModalWindowView {
       },
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
+
+    this._show();
+
     // key event
     this.#handleKeydown = this.#keydown.bind(this);
     document.addEventListener('keydown', this.#handleKeydown);
 
-    const popup = this._popup();
-    // this._ROOT.appendChild(this.#popup(e.detail));
-    this._ROOT.appendChild(popup);
+    const modalWindow = this._getWindow();
     this._ROOT.dataset.categoryId = e.detail.togoKeyView.dataset.categoryId;
-    popup.appendChild(this.#header(e.detail.togoKeyView));
-    popup.appendChild(this.#container(e.detail.togoKeyView));
+    modalWindow.appendChild(this.#header(e.detail.togoKeyView));
+    modalWindow.appendChild(this.#container(e.detail.togoKeyView));
     this._ROOT.classList.add('-backdropping');
   }
 
@@ -172,9 +173,7 @@ export default class ResultDetailModal extends ModalWindowView {
   // Events, functions
 
   #keydown(e) {
-    if (e.key == 'Escape') {
-      DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
-    } else if (this.#arrowFuncs.has(e.key)) {
+    if (this.#arrowFuncs.has(e.key)) {
       e.preventDefault();
       this._ROOT
         .querySelector(`.arrow.-${e.key.replace('Arrow', '').toLowerCase()}`)
@@ -225,8 +224,9 @@ export default class ResultDetailModal extends ModalWindowView {
     );
   }
 
-  #hideStanza(exitingPopup = true) {
-    this._hide(exitingPopup);
+  _close(exitingPopup = true) {
+    super._close(exitingPopup);
+    console.log('extended close');
     this.#RESULTS_TABLE
       .querySelectorAll('.togo-key-view.-selected')
       .forEach(entry => entry.classList.remove('-selected'));
