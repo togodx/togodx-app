@@ -171,7 +171,8 @@ export default class AttributeTrackView {
     DefaultEventEmitter.addEventListener(
       event.changeDisplayedAttributeSet,
       e => {
-        console.log(e.detail.indexOf(attributeId));
+        const displayed = e.detail.indexOf(attributeId) >= 0;
+        this.visibility = displayed;
       }
     );
 
@@ -257,6 +258,7 @@ export default class AttributeTrackView {
   set visibility(visible) {
     this.#CHECKBOX_VISIBILITY.checked = visible;
     this.#ROOT.classList.toggle('-hidden', !visible);
+    if (visible) this.makeFilters();
     // TODO: If :has() is supported in Firefox in the future, stop using the -hidden class
   }
 }

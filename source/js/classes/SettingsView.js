@@ -12,7 +12,6 @@ export default class SettingsView extends ModalWindowView {
     document
       .querySelector('#MiscArea > button')
       .addEventListener('click', () => {
-        console.log('click!');
         this.#render();
         this._open();
       });
@@ -41,8 +40,6 @@ export default class SettingsView extends ModalWindowView {
       .getElementById('SettingsAttributeSelectSets')
       .addEventListener('change', e => {
         const label = e.target.value;
-        console.log(e);
-        console.log(label);
         AttributesManager.updateBySetLabel(label);
       });
   }

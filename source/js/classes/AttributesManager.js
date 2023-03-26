@@ -75,10 +75,8 @@ class AttributesManager {
 
   updateBySetLabel(label) {
     const set = this.#sets.find(set => set.label === label)?.set;
-    console.log(set);
     if (set) {
       this.#displayedAttributes = [...set];
-      console.log(this.#displayedAttributes);
       window.localStorage.setItem(
         displayedAttributes,
         JSON.stringify(this.#displayedAttributes)
@@ -91,8 +89,6 @@ class AttributesManager {
   }
 
   get sets() {
-    console.log(this);
-    console.log(this.#sets);
     return this.#sets;
   }
 }
