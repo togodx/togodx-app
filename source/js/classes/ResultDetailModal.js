@@ -110,7 +110,6 @@ export default class ResultDetailModal extends ModalWindowView {
         ${attributeLable}
         ${valueLabel}
     `;
-    // header.lastElementChild.appendChild(this.#EXIT_BUTTON);
     // header.addEventListener('mousedown', e => {
     //   const customEvent = new CustomEvent(event.dragElement, {
     //     detail: {

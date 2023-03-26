@@ -1,6 +1,5 @@
 export default class ModalWindowView {
   #ROOT;
-  #EXIT_BUTTON;
   #WINDOW;
   #HEADER;
   #TITLE;
@@ -20,20 +19,19 @@ export default class ModalWindowView {
       <div class="container"></div>
     </div>`;
 
-    this.#EXIT_BUTTON = document.createElement('div');
-    this.#EXIT_BUTTON.className = 'close-button-view';
-    this.#EXIT_BUTTON.addEventListener('click', () => {
-      this._hide();
-      // DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
-    });
-
     this.#popupPosition = {x: undefined, y: undefined};
 
     // references
     this.#WINDOW = this.#ROOT.querySelector(':scope > .window');
     this.#HEADER = this.#WINDOW.querySelector(':scope > header');
     this.#TITLE = this.#HEADER.querySelector(':scope > .title');
+    const closeButton = this.#HEADER.querySelector(
+      ':scope > .close-button-view'
+    );
     this.#BODY = this.#WINDOW.querySelector(':scope > .container');
+
+    // attach event
+    closeButton.addEventListener('click', () => this._close());
   }
 
   // protected methods
