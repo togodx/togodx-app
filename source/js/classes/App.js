@@ -7,7 +7,6 @@ import ResultDetailModal from './ResultDetailModal';
 import BalloonView from './BalloonView';
 import ConditionsController from './ConditionsController';
 import UploadUserIDsView from './UploadUserIDsView';
-import GlobalToolBar from './GlobalToolBar';
 import Color from 'colorjs.io';
 import StanzaManager from './StanzaManager';
 import ResultsView from './ResultsView';
@@ -64,7 +63,6 @@ class App {
     new ResultDetailModal();
     new BalloonView();
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
-    new GlobalToolBar(document.querySelector('#GlobalToolBar'));
     new ResultsView(document.querySelector('#ResultsView'));
 
     // standard displayed attributes
