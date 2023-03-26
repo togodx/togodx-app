@@ -50,7 +50,7 @@
       > colgroup
         > col
           &.-selected
-            background-color: var(--color-selected)
+            background-color: var(--color-selected-translucent)
       th, td
         padding: 0
         > .inner
@@ -116,14 +116,14 @@
           position: relative
           transition: border var(--transition-instant), box-shadow var(--transition-instant)
           &:hover, &.-selected
-            background-color: var(--color-selected)
+            background-color: var(--color-selected-translucent)
           > th, > td
             vertical-align: top
           > th
             font-weight: normal
           > td
             &.-selected
-              background-color: var(--color-selected)
+              background-color: var(--color-selected-translucent)
             > .inner
               --padding-block: calc((var(--height-results-tbody-row) - 1lh) * 0.5)
               padding-top: var(--padding-block)

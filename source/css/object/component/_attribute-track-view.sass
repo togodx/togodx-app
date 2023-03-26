@@ -98,7 +98,7 @@
           > .overview
             background-color: transparent !important
   &.-allselected
-    &::after
+    &::before
       content: ""
       position: absolute
       top: 0
@@ -106,9 +106,9 @@
       display: block
       width: 100%
       height: 100%
-      border: solid .1rem black
-      box-shadow: 0 0 0 .1rem rgba(white, .5) inset
       pointer-events: none
+      border: solid 2px var(--color-selected)
+      z-index: var(--z-track-item-selected-hover)
   &.-spread
     > .row.-lower
       content-visibility: visible
