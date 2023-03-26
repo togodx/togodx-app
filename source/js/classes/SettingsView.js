@@ -39,16 +39,22 @@ export default class SettingsView extends ModalWindowView {
       </section>
       <section>
         <h4>Export set</h4>
-        <button id="SettingsAttributeExportSet">Export</button>
+        <button id="SettingsAttributeExportSet" class="rounded-button-view -small">Download</button>
       </section>
     </section>`;
 
     // events
-    document
-      .getElementById('SettingsAttributeSelectSets')
+    const sections = this._BODY.querySelectorAll(':scope > section > section');
+    sections[0]
+      .querySelector(':scope > select')
       .addEventListener('change', e => {
         const label = e.target.value;
         AttributesManager.updateBySetLabel(label);
+      });
+    sections[2]
+      .querySelector(':scope > button')
+      .addEventListener('click', () => {
+        AttributesManager.downloadCurrentSet();
       });
   }
 }

@@ -88,6 +88,17 @@ class AttributesManager {
     }
   }
 
+  downloadCurrentSet() {
+    const str = JSON.stringify(this.#displayedAttributes, null, ' ');
+    const blob = new Blob([str], {type: 'application/json'});
+    const dummyAnchor = document.createElement('a');
+    document.body.append(dummyAnchor);
+    dummyAnchor.href = window.URL.createObjectURL(blob);
+    dummyAnchor.download = 'attributes_set.json';
+    dummyAnchor.click();
+    dummyAnchor.remove();
+  }
+
   get sets() {
     return this.#sets;
   }
