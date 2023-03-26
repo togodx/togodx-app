@@ -2,9 +2,7 @@
   &.-opened
     > .window
       > header
-        &.-primary
-          background-color: var(--color-gray)
-        > .label
+        > .title
           > *
             margin-right: 1rem !important
           > .category
@@ -93,4 +91,6 @@
     &[data-category-id="primary"]
       > .window
         > header
-          background-color: var(--color-gray)
+          > .title
+            > .category._category-background-color-strong
+              background-color: var(--color-gray)

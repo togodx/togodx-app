@@ -3,6 +3,7 @@ export default class ModalWindowView {
   #EXIT_BUTTON;
   #WINDOW;
   #HEADER;
+  #TITLE;
   #BODY;
   #popupPosition;
   #handleKeydown;
@@ -12,7 +13,10 @@ export default class ModalWindowView {
     this.#ROOT.classList.add('modal-window-view');
     document.querySelector('body').append(this.#ROOT);
     this.#ROOT.innerHTML = `<div class="window">
-      <header></header>
+      <header>
+        <div class="title"></div>
+        <div class="close-button-view"></div>
+      </header>
       <div class="container"></div>
     </div>`;
 
@@ -25,8 +29,10 @@ export default class ModalWindowView {
 
     this.#popupPosition = {x: undefined, y: undefined};
 
+    // references
     this.#WINDOW = this.#ROOT.querySelector(':scope > .window');
     this.#HEADER = this.#WINDOW.querySelector(':scope > header');
+    this.#TITLE = this.#HEADER.querySelector(':scope > .title');
     this.#BODY = this.#WINDOW.querySelector(':scope > .container');
   }
 
@@ -51,7 +57,7 @@ export default class ModalWindowView {
     this.#popupPosition.x = exitingPopup ? '' : popupStyle?.left;
 
     this._ROOT.classList.remove('-opened');
-    this.#HEADER.textContent = '';
+    this.#TITLE.textContent = '';
     this.#BODY.textContent = '';
     document.removeEventListener('keydown', this.#handleKeydown);
   }
@@ -62,6 +68,10 @@ export default class ModalWindowView {
 
   get _HEADER() {
     return this.#HEADER;
+  }
+
+  get _TITLE() {
+    return this.#TITLE;
   }
 
   get _BODY() {

@@ -89,7 +89,7 @@ export default class ResultDetailModal extends ModalWindowView {
     const attribute = Records.getAttribute(togoKeyView.dataset.attributeId);
     const isPrimaryKey = togoKeyView.classList.contains('primarykey');
     const categoryLabel = isPrimaryKey
-      ? togoKeyView.dataset.dataset
+      ? `<span class="category _category-background-color-strong">${togoKeyView.dataset.dataset}</span>`
       : `<span class="category _category-background-color-strong">${category.label}</span>`;
     const attributeLable = `<span class="attribute">${
       isPrimaryKey ? togoKeyView.dataset.entry : attribute.label
@@ -105,13 +105,10 @@ export default class ResultDetailModal extends ModalWindowView {
       attribute?.datamodel !== 'distribution' && filter?.label
         ? `<span class="value">${filter.label}</span>`
         : '';
-    this._HEADER.innerHTML = `
-      <div class="label">
+    this._TITLE.innerHTML = `
         ${categoryLabel}
         ${attributeLable}
         ${valueLabel}
-      </div>
-      <div/>
     `;
     // header.lastElementChild.appendChild(this.#EXIT_BUTTON);
     // header.addEventListener('mousedown', e => {
