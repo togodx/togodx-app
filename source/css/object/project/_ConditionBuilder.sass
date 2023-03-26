@@ -32,39 +32,42 @@
             text-align: right
           + *
             margin-top: .4rem
-      > hr
-        border: none
-        border-top: solid .1rem var(--color-separator)
       > .conditions
         > .stacking-condition-view
           > .close-button-view
             body[data-display="results"] &
               display: none
-    > #ConditionAnnotations, > #ConditionFilters
-      transition: opacity var(--transition-instant)
-      opacity: .8
-      background-color: var(--background-color-inactive)
-      cursor: pointer
-      &:hover
-        background-color: var(--background-color)
-    > #ConditionAnnotations
-      border-radius: var(--radius) var(--radius) 0 0
-      [data-condition="filter"] &
-        opacity: 1
-        background-color: var(--background-color)
-    > #ConditionFilters
-      border-radius: 0 0 var(--radius) var(--radius)
-      margin-top: .1rem
-      [data-condition="annotation"] &
-        opacity: 1
-        background-color: var(--background-color)
-    > #ConditionTogoKey
+    > [data-condition-type="dataset"]
       > .inner
         > select
           width: 100%
       body[data-display="results"] &
         pointer-events: none
         opacity: .5
+    > [data-condition-type="filters"], > [data-condition-type="annotations"]
+      transition: opacity var(--transition-instant)
+      opacity: .8
+      background-color: var(--background-color-inactive)
+      cursor: pointer
+      &:hover
+        background-color: var(--background-color)
+    > [data-condition-type="filters"]
+      body[data-condition="filter"] &
+        opacity: 1
+        background-color: var(--background-color)
+    > [data-condition-type="annotations"]
+      body[data-condition="annotation"] &
+        opacity: 1
+        background-color: var(--background-color)
+    > [data-condition-type="ids"]
+      > .inner
+        > textarea
+          width: 100%
+          &::placeholder
+            color: gray
+        > .buttons
+          margin-top: -.2rem
+          text-align: center
   > footer
     > button
       font-weight: bold

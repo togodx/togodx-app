@@ -3,13 +3,15 @@ import ConditionBuilderView from './ConditionBuilderView';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import CategoryView from './CategoryView';
-import ResultsTable from './ResultsTable';
 import ResultDetailModal from './ResultDetailModal';
 import BalloonView from './BalloonView';
 import ConditionsController from './ConditionsController';
 import UploadUserIDsView from './UploadUserIDsView';
+import GlobalToolBar from './GlobalToolBar';
 import Color from 'colorjs.io';
 import StanzaManager from './StanzaManager';
+import ResultsView from './ResultsView';
+import AttributesManager from './AttributesManager';
 import * as event from '../events';
 
 class App {
@@ -32,7 +34,7 @@ class App {
     this.#colorLampBlack = new Color('--color-lamp-black').to('srgb');
   }
 
-  ready(config) {
+  async ready(config) {
     const body = document.body;
     // view modes
     this.#viewModes = {};
@@ -52,19 +54,22 @@ class App {
           DefaultEventEmitter.dispatchEvent(customEvent);
         });
       });
-
     // events
-    DefaultEventEmitter.addEventListener(
-      event.restoreParameters,
-      this.#draw.bind(this)
-    );
+    DefaultEventEmitter.addEventListener(event.restoreParameters, () => {
+      document.querySelector('#App > .loading-view').classList.remove('-shown');
+    });
     // set up views
     new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
     new ConditionsController(document.querySelector('#Conditions'));
-    new ResultsTable(document.querySelector('#ResultsTable'));
     new ResultDetailModal();
     new BalloonView();
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
+    new GlobalToolBar(document.querySelector('#GlobalToolBar'));
+    new ResultsView(document.querySelector('#ResultsView'));
+
+    // standard displayed attributes
+    await AttributesManager.init(config.DISPLAYED_ATTRIBUTES);
+
     // load config json
     Promise.all([
       fetch(config.TEMPLATES),
@@ -85,8 +90,8 @@ class App {
         StanzaManager.init(templates);
         // aggregate
         this.#backend = Object.freeze(backend);
-        // this.#makeCategoryViews();
-        // this.#defineAllTracksCollapseButton();
+        this.#makeCategoryViews();
+        this.#defineAllTracksCollapseButton();
         ConditionBuilder.init();
       });
   }
@@ -100,7 +105,9 @@ class App {
   }
 
   #makeCategoryViews() {
-    const conceptsContainer = document.querySelector('#Properties > .concepts');
+    const conceptsContainer = document.querySelector(
+      '#Properties > .inner > .concepts'
+    );
     Records.categories.forEach(category => {
       const elm = document.createElement('section');
       new CategoryView(category, elm);
@@ -110,9 +117,9 @@ class App {
 
   #defineAllTracksCollapseButton() {
     const collapsebutton = document.querySelector(
-      '#Properties > header > .title > h2.collapsebutton'
+      '#Properties > .inner > header > .title > h2.collapsebutton'
     );
-    collapsebutton.addEventListener('click', e => {
+    collapsebutton.addEventListener('click', () => {
       let customEvent = new CustomEvent(event.allTracksCollapse);
       if (collapsebutton.classList.contains('-spread')) {
         collapsebutton.classList.remove('-spread');

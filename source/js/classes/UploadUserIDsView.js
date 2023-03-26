@@ -42,20 +42,21 @@ export default class UploadUserIDsView {
     this.#errorCount = 0;
 
     this.#BODY = document.querySelector('body');
-    this.#USER_IDS = elm.querySelector(':scope > textarea');
+    const inner = elm.querySelector(':scope > .inner');
+    this.#USER_IDS = inner.querySelector(':scope > textarea');
 
     elm.appendChild(document.createElement('div'));
     this.#progressIndicator = new ProgressIndicator(elm.lastChild, 'simple');
 
     // attach events
-    elm
+    inner
       .querySelector(':scope > .title > .button > button')
       .addEventListener('click', () => {
         this.#USER_IDS.value = this.#USER_IDS.placeholder.replace('e.g. ', '');
         this.#USER_IDS.dispatchEvent(new Event('change'));
         submitButton.dispatchEvent(new Event('click'));
       });
-    const buttons = elm.querySelector(':scope > .buttons');
+    const buttons = inner.querySelector(':scope > .buttons');
     const submitButton = buttons.querySelector(':scope > button:nth-child(1)');
     submitButton.addEventListener('click', e => {
       e.stopPropagation();

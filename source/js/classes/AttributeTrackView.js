@@ -10,15 +10,18 @@ import * as event from '../events';
 
 export default class AttributeTrackView {
   #attribute;
+  #madeFilters;
   #ROOT;
   #LOADING_VIEW;
   #SELECT_CONTAINER;
   #OVERVIEW_CONTAINER;
   #CHECKBOX_ALL_PROPERTIES;
+  #CHECKBOX_VISIBILITY;
   #COLLAPSE_BUTTON;
 
-  constructor(attributeId, container, positionRate) {
+  constructor(attributeId, container, displayed, positionRate) {
     this.#attribute = Records.getAttribute(attributeId);
+    this.#madeFilters = false;
     this.#ROOT = document.createElement('div');
     container.insertAdjacentElement('beforeend', this.#ROOT);
     const category = Records.getCategoryWithAttributeId(attributeId);
@@ -36,6 +39,9 @@ export default class AttributeTrackView {
       <div class="left definition">
         <div class="collapsebutton" data-collapse="${attributeId}">
           <input type="checkbox" class="mapping">
+          <input type="checkbox" class="visibility"${
+            displayed ? ' checked' : ''
+          }>
           <h2 class="title _category-color">${this.#attribute.label}</h2>
         </div>
       </div>
@@ -71,29 +77,34 @@ export default class AttributeTrackView {
       </div>
       <div class="right selector"></div>
     </div>`;
-    const filtersContainer = this.#ROOT.querySelector(
-      ':scope > .row.-upper > .filters'
-    );
-    this.#OVERVIEW_CONTAINER = filtersContainer.querySelector(
-      ':scope > .overview > .inner'
-    );
-    this.#LOADING_VIEW = filtersContainer.querySelector(
-      ':scope > .overview > .loading-view'
-    );
+
+    // references
+
+    const rowupper = this.#ROOT.querySelector(':scope > .row.-upper');
+    const overview = rowupper.querySelector(':scope > .filters > .overview');
+    this.#OVERVIEW_CONTAINER = overview.querySelector(':scope > .inner');
+    this.#LOADING_VIEW = overview.querySelector(':scope > .loading-view');
     this.#SELECT_CONTAINER = this.#ROOT.querySelector(
       ':scope > .row.-lower > .selector'
     );
-    this.#COLLAPSE_BUTTON = this.#ROOT.querySelector(
-      ':scope > .row.-upper > .left > .collapsebutton'
+    this.#COLLAPSE_BUTTON = rowupper.querySelector(
+      ':scope > .left > .collapsebutton'
     );
+    this.#CHECKBOX_ALL_PROPERTIES = this.#COLLAPSE_BUTTON.querySelector(
+      ':scope > input.mapping'
+    );
+    this.#CHECKBOX_VISIBILITY = this.#COLLAPSE_BUTTON.querySelector(
+      ':scope > input.visibility'
+    );
+    if (!displayed) {
+      this.#CHECKBOX_VISIBILITY.ckecked = false;
+      this.#ROOT.classList.add('-hidden');
+    }
 
     // collapse
     collapseView(this.#ROOT);
 
     // select/deselect a property
-    this.#CHECKBOX_ALL_PROPERTIES = this.#ROOT.querySelector(
-      ':scope > .row.-upper > .left > .collapsebutton > input.mapping'
-    );
     this.#CHECKBOX_ALL_PROPERTIES.addEventListener('click', e => {
       e.stopPropagation();
       if (this.#CHECKBOX_ALL_PROPERTIES.checked) {
@@ -106,6 +117,17 @@ export default class AttributeTrackView {
         this.#ROOT.classList.remove('-allselected');
       }
     });
+
+    // visibility
+    this.#CHECKBOX_VISIBILITY.addEventListener('click', e => {
+      e.stopPropagation();
+      this.#ROOT.classList.toggle(
+        '-hidden',
+        !this.#CHECKBOX_VISIBILITY.checked
+      );
+      // TODO: If :has() is supported in Firefox in the future, stop using the -hidden class
+    });
+
     // event listener
     DefaultEventEmitter.addEventListener(
       event.mutateAnnotationCondition,
@@ -146,22 +168,25 @@ export default class AttributeTrackView {
       } else if (e.detail.mode === 'hide') this.#clearError();
     });
 
-    // get property data
-    Records.fetchAttributeFilters(attributeId)
-      .then(filters => this.#makeFilters(filters))
-      .catch(error => {
-        console.error(error);
-        this.#showError(error);
-      })
-      .finally(() => {
-        this.#LOADING_VIEW.classList.remove('-shown');
-      });
+    // make filters
+    if (displayed) this.makeFilters();
   }
 
-  // private methods
+  // public methods
 
-  #makeFilters(filters) {
+  async makeFilters() {
+    if (this.#madeFilters) return;
+    this.#madeFilters = true;
+
+    const filters = await Records.fetchAttributeFilters(
+      this.#attribute.id
+    ).catch(err => {
+      console.error(err);
+      this.#showError(err);
+    });
+    this.#LOADING_VIEW.classList.remove('-shown');
     this.#ROOT.classList.remove('-preparing');
+    if (!filters) return;
 
     // make overview
     new TrackOverviewCategorical(
@@ -189,6 +214,8 @@ export default class AttributeTrackView {
     }
   }
 
+  // private methods
+
   #showError(error, inUserIDs = false) {
     if (
       inUserIDs &&
@@ -211,5 +238,18 @@ export default class AttributeTrackView {
     this.#OVERVIEW_CONTAINER.parentNode
       .querySelector(':scope > .map-ids.error')
       ?.remove();
+  }
+
+  // accessor
+  get id() {
+    return this.#attribute.id;
+  }
+  get visibility() {
+    return this.#CHECKBOX_VISIBILITY.checked;
+  }
+  set visibility(visible) {
+    this.#CHECKBOX_VISIBILITY.checked = visible;
+    this.#ROOT.classList.toggle('-hidden', !visible);
+    // TODO: If :has() is supported in Firefox in the future, stop using the -hidden class
   }
 }

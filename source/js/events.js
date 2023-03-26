@@ -20,11 +20,7 @@ export const clearCondition = 'clearCondition';
 // Stanza
 export const hideStanza = 'hideStanza';
 export const showStanza = 'showStanza';
-
-// Popup
-export const hidePopup = 'hidePopup';
-export const showPopup = 'showPopup';
-export const movePopup = 'movePopup';
+export const moveStanza = 'moveStanza';
 
 // Dragging
 export const dragElement = 'dragElement';
@@ -36,7 +32,7 @@ export const addNextRows = 'addNextRows';
 // Table data
 export const selectTableData = 'selectTableData';
 export const deleteTableData = 'deleteTableData';
-export const highlightCol = 'highlightCol';
+export const highlightColumn = 'highlightColumn';
 
 // Track
 export const enterAttributeFilterItemView = 'enterAttributeFilterItemView';

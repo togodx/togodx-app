@@ -1,0 +1,149 @@
+#ResultsView
+  bottom: 0
+  z-index: var(--z-results)
+  background-color: var(--color-lamp-black)
+  > header
+    --padding: calc(var(--height-results-header) - 1lh)
+    color: white
+    font-size: 1.4rem
+    font-weight: bold
+    padding: calc(var(--padding) * 0.7) 0 calc(var(--padding) * 0.3)
+    position: relative
+    > .collapsenotchbutton
+      position: absolute
+      top: -.5rem
+      width: 3.2rem
+      height: 3.2rem
+      left: calc(50% - 1.6rem)
+      border-radius: 1.6rem
+      background-color: var(--color-lamp-black)
+      cursor: pointer
+      transition: top var(--transition-wipe)
+      [data-display="results"] &
+        top: .2rem
+      [data-number-of-results="0"] &
+        pointer-events: none
+      &::before
+        content: ""
+        width: .8rem
+        height: .8rem
+        border-top: solid .2rem white
+        border-right: solid .2rem white
+        display: block
+        position: absolute
+        translate: 1.2rem .8rem
+        rotate: -0.125turn
+        transition: rotate var(--transition-wipe)
+        [data-display="results"] &
+          rotate: .375turn
+        [data-number-of-results="0"] &
+          opacity: .3
+  > .inner
+    --padding: calc((var(--height-results-thead-row) - var(--height-togo-key-view)) * 0.5)
+    overflow: auto
+    > table
+      width: 100%
+      height: auto
+      font-size: 1.2rem
+      line-height: 1.2
+      background-color: white
+      > colgroup
+        > col
+          &.-selected
+            background-color: var(--color-selected)
+      th, td
+        padding: 0
+        > .inner
+          padding-left: var(--padding-track-inline-start)
+          padding-right: var(--padding-track-inline-start)
+      > thead
+        height: 100%
+        > tr
+          height: 100%
+          > th, td
+            height: 100%
+            > .inner
+              height: var(--height-results-thead-row)
+              padding-top: var(--padding)
+              padding-bottom: var(--padding)
+          &.header
+            font-weight: bold
+            white-space: nowrap
+            > th
+              position: sticky
+              top: 0
+              z-index: var(--z-results-header)
+              line-height: 1.5rem
+              > .inner
+                border-bottom: solid .1rem var(--color-black)
+                &._category-color
+                  background-color: white
+                > .togo-key-view
+                  background-color: var(--color-dark-gray)
+              &:first-child
+                > .inner
+                  background-color: var(--color-lamp-black)
+          &.statistics
+            color: white
+            background-color: var(--color-lamp-black)
+            > th
+              vertical-align: top
+            > th, > td
+              > .inner
+                height: auto
+                transition: height var(--transition-wipe), padding var(--transition-wipe)
+                overflow: hidden
+                [data-display="properties"] &
+                  height: 0
+                  padding: 0
+            > th.controller
+              > .inner
+                > label
+                  display: block
+                  white-space: nowrap
+                  > input
+                    vertical-align: bottom
+                    margin-right: .4rem
+            &.-onlyhitcount
+              > th.controller
+                > .inner
+                  > label.stretch
+                    opacity: .4
+                    pointer-events: none
+      > tbody
+        > tr
+          border-bottom: solid .1rem var(--color-separator)
+          position: relative
+          transition: border var(--transition-instant), box-shadow var(--transition-instant)
+          &:hover, &.-selected
+            background-color: var(--color-selected)
+          > th, > td
+            vertical-align: top
+          > th
+            font-weight: normal
+          > td
+            &.-selected
+              background-color: var(--color-selected)
+            > .inner
+              --padding-block: calc((var(--height-results-tbody-row) - 1lh) * 0.5)
+              padding-top: var(--padding-block)
+              padding-bottom: var(--padding-block)
+              > ul
+                margin: 0
+                padding-inline-start: 0
+                list-style: none
+                max-height: 10.2rem
+                overflow-y: auto
+                .togo-key-view
+                  cursor: pointer
+                  &:hover, &.-selected
+                    background-color: var(--color-lamp-black)
+                > li
+                  + li
+                    margin-block-start: .2rem
+    > .tableend
+      height: 8rem
+      position: relative
+    &.-complete
+      > .tableend
+        display: none

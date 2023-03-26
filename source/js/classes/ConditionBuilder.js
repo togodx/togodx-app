@@ -225,6 +225,14 @@ class ConditionBuilder {
     return !this.#userIds ? [] : this.#userIds.split(',');
   }
 
+  get dxCondition() {
+    return new DXCondition(
+      this.#dataset,
+      this.#conditionAnnotations,
+      this.#conditionFilters
+    );
+  }
+
   // private methods
 
   #postProcessing(dontLeaveInHistory = true) {
@@ -328,7 +336,7 @@ class ConditionBuilder {
   #getChildNodes(attributeId, node) {
     return new Promise((resolve, reject) => {
       Records.fetchAttributeFilters(attributeId, node)
-        .then(filters => {
+        .then(() => {
           resolve();
         })
         .catch(error => {
