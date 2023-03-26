@@ -87,7 +87,7 @@ export default class ResultDetailModal extends ModalWindowView {
 
     this._ROOT.dataset.categoryId = this.#currentTogoKeyView.dataset.categoryId;
     this.#setHeader(this.#currentTogoKeyView);
-    this.#setBody(this.#currentTogoKeyView);
+    this.#setStanza(this.#currentTogoKeyView);
     this._ROOT.classList.add('-opened');
   }
 
@@ -119,22 +119,19 @@ export default class ResultDetailModal extends ModalWindowView {
     `;
   }
 
-  #setBody(togoKeyView) {
-    this._BODY.appendChild(
-      this.#stanzas(togoKeyView.dataset.entry, togoKeyView.dataset.dataset)
+  #setStanza(togoKeyView) {
+    const stanza = document.createElement('div');
+    stanza.className = 'stanzas';
+    stanza.innerHTML += StanzaManager.draw(
+      togoKeyView.dataset.dataset,
+      togoKeyView.dataset.entry
     );
-  }
-
-  #stanzas(entry, dataset) {
-    const stanzas = document.createElement('div');
-    stanzas.className = 'stanzas';
-    stanzas.innerHTML += StanzaManager.draw(dataset, entry);
-    stanzas.querySelectorAll('script').forEach(scriptElement => {
+    stanza.querySelectorAll('script').forEach(scriptElement => {
       const _script = document.createElement('script');
       _script.textContent = scriptElement.textContent;
       scriptElement.replaceWith(_script);
     });
-    return stanzas;
+    this._BODY.append(stanza);
   }
 
   // Events, functions
