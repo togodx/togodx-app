@@ -14,7 +14,7 @@ export default class ModalWindowView {
     document.querySelector('body').append(this.#ROOT);
     this.#ROOT.innerHTML = `<div class="window">
       <header>
-        <div class="title"></div>
+        <h2 class="title"></h2>
         <div class="close-button-view"></div>
       </header>
       <div class="container"></div>
@@ -33,12 +33,14 @@ export default class ModalWindowView {
 
     // attach event
     closeButton.addEventListener('click', () => this._close());
+    this.#ROOT.addEventListener('click', () => this._close());
     this.#HEADER.addEventListener('mousedown', this.#startDrag.bind(this));
   }
 
   // protected methods
 
   _open() {
+    this.#ROOT.classList.add('-opened');
     // key event
     this.#handleKeydown = this.#keydown.bind(this);
     document.addEventListener('keydown', this.#handleKeydown);

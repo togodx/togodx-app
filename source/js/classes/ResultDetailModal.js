@@ -6,7 +6,6 @@ import {createPopupEvent} from '../functions/util';
 import * as event from '../events';
 
 export default class ResultDetailModal extends ModalWindowView {
-  #STANZA;
   #RESULTS_TABLE;
   #TBODY;
   #handleKeydown;
@@ -18,7 +17,7 @@ export default class ResultDetailModal extends ModalWindowView {
     this._ROOT.id = 'ResultDetailModal';
     this._HEADER.classList.add('_category-background-color');
 
-    // make arrow
+    // make arrow buttons
     const makeArrow = direction => {
       const arrow = document.createElement('div');
       arrow.classList.add('arrow', `-${direction.toLowerCase()}`);
@@ -45,12 +44,6 @@ export default class ResultDetailModal extends ModalWindowView {
 
     DefaultEventEmitter.addEventListener(event.hideStanza, () => {
       this._close();
-    });
-
-    // event listen
-    this._ROOT.addEventListener('click', e => {
-      if (e.target !== e.currentTarget) return;
-      DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
     });
   }
 
@@ -88,7 +81,6 @@ export default class ResultDetailModal extends ModalWindowView {
     this._ROOT.dataset.categoryId = this.#currentTogoKeyView.dataset.categoryId;
     this.#setHeader(this.#currentTogoKeyView);
     this.#setStanza(this.#currentTogoKeyView);
-    this._ROOT.classList.add('-opened');
   }
 
   #setHeader(togoKeyView) {
