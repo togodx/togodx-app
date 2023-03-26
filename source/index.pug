@@ -163,7 +163,7 @@ block main
 
     section#FixedArea
 
-      .upper
+      .row
 
         section#ConditionBuilder
 
@@ -236,11 +236,22 @@ block main
               span.material-icons keyboard_return
               | Return
 
-      .lower
+      .row
         
         section#Conditions(data-number-of-conditions="0")
           header
             h2.title Saved conditions
           .conditions
+      
+      .row
+
+        section#MiscArea
+          button.return.rounded-button-view.-black.-spread
+            span.material-icons settings
+            | Settings
+          p.copyright
+            | © 2020 
+            a(href="https://dbcls.rois.ac.jp/" target="_blank") DBCLS
+            | . All rights reserved.
 
     .loading-view.-shown
