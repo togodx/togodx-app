@@ -1,30 +1,24 @@
+@use "../../foundation/_mixins.sass" as *
+
 .switch-button-view
   list-style-type: none
   margin-left: -.1rem
   margin-right: -.1rem
   padding: 3px
   display: flex
-  font-size: 1.4rem
-  line-height: 1.3em
   background-color: var(--color-lamp-black)
   border-radius: calc(1lh + 6px)
   box-shadow: 0 2px 2px #000 inset
+  white-space: nowrap
   > button
+    +button-view()
     flex-grow: 1
-    text-align: center
     border-radius: 1lh
-    border: none
+    line-height: 1.3em
     background-color: transparent
     color: white
-    font-weight: bold
     width: 100%
     transition: color var(--transition-instant), background-color var(--transition-instant)
-    > .material-icons, > .material-icons-outlined
-      font-size: 1.4em
-      vertical-align: middle
-      position: relative
-      top: -.0em
-      margin-right: .2em
     &:hover
       background-color: #FFF3
     &.-active
