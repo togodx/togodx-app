@@ -5,6 +5,7 @@ export default class ModalWindowView {
   #TITLE;
   #BODY;
   #popupPosition;
+  #dragStartPosition;
   #handleKeydown;
 
   constructor() {
@@ -32,6 +33,8 @@ export default class ModalWindowView {
 
     // attach event
     closeButton.addEventListener('click', () => this._close());
+
+    this.#HEADER.addEventListener('mousedown', this.#startDrag.bind(this));
   }
 
   // protected methods
@@ -77,6 +80,33 @@ export default class ModalWindowView {
   }
 
   // private methods
+
+  #startDrag(e) {
+    this.#WINDOW.classList.add('-dragging');
+    this.#dragStartPosition = {
+      x: e.clientX,
+      y: e.clientY,
+    };
+
+    const dragging = e => {
+      const dx = e.clientX - this.#dragStartPosition.x;
+      const dy = e.clientY - this.#dragStartPosition.y;
+
+      this.#WINDOW.style.top = `${this.#WINDOW.offsetTop + dy}px`;
+      this.#WINDOW.style.left = `${this.#WINDOW.offsetLeft + dx}px`;
+
+      this.#dragStartPosition.x = e.clientX;
+      this.#dragStartPosition.y = e.clientY;
+    };
+    const endDrag = () => {
+      this.#WINDOW.classList.remove('-dragging');
+      document.removeEventListener('mousemove', dragging);
+      document.removeEventListener('mouseup', endDrag);
+    };
+
+    document.addEventListener('mousemove', dragging);
+    document.addEventListener('mouseup', endDrag);
+  }
 
   #keydown(e) {
     if (e.key == 'Escape') {

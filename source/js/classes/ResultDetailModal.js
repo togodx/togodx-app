@@ -3,7 +3,6 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
 import StanzaManager from './StanzaManager';
 import {createPopupEvent} from '../functions/util';
-import {dragView} from '../functions/dragView';
 import * as event from '../events';
 
 export default class ResultDetailModal extends ModalWindowView {
@@ -30,10 +29,6 @@ export default class ResultDetailModal extends ModalWindowView {
     DefaultEventEmitter.addEventListener(event.moveStanza, e => {
       this._close(false);
       this.#showStanza(e);
-    });
-
-    DefaultEventEmitter.addEventListener(event.dragElement, e => {
-      dragView(e.detail);
     });
 
     DefaultEventEmitter.addEventListener(event.hideStanza, () => {
@@ -110,17 +105,6 @@ export default class ResultDetailModal extends ModalWindowView {
         ${attributeLable}
         ${valueLabel}
     `;
-    // header.addEventListener('mousedown', e => {
-    //   const customEvent = new CustomEvent(event.dragElement, {
-    //     detail: {
-    //       x: e.clientX,
-    //       y: e.clientY,
-    //       container: header.parentElement,
-    //       dragableElement: header,
-    //     },
-    //   });
-    //   DefaultEventEmitter.dispatchEvent(customEvent);
-    // });
 
     return this._HEADER;
   }

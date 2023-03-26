@@ -22,9 +22,6 @@ export const hideStanza = 'hideStanza';
 export const showStanza = 'showStanza';
 export const moveStanza = 'moveStanza';
 
-// Dragging
-export const dragElement = 'dragElement';
-
 // Polling
 export const failedFetchTableDataIds = 'failedFetchTableDataIds';
 export const addNextRows = 'addNextRows';

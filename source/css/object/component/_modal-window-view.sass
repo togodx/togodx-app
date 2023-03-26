@@ -35,7 +35,7 @@
       background-color: rgba(255, 255, 255, .85)
       border-radius: .4rem
       > header
-        cursor: pointer
+        cursor: grab
         display: flex
         justify-content: space-between
         align-items: center
@@ -62,5 +62,9 @@
         display: flex
         overflow: hidden
         position: relative
+      &.-dragging
+        cursor: grabbing
+        > header
+          cursor: grabbing
 :where(.modal-window-view) > .window > header
   background-color: var(--color-light-gray)
