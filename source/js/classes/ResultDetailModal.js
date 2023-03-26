@@ -74,18 +74,18 @@ export default class ResultDetailModal extends ModalWindowView {
 
     const modalWindow = this._getWindow();
     this._ROOT.dataset.categoryId = e.detail.togoKeyView.dataset.categoryId;
-    modalWindow.appendChild(this.#header(e.detail.togoKeyView));
+    this.#setHeader(e.detail.togoKeyView);
     modalWindow.appendChild(this.#container(e.detail.togoKeyView));
     this._ROOT.classList.add('-opened');
   }
 
-  #header(togoKeyView) {
+  #setHeader(togoKeyView) {
     const category = Records.getCategory(togoKeyView.dataset.categoryId);
     const attribute = Records.getAttribute(togoKeyView.dataset.attributeId);
     const isPrimaryKey = togoKeyView.classList.contains('primarykey');
-    const categoryLabel = isPrimaryKey
-      ? `<span class="category _category-background-color-strong">${togoKeyView.dataset.dataset}</span>`
-      : `<span class="category _category-background-color-strong">${category.label}</span>`;
+    const categoryLabel = `<span class="category _category-background-color-strong">${
+      isPrimaryKey ? togoKeyView.dataset.dataset : category.label
+    }</span>`;
     const attributeLable = `<span class="attribute">${
       isPrimaryKey ? togoKeyView.dataset.entry : attribute.label
     }</span>`;
@@ -105,8 +105,6 @@ export default class ResultDetailModal extends ModalWindowView {
         ${attributeLable}
         ${valueLabel}
     `;
-
-    return this._HEADER;
   }
 
   #container(togoKeyView) {
