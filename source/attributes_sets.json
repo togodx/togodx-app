@@ -93,13 +93,16 @@
     {
       "label": "Set A",
       "set": [
+        "gene_low_level_expression_refex",
+        "transcript_length_ensembl",
         "structure_data_existence_uniprot",
         "structure_helical_regions_uniprot",
         "interaction_proteins_in_pathway_reactome",
         "interaction_compounds_in_pathway_reactome",
         "compound_chemical_role_chebi",
         "compound_application_type_chebi",
-        "glycan_mass_glycosmos"
+        "glycan_mass_glycosmos",
+        "disease_related_dbs_mondo"
       ]
     }
   ]

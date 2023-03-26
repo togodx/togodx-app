@@ -1,4 +1,6 @@
+import DefaultEventEmitter from './DefaultEventEmitter';
 import {displayedAttributes} from '../functions/localStorage.js';
+import * as event from '../events';
 
 class AttributesManager {
   #displayedAttributes;
@@ -8,22 +10,43 @@ class AttributesManager {
 
   async init(api) {
     // Determine display attribute information. If data is available in local storage, use it; if not, query the API.
+
+    await fetch(api)
+      .then(res => res.json())
+      .then(json => {
+        this.#sets = json.sets;
+        this.#displayedAttributes = this.#sets.find(
+          set => (set.label = 'Default')
+        )?.set;
+      })
+      .catch(() => {
+        this.#sets = [];
+        this.#displayedAttributes = undefined;
+      });
+
     const storagedData = JSON.parse(
       window.localStorage.getItem(displayedAttributes)
     );
     if (storagedData) {
       this.#displayedAttributes = storagedData;
-    } else {
-      this.#displayedAttributes = api
-        ? await fetch(api)
-            .then(res => res.json())
-            .then(json => {
-              this.#sets = json.sets;
-              return this.#sets.find(set => (set.label = 'Default'))?.set;
-            })
-            .catch(() => undefined)
-        : undefined;
     }
+
+    // const storagedData = JSON.parse(
+    //   window.localStorage.getItem(displayedAttributes)
+    // );
+    // if (storagedData) {
+    //   this.#displayedAttributes = storagedData;
+    // } else {
+    //   this.#displayedAttributes = api
+    //     ? await fetch(api)
+    //         .then(res => res.json())
+    //         .then(json => {
+    //           this.#sets = json.sets;
+    //           return this.#sets.find(set => (set.label = 'Default'))?.set;
+    //         })
+    //         .catch(() => undefined)
+    //     : undefined;
+    // }
   }
 
   // Returns whether the attribute is included in the display attribute list.
@@ -31,8 +54,12 @@ class AttributesManager {
     return this.#displayedAttributes.indexOf(id) >= 0;
   }
 
-  update(map) {
-    map.forEach((isDisplay, id) => {
+  /**
+   *
+   * @param {Map} differenceData
+   */
+  updateByDifferenceData(differenceData) {
+    differenceData.forEach((isDisplay, id) => {
       const index = this.#displayedAttributes.indexOf(id);
       if (index === -1) {
         if (isDisplay) this.#displayedAttributes.push(id);
@@ -40,14 +67,32 @@ class AttributesManager {
         if (!isDisplay) this.#displayedAttributes.splice(index, 1);
       }
     });
-    console.log(this.#displayedAttributes);
     window.localStorage.setItem(
       displayedAttributes,
       JSON.stringify(this.#displayedAttributes)
     );
   }
 
+  updateBySetLabel(label) {
+    const set = this.#sets.find(set => set.label === label)?.set;
+    console.log(set);
+    if (set) {
+      this.#displayedAttributes = [...set];
+      console.log(this.#displayedAttributes);
+      window.localStorage.setItem(
+        displayedAttributes,
+        JSON.stringify(this.#displayedAttributes)
+      );
+      const customEvent = new CustomEvent(event.changeDisplayedAttributeSet, {
+        detail: [...set],
+      });
+      DefaultEventEmitter.dispatchEvent(customEvent);
+    }
+  }
+
   get sets() {
+    console.log(this);
+    console.log(this.#sets);
     return this.#sets;
   }
 }

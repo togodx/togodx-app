@@ -62,7 +62,9 @@ export default class CategoryView {
           case 0: // ok
             {
               // set local storage
-              AttributesManager.update(this.#makeAttributesDisplayStateMap());
+              AttributesManager.updateByDifferenceData(
+                this.#makeAttributesDisplayStateMap()
+              );
             }
             break;
           case 1: // cancel

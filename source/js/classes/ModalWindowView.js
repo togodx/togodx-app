@@ -34,6 +34,9 @@ export default class ModalWindowView {
     // attach event
     closeButton.addEventListener('click', () => this._close());
     this.#ROOT.addEventListener('click', () => this._close());
+    this.#WINDOW.addEventListener('click', e => {
+      e.stopPropagation();
+    });
     this.#HEADER.addEventListener('mousedown', this.#startDrag.bind(this));
   }
 
@@ -54,8 +57,8 @@ export default class ModalWindowView {
     this.#popupPosition.x = exitingPopup ? '' : popupStyle?.left;
 
     this._ROOT.classList.remove('-opened');
-    this.#TITLE.textContent = '';
-    this.#BODY.textContent = '';
+    // this.#TITLE.textContent = '';
+    // this.#BODY.textContent = '';
     document.removeEventListener('keydown', this.#handleKeydown);
   }
 

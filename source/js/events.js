@@ -44,3 +44,6 @@ export const changeColumnSelectorSorter = 'changeColumnSelectorSorter';
 
 // Collpase
 export const collapsed = 'collapsed';
+
+// Attribute
+export const changeDisplayedAttributeSet = 'changeDisplayedAttributeSet';

@@ -168,6 +168,13 @@ export default class AttributeTrackView {
       } else if (e.detail.mode === 'hide') this.#clearError();
     });
 
+    DefaultEventEmitter.addEventListener(
+      event.changeDisplayedAttributeSet,
+      e => {
+        console.log(e.detail.indexOf(attributeId));
+      }
+    );
+
     // make filters
     if (displayed) this.makeFilters();
   }
