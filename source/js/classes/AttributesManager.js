@@ -1,4 +1,5 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
+import Records from './Records';
 import {displayedAttributes} from '../functions/localStorage.js';
 import * as event from '../events';
 
@@ -30,23 +31,6 @@ class AttributesManager {
     if (storagedData) {
       this.#displayedAttributes = storagedData;
     }
-
-    // const storagedData = JSON.parse(
-    //   window.localStorage.getItem(displayedAttributes)
-    // );
-    // if (storagedData) {
-    //   this.#displayedAttributes = storagedData;
-    // } else {
-    //   this.#displayedAttributes = api
-    //     ? await fetch(api)
-    //         .then(res => res.json())
-    //         .then(json => {
-    //           this.#sets = json.sets;
-    //           return this.#sets.find(set => (set.label = 'Default'))?.set;
-    //         })
-    //         .catch(() => undefined)
-    //     : undefined;
-    // }
   }
 
   // Returns whether the attribute is included in the display attribute list.
@@ -67,25 +51,37 @@ class AttributesManager {
         if (!isDisplay) this.#displayedAttributes.splice(index, 1);
       }
     });
-    window.localStorage.setItem(
-      displayedAttributes,
-      JSON.stringify(this.#displayedAttributes)
-    );
+    this.#changed(false);
   }
 
   updateBySetLabel(label) {
     const set = this.#sets.find(set => set.label === label)?.set;
     if (set) {
       this.#displayedAttributes = [...set];
-      window.localStorage.setItem(
-        displayedAttributes,
-        JSON.stringify(this.#displayedAttributes)
-      );
-      const customEvent = new CustomEvent(event.changeDisplayedAttributeSet, {
-        detail: [...set],
-      });
-      DefaultEventEmitter.dispatchEvent(customEvent);
+      this.#changed();
     }
+  }
+
+  importSet(file) {
+    const reader = new FileReader();
+    reader.onerror = e => {
+      console.error(e);
+      window.alert('Failed to load.');
+    };
+    reader.onload = e => {
+      try {
+        const json = JSON.parse(e.target.result);
+        const existingIds = Records.attributes.map(attribute => attribute.id);
+        const filteredSet = json.filter(id => existingIds.indexOf(id) >= 0);
+        // update
+        this.#displayedAttributes = filteredSet;
+        this.#changed();
+      } catch (e) {
+        console.error(e);
+        window.alert('File parsing failed.');
+      }
+    };
+    reader.readAsText(file);
   }
 
   downloadCurrentSet() {
@@ -101,6 +97,20 @@ class AttributesManager {
 
   get sets() {
     return this.#sets;
+  }
+
+  #changed(emit = true) {
+    // storage
+    window.localStorage.setItem(
+      displayedAttributes,
+      JSON.stringify(this.#displayedAttributes)
+    );
+    // emit
+    if (!emit) return;
+    const customEvent = new CustomEvent(event.changeDisplayedAttributeSet, {
+      detail: [...this.#displayedAttributes],
+    });
+    DefaultEventEmitter.dispatchEvent(customEvent);
   }
 }
 

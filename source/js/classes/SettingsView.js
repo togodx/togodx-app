@@ -51,6 +51,13 @@ export default class SettingsView extends ModalWindowView {
         const label = e.target.value;
         AttributesManager.updateBySetLabel(label);
       });
+    sections[1]
+      .querySelector(':scope > input')
+      .addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        AttributesManager.importSet(file);
+      });
     sections[2]
       .querySelector(':scope > button')
       .addEventListener('click', () => {
