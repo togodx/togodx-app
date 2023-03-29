@@ -25,6 +25,19 @@ export default class CategoryBrowserColumn extends LitElement {
           var(--togostanza-outline-height) - var(--history-height)
         );
       }
+
+      .header-container {
+        position: sticky;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        top: 0;
+        z-index: 1;
+      }
+
+      .header {
+        width: min(85%, 20rem);
+      }
     `;
   }
 
@@ -87,6 +100,7 @@ export default class CategoryBrowserColumn extends LitElement {
         class="column"
         @click="${this.nodes[0].id === 'dummy' ? null : this._handleClick}"
       >
+        <div class="header-container"><div class="header">Some title</div></div>
         ${this.nodes.length
           ? html`
               ${repeat(

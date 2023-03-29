@@ -8,6 +8,9 @@ export class CategoryCard extends LitElement {
         display: block;
         position: relative;
         --default-background_color: white;
+        --connector-color: black;
+        --border-color: #ccc;
+        --node-bg-color: white;
         font-family: var(--togostanza-fonts-font_family);
         font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
         color: var(--togostanza-fonts-font_color);
@@ -19,7 +22,7 @@ export class CategoryCard extends LitElement {
         content: '';
         width: 100%;
         height: 1px;
-        border-bottom: 1px solid var(--togostanza-edge-border_color);
+        border-bottom: 1px solid var(--connector-color);
         top: min(50%, 15px);
         box-sizing: border-box;
       }
@@ -30,7 +33,7 @@ export class CategoryCard extends LitElement {
         content: '';
         width: 100%;
         height: 1px;
-        border-bottom: 1px solid var(--togostanza-edge-border_color);
+        border-bottom: 1px solid var(--connector-color);
         top: min(50%, 15px);
         box-sizing: border-box;
       }
@@ -41,7 +44,7 @@ export class CategoryCard extends LitElement {
         width: 0px;
         height: 0px;
         border: 8px solid transparent;
-        border-left: 8px solid var(--togostanza-edge-border_color);
+        border-left: 8px solid var(--connector-color);
         top: min(50%, 15px);
         right: 0;
         transform: translate(50%, -50%) scaleY(0.5);
@@ -55,7 +58,7 @@ export class CategoryCard extends LitElement {
         content: '';
         width: 1px;
         height: calc(100% - min(50%, 15px) + 5px);
-        border-left: 1px solid var(--togostanza-edge-border_color);
+        border-left: 1px solid var(--connector-color);
         bottom: -6px;
         box-sizing: border-box;
       }
@@ -66,7 +69,7 @@ export class CategoryCard extends LitElement {
         content: '';
         width: 100%;
         height: 1px;
-        border-bottom: 1px solid var(--togostanza-edge-border_color);
+        border-bottom: 1px solid var(--connector-color);
         top: min(50%, 15px);
         box-sizing: border-box;
       }
@@ -77,7 +80,7 @@ export class CategoryCard extends LitElement {
         content: '';
         width: 1px;
         height: calc(min(50%, 15px) + 6px);
-        border-left: 1px solid var(--togostanza-edge-border_color);
+        border-left: 1px solid var(--connector-color);
         top: -6px;
         box-sizing: border-box;
       }
@@ -88,7 +91,7 @@ export class CategoryCard extends LitElement {
         content: '';
         width: 100%;
         height: 1px;
-        border-top: 1px solid var(--togostanza-edge-border_color);
+        border-top: 1px solid var(--connector-color);
         top: min(50%, 15px);
         box-sizing: border-box;
       }
@@ -99,7 +102,7 @@ export class CategoryCard extends LitElement {
         content: '';
         width: 1px;
         height: calc(100% + 14px);
-        border-left: 1px solid var(--togostanza-edge-border_color);
+        border-left: 1px solid var(--connector-color);
         top: -6px;
         box-sizing: border-box;
       }
@@ -110,7 +113,7 @@ export class CategoryCard extends LitElement {
         content: '';
         width: 100%;
         height: 1px;
-        border-bottom: 1px solid var(--togostanza-edge-border_color);
+        border-bottom: 1px solid var(--connector-color);
         top: min(50%, 15px);
         box-sizing: border-box;
       }
@@ -121,7 +124,7 @@ export class CategoryCard extends LitElement {
         content: '';
         width: 1px;
         height: calc(100% - min(50%, 15px) + 5px);
-        border-right: 1px solid var(--togostanza-edge-border_color);
+        border-right: 1px solid var(--connector-color);
         bottom: -6px;
         right: 0;
         box-sizing: border-box;
@@ -133,7 +136,7 @@ export class CategoryCard extends LitElement {
         content: '';
         width: 100%;
         height: 1px;
-        border-bottom: 1px solid var(--togostanza-edge-border_color);
+        border-bottom: 1px solid var(--connector-color);
         top: min(50%, 15px);
         box-sizing: border-box;
       }
@@ -144,7 +147,7 @@ export class CategoryCard extends LitElement {
         content: '';
         width: 1px;
         height: calc(min(50%, 15px) + 6px);
-        border-right: 1px solid var(--togostanza-edge-border_color);
+        border-right: 1px solid var(--connector-color);
         top: -6px;
         right: 0;
         box-sizing: border-box;
@@ -156,7 +159,7 @@ export class CategoryCard extends LitElement {
         content: '';
         width: 100%;
         height: 1px;
-        border-top: 1px solid var(--togostanza-edge-border_color);
+        border-top: 1px solid var(--connector-color);
         top: min(50%, 15px);
         box-sizing: border-box;
       }
@@ -167,7 +170,7 @@ export class CategoryCard extends LitElement {
         content: '';
         width: 1px;
         height: calc(100% + 14px);
-        border-right: 1px solid var(--togostanza-edge-border_color);
+        border-right: 1px solid var(--connector-color);
         top: -6px;
         right: 0;
         box-sizing: border-box;
@@ -179,7 +182,7 @@ export class CategoryCard extends LitElement {
         content: '';
         width: 100%;
         height: 1px;
-        border-bottom: 1px solid var(--togostanza-edge-border_color);
+        border-bottom: 1px solid var(--connector-color);
         top: min(50%, 15px);
         box-sizing: border-box;
       }
@@ -190,7 +193,7 @@ export class CategoryCard extends LitElement {
         content: '';
         width: 100%;
         height: 1px;
-        border-bottom: 1px solid var(--togostanza-edge-border_color);
+        border-bottom: 1px solid var(--connector-color);
         top: min(50%, 15px);
         box-sizing: border-box;
       }
@@ -201,21 +204,21 @@ export class CategoryCard extends LitElement {
         content: '';
         width: 100%;
         height: 1px;
-        border-bottom: 1px solid var(--togostanza-edge-border_color);
+        border-bottom: 1px solid var(--connector-color);
         top: min(50%, 15px);
         box-sizing: border-box;
       }
 
       .ontology-card {
-        padding: 6px 10px;
+        padding: 3px 6px;
         font-family: var(--togostanza-font-family);
-        border: 1px solid var(--togostanza-node-border_color);
+        border: 1px solid var(--border-color);
         border-radius: 4px;
-        background-color: var(--togostanza-node-background_color);
+        background-color: var(--node-bg-color);
         cursor: pointer;
         position: relative;
         width: min(85%, 20rem);
-        max-width: 30rem;
+        max-width: 20rem;
         box-sizing: border-box;
         overflow: hidden;
         margin-bottom: 6px;
@@ -236,7 +239,7 @@ export class CategoryCard extends LitElement {
         width: 0px;
         height: 0px;
         border: 8px solid transparent;
-        border-left: 8px solid var(--togostanza-node-border_color);
+        border-left: 8px solid var(--border-color);
         top: min(50%, 15px);
         left: 0;
         transform: translate(-50%, -50%) scaleY(0.5);

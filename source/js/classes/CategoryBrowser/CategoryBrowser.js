@@ -1,7 +1,5 @@
 import {LitElement, html, css, nothing} from 'lit';
 
-// import loaderPNG from 'togostanza-utils/spinner.png';
-
 import {cachedAxios} from '../../functions/util';
 
 import './CategoryBrowserView';
@@ -19,12 +17,15 @@ export class CategoryBrowser extends LitElement {
         display: block;
         height: 100%;
         width: 100%;
+        position: absolute;
+        inset: 0;
       }
 
       .container {
         display: flex;
         flex-direction: column;
         gap: 5px;
+        height: 100%;
       }
 
       .spinner {
@@ -51,7 +52,7 @@ export class CategoryBrowser extends LitElement {
 
   static get properties() {
     return {
-      diseaseId: {
+      nodeId: {
         type: String,
         reflect: true,
       },
@@ -88,8 +89,7 @@ export class CategoryBrowser extends LitElement {
     this.data = {};
     this.loading = false;
     this.clickedRole = undefined;
-    this.diseaseId = '';
-    //this.apiEndpoint = '';
+    this.nodeId = '';
     this.error = {message: '', isError: false};
     this.showKeys = ['node', 'label'];
     this.activeNode = {};
@@ -98,31 +98,17 @@ export class CategoryBrowser extends LitElement {
     element.append(this);
   }
 
-  // updateParams(params) {
-  //   try {
-
-  //     this.error = {message: '', isError: false};
-
-  //     this.diseaseId = this.initialId;
-  //   } catch (error) {
-  //     this.error = {message: error.message, isError: true};
-  //   }
-  // }
-
   get url() {
     return this.#apiURL.toString();
   }
 
   #loadData() {
-    console.log('loading data with ', this.url);
     this.API.post(this.url)
       .then(({data}) => {
         this.data = {
           role: this.clickedRole,
           ...this.#getDataObject(data),
         };
-
-        console.log('loaded data', data);
 
         this.activeNode = {
           id: this.data.details.node,
@@ -139,8 +125,8 @@ export class CategoryBrowser extends LitElement {
   }
 
   willUpdate(changed) {
-    if (changed.has('diseaseId') && this.diseaseId) {
-      this.#apiURL.searchParams.set('node', this.diseaseId);
+    if (changed.has('nodeId') && this.nodeId) {
+      this.#apiURL.searchParams.set('node', this.nodeId);
       this.error = {message: '', isError: false};
       this.#loadData();
     }
@@ -152,9 +138,6 @@ export class CategoryBrowser extends LitElement {
   }
 
   #getDataObject(incomingData) {
-    //validate
-
-    console.log('incomingData', incomingData);
     const nodeIdVal = incomingData.self.node;
 
     const nodeLabelVal = incomingData.self.label;
@@ -185,13 +168,9 @@ export class CategoryBrowser extends LitElement {
     };
   }
 
-  #getURL(id) {
-    return this.apiEndpoint.replace('<>', id);
-  }
-
   #changeDiseaseEventHadnler(e) {
     e.stopPropagation();
-    this.diseaseId = e.detail.id;
+    this.nodeId = e.detail.id;
     this.clickedRole = e.detail.role;
     this.#loadingStarted();
 

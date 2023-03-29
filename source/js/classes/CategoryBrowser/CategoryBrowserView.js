@@ -11,7 +11,7 @@ export class CategoryBrowserView extends LitElement {
       :host {
         font-size: 10px;
         display: block;
-        height: calc(var(--togostanza-canvas-height) * 1px);
+        height: 100%;
         padding: var(--togostanza-canvas-padding);
       }
 
