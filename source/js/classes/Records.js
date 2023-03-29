@@ -6,8 +6,6 @@ class Records {
   #attributes;
   #datasets;
 
-  constructor() {}
-
   // public methods
 
   setAttributes({categories, attributes, datasets}) {

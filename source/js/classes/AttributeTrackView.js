@@ -8,6 +8,7 @@ import TrackOverviewCategorical from './TrackOverviewCategorical';
 import ConditionAnnotation from './ConditionAnnotation';
 import {Dummy} from './CategoryBrowser/dummy';
 import * as event from '../events';
+import {CategoryBrowser} from './CategoryBrowser/CategoryBrowser';
 
 export default class AttributeTrackView {
   #attribute;
@@ -207,12 +208,12 @@ export default class AttributeTrackView {
     // make selector view
     switch (this.#attribute.datamodel) {
       case 'classification':
-        new ColumnSelectorView(
-          this.#SELECT_CONTAINER,
-          this.#attribute,
-          filters
-        );
-        const a = new Dummy(this.#SELECT_CONTAINER, this.#attribute, filters);
+        // new ColumnSelectorView(
+        //   this.#SELECT_CONTAINER,
+        //   this.#attribute,
+        //   filters
+        // );
+        new CategoryBrowser(this.#SELECT_CONTAINER, this.#attribute, filters);
         break;
       case 'distribution':
         new HistogramRangeSelectorView(

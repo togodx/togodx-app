@@ -102,7 +102,7 @@ export default class ResultsTable {
   }
 
   async #makePreview() {
-    if ((document.body.dataset.display = 'properties')) {
+    if (document.body.dataset.display === 'properties') {
       this.#TBODY.innerHTML = '';
       this.#previewDxCondition = ConditionBuilder.dxCondition;
       // get IDs
@@ -129,7 +129,7 @@ export default class ResultsTable {
   }
 
   #setupTable(tableData) {
-    if ((document.body.dataset.display = 'results')) {
+    if (document.body.dataset.display === 'results') {
       // reset
       this.#tableData = tableData;
       this.#intersctionObserver.unobserve(this.#TABLE_END);

@@ -7,8 +7,6 @@ class AttributesManager {
   #displayedAttributes;
   #sets;
 
-  constructor() {}
-
   async init(api) {
     // Determine display attribute information. If data is available in local storage, use it; if not, query the API.
 

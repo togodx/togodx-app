@@ -64,7 +64,7 @@ export class cachedAxios {
     if (this.cache.has(url)) {
       return Promise.resolve(this.cache.get(url));
     }
-    return this.axios.get(url).then(res => {
+    return this.axios.get().then(res => {
       if (res.status !== 200) {
         throw new Error(res.statusText);
       }

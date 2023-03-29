@@ -157,7 +157,7 @@ export default class ColumnView {
   }
 
   #getUserFilters(attribute, node) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       const parameter = getApiParameter('locate', {
         attribute,
         node,

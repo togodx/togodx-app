@@ -57,7 +57,7 @@ export default class CategoryView {
     // event
     const buttons = this.#ROOT.querySelectorAll(':scope > .buttons > button');
     buttons.forEach((button, i) => {
-      button.addEventListener('click', e => {
+      button.addEventListener('click', () => {
         switch (i) {
           case 0: // ok
             {

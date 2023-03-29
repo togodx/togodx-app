@@ -31,24 +31,23 @@ export default class HistogramRangeSelectorController {
   #defineSelection() {
     let selectionStart = 0,
       selectionEnd = 0;
-    const self = this;
     Object.defineProperties(this.#selection, {
       start: {
-        get() {
+        get: () => {
           return selectionStart;
         },
-        set(value) {
+        set: value => {
           if (selectionStart !== value) {
             selectionStart = value;
-            self.#update();
+            this.#update();
           }
         },
       },
       end: {
-        get() {
+        get: () => {
           return selectionEnd;
         },
-        set(value) {
+        set: value => {
           if (selectionEnd !== value) {
             selectionEnd = value;
             self.#update();
@@ -56,10 +55,10 @@ export default class HistogramRangeSelectorController {
         },
       },
       range: {
-        get() {
+        get: () => {
           return [selectionStart, selectionEnd];
         },
-        set([start, end]) {
+        set: ([start, end]) => {
           if (selectionStart !== start || selectionEnd !== end) {
             selectionStart = start;
             selectionEnd = end;
