@@ -27,7 +27,7 @@ export default class ConditionsController {
 
     // observe number of conditions
     const config = {attributes: false, childList: true, subtree: false};
-    const callback = (mutationsList, observer) => {
+    const callback = () => {
       this.#ROOT.dataset.numberOfConditions =
         this.#CONDITIONS_CONTAINER.childNodes.length;
     };

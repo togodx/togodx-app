@@ -1,5 +1,6 @@
 {
-    "TEMPLATES": "https://raw.githubusercontent.com/togodx/togodx-config-human/main/config/templates.json",
-    "BACKEND": "https://raw.githubusercontent.com/togodx/togodx-config-human/main/config/backend.dx-server.json",
-    "ATTRIBUTES": "https://raw.githubusercontent.com/togodx/togodx-config-human/main/config/attributes.dx-server.json"
-  }
+  "TEMPLATES": "https://raw.githubusercontent.com/togodx/togodx-config-human/main/config/templates.json",
+  "BACKEND": "https://raw.githubusercontent.com/togodx/togodx-config-human/main/config/backend.dx-server.json",
+  "ATTRIBUTES": "http://ep.dbcls.jp/togodx-server-0/config/attributes.pg-0.json",
+  "ATTRIBUTES_SETS": "./attributes_sets.json"
+}

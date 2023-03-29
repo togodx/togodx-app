@@ -1,0 +1,29 @@
+@use "../../foundation/_mixins.sass" as *
+
+.switch-button-view
+  list-style-type: none
+  margin-left: -.1rem
+  margin-right: -.1rem
+  padding: 3px
+  display: flex
+  gap: 1px
+  background-color: var(--color-lamp-black)
+  border-radius: calc(1lh + 6px)
+  box-shadow: 0 2px 2px #000 inset
+  white-space: nowrap
+  > button
+    +button-view()
+    flex-grow: 1
+    border-radius: 1lh
+    line-height: 1.3em
+    background-color: transparent
+    color: white
+    width: 100%
+    transition: color var(--transition-instant), background-color var(--transition-instant)
+    &:hover
+      background-color: #FFF3
+    &.-active
+      background-color: white
+      color: var(--color-lamp-black)
+      > .material-icons, > .material-icons-outlined
+        color: var(--color-lamp-black)

@@ -125,7 +125,7 @@ export default class StatisticsView {
         bar.setAttribute('title', label);
         bar.innerHTML = `
         <div class="wholebar"></div>
-        <div class="hitbar _category-background-color-strong">
+        <div class="hitbar _category-background-color">
           <div class="filter"></div>
         </div>
         <div class="label">${label}</div>`;
@@ -158,7 +158,7 @@ export default class StatisticsView {
       return bar;
     }, undefined);
 
-    if (e?.detail?.done) {
+    if (e?.detail?.dxCondition.isPropertiesLoaded) {
       this.#ROOT.classList.add('-completed');
       this.#ROOT
         .querySelector(':scope > .loading-view')

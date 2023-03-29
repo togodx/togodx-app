@@ -1,9 +1,8 @@
 .track-filter-view
   line-height: calc(var(--height-track) - var(--padding-track-block-start) * 2)
   position: absolute
-  transition: width var(--transition-wipe), left var(--transition-wipe)
   cursor: pointer
-  transition: background-color var(--transition-wipe), opacity var(--transition-wipe)
+  transition: width var(--transition-instant), left var(--transition-instant), background-color var(--transition-instant), opacity var(--transition-instant), box-shadow var(--transition-instant)
   [data-condition="annotation"] &
     pointer-events: none
   &::after
@@ -70,7 +69,7 @@
       position: absolute
       width: 100%
       height: 100%
-      border: solid 1px white
+      border: solid 2px var(--color-selected)
   &.-selected
     &::before
       z-index: var(--z-track-item-selected)

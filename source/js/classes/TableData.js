@@ -1,15 +1,11 @@
-import App from './App';
 import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
-import {getApiParameter} from '../functions/queryTemplates';
 import ProgressIndicator from './ProgressIndicator';
-import ConditionAnnotation from './ConditionAnnotation';
-import {mixin} from './TableDataMixin.js';
+// import ConditionAnnotation from './ConditionAnnotation';
 import * as event from '../events';
 import axios from 'axios';
 
-const LIMIT = 100;
 const downloadUrls = new Map();
 const timeOutError = 'ECONNABORTED';
 
@@ -80,11 +76,8 @@ const dataButtonModes = new Map([
 
 export default class TableData {
   #dxCondition;
-  #queryIds;
-  #rows;
   #source;
   #isLoading;
-  #isCompleted;
   #ROOT;
   #STATUS;
   #progressIndicator;
@@ -97,10 +90,7 @@ export default class TableData {
     this.#source = cancelToken.source();
 
     this.#isLoading = false;
-    this.#isCompleted = false;
     this.#dxCondition = dxCondition;
-    this.#queryIds = [];
-    this.#rows = [];
 
     // view
     elm.classList.add('table-data-controller-view');
@@ -286,7 +276,7 @@ export default class TableData {
     this.#ROOT.classList.toggle('-fetching');
     this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('empty'));
 
-    const partiallyLoaded = this.#queryIds.length > 0;
+    const partiallyLoaded = this.#dxCondition.ids.length > 0;
     const message = partiallyLoaded ? 'Getting data' : 'Getting ID list';
     this.#STATUS.textContent = message;
 
@@ -331,7 +321,7 @@ export default class TableData {
   }
 
   #setJsonUrl() {
-    const jsonBlob = new Blob([JSON.stringify(this.#rows, null, 2)], {
+    const jsonBlob = new Blob([JSON.stringify(this.data, null, 2)], {
       type: 'application/json',
     });
     downloadUrls.set('json', URL.createObjectURL(jsonBlob));
@@ -348,7 +338,7 @@ export default class TableData {
         'node',
         'value',
       ].join('\t'),
-      ...this.#rows
+      ...this.data
         .map(row => {
           return row.attributes
             .map(attribute => {
@@ -407,94 +397,67 @@ export default class TableData {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  #getQueryIds() {
-    axios
-      .post(
-        App.getApiUrl('aggregate'),
-        getApiParameter('aggregate', {
-          dataset: this.#dxCondition.togoKey,
-          filters: this.#dxCondition.queryFilters,
-          queries: ConditionBuilder.userIds,
-        }),
-        {cancelToken: this.#source.token}
-      )
-      .then(response => {
-        this.#queryIds = response.data;
-
-        if (this.#queryIds.length <= 0) {
-          this.#complete(false);
-          const customEvent = new CustomEvent(event.addNextRows, {
-            detail: {
-              tableData: this,
-              offset: 0,
-              rows: [],
-              done: true,
-            },
-          });
-          DefaultEventEmitter.dispatchEvent(customEvent);
-          return;
-        }
-        this.#ROOT.dataset.status = 'load rows';
-        this.#STATUS.textContent = 'Getting data';
-        this.#progressIndicator.setIndicator(undefined, this.#queryIds.length);
-        this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
-        this.#getProperties();
-      })
-      .catch(error => {
-        console.error(error);
-        this.#handleError(error);
+  async #getQueryIds() {
+    // get IDs
+    await this.#dxCondition.ids;
+    // await this.#dxCondition.ids.catch(error => {
+    //   console.error(error);
+    //   this.#handleError(error);
+    // });
+    if (this.total <= 0) {
+      // retry case
+      this.#completed(false);
+      const customEvent = new CustomEvent(event.addNextRows, {
+        detail: {
+          dxCondition: this.#dxCondition,
+          offset: 0,
+          nextRows: [],
+        },
       });
+      DefaultEventEmitter.dispatchEvent(customEvent);
+      return;
+    }
+    this.#ROOT.dataset.status = 'load rows';
+    this.#STATUS.textContent = 'Getting data';
+    this.#progressIndicator.setIndicator(undefined, this.total);
+    this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
+    this.#getProperties();
   }
 
-  #getProperties() {
+  async #getProperties() {
     this.#isLoading = true;
     const startTime = Date.now();
-    axios
-      .post(
-        App.getApiUrl('dataframe'),
-        getApiParameter('dataframe', {
-          dataset: this.#dxCondition.togoKey,
-          filters: this.#dxCondition.queryFilters,
-          annotations: this.#dxCondition.queryAnnotations,
-          queries: this.#queryIds.slice(this.offset, this.offset + LIMIT),
-        }),
-        {cancelToken: this.#source.token}
-      )
-      .then(response => {
-        const offset = this.offset;
-        this.#rows.push(...response.data);
-        this.#isCompleted = this.offset >= this.#queryIds.length;
-        this.#progressIndicator.updateProgressBar({
-          offset: this.offset,
-          startTime,
-        });
 
-        // dispatch event
-        const customEvent2 = new CustomEvent(event.addNextRows, {
-          detail: {
-            tableData: this,
-            offset,
-            rows: response.data,
-            done: this.#isCompleted,
-          },
-        });
-        DefaultEventEmitter.dispatchEvent(customEvent2);
-        // turn off after finished
-        if (this.#isCompleted) {
-          this.#complete();
-          return;
-        }
-        if (this.#isLoading) this.#getProperties();
-      })
-      .catch(error => {
-        this.#handleError(error);
-      });
+    const offset = this.offset;
+    const nextRows = await this.#dxCondition
+      .getNextProperties()
+      .catch(error => this.#handleError(error));
+    this.#progressIndicator.updateProgressBar({
+      offset: this.offset,
+      startTime,
+    });
+
+    // dispatch event
+    const customEvent = new CustomEvent(event.addNextRows, {
+      detail: {
+        dxCondition: this.#dxCondition,
+        offset,
+        nextRows,
+      },
+    });
+    DefaultEventEmitter.dispatchEvent(customEvent);
+    // turn off after finished
+    if (this.#dxCondition.isPropertiesLoaded) {
+      this.#completed();
+      return;
+    }
+    if (this.#isLoading) this.#getProperties();
   }
 
   /**
    * @param { boolean } withData
    */
-  #complete(withData = true) {
+  #completed(withData = true) {
     this.#ROOT.dataset.status = 'complete';
     this.#STATUS.textContent = withData ? 'Complete' : 'No Data Found';
     this.#ROOT.classList.remove('-fetching');
@@ -511,13 +474,11 @@ export default class TableData {
     DefaultEventEmitter.dispatchEvent(customEvent1);
     // send rows
     if (this.#ROOT.dataset.status !== 'load ids') {
-      const done = this.offset >= this.#queryIds.length;
       const customEvent2 = new CustomEvent(event.addNextRows, {
         detail: {
-          tableData: this,
+          dxCondition: this.#dxCondition,
           offset: 0,
-          rows: this.#rows,
-          done,
+          nextRows: this.data,
         },
       });
       DefaultEventEmitter.dispatchEvent(customEvent2);
@@ -535,7 +496,10 @@ export default class TableData {
 
   /* public accessors */
   get offset() {
-    return this.#rows.length;
+    return this.#dxCondition.offset;
+  }
+  get total() {
+    return this.#dxCondition.ids?.length;
   }
   get togoKey() {
     return this.#dxCondition.togoKey;
@@ -544,11 +508,9 @@ export default class TableData {
     return this.#dxCondition;
   }
   get data() {
-    return this.#rows;
+    return [...this.#dxCondition.properties];
   }
   get rateOfProgress() {
-    return this.#rows.length / this.#queryIds.length;
+    return this.offset / this.total;
   }
 }
-
-Object.assign(TableData.prototype, mixin);

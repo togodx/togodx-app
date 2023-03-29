@@ -13,22 +13,24 @@ export function colorTintByHue(baseColor, hue) {
     .to('srgb');
 }
 
-export function createPopupEvent(uniqueEntry, newEvent) {
-  const [x, y] = uniqueEntry.getAttribute('data-order').split(',');
+export function createPopupEvent(togoKeyView, newEvent) {
+  const x = togoKeyView.dataset.x;
+  const y = togoKeyView.dataset.y;
   const customEvent = new CustomEvent(newEvent, {
     detail: {
+      togoKeyView,
       keys: {
-        dataKey: uniqueEntry.getAttribute('data-key'),
-        subjectId: uniqueEntry.getAttribute('data-subject-id'),
-        mainCategoryId: uniqueEntry.getAttribute('data-main-category-id'),
-        subCategoryId: uniqueEntry.getAttribute('data-sub-category-id'),
-        uniqueEntryId: uniqueEntry.getAttribute('data-unique-entry-id'),
+        dataKey: togoKeyView.dataset.dataset,
+        subjectId: togoKeyView.dataset.categoryId,
+        mainCategoryId: togoKeyView.dataset.attributeId,
+        subCategoryId: togoKeyView.dataset.node,
+        uniqueEntryId: togoKeyView.dataset.entry,
       },
       properties: {
         dataX: x,
         dataY: y,
-        dataSubOrder: uniqueEntry.getAttribute('data-sub-order'),
-        isPrimaryKey: uniqueEntry.classList.contains('primarykey'),
+        dataSubOrder: togoKeyView.dataset.y2,
+        isPrimaryKey: togoKeyView.classList.contains('primarykey'),
       },
     },
   });
