@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import { resolve } from "path";
 import { defineConfig } from "vite";
 import vitePluginPug from "./plugins/vite-plugin-pug";

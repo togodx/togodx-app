@@ -33,12 +33,15 @@ export default class CategoryBrowserColumn extends LitElement {
         align-items: center;
         top: 0;
         z-index: 1;
+        background-color: var(--color-gray);
+        width: 100%;
       }
 
       .header {
         width: min(85%, 20rem);
         display: flex;
         justify-content: space-between;
+        color: white;
       }
 
       .header > .values {
@@ -105,18 +108,24 @@ export default class CategoryBrowserColumn extends LitElement {
     }
   }
 
+  get containedId() {
+    return this.nodes[0].id;
+  }
+
   render() {
     return html`
       <div
         class="column"
-        @click="${this.nodes[0].id === 'dummy' ? null : this._handleClick}"
+        @click="${this.containedId === 'dummy' ? null : this._handleClick}"
       >
-        <div class="header-container">
-          <div class="header">
-            <div class="values">Values</div>
-            <div class="total">Total</div>
-          </div>
-        </div>
+        ${this.containedId !== 'dummy'
+          ? html`<div class="header-container">
+              <div class="header">
+                <div class="values">Values</div>
+                <div class="total">Total</div>
+              </div>
+            </div>`
+          : nothing}
         ${this.nodes.length
           ? html`
               ${repeat(

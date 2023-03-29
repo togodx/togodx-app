@@ -18,7 +18,6 @@ export class CategoryCard extends LitElement {
 
       .-hero-right:before {
         position: absolute;
-        z-index: 9;
         content: '';
         width: 100%;
         height: 1px;
@@ -29,7 +28,6 @@ export class CategoryCard extends LitElement {
 
       .-hero-left:before {
         position: absolute;
-        z-index: 9;
         content: '';
         width: 100%;
         height: 1px;
@@ -49,12 +47,10 @@ export class CategoryCard extends LitElement {
         right: 0;
         transform: translate(50%, -50%) scaleY(0.5);
         box-sizing: border-box;
-        z-index: 9;
       }
 
       .-children-first:before {
         position: absolute;
-        z-index: 9;
         content: '';
         width: 1px;
         height: calc(100% - min(50%, 15px) + 5px);
@@ -65,7 +61,6 @@ export class CategoryCard extends LitElement {
 
       .-children-first:after {
         position: absolute;
-        z-index: 9;
         content: '';
         width: 100%;
         height: 1px;
@@ -76,7 +71,6 @@ export class CategoryCard extends LitElement {
 
       .-children-last:before {
         position: absolute;
-        z-index: 9;
         content: '';
         width: 1px;
         height: calc(min(50%, 15px) + 6px);
@@ -87,7 +81,6 @@ export class CategoryCard extends LitElement {
 
       .-children-last:after {
         position: absolute;
-        z-index: 9;
         content: '';
         width: 100%;
         height: 1px;
@@ -98,7 +91,6 @@ export class CategoryCard extends LitElement {
 
       .-children-mid:before {
         position: absolute;
-        z-index: 9;
         content: '';
         width: 1px;
         height: calc(100% + 14px);
@@ -109,7 +101,6 @@ export class CategoryCard extends LitElement {
 
       .-children-mid:after {
         position: absolute;
-        z-index: 9;
         content: '';
         width: 100%;
         height: 1px;
@@ -120,7 +111,6 @@ export class CategoryCard extends LitElement {
 
       .-parents-first:before {
         position: absolute;
-        z-index: 9;
         content: '';
         width: 1px;
         height: calc(100% - min(50%, 15px) + 5px);
@@ -132,7 +122,6 @@ export class CategoryCard extends LitElement {
 
       .-parents-first:after {
         position: absolute;
-        z-index: 9;
         content: '';
         width: 100%;
         height: 1px;
@@ -143,7 +132,6 @@ export class CategoryCard extends LitElement {
 
       .-parents-last:before {
         position: absolute;
-        z-index: 9;
         content: '';
         width: 1px;
         height: calc(min(50%, 15px) + 6px);
@@ -155,7 +143,6 @@ export class CategoryCard extends LitElement {
 
       .-parents-last:after {
         position: absolute;
-        z-index: 9;
         content: '';
         width: 100%;
         height: 1px;
@@ -166,7 +153,6 @@ export class CategoryCard extends LitElement {
 
       .-parents-mid:before {
         position: absolute;
-        z-index: 9;
         content: '';
         width: 1px;
         height: calc(100% + 14px);
@@ -178,7 +164,6 @@ export class CategoryCard extends LitElement {
 
       .-parents-mid:after {
         position: absolute;
-        z-index: 9;
         content: '';
         width: 100%;
         height: 1px;
@@ -189,7 +174,6 @@ export class CategoryCard extends LitElement {
 
       .-parents-single:after {
         position: absolute;
-        z-index: 9;
         content: '';
         width: 100%;
         height: 1px;
@@ -200,7 +184,6 @@ export class CategoryCard extends LitElement {
 
       .-children-single:before {
         position: absolute;
-        z-index: 9;
         content: '';
         width: 100%;
         height: 1px;
@@ -255,7 +238,6 @@ export class CategoryCard extends LitElement {
         left: 0;
         transform: translate(-50%, -50%) scaleY(0.5);
         box-sizing: border-box;
-        z-index: 9;
       }
 
       h3 {
@@ -394,10 +376,6 @@ export class CategoryCard extends LitElement {
     if (this.data.id === 'dummy') {
       this.leftConnectorClassName = '';
       this.rightConnectorClassName = '';
-    }
-
-    if (this.data) {
-      console.log({data: this.data});
     }
   }
 
