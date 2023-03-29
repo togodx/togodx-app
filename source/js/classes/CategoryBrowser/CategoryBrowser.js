@@ -76,27 +76,33 @@ export class OntologyBrowser extends LitElement {
     };
   }
 
-  constructor(element) {
-    super();
-    this._timer = null;
+  get #apiUrl() {
+    return this.#attribute.obj.api + '?hierarchy';
+  }
 
-    element.append(this);
+  constructor(element, attribute, items) {
+    super();
+    this.#timer = null;
+    this.#attribute = attribute;
+    this.#items = items;
 
     this.data = [];
     this.loading = false;
     this.clickedRole = undefined;
     this.diseaseId = undefined;
-    this.apiEndpoint = '';
+    //this.apiEndpoint = '';
     this.error = {message: '', isError: false};
     this.showKeys = ['id', 'label'];
     this.pathArray = [];
     this.activeNode = {};
     this.API = new cachedAxios();
+
+    element.append(this);
   }
 
   updateParams(params) {
     try {
-      this._validateParams(params);
+      this.#validateParams(params);
 
       applyConstructor.call(this, params);
 
@@ -112,7 +118,7 @@ export class OntologyBrowser extends LitElement {
     }
   }
 
-  _validateParams(params) {
+  #validateParams(params) {
     for (const key in params) {
       if (key === 'api-endpoint') {
         if (!params[key].includes('<>')) {
@@ -122,12 +128,12 @@ export class OntologyBrowser extends LitElement {
     }
   }
 
-  _loadData() {
-    this.API.get(this._getURL(this.diseaseId))
+  #loadData() {
+    this.API.post(this.#getURL(this.diseaseId))
       .then(({data}) => {
         this.data = {
           role: this.clickedRole,
-          ...this._getDataObject(data),
+          ...this.#getDataObject(data),
         };
 
         this.activeNode = {
@@ -140,7 +146,7 @@ export class OntologyBrowser extends LitElement {
         this.error = {message: e.message, isError: true};
       })
       .finally(() => {
-        this._loadingEnded();
+        this.#loadingEnded();
       });
   }
 
@@ -150,26 +156,26 @@ export class OntologyBrowser extends LitElement {
       this.diseaseId
     ) {
       this.error = {message: '', isError: false};
-      this._loadData();
+      this.#loadData();
     }
   }
 
   firstUpdated() {
-    this._loadingStarted();
+    this.#loadingStarted();
     this.diseaseId = this.initialId;
   }
 
-  _getDataObject(incomingData) {
+  #getDataObject(incomingData) {
     //validate
-    const nodeIdVal = getByPath(incomingData, this.nodeIdPath);
+    const nodeIdVal = getByPath(incomingData, this.nodeIdPath); //TODO redo without getByPath
     if (!nodeIdVal) {
       throw new Error('Node id path is not valid');
     }
-    const nodeLabelVal = getByPath(incomingData, this.nodeLabelPath);
+    const nodeLabelVal = getByPath(incomingData, this.nodeLabelPath); //TODO redo without getByPath
     if (!nodeLabelVal) {
       throw new Error('Node label path is not valid');
     }
-    const childrenArr = getByPath(incomingData, this.nodeRelationsChildrenPath);
+    const childrenArr = getByPath(incomingData, this.nodeRelationsChildrenPath); //TODO redo without getByPath
 
     if (childrenArr instanceof Array) {
       if (childrenArr.length > 0) {
@@ -221,15 +227,15 @@ export class OntologyBrowser extends LitElement {
     };
   }
 
-  _getURL(id) {
+  #getURL(id) {
     return this.apiEndpoint.replace('<>', id);
   }
 
-  _changeDiseaseEventHadnler(e) {
+  #changeDiseaseEventHadnler(e) {
     e.stopPropagation();
     this.diseaseId = e.detail.id;
     this.clickedRole = e.detail.role;
-    this._loadingStarted();
+    this.#loadingStarted();
 
     this.updateComplete.then(() => {
       this.dispatchEvent(
@@ -247,17 +253,17 @@ export class OntologyBrowser extends LitElement {
     });
   }
 
-  _loadingStarted() {
-    this._timer = setTimeout(() => {
+  #loadingStarted() {
+    this.#timer = setTimeout(() => {
       this.loading = true;
     }, 200);
   }
 
-  _loadingEnded() {
+  #loadingEnded() {
     this.loading = false;
-    if (this._timer) {
-      clearInterval(this._timer);
-      this._timer = null;
+    if (this.#timer) {
+      clearInterval(this.#timer);
+      this.#timer = null;
     }
   }
 
@@ -265,9 +271,7 @@ export class OntologyBrowser extends LitElement {
     return html`
       <div class="container">
         ${this.loading
-          ? html`<div class="spinner">
-              <img src="${loaderPNG}"></img>
-            </div>`
+          ? html`<div class="loading-view -shown"></div>`
           : nothing}
         ${this.error.isError
           ? html`
@@ -276,7 +280,7 @@ export class OntologyBrowser extends LitElement {
           : nothing}
         <ontology-browser-view
           .data=${this.data}
-          @column-click="${this._changeDiseaseEventHadnler}"
+          @column-click="${this.#changeDiseaseEventHadnler}"
         ></ontology-browser-view>
       </div>
     `;
