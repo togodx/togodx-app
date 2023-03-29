@@ -81,6 +81,7 @@ class App {
       })
       .then(([templates, backend, attributes]) => {
         Records.setAttributes(attributes);
+        console.log({attributes});
         // define primary keys
         const customEvent = new CustomEvent(event.defineTogoKey, {
           detail: {datasets: attributes.datasets},

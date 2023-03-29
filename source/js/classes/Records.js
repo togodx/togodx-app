@@ -12,6 +12,7 @@ class Records {
 
   setAttributes({categories, attributes, datasets}) {
     // define categories
+
     for (let i = 0; i < categories.length; i++) {
       let hue = 360 - (360 * i) / categories.length + 130;
       hue -= hue > 360 ? 360 : 0;

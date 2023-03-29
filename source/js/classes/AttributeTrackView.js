@@ -6,6 +6,7 @@ import ColumnSelectorView from './ColumnSelectorView';
 import HistogramRangeSelectorView from './HistogramRangeSelectorView';
 import TrackOverviewCategorical from './TrackOverviewCategorical';
 import ConditionAnnotation from './ConditionAnnotation';
+import {Dummy} from './CategoryBrowser/dummy';
 import * as event from '../events';
 
 export default class AttributeTrackView {
@@ -211,6 +212,7 @@ export default class AttributeTrackView {
           this.#attribute,
           filters
         );
+        const a = new Dummy(this.#SELECT_CONTAINER, this.#attribute, filters);
         break;
       case 'distribution':
         new HistogramRangeSelectorView(
