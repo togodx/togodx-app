@@ -213,7 +213,6 @@ export class CategoryCard extends LitElement {
         padding: 3px 6px;
         font-family: var(--togostanza-font-family);
         border: 1px solid var(--border-color);
-        border-radius: 4px;
         background-color: var(--node-bg-color);
         cursor: pointer;
         position: relative;
@@ -221,7 +220,19 @@ export class CategoryCard extends LitElement {
         max-width: 20rem;
         box-sizing: border-box;
         overflow: hidden;
-        margin-bottom: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .ontology-card > .label {
+        width: 70%;
+      }
+      .ontology-card > .count {
+        width: 20%;
+      }
+      .ontology-card > .p-value {
+        width: 20%;
       }
 
       .ontology-card:hover {
@@ -384,6 +395,10 @@ export class CategoryCard extends LitElement {
       this.leftConnectorClassName = '';
       this.rightConnectorClassName = '';
     }
+
+    if (this.data) {
+      console.log({data: this.data});
+    }
   }
 
   updated() {
@@ -431,33 +446,8 @@ export class CategoryCard extends LitElement {
             ? 'selected'
             : ''} ${this.mode === 'children' ? 'children-arrow' : ''}"
         >
-          <h3>${this.data.label || '...'}</h3>
-          ${this.mode === 'hero'
-            ? html`
-                <div class="table-container">
-                  <table>
-                    <tbody>
-                      ${this.data.showDetailsKeys?.map(key => {
-                        return html`
-                          <tr>
-                            <th class="key">${key}</th>
-                            <td class="data">
-                              ${this.data[key] instanceof Array
-                                ? html`<ul class="hero-list">
-                                    ${this.data[key].map(
-                                      item => html`<li>${item}</li> `
-                                    )}
-                                  </ul>`
-                                : this.data[key]}
-                            </td>
-                          </tr>
-                        `;
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              `
-            : nothing}
+          <div class="label">${this.data.label}</div>
+          <div class="count">${this.data.count}</div>
         </div>
         <div class="connector ${this.rightConnectorClassName}"></div>
       </div>

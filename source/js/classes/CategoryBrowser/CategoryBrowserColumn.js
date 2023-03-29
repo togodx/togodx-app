@@ -37,6 +37,17 @@ export default class CategoryBrowserColumn extends LitElement {
 
       .header {
         width: min(85%, 20rem);
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .header > .values {
+        width: 70%;
+        margin-left: 6px;
+      }
+      .header > .total {
+        width: 20%;
+        margin-right: 6px;
       }
     `;
   }
@@ -100,7 +111,12 @@ export default class CategoryBrowserColumn extends LitElement {
         class="column"
         @click="${this.nodes[0].id === 'dummy' ? null : this._handleClick}"
       >
-        <div class="header-container"><div class="header">Some title</div></div>
+        <div class="header-container">
+          <div class="header">
+            <div class="values">Values</div>
+            <div class="total">Total</div>
+          </div>
+        </div>
         ${this.nodes.length
           ? html`
               ${repeat(
