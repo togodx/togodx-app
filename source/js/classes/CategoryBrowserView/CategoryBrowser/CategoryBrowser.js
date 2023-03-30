@@ -1,16 +1,11 @@
 import {LitElement, html, nothing} from 'lit';
 import {styles} from './CategoryBrowser.css';
 
-import {cachedAxios} from '../../functions/util';
-
-import './CategoryBrowserView';
-import './CategoryBrowserError';
+import {cachedAxios} from '../../../functions/util';
 
 export class CategoryBrowser extends LitElement {
-  #attribute;
   #apiURL;
   #timer;
-  #items;
 
   static get styles() {
     return styles;
@@ -18,6 +13,8 @@ export class CategoryBrowser extends LitElement {
 
   static get properties() {
     return {
+      attribute: {type: Object, state: true},
+
       nodeId: {
         type: String,
         reflect: true,
@@ -44,13 +41,10 @@ export class CategoryBrowser extends LitElement {
     };
   }
 
-  constructor(element, attribute, items) {
+  constructor() {
+    // searchApiUrl
     super();
     this.#timer = null;
-    this.#attribute = attribute;
-    this.#items = items;
-
-    this.#apiURL = new URL(attribute.api + '?hierarchy');
 
     this.data = {};
     this.loading = false;
@@ -60,8 +54,6 @@ export class CategoryBrowser extends LitElement {
     this.showKeys = ['node', 'label'];
     this.activeNode = {};
     this.API = new cachedAxios();
-
-    element.append(this);
   }
 
   get url() {
@@ -91,6 +83,10 @@ export class CategoryBrowser extends LitElement {
   }
 
   willUpdate(changed) {
+    if (changed.has('attribute') && this.attribute?.api) {
+      this.#apiURL = new URL(this.attribute.api + '?hierarchy');
+    }
+
     if (changed.has('nodeId') && this.nodeId) {
       this.#apiURL.searchParams.set('node', this.nodeId);
       this.error = {message: '', isError: false};
@@ -186,11 +182,11 @@ export class CategoryBrowser extends LitElement {
               <category-error message="${this.error.message}"> </category-error>
             `
           : nothing}
-        <category-browser-view
+        <category-browser-columns
           .data=${this.data}
           @node-clicked="${this.#handleNodeClicked}"
           @node-checked="${this.#handleNodeChecked}"
-        ></category-browser-view>
+        ></category-browser-columns>
       </div>
     `;
   }

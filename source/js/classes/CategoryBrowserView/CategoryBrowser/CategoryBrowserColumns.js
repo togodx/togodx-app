@@ -3,10 +3,9 @@ import {ref, createRef} from 'lit/directives/ref.js';
 
 import {repeat} from 'lit/directives/repeat.js';
 
-import './CategoryBrowserColumn';
-import {styles} from './CategoryBrowserView.css';
+import {styles} from './CategoryBrowserColumns.css';
 
-export class CategoryBrowserView extends LitElement {
+export class CategoryBrowserColumns extends LitElement {
   static get styles() {
     return styles;
   }
@@ -206,4 +205,4 @@ export class CategoryBrowserView extends LitElement {
   }
 }
 
-customElements.define('category-browser-view', CategoryBrowserView);
+customElements.define('category-browser-columns', CategoryBrowserColumns);

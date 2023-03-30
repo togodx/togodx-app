@@ -3,8 +3,6 @@ import {repeat} from 'lit/directives/repeat.js';
 import {flip} from './flipColumn';
 import {styles} from './CategoryBrowserColumn.css';
 
-import './CategoryBrowserNode';
-
 export default class CategoryBrowserColumn extends LitElement {
   static get styles() {
     return styles;

@@ -7,7 +7,7 @@ import HistogramRangeSelectorView from './HistogramRangeSelectorView';
 import TrackOverviewCategorical from './TrackOverviewCategorical';
 import ConditionAnnotation from './ConditionAnnotation';
 import * as event from '../events';
-import {CategoryBrowser} from './CategoryBrowser/CategoryBrowser';
+import {CategoryBrowserView} from './CategoryBrowserView/CategoryBrowserView';
 
 export default class AttributeTrackView {
   #attribute;
@@ -208,7 +208,11 @@ export default class AttributeTrackView {
     switch (this.#attribute.datamodel) {
       case 'classification':
         if (filters.some(filter => !filter.tip)) {
-          new CategoryBrowser(this.#SELECT_CONTAINER, this.#attribute, filters);
+          new CategoryBrowserView(
+            this.#SELECT_CONTAINER,
+            this.#attribute,
+            filters
+          );
         } else {
           new ColumnSelectorView(
             this.#SELECT_CONTAINER,
