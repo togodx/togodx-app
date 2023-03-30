@@ -1,4 +1,5 @@
-import {LitElement, html, css, nothing} from 'lit';
+import {LitElement, html, nothing} from 'lit';
+import {styles} from './CategoryBrowser.css';
 
 import {cachedAxios} from '../../functions/util';
 
@@ -12,42 +13,7 @@ export class CategoryBrowser extends LitElement {
   #items;
 
   static get styles() {
-    return css`
-      :host {
-        display: block;
-        height: 100%;
-        width: 100%;
-        position: absolute;
-        inset: 0;
-      }
-
-      .container {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        height: 100%;
-      }
-
-      .spinner {
-        z-index: 10;
-        position: absolute;
-        width: 100%;
-        height: 100%;
-      }
-
-      ontology-error {
-        z-index: 11;
-      }
-
-      .spinner > img {
-        display: block;
-        width: 20px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      }
-    `;
+    return styles;
   }
 
   static get properties() {
@@ -135,6 +101,7 @@ export class CategoryBrowser extends LitElement {
   firstUpdated() {
     this.#loadingStarted();
     this.#loadData();
+    this.id = 'category-browser';
   }
 
   #getDataObject(incomingData) {
@@ -168,7 +135,7 @@ export class CategoryBrowser extends LitElement {
     };
   }
 
-  #changeDiseaseEventHadnler(e) {
+  #handleNodeClicked(e) {
     e.stopPropagation();
     this.nodeId = e.detail.id;
     this.clickedRole = e.detail.role;
@@ -204,11 +171,15 @@ export class CategoryBrowser extends LitElement {
     }
   }
 
+  #handleNodeChecked(e) {
+    console.log('node checked', e.detail);
+  }
+
   render() {
     return html`
       <div class="container">
         ${this.loading
-          ? html`<div class="loading-view -shown"></div>`
+          ? html` <div part="loader" class="loader></div>`
           : nothing}
         ${this.error.isError
           ? html`
@@ -217,7 +188,8 @@ export class CategoryBrowser extends LitElement {
           : nothing}
         <category-browser-view
           .data=${this.data}
-          @column-click="${this.#changeDiseaseEventHadnler}"
+          @node-clicked="${this.#handleNodeClicked}"
+          @node-checked="${this.#handleNodeChecked}"
         ></category-browser-view>
       </div>
     `;

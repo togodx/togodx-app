@@ -1,32 +1,14 @@
-import {LitElement, html, css} from 'lit';
+import {LitElement, html} from 'lit';
 import {ref, createRef} from 'lit/directives/ref.js';
 
 import {repeat} from 'lit/directives/repeat.js';
 
 import './CategoryBrowserColumn';
+import {styles} from './CategoryBrowserView.css';
 
 export class CategoryBrowserView extends LitElement {
   static get styles() {
-    return css`
-      :host {
-        font-size: 10px;
-        display: block;
-        height: 100%;
-        padding: var(--togostanza-canvas-padding);
-      }
-
-      .clip {
-        height: 100%;
-        overflow: hidden;
-        position: relative;
-      }
-
-      .flex {
-        height: 100%;
-        display: flex;
-        flex-direction: row;
-      }
-    `;
+    return styles;
   }
 
   constructor() {
@@ -153,8 +135,8 @@ export class CategoryBrowserView extends LitElement {
     }
   }
 
-  _handleClick(e) {
-    if (e.target?.role === 'parents' || e.target?.role === 'children') {
+  #handleClick(e) {
+    if (e.detail.role === 'parents' || e.detail.role === 'children') {
       this.scrolledRect = e.detail?.rect || null;
     }
   }
@@ -196,7 +178,7 @@ export class CategoryBrowserView extends LitElement {
       <div class="clip" ${ref(this.clipRef)}>
         <div
           class="flex"
-          @column-click="${this._handleClick}"
+          @node-clicked=${this.#handleClick}
           style="width: ${this.flexWidth}"
           ${ref(this.flexRef)}
         >

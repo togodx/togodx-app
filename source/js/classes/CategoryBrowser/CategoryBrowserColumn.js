@@ -1,58 +1,13 @@
-import {LitElement, css, html, nothing} from 'lit';
-
+import {LitElement, html, nothing} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
-
 import {flip} from './flipColumn';
+import {styles} from './CategoryBrowserColumn.css';
 
-import './CategoryBrowserCard';
+import './CategoryBrowserNode';
 
 export default class CategoryBrowserColumn extends LitElement {
   static get styles() {
-    return css`
-      :host {
-        flex-grow: 1;
-        flex-basis: 0;
-        display: block;
-        position: relative;
-      }
-
-      .column {
-        height: 100%;
-        position: relative;
-        overflow-y: auto;
-        overflow-x: hidden;
-        max-height: calc(
-          var(--togostanza-outline-height) - var(--history-height)
-        );
-      }
-
-      .header-container {
-        position: sticky;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        top: 0;
-        z-index: 1;
-        background-color: var(--color-gray);
-        width: 100%;
-      }
-
-      .header {
-        width: min(85%, 20rem);
-        display: flex;
-        justify-content: space-between;
-        color: white;
-      }
-
-      .header > .values {
-        width: 70%;
-        margin-left: 6px;
-      }
-      .header > .total {
-        width: 20%;
-        margin-right: 6px;
-      }
-    `;
+    return styles;
   }
 
   static get properties() {
@@ -88,36 +43,13 @@ export default class CategoryBrowserColumn extends LitElement {
     }
   }
 
-  _handleClick(e) {
-    if (e.target.tagName === 'CATEGORY-CARD') {
-      // only if clicked on the card itself, not on connector div
-      if (this.role !== 'hero') {
-        // dispatch event to load new data by id
-        this.dispatchEvent(
-          new CustomEvent('column-click', {
-            detail: {
-              role: this.role,
-              rect: e.target.getBoundingClientRect(),
-              ...this.idNodeMap.get(e.target.id),
-            },
-            bubbles: true,
-            composed: true,
-          })
-        );
-      }
-    }
-  }
-
   get containedId() {
     return this.nodes[0].id;
   }
 
   render() {
     return html`
-      <div
-        class="column"
-        @click="${this.containedId === 'dummy' ? null : this._handleClick}"
-      >
+      <div class="column">
         ${this.containedId !== 'dummy'
           ? html`<div class="header-container">
               <div class="header">
@@ -132,7 +64,7 @@ export default class CategoryBrowserColumn extends LitElement {
                 this.nodes,
                 node => node.id,
                 (node, index) => {
-                  return html`<category-card
+                  return html`<category-node
                     key="${node.id}"
                     id="${node.id}"
                     .data=${node}
