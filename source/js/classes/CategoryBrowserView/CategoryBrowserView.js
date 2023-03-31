@@ -160,20 +160,20 @@ export class CategoryBrowserView extends LitElement {
       <div class="container">
         <div class="suggest">
           <suggest
-            @suggest-input=${this.#handleSuggestInput}
-            @suggest-select=${this.#handleSuggestSelect}
-            .loading=${this.suggestionLoading}
-            .data=${this.suggestionsData}
+            @suggest-input="${this.#handleSuggestInput}"
+            @suggest-select="${this.#handleSuggestSelect}"
+            .loading="${this.suggestionLoading}"
+            .data="${this.suggestionsData}"
             id="suggest"
           ></suggest>
         </div>
         <div class="category-browser">
           <category-browser
-            @node-clicked=${this.#handleNodeClick}
-            @node-checked=${this.#handleNodeCheck}
+            @node-clicked="${this.#handleNodeClick}"
+            @node-checked="${this.#handleNodeCheck}"
             id="category-browser"
-            .items=${this.#items}
-            .data=${this.categoryData}
+            .items="${this.#items}"
+            .data="${this.categoryData}"
           ></category-browser>
         </div>
       </div>
