@@ -12,6 +12,7 @@ export class CategoryBrowserView extends LitElement {
   #API = new cachedAxios();
   #categoryAPIBaseURL;
   #suggestAPIBaseURL;
+  #clickedRole;
 
   constructor(element, attribute, items) {
     super();
@@ -79,6 +80,7 @@ export class CategoryBrowserView extends LitElement {
     const parentsArr = incomingData.parents ?? [];
 
     return {
+      role: this.#clickedRole,
       details: {
         ...incomingData.self,
         id: nodeIdVal,
@@ -130,6 +132,7 @@ export class CategoryBrowserView extends LitElement {
 
   #handleNodeClick(e) {
     this.nodeId = e.detail.id;
+    this.#clickedRole = e.detail.role;
   }
 
   #handleNodeCheck(e) {

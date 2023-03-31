@@ -52,7 +52,6 @@ export class CategoryBrowserColumns extends LitElement {
 
   willUpdate(changedProperties) {
     if (changedProperties.has('data')) {
-      console.log('willUpdate data changed');
       if (changedProperties.get('data')) {
         if (
           this.data.details.id &&
@@ -66,7 +65,6 @@ export class CategoryBrowserColumns extends LitElement {
           this.dataColumns._children = changedProperties.get('data').relations
             ?.children || [{id: 'dummy', label: 'dummy'}];
 
-          console.log('this._columns', this._columns); // Length is always 3!!
           if (this._columns.length === 4) {
             let movement;
             if (this._columns.includes('_parents')) {
@@ -105,7 +103,6 @@ export class CategoryBrowserColumns extends LitElement {
       }
 
       this.updateComplete.then(() => {
-        console.log('this.data.role= ', this.data.role); // TODO !! always undefined here!
         if (this.data.role === 'children') {
           this.movement = 'left';
 
@@ -145,7 +142,6 @@ export class CategoryBrowserColumns extends LitElement {
   }
 
   updated() {
-    console.log('updated, this.movement = ', this.movement); //movement is empty
     if (this.movement === 'left') {
       this.animate = this.flexRef.value.animate(
         [

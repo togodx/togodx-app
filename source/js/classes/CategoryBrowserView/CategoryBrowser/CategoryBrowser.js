@@ -28,12 +28,6 @@ export class CategoryBrowser extends LitElement {
     this.showKeys = ['node', 'label'];
   }
 
-  willUpdate(changed) {
-    if (changed.has('data')) {
-      console.log({data: this.data});
-    }
-  }
-
   render() {
     return html`
       <div class="container">
