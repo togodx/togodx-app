@@ -1,4 +1,5 @@
 import {css, html, LitElement} from 'lit';
+import {cachedAxios} from '../../functions/util';
 import './Suggest/Suggest';
 import './CategoryBrowser/CategoryBrowser';
 import './CategoryBrowser/CategoryBrowserColumns';
@@ -7,14 +8,27 @@ import './CategoryBrowser/CategoryBrowserError';
 import './CategoryBrowser/CategoryBrowserNode';
 
 export class CategoryBrowserView extends LitElement {
-  #attribute;
   #items;
+  #API = new cachedAxios();
+  #categoryAPIBaseURL;
+  #suggestAPIBaseURL;
 
   constructor(element, attribute, items) {
     super();
 
-    this.#attribute = attribute;
+    this.#suggestAPIBaseURL = new URL(
+      attribute.api.replace('/breakdown/', '/suggest/')
+    );
+    this.#categoryAPIBaseURL = new URL(attribute.api + '?hierarchy');
     this.#items = items;
+
+    this.categoryData = {};
+    this.categoryLoading = false;
+    this.suggestionsData = {};
+    this.suggestionsLoading = false;
+    this.url = '';
+    this.nodeId = '';
+    this.term = '';
 
     element.append(this);
   }
@@ -44,20 +58,122 @@ export class CategoryBrowserView extends LitElement {
   }
 
   static get properties() {
-    return {};
+    return {
+      categoryData: {type: Object, state: true},
+      suggestionsData: {type: Object, state: true},
+      categoryLoading: {type: Boolean, state: true},
+      suggestionsLoading: {type: Boolean, state: true},
+      url: {type: String, state: true},
+      nodeId: {type: String, state: true},
+      term: {type: String, state: true},
+    };
+  }
+
+  #convertCategoryData(incomingData) {
+    const nodeIdVal = incomingData.self.node;
+
+    const nodeLabelVal = incomingData.self.label;
+
+    const childrenArr = incomingData.children ?? [];
+
+    const parentsArr = incomingData.parents ?? [];
+
+    return {
+      details: {
+        ...incomingData.self,
+        id: nodeIdVal,
+        label: nodeLabelVal,
+      },
+      relations: {
+        children: childrenArr.map(item => ({
+          ...item,
+          id: item.node,
+          label: item.label,
+        })),
+        parents: parentsArr.map(item => ({
+          ...item,
+          id: item.node,
+          label: item.label,
+        })),
+      },
+    };
+  }
+
+  willUpdate(changed) {
+    if (changed.has('nodeId') && this.nodeId) {
+      this.#loadCategoryData(this.nodeId);
+    }
+    if (changed.has('term') && this.term) {
+      this.#loadSuggestData(this.term);
+    }
+  }
+
+  #loadCategoryData(nodeId) {
+    if (nodeId) {
+      this.#categoryAPIBaseURL.searchParams.set('node', nodeId);
+    }
+    this.categoryLoading = true;
+    this.#API.post(this.#categoryAPIBaseURL.href).then(({data}) => {
+      this.categoryLoading = false;
+      this.categoryData = this.#convertCategoryData(data);
+    });
+  }
+
+  #loadSuggestData(term) {
+    this.#suggestAPIBaseURL.searchParams.set('term', term);
+    this.suggestionsLoading = true;
+    this.#API.post(this.#suggestAPIBaseURL.href).then(({data}) => {
+      this.suggestionsLoading = false;
+      this.suggestionsData = data;
+    });
+  }
+
+  #handleNodeClick(e) {
+    this.nodeId = e.detail.id;
+  }
+
+  #handleNodeCheck(e) {
+    console.log('node checked', e.detail);
+  }
+
+  #handleSuggestInput(e) {
+    if (e.detail.value.length < 3) {
+      this.suggestionsData = {};
+      return;
+    } else {
+      this.term = e.detail.value;
+    }
+  }
+
+  #handleSuggestSelect(e) {
+    this.nodeId = e.detail.id;
+  }
+
+  // load initial data
+  firstUpdated() {
+    this.url = this.#categoryAPIBaseURL.href;
+    this.#loadCategoryData();
   }
 
   render() {
     return html`
       <div class="container">
         <div class="suggest">
-          <suggest id="suggest"></suggest>
+          <suggest
+            @suggest-input=${this.#handleSuggestInput}
+            @suggest-select=${this.#handleSuggestSelect}
+            .loading=${this.suggestionLoading}
+            .data=${this.suggestionsData}
+            id="suggest"
+          ></suggest>
         </div>
         <div class="category-browser">
           <category-browser
+            @node-clicked=${this.#handleNodeClick}
+            @node-checked=${this.#handleNodeCheck}
             id="category-browser"
-            .attribute=${this.#attribute}
             .items=${this.#items}
+            .data=${this.categoryData}
           ></category-browser>
         </div>
       </div>
