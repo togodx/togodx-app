@@ -145,7 +145,6 @@ export class CategoryBrowserView extends LitElement {
       this.suggestionsData = [];
     } else {
       this.term = e.detail.term;
-      this.#loadSuggestData(this.term);
     }
   }
 
