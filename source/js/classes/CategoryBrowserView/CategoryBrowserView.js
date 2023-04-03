@@ -21,6 +21,7 @@ export class CategoryBrowserView extends LitElement {
       attribute.api.replace('/breakdown/', '/suggest/')
     );
     this.#categoryAPIBaseURL = new URL(attribute.api + '?hierarchy');
+    console.log('items', items);
     this.#items = items;
 
     this.categoryData = {};
@@ -142,7 +143,6 @@ export class CategoryBrowserView extends LitElement {
   #handleSuggestInput(e) {
     if (e.detail.term.length < 3) {
       this.suggestionsData = [];
-      return;
     } else {
       this.term = e.detail.term;
       this.#loadSuggestData(this.term);
@@ -164,8 +164,8 @@ export class CategoryBrowserView extends LitElement {
       <div class="container">
         <div class="suggest">
           <suggest-element
-            @suggest-input="${this.#handleSuggestInput}"
-            @suggest-select="${this.#handleSuggestSelect}"
+            @suggestion-input="${this.#handleSuggestInput}"
+            @suggestion-select="${this.#handleSuggestSelect}"
             .loading="${this.suggestionLoading}"
             .suggestions="${this.suggestionsData}"
             id="suggest"

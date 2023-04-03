@@ -4,15 +4,11 @@ import {styles} from './Suggest.css';
 import {scrollMeUp} from './scrollMeUp';
 
 export class Suggest extends LitElement {
-  #term = '';
-
   constructor() {
     super();
     this.suggestions = [];
     this.selected = 0;
-    this.show = true;
-    this._id = '';
-    this.attribute = {};
+    this.show = false;
   }
 
   static get styles() {
@@ -29,74 +25,37 @@ export class Suggest extends LitElement {
   }
 
   #handleInput(e) {
-    this.#term = e.target.value;
-    if (this.#term.length > 2) {
-      this.dispatchEvent(
-        new CustomEvent('suggest-input', {
-          detail: {
-            term: this.#term,
-          },
-          bubbles: true,
-          composed: true,
-        })
-      );
-    }
+    this.dispatchEvent(
+      new CustomEvent('suggestion-input', {
+        detail: {
+          term: e.target.value,
+        },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 
-  willUpdate(changed) {
-    if (changed.has('suggestions')) {
-      this.selected = 0;
-      console.log('this.suggestions.length', this.suggestions.length);
-    }
+  #handleFocus() {
+    this.show = true;
   }
-  w;
 
-  render() {
-    return html`
-      <div class="container">
-        <div class="input-container">
-          <input
-            type="text"
-            @input=${this.#handleInput}
-            @keydown=${this.#handleKeyDown}
-          />
-        </div>
-
-        ${this.suggestions.length && this.show
-          ? html` <ul class="suggestions">
-              ${repeat(
-                this.suggestions,
-                suggestion => suggestion.node,
-                (suggestion, index) => {
-                  return html`
-                    <li
-                      class="suggestion ${index === this.selected
-                        ? '-selected'
-                        : ''}"
-                      @click=${() => this.#handleSelectSuggestion(suggestion)}
-                      ${scrollMeUp(this.selected === index)}
-                    >
-                      ${suggestion.label}
-                    </li>
-                  `;
-                }
-              )}
-            </ul>`
-          : nothing}
-      </div>
-    `;
+  #hideSuggestions() {
+    this.show = false;
+    this.selected = 0;
   }
 
   #handleSelectSuggestion(suggestion) {
     this.dispatchEvent(
       new CustomEvent('suggestion-select', {
         detail: {
-          id: suggestion.node, // TODO check if "node" or "id" ?
+          id: suggestion.node,
         },
         bubbles: true,
         composed: true,
       })
     );
+    this.#hideSuggestions();
   }
 
   #selectNext() {
@@ -131,11 +90,57 @@ export class Suggest extends LitElement {
         this.#selectCurrent();
         break;
       case 'Escape':
-        this.show = false;
+        this.#hideSuggestions();
         break;
       default:
         break;
     }
+  }
+
+  willUpdate(changed) {
+    if (changed.has('suggestions')) {
+      this.selected = 0;
+      this.show = this.suggestions.length > 0;
+    }
+  }
+
+  render() {
+    return html`
+      <div class="container">
+        <div class="input-container">
+          <input
+            type="text"
+            @input=${this.#handleInput}
+            @keydown=${this.#handleKeyDown}
+            @focusout="${this.#hideSuggestions}"
+            @focusin=${this.#handleFocus}
+            @click=${this.#handleFocus}
+          />
+        </div>
+
+        ${this.show && this.suggestions.length > 0
+          ? html` <ul class="suggestions">
+              ${repeat(
+                this.suggestions,
+                suggestion => suggestion.node,
+                (suggestion, index) => {
+                  return html`
+                    <li
+                      class="suggestion ${index === this.selected
+                        ? '-selected'
+                        : ''}"
+                      @click=${() => this.#handleSelectSuggestion(suggestion)}
+                      ${scrollMeUp(this.selected === index)}
+                    >
+                      ${suggestion.label}
+                    </li>
+                  `;
+                }
+              )}
+            </ul>`
+          : nothing}
+      </div>
+    `;
   }
 }
 customElements.define('suggest-element', Suggest);
