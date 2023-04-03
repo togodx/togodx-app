@@ -164,7 +164,7 @@ export class CategoryBrowserView extends LitElement {
       <div class="container">
         <div class="suggest">
           <suggest-element
-            @suggestion-input="${this.#handleSuggestInput}"
+            @suggestion-input="${debounce(this.#handleSuggestInput)}"
             @suggestion-select="${this.#handleSuggestSelect}"
             .loading="${this.suggestionLoading}"
             .suggestions="${this.suggestionsData}"
@@ -186,3 +186,11 @@ export class CategoryBrowserView extends LitElement {
 }
 
 customElements.define('category-browser-view', CategoryBrowserView);
+
+export function debounce(func, ms = 300) {
+  let timeout;
+  return function () {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, arguments), ms);
+  };
+}
