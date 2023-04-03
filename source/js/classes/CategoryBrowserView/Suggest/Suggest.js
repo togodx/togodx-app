@@ -1,6 +1,5 @@
 import {html, LitElement, nothing} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
-import {styles} from './Suggest.css';
 import {scrollMeUp} from './scrollMeUp';
 
 export class Suggest extends LitElement {
@@ -9,10 +8,6 @@ export class Suggest extends LitElement {
     this.suggestions = [];
     this.selected = 0;
     this.show = false;
-  }
-
-  static get styles() {
-    return styles;
   }
 
   static get properties() {
@@ -115,7 +110,11 @@ export class Suggest extends LitElement {
             @focusout="${this.#hideSuggestions}"
             @focusin=${this.#handleFocus}
             @click=${this.#handleFocus}
+            class="${this.show && this.suggestions.length > 0
+              ? '-suggestions-shown'
+              : ''}"
           />
+          <div class="material-icons">search</div>
         </div>
 
         ${this.show && this.suggestions.length > 0
@@ -132,7 +131,7 @@ export class Suggest extends LitElement {
                       @click=${() => this.#handleSelectSuggestion(suggestion)}
                       ${scrollMeUp(this.selected === index)}
                     >
-                      ${suggestion.label}
+                      <span> ${suggestion.label} </span>
                     </li>
                   `;
                 }
@@ -141,6 +140,9 @@ export class Suggest extends LitElement {
           : nothing}
       </div>
     `;
+  }
+  createRenderRoot() {
+    return this;
   }
 }
 customElements.define('suggest-element', Suggest);

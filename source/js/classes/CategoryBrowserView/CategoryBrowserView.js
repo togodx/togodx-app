@@ -21,7 +21,6 @@ export class CategoryBrowserView extends LitElement {
       attribute.api.replace('/breakdown/', '/suggest/')
     );
     this.#categoryAPIBaseURL = new URL(attribute.api + '?hierarchy');
-    console.log('items', items);
     this.#items = items;
 
     this.categoryData = {};
@@ -127,7 +126,15 @@ export class CategoryBrowserView extends LitElement {
     this.suggestionsLoading = true;
     this.#API.post(this.#suggestAPIBaseURL.href).then(({data}) => {
       this.suggestionsLoading = false;
-      this.suggestionsData = data.results;
+      this.suggestionsData = data.results.reduce((acc, curr) => {
+        // check if the current item "node" is already in array
+        const index = acc.findIndex(item => item.node === curr.node);
+        // if not, add it to the array
+        if (index === -1) {
+          acc.push(curr);
+        }
+        return acc;
+      }, []);
     });
   }
 
@@ -160,7 +167,7 @@ export class CategoryBrowserView extends LitElement {
 
   render() {
     return html`
-      <div class="container">
+      <div class="container" id="category-browser-view">
         <div class="suggest">
           <suggest-element
             @suggestion-input="${debounce(this.#handleSuggestInput)}"
@@ -181,6 +188,10 @@ export class CategoryBrowserView extends LitElement {
         </div>
       </div>
     `;
+  }
+
+  createRenderRoot() {
+    return this;
   }
 }
 

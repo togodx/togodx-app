@@ -22,7 +22,6 @@ export const styles = css`
     justify-content: center;
     align-items: center;
     top: 0;
-    z-index: 1;
     background-color: var(--color-gray);
     width: 100%;
   }
