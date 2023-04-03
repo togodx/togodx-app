@@ -126,7 +126,7 @@ export class CategoryBrowserView extends LitElement {
     this.suggestionsLoading = true;
     this.#API.post(this.#suggestAPIBaseURL.href).then(({data}) => {
       this.suggestionsLoading = false;
-      this.suggestionsData = data;
+      this.suggestionsData = data.results;
     });
   }
 
@@ -140,11 +140,12 @@ export class CategoryBrowserView extends LitElement {
   }
 
   #handleSuggestInput(e) {
-    if (e.detail.value.length < 3) {
-      this.suggestionsData = {};
+    if (e.detail.term.length < 3) {
+      this.suggestionsData = [];
       return;
     } else {
-      this.term = e.detail.value;
+      this.term = e.detail.term;
+      this.#loadSuggestData(this.term);
     }
   }
 
@@ -162,13 +163,13 @@ export class CategoryBrowserView extends LitElement {
     return html`
       <div class="container">
         <div class="suggest">
-          <suggest
+          <suggest-element
             @suggest-input="${this.#handleSuggestInput}"
             @suggest-select="${this.#handleSuggestSelect}"
             .loading="${this.suggestionLoading}"
-            .data="${this.suggestionsData}"
+            .suggestions="${this.suggestionsData}"
             id="suggest"
-          ></suggest>
+          ></suggest-element>
         </div>
         <div class="category-browser">
           <category-browser

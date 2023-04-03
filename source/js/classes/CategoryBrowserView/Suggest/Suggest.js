@@ -1,16 +1,16 @@
 import {html, LitElement, nothing} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
 import {styles} from './Suggest.css';
+import {scrollMeUp} from './scrollMeUp';
 
 export class Suggest extends LitElement {
-  #textInput = '';
+  #term = '';
 
   constructor() {
-    // Suggest API url
     super();
     this.suggestions = [];
     this.selected = 0;
-    this.show = false;
+    this.show = true;
     this._id = '';
     this.attribute = {};
   }
@@ -23,10 +23,33 @@ export class Suggest extends LitElement {
     return {
       suggestions: {type: Array, state: true},
       selected: {type: Number, state: true},
-      data: {type: Array, state: true},
       loading: {type: Boolean, state: true},
+      show: {type: Boolean, state: true},
     };
   }
+
+  #handleInput(e) {
+    this.#term = e.target.value;
+    if (this.#term.length > 2) {
+      this.dispatchEvent(
+        new CustomEvent('suggest-input', {
+          detail: {
+            term: this.#term,
+          },
+          bubbles: true,
+          composed: true,
+        })
+      );
+    }
+  }
+
+  willUpdate(changed) {
+    if (changed.has('suggestions')) {
+      this.selected = 0;
+      console.log('this.suggestions.length', this.suggestions.length);
+    }
+  }
+  w;
 
   render() {
     return html`
@@ -34,77 +57,78 @@ export class Suggest extends LitElement {
         <div class="input-container">
           <input
             type="text"
-            @input=${e => this._input(e)}
-            @keydown=${e => this._keydown(e)}
-            @focus=${() => this._focus()}
-            @blur=${() => this._blur()}
+            @input=${this.#handleInput}
+            @keydown=${this.#handleKeyDown}
           />
         </div>
-        ${this.suggestions.length
-          ? html` <div class="suggestions">
+
+        ${this.suggestions.length && this.show
+          ? html` <ul class="suggestions">
               ${repeat(
                 this.suggestions,
-                suggestion => suggestion.id,
+                suggestion => suggestion.node,
                 (suggestion, index) => {
                   return html`
-                    <div
+                    <li
                       class="suggestion ${index === this.selected
-                        ? 'selected'
+                        ? '-selected'
                         : ''}"
-                      @click=${() => this._selectSuggestion(suggestion)}
+                      @click=${() => this.#handleSelectSuggestion(suggestion)}
+                      ${scrollMeUp(this.selected === index)}
                     >
                       ${suggestion.label}
-                    </div>
+                    </li>
                   `;
                 }
               )}
-            </div>`
+            </ul>`
           : nothing}
       </div>
     `;
   }
 
-  _input(e) {
-    this.#textInput = e.target.value;
-  }
-
-  _selectSuggestion(suggestion) {
+  #handleSelectSuggestion(suggestion) {
     this.dispatchEvent(
-      new CustomEvent('select-suggestion', {
+      new CustomEvent('suggestion-select', {
         detail: {
-          id: this._id,
-          suggestion: suggestion,
+          id: suggestion.node, // TODO check if "node" or "id" ?
         },
+        bubbles: true,
+        composed: true,
       })
     );
   }
 
-  _selectNext() {
+  #selectNext() {
     if (this.selected < this.suggestions.length - 1) {
       this.selected++;
+    } else {
+      this.selected = 0;
     }
   }
 
-  _selectPrev() {
+  #selectPrev() {
     if (this.selected > 0) {
       this.selected--;
+    } else {
+      this.selected = this.suggestions.length - 1;
     }
   }
 
-  _selectCurrent() {
-    this._selectSuggestion(this.suggestions[this.selected]);
+  #selectCurrent() {
+    this.#handleSelectSuggestion(this.suggestions[this.selected]);
   }
 
-  _keyDownHandler(e) {
+  #handleKeyDown(e) {
     switch (e.key) {
       case 'ArrowDown':
-        this._selectNext();
+        this.#selectNext();
         break;
       case 'ArrowUp':
-        this._selectPrev();
+        this.#selectPrev();
         break;
       case 'Enter':
-        this._selectCurrent();
+        this.#selectCurrent();
         break;
       case 'Escape':
         this.show = false;
@@ -112,10 +136,6 @@ export class Suggest extends LitElement {
       default:
         break;
     }
-  }
-
-  firstUpdated() {
-    this.addEventListener('keydown', e => this._keyDownHandler(e));
   }
 }
 customElements.define('suggest-element', Suggest);
