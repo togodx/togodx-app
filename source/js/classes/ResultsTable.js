@@ -90,6 +90,38 @@ export default class ResultsTable {
     DefaultEventEmitter.addEventListener(event.failedFetchTableDataIds, e =>
       this.#failed(e.detail)
     );
+
+    // statistics
+    const controller = this.#STATS.querySelector(
+      ':scope > th.controller > .inner'
+    );
+    controller.querySelectorAll(':scope > label > input').forEach(radio => {
+      radio.addEventListener('change', () => {
+        switch (radio.value) {
+          case 'hits_all':
+            this.#STATS.classList.remove('-onlyhitcount');
+            this.#STATS.classList.remove('-stretch');
+            break;
+          case 'hits_all_percentage':
+            this.#STATS.classList.remove('-onlyhitcount');
+            this.#STATS.classList.add('-stretch');
+            break;
+          case 'hits_only':
+            this.#STATS.classList.add('-onlyhitcount');
+            this.#STATS.classList.remove('-stretch');
+            break;
+        }
+        const customEvent = new CustomEvent(event.changeStatisticsViewMode);
+        DefaultEventEmitter.dispatchEvent(customEvent);
+        window.localStorage.setItem('statistics_view_moe', radio.value);
+      });
+    });
+    const statisticsViewMoe = window.localStorage.getItem(
+      'statistics_view_moe'
+    );
+    controller
+      .querySelector(`:scope > label > input[value="${statisticsViewMoe}"]`)
+      ?.dispatchEvent(new MouseEvent('click'));
   }
 
   // private methods
