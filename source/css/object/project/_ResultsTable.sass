@@ -41,6 +41,7 @@
   > .inner
     --padding: calc((var(--height-results-thead-row) - var(--height-togo-key-view)) * 0.5)
     overflow: auto
+    height: calc(100% - var(--height-results-header))
     > table
       width: 100%
       height: auto
@@ -144,6 +145,9 @@
     > .tableend
       height: 8rem
       position: relative
-    &.-complete
+      [data-display="properties"] &
+        display: none
+  &.-complete
+    > .inner
       > .tableend
         display: none
