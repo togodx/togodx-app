@@ -17,7 +17,7 @@ const prMapEntry = new Map([
 
 export default class ResultsTable {
   #intersctionObserver;
-  #tableData;
+  #conditionResults;
   #statisticsViews;
   #header;
   #previewDxCondition;
@@ -99,7 +99,7 @@ export default class ResultsTable {
 
   #enterTableEnd() {
     this.#intersctionObserver.unobserve(this.#TABLE_END);
-    this.#tableData.next();
+    this.#conditionResults.next();
   }
 
   async #makePreview() {
@@ -129,20 +129,20 @@ export default class ResultsTable {
     }
   }
 
-  #setupTable(tableData) {
+  #setupTable(conditionResults) {
     if ((document.body.dataset.display = 'results')) {
       // reset
-      this.#tableData = tableData;
+      this.#conditionResults = conditionResults;
       this.#intersctionObserver.unobserve(this.#TABLE_END);
-      this.#header = tableData.dxCondition.tableHeader;
+      this.#header = conditionResults.dxCondition.tableHeader;
       this.#ROOT.classList.remove('-complete');
       this.#THEAD.innerHTML = '';
       this.#TBODY.innerHTML = '';
       this.#LOADING_VIEW.classList.add('-shown');
       DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
 
-      this.#makeTableHeader(tableData.dxCondition);
-      this.#makeStats(tableData.dxCondition);
+      this.#makeTableHeader(conditionResults.dxCondition);
+      this.#makeStats(conditionResults.dxCondition);
     }
   }
 
@@ -219,7 +219,7 @@ export default class ResultsTable {
         new StatisticsView(
           this.#STATS,
           td.querySelector(':scope > .inner > div'),
-          this.#tableData,
+          this.#conditionResults,
           index,
           condition
         )
@@ -233,7 +233,7 @@ export default class ResultsTable {
     const isValidResults =
       document.body.dataset.display === 'results' &&
       !isPreview &&
-      dxCondition === this.#tableData?.dxCondition;
+      dxCondition === this.#conditionResults?.dxCondition;
 
     if (isValidPreview || isValidResults) {
       // make table
