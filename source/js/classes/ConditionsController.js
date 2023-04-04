@@ -3,12 +3,12 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import * as event from '../events';
 
 export default class ConditionsController {
-  #tableData;
+  #conditionResultsController;
   #ROOT;
   #CONDITIONS_CONTAINER;
 
   constructor(elm) {
-    this.#tableData = [];
+    this.#conditionResultsController = [];
 
     // references
     this.#ROOT = elm;
@@ -16,13 +16,13 @@ export default class ConditionsController {
 
     // event listener
     DefaultEventEmitter.addEventListener(event.completeQueryParameter, e =>
-      this.#setTableData(e.detail)
+      this.#setConditionResultsController(e.detail)
     );
     DefaultEventEmitter.addEventListener(event.selectTableData, e =>
-      this.#selectTableData(e.detail)
+      this.#selectConditionResultsController(e.detail)
     );
     DefaultEventEmitter.addEventListener(event.deleteTableData, e =>
-      this.#deleteTableData(e.detail)
+      this.#deleteConditionResultsController(e.detail)
     );
 
     // observe number of conditions
@@ -41,32 +41,32 @@ export default class ConditionsController {
    *
    * @param {DXCondition} dxCondition
    */
-  #setTableData(dxCondition) {
+  #setConditionResultsController(dxCondition) {
     // find matching condition from already existing conditions
-    const sameConditionTableData = this.#tableData.find(tableData =>
+    const sameConditionConditionResultsController = this.#conditionResultsController.find(tableData =>
       tableData.dxCondition.checkSameCondition(dxCondition)
     );
-    if (sameConditionTableData) {
+    if (sameConditionConditionResultsController) {
       // use existing table data
-      sameConditionTableData.select();
+      sameConditionConditionResultsController.select();
     } else {
       // make new table data
       const elm = document.createElement('div');
       this.#CONDITIONS_CONTAINER.insertAdjacentElement('afterbegin', elm);
-      this.#tableData.push(new ConditionResultsController(dxCondition, elm));
+      this.#conditionResultsController.push(new ConditionResultsController(dxCondition, elm));
     }
   }
 
-  #selectTableData(selectedTableData) {
+  #selectConditionResultsController(selectedConditionResultsController) {
     document.body.dataset.display = 'results';
     // deselect
-    for (const tableData of this.#tableData) {
-      if (tableData !== selectedTableData) tableData.deselect();
+    for (const tableData of this.#conditionResultsController) {
+      if (tableData !== selectedConditionResultsController) tableData.deselect();
     }
   }
 
-  #deleteTableData(tableData) {
-    const index = this.#tableData.indexOf(tableData);
-    this.#tableData.splice(index, 1);
+  #deleteConditionResultsController(tableData) {
+    const index = this.#conditionResultsController.indexOf(tableData);
+    this.#conditionResultsController.splice(index, 1);
   }
 }
