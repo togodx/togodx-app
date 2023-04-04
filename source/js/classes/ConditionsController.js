@@ -1,4 +1,4 @@
-import TableData from './TableData';
+import ConditionResultsController from './ConditionResultsController';
 import DefaultEventEmitter from './DefaultEventEmitter';
 import * as event from '../events';
 
@@ -53,7 +53,7 @@ export default class ConditionsController {
       // make new table data
       const elm = document.createElement('div');
       this.#CONDITIONS_CONTAINER.insertAdjacentElement('afterbegin', elm);
-      this.#tableData.push(new TableData(dxCondition, elm));
+      this.#tableData.push(new ConditionResultsController(dxCondition, elm));
     }
   }
 

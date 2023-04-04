@@ -74,7 +74,7 @@ const dataButtonModes = new Map([
   ],
 ]);
 
-export default class TableData {
+export default class ConditionResultsController {
   #dxCondition;
   #source;
   #isLoading;
