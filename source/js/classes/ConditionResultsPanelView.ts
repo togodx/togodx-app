@@ -4,6 +4,13 @@ import Records from './Records';
 
 const BUTTONS: string[] = [ 'edit', 'resume', 'pause', 'tsv', 'retry' ]
 
+/**
+ * data-load:
+ *   - ids
+ *   - properties
+ *   - completed
+ */
+
 export default class ConditionResultsPanelView {
   #ROOT: HTMLElement;
   #STATUS: HTMLParagraphElement;
@@ -12,13 +19,13 @@ export default class ConditionResultsPanelView {
 
   constructor(controller: ConditionResultsController) {
 
-    console.log(BUTTONS)
-
     this.#controller = controller;
     this.#ROOT = document.createElement('div');
     // view
     this.#ROOT.classList.add('condition-results-panel-view');
+    this.#ROOT.dataset.total = '';
     this.#ROOT.dataset.status = 'load ids';
+    this.#ROOT.dataset.load = 'ids';
 
     this.#ROOT.innerHTML = `
     <div class="close-button-view"></div>
@@ -60,7 +67,31 @@ export default class ConditionResultsPanelView {
     this.#progressIndicator = new ProgressIndicator(
       <HTMLDivElement>this.#ROOT.querySelector(':scope > .status + div')
     );
+
+    // events
+    this.#ROOT.querySelectorAll<HTMLButtonElement>(':scope > .buttons > button').forEach(button => {
+      button.addEventListener('click', () => {
+        switch (button.dataset.button) {
+          case 'pause':
+          case 'resume':
+            console.log(button.dataset.button)
+            break;
+        }
+      })
+    })
     
+  }
+
+  loadedIds() {
+    this.#ROOT.dataset.total = this.#controller.total;
+    this.#ROOT.dataset.status = 'load rows';
+    this.#ROOT.dataset.load = 'properties';
+    this.#STATUS.textContent = 'Getting data';
+    this.#progressIndicator.setIndicator(undefined, this.#controller.total);
+  }
+
+  loadedProperties() {
+
   }
 
   get element(): HTMLElement {

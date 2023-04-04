@@ -99,10 +99,6 @@ export default class ConditionResultsController {
     // reference
     this.#ROOT = elm;
 
-    // this.#progressIndicator = new ProgressIndicator(
-    //   elm.querySelector(':scope > .status + div')
-    // );
-
     this.#CONTROLLER = elm.querySelector(':scope > .controller');
     this.#CONTROLLER.appendChild(this.#makeDataButton('left'));
     this.#CONTROLLER.appendChild(
@@ -386,9 +382,7 @@ export default class ConditionResultsController {
       DefaultEventEmitter.dispatchEvent(customEvent);
       return;
     }
-    this.#ROOT.dataset.status = 'load rows';
-    this.#panelView.statusElement.textContent = 'Getting data';
-    this.#panelView.progressIndicator.setIndicator(undefined, this.total);
+    this.#panelView.loadedIds();
     this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
     this.#getProperties();
   }

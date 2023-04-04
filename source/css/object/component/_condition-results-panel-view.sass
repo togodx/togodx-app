@@ -82,6 +82,7 @@
         display: none
     > button
       color: white
+      display: none
       &::before
         font-family: 'Material Icons'
         margin-left: -.4rem
@@ -113,6 +114,10 @@
           content: "refresh"
         &::after
           content: "Retry"
+  &[data-load="properties"]
+    > .buttons
+      > button[data-button="pause"]
+        display: block
 
   &.-current, &:hover
     opacity: 1
