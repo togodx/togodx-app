@@ -82,7 +82,7 @@ export default class ConditionResultsController {
   #progressIndicator;
   #panelView;
   #ROOT;
-  #STATUS;
+  // #STATUS;
   #CONTROLLER;
   #BUTTON_LEFT;
   #BUTTON_RIGHT;
@@ -96,49 +96,11 @@ export default class ConditionResultsController {
 
     this.#panelView = new ConditionResultsPanelView(this);
 
-    // view
-    // elm.classList.add('condition-results-controller-view');
-    // elm.dataset.status = 'load ids';
-
-    // elm.innerHTML = `
-    // <div class="close-button-view"></div>
-    // <div class="conditions">
-    //   <div class="condition">
-    //     <p title="${dxCondition.togoKey}">${Records.getDatasetLabel(
-    //   dxCondition.togoKey
-    // )}</p>
-    //   </div>
-    //   ${this.#dxCondition.conditionFilters
-    //     .map(conditionFilter => {
-    //       const label = Records.getAttribute(conditionFilter.attributeId).label;
-    //       return `<div class="condition _category-background-color" data-category-id="${conditionFilter.categoryId}">
-    //           <p title="${label}">${label}</p>
-    //         </div>`;
-    //     })
-    //     .join('')}
-    //   ${this.#dxCondition.conditionAnnotations
-    //     .map(conditionAnnotation => {
-    //       return `<div class="condition _category-color" data-category-id="${conditionAnnotation.categoryId}">
-    //           <p title="${conditionAnnotation.label}">${conditionAnnotation.label}</p>
-    //         </div>`;
-    //     })
-    //     .join('')}
-    // </div>
-    // <div class="status">
-    //   <p>Getting ID list</p>
-    //   <span class="material-icons-outlined -rotating">autorenew</span>
-    // </div>
-    // <div class="-border">
-    // </div>
-    // <div class="controller">
-    // </div>
-    // `;
-
     const elm = this.#panelView.element;
 
     // reference
     this.#ROOT = elm;
-    this.#STATUS = elm.querySelector(':scope > .status > p');
+    // this.#STATUS = elm.querySelector(':scope > .status > p');
 
     this.#progressIndicator = new ProgressIndicator(
       elm.querySelector(':scope > .status + div')
@@ -241,7 +203,7 @@ export default class ConditionResultsController {
   #dataButtonPauseOrResume(e) {
     e.stopPropagation();
     this.#ROOT.classList.toggle('-fetching');
-    this.#STATUS.classList.toggle('-flickering');
+    this.#panelView.statusElement.classList.toggle('-flickering');
 
     const modeToChangeTo = this.#isLoading ? 'resume' : 'pause';
     this.#updateDataButton(
@@ -249,7 +211,9 @@ export default class ConditionResultsController {
       dataButtonModes.get(modeToChangeTo)
     );
     this.#isLoading = !this.#isLoading;
-    this.#STATUS.textContent = this.#isLoading ? 'Getting data' : 'Awaiting';
+    this.#panelView.statusElement.textContent = this.#isLoading
+      ? 'Getting data'
+      : 'Awaiting';
 
     if (this.#isLoading) this.#getProperties();
   }
@@ -278,13 +242,13 @@ export default class ConditionResultsController {
   }
 
   #dataButtonRetry() {
-    this.#STATUS.classList.remove('-error');
+    this.#panelView.statusElement.classList.remove('-error');
     this.#ROOT.classList.toggle('-fetching');
     this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('empty'));
 
     const partiallyLoaded = this.#dxCondition.ids.length > 0;
     const message = partiallyLoaded ? 'Getting data' : 'Getting ID list';
-    this.#STATUS.textContent = message;
+    this.#panelView.statusElement.textContent = message;
 
     if (partiallyLoaded) this.#getProperties();
     else this.#getQueryIds();
@@ -393,8 +357,10 @@ export default class ConditionResultsController {
    * @param { number } code - errorCode na in case of timeout or other
    */
   #displayError(message, code) {
-    this.#STATUS.classList.add('-error');
-    this.#STATUS.textContent = code ? `${message} (${code})` : message;
+    this.#panelView.statusElement.classList.add('-error');
+    this.#panelView.statusElement.textContent = code
+      ? `${message} (${code})`
+      : message;
     this.#ROOT.classList.toggle('-fetching');
 
     const customEvent = new CustomEvent(event.failedFetchConditionResultsIDs, {
@@ -424,7 +390,7 @@ export default class ConditionResultsController {
       return;
     }
     this.#ROOT.dataset.status = 'load rows';
-    this.#STATUS.textContent = 'Getting data';
+    this.#panelView.statusElement.textContent = 'Getting data';
     this.#progressIndicator.setIndicator(undefined, this.total);
     this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
     this.#getProperties();
@@ -465,9 +431,11 @@ export default class ConditionResultsController {
    */
   #completed(withData = true) {
     this.#ROOT.dataset.status = 'complete';
-    this.#STATUS.textContent = withData ? 'Complete' : 'No Data Found';
+    this.#panelView.statusElement.textContent = withData
+      ? 'Complete'
+      : 'No Data Found';
     this.#ROOT.classList.remove('-fetching');
-    this.#STATUS.classList.remove('-flickering');
+    this.#panelView.statusElement.classList.remove('-flickering');
 
     if (withData) this.#setDownloadButtons();
   }

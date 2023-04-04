@@ -3,9 +3,11 @@ import Records from './Records';
 
 export default class ConditionResultsPanelView {
   #ROOT: HTMLElement;
+  #STATUS: HTMLParagraphElement;
   #controller: ConditionResultsController;
 
   constructor(controller: ConditionResultsController) {
+
     this.#controller = controller;
     this.#ROOT = document.createElement('div');
     // view
@@ -46,9 +48,15 @@ export default class ConditionResultsPanelView {
     </div>
     `;
     
+        // reference
+        this.#STATUS = <HTMLParagraphElement>this.#ROOT.querySelector(':scope > .status > p');
+
   }
 
   get element(): HTMLElement {
     return this.#ROOT;
+  }
+  get statusElement(): HTMLParagraphElement {
+    return this.#STATUS;
   }
 }
