@@ -1,7 +1,6 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
-import ProgressIndicator from './ProgressIndicator';
 import ConditionResultsPanelView from './ConditionResultsPanelView';
 // import ConditionAnnotation from './ConditionAnnotation';
 import * as event from '../events';
@@ -82,7 +81,6 @@ export default class ConditionResultsController {
   #progressIndicator;
   #panelView;
   #ROOT;
-  // #STATUS;
   #CONTROLLER;
   #BUTTON_LEFT;
   #BUTTON_RIGHT;
@@ -100,11 +98,10 @@ export default class ConditionResultsController {
 
     // reference
     this.#ROOT = elm;
-    // this.#STATUS = elm.querySelector(':scope > .status > p');
 
-    this.#progressIndicator = new ProgressIndicator(
-      elm.querySelector(':scope > .status + div')
-    );
+    // this.#progressIndicator = new ProgressIndicator(
+    //   elm.querySelector(':scope > .status + div')
+    // );
 
     this.#CONTROLLER = elm.querySelector(':scope > .controller');
     this.#CONTROLLER.appendChild(this.#makeDataButton('left'));
@@ -391,7 +388,7 @@ export default class ConditionResultsController {
     }
     this.#ROOT.dataset.status = 'load rows';
     this.#panelView.statusElement.textContent = 'Getting data';
-    this.#progressIndicator.setIndicator(undefined, this.total);
+    this.#panelView.progressIndicator.setIndicator(undefined, this.total);
     this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
     this.#getProperties();
   }
@@ -404,7 +401,7 @@ export default class ConditionResultsController {
     const nextRows = await this.#dxCondition
       .getNextProperties()
       .catch(error => this.#handleError(error));
-    this.#progressIndicator.updateProgressBar({
+    this.#panelView.progressIndicator.updateProgressBar({
       offset: this.offset,
       startTime,
     });

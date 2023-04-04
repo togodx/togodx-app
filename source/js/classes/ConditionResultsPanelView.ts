@@ -1,10 +1,12 @@
 import ConditionResultsController from './ConditionResultsController';
+import ProgressIndicator from './ProgressIndicator';
 import Records from './Records';
 
 export default class ConditionResultsPanelView {
   #ROOT: HTMLElement;
   #STATUS: HTMLParagraphElement;
   #controller: ConditionResultsController;
+  #progressIndicator: ProgressIndicator;
 
   constructor(controller: ConditionResultsController) {
 
@@ -42,15 +44,16 @@ export default class ConditionResultsPanelView {
       <p>Getting ID list</p>
       <span class="material-icons-outlined -rotating">autorenew</span>
     </div>
-    <div class="-border">
-    </div>
-    <div class="controller">
-    </div>
+    <div class="-border"></div>
+    <div class="controller"></div>
     `;
     
-        // reference
-        this.#STATUS = <HTMLParagraphElement>this.#ROOT.querySelector(':scope > .status > p');
-
+    // reference
+    this.#STATUS = <HTMLParagraphElement>this.#ROOT.querySelector(':scope > .status > p');
+    this.#progressIndicator = new ProgressIndicator(
+      <HTMLDivElement>this.#ROOT.querySelector(':scope > .status + div')
+    );
+    
   }
 
   get element(): HTMLElement {
@@ -58,5 +61,8 @@ export default class ConditionResultsPanelView {
   }
   get statusElement(): HTMLParagraphElement {
     return this.#STATUS;
+  }
+  get progressIndicator(): ProgressIndicator {
+    return this.#progressIndicator;
   }
 }
