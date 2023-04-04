@@ -3,12 +3,12 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import * as event from '../events';
 
 export default class ConditionsController {
-  #conditionResultsController;
+  #conditionResultsControllers;
   #ROOT;
   #CONDITIONS_CONTAINER;
 
   constructor(elm) {
-    this.#conditionResultsController = [];
+    this.#conditionResultsControllers = [];
 
     // references
     this.#ROOT = elm;
@@ -44,7 +44,7 @@ export default class ConditionsController {
   #setConditionResultsController(dxCondition) {
     // find matching condition from already existing conditions
     const sameConditionConditionResultsController =
-      this.#conditionResultsController.find(conditionResults =>
+      this.#conditionResultsControllers.find(conditionResults =>
         conditionResults.dxCondition.checkSameCondition(dxCondition)
       );
     if (sameConditionConditionResultsController) {
@@ -52,25 +52,23 @@ export default class ConditionsController {
       sameConditionConditionResultsController.select();
     } else {
       // make new table data
-      const elm = document.createElement('div');
-      this.#CONDITIONS_CONTAINER.insertAdjacentElement('afterbegin', elm);
-      this.#conditionResultsController.push(
-        new ConditionResultsController(dxCondition, elm)
-      );
+      const controller = new ConditionResultsController(dxCondition);
+      this.#CONDITIONS_CONTAINER.prepend(controller.element);
+      this.#conditionResultsControllers.push(controller);
     }
   }
 
   #selectConditionResultsController(selectedConditionResultsController) {
     document.body.dataset.display = 'results';
     // deselect
-    for (const conditionResults of this.#conditionResultsController) {
+    for (const conditionResults of this.#conditionResultsControllers) {
       if (conditionResults !== selectedConditionResultsController)
         conditionResults.deselect();
     }
   }
 
   #deleteConditionResultsController(conditionResults) {
-    const index = this.#conditionResultsController.indexOf(conditionResults);
-    this.#conditionResultsController.splice(index, 1);
+    const index = this.#conditionResultsControllers.indexOf(conditionResults);
+    this.#conditionResultsControllers.splice(index, 1);
   }
 }

@@ -2,6 +2,7 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import ProgressIndicator from './ProgressIndicator';
+import ConditionResultsPanelView from './ConditionResultsPanelView';
 // import ConditionAnnotation from './ConditionAnnotation';
 import * as event from '../events';
 import axios from 'axios';
@@ -78,57 +79,62 @@ export default class ConditionResultsController {
   #dxCondition;
   #source;
   #isLoading;
+  #progressIndicator;
+  #panelView;
   #ROOT;
   #STATUS;
-  #progressIndicator;
   #CONTROLLER;
   #BUTTON_LEFT;
   #BUTTON_RIGHT;
 
-  constructor(dxCondition, elm) {
+  constructor(dxCondition) {
     const cancelToken = axios.CancelToken;
     this.#source = cancelToken.source();
 
     this.#isLoading = false;
     this.#dxCondition = dxCondition;
 
-    // view
-    elm.classList.add('condition-results-controller-view');
-    elm.dataset.status = 'load ids';
+    this.#panelView = new ConditionResultsPanelView(this);
 
-    elm.innerHTML = `
-    <div class="close-button-view"></div>
-    <div class="conditions">
-      <div class="condition">
-        <p title="${dxCondition.togoKey}">${Records.getDatasetLabel(
-      dxCondition.togoKey
-    )}</p>
-      </div>
-      ${this.#dxCondition.conditionFilters
-        .map(conditionFilter => {
-          const label = Records.getAttribute(conditionFilter.attributeId).label;
-          return `<div class="condition _category-background-color" data-category-id="${conditionFilter.categoryId}">
-              <p title="${label}">${label}</p>
-            </div>`;
-        })
-        .join('')}
-      ${this.#dxCondition.conditionAnnotations
-        .map(conditionAnnotation => {
-          return `<div class="condition _category-color" data-category-id="${conditionAnnotation.categoryId}">
-              <p title="${conditionAnnotation.label}">${conditionAnnotation.label}</p>
-            </div>`;
-        })
-        .join('')}
-    </div>
-    <div class="status">
-      <p>Getting ID list</p>
-      <span class="material-icons-outlined -rotating">autorenew</span>
-    </div>
-    <div class="-border">
-    </div>
-    <div class="controller">
-    </div>
-    `;
+    // view
+    // elm.classList.add('condition-results-controller-view');
+    // elm.dataset.status = 'load ids';
+
+    // elm.innerHTML = `
+    // <div class="close-button-view"></div>
+    // <div class="conditions">
+    //   <div class="condition">
+    //     <p title="${dxCondition.togoKey}">${Records.getDatasetLabel(
+    //   dxCondition.togoKey
+    // )}</p>
+    //   </div>
+    //   ${this.#dxCondition.conditionFilters
+    //     .map(conditionFilter => {
+    //       const label = Records.getAttribute(conditionFilter.attributeId).label;
+    //       return `<div class="condition _category-background-color" data-category-id="${conditionFilter.categoryId}">
+    //           <p title="${label}">${label}</p>
+    //         </div>`;
+    //     })
+    //     .join('')}
+    //   ${this.#dxCondition.conditionAnnotations
+    //     .map(conditionAnnotation => {
+    //       return `<div class="condition _category-color" data-category-id="${conditionAnnotation.categoryId}">
+    //           <p title="${conditionAnnotation.label}">${conditionAnnotation.label}</p>
+    //         </div>`;
+    //     })
+    //     .join('')}
+    // </div>
+    // <div class="status">
+    //   <p>Getting ID list</p>
+    //   <span class="material-icons-outlined -rotating">autorenew</span>
+    // </div>
+    // <div class="-border">
+    // </div>
+    // <div class="controller">
+    // </div>
+    // `;
+
+    const elm = this.#panelView.element;
 
     // reference
     this.#ROOT = elm;
@@ -157,7 +163,7 @@ export default class ConditionResultsController {
     });
 
     // delete
-    this.#ROOT
+    elm
       .querySelector(':scope > .close-button-view')
       .addEventListener('click', e => {
         this.#deleteCondition(e);
@@ -165,7 +171,7 @@ export default class ConditionResultsController {
 
     ConditionBuilder.finish();
     this.select();
-    this.#ROOT.classList.toggle('-fetching');
+    elm.classList.toggle('-fetching');
     this.#getQueryIds();
   }
 
@@ -514,5 +520,8 @@ export default class ConditionResultsController {
   }
   get rateOfProgress() {
     return this.offset / this.total;
+  }
+  get element() {
+    return this.#panelView.element;
   }
 }
