@@ -44,8 +44,8 @@ export default class ConditionsController {
   #setConditionResultsController(dxCondition) {
     // find matching condition from already existing conditions
     const sameConditionConditionResultsController =
-      this.#conditionResultsController.find(tableData =>
-        tableData.dxCondition.checkSameCondition(dxCondition)
+      this.#conditionResultsController.find(conditionResults =>
+        conditionResults.dxCondition.checkSameCondition(dxCondition)
       );
     if (sameConditionConditionResultsController) {
       // use existing table data
@@ -63,14 +63,14 @@ export default class ConditionsController {
   #selectConditionResultsController(selectedConditionResultsController) {
     document.body.dataset.display = 'results';
     // deselect
-    for (const tableData of this.#conditionResultsController) {
-      if (tableData !== selectedConditionResultsController)
-        tableData.deselect();
+    for (const conditionResults of this.#conditionResultsController) {
+      if (conditionResults !== selectedConditionResultsController)
+        conditionResults.deselect();
     }
   }
 
-  #deleteConditionResultsController(tableData) {
-    const index = this.#conditionResultsController.indexOf(tableData);
+  #deleteConditionResultsController(conditionResults) {
+    const index = this.#conditionResultsController.indexOf(conditionResults);
     this.#conditionResultsController.splice(index, 1);
   }
 }
