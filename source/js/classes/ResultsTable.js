@@ -26,7 +26,6 @@ export default class ResultsTable {
   #COLLAPSE_BUTTON;
   #COLGROUP;
   #THEAD;
-  #THEAD_SUB;
   #STATS;
   #TBODY;
   #TABLE_END;
@@ -48,7 +47,6 @@ export default class ResultsTable {
     const TABLE = inner.querySelector(':scope > table');
     this.#COLGROUP = TABLE.querySelector(':scope > colgroup');
     this.#THEAD = TABLE.querySelector(':scope > thead > tr.header');
-    // this.#THEAD_SUB = TABLE.querySelector(':scope > thead > tr.subheader');
     this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics');
     this.#TBODY = TABLE.querySelector(':scope > tbody');
     this.#TABLE_END = inner.querySelector(':scope > .tableend');
@@ -93,6 +91,38 @@ export default class ResultsTable {
       event.failedFetchConditionResultsIDs,
       e => this.#failed(e.detail)
     );
+
+    // statistics
+    const controller = this.#STATS.querySelector(
+      ':scope > th.controller > .inner'
+    );
+    controller.querySelectorAll(':scope > label > input').forEach(radio => {
+      radio.addEventListener('change', () => {
+        switch (radio.value) {
+          case 'hits_all':
+            this.#STATS.classList.remove('-onlyhitcount');
+            this.#STATS.classList.remove('-stretch');
+            break;
+          case 'hits_all_percentage':
+            this.#STATS.classList.remove('-onlyhitcount');
+            this.#STATS.classList.add('-stretch');
+            break;
+          case 'hits_only':
+            this.#STATS.classList.add('-onlyhitcount');
+            this.#STATS.classList.remove('-stretch');
+            break;
+        }
+        const customEvent = new CustomEvent(event.changeStatisticsViewMode);
+        DefaultEventEmitter.dispatchEvent(customEvent);
+        window.localStorage.setItem('statistics_view_moe', radio.value);
+      });
+    });
+    const statisticsViewMoe = window.localStorage.getItem(
+      'statistics_view_moe'
+    );
+    controller
+      .querySelector(`:scope > label > input[value="${statisticsViewMoe}"]`)
+      ?.dispatchEvent(new MouseEvent('click'));
   }
 
   // private methods
@@ -193,9 +223,6 @@ export default class ResultsTable {
         )
         .join('')}
       `;
-    // makte table sub header
-    //     this.#THEAD_SUB.innerHTML = `
-    // `;
   }
 
   #makeStats(dxCondition) {

@@ -40,7 +40,7 @@ class App {
     this.#viewModes = {};
     document
       .querySelectorAll(
-        '#Properties > .header > nav .viewmodecontroller input[type="checkbox"]'
+        '#Properties > .inner > .header > nav .viewmodecontroller input[type="checkbox"]'
       )
       .forEach(checkbox => {
         this.#viewModes[checkbox.value] = checkbox.checked;
@@ -97,12 +97,6 @@ class App {
   }
 
   // private methods
-
-  #draw() {
-    this.#makeCategoryViews();
-    this.#defineAllTracksCollapseButton();
-    document.querySelector('#App > .loading-view').classList.remove('-shown');
-  }
 
   #makeCategoryViews() {
     const conceptsContainer = document.querySelector(
