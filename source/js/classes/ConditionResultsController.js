@@ -172,7 +172,7 @@ export default class ConditionResultsController {
   /* private methods */
   #deleteCondition(e) {
     e.stopPropagation();
-    const customEvent = new CustomEvent(event.deleteTableData, {
+    const customEvent = new CustomEvent(event.deleteConditionResults, {
       detail: this,
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
@@ -391,7 +391,7 @@ export default class ConditionResultsController {
     this.#STATUS.textContent = code ? `${message} (${code})` : message;
     this.#ROOT.classList.toggle('-fetching');
 
-    const customEvent = new CustomEvent(event.failedFetchTableDataIds, {
+    const customEvent = new CustomEvent(event.failedFetchConditionResultsIDs, {
       detail: this,
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
@@ -470,7 +470,9 @@ export default class ConditionResultsController {
   select() {
     this.#ROOT.classList.add('-current');
     // dispatch event
-    const customEvent1 = new CustomEvent(event.selectTableData, {detail: this});
+    const customEvent1 = new CustomEvent(event.selectConditionResults, {
+      detail: this,
+    });
     DefaultEventEmitter.dispatchEvent(customEvent1);
     // send rows
     if (this.#ROOT.dataset.status !== 'load ids') {

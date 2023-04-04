@@ -57,8 +57,8 @@ export default class StatisticsView {
       this.#draw.bind(this)
     );
     DefaultEventEmitter.addEventListener(
-      event.failedFetchTableDataIds,
-      this.#failedFetchTableDataIds.bind(this)
+      event.failedFetchConditionResultsIDs,
+      this.#failedFetchConditionResultsIDs.bind(this)
     );
   }
 
@@ -72,8 +72,8 @@ export default class StatisticsView {
       this.#draw.bind(this)
     );
     DefaultEventEmitter.removeEventListener(
-      event.failedFetchTableDataIds,
-      this.#failedFetchTableDataIds.bind(this)
+      event.failedFetchConditionResultsIDs,
+      this.#failedFetchConditionResultsIDs.bind(this)
     );
   }
 
@@ -166,7 +166,7 @@ export default class StatisticsView {
     }
   }
 
-  #failedFetchTableDataIds() {
+  #failedFetchConditionResultsIDs() {
     this.#ROOT
       .querySelector(':scope > .loading-view')
       .classList.remove('-shown');

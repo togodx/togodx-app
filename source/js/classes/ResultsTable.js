@@ -80,7 +80,7 @@ export default class ResultsTable {
       event.mutateEstablishConditions,
       this.#makePreview.bind(this)
     );
-    DefaultEventEmitter.addEventListener(event.selectTableData, e =>
+    DefaultEventEmitter.addEventListener(event.selectConditionResults, e =>
       this.#setupTable(e.detail)
     );
     DefaultEventEmitter.addEventListener(event.addNextRows, e =>
@@ -89,8 +89,9 @@ export default class ResultsTable {
     DefaultEventEmitter.addEventListener(event.highlightColumn, e => {
       this.#highlightColumn(e.detail);
     });
-    DefaultEventEmitter.addEventListener(event.failedFetchTableDataIds, e =>
-      this.#failed(e.detail)
+    DefaultEventEmitter.addEventListener(
+      event.failedFetchConditionResultsIDs,
+      e => this.#failed(e.detail)
     );
   }
 

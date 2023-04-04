@@ -23,12 +23,12 @@ export const showStanza = 'showStanza';
 export const moveStanza = 'moveStanza';
 
 // Polling
-export const failedFetchTableDataIds = 'failedFetchTableDataIds';
+export const failedFetchConditionResultsIDs = 'failedFetchConditionResultsIDs';
 export const addNextRows = 'addNextRows';
 
 // Table data
-export const selectTableData = 'selectTableData';
-export const deleteTableData = 'deleteTableData';
+export const selectConditionResults = 'selectConditionResults';
+export const deleteConditionResults = 'deleteConditionResults';
 export const highlightColumn = 'highlightColumn';
 
 // Track

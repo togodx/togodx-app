@@ -18,10 +18,10 @@ export default class ConditionsController {
     DefaultEventEmitter.addEventListener(event.completeQueryParameter, e =>
       this.#setConditionResultsController(e.detail)
     );
-    DefaultEventEmitter.addEventListener(event.selectTableData, e =>
+    DefaultEventEmitter.addEventListener(event.selectConditionResults, e =>
       this.#selectConditionResultsController(e.detail)
     );
-    DefaultEventEmitter.addEventListener(event.deleteTableData, e =>
+    DefaultEventEmitter.addEventListener(event.deleteConditionResults, e =>
       this.#deleteConditionResultsController(e.detail)
     );
 
@@ -43,9 +43,10 @@ export default class ConditionsController {
    */
   #setConditionResultsController(dxCondition) {
     // find matching condition from already existing conditions
-    const sameConditionConditionResultsController = this.#conditionResultsController.find(tableData =>
-      tableData.dxCondition.checkSameCondition(dxCondition)
-    );
+    const sameConditionConditionResultsController =
+      this.#conditionResultsController.find(tableData =>
+        tableData.dxCondition.checkSameCondition(dxCondition)
+      );
     if (sameConditionConditionResultsController) {
       // use existing table data
       sameConditionConditionResultsController.select();
@@ -53,7 +54,9 @@ export default class ConditionsController {
       // make new table data
       const elm = document.createElement('div');
       this.#CONDITIONS_CONTAINER.insertAdjacentElement('afterbegin', elm);
-      this.#conditionResultsController.push(new ConditionResultsController(dxCondition, elm));
+      this.#conditionResultsController.push(
+        new ConditionResultsController(dxCondition, elm)
+      );
     }
   }
 
@@ -61,7 +64,8 @@ export default class ConditionsController {
     document.body.dataset.display = 'results';
     // deselect
     for (const tableData of this.#conditionResultsController) {
-      if (tableData !== selectedConditionResultsController) tableData.deselect();
+      if (tableData !== selectedConditionResultsController)
+        tableData.deselect();
     }
   }
 
