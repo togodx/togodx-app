@@ -2,6 +2,8 @@ import ConditionResultsController from './ConditionResultsController';
 import ProgressIndicator from './ProgressIndicator';
 import Records from './Records';
 
+const BUTTONS: string[] = [ 'edit', 'resume', 'pause', 'tsv', 'retry' ]
+
 export default class ConditionResultsPanelView {
   #ROOT: HTMLElement;
   #STATUS: HTMLParagraphElement;
@@ -10,10 +12,12 @@ export default class ConditionResultsPanelView {
 
   constructor(controller: ConditionResultsController) {
 
+    console.log(BUTTONS)
+
     this.#controller = controller;
     this.#ROOT = document.createElement('div');
     // view
-    this.#ROOT.classList.add('condition-results-controller-view');
+    this.#ROOT.classList.add('condition-results-panel-view');
     this.#ROOT.dataset.status = 'load ids';
 
     this.#ROOT.innerHTML = `
@@ -45,6 +49,9 @@ export default class ConditionResultsPanelView {
       <span class="material-icons-outlined -rotating">autorenew</span>
     </div>
     <div class="-border"></div>
+    <div class="buttons">
+      ${BUTTONS.map(button => `<button data-button="${button}"></button>`).join('')}
+    </div>
     <div class="controller"></div>
     `;
     

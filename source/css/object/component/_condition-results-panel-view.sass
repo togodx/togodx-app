@@ -1,4 +1,4 @@
-.condition-results-controller-view
+.condition-results-panel-view
   background-color: white
   box-shadow: var(--shadow-shallow)
   text-align: center
@@ -53,13 +53,14 @@
     > .material-icons-outlined
       display: none
 
-  > .controller
+  > .controller, > .buttons
     display: flex
     color: white
-    > .button
+    > .button, > button
       padding: .2rem 0
       flex-grow: 1
       background-color: var(--color-translucent-lamp-black2)
+      border: none
       transition: background-color var(--transition-instant)
       cursor: pointer
       display: block
@@ -79,6 +80,39 @@
           display: none
       &[data-button="download-json"]
         display: none
+    > button
+      color: white
+      &::before
+        font-family: 'Material Icons'
+        margin-left: -.4rem
+        margin-right: .2rem
+        top: 1px
+        position: relative
+      &[data-button="edit"]
+        &::before
+          content: "edit"
+        &::after
+          content: "Edit"
+      &[data-button="resume"]
+        &::before
+          content: "play_arrow"
+        &::after
+          content: "Resume"
+      &[data-button="pause"]
+        &::before
+          content: "pause"
+        &::after
+          content: "Pause"
+      &[data-button="tsv"]
+        &::before
+          content: "download"
+        &::after
+          content: "TSV"
+      &[data-button="retry"]
+        &::before
+          content: "refresh"
+        &::after
+          content: "Retry"
 
   &.-current, &:hover
     opacity: 1

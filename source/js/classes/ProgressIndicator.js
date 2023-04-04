@@ -117,7 +117,9 @@ export default class ProgressIndicator {
    */
   #setMessage(message, isError) {
     this.#TEXT_STATUS.childNodes[0].nodeValue = message;
-    isError ? this.#ROOT.classList.add('error') : this.#ROOT.classList.remove('error');
+    isError
+      ? this.#ROOT.classList.add('error')
+      : this.#ROOT.classList.remove('error');
   }
 
   /* public accessors */
