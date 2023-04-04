@@ -93,7 +93,7 @@ export default class TableData {
     this.#dxCondition = dxCondition;
 
     // view
-    elm.classList.add('table-data-controller-view');
+    elm.classList.add('condition-results-controller-view');
     elm.dataset.status = 'load ids';
 
     elm.innerHTML = `
