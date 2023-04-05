@@ -76,6 +76,10 @@ export default class ConditionResultsPanelView {
     );
 
     // events
+    this.#ROOT.addEventListener('click', () => {
+      if (this.#ROOT.classList.contains('-current')) return;
+      this.#controller.select();
+    });
     this.#ROOT.querySelectorAll<HTMLButtonElement>(':scope > .buttons > button').forEach(button => {
       button.addEventListener('click', e => {
         e.stopPropagation();

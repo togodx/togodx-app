@@ -80,22 +80,18 @@ export default class ConditionResultsController {
   #isLoading;
   #panelView;
   #status;
-  #statusProxy;
   #ROOT;
-  #CONTROLLER;
+  // #CONTROLLER;
   #BUTTON_LEFT;
-  #BUTTON_RIGHT;
+  // #BUTTON_RIGHT;
 
   constructor(dxCondition) {
     const cancelToken = axios.CancelToken;
     this.#source = cancelToken.source();
-    // this.#status = {total: -1, current: 0};
 
     this.#isLoading = false;
     this.#dxCondition = dxCondition;
-
     this.#panelView = new ConditionResultsPanelView(this);
-    // this.#statusProxy = this.#panelView.controllerStatusProxy(this.#status);
     this.#status = this.#panelView.controllerStatusProxy({});
 
     const elm = this.#panelView.element;
@@ -103,23 +99,23 @@ export default class ConditionResultsController {
     // reference
     this.#ROOT = elm;
 
-    this.#CONTROLLER = elm.querySelector(':scope > .controller');
-    this.#CONTROLLER.appendChild(this.#makeDataButton('left'));
-    this.#CONTROLLER.appendChild(
+    const controller = elm.querySelector(':scope > .controller');
+    controller.appendChild(this.#makeDataButton('left'));
+    controller.appendChild(
       this.#makeDataButton('right', dataButtonModes.get('edit'))
     );
     this.#BUTTON_LEFT = elm.querySelector(
       ':scope > .controller > .button.left'
     );
-    this.#BUTTON_RIGHT = elm.querySelector(
-      ':scope > .controller > .button.right'
-    );
+    // this.#BUTTON_RIGHT = elm.querySelector(
+    //   ':scope > .controller > .button.right'
+    // );
 
     // events
-    elm.addEventListener('click', () => {
-      if (elm.classList.contains('-current')) return;
-      this.select();
-    });
+    // elm.addEventListener('click', () => {
+    //   if (elm.classList.contains('-current')) return;
+    //   this.select();
+    // });
 
     // delete
     elm
