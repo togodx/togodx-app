@@ -77,7 +77,7 @@ const dataButtonModes = new Map([
 export default class ConditionResultsController {
   #dxCondition;
   #source;
-  #isLoading;
+  #isFetching;
   #progressIndicator;
   #panelView;
   #ROOT;
@@ -89,7 +89,7 @@ export default class ConditionResultsController {
     const cancelToken = axios.CancelToken;
     this.#source = cancelToken.source();
 
-    this.#isLoading = false;
+    this.#isFetching = false;
     this.#dxCondition = dxCondition;
 
     this.#panelView = new ConditionResultsPanelView(this);
@@ -193,23 +193,23 @@ export default class ConditionResultsController {
   /**
    * @param { MouseEvent } e
    */
-  #dataButtonPauseOrResume(e) {
-    e.stopPropagation();
-    this.#ROOT.classList.toggle('-fetching');
-    this.#panelView.statusElement.classList.toggle('-flickering');
+  // #dataButtonPauseOrResume(e) {
+  //   e.stopPropagation();
+  //   this.#ROOT.classList.toggle('-fetching');
+  //   this.#panelView.statusElement.classList.toggle('-flickering');
 
-    const modeToChangeTo = this.#isLoading ? 'resume' : 'pause';
-    this.#updateDataButton(
-      e.currentTarget,
-      dataButtonModes.get(modeToChangeTo)
-    );
-    this.#isLoading = !this.#isLoading;
-    this.#panelView.statusElement.textContent = this.#isLoading
-      ? 'Getting data'
-      : 'Awaiting';
+  //   const modeToChangeTo = this.#isFetching ? 'resume' : 'pause';
+  //   this.#updateDataButton(
+  //     e.currentTarget,
+  //     dataButtonModes.get(modeToChangeTo)
+  //   );
+  //   this.#isFetching = !this.#isFetching;
+  //   this.#panelView.statusElement.textContent = this.#isFetching
+  //     ? 'Getting data'
+  //     : 'Awaiting';
 
-    if (this.#isLoading) this.#getProperties();
-  }
+  //   if (this.#isFetching) this.#getProperties();
+  // }
 
   /**
    * @param { MouseEvent } e
@@ -258,10 +258,10 @@ export default class ConditionResultsController {
         this.#dataButtonEdit(e);
         break;
 
-      case 'resume':
-      case 'pause':
-        this.#dataButtonPauseOrResume(e);
-        break;
+      // case 'resume':
+      // case 'pause':
+      //   // this.#dataButtonPauseOrResume(e);
+      //   break;
 
       case 'retry':
         this.#dataButtonRetry();
@@ -388,7 +388,7 @@ export default class ConditionResultsController {
   }
 
   async #getProperties() {
-    this.#isLoading = true;
+    this.#isFetching = true;
     const startTime = Date.now();
 
     const offset = this.offset;
@@ -414,7 +414,7 @@ export default class ConditionResultsController {
       this.#completed();
       return;
     }
-    if (this.#isLoading) this.#getProperties();
+    if (this.#isFetching) this.#getProperties();
   }
 
   /**
@@ -457,8 +457,13 @@ export default class ConditionResultsController {
   }
 
   next() {
-    if (this.#isLoading) return;
+    if (this.#isFetching) return;
     this.#getProperties();
+  }
+
+  pauseOrResume(isFetching) {
+    this.#isFetching = isFetching;
+    if (this.#isFetching) this.#getProperties();
   }
 
   /* public accessors */

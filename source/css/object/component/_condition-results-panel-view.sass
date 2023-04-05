@@ -99,11 +99,11 @@
           content: "play_arrow"
         &::after
           content: "Resume"
-      &[data-button="pause"]
-        &::before
-          content: "pause"
-        &::after
-          content: "Pause"
+      // &[data-button="pause"]
+      //   &::before
+      //     content: "pause"
+      //   &::after
+      //     content: "Pause"
       &[data-button="tsv"]
         &::before
           content: "download"
@@ -114,9 +114,16 @@
           content: "refresh"
         &::after
           content: "Retry"
+  &.-fetching
+    > .buttons
+      > button[data-button="resume"]
+        &::before
+          content: "pause"
+        &::after
+          content: "Pause"
   &[data-load="properties"]
     > .buttons
-      > button[data-button="pause"]
+      > button[data-button="resume"]
         display: block
 
   &.-current, &:hover

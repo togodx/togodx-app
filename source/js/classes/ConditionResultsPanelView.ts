@@ -2,7 +2,7 @@ import ConditionResultsController from './ConditionResultsController';
 import ProgressIndicator from './ProgressIndicator';
 import Records from './Records';
 
-const BUTTONS: string[] = [ 'edit', 'resume', 'pause', 'tsv', 'retry' ]
+const BUTTONS: string[] = [ 'edit', 'resume', 'tsv', 'retry' ]
 
 /**
  * data-load:
@@ -70,16 +70,26 @@ export default class ConditionResultsPanelView {
 
     // events
     this.#ROOT.querySelectorAll<HTMLButtonElement>(':scope > .buttons > button').forEach(button => {
-      button.addEventListener('click', () => {
+      button.addEventListener('click', e => {
+        e.stopPropagation();
         switch (button.dataset.button) {
-          case 'pause':
           case 'resume':
-            console.log(button.dataset.button)
+            this.#pauseOrResume();
             break;
         }
       })
     })
     
+  }
+
+  #pauseOrResume() {
+    this.#ROOT.classList.toggle('-fetching');
+    const isFetching: boolean = this.#ROOT.classList.contains('-fetching');
+    this.statusElement.classList.toggle('-flickering');
+    this.#controller.pauseOrResume(isFetching);
+    this.statusElement.textContent = isFetching
+      ? 'Getting data'
+      : 'Awaiting';
   }
 
   loadedIds() {
