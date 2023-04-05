@@ -247,63 +247,63 @@ export default class ConditionResultsController {
     }
   }
 
-  #setDownloadButtons() {
-    this.#setTsvUrl();
-    this.#updateDataButton(
-      this.#BUTTON_LEFT,
-      dataButtonModes.get('tsv'),
-      'tsv'
-    );
+  // #setDownloadButtons() {
+  //   this.#setTsvUrl();
+  //   this.#updateDataButton(
+  //     this.#BUTTON_LEFT,
+  //     dataButtonModes.get('tsv'),
+  //     'tsv'
+  //   );
 
-    this.#setJsonUrl();
-    const middleButton = this.#makeDataButton('middle', 'json');
-    this.#updateDataButton(middleButton, dataButtonModes.get('json'), 'json');
-    this.#CONTROLLER.insertBefore(middleButton, this.#BUTTON_RIGHT);
-  }
+  //   this.#setJsonUrl();
+  //   const middleButton = this.#makeDataButton('middle', 'json');
+  //   this.#updateDataButton(middleButton, dataButtonModes.get('json'), 'json');
+  //   this.#CONTROLLER.insertBefore(middleButton, this.#BUTTON_RIGHT);
+  // }
 
-  #setJsonUrl() {
-    const jsonBlob = new Blob([JSON.stringify(this.data, null, 2)], {
-      type: 'application/json',
-    });
-    downloadUrls.set('json', URL.createObjectURL(jsonBlob));
-  }
+  // #setJsonUrl() {
+  //   const jsonBlob = new Blob([JSON.stringify(this.data, null, 2)], {
+  //     type: 'application/json',
+  //   });
+  //   downloadUrls.set('json', URL.createObjectURL(jsonBlob));
+  // }
 
-  #setTsvUrl() {
-    const tsv = [
-      [
-        'orig_dataset',
-        'orig_entry',
-        'orig_label',
-        'dest_dataset',
-        'dest_entry',
-        'node',
-        'value',
-      ].join('\t'),
-      ...this.data
-        .map(row => {
-          return row.attributes
-            .map(attribute => {
-              return attribute.items.map(item => {
-                return [
-                  this.#dxCondition.togoKey, // orig_dataset
-                  row.index.entry, // orig_entry
-                  row.index.label, // orig_label
-                  item.dataset, // dest_dataset
-                  item.entry, // dest_entry
-                  attribute.id, // node
-                  item.label, // value
-                ].join('\t');
-              });
-            })
-            .flat();
-        })
-        .flat(),
-    ].join('\n');
-    const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
-    const tsvBlob = new Blob([bom, tsv], {type: 'text/plain'});
-    const tsvUrl = URL.createObjectURL(tsvBlob);
-    downloadUrls.set('tsv', tsvUrl);
-  }
+  // #setTsvUrl() {
+  //   const tsv = [
+  //     [
+  //       'orig_dataset',
+  //       'orig_entry',
+  //       'orig_label',
+  //       'dest_dataset',
+  //       'dest_entry',
+  //       'node',
+  //       'value',
+  //     ].join('\t'),
+  //     ...this.data
+  //       .map(row => {
+  //         return row.attributes
+  //           .map(attribute => {
+  //             return attribute.items.map(item => {
+  //               return [
+  //                 this.#dxCondition.togoKey, // orig_dataset
+  //                 row.index.entry, // orig_entry
+  //                 row.index.label, // orig_label
+  //                 item.dataset, // dest_dataset
+  //                 item.entry, // dest_entry
+  //                 attribute.id, // node
+  //                 item.label, // value
+  //               ].join('\t');
+  //             });
+  //           })
+  //           .flat();
+  //       })
+  //       .flat(),
+  //   ].join('\n');
+  //   const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+  //   const tsvBlob = new Blob([bom, tsv], {type: 'text/plain'});
+  //   const tsvUrl = URL.createObjectURL(tsvBlob);
+  //   downloadUrls.set('tsv', tsvUrl);
+  // }
 
   // *** Properties & Loading ***
   /**
@@ -350,7 +350,7 @@ export default class ConditionResultsController {
     this.#status.total = this.#total;
     if (this.#total <= 0) {
       // retry case
-      this.#completed(false);
+      // this.#completed(false);
       const customEvent = new CustomEvent(event.addNextRows, {
         detail: {
           dxCondition: this.#dxCondition,
@@ -385,23 +385,23 @@ export default class ConditionResultsController {
     // turn off after finished
     if (this.#dxCondition.isPropertiesLoaded) {
       this.#status.current = this.#offset;
-      this.#completed(true);
+      // this.#completed(true);
     } else if (this.#isLoading) this.#getProperties();
   }
 
   /**
    * @param { boolean } withData
    */
-  #completed(withData) {
-    console.log(this.#status);
-    // this.#ROOT.dataset.status = 'complete';
-    // this.#panelView.statusElement.textContent = withData
-    //   ? 'Complete'
-    //   : 'No Data Found';
-    // this.#ROOT.classList.remove('-loading');
+  // #completed(withData) {
+  //   console.log(this.#status);
+  //   // this.#ROOT.dataset.status = 'complete';
+  //   // this.#panelView.statusElement.textContent = withData
+  //   //   ? 'Complete'
+  //   //   : 'No Data Found';
+  //   // this.#ROOT.classList.remove('-loading');
 
-    if (this.#total > 0) this.#setDownloadButtons();
-  }
+  //   if (this.#total > 0) this.#setDownloadButtons();
+  // }
 
   /* public methods */
   select() {

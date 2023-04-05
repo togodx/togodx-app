@@ -96,13 +96,57 @@ export default class ConditionResultsPanelView {
     this.#ROOT.classList.toggle('-loading');
     const isLoading: boolean = this.#ROOT.classList.contains('-loading');
     this.#controller.pauseOrResume(isLoading);
-    this.statusElement.textContent = isLoading
+    this.#STATUS.textContent = isLoading
       ? 'Getting data'
       : 'Awaiting';
   }
 
   #downloadTSV(): void {
-    console.log('downloadTSV')
+    const data = this.#controller.data;
+    const tsv: string = [
+      [
+        'orig_dataset',
+        'orig_entry',
+        'orig_label',
+        'dest_dataset',
+        'dest_entry',
+        'node',
+        'value',
+      ].join('\t'),
+      ...data
+        .map(row => {
+          return row.attributes
+            .map(attribute => {
+              return attribute.items.map(item => {
+                return [
+                  this.#controller.togoKey, // orig_dataset
+                  row.index.entry, // orig_entry
+                  row.index.label, // orig_label
+                  item.dataset, // dest_dataset
+                  item.entry, // dest_entry
+                  attribute.id, // node
+                  item.label, // value
+                ].join('\t');
+              });
+            })
+            .flat();
+        })
+        .flat(),
+    ].join('\n');
+    const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+    const blob = new Blob([bom, tsv], {type: 'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    const timeStamp = new Date();
+    const [date, time] = [
+      timeStamp.toISOString().slice(0, 10).replace(/-/g, ''),
+      timeStamp.toLocaleTimeString().replace(/:/g, ''),
+    ];
+    anchor.href = url;
+    anchor.download = `togodx-${date}-${time}.tsv`;
+    document.body.append(anchor);
+    anchor.click();
+    anchor.remove();
   }
 
   controllerStatusProxy(status) {
@@ -147,10 +191,9 @@ export default class ConditionResultsPanelView {
   }
 
   #completed(): void {
-    console.log('completed');
     this.#ROOT.dataset.status = 'complete';
     this.#ROOT.dataset.load = 'completed';
-    this.statusElement.textContent = this.#statusProxy.total === 0
+    this.#STATUS.textContent = this.#statusProxy.total === 0
       ? 'Complete'
       : 'No Data Found';
     this.#ROOT.classList.remove('-loading');
@@ -161,9 +204,6 @@ export default class ConditionResultsPanelView {
   }
   get statusElement(): HTMLParagraphElement {
     return this.#STATUS;
-  }
-  get progressIndicator(): ProgressIndicator {
-    return this.#progressIndicator;
   }
   // set sum(sum: number) {
   //   this.#ROOT.dataset.sum = sum.toString();
