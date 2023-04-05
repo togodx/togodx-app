@@ -79,6 +79,8 @@ export default class ConditionResultsController {
   #source;
   #isLoading;
   #panelView;
+  #status;
+  #statusProxy;
   #ROOT;
   #CONTROLLER;
   #BUTTON_LEFT;
@@ -87,11 +89,14 @@ export default class ConditionResultsController {
   constructor(dxCondition) {
     const cancelToken = axios.CancelToken;
     this.#source = cancelToken.source();
+    this.#status = {total: -1, current: 0};
 
     this.#isLoading = false;
     this.#dxCondition = dxCondition;
 
     this.#panelView = new ConditionResultsPanelView(this);
+    // this.#statusProxy = this.#panelView.controllerStatusProxy(this.#status);
+    this.#status = this.#panelView.controllerStatusProxy({});
 
     const elm = this.#panelView.element;
 
@@ -342,6 +347,8 @@ export default class ConditionResultsController {
     //   console.error(error);
     //   this.#handleError(error);
     // });
+    this.#status.total = this.total;
+    console.log(this.#status);
     if (this.total <= 0) {
       // retry case
       this.#completed(false);
@@ -355,8 +362,8 @@ export default class ConditionResultsController {
       DefaultEventEmitter.dispatchEvent(customEvent);
       return;
     }
-    this.#panelView.loadedIds();
-    this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
+    // this.#panelView.loadedIds();
+    // this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
     this.#getProperties();
   }
 

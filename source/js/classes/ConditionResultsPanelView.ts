@@ -23,7 +23,8 @@ export default class ConditionResultsPanelView {
     this.#ROOT = document.createElement('div');
     // view
     this.#ROOT.classList.add('condition-results-panel-view');
-    this.#ROOT.dataset.total = '';
+    this.#ROOT.dataset.currentCount = '0';
+    this.#ROOT.dataset.totalCount = '';
     this.#ROOT.dataset.status = 'load ids';
     this.#ROOT.dataset.load = 'ids';
 
@@ -82,7 +83,7 @@ export default class ConditionResultsPanelView {
     
   }
 
-  #pauseOrResume() {
+  #pauseOrResume(): void {
     this.#ROOT.classList.toggle('-loading');
     const isLoading: boolean = this.#ROOT.classList.contains('-loading');
     this.#controller.pauseOrResume(isLoading);
@@ -91,12 +92,36 @@ export default class ConditionResultsPanelView {
       : 'Awaiting';
   }
 
-  loadedIds() {
-    this.#ROOT.dataset.total = this.#controller.total;
-    this.#ROOT.dataset.status = 'load rows';
-    this.#ROOT.dataset.load = 'properties';
-    this.#STATUS.textContent = 'Getting data';
-    this.#progressIndicator.setIndicator(undefined, this.#controller.total);
+  controllerStatusProxy(status) {
+    const self = this;
+    const proxy = new Proxy(status, {
+      get(target, property, receiver) {
+        console.log(target, property, receiver)
+        return Reflect.set(target, property, receiver);
+      },
+      set(target, property, value, receiver) {
+        console.log(target, property, value, receiver)
+        console.log(this)
+        switch (property) {
+          case 'total': 
+          self.#loadedIds(value);
+          break;
+        }
+        return Reflect.set(target, property, value, receiver);
+      }
+    })
+    return proxy;
+  }
+
+  #loadedIds(count: number): void {
+    console.log(count);
+    if (count > 0) {
+      this.#ROOT.dataset.total = count.toString();
+      this.#ROOT.dataset.status = 'load rows';
+      this.#ROOT.dataset.load = 'properties';
+      this.#STATUS.textContent = 'Getting data';
+      this.#progressIndicator.setIndicator(undefined, count);
+    }
   }
 
   loadedProperties() {
@@ -112,4 +137,7 @@ export default class ConditionResultsPanelView {
   get progressIndicator(): ProgressIndicator {
     return this.#progressIndicator;
   }
+  // set sum(sum: number) {
+  //   this.#ROOT.dataset.sum = sum.toString();
+  // }
 }
