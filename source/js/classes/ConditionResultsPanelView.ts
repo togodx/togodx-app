@@ -4,6 +4,11 @@ import Records from './Records';
 
 const BUTTONS: string[] = [ 'edit', 'resume', 'tsv', 'retry' ]
 
+interface ConditionResultsControllerStatus {
+  total: number;
+  current: number;
+}
+
 /**
  * data-load:
  *   - ids
@@ -16,7 +21,7 @@ export default class ConditionResultsPanelView {
   #STATUS: HTMLParagraphElement;
   #controller: ConditionResultsController;
   #progressIndicator: ProgressIndicator;
-  #statusProxy: object;
+  #statusProxy: ConditionResultsControllerStatus;
 
   constructor(controller: ConditionResultsController) {
 
@@ -78,6 +83,9 @@ export default class ConditionResultsPanelView {
           case 'resume':
             this.#pauseOrResume();
             break;
+          case 'tsv':
+            this.#downloadTSV();
+            break;
         }
       })
     })
@@ -93,16 +101,20 @@ export default class ConditionResultsPanelView {
       : 'Awaiting';
   }
 
+  #downloadTSV(): void {
+    console.log('downloadTSV')
+  }
+
   controllerStatusProxy(status) {
     const self = this;
     this.#statusProxy = new Proxy(status, {
       get(target, property, receiver) {
-        console.log(target, property, receiver)
-        return Reflect.set(target, property, receiver);
+        // console.log(target, property, receiver)
+        return Reflect.get(target, property, receiver);
       },
       set(target, property, value, receiver) {
-        console.log(target, property, value, receiver)
-        console.log(status)
+        // console.log(target, property, value, receiver)
+        // console.log(status)
         switch (property) {
           case 'total': 
             self.#loadedIds(value);
@@ -118,18 +130,30 @@ export default class ConditionResultsPanelView {
   }
 
   #loadedIds(count: number): void {
-    console.log(count);
+    this.#ROOT.dataset.totalCount = count.toString();
     if (count > 0) {
-      // this.#ROOT.dataset.totalCount = count.toString();
       this.#ROOT.dataset.status = 'load rows';
       this.#ROOT.dataset.load = 'properties';
       this.#STATUS.textContent = 'Getting data';
       this.#progressIndicator.setIndicator(undefined, count);
+    } else {
+      this.#completed();
     }
   }
 
-  #loadedProperties(count: number) {
+  #loadedProperties(count: number): void {
     this.#progressIndicator.updateProgressBar(count);
+    if (this.#statusProxy.total === count) this.#completed();
+  }
+
+  #completed(): void {
+    console.log('completed');
+    this.#ROOT.dataset.status = 'complete';
+    this.#ROOT.dataset.load = 'completed';
+    this.statusElement.textContent = this.#statusProxy.total === 0
+      ? 'Complete'
+      : 'No Data Found';
+    this.#ROOT.classList.remove('-loading');
   }
 
   get element(): HTMLElement {

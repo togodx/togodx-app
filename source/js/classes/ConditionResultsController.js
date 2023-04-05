@@ -89,7 +89,7 @@ export default class ConditionResultsController {
   constructor(dxCondition) {
     const cancelToken = axios.CancelToken;
     this.#source = cancelToken.source();
-    this.#status = {total: -1, current: 0};
+    // this.#status = {total: -1, current: 0};
 
     this.#isLoading = false;
     this.#dxCondition = dxCondition;
@@ -348,7 +348,6 @@ export default class ConditionResultsController {
     //   this.#handleError(error);
     // });
     this.#status.total = this.total;
-    console.log(this.#status);
     if (this.total <= 0) {
       // retry case
       this.#completed(false);
@@ -367,45 +366,41 @@ export default class ConditionResultsController {
 
   async #getProperties() {
     this.#isLoading = true;
-    // const startTime = Date.now();
 
-    this.#status.current = this.offset;
+    const offset = this.offset;
+    this.#status.current = offset;
     const nextRows = await this.#dxCondition
       .getNextProperties()
       .catch(error => this.#handleError(error));
-    // this.#panelView.progressIndicator.updateProgressBar({
-    //   offset: this.offset,
-    //   startTime,
-    // });
 
     // dispatch event
     const customEvent = new CustomEvent(event.addNextRows, {
       detail: {
         dxCondition: this.#dxCondition,
-        offset: this.#status.current,
+        offset,
         nextRows,
       },
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
     // turn off after finished
     if (this.#dxCondition.isPropertiesLoaded) {
-      this.#completed();
-      return;
-    }
-    if (this.#isLoading) this.#getProperties();
+      this.#status.current = this.offset;
+      this.#completed(true);
+    } else if (this.#isLoading) this.#getProperties();
   }
 
   /**
    * @param { boolean } withData
    */
-  #completed(withData = true) {
-    this.#ROOT.dataset.status = 'complete';
-    this.#panelView.statusElement.textContent = withData
-      ? 'Complete'
-      : 'No Data Found';
-    this.#ROOT.classList.remove('-loading');
+  #completed(withData) {
+    console.log(this.#status);
+    // this.#ROOT.dataset.status = 'complete';
+    // this.#panelView.statusElement.textContent = withData
+    //   ? 'Complete'
+    //   : 'No Data Found';
+    // this.#ROOT.classList.remove('-loading');
 
-    if (withData) this.#setDownloadButtons();
+    // if (withData) this.#setDownloadButtons();TODO:
   }
 
   /* public methods */
