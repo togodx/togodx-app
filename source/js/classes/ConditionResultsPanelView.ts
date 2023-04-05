@@ -83,11 +83,10 @@ export default class ConditionResultsPanelView {
   }
 
   #pauseOrResume() {
-    this.#ROOT.classList.toggle('-fetching');
-    const isFetching: boolean = this.#ROOT.classList.contains('-fetching');
-    this.statusElement.classList.toggle('-flickering');
-    this.#controller.pauseOrResume(isFetching);
-    this.statusElement.textContent = isFetching
+    this.#ROOT.classList.toggle('-loading');
+    const isLoading: boolean = this.#ROOT.classList.contains('-loading');
+    this.#controller.pauseOrResume(isLoading);
+    this.statusElement.textContent = isLoading
       ? 'Getting data'
       : 'Awaiting';
   }

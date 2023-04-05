@@ -48,8 +48,6 @@
       &.-error
         color: red
         opacity: 1
-      &.-flickering
-        animation: var(--transition-fetching) infinite alternate fetching
     > .material-icons-outlined
       display: none
 
@@ -114,13 +112,18 @@
           content: "refresh"
         &::after
           content: "Retry"
-  &.-fetching
+
+  &.-loading
+    // > .status
+    //   > p
+    //     animation: var(--transition-loading) infinite alternate fetching
     > .buttons
       > button[data-button="resume"]
         &::before
           content: "pause"
         &::after
           content: "Pause"
+
   &[data-load="properties"]
     > .buttons
       > button[data-button="resume"]
@@ -130,13 +133,13 @@
     opacity: 1
   &.-current
     cursor: initial
-  &.-fetching, &[data-status="load rows"], &[data-status="complete"]
+  &.-loading, &[data-status="load rows"], &[data-status="complete"]
     > .status
       > p
         opacity: 1
     > .controller
       display: flex
-  &.-fetching
+  &.-loading
     > .status
       > .material-icons-outlined
         display: block

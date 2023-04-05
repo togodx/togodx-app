@@ -77,8 +77,7 @@ const dataButtonModes = new Map([
 export default class ConditionResultsController {
   #dxCondition;
   #source;
-  #isFetching;
-  #progressIndicator;
+  #isLoading;
   #panelView;
   #ROOT;
   #CONTROLLER;
@@ -89,7 +88,7 @@ export default class ConditionResultsController {
     const cancelToken = axios.CancelToken;
     this.#source = cancelToken.source();
 
-    this.#isFetching = false;
+    this.#isLoading = false;
     this.#dxCondition = dxCondition;
 
     this.#panelView = new ConditionResultsPanelView(this);
@@ -126,7 +125,7 @@ export default class ConditionResultsController {
 
     ConditionBuilder.finish();
     this.select();
-    elm.classList.toggle('-fetching');
+    elm.classList.toggle('-loading');
     this.#getQueryIds();
   }
 
@@ -193,27 +192,6 @@ export default class ConditionResultsController {
   /**
    * @param { MouseEvent } e
    */
-  // #dataButtonPauseOrResume(e) {
-  //   e.stopPropagation();
-  //   this.#ROOT.classList.toggle('-fetching');
-  //   this.#panelView.statusElement.classList.toggle('-flickering');
-
-  //   const modeToChangeTo = this.#isFetching ? 'resume' : 'pause';
-  //   this.#updateDataButton(
-  //     e.currentTarget,
-  //     dataButtonModes.get(modeToChangeTo)
-  //   );
-  //   this.#isFetching = !this.#isFetching;
-  //   this.#panelView.statusElement.textContent = this.#isFetching
-  //     ? 'Getting data'
-  //     : 'Awaiting';
-
-  //   if (this.#isFetching) this.#getProperties();
-  // }
-
-  /**
-   * @param { MouseEvent } e
-   */
   #dataButtonEdit(e) {
     e.stopPropagation();
     // property (attribute)
@@ -236,7 +214,7 @@ export default class ConditionResultsController {
 
   #dataButtonRetry() {
     this.#panelView.statusElement.classList.remove('-error');
-    this.#ROOT.classList.toggle('-fetching');
+    this.#ROOT.classList.toggle('-loading');
     this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('empty'));
 
     const partiallyLoaded = this.#dxCondition.ids.length > 0;
@@ -257,11 +235,6 @@ export default class ConditionResultsController {
       case 'edit':
         this.#dataButtonEdit(e);
         break;
-
-      // case 'resume':
-      // case 'pause':
-      //   // this.#dataButtonPauseOrResume(e);
-      //   break;
 
       case 'retry':
         this.#dataButtonRetry();
@@ -354,7 +327,7 @@ export default class ConditionResultsController {
     this.#panelView.statusElement.textContent = code
       ? `${message} (${code})`
       : message;
-    this.#ROOT.classList.toggle('-fetching');
+    this.#ROOT.classList.toggle('-loading');
 
     const customEvent = new CustomEvent(event.failedFetchConditionResultsIDs, {
       detail: this,
@@ -388,7 +361,7 @@ export default class ConditionResultsController {
   }
 
   async #getProperties() {
-    this.#isFetching = true;
+    this.#isLoading = true;
     const startTime = Date.now();
 
     const offset = this.offset;
@@ -414,7 +387,7 @@ export default class ConditionResultsController {
       this.#completed();
       return;
     }
-    if (this.#isFetching) this.#getProperties();
+    if (this.#isLoading) this.#getProperties();
   }
 
   /**
@@ -425,8 +398,7 @@ export default class ConditionResultsController {
     this.#panelView.statusElement.textContent = withData
       ? 'Complete'
       : 'No Data Found';
-    this.#ROOT.classList.remove('-fetching');
-    this.#panelView.statusElement.classList.remove('-flickering');
+    this.#ROOT.classList.remove('-loading');
 
     if (withData) this.#setDownloadButtons();
   }
@@ -457,13 +429,13 @@ export default class ConditionResultsController {
   }
 
   next() {
-    if (this.#isFetching) return;
+    if (this.#isLoading) return;
     this.#getProperties();
   }
 
-  pauseOrResume(isFetching) {
-    this.#isFetching = isFetching;
-    if (this.#isFetching) this.#getProperties();
+  pauseOrResume(isLoading) {
+    this.#isLoading = isLoading;
+    if (this.#isLoading) this.#getProperties();
   }
 
   /* public accessors */
