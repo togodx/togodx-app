@@ -22,11 +22,11 @@ export const styles = css`
     justify-content: center;
     align-items: center;
     top: 0;
-    background-color: var(--color-gray);
     width: 100%;
   }
 
   .header {
+    background-color: var(--color-dark-gray);
     width: min(85%, 20rem);
     display: flex;
     justify-content: space-between;

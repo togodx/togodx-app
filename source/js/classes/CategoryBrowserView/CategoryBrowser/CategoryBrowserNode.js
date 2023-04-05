@@ -155,9 +155,15 @@ export class CategoryNode extends LitElement {
               </div>`
             : nothing}
 
-          <div class="ontology-card-content" @click=${this.#handleClick}>
-            <div class="label">${this.data.label}</div>
+          <div
+            class="ontology-card-content ${!this.data.tip ? '-haschild' : ''}"
+            @click=${this.#handleClick}
+          >
+            <div class="label">${this.data.tip}</div>
             <div class="count">${this.data.count}</div>
+            <div class="mapped"></div>
+            <div class="pvalue"></div>
+            <div class="drilldown"></div>
           </div>
         </div>
         <div class="connector ${this.rightConnectorClassName}"></div>
