@@ -347,8 +347,8 @@ export default class ConditionResultsController {
     //   console.error(error);
     //   this.#handleError(error);
     // });
-    this.#status.total = this.total;
-    if (this.total <= 0) {
+    this.#status.total = this.#total;
+    if (this.#total <= 0) {
       // retry case
       this.#completed(false);
       const customEvent = new CustomEvent(event.addNextRows, {
@@ -367,7 +367,7 @@ export default class ConditionResultsController {
   async #getProperties() {
     this.#isLoading = true;
 
-    const offset = this.offset;
+    const offset = this.#offset;
     this.#status.current = offset;
     const nextRows = await this.#dxCondition
       .getNextProperties()
@@ -384,7 +384,7 @@ export default class ConditionResultsController {
     DefaultEventEmitter.dispatchEvent(customEvent);
     // turn off after finished
     if (this.#dxCondition.isPropertiesLoaded) {
-      this.#status.current = this.offset;
+      this.#status.current = this.#offset;
       this.#completed(true);
     } else if (this.#isLoading) this.#getProperties();
   }
@@ -400,7 +400,7 @@ export default class ConditionResultsController {
     //   : 'No Data Found';
     // this.#ROOT.classList.remove('-loading');
 
-    // if (withData) this.#setDownloadButtons();TODO:
+    if (this.#total > 0) this.#setDownloadButtons();
   }
 
   /* public methods */
@@ -439,10 +439,10 @@ export default class ConditionResultsController {
   }
 
   /* public accessors */
-  get offset() {
+  get #offset() {
     return this.#dxCondition.offset;
   }
-  get total() {
+  get #total() {
     return this.#dxCondition.ids?.length;
   }
   get togoKey() {
@@ -454,9 +454,9 @@ export default class ConditionResultsController {
   get data() {
     return [...this.#dxCondition.properties];
   }
-  get rateOfProgress() {
-    return this.offset / this.total;
-  }
+  // get rateOfProgress() {
+  //   return this.#offset / this.#total;
+  // }
   get element() {
     return this.#panelView.element;
   }
