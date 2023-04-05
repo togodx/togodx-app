@@ -15,6 +15,7 @@ export default class ProgressIndicator {
   #totalDuration;
   #total;
   #mode;
+  #lastTime;
 
   /**
    * @param { HTMLElement } elm
@@ -125,14 +126,16 @@ export default class ProgressIndicator {
   /* public accessors */
 
   /**
-   * @param { {offset: number, startTime: number} } progressInfo
+   * @param { offset: number } progressInfo
    */
-  updateProgressBar({offset = 0, startTime}) {
+  updateProgressBar(offset = 0) {
+    const lastTime = this.#lastTime || Date.now();
     this.#updateBarWidth(offset);
-    if (this.#mode === MODE.SIMPLE || !startTime) return;
+    if (this.#mode === MODE.SIMPLE) return;
 
     this.#updateAmount(offset);
-    this.#updateTime(offset, startTime);
+    this.#updateTime(offset, lastTime);
+    this.#lastTime = Date.now();
   }
 
   /**

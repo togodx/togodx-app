@@ -16,6 +16,7 @@ export default class ConditionResultsPanelView {
   #STATUS: HTMLParagraphElement;
   #controller: ConditionResultsController;
   #progressIndicator: ProgressIndicator;
+  #statusProxy: object;
 
   constructor(controller: ConditionResultsController) {
 
@@ -23,8 +24,8 @@ export default class ConditionResultsPanelView {
     this.#ROOT = document.createElement('div');
     // view
     this.#ROOT.classList.add('condition-results-panel-view');
-    this.#ROOT.dataset.currentCount = '0';
-    this.#ROOT.dataset.totalCount = '';
+    // this.#ROOT.dataset.currentCount = '0';
+    // this.#ROOT.dataset.totalCount = '';
     this.#ROOT.dataset.status = 'load ids';
     this.#ROOT.dataset.load = 'ids';
 
@@ -94,29 +95,32 @@ export default class ConditionResultsPanelView {
 
   controllerStatusProxy(status) {
     const self = this;
-    const proxy = new Proxy(status, {
+    this.#statusProxy = new Proxy(status, {
       get(target, property, receiver) {
         console.log(target, property, receiver)
         return Reflect.set(target, property, receiver);
       },
       set(target, property, value, receiver) {
         console.log(target, property, value, receiver)
-        console.log(this)
+        console.log(status)
         switch (property) {
           case 'total': 
-          self.#loadedIds(value);
-          break;
+            self.#loadedIds(value);
+            break;
+          case 'current': 
+            self.#loadedProperties(value);
+            break;
         }
         return Reflect.set(target, property, value, receiver);
       }
     })
-    return proxy;
+    return this.#statusProxy;
   }
 
   #loadedIds(count: number): void {
     console.log(count);
     if (count > 0) {
-      this.#ROOT.dataset.total = count.toString();
+      // this.#ROOT.dataset.totalCount = count.toString();
       this.#ROOT.dataset.status = 'load rows';
       this.#ROOT.dataset.load = 'properties';
       this.#STATUS.textContent = 'Getting data';
@@ -124,8 +128,8 @@ export default class ConditionResultsPanelView {
     }
   }
 
-  loadedProperties() {
-
+  #loadedProperties(count: number) {
+    this.#progressIndicator.updateProgressBar(count);
   }
 
   get element(): HTMLElement {

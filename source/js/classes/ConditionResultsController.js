@@ -362,29 +362,27 @@ export default class ConditionResultsController {
       DefaultEventEmitter.dispatchEvent(customEvent);
       return;
     }
-    // this.#panelView.loadedIds();
-    // this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('pause'));
     this.#getProperties();
   }
 
   async #getProperties() {
     this.#isLoading = true;
-    const startTime = Date.now();
+    // const startTime = Date.now();
 
-    const offset = this.offset;
+    this.#status.current = this.offset;
     const nextRows = await this.#dxCondition
       .getNextProperties()
       .catch(error => this.#handleError(error));
-    this.#panelView.progressIndicator.updateProgressBar({
-      offset: this.offset,
-      startTime,
-    });
+    // this.#panelView.progressIndicator.updateProgressBar({
+    //   offset: this.offset,
+    //   startTime,
+    // });
 
     // dispatch event
     const customEvent = new CustomEvent(event.addNextRows, {
       detail: {
         dxCondition: this.#dxCondition,
-        offset,
+        offset: this.#status.current,
         nextRows,
       },
     });
