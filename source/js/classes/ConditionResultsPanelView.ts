@@ -80,6 +80,13 @@ export default class ConditionResultsPanelView {
       if (this.#ROOT.classList.contains('-current')) return;
       this.#controller.select();
     });
+    const closeButton = this.#ROOT.querySelector(':scope > .close-button-view') as HTMLDivElement;
+    closeButton.addEventListener('click', e => {
+        e.stopPropagation();
+        // delete element
+        this.#ROOT.remove();
+        this.#controller.deleteCondition();
+      });
     this.#ROOT.querySelectorAll<HTMLButtonElement>(':scope > .buttons > button').forEach(button => {
       button.addEventListener('click', e => {
         e.stopPropagation();

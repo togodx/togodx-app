@@ -81,9 +81,7 @@ export default class ConditionResultsController {
   #panelView;
   #status;
   #ROOT;
-  // #CONTROLLER;
   #BUTTON_LEFT;
-  // #BUTTON_RIGHT;
 
   constructor(dxCondition) {
     const cancelToken = axios.CancelToken;
@@ -107,22 +105,6 @@ export default class ConditionResultsController {
     this.#BUTTON_LEFT = elm.querySelector(
       ':scope > .controller > .button.left'
     );
-    // this.#BUTTON_RIGHT = elm.querySelector(
-    //   ':scope > .controller > .button.right'
-    // );
-
-    // events
-    // elm.addEventListener('click', () => {
-    //   if (elm.classList.contains('-current')) return;
-    //   this.select();
-    // });
-
-    // delete
-    elm
-      .querySelector(':scope > .close-button-view')
-      .addEventListener('click', e => {
-        this.#deleteCondition(e);
-      });
 
     ConditionBuilder.finish();
     this.select();
@@ -131,18 +113,15 @@ export default class ConditionResultsController {
   }
 
   /* private methods */
-  #deleteCondition(e) {
-    e.stopPropagation();
+  deleteCondition() {
     const customEvent = new CustomEvent(event.deleteConditionResults, {
       detail: this,
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
     // abort fetch
     this.#source.cancel('user cancel');
-    // delete element
-    this.#ROOT.parentNode.removeChild(this.#ROOT);
     // transition
-    document.querySelector('body').dataset.display = 'properties';
+    document.body.dataset.display = 'properties';
   }
 
   // *** Responsive Buttons based on dataButtonModes ***
@@ -243,64 +222,6 @@ export default class ConditionResultsController {
     }
   }
 
-  // #setDownloadButtons() {
-  //   this.#setTsvUrl();
-  //   this.#updateDataButton(
-  //     this.#BUTTON_LEFT,
-  //     dataButtonModes.get('tsv'),
-  //     'tsv'
-  //   );
-
-  //   this.#setJsonUrl();
-  //   const middleButton = this.#makeDataButton('middle', 'json');
-  //   this.#updateDataButton(middleButton, dataButtonModes.get('json'), 'json');
-  //   this.#CONTROLLER.insertBefore(middleButton, this.#BUTTON_RIGHT);
-  // }
-
-  // #setJsonUrl() {
-  //   const jsonBlob = new Blob([JSON.stringify(this.data, null, 2)], {
-  //     type: 'application/json',
-  //   });
-  //   downloadUrls.set('json', URL.createObjectURL(jsonBlob));
-  // }
-
-  // #setTsvUrl() {
-  //   const tsv = [
-  //     [
-  //       'orig_dataset',
-  //       'orig_entry',
-  //       'orig_label',
-  //       'dest_dataset',
-  //       'dest_entry',
-  //       'node',
-  //       'value',
-  //     ].join('\t'),
-  //     ...this.data
-  //       .map(row => {
-  //         return row.attributes
-  //           .map(attribute => {
-  //             return attribute.items.map(item => {
-  //               return [
-  //                 this.#dxCondition.togoKey, // orig_dataset
-  //                 row.index.entry, // orig_entry
-  //                 row.index.label, // orig_label
-  //                 item.dataset, // dest_dataset
-  //                 item.entry, // dest_entry
-  //                 attribute.id, // node
-  //                 item.label, // value
-  //               ].join('\t');
-  //             });
-  //           })
-  //           .flat();
-  //       })
-  //       .flat(),
-  //   ].join('\n');
-  //   const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
-  //   const tsvBlob = new Blob([bom, tsv], {type: 'text/plain'});
-  //   const tsvUrl = URL.createObjectURL(tsvBlob);
-  //   downloadUrls.set('tsv', tsvUrl);
-  // }
-
   // *** Properties & Loading ***
   /**
    * @param { Error } err - first check userCancel, then server error, timeout err part of else
@@ -385,20 +306,6 @@ export default class ConditionResultsController {
     } else if (this.#isLoading) this.#getProperties();
   }
 
-  /**
-   * @param { boolean } withData
-   */
-  // #completed(withData) {
-  //   console.log(this.#status);
-  //   // this.#ROOT.dataset.status = 'complete';
-  //   // this.#panelView.statusElement.textContent = withData
-  //   //   ? 'Complete'
-  //   //   : 'No Data Found';
-  //   // this.#ROOT.classList.remove('-loading');
-
-  //   if (this.#total > 0) this.#setDownloadButtons();
-  // }
-
   /* public methods */
   select() {
     this.#ROOT.classList.add('-current');
@@ -450,9 +357,6 @@ export default class ConditionResultsController {
   get data() {
     return [...this.#dxCondition.properties];
   }
-  // get rateOfProgress() {
-  //   return this.#offset / this.#total;
-  // }
   get element() {
     return this.#panelView.element;
   }
