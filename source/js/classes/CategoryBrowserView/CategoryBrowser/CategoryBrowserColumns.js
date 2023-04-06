@@ -52,7 +52,8 @@ export class CategoryBrowserColumns extends LitElement {
 
   willUpdate(changedProperties) {
     if (changedProperties.has('data')) {
-      if (changedProperties.get('data')) {
+      // if (changedProperties.get('data')) {
+      if (this.data && this.data.details) {
         if (
           this.data.details.id &&
           changedProperties.get('data').details?.id !== this.data.details.id
@@ -96,6 +97,10 @@ export class CategoryBrowserColumns extends LitElement {
           }
 
           //parents after update
+          console.log(
+            'this.data.relations?.children',
+            this.data.relations?.children.some(c => c.pvalue)
+          );
           this.dataColumns.parents = this.data.relations?.parents || [];
           //children after update
           this.dataColumns.children = this.data.relations?.children || [];
@@ -174,6 +179,10 @@ export class CategoryBrowserColumns extends LitElement {
   }
 
   render() {
+    console.log(
+      'render @ category-browser-columns, dataColumns',
+      this.dataColumns.children
+    );
     return html`
       <div class="clip" ${ref(this.clipRef)}>
         <div

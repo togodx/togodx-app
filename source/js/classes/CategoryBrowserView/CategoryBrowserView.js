@@ -1,11 +1,13 @@
 import {css, html, LitElement} from 'lit';
 import {cachedAxios} from '../../functions/util';
+import DefaultEventEmitter from '../DefaultEventEmitter';
 import './Suggest/Suggest';
 import './CategoryBrowser/CategoryBrowser';
 import './CategoryBrowser/CategoryBrowserColumns';
 import './CategoryBrowser/CategoryBrowserColumn';
 import './CategoryBrowser/CategoryBrowserError';
 import './CategoryBrowser/CategoryBrowserNode';
+import {setUserFilters} from '../../events';
 
 export class CategoryBrowserView extends LitElement {
   #items;
@@ -13,9 +15,13 @@ export class CategoryBrowserView extends LitElement {
   #categoryAPIBaseURL;
   #suggestAPIBaseURL;
   #clickedRole;
+  #attributeId;
+  #userFilterMap = new Map();
 
   constructor(element, attribute, items) {
     super();
+
+    this.#attributeId = attribute.id;
 
     this.#suggestAPIBaseURL = new URL(
       attribute.api.replace('/breakdown/', '/suggest/')
@@ -91,11 +97,17 @@ export class CategoryBrowserView extends LitElement {
           ...item,
           id: item.node,
           label: item.label,
+          pvalue: this.#userFilterMap.has(item.node)
+            ? this.#userFilterMap.get(item.node).pvalue
+            : null,
         })),
         parents: parentsArr.map(item => ({
           ...item,
           id: item.node,
           label: item.label,
+          pvalue: this.#userFilterMap.has(item.node)
+            ? this.#userFilterMap.get(item.node).pvalue
+            : null,
         })),
       },
     };
@@ -167,7 +179,7 @@ export class CategoryBrowserView extends LitElement {
 
   render() {
     return html`
-      <div class="container" id="category-browser-view">
+      <div class="container" id="category-browser-view" @>
         <div class="suggest">
           <suggest-element
             @suggestion-input="${debounce(this.#handleSuggestInput)}"
@@ -192,6 +204,57 @@ export class CategoryBrowserView extends LitElement {
 
   createRenderRoot() {
     return this;
+  }
+
+  #handleSetUserFilters(e) {
+    if (this.#attributeId === e.detail.attributeId) {
+      this.#userFilterMap.clear();
+      e.detail.filters.forEach(filter => {
+        this.#userFilterMap.set(filter.node, filter);
+      });
+
+      console.log('set user filters', this.#userFilterMap);
+
+      this.categoryData = {
+        role: this.#clickedRole,
+        details: {
+          ...this.categoryData.details,
+          pvalue: this.#userFilterMap.has(this.categoryData.details.id)
+            ? this.#userFilterMap.get(this.categoryData.details.id).pvalue
+            : null,
+        },
+        relations: {
+          children: this.categoryData.relations.children.map(item => ({
+            ...item,
+            pvalue: this.#userFilterMap.has(item.id)
+              ? this.#userFilterMap.get(item.id).pvalue
+              : null,
+          })),
+          parents: this.categoryData.relations.parents.map(item => ({
+            ...item,
+            pvalue: this.#userFilterMap.has(item.id)
+              ? this.#userFilterMap.get(item.id).pvalue
+              : null,
+          })),
+        },
+      };
+    }
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    DefaultEventEmitter.addEventListener(
+      setUserFilters,
+      this.#handleSetUserFilters.bind(this)
+    );
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    DefaultEventEmitter.removeEventListener(
+      setUserFilters,
+      this.#handleSetUserFilters.bind(this)
+    );
   }
 }
 

@@ -77,6 +77,10 @@ export class CategoryNode extends LitElement {
       this.leftConnectorClassName = '';
       this.rightConnectorClassName = '';
     }
+
+    // if (prevParams.has('data')) {
+    //   console.log('Node level data', this.data);
+    // }
   }
 
   updated() {
@@ -159,10 +163,10 @@ export class CategoryNode extends LitElement {
             class="ontology-card-content ${!this.data.tip ? '-haschild' : ''}"
             @click=${this.#handleClick}
           >
-            <div class="label">${this.data.tip}</div>
+            <div class="label">${this.data.label}</div>
             <div class="count">${this.data.count}</div>
             <div class="mapped"></div>
-            <div class="pvalue"></div>
+            <div class="pvalue">${this.data.pvalue?.toExponential(2)}</div>
             <div class="drilldown"></div>
           </div>
         </div>
