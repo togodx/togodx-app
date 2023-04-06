@@ -43,11 +43,10 @@
     justify-content: center
     > p
       margin-bottom: 0
-      opacity: .25
+      // opacity: .25
       transition: opacity var(--transition-instant)
-      &.-error
+      > .error
         color: red
-        opacity: 1
     > .material-icons-outlined
       display: none
 
@@ -90,6 +89,7 @@
         top: 1px
         position: relative
       &[data-button="resume"]
+        display: block
         &::before
           content: "play_arrow"
         &::after
@@ -127,10 +127,10 @@
         &::after
           content: "Pause"
 
-  &[data-load="properties"]
-    > .buttons
-      > button[data-button="resume"]
-        display: block
+  // &[data-load="properties"]
+  //   > .buttons
+  //     > button[data-button="resume"]
+  //       display: block
   &[data-load="completed"]:not([data-total-count="0"])
     > .buttons
       > button[data-button="tsv"]

@@ -2,77 +2,8 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import ConditionResultsPanelView from './ConditionResultsPanelView';
-// import ConditionAnnotation from './ConditionAnnotation';
 import * as event from '../events';
 import axios from 'axios';
-
-const downloadUrls = new Map();
-const timeOutError = 'ECONNABORTED';
-
-/**
- * @typedef { Object } Mode
- * @property { string } label
- * @property { string } icon
- * @property { string } dataButton
- */
-const dataButtonModes = new Map([
-  [
-    'edit',
-    {
-      label: 'Edit',
-      icon: 'edit',
-      dataButton: 'edit',
-    },
-  ],
-  [
-    'resume',
-    {
-      label: 'Resume',
-      icon: 'play_arrow',
-      dataButton: 'resume',
-    },
-  ],
-  [
-    'pause',
-    {
-      label: 'Pause',
-      icon: 'pause',
-      dataButton: 'pause',
-    },
-  ],
-  [
-    'tsv',
-    {
-      label: 'TSV',
-      icon: 'download',
-      dataButton: 'download-tsv',
-    },
-  ],
-  [
-    'json',
-    {
-      label: 'JSON',
-      icon: 'download',
-      dataButton: 'download-json',
-    },
-  ],
-  [
-    'retry',
-    {
-      label: 'Retry',
-      icon: 'refresh',
-      dataButton: 'retry',
-    },
-  ],
-  [
-    'empty',
-    {
-      label: '',
-      icon: '',
-      dataButton: '',
-    },
-  ],
-]);
 
 export default class ConditionResultsController {
   #dxCondition;
@@ -81,7 +12,6 @@ export default class ConditionResultsController {
   #panelView;
   #status;
   #ROOT;
-  #BUTTON_LEFT;
 
   constructor(dxCondition) {
     const cancelToken = axios.CancelToken;
@@ -97,18 +27,8 @@ export default class ConditionResultsController {
     // reference
     this.#ROOT = elm;
 
-    const controller = elm.querySelector(':scope > .controller');
-    controller.appendChild(this.#makeDataButton('left'));
-    // controller.appendChild(
-    //   this.#makeDataButton('right', dataButtonModes.get('edit'))
-    // );
-    this.#BUTTON_LEFT = elm.querySelector(
-      ':scope > .controller > .button.left'
-    );
-
     ConditionBuilder.finish();
     this.select();
-    // elm.classList.toggle('-loading');
     this.#getQueryIds();
   }
 
@@ -122,51 +42,6 @@ export default class ConditionResultsController {
     this.#source.cancel('user cancel');
     // transition
     document.body.dataset.display = 'properties';
-  }
-
-  // *** Responsive Buttons based on dataButtonModes ***
-  /**
-   * @param { string } className
-   * @param { Mode } mode
-   */
-  #makeDataButton(className, mode = undefined) {
-    const button = document.createElement('div');
-    button.innerHTML = `
-      <a>
-        <span class="material-icons-outlined"></span>
-        <span class="label"></span>
-      </a>`;
-    button.classList.add('button', className);
-
-    if (mode) this.#updateDataButton(button, mode);
-    button.addEventListener('click', e => {
-      this.#dataButtonEvent(e);
-    });
-
-    return button;
-  }
-
-  /**
-   * @param { HTMLElement } target
-   * @param { Mode } mode
-   * @param { string } urlType
-   */
-  #updateDataButton(target, mode, urlType) {
-    target.dataset.button = mode.dataButton;
-    const anchor = target.querySelector(':scope > a');
-    anchor.querySelector(':scope > .material-icons-outlined').innerText =
-      mode.icon;
-    anchor.querySelector(':scope > .label').innerText = mode.label;
-    if (urlType) {
-      const url = downloadUrls.get(urlType);
-      anchor.setAttribute('href', url);
-      const timeStamp = new Date();
-      const [date, time] = [
-        timeStamp.toISOString().slice(0, 10).replaceAll('-', ''),
-        timeStamp.toLocaleTimeString().replaceAll(':', ''),
-      ];
-      anchor.setAttribute('download', `togodx-${date}-${time}.${urlType}`);
-    }
   }
 
   edit() {
@@ -188,64 +63,17 @@ export default class ConditionResultsController {
     });
   }
 
-  #dataButtonRetry() {
-    this.#panelView.statusElement.classList.remove('-error');
-    this.#ROOT.classList.toggle('-loading');
-    this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('empty'));
-
-    const partiallyLoaded = this.#dxCondition.ids.length > 0;
-    const message = partiallyLoaded ? 'Getting data' : 'Getting ID list';
-    this.#panelView.statusElement.textContent = message;
-
-    if (partiallyLoaded) this.#getProperties();
-    else this.#getQueryIds();
-  }
-
-  /**
-   * @param { MouseEvent } e
-   */
-  #dataButtonEvent(e) {
-    const button = e.currentTarget;
-    const mode = button.dataset.button;
-    switch (mode) {
-      // case 'edit':
-      //   this.#dataButtonEdit(e);
-      //   break;
-
-      case 'retry':
-        this.#dataButtonRetry();
-        break;
-    }
-  }
-
   // *** Properties & Loading ***
   /**
    * @param { Error } err - first check userCancel, then server error, timeout err part of else
    */
   #handleError(err) {
+    console.log(err);
     if (axios.isCancel && err.message === 'user cancel') return;
 
     const code = err.response?.status;
     const message = err.response?.statusText || err.message;
-    this.#displayError(message, code);
-
-    if ((err.response?.status === 500) | (err.code === timeOutError)) {
-      this.#updateDataButton(this.#BUTTON_LEFT, dataButtonModes.get('retry'));
-      return;
-    }
-    this.#BUTTON_LEFT.remove();
-  }
-
-  /**
-   * @param { string } message - errorMessage
-   * @param { number } code - errorCode na in case of timeout or other
-   */
-  #displayError(message, code) {
-    this.#panelView.statusElement.classList.add('-error');
-    this.#panelView.statusElement.textContent = code
-      ? `${message} (${code})`
-      : message;
-    this.#ROOT.classList.toggle('-loading');
+    this.#panelView.displayError(message, code);
 
     const customEvent = new CustomEvent(event.failedFetchConditionResultsIDs, {
       detail: this,
@@ -255,15 +83,11 @@ export default class ConditionResultsController {
 
   async #getQueryIds() {
     // get IDs
-    await this.#dxCondition.ids;
-    // await this.#dxCondition.ids.catch(error => {
-    //   console.error(error);
-    //   this.#handleError(error);
-    // });
+    await this.#dxCondition.ids.catch(error => {
+      this.#handleError(error);
+    });
     this.#status.total = this.#total;
     if (this.#total <= 0) {
-      // retry case
-      // this.#completed(false);
       const customEvent = new CustomEvent(event.addNextRows, {
         detail: {
           dxCondition: this.#dxCondition,
@@ -285,6 +109,7 @@ export default class ConditionResultsController {
     const nextRows = await this.#dxCondition
       .getNextProperties()
       .catch(error => this.#handleError(error));
+    if (!nextRows) return;
 
     // dispatch event
     const customEvent = new CustomEvent(event.addNextRows, {
@@ -298,7 +123,6 @@ export default class ConditionResultsController {
     // turn off after finished
     if (this.#dxCondition.isPropertiesLoaded) {
       this.#status.current = this.#offset;
-      // this.#completed(true);
     } else if (this.#isLoading) this.#getProperties();
   }
 
@@ -334,7 +158,10 @@ export default class ConditionResultsController {
 
   pauseOrResume(isLoading) {
     this.#isLoading = isLoading;
-    if (this.#isLoading) this.#getProperties();
+    if (this.#isLoading) {
+      if (this.#status.total) this.#getProperties();
+      else this.#getQueryIds();
+    }
   }
 
   /* public accessors */

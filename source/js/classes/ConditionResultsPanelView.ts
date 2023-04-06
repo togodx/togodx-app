@@ -187,6 +187,13 @@ export default class ConditionResultsPanelView {
     return this.#statusProxy;
   }
 
+  displayError(message: string, code: number) {
+    this.#STATUS.innerHTML = `<span class="error">${code
+      ? `${message} (${code})`
+      : message}</span>`;
+    this.#ROOT.classList.remove('-loading');
+  }
+
   #loadedIds(count: number): void {
     this.#ROOT.dataset.totalCount = count.toString();
     if (count > 0) {
