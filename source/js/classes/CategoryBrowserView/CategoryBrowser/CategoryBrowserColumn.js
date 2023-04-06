@@ -53,6 +53,8 @@ export default class CategoryBrowserColumn extends LitElement {
               <div class="header">
                 <div class="values">Values</div>
                 <div class="total">Total</div>
+                <div class="mapped">Mapped</div>
+                <div class="p-value">p-value</div>
               </div>
             </div>`
           : nothing}
