@@ -7,7 +7,7 @@ import './CategoryBrowser/CategoryBrowserColumns';
 import './CategoryBrowser/CategoryBrowserColumn';
 import './CategoryBrowser/CategoryBrowserError';
 import './CategoryBrowser/CategoryBrowserNode';
-import {setUserFilters} from '../../events';
+import {setUserFilters, clearUserFilters} from '../../events';
 
 export class CategoryBrowserView extends LitElement {
   #items;
@@ -213,14 +213,15 @@ export class CategoryBrowserView extends LitElement {
         this.#userFilterMap.set(filter.node, filter);
       });
 
-      console.log('set user filters', this.#userFilterMap);
-
       this.categoryData = {
         role: this.#clickedRole,
         details: {
           ...this.categoryData.details,
           pvalue: this.#userFilterMap.has(this.categoryData.details.id)
             ? this.#userFilterMap.get(this.categoryData.details.id).pvalue
+            : null,
+          mapped: this.#userFilterMap.has(this.categoryData.details.id)
+            ? this.#userFilterMap.get(this.categoryData.details.id).mapped
             : null,
         },
         relations: {
@@ -229,16 +230,48 @@ export class CategoryBrowserView extends LitElement {
             pvalue: this.#userFilterMap.has(item.id)
               ? this.#userFilterMap.get(item.id).pvalue
               : null,
+            mapped: this.#userFilterMap.has(item.id)
+              ? this.#userFilterMap.get(item.id).mapped
+              : null,
           })),
           parents: this.categoryData.relations.parents.map(item => ({
             ...item,
             pvalue: this.#userFilterMap.has(item.id)
               ? this.#userFilterMap.get(item.id).pvalue
               : null,
+            mapped: this.#userFilterMap.has(item.id)
+              ? this.#userFilterMap.get(item.id).mapped
+              : null,
           })),
         },
       };
+
+      console.log('category data', this.categoryData);
     }
+  }
+
+  #handleClearUserFilters(e) {
+    this.#userFilterMap.clear();
+    this.categoryData = {
+      role: this.#clickedRole,
+      details: {
+        ...this.categoryData.details,
+        pvalue: null,
+        mapped: null,
+      },
+      relations: {
+        children: this.categoryData.relations.children.map(item => ({
+          ...item,
+          pvalue: null,
+          mapped: null,
+        })),
+        parents: this.categoryData.relations.parents.map(item => ({
+          ...item,
+          pvalue: null,
+          mapped: null,
+        })),
+      },
+    };
   }
 
   connectedCallback() {
@@ -247,6 +280,10 @@ export class CategoryBrowserView extends LitElement {
       setUserFilters,
       this.#handleSetUserFilters.bind(this)
     );
+    DefaultEventEmitter.addEventListener(
+      clearUserFilters,
+      this.#handleClearUserFilters.bind(this)
+    );
   }
 
   disconnectedCallback() {
@@ -254,6 +291,10 @@ export class CategoryBrowserView extends LitElement {
     DefaultEventEmitter.removeEventListener(
       setUserFilters,
       this.#handleSetUserFilters.bind(this)
+    );
+    DefaultEventEmitter.removeEventListener(
+      clearUserFilters,
+      this.#handleClearUserFilters.bind(this)
     );
   }
 }

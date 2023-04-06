@@ -165,7 +165,7 @@ export class CategoryNode extends LitElement {
           >
             <div class="label">${this.data.label}</div>
             <div class="count">${this.data.count}</div>
-            <div class="mapped"></div>
+            <div class="mapped">${this.data.mapped?.toLocaleString()}</div>
             <div class="pvalue">${this.data.pvalue?.toExponential(2)}</div>
             <div class="drilldown"></div>
           </div>

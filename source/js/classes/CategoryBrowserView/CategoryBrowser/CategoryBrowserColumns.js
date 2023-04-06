@@ -104,6 +104,22 @@ export class CategoryBrowserColumns extends LitElement {
           this.dataColumns.parents = this.data.relations?.parents || [];
           //children after update
           this.dataColumns.children = this.data.relations?.children || [];
+        } else if (
+          changedProperties.get('data').details?.id === this.data.details.id
+        ) {
+          this.dataColumns.hero = [
+            {
+              ...this.data.details,
+              leaf:
+                !this.data.relations?.children ||
+                !this.data.relations?.children.length,
+              root:
+                !this.data.relations?.parents ||
+                !this.data.relations?.parents.length,
+            },
+          ];
+          this.dataColumns.parents = this.data.relations?.parents || [];
+          this.dataColumns.children = this.data.relations?.children || [];
         }
       }
 
