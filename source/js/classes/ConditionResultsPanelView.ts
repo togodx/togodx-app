@@ -2,7 +2,7 @@ import ConditionResultsController from './ConditionResultsController';
 import ProgressIndicator from './ProgressIndicator';
 import Records from './Records';
 
-const BUTTONS: string[] = [ 'edit', 'resume', 'tsv', 'retry' ]
+const BUTTONS: string[] = [ 'resume', 'retry', 'tsv', 'condition', 'edit' ]
 
 interface ConditionResultsControllerStatus {
   total: number;
@@ -28,7 +28,7 @@ export default class ConditionResultsPanelView {
     this.#controller = controller;
     this.#ROOT = document.createElement('div');
     // view
-    this.#ROOT.classList.add('condition-results-panel-view');
+    this.#ROOT.classList.add('condition-results-panel-view', '-loading');
     // this.#ROOT.dataset.currentCount = '0';
     // this.#ROOT.dataset.totalCount = '';
     this.#ROOT.dataset.status = 'load ids';
@@ -96,6 +96,9 @@ export default class ConditionResultsPanelView {
             break;
           case 'tsv':
             this.#downloadTSV();
+            break;
+          case 'edit':
+            this.#controller.edit();
             break;
         }
       })

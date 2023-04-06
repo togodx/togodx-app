@@ -99,16 +99,16 @@ export default class ConditionResultsController {
 
     const controller = elm.querySelector(':scope > .controller');
     controller.appendChild(this.#makeDataButton('left'));
-    controller.appendChild(
-      this.#makeDataButton('right', dataButtonModes.get('edit'))
-    );
+    // controller.appendChild(
+    //   this.#makeDataButton('right', dataButtonModes.get('edit'))
+    // );
     this.#BUTTON_LEFT = elm.querySelector(
       ':scope > .controller > .button.left'
     );
 
     ConditionBuilder.finish();
     this.select();
-    elm.classList.toggle('-loading');
+    // elm.classList.toggle('-loading');
     this.#getQueryIds();
   }
 
@@ -169,11 +169,7 @@ export default class ConditionResultsController {
     }
   }
 
-  /**
-   * @param { MouseEvent } e
-   */
-  #dataButtonEdit(e) {
-    e.stopPropagation();
+  edit() {
     // property (attribute)
     ConditionBuilder.setAnnotation(
       this.#dxCondition.conditionAnnotations.map(conditionAnnotation => {
@@ -212,9 +208,9 @@ export default class ConditionResultsController {
     const button = e.currentTarget;
     const mode = button.dataset.button;
     switch (mode) {
-      case 'edit':
-        this.#dataButtonEdit(e);
-        break;
+      // case 'edit':
+      //   this.#dataButtonEdit(e);
+      //   break;
 
       case 'retry':
         this.#dataButtonRetry();

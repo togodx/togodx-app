@@ -76,6 +76,8 @@
       &[data-button="edit"]
         body[data-display="results"] &
           display: none
+        body[data-display="properties"] &
+          display: block
       &[data-button="download-json"]
         display: none
     > button
@@ -87,31 +89,32 @@
         margin-right: .2rem
         top: 1px
         position: relative
-      &[data-button="edit"]
-        &::before
-          content: "edit"
-        &::after
-          content: "Edit"
       &[data-button="resume"]
         &::before
           content: "play_arrow"
         &::after
           content: "Resume"
-      // &[data-button="pause"]
-      //   &::before
-      //     content: "pause"
-      //   &::after
-      //     content: "Pause"
-      &[data-button="tsv"]
-        &::before
-          content: "download"
-        &::after
-          content: "TSV"
       &[data-button="retry"]
         &::before
           content: "refresh"
         &::after
           content: "Retry"
+      &[data-button="tsv"]
+        &::before
+          content: "download"
+        &::after
+          content: "TSV"
+      &[data-button="edit"]
+        &::before
+          content: "edit"
+        &::after
+          content: "Edit"
+      &[data-button="condition"]
+        display: block
+        &::before
+          content: "download"
+        &::after
+          content: "Condition"
 
   &.-loading
     // > .status
