@@ -11,7 +11,6 @@ export default class ConditionResultsController {
   #isLoading;
   #panelView;
   #status;
-  #ROOT;
 
   constructor(dxCondition) {
     const cancelToken = axios.CancelToken;
@@ -22,63 +21,9 @@ export default class ConditionResultsController {
     this.#panelView = new ConditionResultsPanelView(this);
     this.#status = this.#panelView.controllerStatusProxy({});
 
-    const elm = this.#panelView.element;
-
-    // reference
-    this.#ROOT = elm;
-
     ConditionBuilder.finish();
     this.select();
     this.#getQueryIds();
-  }
-
-  /* private methods */
-  deleteCondition() {
-    const customEvent = new CustomEvent(event.deleteConditionResults, {
-      detail: this,
-    });
-    DefaultEventEmitter.dispatchEvent(customEvent);
-    // abort fetch
-    this.#source.cancel('user cancel');
-    // transition
-    document.body.dataset.display = 'properties';
-  }
-
-  edit() {
-    // property (attribute)
-    ConditionBuilder.setAnnotation(
-      this.#dxCondition.conditionAnnotations.map(conditionAnnotation => {
-        return conditionAnnotation;
-      }),
-      false
-    );
-    // attribute (classification/distribution)
-    Records.attributes.forEach(({id}) => {
-      const conditionFilter = this.#dxCondition.conditionFilters.find(
-        conditionFilter => conditionFilter.attributeId === id
-      );
-      const nodes = [];
-      if (conditionFilter) nodes.push(...conditionFilter.nodes);
-      ConditionBuilder.setFilter(id, nodes, false);
-    });
-  }
-
-  // *** Properties & Loading ***
-  /**
-   * @param { Error } err - first check userCancel, then server error, timeout err part of else
-   */
-  #handleError(err) {
-    console.log(err);
-    if (axios.isCancel && err.message === 'user cancel') return;
-
-    const code = err.response?.status;
-    const message = err.response?.statusText || err.message;
-    this.#panelView.displayError(message, code);
-
-    const customEvent = new CustomEvent(event.failedFetchConditionResultsIDs, {
-      detail: this,
-    });
-    DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
   async #getQueryIds() {
@@ -126,6 +71,55 @@ export default class ConditionResultsController {
     } else if (this.#isLoading) this.#getProperties();
   }
 
+  // *** Properties & Loading ***
+  /**
+   * @param { Error } err - first check userCancel, then server error, timeout err part of else
+   */
+  #handleError(err) {
+    console.log(err);
+    if (axios.isCancel && err.message === 'user cancel') return;
+
+    const code = err.response?.status;
+    const message = err.response?.statusText || err.message;
+    this.#panelView.displayError(message, code);
+
+    const customEvent = new CustomEvent(event.failedFetchConditionResultsIDs, {
+      detail: this,
+    });
+    DefaultEventEmitter.dispatchEvent(customEvent);
+  }
+
+  /* private methods */
+  deleteCondition() {
+    const customEvent = new CustomEvent(event.deleteConditionResults, {
+      detail: this,
+    });
+    DefaultEventEmitter.dispatchEvent(customEvent);
+    // abort fetch
+    this.#source.cancel('user cancel');
+    // transition
+    document.body.dataset.display = 'properties';
+  }
+
+  edit() {
+    // property (attribute)
+    ConditionBuilder.setAnnotation(
+      this.#dxCondition.conditionAnnotations.map(conditionAnnotation => {
+        return conditionAnnotation;
+      }),
+      false
+    );
+    // attribute (classification/distribution)
+    Records.attributes.forEach(({id}) => {
+      const conditionFilter = this.#dxCondition.conditionFilters.find(
+        conditionFilter => conditionFilter.attributeId === id
+      );
+      const nodes = [];
+      if (conditionFilter) nodes.push(...conditionFilter.nodes);
+      ConditionBuilder.setFilter(id, nodes, false);
+    });
+  }
+
   /* public methods */
   select() {
     this.#panelView.selected = true;
@@ -164,7 +158,7 @@ export default class ConditionResultsController {
     }
   }
 
-  /* public accessors */
+  /* accessors */
   get #offset() {
     return this.#dxCondition.offset;
   }
