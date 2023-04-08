@@ -9,6 +9,12 @@ interface ConditionResultsControllerStatus {
   current: number;
 }
 
+export enum LoadStatus {
+  ids = 'ids',
+  properties = 'properties',
+  completed = 'completed',
+}
+
 /**
  * data-load:
  *   - ids
@@ -32,7 +38,7 @@ export default class ConditionResultsPanelView {
     // this.#ROOT.dataset.currentCount = '0';
     // this.#ROOT.dataset.totalCount = '';
     this.#ROOT.dataset.status = 'load ids';
-    this.#ROOT.dataset.load = 'ids';
+    this.#ROOT.dataset.load = LoadStatus.ids;
 
     this.#ROOT.innerHTML = `
     <div class="close-button-view"></div>
@@ -198,7 +204,7 @@ export default class ConditionResultsPanelView {
     this.#ROOT.dataset.totalCount = count.toString();
     if (count > 0) {
       this.#ROOT.dataset.status = 'load rows';
-      this.#ROOT.dataset.load = 'properties';
+      this.#ROOT.dataset.load = LoadStatus.properties;
       this.#STATUS.textContent = 'Getting data';
       this.#progressIndicator.setIndicator(undefined, count);
     } else {
@@ -213,7 +219,7 @@ export default class ConditionResultsPanelView {
 
   #completed(): void {
     this.#ROOT.dataset.status = 'complete';
-    this.#ROOT.dataset.load = 'completed';
+    this.#ROOT.dataset.load = LoadStatus.completed;
     this.#STATUS.textContent = this.#statusProxy.total === 0
       ? 'Complete'
       : 'No Data Found';
@@ -226,6 +232,16 @@ export default class ConditionResultsPanelView {
   get statusElement(): HTMLParagraphElement {
     return this.#STATUS;
   }
+  get loadStatus(): LoadStatus {
+    const loadStatus = <LoadStatus>this.#ROOT.dataset.load!;
+    const values = Object.values(LoadStatus);
+    if (values.includes(loadStatus)) return loadStatus;
+    else throw new Error('invalid load status');
+  }
+  set selected(isSelected: boolean) {
+    this.#ROOT.classList.toggle('-current', isSelected);
+  }
+
   // set sum(sum: number) {
   //   this.#ROOT.dataset.sum = sum.toString();
   // }

@@ -128,14 +128,14 @@ export default class ConditionResultsController {
 
   /* public methods */
   select() {
-    this.#ROOT.classList.add('-current');
+    this.#panelView.selected = true;
     // dispatch event
     const customEvent1 = new CustomEvent(event.selectConditionResults, {
       detail: this,
     });
     DefaultEventEmitter.dispatchEvent(customEvent1);
     // send rows
-    if (this.#ROOT.dataset.status !== 'load ids') {
+    if (this.#panelView.loadStatus !== 'ids') {
       const customEvent2 = new CustomEvent(event.addNextRows, {
         detail: {
           dxCondition: this.#dxCondition,
@@ -148,7 +148,7 @@ export default class ConditionResultsController {
   }
 
   deselect() {
-    this.#ROOT.classList.remove('-current');
+    this.#panelView.selected = false;
   }
 
   next() {
