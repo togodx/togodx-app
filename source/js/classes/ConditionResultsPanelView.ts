@@ -37,7 +37,6 @@ export default class ConditionResultsPanelView {
     this.#ROOT.classList.add('condition-results-panel-view', '-loading');
     // this.#ROOT.dataset.currentCount = '0';
     // this.#ROOT.dataset.totalCount = '';
-    this.#ROOT.dataset.status = 'load ids';
     this.#ROOT.dataset.load = LoadStatus.ids;
 
     this.#ROOT.innerHTML = `
@@ -72,7 +71,6 @@ export default class ConditionResultsPanelView {
     <div class="buttons">
       ${BUTTONS.map(button => `<button data-button="${button}"></button>`).join('')}
     </div>
-    <div class="controller"></div>
     `;
     
     // reference
@@ -102,6 +100,8 @@ export default class ConditionResultsPanelView {
             break;
           case 'tsv':
             this.#downloadTSV();
+            break;
+          case 'condition':
             break;
           case 'edit':
             this.#controller.edit();
@@ -193,7 +193,7 @@ export default class ConditionResultsPanelView {
     return this.#statusProxy;
   }
 
-  displayError(message: string, code: number) {
+  displayError(message: string, code: number): void {
     this.#STATUS.innerHTML = `<span class="error">${code
       ? `${message} (${code})`
       : message}</span>`;
@@ -203,7 +203,6 @@ export default class ConditionResultsPanelView {
   #loadedIds(count: number): void {
     this.#ROOT.dataset.totalCount = count.toString();
     if (count > 0) {
-      this.#ROOT.dataset.status = 'load rows';
       this.#ROOT.dataset.load = LoadStatus.properties;
       this.#STATUS.textContent = 'Getting data';
       this.#progressIndicator.setIndicator(undefined, count);
@@ -218,7 +217,6 @@ export default class ConditionResultsPanelView {
   }
 
   #completed(): void {
-    this.#ROOT.dataset.status = 'complete';
     this.#ROOT.dataset.load = LoadStatus.completed;
     this.#STATUS.textContent = this.#statusProxy.total === 0
       ? 'Complete'
@@ -228,9 +226,6 @@ export default class ConditionResultsPanelView {
 
   get element(): HTMLElement {
     return this.#ROOT;
-  }
-  get statusElement(): HTMLParagraphElement {
-    return this.#STATUS;
   }
   get loadStatus(): LoadStatus {
     const loadStatus = <LoadStatus>this.#ROOT.dataset.load!;
@@ -242,7 +237,4 @@ export default class ConditionResultsPanelView {
     this.#ROOT.classList.toggle('-current', isSelected);
   }
 
-  // set sum(sum: number) {
-  //   this.#ROOT.dataset.sum = sum.toString();
-  // }
 }

@@ -35,7 +35,7 @@
             top: 0
             left: 0
             transition: width var(--transition-wipe)
-    .-fetching &, [data-status="load rows"] &, [data-status="complete"] &
+    .-fetching &
         display: block
     [data-status="load rows"] &, [data-status="complete"] &
         > .text
@@ -61,4 +61,3 @@
             > .text
                 > .status
                     color: var(--color-error)
-                    
