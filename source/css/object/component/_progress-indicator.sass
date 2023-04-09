@@ -37,7 +37,7 @@
             transition: width var(--transition-wipe)
     .-fetching &
         display: block
-    [data-status="load rows"] &, [data-status="complete"] &
+    [data-load="properties"] &, [data-load="completed"] &
         > .text
             > .amount-of-data
                 display: block
@@ -45,7 +45,7 @@
         > .text
             > .bar
                 animation: var(--transition-fetching) infinite alternate fetching
-    [data-status="complete"] &
+    [data-load="completed"] &
         > .text
             > .status
                 display: none
