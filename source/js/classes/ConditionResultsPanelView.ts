@@ -95,6 +95,7 @@ export default class ConditionResultsPanelView {
             this.#downloadTSV();
             break;
           case 'condition':
+            this.#downloadCondition();
             break;
           case 'edit':
             this.#controller.edit();
@@ -160,6 +161,11 @@ export default class ConditionResultsPanelView {
     document.body.append(anchor);
     anchor.click();
     anchor.remove();
+  }
+
+  #downloadCondition(): void {
+    console.log(this.#controller.dxCondition.queryFilters)
+    console.log(this.#controller.dxCondition.queryAnnotations)
   }
 
   controllerStatusProxy(status) {

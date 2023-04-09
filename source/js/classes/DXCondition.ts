@@ -92,6 +92,7 @@ export default class DXCondition {
   }
 
   getNextProperties(limit = LIMIT) {
+    console.log(this);
     return axios
       .post(
         App.getApiUrl('dataframe'),
