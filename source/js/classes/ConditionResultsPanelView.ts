@@ -58,7 +58,7 @@ export default class ConditionResultsPanelView {
     </div>
     <div class="status">
       <p>Getting ID list</p>
-      <span class="material-icons-outlined -rotating">autorenew</span>
+      <span class="material-icons -rotating">autorenew</span>
     </div>
     <div class="-border"></div>
     <div class="buttons">

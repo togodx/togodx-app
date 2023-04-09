@@ -1,10 +1,3 @@
-/**
- * @enum { string } MODE
- */
-const MODE = {
-  SIMPLE: 'simple',
-  DETAILED: 'detailed',
-};
 
 export enum ProgressIndicatorMode {
   SIMPLE = 'simple',
@@ -12,15 +5,15 @@ export enum ProgressIndicatorMode {
 }
 
 export default class ProgressIndicator {
-  #ROOT;
-  #TEXT_OFFSET;
-  #TEXT_TOTAL;
-  #TEXT_STATUS;
-  #BAR;
-  #totalDuration;
-  #total;
-  #mode;
-  #lastTime;
+  #ROOT: HTMLElement;
+  #TEXT_OFFSET: HTMLSpanElement;
+  #TEXT_TOTAL: HTMLSpanElement;
+  #TEXT_STATUS: HTMLDivElement;
+  #BAR: HTMLDivElement;
+  #totalDuration: number;
+  #total: number;
+  #mode: ProgressIndicatorMode;
+  #lastTime: number;
 
   /**
    * @param { HTMLElement } elm
@@ -31,11 +24,11 @@ export default class ProgressIndicator {
     elm.classList.add('progress-indicator', `-${mode}`);
     const loadingIcon =
       mode === ProgressIndicatorMode.SIMPLE
-        ? '<span class="material-icons-outlined -rotating">autorenew</span>'
+        ? '<span class="material-icons -rotating">autorenew</span>'
         : '';
     const counter =
       mode === ProgressIndicatorMode.DETAILED
-        ? `<div class="amount-of-data">
+        ? `<div class="amount">
           <span class="offset">0</span>
           <span class="total"></span>
       </div>`
@@ -52,18 +45,21 @@ export default class ProgressIndicator {
       </div>`;
 
     this.#ROOT = elm;
-    this.#BAR = elm.querySelector(':scope > .progress > .bar');
-    this.#TEXT_STATUS = elm.querySelector(':scope > .text > .status');
+    this.#BAR = elm.querySelector<HTMLDivElement>(':scope > .progress > .bar')!;
+    this.#TEXT_STATUS = elm.querySelector<HTMLDivElement>(':scope > .text > .status')!;
     this.#total = 0;
 
     if (mode === ProgressIndicatorMode.SIMPLE) return;
 
-    this.#TEXT_OFFSET = elm.querySelector(
-      ':scope > .text > .amount-of-data > .offset'
-    );
-    this.#TEXT_TOTAL = elm.querySelector(
-      ':scope > .text > .amount-of-data > .total'
-    );
+    const amount: HTMLDivElement = elm.querySelector<HTMLDivElement>(
+      ':scope > .text > .amount'
+    )!;
+    this.#TEXT_OFFSET = amount.querySelector<HTMLSpanElement>(
+      ':scope > span.offset'
+    )!;
+    this.#TEXT_TOTAL = amount.querySelector<HTMLSpanElement>(
+      ':scope > span.total'
+    )!;
     this.#totalDuration = 0;
   }
 
@@ -71,14 +67,14 @@ export default class ProgressIndicator {
   /**
    * @param { number } offset
    */
-  #updateAmount(offset) {
-    this.#TEXT_OFFSET.textContent = `${offset.toString()}`;
+  #updateAmount(offset: number): void {
+    this.#TEXT_OFFSET.textContent = offset.toString();
   }
 
   /**
    * @param { number } offset
    */
-  #updateBarWidth(offset = 0) {
+  #updateBarWidth(offset:number = 0): void {
     this.#BAR.style.width =
       offset / this.#total ? `${(offset / this.#total) * 100}%` : '0%';
   }
@@ -87,20 +83,21 @@ export default class ProgressIndicator {
    * @param { number } durationPerItem
    * @param { number } itemsLeft
    */
-  #remainingTimeInSec(durationPerItem, itemsLeft) {
+  #remainingTimeInSec(durationPerItem: number, itemsLeft: number): number {
     return (durationPerItem * itemsLeft) / 1000 || 0;
   }
 
   /**
    * @param { number } time
    */
-  #timeString(time) {
+  #timeString(time: number): string {
     if (time <= 0) return '0 sec.';
 
-    let h, m, s;
-    h = Math.floor(time / 3600);
-    m = Math.floor((time % 3600) / 60);
-    s = Math.floor((time % 3600) % 60);
+    const [h, m, s]: number[] = [
+      Math.floor(time / 3600),
+      Math.floor((time % 3600) / 60),
+      Math.floor((time % 3600) % 60),
+    ];
     return h > 0 ? `${h} hr.` : m > 0 ? `${m} min.` : `${s} sec.`;
   }
 
@@ -108,7 +105,7 @@ export default class ProgressIndicator {
    * @param { number } offset
    * @param { number } startTime - start time of 1 instance
    */
-  #updateTime(offset, startTime) {
+  #updateTime(offset: number, startTime: number): void {
     this.#totalDuration += Date.now() - startTime;
     const remainingTime = this.#remainingTimeInSec(
       this.#totalDuration / offset,
@@ -121,11 +118,9 @@ export default class ProgressIndicator {
    * @param { string } message
    * @param { boolean } isError
    */
-  #setMessage(message, isError) {
+  #setMessage(message: string, isError: boolean): void {
     this.#TEXT_STATUS.childNodes[0].nodeValue = message;
-    isError
-      ? this.#ROOT.classList.add('error')
-      : this.#ROOT.classList.remove('error');
+    this.#ROOT.classList.toggle('error', isError);
   }
 
   /* public accessors */
@@ -133,7 +128,7 @@ export default class ProgressIndicator {
   /**
    * @param { offset: number } progressInfo
    */
-  updateProgressBar(offset = 0) {
+  updateProgressBar(offset: number = 0): void {
     const lastTime = this.#lastTime || Date.now();
     this.#updateBarWidth(offset);
     if (this.#mode === ProgressIndicatorMode.SIMPLE) return;
@@ -148,14 +143,14 @@ export default class ProgressIndicator {
    * @param { number } total
    * @param { boolean } isError
    */
-  setIndicator(message = '', total = 0, isError = false) {
+  setIndicator(message: string = '', total: number = 0, isError: boolean = false): void {
     this.#total = total;
     if (this.#mode === ProgressIndicatorMode.SIMPLE) this.#setMessage(message, isError);
     else if (this.#mode === ProgressIndicatorMode.DETAILED)
       this.#TEXT_TOTAL.textContent = `/ ${this.#total.toString()}`;
   }
 
-  reset() {
+  reset(): void {
     this.setIndicator();
     this.#updateBarWidth();
   }

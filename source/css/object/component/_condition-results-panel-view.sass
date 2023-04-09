@@ -10,7 +10,7 @@
   cursor: pointer
   transition: opacity var(--transition-instant)
   position: relative
-  .material-icons-outlined
+  .material-icons
     font-size: 1.4rem
     width: 1.6rem
   > .close-button-view
@@ -46,7 +46,7 @@
       transition: opacity var(--transition-instant)
       > .error
         color: red
-    > .material-icons-outlined
+    > .material-icons
       display: none
 
   > .buttons
@@ -70,14 +70,6 @@
         position: relative
       &:hover
         background-color: var(--color-lamp-black)
-      // > a
-      //   color: white
-      //   text-decoration: none
-      //   display: block
-      //   > span
-      //     vertical-align: middle
-      // &.none
-      //   display: none
 
       &[data-button="resume"]
         display: block
@@ -137,7 +129,7 @@
     cursor: initial
   &.-loading
     > .status
-      > .material-icons-outlined
+      > .material-icons
         display: block
         &.-rotating
           animation: rotation 3s linear infinite
