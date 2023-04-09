@@ -2,13 +2,13 @@ import Records from "./Records";
 
 export default class ConditionBase {
 
-  _attributeId;
-  _ancestors = new Map();
+  protected _attributeId: string;
+  protected _ancestors = new Map();
   #annotation; // <Attribute>
   #categoryId;
   #dataset;
 
-  constructor(attributeId) {
+  constructor(attributeId: string) {
     this._attributeId = attributeId;
   }
 

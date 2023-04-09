@@ -4,19 +4,20 @@ import ConditionBuilder from './ConditionBuilder';
 import App from './App';
 import axios from 'axios';
 import {getApiParameter} from '../functions/queryTemplates';
+import {Property} from '../interfaces';
 
-const LIMIT = 100;
-let idCounter = 0;
+const LIMIT: number = 100;
+let idCounter: number = 0;
 
 // TODO: キャッシュの機構を作る
 
 export default class DXCondition {
-  #id;
-  #togoKey;
-  #conditionAnnotations;
-  #conditionFilters;
-  #ids;
-  #properties;
+  #id: number;
+  #togoKey: string;
+  #conditionAnnotations: ConditionAnnotation[];
+  #conditionFilters: ConditionFilter[];
+  #ids: string[];
+  #properties: Property[];
 
   /**
    *
@@ -91,23 +92,20 @@ export default class DXCondition {
     );
   }
 
-  getNextProperties(limit = LIMIT) {
-    console.log(this);
-    return axios
-      .post(
-        App.getApiUrl('dataframe'),
-        getApiParameter('dataframe', {
-          dataset: this.togoKey,
-          filters: this.queryFilters,
-          annotations: this.queryAnnotations,
-          queries: this.#ids.slice(this.offset, this.offset + limit),
-        })
-        // {cancelToken: this.#source.token}
-      )
-      .then(res => {
-        this.#properties.push(...res.data);
-        return res.data;
-      });
+  async getNextProperties(limit: number = LIMIT): Promise<Property[]> {
+    const res = await axios.post(
+      App.getApiUrl('dataframe'),
+      getApiParameter('dataframe', {
+        dataset: this.togoKey,
+        filters: this.queryFilters,
+        annotations: this.queryAnnotations,
+        queries: this.#ids.slice(this.offset, this.offset + limit),
+      })
+      // {cancelToken: this.#source.token}
+    );
+    const properties: Property[] = res.data;
+    this.#properties.push(...properties);
+    return properties;
   }
 
   #copyConditionAnnotations(conditionAnnotations) {
@@ -155,19 +153,19 @@ export default class DXCondition {
     );
   }
 
-  get offset() {
+  get offset(): number {
     return this.#properties.length;
   }
 
-  get properties() {
+  get properties(): Property[] {
     return [...this.#properties];
   }
 
-  get isPropertiesLoaded() {
+  get isPropertiesLoaded(): boolean {
     return this.offset >= this.#ids?.length;
   }
 
-  get ids() {
+  get ids(): string[] | Promise<string[]> {
     // console.trace(this.#id, this.#ids ? [...this.#ids] : undefined);
     if (this.#ids) {
       return this.#ids;

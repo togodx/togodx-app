@@ -1,23 +1,21 @@
-import ConditionBase from "./ConditionBase";
-import Records from "./Records";
+import ConditionBase from './ConditionBase';
+import Records from './Records';
 
 export default class ConditionAnnotation extends ConditionBase {
-
-  #parentNode;
+  #parentNode: string | undefined;
   #filter;
 
-  constructor(attributeId, parentNode) {
+  constructor(attributeId: string, parentNode: string | undefined) {
     super(attributeId);
     this.#parentNode = parentNode;
   }
 
-
   // methods
-  
+
   /**
-   * 
-   * @param {String} attributeId 
-   * @param {String} parentNode 
+   *
+   * @param {String} attributeId
+   * @param {String} parentNode
    * @return {Boolean}
    */
   isSameCondition(attributeId, parentNode) {
@@ -31,11 +29,10 @@ export default class ConditionAnnotation extends ConditionBase {
       return false;
     }
   }
-  
 
   getURLParameter() {
     const annotation = {
-      attributeId: this._attributeId
+      attributeId: this._attributeId,
     };
     if (this.#parentNode) {
       annotation.parentNode = this.#parentNode;
@@ -43,7 +40,6 @@ export default class ConditionAnnotation extends ConditionBase {
     }
     return annotation;
   }
-
 
   // accessor
 
@@ -73,15 +69,14 @@ export default class ConditionAnnotation extends ConditionBase {
 
   get query() {
     const query = {
-      attribute: this._attributeId
+      attribute: this._attributeId,
     };
     if (this.#parentNode) query.node = this.#parentNode;
     return query;
   }
 
-
   // static
-  
+
   static decodeURLSearchParams(searchParams) {
     const annotations = [];
     const parsed = JSON.parse(searchParams);
@@ -92,9 +87,8 @@ export default class ConditionAnnotation extends ConditionBase {
           annotation.setAncestors(parentNode, ancestors);
           return annotation;
         })
-      )
+      );
     }
     return annotations;
   }
-
 }
