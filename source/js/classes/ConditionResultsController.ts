@@ -4,13 +4,16 @@ import Records from './Records';
 import ConditionResultsPanelView from './ConditionResultsPanelView';
 import * as event from '../events';
 import axios from 'axios';
+import DXCondition from './DXCondition';
+import ConditionFilter from './ConditionFilter';
+import {LoadStatus} from './ConditionResultsPanelView';
 
 export default class ConditionResultsController {
-  #dxCondition;
-  #source;
-  #isLoading;
-  #panelView;
-  #status;
+  #dxCondition: DXCondition;
+  #source: any;
+  #isLoading: boolean;
+  #panelView: ConditionResultsPanelView;
+  #status: any;
 
   constructor(dxCondition) {
     const cancelToken = axios.CancelToken;
@@ -26,7 +29,7 @@ export default class ConditionResultsController {
     this.#getQueryIds();
   }
 
-  async #getQueryIds() {
+  async #getQueryIds(): Promise<void> {
     // get IDs
     await this.#dxCondition.ids.catch(error => {
       this.#handleError(error);
@@ -46,7 +49,7 @@ export default class ConditionResultsController {
     this.#getProperties();
   }
 
-  async #getProperties() {
+  async #getProperties(): Promise<void> {
     this.#isLoading = true;
 
     const offset = this.#offset;
@@ -75,7 +78,7 @@ export default class ConditionResultsController {
   /**
    * @param { Error } err - first check userCancel, then server error, timeout err part of else
    */
-  #handleError(err) {
+  #handleError(err): void {
     console.log(err);
     if (axios.isCancel && err.message === 'user cancel') return;
 
@@ -90,7 +93,7 @@ export default class ConditionResultsController {
   }
 
   /* private methods */
-  deleteCondition() {
+  deleteCondition(): void {
     const customEvent = new CustomEvent(event.deleteConditionResults, {
       detail: this,
     });
@@ -101,7 +104,7 @@ export default class ConditionResultsController {
     document.body.dataset.display = 'properties';
   }
 
-  edit() {
+  edit(): void {
     // property (attribute)
     ConditionBuilder.setAnnotation(
       this.#dxCondition.conditionAnnotations.map(conditionAnnotation => {
@@ -111,17 +114,19 @@ export default class ConditionResultsController {
     );
     // attribute (classification/distribution)
     Records.attributes.forEach(({id}) => {
-      const conditionFilter = this.#dxCondition.conditionFilters.find(
-        conditionFilter => conditionFilter.attributeId === id
-      );
-      const nodes = [];
+      const conditionFilter: ConditionFilter =
+        this.#dxCondition.conditionFilters.find(
+          conditionFilter => conditionFilter.attributeId === id
+        );
+      console.log(conditionFilter);
+      const nodes: string[] = [];
       if (conditionFilter) nodes.push(...conditionFilter.nodes);
       ConditionBuilder.setFilter(id, nodes, false);
     });
   }
 
   /* public methods */
-  select() {
+  select(): void {
     this.#panelView.selected = true;
     // dispatch event
     const customEvent1 = new CustomEvent(event.selectConditionResults, {
@@ -129,7 +134,7 @@ export default class ConditionResultsController {
     });
     DefaultEventEmitter.dispatchEvent(customEvent1);
     // send rows
-    if (this.#panelView.loadStatus !== 'ids') {
+    if (this.#panelView.loadStatus !== LoadStatus.ids) {
       const customEvent2 = new CustomEvent(event.addNextRows, {
         detail: {
           dxCondition: this.#dxCondition,
@@ -141,16 +146,16 @@ export default class ConditionResultsController {
     }
   }
 
-  deselect() {
+  deselect(): void {
     this.#panelView.selected = false;
   }
 
-  next() {
+  next(): void {
     if (this.#isLoading) return;
     this.#getProperties();
   }
 
-  pauseOrResume(isLoading) {
+  pauseOrResume(isLoading): void {
     this.#isLoading = isLoading;
     if (this.#isLoading) {
       if (this.#status.total) this.#getProperties();
@@ -159,22 +164,22 @@ export default class ConditionResultsController {
   }
 
   /* accessors */
-  get #offset() {
+  get #offset(): number {
     return this.#dxCondition.offset;
   }
-  get #total() {
+  get #total(): number {
     return this.#dxCondition.ids?.length;
   }
   get togoKey() {
     return this.#dxCondition.togoKey;
   }
-  get dxCondition() {
+  get dxCondition(): DXCondition {
     return this.#dxCondition;
   }
   get data() {
     return [...this.#dxCondition.properties];
   }
-  get element() {
+  get element(): HTMLElement {
     return this.#panelView.element;
   }
 }

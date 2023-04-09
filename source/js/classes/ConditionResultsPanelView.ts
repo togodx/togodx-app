@@ -15,13 +15,6 @@ export enum LoadStatus {
   completed = 'completed',
 }
 
-/**
- * data-load:
- *   - ids
- *   - properties
- *   - completed
- */
-
 export default class ConditionResultsPanelView {
   #ROOT: HTMLElement;
   #STATUS: HTMLParagraphElement;

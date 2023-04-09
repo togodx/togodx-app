@@ -1,15 +1,13 @@
-import ConditionBase from "./ConditionBase";
-import Records from "./Records";
+import ConditionBase from './ConditionBase';
+import Records from './Records';
 
 export default class ConditionFilter extends ConditionBase {
-
-  #nodes;
+  #nodes; // string[]
 
   constructor(attributeId, nodes) {
     super(attributeId);
     this.#nodes = nodes;
   }
-
 
   // methods
 
@@ -25,20 +23,24 @@ export default class ConditionFilter extends ConditionBase {
   getURLParameter() {
     const values = {
       attributeId: this._attributeId,
-      nodes: []
-    }
+      nodes: [],
+    };
     this.#nodes.forEach(node => {
       const node2 = {node};
-      const ancestors = Records.getAncestors(this._attributeId, node).map(ancestor => ancestor.node);
+      const ancestors = Records.getAncestors(this._attributeId, node).map(
+        ancestor => ancestor.node
+      );
       if (ancestors.length > 0) node2.ancestors = ancestors;
       values.nodes.push(node2);
-    })
+    });
     return values;
-}
-
+  }
 
   // accessor
 
+  /**
+   * @return {string[]}
+   */
   get nodes() {
     return this.#nodes;
   }
@@ -50,10 +52,9 @@ export default class ConditionFilter extends ConditionBase {
   get query() {
     return {
       attribute: this._attributeId,
-      nodes: this.nodes
-    }
+      nodes: this.nodes,
+    };
   }
-
 
   // static
 
@@ -63,7 +64,10 @@ export default class ConditionFilter extends ConditionBase {
     if (parsed) {
       filters.push(
         ...parsed.map(({attributeId, nodes}) => {
-          const cf = new ConditionFilter(attributeId, nodes.map(node => node.node));
+          const cf = new ConditionFilter(
+            attributeId,
+            nodes.map(node => node.node)
+          );
           nodes.forEach(({node, ancestors}) => {
             if (ancestors) {
               cf.setAncestors(node, ancestors);
@@ -71,9 +75,8 @@ export default class ConditionFilter extends ConditionBase {
           });
           return cf;
         })
-      )
+      );
     }
     return filters;
   }
-
 }
