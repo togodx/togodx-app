@@ -6,6 +6,11 @@ const MODE = {
   DETAILED: 'detailed',
 };
 
+export enum ProgressIndicatorMode {
+  SIMPLE = 'simple',
+  DETAILED = 'detailed',
+}
+
 export default class ProgressIndicator {
   #ROOT;
   #TEXT_OFFSET;
@@ -21,15 +26,15 @@ export default class ProgressIndicator {
    * @param { HTMLElement } elm
    * @param { 'simple' | 'detailed' } mode - Default is detailed mode with time bar and amount tracker
    */
-  constructor(elm, mode = MODE.DETAILED) {
+  constructor(elm: HTMLElement, mode: ProgressIndicatorMode = ProgressIndicatorMode.DETAILED) {
     this.#mode = mode;
     elm.classList.add('progress-indicator', `-${mode}`);
     const loadingIcon =
-      mode === MODE.SIMPLE
+      mode === ProgressIndicatorMode.SIMPLE
         ? '<span class="material-icons-outlined -rotating">autorenew</span>'
         : '';
     const counter =
-      mode === MODE.DETAILED
+      mode === ProgressIndicatorMode.DETAILED
         ? `<div class="amount-of-data">
           <span class="offset">0</span>
           <span class="total"></span>
@@ -51,7 +56,7 @@ export default class ProgressIndicator {
     this.#TEXT_STATUS = elm.querySelector(':scope > .text > .status');
     this.#total = 0;
 
-    if (mode === MODE.SIMPLE) return;
+    if (mode === ProgressIndicatorMode.SIMPLE) return;
 
     this.#TEXT_OFFSET = elm.querySelector(
       ':scope > .text > .amount-of-data > .offset'
@@ -131,7 +136,7 @@ export default class ProgressIndicator {
   updateProgressBar(offset = 0) {
     const lastTime = this.#lastTime || Date.now();
     this.#updateBarWidth(offset);
-    if (this.#mode === MODE.SIMPLE) return;
+    if (this.#mode === ProgressIndicatorMode.SIMPLE) return;
 
     this.#updateAmount(offset);
     this.#updateTime(offset, lastTime);
@@ -145,8 +150,8 @@ export default class ProgressIndicator {
    */
   setIndicator(message = '', total = 0, isError = false) {
     this.#total = total;
-    if (this.#mode === MODE.SIMPLE) this.#setMessage(message, isError);
-    else if (this.#mode === MODE.DETAILED)
+    if (this.#mode === ProgressIndicatorMode.SIMPLE) this.#setMessage(message, isError);
+    else if (this.#mode === ProgressIndicatorMode.DETAILED)
       this.#TEXT_TOTAL.textContent = `/ ${this.#total.toString()}`;
   }
 
