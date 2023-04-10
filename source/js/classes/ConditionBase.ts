@@ -4,7 +4,7 @@ import Attribute from "./Attribute";
 export default class ConditionBase {
 
   protected _attributeId: string;
-  protected _ancestors = new Map();
+  protected _ancestors: Map<string, string[]> = new Map();
   #annotation: Attribute;
   #categoryId: string;
   #dataset: string;

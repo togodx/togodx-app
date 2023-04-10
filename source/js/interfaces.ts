@@ -18,6 +18,14 @@ export interface AttributeItem {
   label: string;
 }
 
+// breakdown
+export interface Breakdown {
+  node: string;
+  label: string;
+  count: number;
+  tip: boolean;
+}
+
 // filter condition
 export interface ConditionFilterValue {
   attributeId: string;
@@ -30,4 +38,13 @@ export interface ConditionFilterValueNode {
 export interface ConditionFilterQuery {
   attribute: string;
   nodes: string[];
+}
+export interface ConditionAnnotationValue {
+  attributeId: string;
+  parentNode?: string;
+  ancestors?: string[];
+}
+export interface ConditionAnnotationQuery {
+  attribute: string;
+  node?: string | undefined;
 }
