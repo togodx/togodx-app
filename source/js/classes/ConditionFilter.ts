@@ -1,39 +1,45 @@
 import ConditionBase from './ConditionBase';
 import Records from './Records';
+import {
+  ConditionFilterValue,
+  ConditionFilterValueNode,
+  ConditionFilterQuery,
+} from '../interfaces';
 
 export default class ConditionFilter extends ConditionBase {
-  #nodes; // string[]
+  #nodes: string[];
 
-  constructor(attributeId, nodes) {
+  constructor(attributeId: string, nodes: string[]) {
     super(attributeId);
     this.#nodes = nodes;
   }
 
   // methods
 
-  addNode(node) {
+  addNode(node: string): void {
     this.#nodes.push(node);
   }
 
-  removeNode(node) {
+  removeNode(node: string): void {
     const index = this.#nodes.indexOf(node);
     this.#nodes.splice(index, 1);
   }
 
-  getURLParameter() {
-    const values = {
+  getURLParameter(): ConditionFilterValue {
+    const value: ConditionFilterValue = {
       attributeId: this._attributeId,
       nodes: [],
     };
     this.#nodes.forEach(node => {
-      const node2 = {node};
-      const ancestors = Records.getAncestors(this._attributeId, node).map(
-        ancestor => ancestor.node
-      );
+      const node2: ConditionFilterValueNode = {node};
+      const ancestors: string[] = Records.getAncestors(
+        this._attributeId,
+        node
+      ).map(ancestor => ancestor.node);
       if (ancestors.length > 0) node2.ancestors = ancestors;
-      values.nodes.push(node2);
+      value.nodes.push(node2);
     });
-    return values;
+    return value;
   }
 
   // accessor
@@ -41,15 +47,15 @@ export default class ConditionFilter extends ConditionBase {
   /**
    * @return {string[]}
    */
-  get nodes() {
+  get nodes(): string[] {
     return this.#nodes;
   }
 
-  get label() {
+  get label(): string {
     return this.annotation.label;
   }
 
-  get query() {
+  get query(): ConditionFilterQuery {
     return {
       attribute: this._attributeId,
       nodes: this.nodes,
@@ -58,9 +64,9 @@ export default class ConditionFilter extends ConditionBase {
 
   // static
 
-  static decodeURLSearchParams(searchParams) {
-    const filters = [];
-    const parsed = JSON.parse(searchParams);
+  static decodeURLSearchParams(searchParams: string): ConditionFilter[] {
+    const filters: ConditionFilter[] = [];
+    const parsed: ConditionFilterValue[] = JSON.parse(searchParams);
     if (parsed) {
       filters.push(
         ...parsed.map(({attributeId, nodes}) => {
