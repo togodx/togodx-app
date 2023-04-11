@@ -43,10 +43,10 @@ export default class ConditionResultsPanelView {
       controller.dxCondition.togoKey
     )}</p>
       </div>
-      ${controller.dxCondition.conditionFilters
-        .map(conditionFilter => {
-          const label = Records.getAttribute(conditionFilter.attributeId).label;
-          return `<div class="condition _category-background-color" data-category-id="${conditionFilter.categoryId}">
+      ${controller.dxCondition.conditionUtilityFilters
+        .map(conditionUtilityFilter => {
+          const label = Records.getAttribute(conditionUtilityFilter.attributeId).label;
+          return `<div class="condition _category-background-color" data-category-id="${conditionUtilityFilter.categoryId}">
               <p title="${label}">${label}</p>
             </div>`;
         })

@@ -1,7 +1,7 @@
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import ConditionAnnotation from './ConditionAnnotation';
-import ConditionFilter from './ConditionFilter';
+import ConditionUtilityFilter from './ConditionUtilityFilter';
 
 const POLLING_DURATION = 1000;
 
@@ -15,7 +15,7 @@ export default class StackingConditionView {
    *
    * @param {HTMLElement} container
    * @param {String} type: 'property' or 'filter'
-   * @param {conditionAnnotation|conditionFilter} condition
+   * @param {conditionAnnotation|conditionUtilityFilter} condition
    */
   constructor(container, type, condition, isRange = false) {
     this.#condition = condition;
@@ -59,7 +59,7 @@ export default class StackingConditionView {
           }
         }
         break;
-      case this.#condition instanceof ConditionFilter:
+      case this.#condition instanceof ConditionUtilityFilter:
         label = `<ul class="labels"></ul>`;
         ancestorLabels.push(attribute.label);
         this.#make(container, type, ancestorLabels, label);
@@ -80,7 +80,7 @@ export default class StackingConditionView {
     ${label}`;
     container.insertAdjacentElement('beforeend', this.#ROOT);
     // reference
-    if (this.#condition instanceof ConditionFilter) {
+    if (this.#condition instanceof ConditionUtilityFilter) {
       this.#LABELS = this.#ROOT.querySelector(':scope > .labels');
       for (const node of this.#condition.nodes) {
         this.addFilter(node);
@@ -101,7 +101,7 @@ export default class StackingConditionView {
               )
             );
             break;
-          case this.#condition instanceof ConditionFilter:
+          case this.#condition instanceof ConditionUtilityFilter:
             for (const label of this.#LABELS.querySelectorAll(
               ':scope > .label'
             )) {
