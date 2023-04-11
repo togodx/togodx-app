@@ -4,7 +4,12 @@ import ConditionBuilder from './ConditionBuilder';
 import App from './App';
 import axios from 'axios';
 import {getApiParameter} from '../functions/queryTemplates';
-import {Property} from '../interfaces';
+import {
+  Property,
+  ConditionFilterQuery,
+  ConditionAnnotationQuery,
+  TableHeader,
+} from '../interfaces';
 
 const LIMIT: number = 100;
 let idCounter: number = 0;
@@ -25,7 +30,11 @@ export default class DXCondition {
    * @param {ConditionAnnotation[]} conditionAnnotations
    * @param {ConditionFilter[]} conditionFilters
    */
-  constructor(togoKey, conditionAnnotations, conditionFilters) {
+  constructor(
+    togoKey: string,
+    conditionAnnotations: ConditionAnnotation[],
+    conditionFilters: ConditionFilter[]
+  ) {
     this.#id = idCounter++;
     this.#togoKey = togoKey;
     this.#conditionAnnotations =
@@ -41,7 +50,7 @@ export default class DXCondition {
    * @param {DXCondition} dxCondition
    * @return Boolean
    */
-  checkSameCondition(dxCondition) {
+  checkSameCondition(dxCondition: DXCondition): boolean {
     // annotations
     let matchAnnotations = false;
     if (
@@ -108,7 +117,9 @@ export default class DXCondition {
     return properties;
   }
 
-  #copyConditionAnnotations(conditionAnnotations) {
+  #copyConditionAnnotations(
+    conditionAnnotations: ConditionAnnotation[]
+  ): ConditionAnnotation[] {
     return conditionAnnotations.map(
       conditionAnnotation =>
         new ConditionAnnotation(
@@ -118,7 +129,9 @@ export default class DXCondition {
     );
   }
 
-  #copyConditionFilters(conditionFilters) {
+  #copyConditionFilters(
+    conditionFilters: ConditionFilter[]
+  ): ConditionFilter[] {
     return conditionFilters.map(
       conditionFilter =>
         new ConditionFilter(conditionFilter.attributeId, [
@@ -129,25 +142,25 @@ export default class DXCondition {
 
   // accessor
 
-  get togoKey() {
+  get togoKey(): string {
     return this.#togoKey;
   }
 
-  get conditionAnnotations() {
+  get conditionAnnotations(): ConditionAnnotation[] {
     return this.#conditionAnnotations;
   }
 
-  get conditionFilters() {
+  get conditionFilters(): ConditionFilter[] {
     return this.#conditionFilters;
   }
 
-  get queryFilters() {
+  get queryFilters(): ConditionFilterQuery[] {
     return this.#conditionFilters.map(
       conditionFilters => conditionFilters.query
     );
   }
 
-  get queryAnnotations() {
+  get queryAnnotations(): ConditionAnnotationQuery[] {
     return this.#conditionAnnotations.map(
       conditionAnnotations => conditionAnnotations.query
     );
@@ -187,7 +200,7 @@ export default class DXCondition {
     }
   }
 
-  get tableHeader() {
+  get tableHeader(): TableHeader[] {
     return [
       ...this.conditionFilters.map(({categoryId, attributeId}) => {
         return {categoryId, attributeId};

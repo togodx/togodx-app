@@ -48,3 +48,9 @@ export interface ConditionAnnotationQuery {
   attribute: string;
   node?: string | undefined;
 }
+
+// table
+export type TableHeader = {
+  categoryId: string,
+  attributeId: string,
+};
