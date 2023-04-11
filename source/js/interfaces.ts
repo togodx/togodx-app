@@ -39,6 +39,8 @@ export interface ConditionFilterQuery {
   attribute: string;
   nodes: string[];
 }
+
+// annotation condition
 export interface ConditionAnnotationValue {
   attributeId: string;
   parentNode?: string;
@@ -47,6 +49,14 @@ export interface ConditionAnnotationValue {
 export interface ConditionAnnotationQuery {
   attribute: string;
   node?: string | undefined;
+}
+
+// condition
+export interface Condition {
+  dataset: string;
+  filters: ConditionFilterValue[];
+  annotations: ConditionAnnotationValue[];
+  queries: string[];
 }
 
 // table

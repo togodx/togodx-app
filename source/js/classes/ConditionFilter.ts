@@ -1,4 +1,4 @@
-import ConditionBase from './ConditionBase';
+import ConditionUtilityBase from './ConditionUtilityBase';
 import Records from './Records';
 import {
   ConditionFilterValue,
@@ -6,7 +6,7 @@ import {
   ConditionFilterQuery,
 } from '../interfaces';
 
-export default class ConditionFilter extends ConditionBase {
+export default class ConditionFilter extends ConditionUtilityBase {
   #nodes: string[];
 
   constructor(attributeId: string, nodes: string[]) {

@@ -1,7 +1,7 @@
 import Records from "./Records";
 import Attribute from "./Attribute";
 
-export default class ConditionBase {
+export default class ConditionUtilityBase {
 
   protected _attributeId: string;
   protected _ancestors: Map<string, string[]> = new Map();

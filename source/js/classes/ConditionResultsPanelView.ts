@@ -1,6 +1,9 @@
 import ConditionResultsController from './ConditionResultsController';
 import ProgressIndicator from './ProgressIndicator';
 import Records from './Records';
+import {
+  Condition,
+} from '../interfaces';
 
 const BUTTONS: string[] = [ 'resume', 'retry', 'tsv', 'condition', 'edit' ]
 
@@ -164,6 +167,12 @@ export default class ConditionResultsPanelView {
   }
 
   #downloadCondition(): void {
+    // const condition: Condition = {
+    //   dataset: this.#controller.dxCondition.togoKey,
+    //   filters: this.#controller.dxCondition.queryFilters,
+    // };
+    // console.log(dataset)
+
     console.log(this.#controller.dxCondition.queryFilters)
     console.log(this.#controller.dxCondition.queryAnnotations)
   }

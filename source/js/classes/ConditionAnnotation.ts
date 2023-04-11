@@ -1,8 +1,8 @@
-import ConditionBase from './ConditionBase';
+import ConditionUtilityBase from './ConditionUtilityBase';
 import Records from './Records';
 import {ConditionAnnotationValue, Breakdown, ConditionAnnotationQuery} from '../interfaces';
 
-export default class ConditionAnnotation extends ConditionBase {
+export default class ConditionAnnotation extends ConditionUtilityBase {
   #parentNode: string | undefined;
   #filter: Breakdown;
 
