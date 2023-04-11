@@ -107,9 +107,11 @@ export default class ConditionResultsController {
   edit(): void {
     // property (attribute)
     ConditionBuilder.setAnnotation(
-      this.#dxCondition.conditionAnnotations.map(conditionAnnotation => {
-        return conditionAnnotation;
-      }),
+      this.#dxCondition.conditionUtilityAnnotations.map(
+        conditionUtilityAnnotation => {
+          return conditionUtilityAnnotation;
+        }
+      ),
       false
     );
     // attribute (classification/distribution)

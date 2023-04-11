@@ -1,7 +1,6 @@
 import ConditionBuilder from './ConditionBuilder';
 import DefaultEventEmitter from './DefaultEventEmitter';
 import StackingConditionView from './StackingConditionView';
-// import ConditionAnnotation from './ConditionAnnotation';
 import ConditionUtilityFilter from './ConditionUtilityFilter';
 import * as event from '../events';
 
@@ -72,13 +71,13 @@ export default class ConditionBuilderView {
     // event listeners
     DefaultEventEmitter.addEventListener(
       event.mutateAnnotationCondition,
-      ({detail: {action, conditionAnnotation}}) => {
+      ({detail: {action, conditionUtilityAnnotation}}) => {
         switch (action) {
           case 'add':
-            this.#addAnnotation(conditionAnnotation);
+            this.#addAnnotation(conditionUtilityAnnotation);
             break;
           case 'remove':
-            this.#removeAnnotation(conditionAnnotation);
+            this.#removeAnnotation(conditionUtilityAnnotation);
             break;
         }
       }
@@ -141,7 +140,7 @@ export default class ConditionBuilderView {
     this.#DATASET_KEY.dispatchEvent(new Event('change'));
   }
 
-  #addAnnotation(conditionAnnotation) {
+  #addAnnotation(conditionUtilityAnnotation) {
     // modifier
     this.#ANNOTATIONS_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
@@ -149,15 +148,15 @@ export default class ConditionBuilderView {
       new StackingConditionView(
         this.#ANNOTATIONS_CONDITIONS_CONTAINER,
         'annotation',
-        conditionAnnotation
+        conditionUtilityAnnotation
       )
     );
   }
 
-  #removeAnnotation(conditionAnnotation) {
+  #removeAnnotation(conditionUtilityAnnotation) {
     // remove from array
     const index = this.#properties.findIndex(stackingConditionView =>
-      stackingConditionView.removeAnnotation(conditionAnnotation)
+      stackingConditionView.removeAnnotation(conditionUtilityAnnotation)
     );
     this.#properties.splice(index, 1);
     // modifier

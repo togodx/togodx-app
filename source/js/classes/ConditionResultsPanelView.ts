@@ -51,10 +51,10 @@ export default class ConditionResultsPanelView {
             </div>`;
         })
         .join('')}
-      ${controller.dxCondition.conditionAnnotations
-        .map(conditionAnnotation => {
-          return `<div class="condition _category-color" data-category-id="${conditionAnnotation.categoryId}">
-              <p title="${conditionAnnotation.label}">${conditionAnnotation.label}</p>
+      ${controller.dxCondition.conditionUtilityAnnotations
+        .map(conditionUtilityAnnotation => {
+          return `<div class="condition _category-color" data-category-id="${conditionUtilityAnnotation.categoryId}">
+              <p title="${conditionUtilityAnnotation.label}">${conditionUtilityAnnotation.label}</p>
             </div>`;
         })
         .join('')}

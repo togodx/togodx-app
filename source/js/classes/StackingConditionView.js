@@ -1,6 +1,6 @@
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
-import ConditionAnnotation from './ConditionAnnotation';
+import ConditionUtilityAnnotation from './ConditionUtilityAnnotation';
 import ConditionUtilityFilter from './ConditionUtilityFilter';
 
 const POLLING_DURATION = 1000;
@@ -15,7 +15,7 @@ export default class StackingConditionView {
    *
    * @param {HTMLElement} container
    * @param {String} type: 'property' or 'filter'
-   * @param {conditionAnnotation|conditionUtilityFilter} condition
+   * @param {conditionUtilityAnnotation|conditionUtilityFilter} condition
    */
   constructor(container, type, condition, isRange = false) {
     this.#condition = condition;
@@ -33,7 +33,7 @@ export default class StackingConditionView {
     let label,
       ancestorLabels = [Records.getCategory(condition.categoryId).label];
     switch (true) {
-      case this.#condition instanceof ConditionAnnotation:
+      case this.#condition instanceof ConditionUtilityAnnotation:
         {
           if (condition.parentNode) {
             const getFilter = () => {
@@ -92,10 +92,10 @@ export default class StackingConditionView {
       .querySelector(':scope > .close-button-view')
       .addEventListener('click', () => {
         switch (true) {
-          case this.#condition instanceof ConditionAnnotation:
+          case this.#condition instanceof ConditionUtilityAnnotation:
             // notify
             ConditionBuilder.removeAnnotation(
-              new ConditionAnnotation(
+              new ConditionUtilityAnnotation(
                 this.#condition.attributeId,
                 this.#condition.parentNode
               )
@@ -142,11 +142,11 @@ export default class StackingConditionView {
     getFilter();
   }
 
-  removeAnnotation(conditionAnnotation) {
+  removeAnnotation(conditionUtilityAnnotation) {
     const isMatch =
-      conditionAnnotation.attributeId === this.#condition.attributeId &&
-      (conditionAnnotation.parentNode
-        ? conditionAnnotation.parentNode === this.#condition.parentNode
+      conditionUtilityAnnotation.attributeId === this.#condition.attributeId &&
+      (conditionUtilityAnnotation.parentNode
+        ? conditionUtilityAnnotation.parentNode === this.#condition.parentNode
         : true);
     if (isMatch) this.#ROOT.parentNode.removeChild(this.#ROOT);
     return isMatch;

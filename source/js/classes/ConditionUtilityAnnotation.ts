@@ -2,7 +2,7 @@ import ConditionUtilityBase from './ConditionUtilityBase';
 import Records from './Records';
 import {ConditionAnnotationValue, Breakdown, ConditionAnnotationQuery} from '../interfaces';
 
-export default class ConditionAnnotation extends ConditionUtilityBase {
+export default class ConditionUtilityAnnotation extends ConditionUtilityBase {
   #parentNode: string | undefined;
   #filter: Breakdown;
 
@@ -76,13 +76,13 @@ export default class ConditionAnnotation extends ConditionUtilityBase {
 
   // static
 
-  static decodeURLSearchParams(searchParams: string): ConditionAnnotation[] {
-    const annotations: ConditionAnnotation[] = [];
+  static decodeURLSearchParams(searchParams: string): ConditionUtilityAnnotation[] {
+    const annotations: ConditionUtilityAnnotation[] = [];
     const parsed: ConditionAnnotationValue[] = JSON.parse(searchParams);
     if (parsed) {
       annotations.push(
         ...parsed.map(({attributeId, parentNode, ancestors}) => {
-          const ca = new ConditionAnnotation(attributeId, parentNode);
+          const ca = new ConditionUtilityAnnotation(attributeId, parentNode);
           if (parentNode) ca.setAncestors(parentNode, ancestors!);
           return ca;
         })

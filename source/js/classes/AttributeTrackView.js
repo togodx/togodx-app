@@ -5,7 +5,7 @@ import collapseView from '../functions/collapseView';
 import ColumnSelectorView from './ColumnSelectorView';
 import HistogramRangeSelectorView from './HistogramRangeSelectorView';
 import TrackOverviewCategorical from './TrackOverviewCategorical';
-import ConditionAnnotation from './ConditionAnnotation';
+import ConditionUtilityAnnotation from './ConditionUtilityAnnotation';
 import * as event from '../events';
 
 export default class AttributeTrackView {
@@ -109,11 +109,15 @@ export default class AttributeTrackView {
       e.stopPropagation();
       if (this.#CHECKBOX_ALL_PROPERTIES.checked) {
         // add
-        ConditionBuilder.addAnnotation(new ConditionAnnotation(attributeId));
+        ConditionBuilder.addAnnotation(
+          new ConditionUtilityAnnotation(attributeId)
+        );
         this.#ROOT.classList.add('-allselected');
       } else {
         // remove
-        ConditionBuilder.removeAnnotation(new ConditionAnnotation(attributeId));
+        ConditionBuilder.removeAnnotation(
+          new ConditionUtilityAnnotation(attributeId)
+        );
         this.#ROOT.classList.remove('-allselected');
       }
     });
@@ -131,17 +135,17 @@ export default class AttributeTrackView {
     // event listener
     DefaultEventEmitter.addEventListener(
       event.mutateAnnotationCondition,
-      ({detail: {action, conditionAnnotation}}) => {
-        if (conditionAnnotation.parentNode !== undefined) return;
+      ({detail: {action, conditionUtilityAnnotation}}) => {
+        if (conditionUtilityAnnotation.parentNode !== undefined) return;
         switch (action) {
           case 'add':
-            if (conditionAnnotation.attributeId === attributeId) {
+            if (conditionUtilityAnnotation.attributeId === attributeId) {
               this.#CHECKBOX_ALL_PROPERTIES.checked = true;
               this.#ROOT.classList.add('-allselected');
             }
             break;
           case 'remove':
-            if (conditionAnnotation.attributeId === attributeId) {
+            if (conditionUtilityAnnotation.attributeId === attributeId) {
               this.#CHECKBOX_ALL_PROPERTIES.checked = false;
               this.#ROOT.classList.remove('-allselected');
             }

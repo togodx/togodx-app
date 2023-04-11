@@ -180,7 +180,7 @@ export default class ResultsTable {
     // make column group
     this.#COLGROUP.innerHTML = '<col></col>'.repeat(
       dxCondition.conditionUtilityFilters.length +
-        dxCondition.conditionAnnotations.length +
+        dxCondition.conditionUtilityAnnotations.length +
         1
     );
     // make table header
@@ -207,17 +207,17 @@ export default class ResultsTable {
             </th>`;
         })
         .join('')}
-      ${dxCondition.conditionAnnotations
+      ${dxCondition.conditionUtilityAnnotations
         .map(
-          conditionAnnotation => `
+          conditionUtilityAnnotation => `
             <th>
               <div class="inner _category-color" data-category-id="${
-                conditionAnnotation.categoryId
+                conditionUtilityAnnotation.categoryId
               }">
                 <div class="togo-key-view">${Records.getDatasetLabel(
-                  conditionAnnotation.dataset
+                  conditionUtilityAnnotation.dataset
                 )}</div>
-                <span>${conditionAnnotation.label}</span>
+                <span>${conditionUtilityAnnotation.label}</span>
               </div>
             </th>`
         )
@@ -236,7 +236,7 @@ export default class ResultsTable {
     dxCondition;
     const conditions = [
       ...dxCondition.conditionUtilityFilters,
-      ...dxCondition.conditionAnnotations,
+      ...dxCondition.conditionUtilityAnnotations,
     ];
     conditions.forEach((condition, index) => {
       const td = document.createElement('td');
