@@ -1,9 +1,9 @@
 import ConditionUtilityBase from './ConditionUtilityBase';
 import Records from './Records';
 import {
-  ConditionFilterValue,
-  ConditionFilterValueNode,
-  ConditionFilterQuery,
+  ConditionFilterWithAncestor,
+  ConditionFilterWithAncestorNode,
+  ConditionFilter,
 } from '../interfaces';
 
 export default class ConditionFilter extends ConditionUtilityBase {
@@ -25,13 +25,13 @@ export default class ConditionFilter extends ConditionUtilityBase {
     this.#nodes.splice(index, 1);
   }
 
-  getURLParameter(): ConditionFilterValue {
-    const value: ConditionFilterValue = {
+  getURLParameter(): ConditionFilterWithAncestor {
+    const value: ConditionFilterWithAncestor = {
       attributeId: this._attributeId,
       nodes: [],
     };
     this.#nodes.forEach(node => {
-      const node2: ConditionFilterValueNode = {node};
+      const node2: ConditionFilterWithAncestorNode = {node};
       const ancestors: string[] = Records.getAncestors(
         this._attributeId,
         node
@@ -55,7 +55,7 @@ export default class ConditionFilter extends ConditionUtilityBase {
     return this.annotation.label;
   }
 
-  get query(): ConditionFilterQuery {
+  get query(): ConditionFilter {
     return {
       attribute: this._attributeId,
       nodes: this.nodes,
@@ -66,7 +66,7 @@ export default class ConditionFilter extends ConditionUtilityBase {
 
   static decodeURLSearchParams(searchParams: string): ConditionFilter[] {
     const filters: ConditionFilter[] = [];
-    const parsed: ConditionFilterValue[] = JSON.parse(searchParams);
+    const parsed: ConditionFilterWithAncestor[] = JSON.parse(searchParams);
     if (parsed) {
       filters.push(
         ...parsed.map(({attributeId, nodes}) => {

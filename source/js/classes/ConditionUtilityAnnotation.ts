@@ -1,6 +1,6 @@
 import ConditionUtilityBase from './ConditionUtilityBase';
 import Records from './Records';
-import {ConditionAnnotationValue, Breakdown, ConditionAnnotationQuery} from '../interfaces';
+import {ConditionAnnotationWithAncestor, Breakdown, ConditionAnnotation} from '../interfaces';
 
 export default class ConditionUtilityAnnotation extends ConditionUtilityBase {
   #parentNode: string | undefined;
@@ -25,8 +25,8 @@ export default class ConditionUtilityAnnotation extends ConditionUtilityBase {
     }
   }
 
-  getURLParameter(): ConditionAnnotationValue {
-    const annotation: ConditionAnnotationValue = {
+  getURLParameter(): ConditionAnnotationWithAncestor {
+    const annotation: ConditionAnnotationWithAncestor = {
       attributeId: this._attributeId,
     };
     if (this.#parentNode) {
@@ -66,8 +66,8 @@ export default class ConditionUtilityAnnotation extends ConditionUtilityBase {
     return this.#filter;
   }
 
-  get query(): ConditionAnnotationQuery {
-    const query: ConditionAnnotationQuery = {
+  get query(): ConditionAnnotation {
+    const query: ConditionAnnotation = {
       attribute: this._attributeId,
     };
     if (this.#parentNode) query.node = this.#parentNode;
@@ -78,7 +78,7 @@ export default class ConditionUtilityAnnotation extends ConditionUtilityBase {
 
   static decodeURLSearchParams(searchParams: string): ConditionUtilityAnnotation[] {
     const annotations: ConditionUtilityAnnotation[] = [];
-    const parsed: ConditionAnnotationValue[] = JSON.parse(searchParams);
+    const parsed: ConditionAnnotationWithAncestor[] = JSON.parse(searchParams);
     if (parsed) {
       annotations.push(
         ...parsed.map(({attributeId, parentNode, ancestors}) => {

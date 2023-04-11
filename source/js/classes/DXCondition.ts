@@ -6,8 +6,8 @@ import axios from 'axios';
 import {getApiParameter} from '../functions/queryTemplates';
 import {
   Property,
-  ConditionFilterQuery,
-  ConditionAnnotationQuery,
+  ConditionFilter,
+  ConditionAnnotation,
   TableHeader,
 } from '../interfaces';
 
@@ -165,13 +165,13 @@ export default class DXCondition {
     return this.#conditionUtilityFilters;
   }
 
-  get queryFilters(): ConditionFilterQuery[] {
+  get queryFilters(): ConditionFilter[] {
     return this.#conditionUtilityFilters.map(
       conditionUtilityFilters => conditionUtilityFilters.query
     );
   }
 
-  get queryAnnotations(): ConditionAnnotationQuery[] {
+  get queryAnnotations(): ConditionAnnotation[] {
     return this.#conditionUtilityAnnotations.map(
       conditionUtilityAnnotations => conditionUtilityAnnotations.query
     );

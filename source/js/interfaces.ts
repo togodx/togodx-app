@@ -27,35 +27,36 @@ export interface Breakdown {
 }
 
 // filter condition
-export interface ConditionFilterValue {
-  attributeId: string;
-  nodes: ConditionFilterValueNode[];
-}
-export interface ConditionFilterValueNode {
-  node: string;
-  ancestors?: string[];
-}
-export interface ConditionFilterQuery {
+export interface ConditionFilter {
   attribute: string;
   nodes: string[];
 }
+export interface ConditionFilterWithAncestor {
+  attributeId: string;
+  nodes: ConditionFilterWithAncestorNode[];
+}
+export interface ConditionFilterWithAncestorNode {
+  node: string;
+  ancestors?: string[];
+}
 
 // annotation condition
-export interface ConditionAnnotationValue {
+export interface ConditionAnnotation {
+  attribute: string;
+  node?: string | undefined;
+}
+export interface ConditionAnnotationWithAncestor {
   attributeId: string;
   parentNode?: string;
   ancestors?: string[];
 }
-export interface ConditionAnnotationQuery {
-  attribute: string;
-  node?: string | undefined;
-}
+// TODO: ConditionFilter と ConditionFilterWithAncestor、ConditionAnnotation と ConditionAnnotationWithAncestor は統合する
 
 // condition
 export interface Condition {
   dataset: string;
-  filters: ConditionFilterValue[];
-  annotations: ConditionAnnotationValue[];
+  filters: ConditionFilterWithAncestor[];
+  annotations: ConditionAnnotationWithAncestor[];
   queries: string[];
 }
 
