@@ -3,7 +3,7 @@ import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import ConditionResultsPanelView from './ConditionResultsPanelView';
 import * as event from '../events';
-import axios from 'axios';
+import axios, {AxiosError} from 'axios';
 import DXCondition from './DXCondition';
 import ConditionUtilityFilter from './ConditionUtilityFilter';
 import {LoadStatus} from './ConditionResultsPanelView';
@@ -84,7 +84,7 @@ export default class ConditionResultsController {
 
     const code = err.response?.status;
     const message = err.response?.statusText || err.message;
-    this.#panelView.displayError(message, code);
+    this.#panelView.displayError(message, Number(code));
 
     const customEvent = new CustomEvent(event.failedFetchConditionResultsIDs, {
       detail: this,
