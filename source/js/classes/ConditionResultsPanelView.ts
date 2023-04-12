@@ -2,6 +2,7 @@ import ConditionResultsController from './ConditionResultsController';
 import ProgressIndicator from './ProgressIndicator';
 import Records from './Records';
 import ConditionBuilder from './ConditionBuilder';
+import AttributesManager from './AttributesManager';
 import {
   SynthesizedCondition,
 } from '../interfaces';
@@ -172,9 +173,11 @@ export default class ConditionResultsPanelView {
       dataset: this.#controller.dxCondition.togoKey,
       filters: this.#controller.dxCondition.conditionUtilityFilters.map(cuf => cuf.conditionFilterWithAncestor),
       annotations: this.#controller.dxCondition.conditionUtilityAnnotations.map(cua => cua.conditionAnnotationWithAncestor),
-      queries: ConditionBuilder.userIds
+      queries: ConditionBuilder.userIds,
+      attributeSet: AttributesManager.currentSet
     };
     console.log(condition)
+    console.log(AttributesManager.currentSet)
     // console.log(this)
     // console.log(this.#controller.dxCondition.togoKey)
     // console.log(this.#controller.dxCondition.queryFilters)

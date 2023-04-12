@@ -58,6 +58,7 @@ export interface SynthesizedCondition {
   filters: ConditionFilterWithAncestor[];
   annotations: ConditionAnnotationWithAncestor[];
   queries: string[];
+  attributeSet: string[];
 }
 
 // table

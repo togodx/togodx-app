@@ -9,6 +9,8 @@ class AttributesManager {
 
   constructor() {}
 
+  // public
+
   async init(api) {
     // Determine display attribute information. If data is available in local storage, use it; if not, query the API.
 
@@ -98,6 +100,12 @@ class AttributesManager {
   get sets() {
     return this.#sets;
   }
+
+  get currentSet() {
+    return this.#displayedAttributes;
+  }
+
+  // private
 
   #changed(emit = true) {
     // storage
