@@ -1,19 +1,17 @@
 import Color from 'colorjs.io';
 import DefaultEventEmitter from '../classes/DefaultEventEmitter';
 
-/**
- *
- * @param {Color} baseColor
- * @param {Color} tintColor
- */
-export function colorTintByHue(baseColor, hue) {
+export function colorTintByHue(baseColor: Color, hue: number): Color {
   return baseColor
     .mix(new Color('hsv', [hue, 70, 50]), 0.15)
     .set({lightness: lightness => lightness * 1.1})
     .to('srgb');
 }
 
-export function createPopupEvent(togoKeyView, newEvent) {
+export function createPopupEvent(
+  togoKeyView: HTMLElement,
+  newEvent: string
+): void {
   const x = togoKeyView.dataset.x;
   const y = togoKeyView.dataset.y;
   const customEvent = new CustomEvent(newEvent, {
