@@ -1,8 +1,9 @@
 import ConditionResultsController from './ConditionResultsController';
 import ProgressIndicator from './ProgressIndicator';
 import Records from './Records';
+import ConditionBuilder from './ConditionBuilder';
 import {
-  Condition,
+  SynthesizedCondition,
 } from '../interfaces';
 
 const BUTTONS: string[] = [ 'resume', 'retry', 'tsv', 'condition', 'edit' ]
@@ -167,14 +168,18 @@ export default class ConditionResultsPanelView {
   }
 
   #downloadCondition(): void {
-    // const condition: Condition = {
-    //   dataset: this.#controller.dxCondition.togoKey,
-    //   filters: this.#controller.dxCondition.queryFilters,
-    // };
-    // console.log(dataset)
-
-    console.log(this.#controller.dxCondition.queryFilters)
-    console.log(this.#controller.dxCondition.queryAnnotations)
+    const condition: SynthesizedCondition = {
+      dataset: this.#controller.dxCondition.togoKey,
+      filters: this.#controller.dxCondition.conditionUtilityFilters.map(cuf => cuf.conditionFilterWithAncestor),
+      annotations: this.#controller.dxCondition.conditionUtilityAnnotations.map(cua => cua.conditionAnnotationWithAncestor),
+      queries: ConditionBuilder.userIds
+    };
+    console.log(condition)
+    // console.log(this)
+    // console.log(this.#controller.dxCondition.togoKey)
+    // console.log(this.#controller.dxCondition.queryFilters)
+    // console.log(this.#controller.dxCondition.queryAnnotations)
+    // console.log(ConditionBuilder.userIds)
   }
 
   controllerStatusProxy(status) {

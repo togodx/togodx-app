@@ -15,7 +15,7 @@ export default class ConditionResultsController {
   #panelView: ConditionResultsPanelView;
   #status: any;
 
-  constructor(dxCondition) {
+  constructor(dxCondition: DXCondition) {
     const cancelToken = axios.CancelToken;
     this.#source = cancelToken.source();
 
@@ -31,7 +31,7 @@ export default class ConditionResultsController {
 
   async #getQueryIds(): Promise<void> {
     // get IDs
-    await this.#dxCondition.ids.catch(error => {
+    await this.#dxCondition.getIDs().catch(error => {
       this.#handleError(error);
     });
     this.#status.total = this.#total;
@@ -78,7 +78,7 @@ export default class ConditionResultsController {
   /**
    * @param { Error } err - first check userCancel, then server error, timeout err part of else
    */
-  #handleError(err): void {
+  #handleError(err: AxiosError): void {
     console.log(err);
     if (axios.isCancel && err.message === 'user cancel') return;
 
@@ -116,11 +116,10 @@ export default class ConditionResultsController {
     );
     // attribute (classification/distribution)
     Records.attributes.forEach(({id}) => {
-      const conditionUtilityFilter: ConditionUtilityFilter =
+      const conditionUtilityFilter: ConditionUtilityFilter | undefined =
         this.#dxCondition.conditionUtilityFilters.find(
           conditionUtilityFilter => conditionUtilityFilter.attributeId === id
         );
-      console.log(conditionUtilityFilter);
       const nodes: string[] = [];
       if (conditionUtilityFilter) nodes.push(...conditionUtilityFilter.nodes);
       ConditionBuilder.setFilter(id, nodes, false);
@@ -169,8 +168,8 @@ export default class ConditionResultsController {
   get #offset(): number {
     return this.#dxCondition.offset;
   }
-  get #total(): number {
-    return this.#dxCondition.ids?.length;
+  get #total(): number{
+    return this.#dxCondition.ids!.length;
   }
   get togoKey() {
     return this.#dxCondition.togoKey;

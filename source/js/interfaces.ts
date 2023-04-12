@@ -53,7 +53,7 @@ export interface ConditionAnnotationWithAncestor {
 // TODO: ConditionFilter と ConditionFilterWithAncestor、ConditionAnnotation と ConditionAnnotationWithAncestor は統合する
 
 // condition
-export interface Condition {
+export interface SynthesizedCondition {
   dataset: string;
   filters: ConditionFilterWithAncestor[];
   annotations: ConditionAnnotationWithAncestor[];

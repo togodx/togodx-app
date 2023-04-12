@@ -6,7 +6,7 @@ import {
   ConditionFilter,
 } from '../interfaces';
 
-export default class ConditionFilter extends ConditionUtilityBase {
+export default class ConditionUtilityFilter extends ConditionUtilityBase {
   #nodes: string[];
 
   constructor(attributeId: string, nodes: string[]) {
@@ -23,23 +23,6 @@ export default class ConditionFilter extends ConditionUtilityBase {
   removeNode(node: string): void {
     const index = this.#nodes.indexOf(node);
     this.#nodes.splice(index, 1);
-  }
-
-  getURLParameter(): ConditionFilterWithAncestor {
-    const value: ConditionFilterWithAncestor = {
-      attributeId: this._attributeId,
-      nodes: [],
-    };
-    this.#nodes.forEach(node => {
-      const node2: ConditionFilterWithAncestorNode = {node};
-      const ancestors: string[] = Records.getAncestors(
-        this._attributeId,
-        node
-      ).map(ancestor => ancestor.node);
-      if (ancestors.length > 0) node2.ancestors = ancestors;
-      value.nodes.push(node2);
-    });
-    return value;
   }
 
   // accessor
@@ -62,15 +45,32 @@ export default class ConditionFilter extends ConditionUtilityBase {
     };
   }
 
+  get conditionFilterWithAncestor(): ConditionFilterWithAncestor {
+    const cfwa: ConditionFilterWithAncestor = {
+      attributeId: this._attributeId,
+      nodes: [],
+    };
+    this.#nodes.forEach(node => {
+      const node2: ConditionFilterWithAncestorNode = {node};
+      const ancestors: string[] = Records.getAncestors(
+        this._attributeId,
+        node
+      ).map(ancestor => ancestor.node);
+      if (ancestors.length > 0) node2.ancestors = ancestors;
+      cfwa.nodes.push(node2);
+    });
+    return cfwa;
+  }
+
   // static
 
-  static decodeURLSearchParams(searchParams: string): ConditionFilter[] {
-    const filters: ConditionFilter[] = [];
+  static decodeURLSearchParams(searchParams: string): ConditionUtilityFilter[] {
+    const filters: ConditionUtilityFilter[] = [];
     const parsed: ConditionFilterWithAncestor[] = JSON.parse(searchParams);
     if (parsed) {
       filters.push(
         ...parsed.map(({attributeId, nodes}) => {
-          const cf = new ConditionFilter(
+          const cf = new ConditionUtilityFilter(
             attributeId,
             nodes.map(node => node.node)
           );

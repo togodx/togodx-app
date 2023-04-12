@@ -25,17 +25,6 @@ export default class ConditionUtilityAnnotation extends ConditionUtilityBase {
     }
   }
 
-  getURLParameter(): ConditionAnnotationWithAncestor {
-    const annotation: ConditionAnnotationWithAncestor = {
-      attributeId: this._attributeId,
-    };
-    if (this.#parentNode) {
-      annotation.parentNode = this.#parentNode;
-      annotation.ancestors = this.ancestors;
-    }
-    return annotation;
-  }
-
   // accessor
 
   get parentNode(): string | undefined {
@@ -72,6 +61,17 @@ export default class ConditionUtilityAnnotation extends ConditionUtilityBase {
     };
     if (this.#parentNode) query.node = this.#parentNode;
     return query;
+  }
+
+  get conditionAnnotationWithAncestor(): ConditionAnnotationWithAncestor {
+    const annotation: ConditionAnnotationWithAncestor = {
+      attributeId: this._attributeId,
+    };
+    if (this.#parentNode) {
+      annotation.parentNode = this.#parentNode;
+      annotation.ancestors = this.ancestors;
+    }
+    return annotation;
   }
 
   // static

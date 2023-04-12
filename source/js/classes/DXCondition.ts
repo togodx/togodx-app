@@ -112,6 +112,21 @@ export default class DXCondition {
     );
   }
 
+  async getIDs(): Promise<string[]> {
+    if (!this.#ids) {
+      const res = await axios.post(
+        App.getApiUrl('aggregate'),
+        getApiParameter('aggregate', {
+          dataset: this.togoKey,
+          filters: this.queryFilters,
+          queries: ConditionBuilder.userIds,
+        })
+      );
+      this.#ids = res.data;
+    }
+    return this.#ids;
+  }
+
   async getNextProperties(limit: number = LIMIT): Promise<Property[]> {
     const res = await axios.post(
       App.getApiUrl('dataframe'),
@@ -189,26 +204,8 @@ export default class DXCondition {
     return this.offset >= this.#ids?.length;
   }
 
-  get ids(): string[] | Promise<string[]> {
-    // console.trace(this.#id, this.#ids ? [...this.#ids] : undefined);
-    if (this.#ids) {
-      return this.#ids;
-    } else {
-      return axios
-        .post(
-          App.getApiUrl('aggregate'),
-          getApiParameter('aggregate', {
-            dataset: this.togoKey,
-            filters: this.queryFilters,
-            queries: ConditionBuilder.userIds,
-          })
-          // {cancelToken: this.#source.token}
-        )
-        .then(res => {
-          this.#ids = res.data;
-          return res.data;
-        });
-    }
+  get ids(): string[] | undefined {
+    return this.#ids;
   }
 
   get tableHeader(): TableHeader[] {

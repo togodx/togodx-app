@@ -263,10 +263,11 @@ class ConditionBuilder {
 
     // get hierarchic conditions
     const annotations = this.#conditionUtilityAnnotations.map(
-      annotationCondiiton => annotationCondiiton.getURLParameter()
+      annotationCondiiton => annotationCondiiton.conditionAnnotationWithAncestor
     );
-    const filters = this.#conditionUtilityFilters.map(conditionUtilityFilter =>
-      conditionUtilityFilter.getURLParameter()
+    const filters = this.#conditionUtilityFilters.map(
+      conditionUtilityFilter =>
+        conditionUtilityFilter.conditionFilterWithAncestor
     );
 
     // generate permalink

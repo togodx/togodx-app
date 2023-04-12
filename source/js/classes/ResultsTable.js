@@ -137,7 +137,7 @@ export default class ResultsTable {
       this.#TBODY.innerHTML = '';
       this.#previewDxCondition = ConditionBuilder.dxCondition;
       // get IDs
-      const ids = await this.#previewDxCondition.ids;
+      const ids = await this.#previewDxCondition.getIDs();
       this.#header = this.#previewDxCondition.tableHeader;
       // make table header
       this.#NUMBER_OF_ENTRIES.innerHTML = `${ids.length.toLocaleString()} ${prMapEntry.get(
