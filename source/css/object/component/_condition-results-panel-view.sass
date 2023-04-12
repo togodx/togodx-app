@@ -72,7 +72,6 @@
         background-color: var(--color-lamp-black)
 
       &[data-button="resume"]
-        display: block
         &::before
           content: "play_arrow"
         &::after
@@ -114,10 +113,10 @@
   &:not([data-load="ids"])
     > .progress-indicator
       display: block
-  // &[data-load="properties"]
-  //   > .buttons
-  //     > button[data-button="resume"]
-  //       display: block
+  &[data-load="properties"]
+    > .buttons
+      > button[data-button="resume"]
+        display: block
   &[data-load="completed"]:not([data-total-count="0"])
     > .buttons
       > button[data-button="tsv"]
