@@ -3,6 +3,7 @@ import ProgressIndicator from './ProgressIndicator';
 import Records from './Records';
 import ConditionBuilder from './ConditionBuilder';
 import AttributesManager from './AttributesManager';
+import {download} from '../functions/util';
 import {
   SynthesizedCondition,
 } from '../interfaces';
@@ -152,20 +153,7 @@ export default class ConditionResultsPanelView {
         })
         .flat(),
     ].join('\n');
-    const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
-    const blob = new Blob([bom, tsv], {type: 'text/plain'});
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    const timeStamp = new Date();
-    const [date, time] = [
-      timeStamp.toISOString().slice(0, 10).replace(/-/g, ''),
-      timeStamp.toLocaleTimeString().replace(/:/g, ''),
-    ];
-    anchor.href = url;
-    anchor.download = `togodx-${date}-${time}.tsv`;
-    document.body.append(anchor);
-    anchor.click();
-    anchor.remove();
+    download(tsv, 'tsv', 'togodx', true);
   }
 
   #downloadCondition(): void {
@@ -176,13 +164,7 @@ export default class ConditionResultsPanelView {
       queries: ConditionBuilder.userIds,
       attributeSet: AttributesManager.currentSet
     };
-    console.log(condition)
-    console.log(AttributesManager.currentSet)
-    // console.log(this)
-    // console.log(this.#controller.dxCondition.togoKey)
-    // console.log(this.#controller.dxCondition.queryFilters)
-    // console.log(this.#controller.dxCondition.queryAnnotations)
-    // console.log(ConditionBuilder.userIds)
+    download(JSON.stringify(condition), 'json', 'togodx-condition', true);
   }
 
   controllerStatusProxy(status) {

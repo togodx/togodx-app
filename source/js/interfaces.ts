@@ -51,6 +51,8 @@ export interface ConditionAnnotationWithAncestor {
   ancestors?: string[];
 }
 // TODO: ConditionFilter と ConditionFilterWithAncestor、ConditionAnnotation と ConditionAnnotationWithAncestor は統合する
+// 特に `parentNode` は早急に `node` に変更する
+// ancestors は API で取得できるようにしてほしい
 
 // condition
 export interface SynthesizedCondition {

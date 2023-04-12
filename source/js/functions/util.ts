@@ -34,3 +34,26 @@ export function createPopupEvent(
   });
   DefaultEventEmitter.dispatchEvent(customEvent);
 }
+
+type ArrowedFormat = 'tsv' | 'json';
+export function download(
+  text: string,
+  format: ArrowedFormat,
+  filename: string,
+  isTimestamp: boolean
+): void {
+  const FORMAT = {
+    tsv: {mime: 'text/tsv', extension: 'tsv'},
+    json: {mime: 'application/json', extension: 'json'},
+  };
+  const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+  const blob = new Blob([bom, text], {type: FORMAT[format].mime});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${filename}${
+    isTimestamp ? `_${new Date().toISOString()}` : ''
+  }.${FORMAT[format].extension}`;
+  a.click();
+  a.remove();
+}
