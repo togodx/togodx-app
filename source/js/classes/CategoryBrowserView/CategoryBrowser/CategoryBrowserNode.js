@@ -84,10 +84,6 @@ export class CategoryNode extends LitElement {
       this.rightConnectorClassName = '';
     }
     this.#greyedOut = !this.data.pvalue && this.userFiltersSet;
-
-    if (prevParams.has('checked')) {
-      console.log('checked changed', this.data.label, this.checked);
-    }
   }
 
   updated() {

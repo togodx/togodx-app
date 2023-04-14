@@ -10,8 +10,8 @@ import './CategoryBrowser/CategoryBrowserNode';
 import {setUserFilters, clearUserFilters} from '../../events';
 import App from '../App';
 import Records from '../Records';
-import * as util from '../../functions/util';
 import ConditionBuilder from '../ConditionBuilder';
+import * as event from '../../events';
 
 export class CategoryBrowserView extends LitElement {
   #items;
@@ -209,11 +209,28 @@ export class CategoryBrowserView extends LitElement {
   #handleNodeCheck(e) {
     // here make call to "store", and mutate checked states.
     if (e.detail.checked) {
-      ConditionBuilder.addFilter(this.#attributeId, e.detail.id);
-      this.checkedIds = [...this.checkedIds, e.detail.id];
+      const dispatchEvent = new CustomEvent(event.mutateFilterCondition, {
+        detail: {
+          action: 'add',
+          attributeId: this.#attributeId,
+          node: e.detail.id,
+        },
+      });
+      DefaultEventEmitter.dispatchEvent(dispatchEvent);
+      // ConditionBuilder.addFilter(this.#attributeId, e.detail.id);
+      // this.checkedIds = [...this.checkedIds, e.detail.id];
     } else {
-      ConditionBuilder.removeFilter(this.#attributeId, e.detail.id);
-      this.checkedIds = this.checkedIds.filter(id => id !== e.detail.id);
+      const dispatchEvent = new CustomEvent(event.mutateFilterCondition, {
+        detail: {
+          action: 'remove',
+          attributeId: this.#attributeId,
+          node: e.detail.id,
+        },
+      });
+      DefaultEventEmitter.dispatchEvent(dispatchEvent);
+
+      // ConditionBuilder.removeFilter(this.#attributeId, e.detail.id);
+      // this.checkedIds = this.checkedIds.filter(id => id !== e.detail.id);
     }
   }
 
@@ -236,7 +253,7 @@ export class CategoryBrowserView extends LitElement {
 
   render() {
     return html`
-      <div class="container" id="category-browser-view" @>
+      <div class="container" id="category-browser-view">
         <div class="suggest">
           <suggest-element
             @suggestion-input="${debounce(this.#handleSuggestInput)}"
@@ -331,6 +348,21 @@ export class CategoryBrowserView extends LitElement {
     };
   }
 
+  #handleAddRemoveFilter(e) {
+    const {action, attributeId, node} = e.detail;
+    console.log('event.mutateFilterCondition', e.detail);
+    if (attributeId === this.#attributeId) {
+      switch (action) {
+        case 'add':
+          this.checkedIds = [...this.checkedIds, node];
+          break;
+        case 'remove':
+          this.checkedIds = this.checkedIds.filter(id => id !== node);
+          break;
+      }
+    }
+  }
+
   connectedCallback() {
     super.connectedCallback();
     DefaultEventEmitter.addEventListener(
@@ -340,6 +372,10 @@ export class CategoryBrowserView extends LitElement {
     DefaultEventEmitter.addEventListener(
       clearUserFilters,
       this.#handleClearUserFilters.bind(this)
+    );
+    DefaultEventEmitter.addEventListener(
+      event.mutateFilterCondition,
+      this.#handleAddRemoveFilter.bind(this)
     );
   }
 
@@ -352,6 +388,10 @@ export class CategoryBrowserView extends LitElement {
     DefaultEventEmitter.removeEventListener(
       clearUserFilters,
       this.#handleClearUserFilters.bind(this)
+    );
+    DefaultEventEmitter.removeEventListener(
+      event.mutateFilterCondition,
+      this.#handleAddRemoveFilter.bind(this)
     );
   }
 }
