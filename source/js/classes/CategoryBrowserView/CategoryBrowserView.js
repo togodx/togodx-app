@@ -1,5 +1,5 @@
 import {css, html, LitElement} from 'lit';
-import {cachedAxios} from '../../functions/util';
+import {cachedAxios, Observable} from '../../functions/util';
 import DefaultEventEmitter from '../DefaultEventEmitter';
 import './Suggest/Suggest';
 import './CategoryBrowser/CategoryBrowser';
@@ -10,9 +10,10 @@ import './CategoryBrowser/CategoryBrowserNode';
 import {setUserFilters, clearUserFilters} from '../../events';
 import App from '../App';
 import Records from '../Records';
-import ConditionBuilder from '../ConditionBuilder';
+import ConditionAnnotation from '../ConditionAnnotation';
 import * as event from '../../events';
 
+//TODO add mutation observer to observe body's data-condition change
 export class CategoryBrowserView extends LitElement {
   #items;
   #API = new cachedAxios();
@@ -22,7 +23,6 @@ export class CategoryBrowserView extends LitElement {
   #attributeId;
   #userFilterMap = new Map();
   #categoryColor;
-
   constructor(element, attribute, items) {
     super();
 
@@ -42,9 +42,17 @@ export class CategoryBrowserView extends LitElement {
     this.suggestionsLoading = false;
     this.nodeId = '';
     this.term = '';
-    this.checkedIds = [];
+    this.checkedIds = {filter: [], annotation: []};
+    this.contition = 'filter';
 
+    Observable.subscribe(this.#onBodyMutation.bind(this));
     element.append(this);
+  }
+
+  #onBodyMutation(mutation) {
+    if (mutation.attributeName === 'data-condition') {
+      this.contition = mutation.target.dataset.condition;
+    }
   }
 
   #addLog10ToItems(categoryData) {
@@ -89,6 +97,7 @@ export class CategoryBrowserView extends LitElement {
       nodeId: {type: String, state: true},
       term: {type: String, state: true},
       checkedIds: {type: Array, state: true},
+      contition: {type: String, state: true},
     };
   }
 
@@ -206,31 +215,52 @@ export class CategoryBrowserView extends LitElement {
     this.#clickedRole = e.detail.role;
   }
 
-  #handleNodeCheck(e) {
-    // here make call to "store", and mutate checked states.
-    if (e.detail.checked) {
-      const dispatchEvent = new CustomEvent(event.mutateFilterCondition, {
-        detail: {
-          action: 'add',
-          attributeId: this.#attributeId,
-          node: e.detail.id,
-        },
-      });
-      DefaultEventEmitter.dispatchEvent(dispatchEvent);
-      // ConditionBuilder.addFilter(this.#attributeId, e.detail.id);
-      // this.checkedIds = [...this.checkedIds, e.detail.id];
-    } else {
-      const dispatchEvent = new CustomEvent(event.mutateFilterCondition, {
-        detail: {
-          action: 'remove',
-          attributeId: this.#attributeId,
-          node: e.detail.id,
-        },
-      });
-      DefaultEventEmitter.dispatchEvent(dispatchEvent);
+  get #conditionType() {
+    return document.querySelector('body').dataset.condition;
+  }
 
-      // ConditionBuilder.removeFilter(this.#attributeId, e.detail.id);
-      // this.checkedIds = this.checkedIds.filter(id => id !== e.detail.id);
+  #handleNodeCheck(e) {
+    let action = '';
+
+    switch (e.detail.checked) {
+      case true:
+        action = 'add';
+        break;
+      case false:
+        action = 'remove';
+        break;
+    }
+
+    if (this.#conditionType === 'filter') {
+      const eventPayload = {
+        detail: {
+          action,
+          attributeId: this.#attributeId,
+          node: e.detail.id,
+        },
+      };
+
+      const dispatchEvent = new CustomEvent(
+        event.mutateFilterCondition,
+        eventPayload
+      );
+      DefaultEventEmitter.dispatchEvent(dispatchEvent);
+    } else if (this.#conditionType === 'annotation') {
+      //{detail: {action, conditionAnnotation}}
+      const eventPayload = {
+        detail: {
+          action,
+          conditionAnnotation: new ConditionAnnotation(
+            this.#attributeId,
+            e.detail.id
+          ),
+        },
+      };
+      const dispatchEvent = new CustomEvent(
+        event.mutateAnnotationCondition,
+        eventPayload
+      );
+      DefaultEventEmitter.dispatchEvent(dispatchEvent);
     }
   }
 
@@ -269,7 +299,7 @@ export class CategoryBrowserView extends LitElement {
             @node-checked="${this.#handleNodeCheck}"
             id="category-browser"
             .data="${this.categoryData}"
-            .checkedIds="${this.checkedIds}"
+            .checkedIds="${this.checkedIds[this.condition]}"
           ></category-browser>
         </div>
       </div>
@@ -350,7 +380,7 @@ export class CategoryBrowserView extends LitElement {
 
   #handleAddRemoveFilter(e) {
     const {action, attributeId, node} = e.detail;
-    console.log('event.mutateFilterCondition', e.detail);
+
     if (attributeId === this.#attributeId) {
       switch (action) {
         case 'add':
@@ -393,6 +423,7 @@ export class CategoryBrowserView extends LitElement {
       event.mutateFilterCondition,
       this.#handleAddRemoveFilter.bind(this)
     );
+    Observable.unsubscribe(this.#onBodyMutation.bind(this));
   }
 }
 

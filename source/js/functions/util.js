@@ -104,3 +104,30 @@ export class cachedAxios {
     });
   }
 }
+
+const observers = [];
+
+export const Observable = Object.freeze({
+  notify: data => observers.forEach(observer => observer(data)),
+  subscribe: func => observers.push(func),
+  unsubscribe: func => {
+    [...observers].forEach((observer, index) => {
+      if (observer === func) {
+        observers.splice(index, 1);
+      }
+    });
+  },
+});
+
+const mutationObserver = new MutationObserver(mutations => {
+  mutations.forEach(mutation => {
+    if (mutation.type === 'attributes') {
+      Observable.notify(mutation);
+    }
+  });
+});
+
+mutationObserver.observe(document.body, {
+  attributes: true,
+  attributeFilter: ['data-condition'],
+});
