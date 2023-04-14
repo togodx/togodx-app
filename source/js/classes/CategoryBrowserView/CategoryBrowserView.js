@@ -8,6 +8,10 @@ import './CategoryBrowser/CategoryBrowserColumn';
 import './CategoryBrowser/CategoryBrowserError';
 import './CategoryBrowser/CategoryBrowserNode';
 import {setUserFilters, clearUserFilters} from '../../events';
+import App from '../App';
+import Records from '../Records';
+import * as util from '../../functions/util';
+import ConditionBuilder from '../ConditionBuilder';
 
 export class CategoryBrowserView extends LitElement {
   #items;
@@ -17,27 +21,40 @@ export class CategoryBrowserView extends LitElement {
   #clickedRole;
   #attributeId;
   #userFilterMap = new Map();
+  #categoryColor;
 
   constructor(element, attribute, items) {
     super();
 
+    this.#categoryColor = Records.getCategoryWithAttributeId(
+      attribute.id
+    ).color;
     this.#attributeId = attribute.id;
-
     this.#suggestAPIBaseURL = new URL(
       attribute.api.replace('/breakdown/', '/suggest/')
     );
     this.#categoryAPIBaseURL = new URL(attribute.api + '?hierarchy');
-    this.#items = items;
 
     this.categoryData = {};
     this.categoryLoading = false;
     this.suggestionsData = {};
     this.suggestionsLoading = false;
-    this.url = '';
     this.nodeId = '';
     this.term = '';
+    this.checkedIds = [];
 
     element.append(this);
+  }
+
+  #addLog10ToItems(categoryData) {
+    return categoryData.map((item, index) => {
+      item.countLog10 = item.count === 0 ? 0 : Math.log10(item.count);
+      item.baseColor = util.colorTintByHue(
+        this.#categoryColor,
+        (360 * index) / categoryData.length
+      );
+      return item;
+    });
   }
 
   static get styles() {
@@ -73,17 +90,56 @@ export class CategoryBrowserView extends LitElement {
       url: {type: String, state: true},
       nodeId: {type: String, state: true},
       term: {type: String, state: true},
+      checkedIds: {type: Array, state: true},
     };
   }
 
+  // #getColor = (filter = this.#items, max) => {};
+
   #convertCategoryData(incomingData) {
+    const isLog10 = App.viewModes.log10;
+
+    incomingData.self = this.#addLog10ToItems([incomingData.self])[0];
+
+    incomingData.children = this.#addLog10ToItems([
+      ...(incomingData.children ?? []),
+    ]);
+    incomingData.parents = this.#addLog10ToItems([
+      ...(incomingData.parents ?? []),
+    ]);
+
+    let maxChildren = Math.max(
+      ...incomingData.children.map(filter => filter.count)
+    );
+    let maxParents = Math.max(
+      ...incomingData.parents.map(filter => filter.count)
+    );
+
+    maxChildren = isLog10 ? Math.log10(maxChildren) : maxChildren;
+    maxParents = isLog10 ? Math.log10(maxParents) : maxParents;
+    const maxSelf = isLog10
+      ? Math.log10(incomingData.self.count)
+      : incomingData.self.count;
+
+    // const color = this.#getColor(,) `rgb(${filter.baseColor.mix(App.colorSilver, 1 - (isLog10 ? filter.countLog10 : filter.count) / max).coords.map(cood => cood * 256).join(',')})`;
+
     const nodeIdVal = incomingData.self.node;
 
     const nodeLabelVal = incomingData.self.label;
 
-    const childrenArr = incomingData.children ?? [];
+    const childrenArr = incomingData.children;
 
-    const parentsArr = incomingData.parents ?? [];
+    const parentsArr = incomingData.parents;
+
+    function getColor(datum, max) {
+      return `rgb(${datum.baseColor
+        .mix(
+          App.colorWhite,
+          1 - (isLog10 ? datum.countLog10 : datum.count) / max
+        )
+        .coords.map(coord => coord * 256)
+        .join(',')})`;
+    }
 
     return {
       role: this.#clickedRole,
@@ -91,23 +147,20 @@ export class CategoryBrowserView extends LitElement {
         ...incomingData.self,
         id: nodeIdVal,
         label: nodeLabelVal,
+        color: getColor(incomingData.self, maxSelf),
       },
       relations: {
         children: childrenArr.map(item => ({
           ...item,
           id: item.node,
           label: item.label,
-          pvalue: this.#userFilterMap.has(item.node)
-            ? this.#userFilterMap.get(item.node).pvalue
-            : null,
+          color: getColor(item, maxChildren),
         })),
         parents: parentsArr.map(item => ({
           ...item,
           id: item.node,
           label: item.label,
-          pvalue: this.#userFilterMap.has(item.node)
-            ? this.#userFilterMap.get(item.node).pvalue
-            : null,
+          color: getColor(item, maxParents),
         })),
       },
     };
@@ -156,7 +209,14 @@ export class CategoryBrowserView extends LitElement {
   }
 
   #handleNodeCheck(e) {
-    console.log('node checked', e.detail);
+    // here make call to "store", and mutate checked states.
+    if (e.detail.checked) {
+      ConditionBuilder.addFilter(this.#attributeId, e.detail.id);
+      this.checkedIds = [...this.checkedIds, e.detail.id];
+    } else {
+      ConditionBuilder.removeFilter(this.#attributeId, e.detail.id);
+      this.checkedIds = this.checkedIds.filter(id => id !== e.detail.id);
+    }
   }
 
   #handleSuggestInput(e) {
@@ -173,7 +233,6 @@ export class CategoryBrowserView extends LitElement {
 
   // load initial data
   firstUpdated() {
-    this.url = this.#categoryAPIBaseURL.href;
     this.#loadCategoryData();
   }
 
@@ -194,8 +253,8 @@ export class CategoryBrowserView extends LitElement {
             @node-clicked="${this.#handleNodeClick}"
             @node-checked="${this.#handleNodeCheck}"
             id="category-browser"
-            .items="${this.#items}"
             .data="${this.categoryData}"
+            .checkedIds="${this.checkedIds}"
           ></category-browser>
         </div>
       </div>
@@ -215,6 +274,7 @@ export class CategoryBrowserView extends LitElement {
 
       this.categoryData = {
         role: this.#clickedRole,
+        userFiltersSet: true,
         details: {
           ...this.categoryData.details,
           pvalue: this.#userFilterMap.has(this.categoryData.details.id)
@@ -245,15 +305,14 @@ export class CategoryBrowserView extends LitElement {
           })),
         },
       };
-
-      console.log('category data', this.categoryData);
     }
   }
 
-  #handleClearUserFilters(e) {
+  #handleClearUserFilters() {
     this.#userFilterMap.clear();
     this.categoryData = {
       role: this.#clickedRole,
+      userFiltersSet: false,
       details: {
         ...this.categoryData.details,
         pvalue: null,

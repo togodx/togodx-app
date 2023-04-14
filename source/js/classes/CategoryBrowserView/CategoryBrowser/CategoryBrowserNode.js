@@ -3,6 +3,8 @@ import {ref, createRef} from 'lit/directives/ref.js';
 import {styles} from './CategoryBrowserNode.css';
 
 export class CategoryNode extends LitElement {
+  #greyedOut = false;
+
   static get styles() {
     return styles;
   }
@@ -10,6 +12,8 @@ export class CategoryNode extends LitElement {
   static get properties() {
     return {
       data: {type: Object, state: true},
+      userFiltersSet: {type: Boolean, state: true},
+      checked: {type: Boolean, state: true},
       hidden: {type: Boolean, attribute: true},
       id: {type: String, attribute: true, reflect: true},
       mode: {
@@ -53,6 +57,8 @@ export class CategoryNode extends LitElement {
     this.leftConnectorClassName = '';
     this.rightConnectorClassName = '';
     this.content = {};
+    this.userFiltersSet = false;
+    this.checked = false;
   }
 
   willUpdate(prevParams) {
@@ -77,10 +83,11 @@ export class CategoryNode extends LitElement {
       this.leftConnectorClassName = '';
       this.rightConnectorClassName = '';
     }
+    this.#greyedOut = !this.data.pvalue && this.userFiltersSet;
 
-    // if (prevParams.has('data')) {
-    //   console.log('Node level data', this.data);
-    // }
+    if (prevParams.has('checked')) {
+      console.log('checked changed', this.data.label, this.checked);
+    }
   }
 
   updated() {
@@ -118,6 +125,7 @@ export class CategoryNode extends LitElement {
   }
 
   #handleClick() {
+    if (this.#greyedOut) return;
     this.dispatchEvent(
       new CustomEvent('node-clicked', {
         detail: {
@@ -132,6 +140,7 @@ export class CategoryNode extends LitElement {
   }
 
   #handleCheckboxChange = e => {
+    e.preventDefault();
     this.dispatchEvent(
       new CustomEvent('node-checked', {
         detail: {id: this.data.id, checked: e.target.checked},
@@ -150,12 +159,25 @@ export class CategoryNode extends LitElement {
           class="ontology-card ${this.hidden ? 'hidden' : ''} ${this.mode ===
           'hero'
             ? 'selected'
-            : ''} ${this.mode === 'children' ? 'children-arrow' : ''}"
+            : ''} ${this.mode === 'children' ? 'children-arrow' : ''} 
+            ${this.#greyedOut ? '-greyedout' : ''}"
+          style=${!this.#greyedOut
+            ? `background-color: ${this.data.color}`
+            : ''}
           part="card"
         >
           ${this.data.id !== 'root'
             ? html`<div class="checkbox-container">
-                <input type="checkbox" @change=${this.#handleCheckboxChange} />
+                ${this.checked
+                  ? html`<input
+                      type="checkbox"
+                      checked
+                      @change=${this.#handleCheckboxChange}
+                    />`
+                  : html`<input
+                      type="checkbox"
+                      @change=${this.#handleCheckboxChange}
+                    />`}
               </div>`
             : nothing}
 
@@ -164,7 +186,7 @@ export class CategoryNode extends LitElement {
             @click=${this.#handleClick}
           >
             <div class="label">${this.data.label}</div>
-            <div class="count">${this.data.count}</div>
+            <div class="count">${this.data.count.toLocaleString()}</div>
             <div class="mapped">${this.data.mapped?.toLocaleString()}</div>
             <div class="pvalue">${this.data.pvalue?.toExponential(2)}</div>
             <div class="drilldown"></div>

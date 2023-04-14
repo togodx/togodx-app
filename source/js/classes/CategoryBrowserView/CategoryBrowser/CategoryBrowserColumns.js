@@ -22,6 +22,7 @@ export class CategoryBrowserColumns extends LitElement {
     this.gap = 0;
     this.animate = null;
     this.scrolledRect = null;
+    this.checkedIds = [];
 
     this.dataColumns = {
       _parents: [],
@@ -47,6 +48,7 @@ export class CategoryBrowserColumns extends LitElement {
         type: Array,
         state: true,
       },
+      checkedIds: {type: Array, state: true},
     };
   }
 
@@ -96,11 +98,6 @@ export class CategoryBrowserColumns extends LitElement {
             ];
           }
 
-          //parents after update
-          console.log(
-            'this.data.relations?.children',
-            this.data.relations?.children.some(c => c.pvalue)
-          );
           this.dataColumns.parents = this.data.relations?.parents || [];
           //children after update
           this.dataColumns.children = this.data.relations?.children || [];
@@ -195,10 +192,6 @@ export class CategoryBrowserColumns extends LitElement {
   }
 
   render() {
-    console.log(
-      'render @ category-browser-columns, dataColumns',
-      this.dataColumns.children
-    );
     return html`
       <div class="clip" ${ref(this.clipRef)}>
         <div
@@ -218,9 +211,11 @@ export class CategoryBrowserColumns extends LitElement {
                     ? this.dataColumns[column]
                     : [{id: 'dummy', label: 'dummy'}]}"
                   ${ref(this.nodeRef)}
+                  .userFiltersSet=${this.data.userFiltersSet}
                   .heroId="${this.data.details?.id}"
                   .scrolledHeroRect="${this.scrolledRect}"
                   .animationOptions="${this.animationOptions}"
+                  .checkedIds="${this.checkedIds}"
                 ></category-browser-column>
               `;
             }

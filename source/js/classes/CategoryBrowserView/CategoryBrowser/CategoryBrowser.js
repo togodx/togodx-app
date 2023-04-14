@@ -13,6 +13,7 @@ export class CategoryBrowser extends LitElement {
       data: {type: Object, state: true},
       loading: {type: Boolean, state: true},
       error: {type: Object, state: true},
+      checkedIds: {type: Array, state: true},
       showKeys: {
         type: Array,
         state: true,
@@ -26,13 +27,14 @@ export class CategoryBrowser extends LitElement {
     this.loading = false;
     this.error = {message: '', isError: false};
     this.showKeys = ['node', 'label'];
+    this.checkedIds = [];
   }
 
   render() {
     return html`
       <div class="container">
         ${this.loading && this.#showLoader
-          ? html` <div part="loader" class="loader></div>`
+          ? html` <div part="loader" class="loader"></div>`
           : nothing}
         ${this.error.isError
           ? html`
@@ -40,6 +42,7 @@ export class CategoryBrowser extends LitElement {
             `
           : nothing}
         <category-browser-columns
+          .checkedIds="${this.checkedIds}"
           .data="${this.data}"
         ></category-browser-columns>
       </div>

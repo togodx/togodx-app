@@ -196,8 +196,8 @@ export const styles = css`
     background-color: var(--node-bg-color);
     cursor: pointer;
     position: relative;
-    width: min(85%, 20rem);
-    max-width: 20rem;
+    width: var(--column-width);
+    max-width: 25rem;
     box-sizing: border-box;
     overflow: hidden;
     display: flex;
@@ -230,17 +230,28 @@ export const styles = css`
   }
 
   .ontology-card-content > .label {
-    width: 70%;
+    width: 80%;
   }
   .ontology-card-content > .count {
-    width: 20%;
+    width: 10%;
   }
-  .ontology-card-content > .p-value {
-    width: 20%;
+  .ontology-card-content > .pvalue {
+    flex: 1;
+  }
+  .ontology-card-content > .mapped {
+    flex: 1;
+  }
+  .ontology-card-content > .drilldown {
+    width: 1.6rem;
+    height: 1.6rem;
   }
 
   .ontology-card:hover {
     filter: brightness(90%);
+  }
+
+  .ontology-card.-greyedout {
+    background-color: #ccc;
   }
 
   .children-arrow {

@@ -7,6 +7,8 @@ export const styles = css`
     width: 100%;
     position: absolute;
     inset: 0;
+    --column-width: min(90%, 25rem);
+    --label-width: 70%;
   }
 
   .container {

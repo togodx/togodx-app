@@ -12,10 +12,12 @@ export default class CategoryBrowserColumn extends LitElement {
     return {
       nodes: {type: Array, state: true},
       role: {type: String, state: true},
+      checkedIds: {type: Array, state: true},
       heroId: {
         type: String,
         state: true,
       },
+      userFiltersSet: {type: Boolean, state: true},
       scrolledHeroRect: {type: Object, state: true},
       animationOptions: {type: Object, state: true},
     };
@@ -28,6 +30,8 @@ export default class CategoryBrowserColumn extends LitElement {
     this.scrolledHeroRect = null;
     this.animationOptions = {};
     this.idNodeMap = new Map();
+    this.userFiltersSet = false;
+    this.checkedIds = [];
   }
 
   willUpdate(changed) {
@@ -39,6 +43,9 @@ export default class CategoryBrowserColumn extends LitElement {
     if (changed.has('heroId')) {
       this.previousHeroId = changed.get('heroId');
     }
+    if (changed.has('checkedIds')) {
+      console.log('checkedIds changed', this.checkedIds);
+    }
   }
 
   get containedId() {
@@ -46,6 +53,7 @@ export default class CategoryBrowserColumn extends LitElement {
   }
 
   render() {
+    console.log('Column, checkedIds', this.checkedIds);
     return html`
       <div class="column">
         ${this.containedId !== 'dummy'
@@ -77,6 +85,8 @@ export default class CategoryBrowserColumn extends LitElement {
                       : index === this.nodes.length - 1
                       ? 'last'
                       : 'mid'}
+                    .userFiltersSet=${this.userFiltersSet}
+                    .checked=${this.checkedIds.includes(node.id)}
                     ${flip({
                       id: node.id,
                       heroId: this.heroId,
