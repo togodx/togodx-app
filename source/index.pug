@@ -169,7 +169,9 @@ block main
 
           header(data-hidden-by="results")
             h2.title Condition builder
-            button.rounded-button-view.-verysmall.-outline(type="button") Clear
+            button.rounded-button-view.-verysmall.-outline(type="button")
+              span.material-icons delete
+              | Clear
           .switch-button-view(data-hidden-by="results")
             button.-active(data-button="filter" title="Add filters" value="filter")
               span.material-icons filter_alt
@@ -241,6 +243,10 @@ block main
         section#Conditions(data-number-of-conditions="0")
           header
             h2.title Saved conditions
+            button.rounded-button-view.-verysmall.-outline(type="button")
+              span.material-icons publish
+              | Import
+
           .conditions
       
       .row
