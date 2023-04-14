@@ -246,8 +246,18 @@ export const styles = css`
     height: 1.6rem;
   }
 
-  .ontology-card:hover {
-    filter: brightness(90%);
+  .ontology-card {
+    position: relative;
+  }
+  .ontology-card:hover::before {
+    content: '';
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-selected-translucent);
   }
 
   .ontology-card.-greyedout {

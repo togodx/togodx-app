@@ -29,6 +29,7 @@ export class CategoryBrowserView extends LitElement {
     this.#categoryColor = Records.getCategoryWithAttributeId(
       attribute.id
     ).color;
+
     this.#attributeId = attribute.id;
     this.#suggestAPIBaseURL = new URL(
       attribute.api.replace('/breakdown/', '/suggest/')
@@ -49,10 +50,7 @@ export class CategoryBrowserView extends LitElement {
   #addLog10ToItems(categoryData) {
     return categoryData.map((item, index) => {
       item.countLog10 = item.count === 0 ? 0 : Math.log10(item.count);
-      item.baseColor = util.colorTintByHue(
-        this.#categoryColor,
-        (360 * index) / categoryData.length
-      );
+
       return item;
     });
   }
@@ -131,15 +129,15 @@ export class CategoryBrowserView extends LitElement {
 
     const parentsArr = incomingData.parents;
 
-    function getColor(datum, max) {
-      return `rgb(${datum.baseColor
+    const getColor = (datum, max) => {
+      return `rgb(${this.#categoryColor
         .mix(
           App.colorWhite,
           1 - (isLog10 ? datum.countLog10 : datum.count) / max
         )
         .coords.map(coord => coord * 256)
         .join(',')})`;
-    }
+    };
 
     return {
       role: this.#clickedRole,

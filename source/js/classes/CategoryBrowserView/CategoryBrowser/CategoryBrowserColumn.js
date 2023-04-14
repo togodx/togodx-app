@@ -53,16 +53,17 @@ export default class CategoryBrowserColumn extends LitElement {
   }
 
   render() {
-    console.log('Column, checkedIds', this.checkedIds);
     return html`
       <div class="column">
         ${this.containedId !== 'dummy'
           ? html`<div class="header-container">
               <div class="header">
+                <div class="checkbox"></div>
                 <div class="values">Values</div>
                 <div class="total">Total</div>
                 <div class="mapped">Mapped</div>
                 <div class="p-value">p-value</div>
+                <div class="drilldown"></div>
               </div>
             </div>`
           : nothing}
