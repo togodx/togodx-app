@@ -205,7 +205,7 @@ export default class ConditionResultsPanelView {
       this.#STATUS.textContent = 'Getting data';
       this.#progressIndicator.setIndicator(undefined, count);
     } else {
-      this.#completed();
+      this.#completed('No Data Found');
     }
   }
 
@@ -214,11 +214,9 @@ export default class ConditionResultsPanelView {
     if (this.#statusProxy.total === count) this.#completed();
   }
 
-  #completed(): void {
+  #completed(message: string = 'Complete'): void {
     this.#ROOT.dataset.load = LoadStatus.completed;
-    this.#STATUS.textContent = this.#statusProxy.total === 0
-      ? 'Complete'
-      : 'No Data Found';
+    this.#STATUS.textContent = message;
     this.#ROOT.classList.remove('-loading');
   }
 
