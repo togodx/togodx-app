@@ -22,7 +22,7 @@ export const styles = css`
     justify-content: center;
     align-items: center;
     top: 0;
-    z-index: 2;
+    background-color: var(--color-gray);
   }
 
   .header {
@@ -33,13 +33,26 @@ export const styles = css`
     color: white;
   }
 
-  .header > .values {
-    width: 70%;
-    margin-left: 6px;
+  .checkbox {
+    width: 1rem;
   }
-  .header > .total {
-    width: 20%;
-    margin-right: 6px;
+
+  .label {
+    width: 80%;
+  }
+
+  .count {
+    width: 10%;
+  }
+  .pvalue {
+    flex: 1;
+  }
+  .mapped {
+    flex: 1;
+  }
+  .drilldown {
+    width: 1.6rem;
+    height: 1.6rem;
   }
 
   category-node:part(card) + category-node:part(card) {

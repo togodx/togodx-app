@@ -43,15 +43,6 @@ export default class CategoryBrowserColumn extends LitElement {
     if (changed.has('heroId')) {
       this.previousHeroId = changed.get('heroId');
     }
-    if (changed.has('checkedIds')) {
-      console.log('checkedIds', this.checkedIds);
-      this.nodes.forEach(node => {
-        console.log({
-          id: node.label,
-          checked: this.checkedIds.includes(node.id),
-        });
-      });
-    }
   }
 
   get containedId() {
@@ -65,10 +56,10 @@ export default class CategoryBrowserColumn extends LitElement {
           ? html`<div class="header-container">
               <div class="header">
                 <div class="checkbox"></div>
-                <div class="values">Values</div>
-                <div class="total">Total</div>
+                <div class="label">Values</div>
+                <div class="count">Total</div>
                 <div class="mapped">Mapped</div>
-                <div class="p-value">p-value</div>
+                <div class="pvalue">p-value</div>
                 <div class="drilldown"></div>
               </div>
             </div>`

@@ -230,6 +230,7 @@ export class CategoryBrowserView extends LitElement {
         break;
     }
 
+    console.log(this.condition);
     if (this.condition === 'filter') {
       // const eventPayload = {
       //   detail: {
@@ -257,7 +258,7 @@ export class CategoryBrowserView extends LitElement {
       if (action === 'add') {
         ConditionBuilder.addAnnotation(conditionAnnotation);
       } else {
-        ConditionBuilder.removeAnnotation(this.#attributeId, e.detail.id);
+        ConditionBuilder.removeAnnotation(conditionAnnotation);
       }
 
       // const eventPayload = {
@@ -298,13 +299,24 @@ export class CategoryBrowserView extends LitElement {
     return html`
       <div class="container" id="category-browser-view">
         <div class="suggest">
-          <suggest-element
-            @suggestion-input="${debounce(this.#handleSuggestInput)}"
-            @suggestion-select="${this.#handleSuggestSelect}"
-            .loading="${this.suggestionLoading}"
-            .suggestions="${this.suggestionsData}"
-            id="suggest"
-          ></suggest-element>
+          <div class="column-title-wrapper">
+            <div class="column-title"><h3>Superclasses</h3></div>
+          </div>
+          <div class="column-title-wrapper">
+            <div class="column-title">
+              <h3>Concept</h3>
+              <suggest-element
+                @suggestion-input="${debounce(this.#handleSuggestInput)}"
+                @suggestion-select="${this.#handleSuggestSelect}"
+                .loading="${this.suggestionLoading}"
+                .suggestions="${this.suggestionsData}"
+                id="suggest"
+              ></suggest-element>
+            </div>
+          </div>
+          <div class="column-title-wrapper">
+            <div class="column-title"><h3>Subclasses</h3></div>
+          </div>
         </div>
         <div class="category-browser">
           <category-browser
@@ -435,6 +447,10 @@ export class CategoryBrowserView extends LitElement {
       event.mutateFilterCondition,
       this.#handleAddRemoveFilter.bind(this)
     );
+    DefaultEventEmitter.addEventListener(
+      event.mutateAnnotationCondition,
+      this.#handleAddRemoveFilter.bind(this)
+    );
   }
 
   disconnectedCallback() {
@@ -451,6 +467,11 @@ export class CategoryBrowserView extends LitElement {
       event.mutateFilterCondition,
       this.#handleAddRemoveFilter.bind(this)
     );
+    DefaultEventEmitter.removeEventListener(
+      event.mutateAnnotationCondition,
+      this.#handleAddRemoveFilter.bind(this)
+    );
+
     Observable.unsubscribe(this.#onBodyMutation.bind(this));
   }
 }
