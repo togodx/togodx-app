@@ -43,6 +43,15 @@ export default class CategoryBrowserColumn extends LitElement {
     if (changed.has('heroId')) {
       this.previousHeroId = changed.get('heroId');
     }
+    if (changed.has('checkedIds')) {
+      console.log('checkedIds', this.checkedIds);
+      this.nodes.forEach(node => {
+        console.log({
+          id: node.label,
+          checked: this.checkedIds.includes(node.id),
+        });
+      });
+    }
   }
 
   get containedId() {

@@ -164,16 +164,11 @@ export class CategoryNode extends LitElement {
         >
           ${this.data.id !== 'root'
             ? html`<div class="checkbox-container">
-                ${this.checked
-                  ? html`<input
-                      type="checkbox"
-                      checked
-                      @change=${this.#handleCheckboxChange}
-                    />`
-                  : html`<input
-                      type="checkbox"
-                      @change=${this.#handleCheckboxChange}
-                    />`}
+                <input
+                  type="checkbox"
+                  .checked=${this.checked}
+                  @change=${this.#handleCheckboxChange}
+                />
               </div>`
             : nothing}
 

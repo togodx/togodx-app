@@ -12,6 +12,7 @@ import App from '../App';
 import Records from '../Records';
 import ConditionAnnotation from '../ConditionAnnotation';
 import * as event from '../../events';
+import ConditionBuilder from '../ConditionBuilder';
 
 //TODO add mutation observer to observe body's data-condition change
 export class CategoryBrowserView extends LitElement {
@@ -23,6 +24,7 @@ export class CategoryBrowserView extends LitElement {
   #attributeId;
   #userFilterMap = new Map();
   #categoryColor;
+
   constructor(element, attribute, items) {
     super();
 
@@ -42,8 +44,8 @@ export class CategoryBrowserView extends LitElement {
     this.suggestionsLoading = false;
     this.nodeId = '';
     this.term = '';
+    this.condition = document.body.dataset.condition;
     this.checkedIds = {filter: [], annotation: []};
-    this.contition = 'filter';
 
     Observable.subscribe(this.#onBodyMutation.bind(this));
     element.append(this);
@@ -51,7 +53,7 @@ export class CategoryBrowserView extends LitElement {
 
   #onBodyMutation(mutation) {
     if (mutation.attributeName === 'data-condition') {
-      this.contition = mutation.target.dataset.condition;
+      this.condition = mutation.target.dataset.condition;
     }
   }
 
@@ -96,12 +98,10 @@ export class CategoryBrowserView extends LitElement {
       url: {type: String, state: true},
       nodeId: {type: String, state: true},
       term: {type: String, state: true},
-      checkedIds: {type: Array, state: true},
-      contition: {type: String, state: true},
+      checkedIds: {type: Object, state: true},
+      condition: {type: String, state: true},
     };
   }
-
-  // #getColor = (filter = this.#items, max) => {};
 
   #convertCategoryData(incomingData) {
     const isLog10 = App.viewModes.log10;
@@ -180,6 +180,9 @@ export class CategoryBrowserView extends LitElement {
     if (changed.has('term') && this.term) {
       this.#loadSuggestData(this.term);
     }
+    if (changed.has('checkedIds')) {
+      console.log('this.checkedIds', this.checkedIds);
+    }
   }
 
   #loadCategoryData(nodeId) {
@@ -215,10 +218,6 @@ export class CategoryBrowserView extends LitElement {
     this.#clickedRole = e.detail.role;
   }
 
-  get #conditionType() {
-    return document.querySelector('body').dataset.condition;
-  }
-
   #handleNodeCheck(e) {
     let action = '';
 
@@ -231,36 +230,50 @@ export class CategoryBrowserView extends LitElement {
         break;
     }
 
-    if (this.#conditionType === 'filter') {
-      const eventPayload = {
-        detail: {
-          action,
-          attributeId: this.#attributeId,
-          node: e.detail.id,
-        },
-      };
+    if (this.condition === 'filter') {
+      // const eventPayload = {
+      //   detail: {
+      //     action,
+      //     attributeId: this.#attributeId,
+      //     node: e.detail.id,
+      //   },
+      // };
 
-      const dispatchEvent = new CustomEvent(
-        event.mutateFilterCondition,
-        eventPayload
+      if (action === 'add') {
+        ConditionBuilder.addFilter(this.#attributeId, e.detail.id);
+      } else {
+        ConditionBuilder.removeFilter(this.#attributeId, e.detail.id);
+      }
+      // const dispatchEvent = new CustomEvent(
+      //   event.mutateFilterCondition,
+      //   eventPayload
+      // );
+      // DefaultEventEmitter.dispatchEvent(dispatchEvent);
+    } else if (this.condition === 'annotation') {
+      const conditionAnnotation = new ConditionAnnotation(
+        this.#attributeId,
+        e.detail.id
       );
-      DefaultEventEmitter.dispatchEvent(dispatchEvent);
-    } else if (this.#conditionType === 'annotation') {
-      //{detail: {action, conditionAnnotation}}
-      const eventPayload = {
-        detail: {
-          action,
-          conditionAnnotation: new ConditionAnnotation(
-            this.#attributeId,
-            e.detail.id
-          ),
-        },
-      };
-      const dispatchEvent = new CustomEvent(
-        event.mutateAnnotationCondition,
-        eventPayload
-      );
-      DefaultEventEmitter.dispatchEvent(dispatchEvent);
+      if (action === 'add') {
+        ConditionBuilder.addAnnotation(conditionAnnotation);
+      } else {
+        ConditionBuilder.removeAnnotation(this.#attributeId, e.detail.id);
+      }
+
+      // const eventPayload = {
+      //   detail: {
+      //     action,
+      //     conditionAnnotation: new ConditionAnnotation(
+      //       this.#attributeId,
+      //       e.detail.id
+      //     ),
+      //   },
+      // };
+      // const dispatchEvent = new CustomEvent(
+      //   event.mutateAnnotationCondition,
+      //   eventPayload
+      // );
+      // DefaultEventEmitter.dispatchEvent(dispatchEvent);
     }
   }
 
@@ -310,6 +323,7 @@ export class CategoryBrowserView extends LitElement {
     return this;
   }
 
+  /** When MappedIDs "Try", ann pvalue & mapped values to data */
   #handleSetUserFilters(e) {
     if (this.#attributeId === e.detail.attributeId) {
       this.#userFilterMap.clear();
@@ -353,6 +367,7 @@ export class CategoryBrowserView extends LitElement {
     }
   }
 
+  /** When Mapped IDs are cleared */
   #handleClearUserFilters() {
     this.#userFilterMap.clear();
     this.categoryData = {
@@ -378,16 +393,29 @@ export class CategoryBrowserView extends LitElement {
     };
   }
 
+  // TODO here checked ids wont updating properly when we change the condition
+
   #handleAddRemoveFilter(e) {
     const {action, attributeId, node} = e.detail;
 
     if (attributeId === this.#attributeId) {
+      console.log('handleAddRemoveFilter', e.detail);
       switch (action) {
         case 'add':
-          this.checkedIds = [...this.checkedIds, node];
+          this.checkedIds = {
+            ...this.checkedIds,
+            [this.condition]: [...this.checkedIds[this.condition], node],
+          };
+
           break;
         case 'remove':
-          this.checkedIds = this.checkedIds.filter(id => id !== node);
+          this.checkedIds = {
+            ...this.checkedIds,
+            [this.condition]: this.checkedIds[this.condition].filter(
+              id => id !== node
+            ),
+          };
+
           break;
       }
     }
