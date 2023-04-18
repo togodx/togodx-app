@@ -6,6 +6,7 @@ export const styles = css`
     flex-basis: 0;
     display: block;
     position: relative;
+    --column-gap: 0.5rem;
   }
 
   .column {
@@ -32,6 +33,7 @@ export const styles = css`
     display: flex;
     justify-content: space-between;
     color: white;
+    gap: var(--column-gap);
   }
 
   .checkbox {

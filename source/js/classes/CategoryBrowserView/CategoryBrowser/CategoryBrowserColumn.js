@@ -3,7 +3,7 @@ import {repeat} from 'lit/directives/repeat.js';
 import {flip} from './flipColumn';
 import {styles} from './CategoryBrowserColumn.css';
 import {createRef, ref} from 'lit/directives/ref.js';
-import {observable} from '../../../functions/util';
+import {store} from '../../../functions/util';
 
 export default class CategoryBrowserColumn extends LitElement {
   #columnWidths = [];
@@ -12,6 +12,11 @@ export default class CategoryBrowserColumn extends LitElement {
   #maxCountWidth = 0;
   #maxMappedWidth = 0;
   #maxPvalueWidth = 0;
+  #unsubscribe = store.subscribe(
+    'userFiltersSet',
+    this.#userFiltersSet.bind(this)
+  );
+
   static get styles() {
     return styles;
   }
@@ -40,17 +45,16 @@ export default class CategoryBrowserColumn extends LitElement {
     this.idNodeMap = new Map();
     this.userFiltersSet = false;
     this.checkedIds = [];
-    observable.subscribe('userFiltersSet', this.#userFiltersSet.bind(this));
   }
 
-  #userFiltersSet(event) {
-    this.userFiltersSet = event.userFiltersSet;
+  #userFiltersSet(userFiltersSet) {
+    this.userFiltersSet = userFiltersSet;
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.idNodeMap.clear();
-    observable.unsubscribe('userFiltersSet', this.#userFiltersSet.bind(this));
+    this.#unsubscribe();
   }
 
   #getMaxCountWidth(title, valArr) {
@@ -77,6 +81,7 @@ export default class CategoryBrowserColumn extends LitElement {
       this.nodes.forEach(node => {
         this.idNodeMap.set(node.id, node);
       });
+      console.log('column this.nodes', this.nodes);
     }
 
     if (this.#columnRef.value && this.nodes.length > 0) {
@@ -93,17 +98,12 @@ export default class CategoryBrowserColumn extends LitElement {
           'p-value',
           this.nodes.map(node => node.pvalue?.toExponential(2))
         );
-        console.log('this.#maxPvalueWidth', this.#maxPvalueWidth);
       }
     }
 
     if (changed.has('heroId')) {
       this.previousHeroId = changed.get('heroId');
     }
-
-    // if (changed.has('userFiltersSet')) {
-    //   console.log(' column willupdate userfilterset', this.userFiltersSet);
-    // }
   }
 
   get containedId() {
@@ -122,7 +122,7 @@ export default class CategoryBrowserColumn extends LitElement {
                   Total
                 </div>
                 <div
-                  class="mapped ${this.userFiltersSet
+                  class="mapped ${store.state.userFiltersSet
                     ? '-user-filter-set'
                     : ''}"
                   style="width: ${this.#maxMappedWidth}px"
@@ -130,7 +130,7 @@ export default class CategoryBrowserColumn extends LitElement {
                   Mapped
                 </div>
                 <div
-                  class="pvalue ${this.userFiltersSet
+                  class="pvalue ${store.state.userFiltersSet
                     ? '-user-filter-set'
                     : ''}"
                   style="width: ${this.#maxPvalueWidth}px"

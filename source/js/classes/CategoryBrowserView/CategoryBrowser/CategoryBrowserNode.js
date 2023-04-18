@@ -1,10 +1,14 @@
 import {LitElement, html, nothing} from 'lit';
 import {ref, createRef} from 'lit/directives/ref.js';
 import {styles} from './CategoryBrowserNode.css';
-import {observable} from '../../../functions/util';
+import {store} from '../../../functions/util';
 
 export class CategoryNode extends LitElement {
   #greyedOut = false;
+  #unsubscribe = store.subscribe(
+    'userFiltersSet',
+    this.#userFiltersSet.bind(this)
+  );
 
   static get styles() {
     return styles;
@@ -66,15 +70,15 @@ export class CategoryNode extends LitElement {
     this.countWidth = 0;
     this.mappedWidth = 0;
     this.pvalueWidth = 0;
-    observable.subscribe('userFiltersSet', this.#userFiltersSet.bind(this));
   }
 
-  #userFiltersSet(event) {
-    this.userFiltersSet = event.userFiltersSet;
+  #userFiltersSet(userFiltersSet) {
+    this.userFiltersSet = userFiltersSet;
   }
 
   disconnectedCallback() {
-    observable.unsubscribe('userFiltersSet', this.#userFiltersSet.bind(this));
+    super.disconnectedCallback();
+    this.#unsubscribe();
   }
 
   willUpdate(prevParams) {
@@ -94,20 +98,12 @@ export class CategoryNode extends LitElement {
       this.rightConnectorClassName = `-${this.mode}-${this.order}`;
     }
 
-    // if (prevParams.has('userFiltersSet')) {
-    //   console.log("prevParams.get('userFiltersSet')", this.userFiltersSet);
-    // }
-
     this.prevMode = prevParams.get('mode');
     if (this.data.id === 'dummy') {
       this.leftConnectorClassName = '';
       this.rightConnectorClassName = '';
     }
     this.#greyedOut = !this.data.pvalue && this.userFiltersSet;
-
-    // if (prevParams.has('data')) {
-    //   console.log('node data', this.data);
-    // }
   }
 
   updated() {
@@ -206,13 +202,17 @@ export class CategoryNode extends LitElement {
               ${this.data.count?.toLocaleString()}
             </div>
             <div
-              class="mapped ${this.userFiltersSet ? '-user-filter-set' : ''}"
+              class="mapped ${store.state.userFiltersSet
+                ? '-user-filter-set'
+                : ''}"
               style="width: ${this.mappedWidth}px"
             >
               ${this.data.mapped?.toLocaleString()}
             </div>
             <div
-              class="pvalue ${this.userFiltersSet ? '-user-filter-set' : ''}"
+              class="pvalue ${store.state.userFiltersSet
+                ? '-user-filter-set'
+                : ''}"
               style="width: ${this.pvalueWidth}px"
             >
               ${this.data.pvalue?.toExponential(2)}

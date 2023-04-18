@@ -1,5 +1,5 @@
 import {css, html, LitElement} from 'lit';
-import {cachedAxios, observable} from '../../functions/util';
+import {cachedAxios, store} from '../../functions/util';
 import DefaultEventEmitter from '../DefaultEventEmitter';
 import './Suggest/Suggest';
 import './CategoryBrowser/CategoryBrowser';
@@ -24,6 +24,8 @@ export class CategoryBrowserView extends LitElement {
   #attributeId;
   #userFilterMap = new Map();
   #categoryColor;
+  #state = store.state;
+  #unsubscribe = store.subscribe('condition', this.#onBodyMutation.bind(this));
 
   constructor(element, attribute, items) {
     super();
@@ -47,14 +49,11 @@ export class CategoryBrowserView extends LitElement {
     this.condition = document.body.dataset.condition;
     this.checkedIds = {filter: [], annotation: []};
 
-    observable.subscribe('mutation', this.#onBodyMutation.bind(this));
     element.append(this);
   }
 
-  #onBodyMutation(event) {
-    if (event.mutation.attributeName === 'data-condition') {
-      this.condition = event.mutation.target.dataset.condition;
-    }
+  #onBodyMutation(condition) {
+    this.condition = condition;
   }
 
   #addLog10ToItems(categoryData) {
@@ -190,6 +189,7 @@ export class CategoryBrowserView extends LitElement {
     this.#API.post(this.#categoryAPIBaseURL.href).then(({data}) => {
       this.categoryLoading = false;
       this.categoryData = this.#convertCategoryData(data);
+      this.#addMappedToData();
     });
   }
 
@@ -303,6 +303,42 @@ export class CategoryBrowserView extends LitElement {
     return this;
   }
 
+  #addMappedToData() {
+    this.categoryData = {
+      role: this.#clickedRole,
+
+      details: {
+        ...this.categoryData.details,
+        pvalue: this.#userFilterMap.has(this.categoryData.details.id)
+          ? this.#userFilterMap.get(this.categoryData.details.id).pvalue
+          : null,
+        mapped: this.#userFilterMap.has(this.categoryData.details.id)
+          ? this.#userFilterMap.get(this.categoryData.details.id).mapped
+          : null,
+      },
+      relations: {
+        children: this.categoryData.relations.children.map(item => ({
+          ...item,
+          pvalue: this.#userFilterMap.has(item.id)
+            ? this.#userFilterMap.get(item.id).pvalue
+            : null,
+          mapped: this.#userFilterMap.has(item.id)
+            ? this.#userFilterMap.get(item.id).mapped
+            : null,
+        })),
+        parents: this.categoryData.relations.parents.map(item => ({
+          ...item,
+          pvalue: this.#userFilterMap.has(item.id)
+            ? this.#userFilterMap.get(item.id).pvalue
+            : null,
+          mapped: this.#userFilterMap.has(item.id)
+            ? this.#userFilterMap.get(item.id).mapped
+            : null,
+        })),
+      },
+    };
+  }
+
   /** When MappedIDs "Try", ann pvalue & mapped values to data */
   #handleSetUserFilters(e) {
     if (this.#attributeId === e.detail.attributeId) {
@@ -311,51 +347,17 @@ export class CategoryBrowserView extends LitElement {
         this.#userFilterMap.set(filter.node, filter);
       });
 
-      observable.notify({
-        type: 'userFiltersSet',
-        userFiltersSet: true,
-      });
+      this.#state.userFiltersSet = true;
 
-      this.categoryData = {
-        role: this.#clickedRole,
-
-        details: {
-          ...this.categoryData.details,
-          pvalue: this.#userFilterMap.has(this.categoryData.details.id)
-            ? this.#userFilterMap.get(this.categoryData.details.id).pvalue
-            : null,
-          mapped: this.#userFilterMap.has(this.categoryData.details.id)
-            ? this.#userFilterMap.get(this.categoryData.details.id).mapped
-            : null,
-        },
-        relations: {
-          children: this.categoryData.relations.children.map(item => ({
-            ...item,
-            pvalue: this.#userFilterMap.has(item.id)
-              ? this.#userFilterMap.get(item.id).pvalue
-              : null,
-            mapped: this.#userFilterMap.has(item.id)
-              ? this.#userFilterMap.get(item.id).mapped
-              : null,
-          })),
-          parents: this.categoryData.relations.parents.map(item => ({
-            ...item,
-            pvalue: this.#userFilterMap.has(item.id)
-              ? this.#userFilterMap.get(item.id).pvalue
-              : null,
-            mapped: this.#userFilterMap.has(item.id)
-              ? this.#userFilterMap.get(item.id).mapped
-              : null,
-          })),
-        },
-      };
+      this.#addMappedToData();
     }
   }
 
   /** When Mapped IDs are cleared */
   #handleClearUserFilters() {
     this.#userFilterMap.clear();
-    observable.notify({type: 'userFiltersSet', userFiltersSet: false});
+    this.#state.userFiltersSet = false;
+
     this.categoryData = {
       role: this.#clickedRole,
 
@@ -446,7 +448,7 @@ export class CategoryBrowserView extends LitElement {
       this.#handleAddRemoveFilter.bind(this)
     );
 
-    observable.unsubscribe(this.#onBodyMutation.bind(this));
+    this.#unsubscribe();
   }
 }
 

@@ -212,6 +212,7 @@ export const styles = css`
     align-items: center;
     justify-content: space-between;
     position: relative;
+    gap: var(--column-gap);
   }
 
   .checkbox-container {
@@ -303,11 +304,6 @@ export const styles = css`
     visibility: hidden;
   }
 
-  .table-container {
-    overflow-y: auto;
-    margin-top: 2px;
-  }
-
   .hero-list {
     padding-inline-start: 0.2rem;
     margin: 0;
@@ -315,31 +311,6 @@ export const styles = css`
 
   .hero-list li {
     margin-left: 0.5rem;
-  }
-
-  table {
-    width: 100%;
-    max-width: 10rem;
-    table-layout: fixed;
-    font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
-    border-spacing: 0;
-    opacity: 0.7;
-  }
-
-  table th,
-  table td {
-    padding-top: 3px;
-  }
-
-  table th.key {
-    vertical-align: top;
-    text-align: left;
-    padding-right: 0.8em;
-  }
-
-  table td.data {
-    overflow: auto;
-    display: inline-block;
   }
 
   .-haschild > .drilldown {
