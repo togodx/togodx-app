@@ -41,6 +41,7 @@ export class Suggest extends LitElement {
   }
 
   #handleSelectSuggestion(suggestion) {
+    console.log('handleSelectSuggestion', suggestion);
     this.dispatchEvent(
       new CustomEvent('suggestion-select', {
         detail: {
@@ -128,7 +129,8 @@ export class Suggest extends LitElement {
                       class="suggestion ${index === this.selected
                         ? '-selected'
                         : ''}"
-                      @click=${() => this.#handleSelectSuggestion(suggestion)}
+                      @mousedown=${() =>
+                        this.#handleSelectSuggestion(suggestion)}
                       ${scrollMeUp(this.selected === index)}
                     >
                       <span> ${suggestion.label} </span>

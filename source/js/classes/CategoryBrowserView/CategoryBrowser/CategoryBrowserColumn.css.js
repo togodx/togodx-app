@@ -23,6 +23,7 @@ export const styles = css`
     align-items: center;
     top: 0;
     background-color: var(--color-gray);
+    z-index: var(--z-category-column-header);
   }
 
   .header {
