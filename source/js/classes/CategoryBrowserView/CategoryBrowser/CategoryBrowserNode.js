@@ -5,10 +5,6 @@ import {store} from '../../../functions/util';
 
 export class CategoryNode extends LitElement {
   #greyedOut = false;
-  #unsubscribe = store.subscribe(
-    'userFiltersSet',
-    this.#userFiltersSet.bind(this)
-  );
 
   static get styles() {
     return styles;
@@ -17,7 +13,6 @@ export class CategoryNode extends LitElement {
   static get properties() {
     return {
       data: {type: Object, state: true},
-      userFiltersSet: {type: Boolean, state: true},
       checked: {type: Boolean, state: true},
       hidden: {type: Boolean, attribute: true},
       id: {type: String, attribute: true, reflect: true},
@@ -65,20 +60,10 @@ export class CategoryNode extends LitElement {
     this.leftConnectorClassName = '';
     this.rightConnectorClassName = '';
     this.content = {};
-    this.userFiltersSet = false;
     this.checked = false;
     this.countWidth = 0;
     this.mappedWidth = 0;
     this.pvalueWidth = 0;
-  }
-
-  #userFiltersSet(userFiltersSet) {
-    this.userFiltersSet = userFiltersSet;
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this.#unsubscribe();
   }
 
   willUpdate(prevParams) {
@@ -103,7 +88,7 @@ export class CategoryNode extends LitElement {
       this.leftConnectorClassName = '';
       this.rightConnectorClassName = '';
     }
-    this.#greyedOut = !this.data.pvalue && this.userFiltersSet;
+    this.#greyedOut = !this.data.pvalue && store.state.userFiltersSet;
   }
 
   updated() {
@@ -141,7 +126,6 @@ export class CategoryNode extends LitElement {
   }
 
   #handleClick() {
-    if (this.#greyedOut) return;
     this.dispatchEvent(
       new CustomEvent('node-clicked', {
         detail: {
@@ -157,6 +141,7 @@ export class CategoryNode extends LitElement {
 
   #handleCheckboxChange = e => {
     e.preventDefault();
+
     this.dispatchEvent(
       new CustomEvent('node-checked', {
         detail: {id: this.data.id, checked: e.target.checked},
@@ -168,6 +153,7 @@ export class CategoryNode extends LitElement {
 
   render() {
     // console.log('node render this.userFiltersSet', this.userFiltersSet);
+    console.log('store.state.userFilterSet', store.state.userFiltersSet);
     return html`
       <div class="card-container">
         <div class="connector ${this.leftConnectorClassName}"></div>
@@ -188,6 +174,7 @@ export class CategoryNode extends LitElement {
                 <input
                   type="checkbox"
                   .checked=${this.checked}
+                  .disabled=${this.#greyedOut}
                   @change=${this.#handleCheckboxChange}
                 />
               </div>`
