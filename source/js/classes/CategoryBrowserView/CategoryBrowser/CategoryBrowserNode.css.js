@@ -221,17 +221,20 @@ export const styles = css`
     justify-content: center;
     width: 1em;
     height: 1em;
-    position: relative;
   }
   .checkbox-container > input[type='checkbox'] {
     cursor: pointer;
-    position: absolute;
-    inset: 0;
+    width: 100%;
+    height: 100%;
     margin: 0;
   }
 
   .label {
     flex: 1;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    hyphens: auto;
   }
 
   .mapped,

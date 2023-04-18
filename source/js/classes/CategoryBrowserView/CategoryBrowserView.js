@@ -7,6 +7,7 @@ import './CategoryBrowser/CategoryBrowserColumns';
 import './CategoryBrowser/CategoryBrowserColumn';
 import './CategoryBrowser/CategoryBrowserError';
 import './CategoryBrowser/CategoryBrowserNode';
+import './CategoryBrowser/CategoryBrowserSorter';
 import {setUserFilters, clearUserFilters} from '../../events';
 import App from '../App';
 import Records from '../Records';
@@ -258,6 +259,46 @@ export class CategoryBrowserView extends LitElement {
     this.nodeId = e.detail.id;
   }
 
+  #handleSortChange(e) {
+    const order = e.detail.order;
+    const property = e.detail.property;
+    console.log('order: ', order);
+    console.log('e.detail: ', e.detail);
+    switch (order) {
+      case 'desc':
+        this.categoryData = {
+          ...this.categoryData,
+          relations: {
+            children: this.categoryData.relations.children.sort((a, b) => {
+              return a[property] < b[property] ? 1 : -1;
+            }),
+            parents: this.categoryData.relations.parents.sort((a, b) => {
+              return a[property] < b[property] ? 1 : -1;
+            }),
+          },
+        };
+        break;
+      case 'asc':
+        this.categoryData = {
+          ...this.categoryData,
+          relations: {
+            children: this.categoryData.relations.children.sort((a, b) => {
+              return a[property] > b[property] ? 1 : -1;
+            }),
+            parents: this.categoryData.relations.parents.sort((a, b) => {
+              return a[property] > b[property] ? 1 : -1;
+            }),
+          },
+        };
+        break;
+
+      default:
+        break;
+    }
+
+    this.#addMappedToData();
+  }
+
   // load initial data
   firstUpdated() {
     this.#loadCategoryData();
@@ -290,6 +331,7 @@ export class CategoryBrowserView extends LitElement {
           <category-browser
             @node-clicked="${this.#handleNodeClick}"
             @node-checked="${this.#handleNodeCheck}"
+            @category-sort-change="${this.#handleSortChange}"
             id="category-browser"
             .data="${this.categoryData}"
             .checkedIds="${this.checkedIds[this.condition]}"

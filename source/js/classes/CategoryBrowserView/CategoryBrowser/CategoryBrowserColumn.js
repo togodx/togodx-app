@@ -6,9 +6,8 @@ import {createRef, ref} from 'lit/directives/ref.js';
 import {store} from '../../../functions/util';
 
 export default class CategoryBrowserColumn extends LitElement {
-  #columnWidths = [];
   #columnRef = createRef();
-  #totalHeaderRef = createRef();
+
   #maxCountWidth = 0;
   #maxMappedWidth = 0;
   #maxPvalueWidth = 0;
@@ -57,13 +56,23 @@ export default class CategoryBrowserColumn extends LitElement {
     this.#unsubscribe();
   }
 
-  #getMaxCountWidth(title, valArr) {
-    let max = 0;
-    const countLabelsToCheck = valArr.concat(title);
+  #getMaxCountWidth(titleText, valArr) {
+    const div = document.createElement('div');
+    div.innerText = titleText;
+    div.style.display = 'inline-block';
+    div.style.paddingLeft = '0.3rem';
+    const sorter = document.createElement('div');
+    sorter.style.width = '1.2rem';
+    sorter.style.display = 'inline-block';
+    div.appendChild(sorter);
+    this.#columnRef.value?.appendChild(div);
 
-    countLabelsToCheck.forEach(count => {
+    let max = div.getBoundingClientRect().width;
+    this.#columnRef.value?.removeChild(div);
+
+    valArr.forEach(text => {
       const span = document.createElement('span');
-      span.innerText = count;
+      span.innerText = text;
       this.#columnRef.value?.appendChild(span);
       const countWidth = span.getBoundingClientRect().width;
       if (countWidth > max) {
@@ -83,9 +92,10 @@ export default class CategoryBrowserColumn extends LitElement {
       });
     }
 
+    // TODO gette
     if (this.#columnRef.value && this.nodes.length > 0) {
       this.#maxCountWidth = this.#getMaxCountWidth(
-        'Total',
+        'Values',
         this.nodes.map(node => node.count?.toLocaleString())
       );
       if (store.state.userFiltersSet) {
@@ -116,26 +126,34 @@ export default class CategoryBrowserColumn extends LitElement {
           ? html`<div class="header-container">
               <div class="header">
                 <div class="checkbox"></div>
-                <div class="label">Values</div>
-                <div class="count" style="width: ${this.#maxCountWidth}px">
-                  Total
-                </div>
-                <div
+
+                <category-browser-sorter
+                  prop="label"
+                  label="Values"
+                  class="label"
+                ></category-browser-sorter>
+                <category-browser-sorter
+                  style="width: ${this.#maxCountWidth}px"
+                  prop="count"
+                  label="Total"
+                ></category-browser-sorter>
+                <category-browser-sorter
+                  prop="mapped"
                   class="mapped ${store.state.userFiltersSet
                     ? '-user-filter-set'
                     : ''}"
-                  style="width: ${this.#maxMappedWidth}px"
-                >
-                  Mapped
-                </div>
-                <div
+                  label="Mapped"
+                  style="width: ${this.#maxCountWidth}px"
+                ></category-browser-sorter>
+                <category-browser-sorter
+                  prop="pvalue"
+                  label="p-value"
                   class="pvalue ${store.state.userFiltersSet
                     ? '-user-filter-set'
                     : ''}"
                   style="width: ${this.#maxPvalueWidth}px"
-                >
-                  p-value
-                </div>
+                ></category-browser-sorter>
+
                 <div class="drilldown"></div>
               </div>
             </div>`

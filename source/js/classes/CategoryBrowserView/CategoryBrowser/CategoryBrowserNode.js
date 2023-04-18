@@ -56,7 +56,6 @@ export class CategoryNode extends LitElement {
     this.prevRect = {x: 0, y: 0, width: 0, height: 0};
     this._skipKeys = ['label', 'children', 'parents', 'leaf', 'root'];
     this.nodeRef = createRef();
-    this._leftCoinnector = createRef;
     this.leftConnectorClassName = '';
     this.rightConnectorClassName = '';
     this.content = {};

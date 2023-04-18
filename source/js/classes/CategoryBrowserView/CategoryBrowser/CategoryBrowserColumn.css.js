@@ -47,7 +47,7 @@ export const styles = css`
     margin-right: var(--node-padding-x);
   }
 
-  .label {
+  category-browser-sorter.label {
     flex: 1;
   }
 
