@@ -81,7 +81,6 @@ export default class CategoryBrowserColumn extends LitElement {
       this.nodes.forEach(node => {
         this.idNodeMap.set(node.id, node);
       });
-      console.log('column this.nodes', this.nodes);
     }
 
     if (this.#columnRef.value && this.nodes.length > 0) {
@@ -89,7 +88,7 @@ export default class CategoryBrowserColumn extends LitElement {
         'Total',
         this.nodes.map(node => node.count?.toLocaleString())
       );
-      if (this.userFiltersSet) {
+      if (store.state.userFiltersSet) {
         this.#maxMappedWidth = this.#getMaxCountWidth(
           'Mapped',
           this.nodes.map(node => node.mapped?.toLocaleString())

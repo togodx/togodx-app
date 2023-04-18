@@ -190,7 +190,7 @@ export const styles = css`
   }
 
   .ontology-card {
-    padding: 3px 6px;
+    padding: var(--node-padding-y) var(--node-padding-x);
     font-family: var(--togostanza-font-family);
     border: 1px solid var(--border-color);
     background-color: var(--node-bg-color);

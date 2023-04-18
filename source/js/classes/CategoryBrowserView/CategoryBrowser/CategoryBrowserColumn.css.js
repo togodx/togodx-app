@@ -7,6 +7,8 @@ export const styles = css`
     display: block;
     position: relative;
     --column-gap: 0.5rem;
+    --node-padding-x: 6px;
+    --node-padding-y: 3px;
   }
 
   .column {
@@ -38,6 +40,11 @@ export const styles = css`
 
   .checkbox {
     width: 1rem;
+    margin-left: var(--node-padding-x);
+  }
+
+  .drilldown {
+    margin-right: var(--node-padding-x);
   }
 
   .label {
