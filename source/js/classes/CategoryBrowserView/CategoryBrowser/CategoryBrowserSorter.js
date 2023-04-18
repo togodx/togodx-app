@@ -61,7 +61,7 @@ export class CategoryBrowserSorter extends LitElement {
         ${ref(this.#containterRef)}
       >
         ${this.label}
-        <div class="sorter ${this.order ? this.order : ''}"></div>
+        <div class="sorter -${this.order ? this.order : ''}"></div>
       </div>
     `;
   }

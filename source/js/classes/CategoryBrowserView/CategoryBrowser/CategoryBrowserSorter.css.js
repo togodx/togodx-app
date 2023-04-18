@@ -46,4 +46,12 @@ export const styles = css`
     border-color: white transparent transparent transparent;
     bottom: 0.2rem;
   }
+
+  .sorter.-asc::before {
+    opacity: 1;
+  }
+
+  .sorter.-desc::after {
+    opacity: 1;
+  }
 `;
