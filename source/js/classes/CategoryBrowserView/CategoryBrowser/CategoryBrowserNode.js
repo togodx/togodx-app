@@ -140,6 +140,7 @@ export class CategoryNode extends LitElement {
 
   #handleCheckboxChange = e => {
     e.preventDefault();
+    console.log('check');
 
     this.dispatchEvent(
       new CustomEvent('node-checked', {
@@ -151,8 +152,6 @@ export class CategoryNode extends LitElement {
   };
 
   render() {
-    // console.log('node render this.userFiltersSet', this.userFiltersSet);
-    console.log('store.state.userFilterSet', store.state.userFiltersSet);
     return html`
       <div class="card-container">
         <div class="connector ${this.leftConnectorClassName}"></div>

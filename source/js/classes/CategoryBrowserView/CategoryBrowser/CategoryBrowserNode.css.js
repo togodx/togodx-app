@@ -263,6 +263,7 @@ export const styles = css`
     width: 100%;
     height: 100%;
     background-color: var(--color-selected-translucent);
+    pointer-events: none;
   }
 
   .ontology-card.-greyedout {

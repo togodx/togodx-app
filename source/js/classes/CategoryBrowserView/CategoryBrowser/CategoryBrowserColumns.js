@@ -23,6 +23,7 @@ export class CategoryBrowserColumns extends LitElement {
     this.animate = null;
     this.scrolledRect = null;
     this.checkedIds = [];
+    this.sortOrder = 'none';
 
     this.dataColumns = {
       _parents: [],
@@ -49,6 +50,7 @@ export class CategoryBrowserColumns extends LitElement {
         state: true,
       },
       checkedIds: {type: Array, state: true},
+      sortOrder: {type: String, state: true},
     };
   }
 
@@ -120,17 +122,20 @@ export class CategoryBrowserColumns extends LitElement {
         }
       }
 
-      this.updateComplete.then(() => {
-        if (this.data.role === 'children') {
-          this.movement = 'left';
+      // do not update columns if only sortOrder has changed
+      if (!changedProperties.has('sortOrder')) {
+        this.updateComplete.then(() => {
+          if (this.data.role === 'children') {
+            this.movement = 'left';
 
-          this._columns = ['_parents', 'parents', 'hero', 'children'];
-        } else if (this.data.role === 'parents') {
-          this.movement = 'right';
+            this._columns = ['_parents', 'parents', 'hero', 'children'];
+          } else if (this.data.role === 'parents') {
+            this.movement = 'right';
 
-          this._columns = ['parents', 'hero', 'children', '_children'];
-        }
-      });
+            this._columns = ['parents', 'hero', 'children', '_children'];
+          }
+        });
+      }
     }
     if (changedProperties.has('_columns')) {
       this.nodeWidth =

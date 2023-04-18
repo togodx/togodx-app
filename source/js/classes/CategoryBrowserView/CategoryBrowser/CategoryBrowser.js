@@ -14,6 +14,7 @@ export class CategoryBrowser extends LitElement {
       loading: {type: Boolean, state: true},
       error: {type: Object, state: true},
       checkedIds: {type: Array, state: true},
+      sortOrder: {type: String, state: true},
       showKeys: {
         type: Array,
         state: true,
@@ -28,6 +29,7 @@ export class CategoryBrowser extends LitElement {
     this.error = {message: '', isError: false};
     this.showKeys = ['node', 'label'];
     this.checkedIds = [];
+    this.sortOrder = 'none';
   }
 
   render() {
@@ -44,6 +46,7 @@ export class CategoryBrowser extends LitElement {
         <category-browser-columns
           .checkedIds="${this.checkedIds}"
           .data="${this.data}"
+          .sortOrder="${this.sortOrder}"
         ></category-browser-columns>
       </div>
     `;

@@ -27,6 +27,7 @@ export class CategoryBrowserView extends LitElement {
   #categoryColor;
   #state = store.state;
   #unsubscribe = store.subscribe('condition', this.#onBodyMutation.bind(this));
+  #sortOrder = 'none';
 
   constructor(element, attribute, items) {
     super();
@@ -262,8 +263,8 @@ export class CategoryBrowserView extends LitElement {
   #handleSortChange(e) {
     const order = e.detail.order;
     const property = e.detail.property;
-    console.log('order: ', order);
-    console.log('e.detail: ', e.detail);
+    this.#sortOrder = order;
+
     switch (order) {
       case 'desc':
         this.categoryData = {
@@ -329,6 +330,7 @@ export class CategoryBrowserView extends LitElement {
         </div>
         <div class="category-browser">
           <category-browser
+            .sortOrder="${this.#sortOrder}"
             @node-clicked="${this.#handleNodeClick}"
             @node-checked="${this.#handleNodeCheck}"
             @category-sort-change="${this.#handleSortChange}"
