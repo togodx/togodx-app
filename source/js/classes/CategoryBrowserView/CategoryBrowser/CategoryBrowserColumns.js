@@ -211,7 +211,6 @@ export class CategoryBrowserColumns extends LitElement {
                     ? this.dataColumns[column]
                     : [{id: 'dummy', label: 'dummy'}]}"
                   ${ref(this.nodeRef)}
-                  .userFiltersSet=${this.data.userFiltersSet}
                   .heroId="${this.data.details?.id}"
                   .scrolledHeroRect="${this.scrolledRect}"
                   .animationOptions="${this.animationOptions}"

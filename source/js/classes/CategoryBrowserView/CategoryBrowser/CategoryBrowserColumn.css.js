@@ -39,18 +39,18 @@ export const styles = css`
   }
 
   .label {
-    width: 80%;
+    flex: 1;
   }
 
-  .count {
-    width: 10%;
-  }
-  .pvalue {
-    flex: 1;
-  }
+  .pvalue,
   .mapped {
-    flex: 1;
+    display: none;
   }
+
+  .-user-filter-set {
+    display: block;
+  }
+
   .drilldown {
     width: 1.6rem;
     height: 1.6rem;

@@ -1,5 +1,5 @@
 import {css, html, LitElement} from 'lit';
-import {cachedAxios, Observable} from '../../functions/util';
+import {cachedAxios, observable} from '../../functions/util';
 import DefaultEventEmitter from '../DefaultEventEmitter';
 import './Suggest/Suggest';
 import './CategoryBrowser/CategoryBrowser';
@@ -47,13 +47,13 @@ export class CategoryBrowserView extends LitElement {
     this.condition = document.body.dataset.condition;
     this.checkedIds = {filter: [], annotation: []};
 
-    Observable.subscribe(this.#onBodyMutation.bind(this));
+    observable.subscribe('mutation', this.#onBodyMutation.bind(this));
     element.append(this);
   }
 
-  #onBodyMutation(mutation) {
-    if (mutation.attributeName === 'data-condition') {
-      this.condition = mutation.target.dataset.condition;
+  #onBodyMutation(event) {
+    if (event.mutation.attributeName === 'data-condition') {
+      this.condition = event.mutation.target.dataset.condition;
     }
   }
 
@@ -180,9 +180,6 @@ export class CategoryBrowserView extends LitElement {
     if (changed.has('term') && this.term) {
       this.#loadSuggestData(this.term);
     }
-    if (changed.has('checkedIds')) {
-      console.log('this.checkedIds', this.checkedIds);
-    }
   }
 
   #loadCategoryData(nodeId) {
@@ -230,26 +227,12 @@ export class CategoryBrowserView extends LitElement {
         break;
     }
 
-    console.log(this.condition);
     if (this.condition === 'filter') {
-      // const eventPayload = {
-      //   detail: {
-      //     action,
-      //     attributeId: this.#attributeId,
-      //     node: e.detail.id,
-      //   },
-      // };
-
       if (action === 'add') {
         ConditionBuilder.addFilter(this.#attributeId, e.detail.id);
       } else {
         ConditionBuilder.removeFilter(this.#attributeId, e.detail.id);
       }
-      // const dispatchEvent = new CustomEvent(
-      //   event.mutateFilterCondition,
-      //   eventPayload
-      // );
-      // DefaultEventEmitter.dispatchEvent(dispatchEvent);
     } else if (this.condition === 'annotation') {
       const conditionAnnotation = new ConditionAnnotation(
         this.#attributeId,
@@ -260,21 +243,6 @@ export class CategoryBrowserView extends LitElement {
       } else {
         ConditionBuilder.removeAnnotation(conditionAnnotation);
       }
-
-      // const eventPayload = {
-      //   detail: {
-      //     action,
-      //     conditionAnnotation: new ConditionAnnotation(
-      //       this.#attributeId,
-      //       e.detail.id
-      //     ),
-      //   },
-      // };
-      // const dispatchEvent = new CustomEvent(
-      //   event.mutateAnnotationCondition,
-      //   eventPayload
-      // );
-      // DefaultEventEmitter.dispatchEvent(dispatchEvent);
     }
   }
 
@@ -343,9 +311,14 @@ export class CategoryBrowserView extends LitElement {
         this.#userFilterMap.set(filter.node, filter);
       });
 
+      observable.notify({
+        type: 'userFiltersSet',
+        userFiltersSet: true,
+      });
+
       this.categoryData = {
         role: this.#clickedRole,
-        userFiltersSet: true,
+
         details: {
           ...this.categoryData.details,
           pvalue: this.#userFilterMap.has(this.categoryData.details.id)
@@ -382,9 +355,10 @@ export class CategoryBrowserView extends LitElement {
   /** When Mapped IDs are cleared */
   #handleClearUserFilters() {
     this.#userFilterMap.clear();
+    observable.notify({type: 'userFiltersSet', userFiltersSet: false});
     this.categoryData = {
       role: this.#clickedRole,
-      userFiltersSet: false,
+
       details: {
         ...this.categoryData.details,
         pvalue: null,
@@ -472,7 +446,7 @@ export class CategoryBrowserView extends LitElement {
       this.#handleAddRemoveFilter.bind(this)
     );
 
-    Observable.unsubscribe(this.#onBodyMutation.bind(this));
+    observable.unsubscribe(this.#onBodyMutation.bind(this));
   }
 }
 

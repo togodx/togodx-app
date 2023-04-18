@@ -1,6 +1,7 @@
 import {LitElement, html, nothing} from 'lit';
 import {ref, createRef} from 'lit/directives/ref.js';
 import {styles} from './CategoryBrowserNode.css';
+import {observable} from '../../../functions/util';
 
 export class CategoryNode extends LitElement {
   #greyedOut = false;
@@ -16,6 +17,9 @@ export class CategoryNode extends LitElement {
       checked: {type: Boolean, state: true},
       hidden: {type: Boolean, attribute: true},
       id: {type: String, attribute: true, reflect: true},
+      countWidth: {type: Number, state: true},
+      mappedWidth: {type: Number, state: true},
+      pvalueWidth: {type: Number, state: true},
       mode: {
         type: String,
         state: true,
@@ -59,6 +63,18 @@ export class CategoryNode extends LitElement {
     this.content = {};
     this.userFiltersSet = false;
     this.checked = false;
+    this.countWidth = 0;
+    this.mappedWidth = 0;
+    this.pvalueWidth = 0;
+    observable.subscribe('userFiltersSet', this.#userFiltersSet.bind(this));
+  }
+
+  #userFiltersSet(event) {
+    this.userFiltersSet = event.userFiltersSet;
+  }
+
+  disconnectedCallback() {
+    observable.unsubscribe('userFiltersSet', this.#userFiltersSet.bind(this));
   }
 
   willUpdate(prevParams) {
@@ -78,12 +94,20 @@ export class CategoryNode extends LitElement {
       this.rightConnectorClassName = `-${this.mode}-${this.order}`;
     }
 
+    // if (prevParams.has('userFiltersSet')) {
+    //   console.log("prevParams.get('userFiltersSet')", this.userFiltersSet);
+    // }
+
     this.prevMode = prevParams.get('mode');
     if (this.data.id === 'dummy') {
       this.leftConnectorClassName = '';
       this.rightConnectorClassName = '';
     }
     this.#greyedOut = !this.data.pvalue && this.userFiltersSet;
+
+    // if (prevParams.has('data')) {
+    //   console.log('node data', this.data);
+    // }
   }
 
   updated() {
@@ -147,6 +171,7 @@ export class CategoryNode extends LitElement {
   };
 
   render() {
+    // console.log('node render this.userFiltersSet', this.userFiltersSet);
     return html`
       <div class="card-container">
         <div class="connector ${this.leftConnectorClassName}"></div>
@@ -177,9 +202,21 @@ export class CategoryNode extends LitElement {
             @click=${this.#handleClick}
           >
             <div class="label">${this.data.label}</div>
-            <div class="count">${this.data.count.toLocaleString()}</div>
-            <div class="mapped">${this.data.mapped?.toLocaleString()}</div>
-            <div class="pvalue">${this.data.pvalue?.toExponential(2)}</div>
+            <div class="count" style="width: ${this.countWidth}px;">
+              ${this.data.count?.toLocaleString()}
+            </div>
+            <div
+              class="mapped ${this.userFiltersSet ? '-user-filter-set' : ''}"
+              style="width: ${this.mappedWidth}px"
+            >
+              ${this.data.mapped?.toLocaleString()}
+            </div>
+            <div
+              class="pvalue ${this.userFiltersSet ? '-user-filter-set' : ''}"
+              style="width: ${this.pvalueWidth}px"
+            >
+              ${this.data.pvalue?.toExponential(2)}
+            </div>
             <div class="drilldown"></div>
           </div>
         </div>

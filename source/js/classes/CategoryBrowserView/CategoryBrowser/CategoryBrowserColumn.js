@@ -2,8 +2,16 @@ import {LitElement, html, nothing} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
 import {flip} from './flipColumn';
 import {styles} from './CategoryBrowserColumn.css';
+import {createRef, ref} from 'lit/directives/ref.js';
+import {observable} from '../../../functions/util';
 
 export default class CategoryBrowserColumn extends LitElement {
+  #columnWidths = [];
+  #columnRef = createRef();
+  #totalHeaderRef = createRef();
+  #maxCountWidth = 0;
+  #maxMappedWidth = 0;
+  #maxPvalueWidth = 0;
   static get styles() {
     return styles;
   }
@@ -32,17 +40,70 @@ export default class CategoryBrowserColumn extends LitElement {
     this.idNodeMap = new Map();
     this.userFiltersSet = false;
     this.checkedIds = [];
+    observable.subscribe('userFiltersSet', this.#userFiltersSet.bind(this));
+  }
+
+  #userFiltersSet(event) {
+    this.userFiltersSet = event.userFiltersSet;
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.idNodeMap.clear();
+    observable.unsubscribe('userFiltersSet', this.#userFiltersSet.bind(this));
+  }
+
+  #getMaxCountWidth(title, valArr) {
+    let max = 0;
+    const countLabelsToCheck = valArr.concat(title);
+
+    countLabelsToCheck.forEach(count => {
+      const span = document.createElement('span');
+      span.innerText = count;
+      this.#columnRef.value?.appendChild(span);
+      const countWidth = span.getBoundingClientRect().width;
+      if (countWidth > max) {
+        max = countWidth;
+      }
+      this.#columnRef.value?.removeChild(span);
+    });
+
+    return max;
   }
 
   willUpdate(changed) {
     if (changed.has('nodes')) {
+      this.idNodeMap.clear();
       this.nodes.forEach(node => {
         this.idNodeMap.set(node.id, node);
       });
     }
+
+    if (this.#columnRef.value && this.nodes.length > 0) {
+      this.#maxCountWidth = this.#getMaxCountWidth(
+        'Total',
+        this.nodes.map(node => node.count?.toLocaleString())
+      );
+      if (this.userFiltersSet) {
+        this.#maxMappedWidth = this.#getMaxCountWidth(
+          'Mapped',
+          this.nodes.map(node => node.mapped?.toLocaleString())
+        );
+        this.#maxPvalueWidth = this.#getMaxCountWidth(
+          'p-value',
+          this.nodes.map(node => node.pvalue?.toExponential(2))
+        );
+        console.log('this.#maxPvalueWidth', this.#maxPvalueWidth);
+      }
+    }
+
     if (changed.has('heroId')) {
       this.previousHeroId = changed.get('heroId');
     }
+
+    // if (changed.has('userFiltersSet')) {
+    //   console.log(' column willupdate userfilterset', this.userFiltersSet);
+    // }
   }
 
   get containedId() {
@@ -51,15 +112,31 @@ export default class CategoryBrowserColumn extends LitElement {
 
   render() {
     return html`
-      <div class="column">
+      <div class="column" ${ref(this.#columnRef)}>
         ${this.containedId !== 'dummy'
           ? html`<div class="header-container">
               <div class="header">
                 <div class="checkbox"></div>
                 <div class="label">Values</div>
-                <div class="count">Total</div>
-                <div class="mapped">Mapped</div>
-                <div class="pvalue">p-value</div>
+                <div class="count" style="width: ${this.#maxCountWidth}px">
+                  Total
+                </div>
+                <div
+                  class="mapped ${this.userFiltersSet
+                    ? '-user-filter-set'
+                    : ''}"
+                  style="width: ${this.#maxMappedWidth}px"
+                >
+                  Mapped
+                </div>
+                <div
+                  class="pvalue ${this.userFiltersSet
+                    ? '-user-filter-set'
+                    : ''}"
+                  style="width: ${this.#maxPvalueWidth}px"
+                >
+                  p-value
+                </div>
                 <div class="drilldown"></div>
               </div>
             </div>`
@@ -83,8 +160,10 @@ export default class CategoryBrowserColumn extends LitElement {
                       : index === this.nodes.length - 1
                       ? 'last'
                       : 'mid'}
-                    .userFiltersSet=${this.userFiltersSet}
                     .checked=${this.checkedIds.includes(node.id)}
+                    .countWidth=${this.#maxCountWidth}
+                    .mappedWidth=${this.#maxMappedWidth}
+                    .pvalueWidth=${this.#maxPvalueWidth}
                     ${flip({
                       id: node.id,
                       heroId: this.heroId,

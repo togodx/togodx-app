@@ -105,24 +105,41 @@ export class cachedAxios {
   }
 }
 
-const observers = [];
+class ObservableStore {
+  constructor() {
+    this._observers = new Set();
+    this._eventObservers = new Map();
+  }
 
-export const Observable = Object.freeze({
-  notify: data => observers.forEach(observer => observer(data)),
-  subscribe: func => observers.push(func),
-  unsubscribe: func => {
-    [...observers].forEach((observer, index) => {
-      if (observer === func) {
-        observers.splice(index, 1);
-      }
-    });
-  },
-});
+  subscribe(eventType, observer) {
+    if (this._eventObservers.has(eventType)) {
+      this._eventObservers.get(eventType).add(observer);
+      return;
+    } else {
+      this._eventObservers.set(eventType, new Set([observer]));
+    }
+  }
+
+  unsubscribe(eventType, observer) {
+    if (this._eventObservers.has(eventType)) {
+      this._eventObservers.get(eventType).delete(observer);
+    }
+  }
+
+  /** Notify observers. Event type: {type: <eventType: string>, ...} */
+  notify(event) {
+    if (this._eventObservers.has(event.type)) {
+      this._eventObservers.get(event.type).forEach(observer => observer(event));
+    }
+  }
+}
+
+export const observable = new ObservableStore();
 
 const mutationObserver = new MutationObserver(mutations => {
   mutations.forEach(mutation => {
     if (mutation.type === 'attributes') {
-      Observable.notify(mutation);
+      observable.notify({type: 'mutation', mutation});
     }
   });
 });

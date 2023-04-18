@@ -229,18 +229,19 @@ export const styles = css`
     margin: 0;
   }
 
-  .ontology-card-content > .label {
-    width: 80%;
-  }
-  .ontology-card-content > .count {
-    width: 10%;
-  }
-  .ontology-card-content > .pvalue {
+  .label {
     flex: 1;
   }
-  .ontology-card-content > .mapped {
-    flex: 1;
+
+  .mapped,
+  .pvalue {
+    display: none;
   }
+
+  .-user-filter-set {
+    display: block;
+  }
+
   .ontology-card-content > .drilldown {
     width: 1.6rem;
     height: 1.6rem;
