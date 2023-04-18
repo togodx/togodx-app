@@ -28,6 +28,7 @@ export class CategoryBrowserView extends LitElement {
   #state = store.state;
   #unsubscribe = store.subscribe('condition', this.#onBodyMutation.bind(this));
   #sortOrder = 'none';
+  #unsortedData = null;
 
   constructor(element, attribute, items) {
     super();
@@ -191,6 +192,8 @@ export class CategoryBrowserView extends LitElement {
     this.#API.post(this.#categoryAPIBaseURL.href).then(({data}) => {
       this.categoryLoading = false;
       this.categoryData = this.#convertCategoryData(data);
+      this.#unsortedData = this.#convertCategoryData(data);
+
       this.#addMappedToData();
     });
   }
@@ -265,15 +268,18 @@ export class CategoryBrowserView extends LitElement {
     const property = e.detail.property;
     this.#sortOrder = order;
 
+    const children = this.#unsortedData.relations.children.slice();
+    const parents = this.#unsortedData.relations.parents.slice();
+
     switch (order) {
       case 'desc':
         this.categoryData = {
-          ...this.categoryData,
+          ...this.#unsortedData,
           relations: {
-            children: this.categoryData.relations.children.sort((a, b) => {
+            children: children.sort((a, b) => {
               return a[property] < b[property] ? 1 : -1;
             }),
-            parents: this.categoryData.relations.parents.sort((a, b) => {
+            parents: parents.sort((a, b) => {
               return a[property] < b[property] ? 1 : -1;
             }),
           },
@@ -281,12 +287,12 @@ export class CategoryBrowserView extends LitElement {
         break;
       case 'asc':
         this.categoryData = {
-          ...this.categoryData,
+          ...this.#unsortedData,
           relations: {
-            children: this.categoryData.relations.children.sort((a, b) => {
+            children: children.sort((a, b) => {
               return a[property] > b[property] ? 1 : -1;
             }),
-            parents: this.categoryData.relations.parents.sort((a, b) => {
+            parents: parents.sort((a, b) => {
               return a[property] > b[property] ? 1 : -1;
             }),
           },
@@ -294,6 +300,7 @@ export class CategoryBrowserView extends LitElement {
         break;
 
       default:
+        this.categoryData = this.#unsortedData;
         break;
     }
 
