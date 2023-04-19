@@ -3,8 +3,10 @@ export interface Config {
   TEMPLATES: string;
   BACKEND: string;
   ATTRIBUTES: string;
-  PRESET?: string;
+  PRESET: string;
 }
+
+// API
 export interface Backend {
   aggregate: {
     url: string,
@@ -17,6 +19,15 @@ export interface Backend {
   };
 }
 export type API = 'aggregate' | 'dataframe' | 'locate';
+
+// Preset
+export interface Preset {
+  attribute_sets: AttributeSet[];
+}
+export interface AttributeSet {
+  label: string;
+  set: string[];
+}
 
 // App
 export interface ViewModes {

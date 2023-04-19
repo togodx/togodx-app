@@ -2,41 +2,42 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
 import {displayedAttributes} from '../functions/localStorage.js';
 import * as event from '../events';
+import {Preset, AttributeSet} from '../interfaces';
 
 class AttributesManager {
-  #displayedAttributes;
-  #sets;
+  #displayedAttributes: string[];
+  #sets: AttributeSet[];
 
   constructor() {}
 
   // public
 
-  async init(api) {
+  async init(api: string): Promise<void> {
     // Determine display attribute information. If data is available in local storage, use it; if not, query the API.
 
     await fetch(api)
       .then(res => res.json())
-      .then(json => {
-        this.#sets = json.attribute_sets;
+      .then((preset: Preset) => {
+        this.#sets = preset.attribute_sets;
         this.#displayedAttributes = this.#sets.find(
-          set => (set.label = 'Default')
-        )?.set;
+          set => set.label === 'Default'
+        )!.set;
       })
       .catch(() => {
         this.#sets = [];
-        this.#displayedAttributes = undefined;
+        this.#displayedAttributes = [];
       });
 
-    const storagedData = JSON.parse(
-      window.localStorage.getItem(displayedAttributes)
-    );
-    if (storagedData) {
+    const json: string =
+      window.localStorage.getItem(displayedAttributes) || '[]';
+    const storagedData: string[] = JSON.parse(json);
+    if (storagedData.length > 0) {
       this.#displayedAttributes = storagedData;
     }
   }
 
   // Returns whether the attribute is included in the display attribute list.
-  containsInDisplayedAttributes(id) {
+  containsInDisplayedAttributes(id: string): boolean {
     return this.#displayedAttributes.indexOf(id) >= 0;
   }
 
@@ -44,7 +45,8 @@ class AttributesManager {
    *
    * @param {Map} differenceData
    */
-  updateByDifferenceData(differenceData) {
+  updateByDifferenceData(differenceData: Map<string, boolean>): void {
+    console.log(differenceData);
     differenceData.forEach((isDisplay, id) => {
       const index = this.#displayedAttributes.indexOf(id);
       if (index === -1) {
@@ -57,6 +59,7 @@ class AttributesManager {
   }
 
   updateBySetLabel(label) {
+    console.log(label);
     const set = this.#sets.find(set => set.label === label)?.set;
     if (set) {
       this.#displayedAttributes = [...set];
@@ -65,6 +68,7 @@ class AttributesManager {
   }
 
   importSet(file) {
+    console.log(file);
     const reader = new FileReader();
     reader.onerror = e => {
       console.error(e);
