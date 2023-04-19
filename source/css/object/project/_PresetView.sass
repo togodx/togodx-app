@@ -1,1 +1,25 @@
 #PresetView
+  > .window
+    > .body
+      > section
+        > section
+          > nav
+            border-radius: .5rem
+            border: solid 1px var(--color-lamp-black)
+            overflow: auto
+            max-height: 50vh
+            > dl
+              margin: 0
+              padding: .2rem .8rem
+              border-bottom: solid 1px var(--color-separator)
+              background-color: white
+              line-height: 1.2
+              cursor: pointer
+              transition: background-color var(--transition-instant)
+              &:last-child
+                border-bottom: none
+              &:hover
+                background-color: var(--color-selected)
+              > dt
+                font-size: 1.4rem
+                line-height: 1.4

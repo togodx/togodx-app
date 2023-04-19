@@ -22,12 +22,17 @@ export type API = 'aggregate' | 'dataframe' | 'locate';
 
 // Preset
 export interface Preset {
-  attribute_sets: AttributeSet[];
-}
-export interface AttributeSet {
   label: string;
-  set: string[];
+  description: string;
+  url: string;
 }
+// export interface Preset {
+//   attribute_sets: AttributeSet[];
+// }
+// export interface AttributeSet {
+//   label: string;
+//   set: string[];
+// }
 
 // App
 export interface ViewModes {

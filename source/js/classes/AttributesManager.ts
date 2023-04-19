@@ -2,12 +2,12 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
 import {displayedAttributes} from '../functions/localStorage.js';
 import * as event from '../events';
-import {Preset, AttributeSet} from '../interfaces';
+import {Preset} from '../interfaces';
 import {download} from '../functions/util';
 
 class AttributesManager {
   #displayedAttributes: string[];
-  #sets: AttributeSet[];
+  #presets: Preset[];
 
   constructor() {}
 
@@ -18,14 +18,14 @@ class AttributesManager {
 
     await fetch(api)
       .then(res => res.json())
-      .then((preset: Preset) => {
-        this.#sets = preset.attribute_sets;
-        this.#displayedAttributes = this.#sets.find(
-          set => set.label === 'Default'
-        )!.set;
+      .then((presets: Preset[]) => {
+        this.#presets = presets;
+        // this.#displayedAttributes = this.#presets.find(
+        //   set => set.label === 'Default'
+        // )!.set;
       })
       .catch(() => {
-        this.#sets = [];
+        this.#presets = [];
         this.#displayedAttributes = [];
       });
 
@@ -59,7 +59,7 @@ class AttributesManager {
   }
 
   updateBySetLabel(label: string): void {
-    const set = this.#sets.find(set => set.label === label)?.set;
+    const set = this.#presets.find(set => set.label === label)?.set;
     if (set) {
       this.#displayedAttributes = [...set];
       this.#changed();
@@ -93,8 +93,8 @@ class AttributesManager {
   //   download(str, 'json', 'attributes_set.json', true);
   // }
 
-  get sets(): AttributeSet[] {
-    return this.#sets;
+  get presets(): Preset[] {
+    return this.#presets;
   }
 
   get currentSet(): string[] {

@@ -1,5 +1,6 @@
 import ModalWindowView from './ModalWindowView';
 import AttributesManager from './AttributesManager';
+import {Preset} from '../interfaces';
 
 export default class PresetView extends ModalWindowView {
   #isRendered = false;
@@ -20,18 +21,21 @@ export default class PresetView extends ModalWindowView {
   #render() {
     if (this.#isRendered) return;
     this.#isRendered = true;
+    console.log(AttributesManager.presets)
 
     this._TITLE.textContent = 'Import';
     this._BODY.innerHTML = `<section>
-      <h3><span>Attributes set</span></h3>
+      <!--<h3><span>Attributes set</span></h3>-->
       <section>
-        <!--<h4>Select set</h4>-->
-        <select id="SettingsAttributeSelectSets">
-          <option></option>
-          ${AttributesManager.sets
-            .map(set => `<option value="${set.label}">${set.label}</option>`)
+        <h4>Select set</h4>
+        <nav>
+          ${AttributesManager.presets
+            .map(preset => `<dl data-url="${preset.url}">
+              <dt>${preset.label}</dt>
+              <dd>${preset.description}</dd>
+            </dl>`)
             .join('')}
-        </select>
+        </nav>
       </section>
       <section>
         <h4>Import set</h4>
@@ -48,11 +52,18 @@ export default class PresetView extends ModalWindowView {
     // events
     const sections = this._BODY.querySelectorAll(':scope > section > section');
     sections[0]
-      .querySelector(':scope > select')
-      .addEventListener('change', e => {
-        const label = e.target.value;
-        AttributesManager.updateBySetLabel(label);
-      });
+      .querySelectorAll(':scope > nav > dl')
+      .forEach(dl => {
+        dl.addEventListener('click', e => {
+          const url = dl.dataset.url!;
+          console.log(e)
+        });
+      })
+      // .addEventListener('click', e => {
+      //   console.log(e)
+      //   // const label = e.target.value;
+      //   // AttributesManager.updateBySetLabel(label);
+      // });
     sections[1]
       .querySelector(':scope > input')
       .addEventListener('change', e => {
