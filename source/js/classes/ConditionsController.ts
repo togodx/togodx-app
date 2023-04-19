@@ -29,6 +29,14 @@ export default class ConditionsController {
       this.#deleteConditionResultsController.bind(this)
     );
 
+    // event
+    console.log(this.#ROOT.querySelectorAll(':scope > header > button'))
+    this.#ROOT.querySelectorAll(':scope > header > button').forEach(button => {
+      button.addEventListener('click', e => {
+        console.log(button)
+      });
+    })
+
     // observe number of conditions
     const config = {attributes: false, childList: true, subtree: false};
     const callback = () => {

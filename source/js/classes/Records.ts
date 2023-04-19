@@ -85,7 +85,7 @@ class Records {
     );
   }
 
-  getAttribute(attributeId) {
+  getAttribute(attributeId: string): Attribute | undefined {
     return this.#attributes.find(attribute => attribute.id === attributeId);
   }
 

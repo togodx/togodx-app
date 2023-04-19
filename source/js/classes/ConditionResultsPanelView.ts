@@ -48,7 +48,7 @@ export default class ConditionResultsPanelView {
       </div>
       ${controller.dxCondition.conditionUtilityFilters
         .map(conditionUtilityFilter => {
-          const label = Records.getAttribute(conditionUtilityFilter.attributeId).label;
+          const label = Records.getAttribute(conditionUtilityFilter.attributeId)!.label;
           return `<div class="condition _category-background-color" data-category-id="${conditionUtilityFilter.categoryId}">
               <p title="${label}">${label}</p>
             </div>`;
@@ -164,7 +164,7 @@ export default class ConditionResultsPanelView {
       queries: ConditionBuilder.userIds,
       attributeSet: AttributesManager.currentSet
     };
-    download(JSON.stringify(condition), 'json', 'togodx-condition', true);
+    download(JSON.stringify([condition]), 'json', 'togodx-condition', true);
   }
 
   controllerStatusProxy(status) {
