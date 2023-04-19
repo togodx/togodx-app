@@ -173,12 +173,12 @@ block main
               span.material-icons delete
               | Clear
           .switch-button-view(data-hidden-by="results")
-            button.-active(data-button="filter" title="Add filters" value="filter")
+            button.-active(data-button="filter" value="filter")
               span.material-icons filter_alt
               | Filter
-            button(data-button="annotation" title="Map attributes" value="annotation")
-              span.material-icons format_list_bulleted
-              | Annotation
+            button(data-button="annotation" value="annotation")
+              span.material-icons bar_chart
+              | Projection
             
           .conditions(data-hidden-by="results")
             .condition(data-condition-type="dataset")
@@ -188,6 +188,20 @@ block main
                   | Select target dataset
                 select(disabled)
                   //- option(val="gene") Gene
+            #UploadUserIDsView.condition(data-condition-type="ids")
+              .inner
+                h2.title
+                  span.material-icons location_on
+                  | Map your IDs
+                  small optional
+                  .button
+                    button.rounded-button-view.-verysmall.-black
+                      span.material-icons subdirectory_arrow_right
+                      | Try
+                textarea(type="text" placeholder="Enter IDs")
+                .buttons
+                  button.rounded-button-view.-verysmall.-outline(type="button") Submit
+                  button.rounded-button-view.-verysmall.-outline(type="button") Reset
             .condition(data-condition-type="filters")
               .inner
                 h2.title
@@ -202,26 +216,12 @@ block main
                       li Position
                       li.end Genital
                     .label Testis
-            #UploadUserIDsView.condition(data-condition-type="ids")
-              .inner
-                h2.title
-                  span.material-icons location_on
-                  | Mapped IDs
-                  small optional
-                  .button
-                    button.rounded-button-view.-verysmall.-black
-                      span.material-icons subdirectory_arrow_right
-                      | Try
-                textarea(type="text" placeholder="Enter IDs")
-                .buttons
-                  button.rounded-button-view.-verysmall.-outline(type="button") Submit
-                  button.rounded-button-view.-verysmall.-outline(type="button") Reset
-
             .condition(data-condition-type="annotations")
               .inner
                 h2.title
-                  span.material-icons format_list_bulleted
-                  | Mapped attributes
+                  span.material-icons bar_chart
+                  | Projections
+                  small optional
                 .conditions.-empty
                 //-
                   .stacking-condition-view
@@ -243,10 +243,10 @@ block main
         section#Conditions(data-number-of-conditions="0")
           header
             h2.title Conditions
-            button.rounded-button-view.-verysmall.-outline(type="button")
+            button.rounded-button-view.-verysmall.-outline(type="button" value="import")
               span.material-icons publish
               | Import
-            button.rounded-button-view.-verysmall.-outline(type="button")
+            button.rounded-button-view.-verysmall.-outline(type="button" value="export")
               span.material-icons download
               | Export
 
