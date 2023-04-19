@@ -68,7 +68,7 @@ class App {
     new ResultsTable(document.querySelector('#ResultsTable'));
 
     // standard displayed attributes
-    await AttributesManager.init(config.ATTRIBUTES_SETS);
+    await AttributesManager.init(config.PRESET);
 
     // load config json
     Promise.all([

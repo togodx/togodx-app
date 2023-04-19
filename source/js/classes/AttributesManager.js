@@ -17,7 +17,7 @@ class AttributesManager {
     await fetch(api)
       .then(res => res.json())
       .then(json => {
-        this.#sets = json.sets;
+        this.#sets = json.attribute_sets;
         this.#displayedAttributes = this.#sets.find(
           set => (set.label = 'Default')
         )?.set;
