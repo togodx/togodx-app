@@ -1,16 +1,16 @@
 import ModalWindowView from './ModalWindowView';
 import AttributesManager from './AttributesManager';
 
-export default class SettingsView extends ModalWindowView {
+export default class PresetView extends ModalWindowView {
   #isRendered = false;
 
   constructor() {
     super();
 
-    this._ROOT.id = 'SettingsView';
+    this._ROOT.id = 'PresetView';
 
     document
-      .querySelector('#MiscArea > button')
+      .querySelector('#ImportConditionButton')!
       .addEventListener('click', () => {
         this.#render();
         this._open();
@@ -21,11 +21,11 @@ export default class SettingsView extends ModalWindowView {
     if (this.#isRendered) return;
     this.#isRendered = true;
 
-    this._TITLE.textContent = 'Settings';
+    this._TITLE.textContent = 'Import';
     this._BODY.innerHTML = `<section>
       <h3><span>Attributes set</span></h3>
       <section>
-        <h4>Select set</h4>
+        <!--<h4>Select set</h4>-->
         <select id="SettingsAttributeSelectSets">
           <option></option>
           ${AttributesManager.sets
@@ -37,10 +37,12 @@ export default class SettingsView extends ModalWindowView {
         <h4>Import set</h4>
         <input type="file" id="SettingsAttributeImportSet" accept=".json" />
       </section>
+      <!--
       <section>
         <h4>Export set</h4>
         <button id="SettingsAttributeExportSet" class="rounded-button-view -small">Download</button>
       </section>
+      -->
     </section>`;
 
     // events
@@ -58,10 +60,10 @@ export default class SettingsView extends ModalWindowView {
         if (!file) return;
         AttributesManager.importSet(file);
       });
-    sections[2]
-      .querySelector(':scope > button')
-      .addEventListener('click', () => {
-        AttributesManager.downloadCurrentSet();
-      });
+    // sections[2]
+    //   .querySelector(':scope > button')
+    //   .addEventListener('click', () => {
+    //     AttributesManager.downloadCurrentSet();
+    //   });
   }
 }

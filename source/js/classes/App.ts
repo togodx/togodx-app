@@ -60,7 +60,7 @@ class App {
     });
     // set up views
     new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
-    new ConditionsController(document.querySelector('#Conditions'));
+    new ConditionsController(document.querySelector('#Conditions')!);
     new PresetView();
     new ResultDetailModal();
     new BalloonView();

@@ -88,10 +88,10 @@ class AttributesManager {
     reader.readAsText(file);
   }
 
-  downloadCurrentSet(): void {
-    const str = JSON.stringify(this.#displayedAttributes, null, ' ');
-    download(str, 'json', 'attributes_set.json', true);
-  }
+  // downloadCurrentSet(): void {
+  //   const str = JSON.stringify(this.#displayedAttributes, null, ' ');
+  //   download(str, 'json', 'attributes_set.json', true);
+  // }
 
   get sets(): AttributeSet[] {
     return this.#sets;

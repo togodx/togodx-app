@@ -5,10 +5,10 @@ import DXCondition from './DXCondition';
 
 export default class ConditionsController {
   #conditionResultsControllers: ConditionResultsController[];
-  #ROOT: HTMLSelectElement;
+  #ROOT: HTMLElement;
   #CONDITIONS_CONTAINER: HTMLDivElement;
 
-  constructor(elm: HTMLSelectElement) {
+  constructor(elm: HTMLElement) {
     this.#conditionResultsControllers = [];
 
     // references
@@ -30,9 +30,8 @@ export default class ConditionsController {
     );
 
     // event
-    console.log(this.#ROOT.querySelectorAll(':scope > header > button'))
     this.#ROOT.querySelectorAll(':scope > header > button').forEach(button => {
-      button.addEventListener('click', e => {
+      button.addEventListener('click', () => {
         console.log(button)
       });
     })
