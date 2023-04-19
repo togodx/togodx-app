@@ -3,7 +3,7 @@ import ConditionBuilderView from './ConditionBuilderView';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import CategoryView from './CategoryView';
-import SettingsView from './SettingsView';
+import PresetView from './PresetView';
 import ResultDetailModal from './ResultDetailModal';
 import BalloonView from './BalloonView';
 import ConditionsController from './ConditionsController';
@@ -61,7 +61,7 @@ class App {
     // set up views
     new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
     new ConditionsController(document.querySelector('#Conditions'));
-    new SettingsView();
+    new PresetView();
     new ResultDetailModal();
     new BalloonView();
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
