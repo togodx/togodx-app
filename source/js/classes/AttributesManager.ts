@@ -46,7 +46,6 @@ class AttributesManager {
    * @param {Map} differenceData
    */
   updateByDifferenceData(differenceData: Map<string, boolean>): void {
-    console.log(differenceData);
     differenceData.forEach((isDisplay, id) => {
       const index = this.#displayedAttributes.indexOf(id);
       if (index === -1) {
@@ -58,8 +57,7 @@ class AttributesManager {
     this.#changed(false);
   }
 
-  updateBySetLabel(label) {
-    console.log(label);
+  updateBySetLabel(label: string): void {
     const set = this.#sets.find(set => set.label === label)?.set;
     if (set) {
       this.#displayedAttributes = [...set];
@@ -67,18 +65,18 @@ class AttributesManager {
     }
   }
 
-  importSet(file) {
-    console.log(file);
+  importSet(file: File): void {
     const reader = new FileReader();
     reader.onerror = e => {
-      console.error(e);
       window.alert('Failed to load.');
     };
-    reader.onload = e => {
+    reader.onload = (e: ProgressEvent) => {
       try {
-        const json = JSON.parse(e.target.result);
+        const fileReader: FileReader = <FileReader>e.target!;
+        const set: string[] = JSON.parse(<string>fileReader.result);
+        console.log(set)
         const existingIds = Records.attributes.map(attribute => attribute.id);
-        const filteredSet = json.filter(id => existingIds.indexOf(id) >= 0);
+        const filteredSet = set.filter(id => existingIds.indexOf(id) >= 0);
         // update
         this.#displayedAttributes = filteredSet;
         this.#changed();

@@ -1,8 +1,8 @@
 import AttributeTrackView from './AttributeTrackView.js';
-import AttributesManager from './AttributesManager';
+import AttributesManager from './AttributesManager.js';
 
 export default class CategoryView {
-  #attributeTrackViews;
+  #attributeTrackViews: AttributeTrackView[];
   #lastState;
   #ROOT;
 
@@ -81,7 +81,7 @@ export default class CategoryView {
     });
   }
 
-  #makeAttributesDisplayStateMap() {
+  #makeAttributesDisplayStateMap(): Map<string, boolean> {
     const stateMap = new Map();
     this.#attributeTrackViews.forEach(attributeTrackView => {
       stateMap.set(attributeTrackView.id, attributeTrackView.visibility);
