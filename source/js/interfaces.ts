@@ -1,3 +1,28 @@
+// config
+export interface Config {
+  TEMPLATES: string;
+  BACKEND: string;
+  ATTRIBUTES: string;
+  PRESET?: string;
+}
+export interface Backend {
+  aggregate: {
+    url: string,
+  };
+  dataframe: {
+    url: string,
+  };
+  locate: {
+    url: string,
+  };
+}
+export type API = 'aggregate' | 'dataframe' | 'locate';
+
+// App
+export interface ViewModes {
+  [key: string]: boolean;
+}
+
 // dataframe responce
 export interface Property {
   index: {

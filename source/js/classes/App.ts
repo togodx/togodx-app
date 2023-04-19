@@ -13,17 +13,18 @@ import StanzaManager from './StanzaManager';
 import ResultsTable from './ResultsTable';
 import AttributesManager from './AttributesManager';
 import * as event from '../events';
+import {Config, ViewModes, Backend, API} from '../interfaces';
 
 class App {
-  #viewModes;
-  #backend;
+  #viewModes: ViewModes;
+  #backend: Backend;
 
-  #colorWhite;
-  #colorLightGray;
-  #colorSilver;
-  #colorGray;
-  #colorDarkGray;
-  #colorLampBlack;
+  #colorWhite: Color;
+  #colorLightGray: Color;
+  #colorSilver: Color;
+  #colorGray: Color;
+  #colorDarkGray: Color;
+  #colorLampBlack: Color;
 
   constructor() {
     this.#colorWhite = new Color('white').to('srgb');
@@ -34,19 +35,18 @@ class App {
     this.#colorLampBlack = new Color('--color-lamp-black').to('srgb');
   }
 
-  async ready(config) {
-    const body = document.body;
+  async ready(config: Config): Promise<void> {
     // view modes
     this.#viewModes = {};
     document
-      .querySelectorAll(
+      .querySelectorAll<HTMLInputElement>(
         '#Properties > .inner > .header > nav .viewmodecontroller input[type="checkbox"]'
       )
       .forEach(checkbox => {
         this.#viewModes[checkbox.value] = checkbox.checked;
         checkbox.addEventListener('click', () => {
           if (checkbox.value === 'heatmap')
-            body.dataset.heatmap = checkbox.checked;
+          document.body.dataset.heatmap = checkbox.checked.toString();
           this.#viewModes[checkbox.value] = checkbox.checked;
           const customEvent = new CustomEvent(event.changeViewModes, {
             detail: this.#viewModes,
@@ -56,7 +56,7 @@ class App {
       });
     // events
     DefaultEventEmitter.addEventListener(event.restoreParameters, () => {
-      document.querySelector('#App > .loading-view').classList.remove('-shown');
+      document.querySelector<HTMLDivElement>('#App > .loading-view')!.classList.remove('-shown');
     });
     // set up views
     new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
@@ -98,21 +98,22 @@ class App {
 
   // private methods
 
-  #makeCategoryViews() {
+  #makeCategoryViews(): void {
     const conceptsContainer = document.querySelector(
       '#Properties > .inner > .concepts'
-    );
+    )!;
     Records.categories.forEach(category => {
-      const elm = document.createElement('section');
-      new CategoryView(category, elm);
-      conceptsContainer.insertAdjacentElement('beforeend', elm);
+      // TODO: define type of 'category'
+      const section = document.createElement('section');
+      new CategoryView(category, section);
+      conceptsContainer.insertAdjacentElement('beforeend', section);
     });
   }
 
-  #defineAllTracksCollapseButton() {
+  #defineAllTracksCollapseButton(): void {
     const collapsebutton = document.querySelector(
       '#Properties > .inner > header > .title > h2.collapsebutton'
-    );
+    )!;
     collapsebutton.addEventListener('click', () => {
       let customEvent = new CustomEvent(event.allTracksCollapse);
       if (collapsebutton.classList.contains('-spread')) {
@@ -133,12 +134,12 @@ class App {
    * @param {String} api 'aggregate' or 'dataframe' or 'locate'
    * @returns
    */
-  getApiUrl(api) {
+  getApiUrl(api: API): string {
     return this.#backend[api].url;
   }
 
   // accessor
-  get viewModes() {
+  get viewModes(): ViewModes {
     return this.#viewModes;
   }
   // get aggregate() {
@@ -150,22 +151,22 @@ class App {
   // get locate() {
   //   return this.#backend.locate.url;
   // }
-  get colorWhite() {
+  get colorWhite(): Color {
     return this.#colorWhite;
   }
-  get colorLightGray() {
+  get colorLightGray(): Color {
     return this.#colorLightGray;
   }
-  get colorSilver() {
+  get colorSilver(): Color {
     return this.#colorSilver;
   }
-  get colorGray() {
+  get colorGray(): Color {
     return this.#colorGray;
   }
-  get colorDarkGray() {
+  get colorDarkGray(): Color {
     return this.#colorDarkGray;
   }
-  get colorLampBlack() {
+  get colorLampBlack(): Color {
     return this.#colorLampBlack;
   }
 }

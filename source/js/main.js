@@ -1,4 +1,4 @@
-import App from './classes/App.js';
+import App from './classes/App';
 import config from './config.json';
 
 globalThis.togositeapp = App;
