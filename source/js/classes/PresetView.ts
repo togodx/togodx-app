@@ -21,7 +21,6 @@ export default class PresetView extends ModalWindowView {
   #render() {
     if (this.#isRendered) return;
     this.#isRendered = true;
-    console.log(AttributesManager.presets)
 
     this._TITLE.textContent = 'Import';
     this._BODY.innerHTML = `<section>
@@ -52,11 +51,11 @@ export default class PresetView extends ModalWindowView {
     // events
     const sections = this._BODY.querySelectorAll(':scope > section > section');
     sections[0]
-      .querySelectorAll(':scope > nav > dl')
+      .querySelectorAll<HTMLDListElement>(':scope > nav > dl')
       .forEach(dl => {
         dl.addEventListener('click', e => {
           const url = dl.dataset.url!;
-          console.log(e)
+          this.#loadPreset(url);
         });
       })
       // .addEventListener('click', e => {
@@ -76,5 +75,10 @@ export default class PresetView extends ModalWindowView {
     //   .addEventListener('click', () => {
     //     AttributesManager.downloadCurrentSet();
     //   });
+  }
+
+  async #loadPreset(url: string): Promise<void>{
+    console.log(url)
+
   }
 }
