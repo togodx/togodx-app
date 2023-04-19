@@ -197,7 +197,7 @@ export const styles = css`
     background-color: var(--node-bg-color);
     cursor: pointer;
     position: relative;
-    width: var(--column-width);
+    width: var(--width-category-browser-column);
     box-sizing: border-box;
     overflow: hidden;
     display: flex;

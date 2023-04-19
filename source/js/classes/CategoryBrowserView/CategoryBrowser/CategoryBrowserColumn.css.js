@@ -31,7 +31,7 @@ export const styles = css`
 
   .header {
     background-color: var(--color-dark-gray);
-    width: var(--column-width);
+    width: var(--width-category-browser-column);
     display: flex;
     justify-content: space-between;
     color: white;
