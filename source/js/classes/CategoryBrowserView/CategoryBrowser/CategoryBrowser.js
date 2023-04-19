@@ -3,6 +3,12 @@ import {styles} from './CategoryBrowser.css';
 
 export class CategoryBrowser extends LitElement {
   #showLoader = false;
+  #sortOrderOprions = [
+    {value: 'none', label: 'None'},
+    {value: 'asc', label: 'Ascending'},
+    {value: 'desc', label: 'Descending'},
+  ];
+  #currentOrderOptionIndex = 0;
 
   static get styles() {
     return styles;
@@ -15,6 +21,7 @@ export class CategoryBrowser extends LitElement {
       error: {type: Object, state: true},
       checkedIds: {type: Array, state: true},
       sortOrder: {type: String, state: true},
+      sortProp: {type: String, state: true},
       showKeys: {
         type: Array,
         state: true,
@@ -29,7 +36,9 @@ export class CategoryBrowser extends LitElement {
     this.error = {message: '', isError: false};
     this.showKeys = ['node', 'label'];
     this.checkedIds = [];
-    this.sortOrder = 'none';
+    this.sortOrder =
+      this.#sortOrderOprions[this.#currentOrderOptionIndex].value;
+    this.sortProp = '';
   }
 
   render() {
@@ -47,6 +56,7 @@ export class CategoryBrowser extends LitElement {
           .checkedIds="${this.checkedIds}"
           .data="${this.data}"
           .sortOrder="${this.sortOrder}"
+          .sortProp="${this.sortProp}"
         ></category-browser-columns>
       </div>
     `;

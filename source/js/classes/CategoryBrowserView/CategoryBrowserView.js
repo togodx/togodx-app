@@ -28,6 +28,7 @@ export class CategoryBrowserView extends LitElement {
   #state = store.state;
   #unsubscribe = store.subscribe('condition', this.#onBodyMutation.bind(this));
   #sortOrder = 'none';
+  #sortProp = '';
   #unsortedData = null;
 
   constructor(element, attribute, items) {
@@ -263,24 +264,23 @@ export class CategoryBrowserView extends LitElement {
   }
 
   #handleSortChange(e) {
-    const order = e.detail.order;
-    const property = e.detail.property;
+    this.#sortOrder = e.detail.order;
+    this.#sortProp = e.detail.property;
 
     const children = this.#unsortedData.relations.children.slice();
     const parents = this.#unsortedData.relations.parents.slice();
 
-    console.log('children', children);
     // sorting here but here there is no yet mapped
-    switch (order) {
+    switch (this.#sortOrder) {
       case 'desc':
         this.categoryData = {
           ...this.#unsortedData,
           relations: {
             children: children.sort((a, b) => {
-              return a[property] < b[property] ? 1 : -1;
+              return a[this.#sortProp] < b[this.#sortProp] ? 1 : -1;
             }),
             parents: parents.sort((a, b) => {
-              return a[property] < b[property] ? 1 : -1;
+              return a[this.#sortProp] < b[this.#sortProp] ? 1 : -1;
             }),
           },
         };
@@ -290,10 +290,10 @@ export class CategoryBrowserView extends LitElement {
           ...this.#unsortedData,
           relations: {
             children: children.sort((a, b) => {
-              return a[property] > b[property] ? 1 : -1;
+              return a[this.#sortProp] > b[this.#sortProp] ? 1 : -1;
             }),
             parents: parents.sort((a, b) => {
-              return a[property] > b[property] ? 1 : -1;
+              return a[this.#sortProp] > b[this.#sortProp] ? 1 : -1;
             }),
           },
         };
@@ -338,6 +338,7 @@ export class CategoryBrowserView extends LitElement {
         <div class="category-browser">
           <category-browser
             .sortOrder="${this.#sortOrder}"
+            .sortProp="${this.#sortProp}"
             @node-clicked="${this.#handleNodeClick}"
             @node-checked="${this.#handleNodeCheck}"
             @category-sort-change="${this.#handleSortChange}"
@@ -463,6 +464,7 @@ export class CategoryBrowserView extends LitElement {
   }
 
   connectedCallback() {
+    console.log('this', this);
     super.connectedCallback();
     DefaultEventEmitter.addEventListener(
       setUserFilters,

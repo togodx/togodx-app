@@ -24,6 +24,7 @@ export class CategoryBrowserColumns extends LitElement {
     this.scrolledRect = null;
     this.checkedIds = [];
     this.sortOrder = 'none';
+    this.sortProp = '';
 
     this.dataColumns = {
       _parents: [],
@@ -51,6 +52,7 @@ export class CategoryBrowserColumns extends LitElement {
       },
       checkedIds: {type: Array, state: true},
       sortOrder: {type: String, state: true},
+      sortProp: {type: String, state: true},
     };
   }
 
@@ -106,24 +108,16 @@ export class CategoryBrowserColumns extends LitElement {
         } else if (
           changedProperties.get('data').details?.id === this.data.details.id
         ) {
-          this.dataColumns.hero = [
-            {
-              ...this.data.details,
-              leaf:
-                !this.data.relations?.children ||
-                !this.data.relations?.children.length,
-              root:
-                !this.data.relations?.parents ||
-                !this.data.relations?.parents.length,
-            },
-          ];
           this.dataColumns.parents = this.data.relations?.parents || [];
           this.dataColumns.children = this.data.relations?.children || [];
         }
       }
 
       // do not update columns if only sortOrder has changed
-      if (!changedProperties.has('sortOrder')) {
+      if (
+        !changedProperties.has('sortOrder') &&
+        !changedProperties.has('sortProp')
+      ) {
         this.updateComplete.then(() => {
           if (this.data.role === 'children') {
             this.movement = 'left';
@@ -138,6 +132,7 @@ export class CategoryBrowserColumns extends LitElement {
       }
     }
     if (changedProperties.has('_columns')) {
+      console.log('_columns changed', this._columns);
       this.nodeWidth =
         this.nodeRef.value?.getBoundingClientRect().width -
           (this.nodeRef.value?.getBoundingClientRect().right -
