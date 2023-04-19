@@ -88,22 +88,22 @@ class AttributesManager {
     reader.readAsText(file);
   }
 
-  downloadCurrentSet() {
+  downloadCurrentSet(): void {
     const str = JSON.stringify(this.#displayedAttributes, null, ' ');
     download(str, 'json', 'attributes_set.json', true);
   }
 
-  get sets() {
+  get sets(): AttributeSet[] {
     return this.#sets;
   }
 
-  get currentSet() {
+  get currentSet(): string[] {
     return this.#displayedAttributes;
   }
 
   // private
 
-  #changed(emit = true) {
+  #changed(emit = true): void {
     // storage
     window.localStorage.setItem(
       displayedAttributes,
