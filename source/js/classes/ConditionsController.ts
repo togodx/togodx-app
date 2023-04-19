@@ -1,36 +1,39 @@
 import ConditionResultsController from './ConditionResultsController';
 import DefaultEventEmitter from './DefaultEventEmitter';
 import * as event from '../events';
+import DXCondition from './DXCondition';
 
 export default class ConditionsController {
-  #conditionResultsControllers;
-  #ROOT;
-  #CONDITIONS_CONTAINER;
+  #conditionResultsControllers: ConditionResultsController[];
+  #ROOT: HTMLSelectElement;
+  #CONDITIONS_CONTAINER: HTMLDivElement;
 
-  constructor(elm) {
+  constructor(elm: HTMLSelectElement) {
     this.#conditionResultsControllers = [];
 
     // references
     this.#ROOT = elm;
-    console.log(elm);
-    this.#CONDITIONS_CONTAINER = elm.querySelector(':scope > .conditions');
+    this.#CONDITIONS_CONTAINER = elm.querySelector<HTMLDivElement>(':scope > .conditions')!;
 
     // event listener
-    DefaultEventEmitter.addEventListener(event.completeQueryParameter, e =>
-      this.#setConditionResultsController(e.detail)
+    DefaultEventEmitter.addEventListener(
+      event.completeQueryParameter,
+      this.#setConditionResultsController.bind(this)
     );
-    DefaultEventEmitter.addEventListener(event.selectConditionResults, e =>
-      this.#selectConditionResultsController(e.detail)
+    DefaultEventEmitter.addEventListener(
+      event.selectConditionResults,
+      this.#selectConditionResultsController.bind(this)
     );
-    DefaultEventEmitter.addEventListener(event.deleteConditionResults, e =>
-      this.#deleteConditionResultsController(e.detail)
+    DefaultEventEmitter.addEventListener(
+      event.deleteConditionResults,
+      this.#deleteConditionResultsController.bind(this)
     );
 
     // observe number of conditions
     const config = {attributes: false, childList: true, subtree: false};
     const callback = () => {
       this.#ROOT.dataset.numberOfConditions =
-        this.#CONDITIONS_CONTAINER.childNodes.length;
+        this.#CONDITIONS_CONTAINER.childNodes.length.toString();
     };
     const observer = new MutationObserver(callback);
     observer.observe(this.#CONDITIONS_CONTAINER, config);
@@ -38,11 +41,8 @@ export default class ConditionsController {
 
   /* private methods */
 
-  /**
-   *
-   * @param {DXCondition} dxCondition
-   */
-  #setConditionResultsController(dxCondition) {
+  #setConditionResultsController(e: CustomEvent) {
+    const dxCondition: DXCondition = e.detail;
     // find matching condition from already existing conditions
     const sameConditionConditionResultsController =
       this.#conditionResultsControllers.find(conditionResults =>
@@ -59,7 +59,9 @@ export default class ConditionsController {
     }
   }
 
-  #selectConditionResultsController(selectedConditionResultsController) {
+  #selectConditionResultsController(e: CustomEvent) {
+    const selectedConditionResultsController: ConditionResultsController =
+      e.detail;
     document.body.dataset.display = 'results';
     // deselect
     for (const conditionResults of this.#conditionResultsControllers) {
@@ -68,8 +70,9 @@ export default class ConditionsController {
     }
   }
 
-  #deleteConditionResultsController(conditionResults) {
-    const index = this.#conditionResultsControllers.indexOf(conditionResults);
+  #deleteConditionResultsController(e: CustomEvent) {
+    const controller: ConditionResultsController = e.detail;
+    const index = this.#conditionResultsControllers.indexOf(controller);
     this.#conditionResultsControllers.splice(index, 1);
   }
 }
