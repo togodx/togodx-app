@@ -3,6 +3,7 @@ import Records from './Records';
 import {displayedAttributes} from '../functions/localStorage.js';
 import * as event from '../events';
 import {Preset, AttributeSet} from '../interfaces';
+import {download} from '../functions/util';
 
 class AttributesManager {
   #displayedAttributes: string[];
@@ -74,8 +75,7 @@ class AttributesManager {
       try {
         const fileReader: FileReader = <FileReader>e.target!;
         const set: string[] = JSON.parse(<string>fileReader.result);
-        console.log(set)
-        const existingIds = Records.attributes.map(attribute => attribute.id);
+        const existingIds: string[] = Records.attributes.map(attribute => attribute.id);
         const filteredSet = set.filter(id => existingIds.indexOf(id) >= 0);
         // update
         this.#displayedAttributes = filteredSet;
@@ -90,13 +90,7 @@ class AttributesManager {
 
   downloadCurrentSet() {
     const str = JSON.stringify(this.#displayedAttributes, null, ' ');
-    const blob = new Blob([str], {type: 'application/json'});
-    const dummyAnchor = document.createElement('a');
-    document.body.append(dummyAnchor);
-    dummyAnchor.href = window.URL.createObjectURL(blob);
-    dummyAnchor.download = 'attributes_set.json';
-    dummyAnchor.click();
-    dummyAnchor.remove();
+    download(str, 'json', 'attributes_set.json', true);
   }
 
   get sets() {

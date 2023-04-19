@@ -3,7 +3,7 @@ import Attribute from './Attribute';
 
 class Records {
   #categories;
-  #attributes;
+  #attributes: Attribute[];
   #datasets;
 
   constructor() {}
@@ -36,7 +36,7 @@ class Records {
     // make stylesheet
     const styleElm = document.createElement('style');
     document.head.appendChild(styleElm);
-    const styleSheet = styleElm.sheet;
+    const styleSheet = styleElm.sheet!;
     styleSheet.insertRule(`:root {
       ${categories
         .map(
@@ -123,7 +123,7 @@ class Records {
     return this.#categories;
   }
 
-  get attributes() {
+  get attributes(): Attribute[] {
     return this.#attributes;
   }
 }
