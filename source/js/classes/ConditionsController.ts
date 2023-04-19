@@ -12,6 +12,7 @@ export default class ConditionsController {
 
     // references
     this.#ROOT = elm;
+    console.log(elm);
     this.#CONDITIONS_CONTAINER = elm.querySelector(':scope > .conditions');
 
     // event listener
