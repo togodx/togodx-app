@@ -2,13 +2,10 @@ import {LitElement, html} from 'lit';
 
 import {styles} from './CategoryBrowserSorter.css';
 import {ref, createRef} from 'lit/directives/ref.js';
+import DefaultEventEmitter from '../../DefaultEventEmitter';
+import {sortEvent, sortOrderConst} from './sortConst';
 
 export class CategoryBrowserSorter extends LitElement {
-  #sortOrderOprions = [
-    {value: 'none', label: 'None'},
-    {value: 'asc', label: 'Ascending'},
-    {value: 'desc', label: 'Descending'},
-  ];
   #currentOrderOptionIndex = 0;
   #containterRef = createRef();
 
@@ -28,22 +25,49 @@ export class CategoryBrowserSorter extends LitElement {
     super();
     this.prop = '';
     this.label = '';
-    this.order = this.#sortOrderOprions[this.#currentOrderOptionIndex].value;
+    this.order = sortOrderConst.default;
   }
 
   #handleSortChange() {
     this.#currentOrderOptionIndex =
-      (this.#currentOrderOptionIndex + 1) % this.#sortOrderOprions.length;
-    this.order = this.#sortOrderOprions[this.#currentOrderOptionIndex].value;
+      (this.#currentOrderOptionIndex + 1) % sortOrderConst.length;
+    const order = sortOrderConst[this.#currentOrderOptionIndex].value;
     this.dispatchEvent(
-      new CustomEvent('category-sort-change', {
+      new CustomEvent(sortEvent.sortChange, {
         detail: {
           property: this.prop,
-          order: this.order,
+          order,
         },
         bubbles: true,
         composed: true,
       })
+    );
+  }
+
+  #handleOutsideSortChange(e) {
+    const {property, order} = e.detail;
+    if (property === this.prop) {
+      this.order = order;
+    } else {
+      this.order = sortOrderConst.default.value;
+    }
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    DefaultEventEmitter.addEventListener(
+      sortEvent.outsideSortChange,
+      this.#handleOutsideSortChange.bind(this)
+    );
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+
+    DefaultEventEmitter.removeEventListener(
+      'sort-change',
+      this.#handleOutsideSortChange.bind(this)
     );
   }
 

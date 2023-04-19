@@ -14,6 +14,7 @@ import Records from '../Records';
 import ConditionAnnotation from '../ConditionAnnotation';
 import * as event from '../../events';
 import ConditionBuilder from '../ConditionBuilder';
+import {sortEvent} from './CategoryBrowser/sortConst';
 
 //TODO add mutation observer to observe body's data-condition change
 export class CategoryBrowserView extends LitElement {
@@ -30,6 +31,11 @@ export class CategoryBrowserView extends LitElement {
   #sortOrder = 'none';
   #sortProp = '';
   #unsortedData = null;
+  #sortOrderOprions = [
+    {value: 'none', label: 'None'},
+    {value: 'asc', label: 'Ascending'},
+    {value: 'desc', label: 'Descending'},
+  ];
 
   constructor(element, attribute, items) {
     super();
@@ -53,6 +59,10 @@ export class CategoryBrowserView extends LitElement {
     this.condition = document.body.dataset.condition;
     this.checkedIds = {filter: [], annotation: []};
 
+    this.addEventListener(
+      sortEvent.sortChange,
+      this.#handleSortChange.bind(this)
+    );
     element.append(this);
   }
 
@@ -304,6 +314,15 @@ export class CategoryBrowserView extends LitElement {
         break;
     }
 
+    // Here change toggle state of sorters
+    const newSortState = {property: this.#sortProp, order: this.#sortOrder};
+    DefaultEventEmitter.dispatchEvent(
+      new CustomEvent(sortEvent.outsideSortChange, {
+        detail: newSortState,
+        bubbles: true,
+        composed: true,
+      })
+    );
     //this.#addMappedToData();
   }
 
@@ -341,7 +360,6 @@ export class CategoryBrowserView extends LitElement {
             .sortProp="${this.#sortProp}"
             @node-clicked="${this.#handleNodeClick}"
             @node-checked="${this.#handleNodeCheck}"
-            @category-sort-change="${this.#handleSortChange}"
             id="category-browser"
             .data="${this.categoryData}"
             .checkedIds="${this.checkedIds[this.condition]}"
@@ -464,7 +482,6 @@ export class CategoryBrowserView extends LitElement {
   }
 
   connectedCallback() {
-    console.log('this', this);
     super.connectedCallback();
     DefaultEventEmitter.addEventListener(
       setUserFilters,
