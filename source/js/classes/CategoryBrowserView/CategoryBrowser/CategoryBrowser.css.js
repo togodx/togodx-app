@@ -7,7 +7,7 @@ export const styles = css`
     width: 100%;
     position: absolute;
     inset: 0;
-    --column-width: min(90%, 25rem);
+    --column-width: 30rem;
     --label-width: 70%;
   }
 

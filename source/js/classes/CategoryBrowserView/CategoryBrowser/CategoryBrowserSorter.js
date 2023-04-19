@@ -47,12 +47,6 @@ export class CategoryBrowserSorter extends LitElement {
     );
   }
 
-  willUpdate(changed) {
-    if (changed.has('prop')) {
-      console.log('prop changed', this.prop);
-    }
-  }
-
   render() {
     return html`
       <div

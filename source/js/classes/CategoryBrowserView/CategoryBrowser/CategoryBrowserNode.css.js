@@ -8,6 +8,7 @@ export const styles = css`
     --connector-color: var(--color-dark-gray);
     --border-color: var(--color-dark-gray);
     --node-bg-color: white;
+    --leader-top-offset: min(50%, 12px);
     font-family: var(--togostanza-fonts-font_family);
     font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
     color: var(--togostanza-fonts-font_color);
@@ -19,7 +20,7 @@ export const styles = css`
     width: 100%;
     height: 1px;
     border-bottom: 1px solid var(--connector-color);
-    top: min(50%, 15px);
+    top: var(--leader-top-offset);
     box-sizing: border-box;
   }
 
@@ -29,7 +30,7 @@ export const styles = css`
     width: 100%;
     height: 1px;
     border-bottom: 1px solid var(--connector-color);
-    top: min(50%, 15px);
+    top: var(--leader-top-offset);
     box-sizing: border-box;
   }
 
@@ -40,7 +41,7 @@ export const styles = css`
     height: 0px;
     border: 8px solid transparent;
     border-left: 8px solid var(--connector-color);
-    top: min(50%, 15px);
+    top: var(--leader-top-offset);
     right: 0;
     transform: translate(50%, -50%) scaleY(0.5);
     box-sizing: border-box;
@@ -50,7 +51,7 @@ export const styles = css`
     position: absolute;
     content: '';
     width: 1px;
-    height: calc(100% - min(50%, 15px) + 5px);
+    height: calc(100% - var(--leader-top-offset) + 5px);
     border-left: 1px solid var(--connector-color);
     bottom: -6px;
     box-sizing: border-box;
@@ -62,7 +63,7 @@ export const styles = css`
     width: 100%;
     height: 1px;
     border-bottom: 1px solid var(--connector-color);
-    top: min(50%, 15px);
+    top: var(--leader-top-offset);
     box-sizing: border-box;
   }
 
@@ -70,7 +71,7 @@ export const styles = css`
     position: absolute;
     content: '';
     width: 1px;
-    height: calc(min(50%, 15px) + 6px);
+    height: calc(var(--leader-top-offset) + 6px);
     border-left: 1px solid var(--connector-color);
     top: -6px;
     box-sizing: border-box;
@@ -82,7 +83,7 @@ export const styles = css`
     width: 100%;
     height: 1px;
     border-top: 1px solid var(--connector-color);
-    top: min(50%, 15px);
+    top: var(--leader-top-offset);
     box-sizing: border-box;
   }
 
@@ -102,7 +103,7 @@ export const styles = css`
     width: 100%;
     height: 1px;
     border-bottom: 1px solid var(--connector-color);
-    top: min(50%, 15px);
+    top: var(--leader-top-offset);
     box-sizing: border-box;
   }
 
@@ -110,7 +111,7 @@ export const styles = css`
     position: absolute;
     content: '';
     width: 1px;
-    height: calc(100% - min(50%, 15px) + 5px);
+    height: calc(100% - var(--leader-top-offset) + 5px);
     border-right: 1px solid var(--connector-color);
     bottom: -6px;
     right: 0;
@@ -123,7 +124,7 @@ export const styles = css`
     width: 100%;
     height: 1px;
     border-bottom: 1px solid var(--connector-color);
-    top: min(50%, 15px);
+    top: var(--leader-top-offset);
     box-sizing: border-box;
   }
 
@@ -131,7 +132,7 @@ export const styles = css`
     position: absolute;
     content: '';
     width: 1px;
-    height: calc(min(50%, 15px) + 6px);
+    height: calc(var(--leader-top-offset) + 6px);
     border-right: 1px solid var(--connector-color);
     top: -6px;
     right: 0;
@@ -144,7 +145,7 @@ export const styles = css`
     width: 100%;
     height: 1px;
     border-top: 1px solid var(--connector-color);
-    top: min(50%, 15px);
+    top: var(--leader-top-offset);
     box-sizing: border-box;
   }
 
@@ -165,7 +166,7 @@ export const styles = css`
     width: 100%;
     height: 1px;
     border-bottom: 1px solid var(--connector-color);
-    top: min(50%, 15px);
+    top: var(--leader-top-offset);
     box-sizing: border-box;
   }
 
@@ -175,7 +176,7 @@ export const styles = css`
     width: 100%;
     height: 1px;
     border-bottom: 1px solid var(--connector-color);
-    top: min(50%, 15px);
+    top: var(--leader-top-offset);
     box-sizing: border-box;
   }
 
@@ -185,7 +186,7 @@ export const styles = css`
     width: 100%;
     height: 1px;
     border-bottom: 1px solid var(--connector-color);
-    top: min(50%, 15px);
+    top: var(--leader-top-offset);
     box-sizing: border-box;
   }
 
@@ -197,7 +198,6 @@ export const styles = css`
     cursor: pointer;
     position: relative;
     width: var(--column-width);
-    max-width: 25rem;
     box-sizing: border-box;
     overflow: hidden;
     display: flex;
@@ -281,7 +281,7 @@ export const styles = css`
     height: 0px;
     border: 8px solid transparent;
     border-left: 8px solid var(--border-color);
-    top: min(50%, 15px);
+    top: var(--leader-top-offset);
     left: 0;
     transform: translate(-50%, -50%) scaleY(0.5);
     box-sizing: border-box;

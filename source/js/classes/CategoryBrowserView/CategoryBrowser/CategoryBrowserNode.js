@@ -125,6 +125,7 @@ export class CategoryNode extends LitElement {
   }
 
   #handleClick() {
+    if (this.data.tip) return;
     this.dispatchEvent(
       new CustomEvent('node-clicked', {
         detail: {
@@ -140,7 +141,6 @@ export class CategoryNode extends LitElement {
 
   #handleCheckboxChange = e => {
     e.preventDefault();
-    console.log('check');
 
     this.dispatchEvent(
       new CustomEvent('node-checked', {

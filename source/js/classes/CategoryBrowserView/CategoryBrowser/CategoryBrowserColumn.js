@@ -67,7 +67,7 @@ export default class CategoryBrowserColumn extends LitElement {
     div.appendChild(sorter);
     this.#columnRef.value?.appendChild(div);
 
-    let max = div.getBoundingClientRect().width;
+    let max = div.getBoundingClientRect().width + 10;
     this.#columnRef.value?.removeChild(div);
 
     valArr.forEach(text => {

@@ -191,10 +191,9 @@ export class CategoryBrowserView extends LitElement {
     this.categoryLoading = true;
     this.#API.post(this.#categoryAPIBaseURL.href).then(({data}) => {
       this.categoryLoading = false;
-      this.categoryData = this.#convertCategoryData(data);
       this.#unsortedData = this.#convertCategoryData(data);
-
       this.#addMappedToData();
+      this.categoryData = this.#unsortedData;
     });
   }
 
@@ -266,11 +265,12 @@ export class CategoryBrowserView extends LitElement {
   #handleSortChange(e) {
     const order = e.detail.order;
     const property = e.detail.property;
-    this.#sortOrder = order;
 
     const children = this.#unsortedData.relations.children.slice();
     const parents = this.#unsortedData.relations.parents.slice();
 
+    console.log('children', children);
+    // sorting here but here there is no yet mapped
     switch (order) {
       case 'desc':
         this.categoryData = {
@@ -304,7 +304,7 @@ export class CategoryBrowserView extends LitElement {
         break;
     }
 
-    this.#addMappedToData();
+    //this.#addMappedToData();
   }
 
   // load initial data
@@ -355,20 +355,20 @@ export class CategoryBrowserView extends LitElement {
   }
 
   #addMappedToData() {
-    this.categoryData = {
+    this.#unsortedData = {
       role: this.#clickedRole,
 
       details: {
-        ...this.categoryData.details,
-        pvalue: this.#userFilterMap.has(this.categoryData.details.id)
-          ? this.#userFilterMap.get(this.categoryData.details.id).pvalue
+        ...this.#unsortedData.details,
+        pvalue: this.#userFilterMap.has(this.#unsortedData.details.id)
+          ? this.#userFilterMap.get(this.#unsortedData.details.id).pvalue
           : null,
-        mapped: this.#userFilterMap.has(this.categoryData.details.id)
-          ? this.#userFilterMap.get(this.categoryData.details.id).mapped
+        mapped: this.#userFilterMap.has(this.#unsortedData.details.id)
+          ? this.#userFilterMap.get(this.#unsortedData.details.id).mapped
           : null,
       },
       relations: {
-        children: this.categoryData.relations.children.map(item => ({
+        children: this.#unsortedData.relations.children.map(item => ({
           ...item,
           pvalue: this.#userFilterMap.has(item.id)
             ? this.#userFilterMap.get(item.id).pvalue
@@ -377,7 +377,7 @@ export class CategoryBrowserView extends LitElement {
             ? this.#userFilterMap.get(item.id).mapped
             : null,
         })),
-        parents: this.categoryData.relations.parents.map(item => ({
+        parents: this.#unsortedData.relations.parents.map(item => ({
           ...item,
           pvalue: this.#userFilterMap.has(item.id)
             ? this.#userFilterMap.get(item.id).pvalue
@@ -390,7 +390,7 @@ export class CategoryBrowserView extends LitElement {
     };
   }
 
-  /** When MappedIDs "Try", ann pvalue & mapped values to data */
+  /** When MappedIDs "Try", add pvalue & mapped values to data */
   #handleSetUserFilters(e) {
     if (this.#attributeId === e.detail.attributeId) {
       this.#userFilterMap.clear();
@@ -401,6 +401,7 @@ export class CategoryBrowserView extends LitElement {
       this.#state.userFiltersSet = true;
 
       this.#addMappedToData();
+      this.categoryData = this.#unsortedData;
     }
   }
 
@@ -409,27 +410,28 @@ export class CategoryBrowserView extends LitElement {
     this.#userFilterMap.clear();
     this.#state.userFiltersSet = false;
 
-    this.categoryData = {
+    this.#unsortedData = {
       role: this.#clickedRole,
-
       details: {
-        ...this.categoryData.details,
+        ...this.#unsortedData.details,
         pvalue: null,
         mapped: null,
       },
       relations: {
-        children: this.categoryData.relations.children.map(item => ({
+        children: this.#unsortedData.relations.children.map(item => ({
           ...item,
           pvalue: null,
           mapped: null,
         })),
-        parents: this.categoryData.relations.parents.map(item => ({
+        parents: this.#unsortedData.relations.parents.map(item => ({
           ...item,
           pvalue: null,
           mapped: null,
         })),
       },
     };
+
+    this.categoryData = this.#unsortedData;
   }
 
   // TODO here checked ids wont updating properly when we change the condition

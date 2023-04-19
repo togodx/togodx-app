@@ -6,7 +6,7 @@ export const styles = css`
     flex-basis: 0;
     display: block;
     position: relative;
-    --column-gap: 0.5rem;
+    --column-gap: 0.2rem;
     --node-padding-x: 6px;
     --node-padding-y: 3px;
   }
