@@ -1,29 +1,5 @@
 [
   {
-    "dataset": "ensembl_gene",
-    "filters": [
-      {
-        "attributeId": "gene_chromosome_ensembl",
-        "nodes": [{ "node": "03" }, { "node": "04" }]
-      },
-      {
-        "attributeId": "protein_domains_uniprot",
-        "nodes": [{ "node": "1133", "ancestors": ["812"] }]
-      },
-      {
-        "attributeId": "compound_chemical_role_chebi",
-        "nodes": [{ "node": "52214" }]
-      }
-    ],
-    "annotations": [
-      {
-        "attributeId": "disease_diseases_mondo",
-        "parentNode": "0005071",
-        "ancestors": []
-      },
-      { "attributeId": "interaction_proteins_in_pathway_reactome" }
-    ],
-    "queries": [],
     "attributeSet": [
       "gene_biotype_ensembl",
       "gene_chromosome_ensembl",

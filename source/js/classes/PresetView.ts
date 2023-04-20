@@ -1,3 +1,4 @@
+import { PresetMetaData } from './../interfaces';
 import ModalWindowView from './ModalWindowView';
 import AttributesManager from './AttributesManager';
 import {Preset} from '../interfaces';
@@ -28,7 +29,7 @@ export default class PresetView extends ModalWindowView {
       <section>
         <h4>Select set</h4>
         <nav>
-          ${AttributesManager.presets
+          ${AttributesManager.presetMetaData
             .map(preset => `<dl data-url="${preset.url}">
               <dt>${preset.label}</dt>
               <dd>${preset.description}</dd>

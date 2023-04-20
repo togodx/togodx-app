@@ -2,12 +2,12 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
 import {displayedAttributes} from '../functions/localStorage.js';
 import * as event from '../events';
-import {Preset} from '../interfaces';
+import {PresetMetaDatum} from '../interfaces';
 import {download} from '../functions/util';
 
 class AttributesManager {
   #displayedAttributes: string[];
-  #presets: Preset[];
+  #presetMetaData: PresetMetaDatum[];
 
   constructor() {}
 
@@ -16,24 +16,30 @@ class AttributesManager {
   async init(api: string): Promise<void> {
     // Determine display attribute information. If data is available in local storage, use it; if not, query the API.
 
+    // fetch from local storage
+    const json: string =
+    window.localStorage.getItem(displayedAttributes) || '[]';
+    const storagedDisplayAttributes: string[] = JSON.parse(json);
+
+    // fetch presets
     await fetch(api)
       .then(res => res.json())
-      .then((presets: Preset[]) => {
-        this.#presets = presets;
-        // this.#displayedAttributes = this.#presets.find(
-        //   set => set.label === 'Default'
-        // )!.set;
+      .then((presets: PresetMetaDatum[]) => {
+        this.#presetMetaData = presets;
       })
       .catch(() => {
-        this.#presets = [];
+        this.#presetMetaData = [];
         this.#displayedAttributes = [];
       });
 
-    const json: string =
-      window.localStorage.getItem(displayedAttributes) || '[]';
-    const storagedData: string[] = JSON.parse(json);
-    if (storagedData.length > 0) {
-      this.#displayedAttributes = storagedData;
+    if (storagedDisplayAttributes.length > 0) {
+      this.#displayedAttributes = storagedDisplayAttributes;
+    } else {
+      // get default preset
+      // TODO: 暗黙的にデフォルトデータとしているので、あまり筋がよろしくない
+      const preset = await fetch(this.#presetMetaData[0].url)
+        .then(res => res.json());
+        this.#displayedAttributes = preset[0].attributeSet;
     }
   }
 
@@ -58,13 +64,14 @@ class AttributesManager {
     this.#changed(false);
   }
 
-  updateBySetLabel(label: string): void {
-    const set = this.#presets.find(set => set.label === label)?.set;
-    if (set) {
-      this.#displayedAttributes = [...set];
-      this.#changed();
-    }
-  }
+  // updateBySetLabel(label: string): void {
+  //   console.log(label);
+  //   const set = this.#presetMetaData.find(set => set.label === label)?.set;
+  //   if (set) {
+  //     this.#displayedAttributes = [...set];
+  //     this.#changed();
+  //   }
+  // }
 
   importSet(file: File): void {
     const reader = new FileReader();
@@ -93,8 +100,8 @@ class AttributesManager {
   //   download(str, 'json', 'attributes_set.json', true);
   // }
 
-  get presets(): Preset[] {
-    return this.#presets;
+  get presetMetaData(): PresetMetaDatum[] {
+    return this.#presetMetaData;
   }
 
   get currentSet(): string[] {

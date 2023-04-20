@@ -21,10 +21,14 @@ export interface Backend {
 export type API = 'aggregate' | 'dataframe' | 'locate';
 
 // Preset
-export interface Preset {
+export interface PresetMetaDatum {
   label: string;
   description: string;
   url: string;
+}
+export interface Preset {
+  condition?: Condition;
+  attributeSet: string[];
 }
 // export interface Preset {
 //   attribute_sets: AttributeSet[];
@@ -96,6 +100,12 @@ export interface ConditionAnnotationWithAncestor {
 // ancestors は API で取得できるようにしてほしい
 
 // condition
+export interface Condition {
+  dataset: string;
+  filters: ConditionFilterWithAncestor[];
+  annotations: ConditionAnnotationWithAncestor[];
+  queries: string[];
+}
 export interface SynthesizedCondition {
   dataset: string;
   filters: ConditionFilterWithAncestor[];
