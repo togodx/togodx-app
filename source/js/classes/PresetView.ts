@@ -10,6 +10,7 @@ export default class PresetView extends ModalWindowView {
 
     this._ROOT.id = 'PresetView';
 
+    // TODO: 暫定的な呼び出し
     document
       .querySelector('#ImportConditionButton')!
       .addEventListener('click', () => {

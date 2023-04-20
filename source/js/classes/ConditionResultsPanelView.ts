@@ -155,16 +155,7 @@ export default class ConditionResultsPanelView {
   }
 
   #downloadCondition(): void {
-    const condition: Preset = {
-      condition: {
-        dataset: this.#controller.dxCondition.togoKey,
-        filters: this.#controller.dxCondition.conditionUtilityFilters.map(cuf => cuf.conditionFilterWithAncestor),
-        annotations: this.#controller.dxCondition.conditionUtilityAnnotations.map(cua => cua.conditionAnnotationWithAncestor),
-        queries: ConditionBuilder.userIds,
-      },
-      attributeSet: PresetManager.currentSet
-    };
-    download(JSON.stringify([condition]), 'json', 'togodx-condition', true);
+    download(JSON.stringify([this.preset]), 'json', 'togodx-preset', true);
   }
 
   controllerStatusProxy(status) {
@@ -228,6 +219,17 @@ export default class ConditionResultsPanelView {
     const values = Object.values(LoadStatus);
     if (values.includes(loadStatus)) return loadStatus;
     else throw new Error('invalid load status');
+  }
+  get preset(): Preset {
+    return {
+      condition: {
+        dataset: this.#controller.dxCondition.togoKey,
+        filters: this.#controller.dxCondition.conditionUtilityFilters.map(cuf => cuf.conditionFilterWithAncestor),
+        annotations: this.#controller.dxCondition.conditionUtilityAnnotations.map(cua => cua.conditionAnnotationWithAncestor),
+        queries: ConditionBuilder.userIds,
+      },
+      attributeSet: PresetManager.currentSet
+    };
   }
   set selected(isSelected: boolean) {
     this.#ROOT.classList.toggle('-current', isSelected);

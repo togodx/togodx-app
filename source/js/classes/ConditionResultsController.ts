@@ -6,7 +6,8 @@ import * as event from '../events';
 import axios, {AxiosError} from 'axios';
 import DXCondition from './DXCondition';
 import ConditionUtilityFilter from './ConditionUtilityFilter';
-import {LoadStatus} from './ConditionResultsPanelView';
+import { LoadStatus } from './ConditionResultsPanelView';
+import { Preset } from '../interfaces';
 
 export default class ConditionResultsController {
   #dxCondition: DXCondition;
@@ -182,5 +183,8 @@ export default class ConditionResultsController {
   }
   get element(): HTMLElement {
     return this.#panelView.element;
+  }
+  get preset(): Preset {
+    return this.#panelView.preset;
   }
 }

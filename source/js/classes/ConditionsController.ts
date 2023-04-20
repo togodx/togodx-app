@@ -2,6 +2,7 @@ import ConditionResultsController from './ConditionResultsController';
 import DefaultEventEmitter from './DefaultEventEmitter';
 import * as event from '../events';
 import DXCondition from './DXCondition';
+import { download } from '../functions/util';
 
 export default class ConditionsController {
   #conditionResultsControllers: ConditionResultsController[];
@@ -30,11 +31,18 @@ export default class ConditionsController {
     );
 
     // event
-    this.#ROOT.querySelectorAll(':scope > header > button').forEach(button => {
+    this.#ROOT.querySelectorAll<HTMLButtonElement>(':scope > header > button').forEach(button => {
       button.addEventListener('click', () => {
-        console.log(button)
+        switch (button.value) {
+          case 'import':
+            // TODO: 現在は PresetView 側でクリックイベントをアタッチしている
+            break;
+          case 'export':
+            download(JSON.stringify(this.#conditionResultsControllers.map(crc => crc.preset)), 'json', 'togodx-preset', true);
+            break;
+        }
       });
-    })
+    });
 
     // observe number of conditions
     const config = {attributes: false, childList: true, subtree: false};
