@@ -11,7 +11,7 @@ import UploadUserIDsView from './UploadUserIDsView';
 import Color from 'colorjs.io';
 import StanzaManager from './StanzaManager';
 import ResultsTable from './ResultsTable';
-import AttributesManager from './AttributesManager';
+import PresetManager from './PresetManager';
 import * as event from '../events';
 import {Config, ViewModes, Backend, API} from '../interfaces';
 
@@ -68,7 +68,7 @@ class App {
     new ResultsTable(document.querySelector('#ResultsTable'));
 
     // standard displayed attributes
-    await AttributesManager.init(config.PRESET);
+    await PresetManager.init(config.PRESET);
 
     // load config json
     Promise.all([

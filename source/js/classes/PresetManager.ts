@@ -5,7 +5,7 @@ import * as event from '../events';
 import {PresetMetaDatum} from '../interfaces';
 import {download} from '../functions/util';
 
-class AttributesManager {
+class PresetManager {
   #displayedAttributes: string[];
   #presetMetaData: PresetMetaDatum[];
 
@@ -125,4 +125,4 @@ class AttributesManager {
   }
 }
 
-export default new AttributesManager();
+export default new PresetManager();

@@ -2,11 +2,9 @@ import ConditionResultsController from './ConditionResultsController';
 import ProgressIndicator from './ProgressIndicator';
 import Records from './Records';
 import ConditionBuilder from './ConditionBuilder';
-import AttributesManager from './AttributesManager';
-import {download} from '../functions/util';
-import {
-  SynthesizedCondition,
-} from '../interfaces';
+import PresetManager from './PresetManager';
+import { download } from '../functions/util';
+import { Preset } from '../interfaces';
 
 const BUTTONS: string[] = [ 'resume', 'retry', 'tsv', 'condition', 'edit' ]
 
@@ -157,12 +155,14 @@ export default class ConditionResultsPanelView {
   }
 
   #downloadCondition(): void {
-    const condition: SynthesizedCondition = {
-      dataset: this.#controller.dxCondition.togoKey,
-      filters: this.#controller.dxCondition.conditionUtilityFilters.map(cuf => cuf.conditionFilterWithAncestor),
-      annotations: this.#controller.dxCondition.conditionUtilityAnnotations.map(cua => cua.conditionAnnotationWithAncestor),
-      queries: ConditionBuilder.userIds,
-      attributeSet: AttributesManager.currentSet
+    const condition: Preset = {
+      condition: {
+        dataset: this.#controller.dxCondition.togoKey,
+        filters: this.#controller.dxCondition.conditionUtilityFilters.map(cuf => cuf.conditionFilterWithAncestor),
+        annotations: this.#controller.dxCondition.conditionUtilityAnnotations.map(cua => cua.conditionAnnotationWithAncestor),
+        queries: ConditionBuilder.userIds,
+      },
+      attributeSet: PresetManager.currentSet
     };
     download(JSON.stringify([condition]), 'json', 'togodx-condition', true);
   }

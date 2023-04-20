@@ -1,5 +1,5 @@
 import AttributeTrackView from './AttributeTrackView.js';
-import AttributesManager from './AttributesManager.js';
+import PresetManager from './PresetManager.js';
 
 export default class CategoryView {
   #attributeTrackViews: AttributeTrackView[];
@@ -25,7 +25,7 @@ export default class CategoryView {
         new AttributeTrackView(
           attribute,
           container,
-          AttributesManager.containsInDisplayedAttributes(attribute),
+          PresetManager.containsInDisplayedAttributes(attribute),
           i / attributes.length
         )
     );
@@ -62,7 +62,7 @@ export default class CategoryView {
           case 0: // ok
             {
               // set local storage
-              AttributesManager.updateByDifferenceData(
+              PresetManager.updateByDifferenceData(
                 this.#makeAttributesDisplayStateMap()
               );
             }

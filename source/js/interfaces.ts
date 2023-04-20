@@ -106,13 +106,6 @@ export interface Condition {
   annotations: ConditionAnnotationWithAncestor[];
   queries: string[];
 }
-export interface SynthesizedCondition {
-  dataset: string;
-  filters: ConditionFilterWithAncestor[];
-  annotations: ConditionAnnotationWithAncestor[];
-  queries: string[];
-  attributeSet: string[];
-}
 
 // table
 export type TableHeader = {

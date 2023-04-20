@@ -1,6 +1,5 @@
-import { PresetMetaData } from './../interfaces';
 import ModalWindowView from './ModalWindowView';
-import AttributesManager from './AttributesManager';
+import PresetManager from './PresetManager';
 import {Preset} from '../interfaces';
 
 export default class PresetView extends ModalWindowView {
@@ -29,7 +28,7 @@ export default class PresetView extends ModalWindowView {
       <section>
         <h4>Select set</h4>
         <nav>
-          ${AttributesManager.presetMetaData
+          ${PresetManager.presetMetaData
             .map(preset => `<dl data-url="${preset.url}">
               <dt>${preset.label}</dt>
               <dd>${preset.description}</dd>
@@ -62,19 +61,19 @@ export default class PresetView extends ModalWindowView {
       // .addEventListener('click', e => {
       //   console.log(e)
       //   // const label = e.target.value;
-      //   // AttributesManager.updateBySetLabel(label);
+      //   // PresetManager.updateBySetLabel(label);
       // });
     sections[1]
       .querySelector(':scope > input')
       .addEventListener('change', e => {
         const file = e.target.files[0];
         if (!file) return;
-        AttributesManager.importSet(file);
+        PresetManager.importSet(file);
       });
     // sections[2]
     //   .querySelector(':scope > button')
     //   .addEventListener('click', () => {
-    //     AttributesManager.downloadCurrentSet();
+    //     PresetManager.downloadCurrentSet();
     //   });
   }
 
