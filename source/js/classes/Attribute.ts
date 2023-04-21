@@ -4,6 +4,7 @@ export default class Attribute {
   #filters;
 
   constructor(id, obj) {
+    console.log(id, obj);
     this.#id = id;
     this.#obj = obj;
     this.#filters = [];
@@ -12,10 +13,12 @@ export default class Attribute {
   // public Methods
 
   fetchFiltersWithParentNode(parentNode) {
+    console.log(parentNode);
     return new Promise((resolve, reject) => {
       const filters = this.#filters.filter(
         filter => filter.parentNode === parentNode
       );
+      console.log(filters);
       if (filters.length > 0) {
         resolve(filters);
       } else {
@@ -46,7 +49,7 @@ export default class Attribute {
     });
   }
 
-  getFilter(node) {
+  getFilter(node: string) {
     return this.#filters.find(filter => filter.node === node);
   }
 

@@ -5,7 +5,7 @@ import App from './App';
 import axios from 'axios';
 import {getApiParameter} from '../functions/queryTemplates';
 import {
-  Property,
+  DataFrame,
   ConditionFilter,
   ConditionAnnotation,
   TableHeader,
@@ -22,7 +22,7 @@ export default class DXCondition {
   #conditionUtilityAnnotations: ConditionUtilityAnnotation[];
   #conditionUtilityFilters: ConditionUtilityFilter[];
   #ids: string[];
-  #properties: Property[];
+  #properties: DataFrame[];
   #attributeSet: string[];
 
   /**
@@ -130,7 +130,7 @@ export default class DXCondition {
     return this.#ids;
   }
 
-  async getNextProperties(limit: number = LIMIT): Promise<Property[]> {
+  async getNextProperties(limit: number = LIMIT): Promise<DataFrame[]> {
     const res = await axios.post(
       App.getApiUrl('dataframe'),
       getApiParameter('dataframe', {
@@ -141,7 +141,7 @@ export default class DXCondition {
       })
       // {cancelToken: this.#source.token}
     );
-    const properties: Property[] = res.data;
+    const properties: DataFrame[] = res.data;
     this.#properties.push(...properties);
     return properties;
   }
@@ -199,7 +199,7 @@ export default class DXCondition {
     return this.#properties.length;
   }
 
-  get properties(): Property[] {
+  get properties(): DataFrame[] {
     return [...this.#properties];
   }
 

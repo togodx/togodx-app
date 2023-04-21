@@ -47,19 +47,19 @@ export interface ViewModes {
 }
 
 // dataframe responce
-export interface Property {
+export interface DataFrame {
   index: {
     dataset: string,
     entry: string,
     label: string,
   };
-  attributes: Attribute[];
+  attributes: DataFrameAttribute[];
 }
-export interface Attribute {
+export interface DataFrameAttribute {
   id: string;
-  items: AttributeItem[];
+  items: DataFrameAttributeItem[];
 }
-export interface AttributeItem {
+export interface DataFrameAttributeItem {
   dataset: string;
   entry: string;
   node: string;
