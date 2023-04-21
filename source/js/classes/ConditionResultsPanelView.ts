@@ -228,7 +228,7 @@ export default class ConditionResultsPanelView {
         annotations: this.#controller.dxCondition.conditionUtilityAnnotations.map(cua => cua.conditionAnnotationWithAncestor),
         queries: ConditionBuilder.userIds,
       },
-      attributeSet: PresetManager.currentSet
+      attributeSet: PresetManager.currentAttributeSet
     };
   }
   set selected(isSelected: boolean) {

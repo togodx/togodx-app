@@ -23,6 +23,7 @@ export default class DXCondition {
   #conditionUtilityFilters: ConditionUtilityFilter[];
   #ids: string[];
   #properties: Property[];
+  #attributeSet: string[];
 
   /**
    *
@@ -33,7 +34,8 @@ export default class DXCondition {
   constructor(
     togoKey: string,
     conditionUtilityAnnotations: ConditionUtilityAnnotation[],
-    conditionUtilityFilters: ConditionUtilityFilter[]
+    conditionUtilityFilters: ConditionUtilityFilter[],
+    attributeSet: string[]
   ) {
     this.#id = idCounter++;
     this.#togoKey = togoKey;
@@ -43,6 +45,7 @@ export default class DXCondition {
     this.#conditionUtilityFilters = this.#copyConditionUtilityFilters(
       conditionUtilityFilters
     );
+    this.#attributeSet = attributeSet;
     this.#properties = [];
   }
 

@@ -1,12 +1,12 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
-import {displayedAttributes} from '../functions/localStorage.js';
+import {currentAttributeSet} from '../functions/localStorage.js';
 import * as event from '../events';
 import {PresetMetaDatum} from '../interfaces';
-import {download} from '../functions/util';
+// import {download} from '../functions/util';
 
 class PresetManager {
-  #displayedAttributes: string[];
+  #currentAttributeSet: string[];
   #presetMetaData: PresetMetaDatum[];
 
   constructor() {}
@@ -18,7 +18,7 @@ class PresetManager {
 
     // fetch from local storage
     const json: string =
-    window.localStorage.getItem(displayedAttributes) || '[]';
+    window.localStorage.getItem(currentAttributeSet) || '[]';
     const storagedDisplayAttributes: string[] = JSON.parse(json);
 
     // fetch presets
@@ -29,23 +29,23 @@ class PresetManager {
       })
       .catch(() => {
         this.#presetMetaData = [];
-        this.#displayedAttributes = [];
+        this.#currentAttributeSet = [];
       });
 
     if (storagedDisplayAttributes.length > 0) {
-      this.#displayedAttributes = storagedDisplayAttributes;
+      this.#currentAttributeSet = storagedDisplayAttributes;
     } else {
       // get default preset
       // TODO: 暗黙的にデフォルトデータとしているので、あまり筋がよろしくない
       const preset = await fetch(this.#presetMetaData[0].url)
         .then(res => res.json());
-        this.#displayedAttributes = preset[0].attributeSet;
+        this.#currentAttributeSet = preset[0].attributeSet;
     }
   }
 
   // Returns whether the attribute is included in the display attribute list.
   containsInDisplayedAttributes(id: string): boolean {
-    return this.#displayedAttributes.indexOf(id) >= 0;
+    return this.#currentAttributeSet.indexOf(id) >= 0;
   }
 
   /**
@@ -54,11 +54,11 @@ class PresetManager {
    */
   updateByDifferenceData(differenceData: Map<string, boolean>): void {
     differenceData.forEach((isDisplay, id) => {
-      const index = this.#displayedAttributes.indexOf(id);
+      const index = this.#currentAttributeSet.indexOf(id);
       if (index === -1) {
-        if (isDisplay) this.#displayedAttributes.push(id);
+        if (isDisplay) this.#currentAttributeSet.push(id);
       } else {
-        if (!isDisplay) this.#displayedAttributes.splice(index, 1);
+        if (!isDisplay) this.#currentAttributeSet.splice(index, 1);
       }
     });
     this.#changed(false);
@@ -68,7 +68,7 @@ class PresetManager {
   //   console.log(label);
   //   const set = this.#presetMetaData.find(set => set.label === label)?.set;
   //   if (set) {
-  //     this.#displayedAttributes = [...set];
+  //     this.#currentAttributeSet = [...set];
   //     this.#changed();
   //   }
   // }
@@ -85,7 +85,7 @@ class PresetManager {
         const existingIds: string[] = Records.attributes.map(attribute => attribute.id);
         const filteredSet = set.filter(id => existingIds.indexOf(id) >= 0);
         // update
-        this.#displayedAttributes = filteredSet;
+        this.#currentAttributeSet = filteredSet;
         this.#changed();
       } catch (e) {
         console.error(e);
@@ -96,7 +96,7 @@ class PresetManager {
   }
 
   // downloadCurrentSet(): void {
-  //   const str = JSON.stringify(this.#displayedAttributes, null, ' ');
+  //   const str = JSON.stringify(this.#currentAttributeSet, null, ' ');
   //   download(str, 'json', 'attributes_set.json', true);
   // }
 
@@ -104,8 +104,8 @@ class PresetManager {
     return this.#presetMetaData;
   }
 
-  get currentSet(): string[] {
-    return this.#displayedAttributes;
+  get currentAttributeSet(): string[] {
+    return [...this.#currentAttributeSet];
   }
 
   // private
@@ -113,13 +113,13 @@ class PresetManager {
   #changed(emit = true): void {
     // storage
     window.localStorage.setItem(
-      displayedAttributes,
-      JSON.stringify(this.#displayedAttributes)
+      currentAttributeSet,
+      JSON.stringify(this.#currentAttributeSet)
     );
     // emit
     if (!emit) return;
     const customEvent = new CustomEvent(event.changeDisplayedAttributeSet, {
-      detail: [...this.#displayedAttributes],
+      detail: [...this.#currentAttributeSet],
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
   }

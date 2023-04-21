@@ -18,7 +18,7 @@ export default class ConditionsController {
 
     // event listener
     DefaultEventEmitter.addEventListener(
-      event.completeQueryParameter,
+      event.sendCondition,
       this.#setConditionResultsController.bind(this)
     );
     DefaultEventEmitter.addEventListener(

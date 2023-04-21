@@ -80,6 +80,8 @@ export default class PresetView extends ModalWindowView {
 
   async #loadPreset(url: string): Promise<void>{
     console.log(url)
-
+    const preset: Preset = await fetch(url)
+      .then(res => res.json());
+    console.log(preset)
   }
 }

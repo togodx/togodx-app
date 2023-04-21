@@ -13,7 +13,7 @@ export const changeViewModes = 'changeViewModes';
 export const mutateAnnotationCondition = 'mutateAnnotationCondition';
 export const mutateFilterCondition = 'mutateFilterCondition';
 export const mutateEstablishConditions = 'mutateEstablishConditions';
-export const completeQueryParameter = 'completeQueryParameter';
+export const sendCondition = 'sendCondition';
 export const restoreParameters = 'restoreParameters';
 export const clearCondition = 'clearCondition';
 

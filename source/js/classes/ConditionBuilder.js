@@ -4,6 +4,7 @@ import ConditionUtilityAnnotation from './ConditionUtilityAnnotation';
 import ConditionUtilityFilter from './ConditionUtilityFilter';
 import DXCondition from './DXCondition';
 import * as event from '../events';
+import PresetManager from './PresetManager';
 
 class ConditionBuilder {
   #conditionUtilityAnnotations; // Array<ConditionUtilityAnnotation>
@@ -195,11 +196,12 @@ class ConditionBuilder {
 
   makeQueryParameter() {
     // emmit event
-    const customEvent = new CustomEvent(event.completeQueryParameter, {
+    const customEvent = new CustomEvent(event.sendCondition, {
       detail: new DXCondition(
         this.#dataset,
         this.#conditionUtilityAnnotations,
-        this.#conditionUtilityFilters
+        this.#conditionUtilityFilters,
+        PresetManager.currentAttributeSet
       ),
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
@@ -244,7 +246,8 @@ class ConditionBuilder {
     return new DXCondition(
       this.#dataset,
       this.#conditionUtilityAnnotations,
-      this.#conditionUtilityFilters
+      this.#conditionUtilityFilters,
+      PresetManager.currentAttributeSet
     );
   }
 
