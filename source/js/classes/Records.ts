@@ -1,5 +1,6 @@
 import Color from 'colorjs.io';
 import Attribute from './Attribute';
+import { Breakdown } from '../interfaces';
 
 class Records {
   #categories;
@@ -89,20 +90,20 @@ class Records {
     return this.#attributes.find(attribute => attribute.id === attributeId);
   }
 
-  getFilter(attributeId, node) {
+  getFilter(attributeId: string, node: string | undefined) {
     const attribute = this.getAttribute(attributeId);
     return attribute.getFilter(node);
   }
 
-  getFiltersWithParentNode(attributeId, parentNode) {
+  getFiltersWithParentNode(attributeId: string, parentNode: string) {
     const attribute = this.getAttribute(attributeId);
     return attribute.filters.filter(filter => filter.parentNode === parentNode);
   }
 
-  getAncestors(attributeId, node) {
-    const attribute = this.getAttribute(attributeId);
+  getAncestors(attributeId: string, node: string): Breakdown[] {
+    const attribute = this.getAttribute(attributeId)!;
     const ancestors = [];
-    let parent;
+    let parent: Attribute | undefined;
     do {
       // find ancestors
       parent = attribute.filters.find(filter => filter.node === node);

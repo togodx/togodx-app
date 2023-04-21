@@ -13,7 +13,7 @@ export default class ConditionUtilityAnnotation extends ConditionUtilityBase {
 
   // methods
 
-  isSameCondition(attributeId: string, parentNode: string): boolean {
+  isSameCondition(attributeId: string, parentNode: string | undefined): boolean {
     if (attributeId === this._attributeId) {
       if (parentNode) {
         return parentNode === this.#parentNode;
@@ -76,9 +76,9 @@ export default class ConditionUtilityAnnotation extends ConditionUtilityBase {
 
   // static
 
-  static decodeURLSearchParams(searchParams: string): ConditionUtilityAnnotation[] {
+  static decodeURLSearchParams(searchParams: string | null): ConditionUtilityAnnotation[] {
     const annotations: ConditionUtilityAnnotation[] = [];
-    const parsed: ConditionAnnotationWithAncestor[] = JSON.parse(searchParams);
+    const parsed: ConditionAnnotationWithAncestor[] | null = JSON.parse(searchParams || 'null');
     if (parsed) {
       annotations.push(
         ...parsed.map(({attributeId, parentNode, ancestors}) => {

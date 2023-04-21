@@ -1,3 +1,6 @@
+import ConditionUtilityFilter from './classes/ConditionUtilityFilter';
+import ConditionUtilityAnnotation from './classes/ConditionUtilityAnnotation';
+
 // config
 export interface Config {
   TEMPLATES: string;
@@ -105,6 +108,10 @@ export interface Condition {
   filters: ConditionFilterWithAncestor[];
   annotations: ConditionAnnotationWithAncestor[];
   queries: string[];
+}
+export interface SelectedNodes {
+  filters: string[];
+  annotations: string[];
 }
 
 // table

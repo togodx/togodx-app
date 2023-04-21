@@ -64,9 +64,13 @@ export default class ConditionUtilityFilter extends ConditionUtilityBase {
 
   // static
 
-  static decodeURLSearchParams(searchParams: string): ConditionUtilityFilter[] {
+  static decodeURLSearchParams(
+    searchParams: string | null
+  ): ConditionUtilityFilter[] {
     const filters: ConditionUtilityFilter[] = [];
-    const parsed: ConditionFilterWithAncestor[] = JSON.parse(searchParams);
+    const parsed: ConditionFilterWithAncestor[] = JSON.parse(
+      searchParams || 'null'
+    );
     if (parsed) {
       filters.push(
         ...parsed.map(({attributeId, nodes}) => {
