@@ -80,6 +80,7 @@ class App {
         return Promise.all(responces.map(responce => responce.json()));
       })
       .then(([templates, backend, attributes]) => {
+        console.log(templates, backend, attributes)
         Records.setAttributes(attributes);
         // define primary keys
         const customEvent = new CustomEvent(event.defineTogoKey, {

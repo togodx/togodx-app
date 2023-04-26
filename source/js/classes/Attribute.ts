@@ -1,9 +1,9 @@
 export default class Attribute {
-  #id;
+  #id: string;
   #obj;
   #filters;
 
-  constructor(id, obj) {
+  constructor(id: string, obj) {
     console.log(id, obj);
     this.#id = id;
     this.#obj = obj;

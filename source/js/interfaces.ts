@@ -1,5 +1,7 @@
+import {TemplatesTemplate, Attribute, AttributeCategory} from './interfaces';
 import ConditionUtilityFilter from './classes/ConditionUtilityFilter';
 import ConditionUtilityAnnotation from './classes/ConditionUtilityAnnotation';
+import Color from 'colorjs.io';
 
 // config
 export interface Config {
@@ -8,7 +10,14 @@ export interface Config {
   ATTRIBUTES: string;
   PRESET: string;
 }
-
+// Template
+export interface Templates {
+  stanzas: string[];
+  templates: TemplatesTemplate[];
+}
+export interface TemplatesTemplate {
+  [key: string]: string;
+}
 // API
 export interface Backend {
   aggregate: {
@@ -22,6 +31,52 @@ export interface Backend {
   };
 }
 export type API = 'aggregate' | 'dataframe' | 'locate';
+// Attribute
+export interface Attributes {
+  attributes: AttributesObject[];
+  categories: AttributesCategory[];
+  datasets: AttributesDatasetObject;
+}
+export interface AttributesObject {
+  [key: string]: AttributesAttribute[];
+}
+export interface AttributesAttribute {
+  api: string;
+  datamodel: string;
+  dataset: string;
+  description: string;
+  label: string;
+  order: string;
+  source: AttributesSource[];
+}
+export interface AttributesSource {
+  label: string;
+  updated: string;
+  url: string;
+  version: string;
+}
+export interface AttributesCategory {
+  attributes: string[];
+  id: string;
+  label: string;
+  hue: number;
+  color: Color;
+  colorCSSStrongValue: string;
+  colorCSSValue: string;
+}
+export interface AttributesDatasetObject {
+  [key: string]: AttributesDataset;
+}
+export interface AttributesDataset {
+  conversion: AttributesDatasetConversion;
+  examples: string[];
+  label: string;
+  target: boolean;
+  template: string;
+}
+export interface AttributesDatasetConversion {
+  [key: string]: string;
+}
 
 // Preset
 export interface PresetMetaDatum {
