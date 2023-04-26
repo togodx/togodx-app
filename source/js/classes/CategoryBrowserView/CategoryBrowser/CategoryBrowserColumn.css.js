@@ -22,11 +22,29 @@ export const styles = css`
   .header-container {
     position: sticky;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     top: 0;
     background-color: var(--color-gray);
     z-index: var(--z-category-column-header);
+    --width-side: calc((100% - var(--width-category-browser-column)) / 2);
+  }
+
+  .header-container::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--width-side) / 2);
+    height: 100%;
+    left: calc(var(--width-side) / 2);
+    background-color: var(--color-lighter-gray);
+  }
+  .header-container::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--width-side) / 2);
+    height: 100%;
+    right: calc(var(--width-side) / 2);
+    background-color: var(--color-lighter-gray);
   }
 
   .header {

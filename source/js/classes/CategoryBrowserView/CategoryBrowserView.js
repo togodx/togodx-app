@@ -334,6 +334,11 @@ export class CategoryBrowserView extends LitElement {
   render() {
     return html`
       <div class="container" id="category-browser-view">
+        <div class="columns-bg-wrapper">
+          <div class="columns-bg"></div>
+          <div class="columns-bg"></div>
+          <div class="columns-bg"></div>
+        </div>
         <div class="suggest">
           <div class="column-title-wrapper">
             <div class="column-title"><h3>Superclasses</h3></div>

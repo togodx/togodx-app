@@ -124,6 +124,7 @@ export default class CategoryBrowserColumn extends LitElement {
       <div class="column" ${ref(this.#columnRef)}>
         ${this.containedId !== 'dummy'
           ? html`<div class="header-container">
+              <div class="header-bg"></div>
               <div class="header">
                 <div class="checkbox"></div>
 
@@ -156,6 +157,7 @@ export default class CategoryBrowserColumn extends LitElement {
 
                 <div class="drilldown"></div>
               </div>
+              <div class="header-bg"></div>
             </div>`
           : nothing}
         ${this.nodes.length
