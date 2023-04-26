@@ -341,11 +341,11 @@ export class CategoryBrowserView extends LitElement {
         </div>
         <div class="suggest">
           <div class="column-title-wrapper">
-            <div class="column-title"><h3>Superclasses</h3></div>
+            <div class="column-title"><h3>Broader</h3></div>
           </div>
           <div class="column-title-wrapper">
             <div class="column-title">
-              <h3>Concept</h3>
+              <h3>Term</h3>
               <suggest-element
                 @suggestion-input="${debounce(this.#handleSuggestInput)}"
                 @suggestion-select="${this.#handleSuggestSelect}"
@@ -356,7 +356,7 @@ export class CategoryBrowserView extends LitElement {
             </div>
           </div>
           <div class="column-title-wrapper">
-            <div class="column-title"><h3>Subclasses</h3></div>
+            <div class="column-title"><h3>Narrower</h3></div>
           </div>
         </div>
         <div class="category-browser">
