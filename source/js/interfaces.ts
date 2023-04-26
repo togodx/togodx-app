@@ -1,4 +1,3 @@
-import {TemplatesTemplate, Attribute, AttributeCategory} from './interfaces';
 import ConditionUtilityFilter from './classes/ConditionUtilityFilter';
 import ConditionUtilityAnnotation from './classes/ConditionUtilityAnnotation';
 import Color from 'colorjs.io';

@@ -13,7 +13,9 @@ import StanzaManager from './StanzaManager';
 import ResultsTable from './ResultsTable';
 import PresetManager from './PresetManager';
 import * as event from '../events';
-import {Config, ViewModes, Backend, API} from '../interfaces';
+import {Config, ViewModes, Templates, Backend, Attributes, API} from '../interfaces';
+
+type ConfigResponces = [Templates, Backend, Attributes];
 
 class App {
   #viewModes: ViewModes;
@@ -71,30 +73,26 @@ class App {
     await PresetManager.init(config.PRESET);
 
     // load config json
-    Promise.all([
-      fetch(config.TEMPLATES),
-      fetch(config.BACKEND),
-      fetch(config.ATTRIBUTES),
-    ])
-      .then(responces => {
-        return Promise.all(responces.map(responce => responce.json()));
-      })
-      .then(([templates, backend, attributes]) => {
-        console.log(templates, backend, attributes)
-        Records.setAttributes(attributes);
-        // define primary keys
-        const customEvent = new CustomEvent(event.defineTogoKey, {
-          detail: {datasets: attributes.datasets},
-        });
-        DefaultEventEmitter.dispatchEvent(customEvent);
-        // initialize stanza manager
-        StanzaManager.init(templates);
-        // aggregate
-        this.#backend = Object.freeze(backend);
-        this.#makeCategoryViews();
-        this.#defineAllTracksCollapseButton();
-        ConditionBuilder.init();
-      });
+    const [templates, backend, attributes] = await Promise
+      .all([
+        fetch(config.TEMPLATES),
+        fetch(config.BACKEND),
+        fetch(config.ATTRIBUTES),
+      ])
+      .then((res) => Promise.all(res.map(res => res.json())));
+    Records.setAttributes(attributes);
+    // define primary keys
+    const customEvent = new CustomEvent(event.defineTogoKey, {
+      detail: {datasets: attributes.datasets},
+    });
+    DefaultEventEmitter.dispatchEvent(customEvent);
+    // initialize stanza manager
+    StanzaManager.init(templates);
+    // aggregate
+    this.#backend = Object.freeze(backend);
+    this.#makeCategoryViews();
+    this.#defineAllTracksCollapseButton();
+    ConditionBuilder.init();
   }
 
   // private methods

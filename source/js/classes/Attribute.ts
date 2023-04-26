@@ -4,7 +4,6 @@ export default class Attribute {
   #filters;
 
   constructor(id: string, obj) {
-    console.log(id, obj);
     this.#id = id;
     this.#obj = obj;
     this.#filters = [];
