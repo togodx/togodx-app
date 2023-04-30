@@ -159,8 +159,10 @@ export interface ConditionAnnotationWithAncestor {
 // condition
 export interface Condition {
   dataset: string;
-  filters: ConditionFilterWithAncestor[];
-  annotations: ConditionAnnotationWithAncestor[];
+  // filters: ConditionFilterWithAncestor[];
+  // annotations: ConditionAnnotationWithAncestor[];
+  filters: ConditionFilter[];
+  annotations: ConditionAnnotation[];
   queries: string[];
 }
 export interface SelectedNodes {

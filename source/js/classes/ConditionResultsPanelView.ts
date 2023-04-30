@@ -224,8 +224,10 @@ export default class ConditionResultsPanelView {
     return {
       condition: {
         dataset: this.#controller.dxCondition.togoKey,
-        filters: this.#controller.dxCondition.conditionUtilityFilters.map(cuf => cuf.conditionFilterWithAncestor),
-        annotations: this.#controller.dxCondition.conditionUtilityAnnotations.map(cua => cua.conditionAnnotationWithAncestor),
+        // filters: this.#controller.dxCondition.conditionUtilityFilters.map(cuf => cuf.conditionFilterWithAncestor),
+        // annotations: this.#controller.dxCondition.conditionUtilityAnnotations.map(cua => cua.conditionAnnotationWithAncestor),
+        filters: this.#controller.dxCondition.conditionUtilityFilters.map(cuf => cuf.query),
+        annotations: this.#controller.dxCondition.conditionUtilityAnnotations.map(cua => cua.query),
         queries: ConditionBuilder.userIds,
       },
       attributeSet: PresetManager.currentAttributeSet
