@@ -1,11 +1,11 @@
 import Records from "./Records";
-import Attribute from "./Attribute";
+import AttributeUtility from "./AttributeUtility";
 
 export default class ConditionUtility {
 
   protected _attributeId: string;
   protected _ancestors: Map<string, string[]> = new Map();
-  #annotation: Attribute;
+  #annotation: AttributeUtility;
   #categoryId: string;
   #dataset: string;
 
@@ -39,7 +39,7 @@ export default class ConditionUtility {
     return this._attributeId;
   }
 
-  get annotation(): Attribute {
+  get annotation(): AttributeUtility {
     if (!this.#annotation) this.#annotation = Records.getAttribute(this._attributeId);
     return this.#annotation;
   }

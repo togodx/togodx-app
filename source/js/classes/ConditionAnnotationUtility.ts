@@ -8,7 +8,11 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
 
   constructor(attributeId: string, parentNode: string | undefined) {
     super(attributeId);
+    console.log(attributeId, parentNode);
     this.#parentNode = parentNode;
+
+    // get parent node
+    console.log(Records.getParentNode(attributeId, parentNode!));
   }
 
   // methods

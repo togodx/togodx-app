@@ -1,4 +1,4 @@
-export default class Attribute {
+export default class AttributeUtility {
   #id: string;
   #obj;
   #filters;

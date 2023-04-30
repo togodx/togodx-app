@@ -128,11 +128,6 @@ class App {
 
   // public methods
 
-  /**
-   *
-   * @param {String} api 'aggregate' or 'dataframe' or 'locate'
-   * @returns
-   */
   getApiUrl(api: API): string {
     return this.#backend[api].url;
   }

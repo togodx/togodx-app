@@ -1,10 +1,10 @@
 import Color from 'colorjs.io';
-import Attribute from './Attribute';
+import AttributeUtility from './AttributeUtility';
 import { Breakdown } from '../interfaces';
 
 class Records {
   #categories;
-  #attributes: Attribute[];
+  #attributes: AttributeUtility[];
   #datasets;
 
   constructor() {}
@@ -31,7 +31,7 @@ class Records {
 
     // set attributes
     this.#attributes = Object.keys(attributes).map(
-      id => new Attribute(id, attributes[id])
+      id => new AttributeUtility(id, attributes[id])
     );
 
     // make stylesheet
@@ -86,7 +86,7 @@ class Records {
     );
   }
 
-  getAttribute(attributeId: string): Attribute | undefined {
+  getAttribute(attributeId: string): AttributeUtility | undefined {
     return this.#attributes.find(attribute => attribute.id === attributeId);
   }
 
@@ -103,7 +103,7 @@ class Records {
   getAncestors(attributeId: string, node: string): Breakdown[] {
     const attribute = this.getAttribute(attributeId)!;
     const ancestors = [];
-    let parent: Attribute | undefined;
+    let parent: AttributeUtility | undefined;
     do {
       // find ancestors
       parent = attribute.filters.find(filter => filter.node === node);
@@ -112,6 +112,13 @@ class Records {
     } while (parent);
     ancestors.pop();
     return ancestors;
+  }
+
+  async getParentNode(attributeId: string, node: string | undefined): Promise<string> {
+    // const attribute = this.getAttribute(attributeId);
+    // const filter = attribute.filters.find(filter => filter.node === node);
+    // return filter?.parentNode || '';
+    return Promise.resolve('123')
   }
 
   getDatasetLabel(dataset) {
@@ -124,7 +131,7 @@ class Records {
     return this.#categories;
   }
 
-  get attributes(): Attribute[] {
+  get attributes(): AttributeUtility[] {
     return this.#attributes;
   }
 }
