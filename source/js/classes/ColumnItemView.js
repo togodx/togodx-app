@@ -1,6 +1,6 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
-import ConditionUtilityAnnotation from './ConditionUtilityAnnotation';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility';
 import App from './App';
 import * as event from '../events';
 
@@ -58,7 +58,7 @@ export default class ColumnItemView {
 
     // even listener
     this.#INPUT_KEY.addEventListener('change', e => {
-      const conditionUtilityAnnotation = new ConditionUtilityAnnotation(
+      const conditionUtilityAnnotation = new ConditionAnnotationUtility(
         column.attributeId,
         node
       );

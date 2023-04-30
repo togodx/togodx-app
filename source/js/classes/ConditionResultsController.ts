@@ -5,7 +5,7 @@ import ConditionResultsPanelView from './ConditionResultsPanelView';
 import * as event from '../events';
 import axios, {AxiosError} from 'axios';
 import DXCondition from './DXCondition';
-import ConditionUtilityFilter from './ConditionUtilityFilter';
+import ConditionFilterUtility from './ConditionFilterUtility';
 import { LoadStatus } from './ConditionResultsPanelView';
 import { Preset } from '../interfaces';
 
@@ -117,7 +117,7 @@ export default class ConditionResultsController {
     );
     // attribute (classification/distribution)
     Records.attributes.forEach(({id}) => {
-      const conditionUtilityFilter: ConditionUtilityFilter | undefined =
+      const conditionUtilityFilter: ConditionFilterUtility | undefined =
         this.#dxCondition.conditionUtilityFilters.find(
           conditionUtilityFilter => conditionUtilityFilter.attributeId === id
         );

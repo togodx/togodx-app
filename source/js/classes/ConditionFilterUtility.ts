@@ -1,4 +1,4 @@
-import ConditionUtilityBase from './ConditionUtilityBase';
+import ConditionUtility from './ConditionUtility';
 import Records from './Records';
 import {
   ConditionFilterWithAncestor,
@@ -6,7 +6,7 @@ import {
   ConditionFilter,
 } from '../interfaces';
 
-export default class ConditionUtilityFilter extends ConditionUtilityBase {
+export default class ConditionFilterUtility extends ConditionUtility {
   #nodes: string[];
 
   constructor(attributeId: string, nodes: string[]) {
@@ -66,15 +66,15 @@ export default class ConditionUtilityFilter extends ConditionUtilityBase {
 
   static decodeURLSearchParams(
     searchParams: string | null
-  ): ConditionUtilityFilter[] {
-    const filters: ConditionUtilityFilter[] = [];
+  ): ConditionFilterUtility[] {
+    const filters: ConditionFilterUtility[] = [];
     const parsed: ConditionFilterWithAncestor[] = JSON.parse(
       searchParams || 'null'
     );
     if (parsed) {
       filters.push(
         ...parsed.map(({attributeId, nodes}) => {
-          const cf = new ConditionUtilityFilter(
+          const cf = new ConditionFilterUtility(
             attributeId,
             nodes.map(node => node.node)
           );

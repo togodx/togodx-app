@@ -1,8 +1,8 @@
-import ConditionUtilityBase from './ConditionUtilityBase';
+import ConditionUtility from './ConditionUtility';
 import Records from './Records';
 import {ConditionAnnotationWithAncestor, Breakdown, ConditionAnnotation} from '../interfaces';
 
-export default class ConditionUtilityAnnotation extends ConditionUtilityBase {
+export default class ConditionAnnotationUtility extends ConditionUtility {
   #parentNode: string | undefined;
   #filter: Breakdown;
 
@@ -76,13 +76,13 @@ export default class ConditionUtilityAnnotation extends ConditionUtilityBase {
 
   // static
 
-  static decodeURLSearchParams(searchParams: string | null): ConditionUtilityAnnotation[] {
-    const annotations: ConditionUtilityAnnotation[] = [];
+  static decodeURLSearchParams(searchParams: string | null): ConditionAnnotationUtility[] {
+    const annotations: ConditionAnnotationUtility[] = [];
     const parsed: ConditionAnnotationWithAncestor[] | null = JSON.parse(searchParams || 'null');
     if (parsed) {
       annotations.push(
         ...parsed.map(({attributeId, parentNode, ancestors}) => {
-          const ca = new ConditionUtilityAnnotation(attributeId, parentNode);
+          const ca = new ConditionAnnotationUtility(attributeId, parentNode);
           if (parentNode) ca.setAncestors(parentNode, ancestors!);
           return ca;
         })

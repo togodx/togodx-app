@@ -1,7 +1,7 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
-import ConditionUtilityAnnotation from './ConditionUtilityAnnotation';
-import ConditionUtilityFilter from './ConditionUtilityFilter';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility';
+import ConditionFilterUtility from './ConditionFilterUtility';
 import DXCondition from './DXCondition';
 import * as event from '../events';
 import PresetManager from './PresetManager';
@@ -9,8 +9,8 @@ import { SelectedNodes } from '../interfaces';
 
 interface Condition {
   dataset: string;
-  filters: ConditionUtilityFilter[];
-  annotations: ConditionUtilityAnnotation[];
+  filters: ConditionFilterUtility[];
+  annotations: ConditionAnnotationUtility[];
 }
 interface Task {
   attributeId: string;
@@ -18,8 +18,8 @@ interface Task {
 }
 
 class ConditionBuilder {
-  #conditionUtilityAnnotations: ConditionUtilityAnnotation[];
-  #conditionUtilityFilters: ConditionUtilityFilter[];
+  #conditionUtilityAnnotations: ConditionAnnotationUtility[];
+  #conditionUtilityFilters: ConditionFilterUtility[];
   #dataset: string;
   #userIds: string;
   #isRestoredConditinoFromURLParameters = false;
@@ -59,7 +59,7 @@ class ConditionBuilder {
     this.#postProcessing();
   }
 
-  addAnnotation(conditionUtilityAnnotation: ConditionUtilityAnnotation, isFinal = true) {
+  addAnnotation(conditionUtilityAnnotation: ConditionAnnotationUtility, isFinal = true) {
     // store
     this.#conditionUtilityAnnotations.push(conditionUtilityAnnotation);
     // evaluate
@@ -73,15 +73,15 @@ class ConditionBuilder {
 
   addFilter(attributeId: string, node: string, ancestors = [], isFinal = true) {
     // find filter of same property
-    const sameConditionUtilityFilter = this.#conditionUtilityFilters.find(
+    const sameConditionFilterUtility = this.#conditionUtilityFilters.find(
       conditionUtilityFilter =>
         conditionUtilityFilter.attributeId === attributeId
     );
     // store
-    if (sameConditionUtilityFilter) {
-      sameConditionUtilityFilter.addNode(node);
+    if (sameConditionFilterUtility) {
+      sameConditionFilterUtility.addNode(node);
     } else {
-      const conditionUtilityFilter = new ConditionUtilityFilter(attributeId, [
+      const conditionUtilityFilter = new ConditionFilterUtility(attributeId, [
         node,
       ]);
       this.#conditionUtilityFilters.push(conditionUtilityFilter);
@@ -95,7 +95,7 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  removeAnnotation(conditionUtilityAnnotation: ConditionUtilityAnnotation, isFinal = true) {
+  removeAnnotation(conditionUtilityAnnotation: ConditionAnnotationUtility, isFinal = true) {
     // remove from store
     const index = this.#conditionUtilityAnnotations.findIndex(
       conditionUtilityAnnotation2 =>
@@ -141,7 +141,7 @@ class ConditionBuilder {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  setAnnotation(annotations: ConditionUtilityAnnotation[], isFinal = true) {
+  setAnnotation(annotations: ConditionAnnotationUtility[], isFinal = true) {
     // delete existing properties
     while (this.#conditionUtilityAnnotations.length > 0) {
       this.removeAnnotation(this.#conditionUtilityAnnotations[0], false);
@@ -155,15 +155,15 @@ class ConditionBuilder {
   }
 
   setFilter(attributeId: string, nodes: string[], isFinal = true) {
-    const oldConditionUtilityFilter = this.#conditionUtilityFilters.find(
+    const oldConditionFilterUtility = this.#conditionUtilityFilters.find(
       conditionUtilityFilter =>
         conditionUtilityFilter.attributeId === attributeId
     );
-    if (oldConditionUtilityFilter) {
+    if (oldConditionFilterUtility) {
       const originalFilters = Records.getAttribute(attributeId)!.filters;
       originalFilters.forEach(originalFilter => {
         const indexInNew = nodes.indexOf(originalFilter.node);
-        const indexInOld = oldConditionUtilityFilter.nodes.indexOf(
+        const indexInOld = oldConditionFilterUtility.nodes.indexOf(
           originalFilter.node
         );
         if (indexInNew !== -1) {
@@ -291,10 +291,10 @@ class ConditionBuilder {
     const params = new URL(location.href).searchParams;
     const condition: Condition = {
       dataset: params.get('dataset') ?? this.#dataset,
-      filters: ConditionUtilityFilter.decodeURLSearchParams(
+      filters: ConditionFilterUtility.decodeURLSearchParams(
         params.get('filters')
       ),
-      annotations: ConditionUtilityAnnotation.decodeURLSearchParams(
+      annotations: ConditionAnnotationUtility.decodeURLSearchParams(
         params.get('annotations')
       ),
     };

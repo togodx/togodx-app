@@ -1,7 +1,7 @@
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
-import ConditionUtilityAnnotation from './ConditionUtilityAnnotation';
-import ConditionUtilityFilter from './ConditionUtilityFilter';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility';
+import ConditionFilterUtility from './ConditionFilterUtility';
 
 const POLLING_DURATION = 1000;
 
@@ -33,7 +33,7 @@ export default class StackingConditionView {
     let label,
       ancestorLabels = [Records.getCategory(condition.categoryId).label];
     switch (true) {
-      case this.#condition instanceof ConditionUtilityAnnotation:
+      case this.#condition instanceof ConditionAnnotationUtility:
         {
           if (condition.parentNode) {
             const getFilter = () => {
@@ -59,7 +59,7 @@ export default class StackingConditionView {
           }
         }
         break;
-      case this.#condition instanceof ConditionUtilityFilter:
+      case this.#condition instanceof ConditionFilterUtility:
         label = `<ul class="labels"></ul>`;
         ancestorLabels.push(attribute.label);
         this.#make(container, type, ancestorLabels, label);
@@ -80,7 +80,7 @@ export default class StackingConditionView {
     ${label}`;
     container.insertAdjacentElement('beforeend', this.#ROOT);
     // reference
-    if (this.#condition instanceof ConditionUtilityFilter) {
+    if (this.#condition instanceof ConditionFilterUtility) {
       this.#LABELS = this.#ROOT.querySelector(':scope > .labels');
       for (const node of this.#condition.nodes) {
         this.addFilter(node);
@@ -92,16 +92,16 @@ export default class StackingConditionView {
       .querySelector(':scope > .close-button-view')
       .addEventListener('click', () => {
         switch (true) {
-          case this.#condition instanceof ConditionUtilityAnnotation:
+          case this.#condition instanceof ConditionAnnotationUtility:
             // notify
             ConditionBuilder.removeAnnotation(
-              new ConditionUtilityAnnotation(
+              new ConditionAnnotationUtility(
                 this.#condition.attributeId,
                 this.#condition.parentNode
               )
             );
             break;
-          case this.#condition instanceof ConditionUtilityFilter:
+          case this.#condition instanceof ConditionFilterUtility:
             for (const label of this.#LABELS.querySelectorAll(
               ':scope > .label'
             )) {

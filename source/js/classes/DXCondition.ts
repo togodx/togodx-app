@@ -1,5 +1,5 @@
-import ConditionUtilityAnnotation from './ConditionUtilityAnnotation';
-import ConditionUtilityFilter from './ConditionUtilityFilter';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility';
+import ConditionFilterUtility from './ConditionFilterUtility';
 import ConditionBuilder from './ConditionBuilder';
 import App from './App';
 import axios from 'axios';
@@ -19,8 +19,8 @@ let idCounter: number = 0;
 export default class DXCondition {
   #id: number;
   #togoKey: string;
-  #conditionUtilityAnnotations: ConditionUtilityAnnotation[];
-  #conditionUtilityFilters: ConditionUtilityFilter[];
+  #conditionUtilityAnnotations: ConditionAnnotationUtility[];
+  #conditionUtilityFilters: ConditionFilterUtility[];
   #ids: string[];
   #properties: DataFrame[];
   #attributeSet: string[];
@@ -28,21 +28,21 @@ export default class DXCondition {
   /**
    *
    * @param {string} togoKey
-   * @param {ConditionUtilityAnnotation[]} conditionUtilityAnnotations
-   * @param {ConditionUtilityFilter[]} conditionUtilityFilters
+   * @param {ConditionAnnotationUtility[]} conditionUtilityAnnotations
+   * @param {ConditionFilterUtility[]} conditionUtilityFilters
    */
   constructor(
     togoKey: string,
-    conditionUtilityAnnotations: ConditionUtilityAnnotation[],
-    conditionUtilityFilters: ConditionUtilityFilter[],
+    conditionUtilityAnnotations: ConditionAnnotationUtility[],
+    conditionUtilityFilters: ConditionFilterUtility[],
     attributeSet: string[]
   ) {
     this.#id = idCounter++;
     this.#togoKey = togoKey;
-    this.#conditionUtilityAnnotations = this.#copyConditionUtilityAnnotations(
+    this.#conditionUtilityAnnotations = this.#copyConditionAnnotationUtilitys(
       conditionUtilityAnnotations
     );
-    this.#conditionUtilityFilters = this.#copyConditionUtilityFilters(
+    this.#conditionUtilityFilters = this.#copyConditionFilterUtilitys(
       conditionUtilityFilters
     );
     this.#attributeSet = attributeSet;
@@ -67,12 +67,12 @@ export default class DXCondition {
         conditionUtilityAnnotation => {
           return (
             dxCondition.conditionUtilityAnnotations.findIndex(
-              newConditionUtilityAnnotation => {
+              newConditionAnnotationUtility => {
                 return (
                   conditionUtilityAnnotation.attributeId ===
-                    newConditionUtilityAnnotation.attributeId &&
+                    newConditionAnnotationUtility.attributeId &&
                   conditionUtilityAnnotation.parentNode ===
-                    newConditionUtilityAnnotation.parentNode
+                    newConditionAnnotationUtility.parentNode
                 );
               }
             ) !== -1
@@ -90,15 +90,15 @@ export default class DXCondition {
         conditionUtilityFilter => {
           return (
             dxCondition.conditionUtilityFilters.findIndex(
-              newConditionUtilityFilter => {
+              newConditionFilterUtility => {
                 return (
                   conditionUtilityFilter.attributeId ===
-                    newConditionUtilityFilter.attributeId &&
+                    newConditionFilterUtility.attributeId &&
                   conditionUtilityFilter.nodes.length ===
-                    newConditionUtilityFilter.nodes.length &&
+                    newConditionFilterUtility.nodes.length &&
                   conditionUtilityFilter.nodes.every(node => {
                     return (
-                      newConditionUtilityFilter.nodes.findIndex(
+                      newConditionFilterUtility.nodes.findIndex(
                         newNode => node === newNode
                       ) !== -1
                     );
@@ -146,24 +146,24 @@ export default class DXCondition {
     return properties;
   }
 
-  #copyConditionUtilityAnnotations(
-    conditionUtilityAnnotations: ConditionUtilityAnnotation[]
-  ): ConditionUtilityAnnotation[] {
+  #copyConditionAnnotationUtilitys(
+    conditionUtilityAnnotations: ConditionAnnotationUtility[]
+  ): ConditionAnnotationUtility[] {
     return conditionUtilityAnnotations.map(
       conditionUtilityAnnotation =>
-        new ConditionUtilityAnnotation(
+        new ConditionAnnotationUtility(
           conditionUtilityAnnotation.attributeId,
           conditionUtilityAnnotation.parentNode
         )
     );
   }
 
-  #copyConditionUtilityFilters(
-    conditionUtilityFilters: ConditionUtilityFilter[]
-  ): ConditionUtilityFilter[] {
+  #copyConditionFilterUtilitys(
+    conditionUtilityFilters: ConditionFilterUtility[]
+  ): ConditionFilterUtility[] {
     return conditionUtilityFilters.map(
       conditionUtilityFilter =>
-        new ConditionUtilityFilter(conditionUtilityFilter.attributeId, [
+        new ConditionFilterUtility(conditionUtilityFilter.attributeId, [
           ...conditionUtilityFilter.nodes,
         ])
     );
@@ -175,11 +175,11 @@ export default class DXCondition {
     return this.#togoKey;
   }
 
-  get conditionUtilityAnnotations(): ConditionUtilityAnnotation[] {
+  get conditionUtilityAnnotations(): ConditionAnnotationUtility[] {
     return this.#conditionUtilityAnnotations;
   }
 
-  get conditionUtilityFilters(): ConditionUtilityFilter[] {
+  get conditionUtilityFilters(): ConditionFilterUtility[] {
     return this.#conditionUtilityFilters;
   }
 

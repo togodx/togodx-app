@@ -1,7 +1,7 @@
 import ConditionBuilder from './ConditionBuilder';
 import DefaultEventEmitter from './DefaultEventEmitter';
 import StackingConditionView from './StackingConditionView';
-import ConditionUtilityFilter from './ConditionUtilityFilter';
+import ConditionFilterUtility from './ConditionFilterUtility';
 import * as event from '../events';
 
 // const POLLING_DURATION = 100;
@@ -180,7 +180,7 @@ export default class ConditionBuilderView {
         new StackingConditionView(
           this.#FILTERS_CONDITIONS_CONTAINER,
           'value',
-          new ConditionUtilityFilter(attributeId, [node])
+          new ConditionFilterUtility(attributeId, [node])
         )
       );
     }
