@@ -1,7 +1,10 @@
 .stacking-condition-view
   padding: 0 .4rem .4rem
+  border-left-width: .4rem
+  border-left-style: solid
   position: relative
   background-color: white
+  clip-path: polygon(.3rem 0, 100% 0, 100% 100%, 0 100%, 0 .3rem)
   box-shadow: var(--shadow-shallow)
   animation: var(--transition-instant) enter-stacking-item
   transform-origin: 0 0
@@ -15,8 +18,9 @@
     padding: .6rem 1.4rem 0 0
     list-style: none
     font-size: 1rem
+    font-weight: bold
     line-height: 1
-    color: var(--color-gray)
+    // color: var(--color-gray)
     > li
       display: inline-block
       + li
@@ -56,5 +60,3 @@
             border-left-color: rgba(0, 0, 0, .5)
     > .label
       color: white
-
-

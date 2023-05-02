@@ -147,7 +147,6 @@ export default class ConditionBuilderView {
     this.#properties.push(
       new StackingConditionView(
         this.#ANNOTATIONS_CONDITIONS_CONTAINER,
-        'annotation',
         conditionUtilityAnnotation
       )
     );
@@ -179,7 +178,6 @@ export default class ConditionBuilderView {
       this.#propertyFilters.push(
         new StackingConditionView(
           this.#FILTERS_CONDITIONS_CONTAINER,
-          'value',
           new ConditionFilterUtility(attributeId, [node])
         )
       );

@@ -65,6 +65,10 @@ class Records {
       ._category-border-color[data-category-id="${category.id}"], [data-category-id="${category.id}"] ._category-border-color {
         border-color: var(--color-category-${category.id});
       }`);
+      styleSheet.insertRule(`
+      ._category-border-color-strong[data-category-id="${category.id}"], [data-category-id="${category.id}"] ._category-border-color-strong {
+        border-color: var(--color-category-${category.id}-strong);
+      }`);
     }
 
     // set datasets

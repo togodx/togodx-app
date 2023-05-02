@@ -1,39 +1,41 @@
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
-import ConditionAnnotationUtility from './ConditionAnnotationUtility';
 import ConditionFilterUtility from './ConditionFilterUtility';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility';
 
 const POLLING_DURATION = 1000;
 
 export default class StackingConditionView {
   // #isRange;
-  #condition;
-  #ROOT;
-  #LABELS;
+  #condition: ConditionFilterUtility | ConditionAnnotationUtility;
+  #ROOT: HTMLDivElement;
+  #LABELS: HTMLUListElement;
 
-  /**
-   *
-   * @param {HTMLElement} container
-   * @param {String} type: 'property' or 'filter'
-   * @param {conditionUtilityAnnotation|conditionUtilityFilter} condition
-   */
-  constructor(container, type, condition, isRange = false) {
+  constructor(
+    container: HTMLDivElement,
+    condition: ConditionFilterUtility | ConditionAnnotationUtility,
+    isRange = false
+  ) {
+    console.log(container, condition);
     this.#condition = condition;
     const attribute = Records.getAttribute(condition.attributeId);
     // this.#isRange = isRange;
 
     // attributes
     this.#ROOT = document.createElement('div');
-    this.#ROOT.classList.add('stacking-condition-view');
+    this.#ROOT.classList.add(
+      'stacking-condition-view',
+      '_category-border-color-strong'
+    );
     this.#ROOT.dataset.categoryId = condition.categoryId;
     this.#ROOT.dataset.attributeId = condition.attributeId;
-    if (condition.parentNode)
+    if (condition instanceof ConditionAnnotationUtility && condition.parentNode)
       this.#ROOT.dataset.parentNode = condition.parentNode;
     // make view
-    let label,
+    let label: string,
       ancestorLabels = [Records.getCategory(condition.categoryId).label];
     switch (true) {
-      case this.#condition instanceof ConditionAnnotationUtility:
+      case condition instanceof ConditionAnnotationUtility:
         {
           if (condition.parentNode) {
             const getFilter = () => {
@@ -47,7 +49,7 @@ export default class StackingConditionView {
                       .label;
                   })
                 );
-                this.#make(container, type, ancestorLabels, label);
+                this.#make(container, ancestorLabels, label);
               } catch (e) {
                 setTimeout(getFilter, POLLING_DURATION);
               }
@@ -55,14 +57,14 @@ export default class StackingConditionView {
             getFilter();
           } else {
             label = `<div class="label _category-color">${attribute.label}</div>`;
-            this.#make(container, type, ancestorLabels, label);
+            this.#make(container, ancestorLabels, label);
           }
         }
         break;
       case this.#condition instanceof ConditionFilterUtility:
         label = `<ul class="labels"></ul>`;
         ancestorLabels.push(attribute.label);
-        this.#make(container, type, ancestorLabels, label);
+        this.#make(container, ancestorLabels, label);
         break;
     }
 
@@ -71,10 +73,10 @@ export default class StackingConditionView {
 
   // private methods
 
-  #make(container, type, ancestorLabels, label) {
+  #make(container, ancestorLabels, label) {
     this.#ROOT.innerHTML = `
     <div class="close-button-view"></div>
-    <ul class="path">
+    <ul class="path _category-color">
       ${ancestorLabels.map(ancestor => `<li>${ancestor}</li>`).join('')}
     </ul>
     ${label}`;
