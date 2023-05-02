@@ -114,12 +114,12 @@ class Records {
     return ancestors;
   }
 
-  async getParentNode(attributeId: string, node: string | undefined): Promise<string> {
+  async fetchParentNode(attributeId: string, node: string | undefined): Promise<string> {
     // const attribute = this.getAttribute(attributeId);
     // const filter = attribute.filters.find(filter => filter.node === node);
     // return filter?.parentNode || '';
     const attribute = this.getAttribute(attributeId);
-    await attribute.getNode(node);
+    await attribute.fetchNode(node);
     return Promise.resolve('123')
   }
 

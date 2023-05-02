@@ -2,6 +2,7 @@ import axios from 'axios';
 import {
   AttributesAttribute,
   Breakdown,
+  BreakdownWithParentNode,
   BreakdownHierarchyRequest,
   BreakdownHierarchyResponse,
 } from '../interfaces';
@@ -14,7 +15,7 @@ interface BreakdownRequest {
 export default class AttributeUtility {
   #id: string;
   #attribute: AttributesAttribute;
-  #filters: Breakdown[];
+  #filters: BreakdownWithParentNode[];
   #cache: Map<string | undefined, BreakdownHierarchyResponse>;
 
   constructor(id: string, attribute: AttributesAttribute) {
@@ -45,6 +46,19 @@ export default class AttributeUtility {
       })
     }
     return Promise.resolve(filters);
+  }
+
+  async fetchNode(node: string | undefined): Promise<BreakdownHierarchyResponse> {
+    let res = this.#cache.get(node);
+    if (!res) {
+      const body: BreakdownHierarchyRequest = {
+        hierarchy: '',
+        node,
+      };
+      res = await axios.post(this.api, body).then(res => res.data) as BreakdownHierarchyResponse;
+      this.#cache.set(node, res);
+    }
+    return Promise.resolve(res);
   }
 
   getFilter(node: string) {
@@ -87,18 +101,5 @@ export default class AttributeUtility {
 
   get filters() {
     return this.#filters;
-  }
-
-  async getNode(node: string | undefined): Promise<BreakdownHierarchyResponse> {
-    let res = this.#cache.get(node);
-    if (!res) {
-      const body: BreakdownHierarchyRequest = {
-        hierarchy: '',
-        node,
-      };
-      res = await axios.post(this.api, body).then(res => res.data) as BreakdownHierarchyResponse;
-      this.#cache.set(node, res);
-    }
-    return Promise.resolve(res);
   }
 }

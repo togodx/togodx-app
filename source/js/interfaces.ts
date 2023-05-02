@@ -127,6 +127,9 @@ export interface Breakdown {
   count: number;
   tip: boolean;
 }
+export interface BreakdownWithParentNode extends Breakdown {
+  parentNode: string;
+}
 export interface BreakdownHierarchyRequest {
   hierarchy: '';
   node?: string;
