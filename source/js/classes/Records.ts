@@ -71,7 +71,7 @@ class Records {
     this.#datasets = datasets;
   }
 
-  fetchAttributeFilters(attributeId, node) {
+  fetchAttributeFilters(attributeId: string, node: string): Promise<Breakdown[]> {
     const attribute = this.getAttribute(attributeId);
     return attribute.fetchFiltersWithParentNode(node);
   }
@@ -86,8 +86,8 @@ class Records {
     );
   }
 
-  getAttribute(attributeId: string): AttributeUtility | undefined {
-    return this.#attributes.find(attribute => attribute.id === attributeId);
+  getAttribute(attributeId: string): AttributeUtility {
+    return this.#attributes.find(attribute => attribute.id === attributeId)!;
   }
 
   getFilter(attributeId: string, node: string | undefined) {
@@ -118,6 +118,8 @@ class Records {
     // const attribute = this.getAttribute(attributeId);
     // const filter = attribute.filters.find(filter => filter.node === node);
     // return filter?.parentNode || '';
+    const attribute = this.getAttribute(attributeId);
+    await attribute.getNode(node);
     return Promise.resolve('123')
   }
 

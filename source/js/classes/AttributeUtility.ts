@@ -1,51 +1,50 @@
+import axios from 'axios';
+import {
+  AttributesAttribute,
+  Breakdown,
+  BreakdownHierarchyRequest,
+  BreakdownHierarchyResponse,
+} from '../interfaces';
+
+interface BreakdownRequest {
+  node?: string;
+  order?: string;
+}
+
 export default class AttributeUtility {
   #id: string;
-  #obj;
-  #filters;
+  #attribute: AttributesAttribute;
+  #filters: Breakdown[];
+  #cache: Map<string | undefined, BreakdownHierarchyResponse>;
 
-  constructor(id: string, obj) {
+  constructor(id: string, attribute: AttributesAttribute) {
     this.#id = id;
-    this.#obj = obj;
+    this.#attribute = attribute;
     this.#filters = [];
+    this.#cache = new Map();
   }
 
   // public Methods
 
-  fetchFiltersWithParentNode(parentNode) {
-    console.log(parentNode);
-    return new Promise((resolve, reject) => {
-      const filters = this.#filters.filter(
-        filter => filter.parentNode === parentNode
-      );
-      console.log(filters);
-      if (filters.length > 0) {
-        resolve(filters);
-      } else {
-        const body = {};
-        if (parentNode) body.node = parentNode;
-        if (this.order) body.order = this.order;
-        fetch(this.api, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(body),
-        })
-          .then(responce => responce.json())
-          .then(filters => {
-            // set parent node
-            if (parentNode)
-              filters.forEach(filter => (filter.parentNode = parentNode));
-            // set filters
-            this.#filters.push(...filters);
-            resolve(filters);
-          })
-          .catch(error => {
-            console.error(this, error);
-            reject(error);
-          });
-      }
-    });
+  async fetchFiltersWithParentNode(parentNode: string): Promise<Breakdown[]> {
+    let filters = this.#filters.filter(
+      filter => filter.parentNode === parentNode
+    );
+    if (filters.length === 0) {
+      const body: BreakdownRequest = {};
+      if (parentNode) body.node = parentNode;
+      if (this.order) body.order = this.order;
+      filters = await axios.post(this.api, body).then(res => {
+        filters = res.data;
+        // set parent node
+        if (parentNode)
+          filters.forEach(filter => (filter.parentNode = parentNode));
+        // set filters
+        this.#filters.push(...filters);
+        return res.data;
+      })
+    }
+    return Promise.resolve(filters);
   }
 
   getFilter(node: string) {
@@ -59,34 +58,47 @@ export default class AttributeUtility {
   }
 
   get label() {
-    return this.#obj.label;
+    return this.#attribute.label;
   }
 
   get description() {
-    return this.#obj.description;
+    return this.#attribute.description;
   }
 
   get api() {
-    return this.#obj.api;
+    return this.#attribute.api;
   }
 
   get dataset() {
-    return this.#obj.dataset;
+    return this.#attribute.dataset;
   }
 
   get datamodel() {
-    return this.#obj.datamodel;
+    return this.#attribute.datamodel;
   }
 
   get source() {
-    return this.#obj.source;
+    return this.#attribute.source;
   }
 
   get order() {
-    return this.#obj.order;
+    return this.#attribute.order;
   }
 
   get filters() {
     return this.#filters;
+  }
+
+  async getNode(node: string | undefined): Promise<BreakdownHierarchyResponse> {
+    let res = this.#cache.get(node);
+    if (!res) {
+      const body: BreakdownHierarchyRequest = {
+        hierarchy: '',
+        node,
+      };
+      res = await axios.post(this.api, body).then(res => res.data) as BreakdownHierarchyResponse;
+      this.#cache.set(node, res);
+    }
+    return Promise.resolve(res);
   }
 }

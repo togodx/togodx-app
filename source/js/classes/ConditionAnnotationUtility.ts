@@ -13,6 +13,7 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
 
     // get parent node
     console.log(Records.getParentNode(attributeId, parentNode!));
+    
   }
 
   // methods

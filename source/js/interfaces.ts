@@ -127,6 +127,15 @@ export interface Breakdown {
   count: number;
   tip: boolean;
 }
+export interface BreakdownHierarchyRequest {
+  hierarchy: '';
+  node?: string;
+}
+export interface BreakdownHierarchyResponse {
+  self: Breakdown;
+  parents: Breakdown[];
+  children: Breakdown[];
+}
 
 // filter condition
 export interface ConditionFilter {
