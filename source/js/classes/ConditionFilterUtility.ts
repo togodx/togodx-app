@@ -38,6 +38,10 @@ export default class ConditionFilterUtility extends ConditionUtility {
     return this.annotation.label;
   }
 
+  get attributeLabel(): string {
+    return this.annotation.label;
+  }
+
   get query(): ConditionFilter {
     return {
       attribute: this._attributeId,

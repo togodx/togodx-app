@@ -16,7 +16,6 @@ export default class StackingConditionView {
     condition: ConditionFilterUtility | ConditionAnnotationUtility,
     isRange = false
   ) {
-    console.log(container, condition);
     this.#condition = condition;
     const attribute = Records.getAttribute(condition.attributeId);
     // this.#isRange = isRange;
@@ -37,7 +36,10 @@ export default class StackingConditionView {
     switch (true) {
       case condition instanceof ConditionAnnotationUtility:
         {
-          if (condition.parentNode) {
+          if (
+            condition instanceof ConditionAnnotationUtility &&
+            condition.parentNode
+          ) {
             const getFilter = () => {
               try {
                 const filter = condition.filter;
@@ -73,17 +75,22 @@ export default class StackingConditionView {
 
   // private methods
 
-  #make(container, ancestorLabels, label) {
+  #make(container: HTMLDivElement, ancestorLabels, label: string) {
+    // this.#ROOT.innerHTML = `
+    // <div class="close-button-view"></div>
+    // <ul class="path _category-color">
+    //   ${ancestorLabels.map(ancestor => `<li>${ancestor}</li>`).join('')}
+    // </ul>
+    // ${label}`;
+    console.log(this.#condition);
     this.#ROOT.innerHTML = `
     <div class="close-button-view"></div>
-    <ul class="path _category-color">
-      ${ancestorLabels.map(ancestor => `<li>${ancestor}</li>`).join('')}
-    </ul>
+    <p class="attribute _category-color">${this.#condition.attributeLabel}</p>
     ${label}`;
     container.insertAdjacentElement('beforeend', this.#ROOT);
     // reference
     if (this.#condition instanceof ConditionFilterUtility) {
-      this.#LABELS = this.#ROOT.querySelector(':scope > .labels');
+      this.#LABELS = this.#ROOT.querySelector(':scope > .labels')!;
       for (const node of this.#condition.nodes) {
         this.addFilter(node);
       }
@@ -91,7 +98,7 @@ export default class StackingConditionView {
 
     // event
     this.#ROOT
-      .querySelector(':scope > .close-button-view')
+      .querySelector(':scope > .close-button-view')!
       .addEventListener('click', () => {
         switch (true) {
           case this.#condition instanceof ConditionAnnotationUtility:

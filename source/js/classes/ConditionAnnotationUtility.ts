@@ -53,9 +53,13 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
     }
   }
 
+  get attributeLabel(): string {
+    return this.annotation.label;
+  }
+
   get filter(): Breakdown {
     if (!this.#filter) {
-      this.#filter = Records.getFilter(this._attributeId, this.#node);
+      this.#filter = Records.getFilter(this._attributeId, this.#node)!;
     }
     return this.#filter;
   }
