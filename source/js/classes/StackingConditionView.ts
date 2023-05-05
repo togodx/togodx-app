@@ -35,30 +35,21 @@ export default class StackingConditionView {
     this.#ROOT.dataset.conditionType = this.#conditionType;
     if (condition instanceof ConditionAnnotationUtility && condition.parentNode)
       this.#ROOT.dataset.parentNode = condition.parentNode;
+
     // make view
-    const label: string = this.#conditionType === 'annotation' ? `<div class="label _category-color">${condition.label}</div>` : '<ul class="labels"></ul>'; 
-    // switch (true) {
-    //   case condition instanceof ConditionAnnotationUtility:
-    //     label = `<div class="label _category-color">${condition.label}</div>`;
-    //     break;
-    //   case condition instanceof ConditionFilterUtility:
-    //     label = `<ul class="labels"></ul>`;
-    //     break;
-    // }
-    console.log(label)
-    this.#make(container, label);
-
-    // TODO: クリックイベントで当該要素を表示する
-  }
-
-  // private methods
-
-  #make(container: HTMLDivElement, label: string) {
+    // const label: string = this.#conditionType === 'annotation' 
+    //   ? `<div class="label _category-color">${condition.label}</div>` 
+    //   : '<ul class="labels"></ul>'; 
     this.#ROOT.innerHTML = `
     <div class="close-button-view"></div>
     <p class="attribute _category-color">${this.#condition.attributeLabel}</p>
-    ${label}`;
-    container.insertAdjacentElement('beforeend', this.#ROOT);
+    ${this.#conditionType === 'annotation' 
+      ? `<div class="label _category-color">${condition.label}</div>` 
+      : '<ul class="labels"></ul>'}
+    `;
+    container.append(this.#ROOT);
+    // container.insertAdjacentElement('beforeend', this.#ROOT);
+
     // reference
     if (this.#condition instanceof ConditionFilterUtility) {
       this.#LABELS = this.#ROOT.querySelector(':scope > .labels')!;
@@ -73,21 +64,23 @@ export default class StackingConditionView {
       .addEventListener('click', () => {
         switch (true) {
           case this.#condition instanceof ConditionAnnotationUtility:
-            // notify
-            ConditionBuilder.removeAnnotation(
-              new ConditionAnnotationUtility(
-                this.#condition.attributeId,
-                this.#condition.parentNode
-              )
-            );
+            {
+              // notify
+              ConditionBuilder.removeAnnotation(
+                new ConditionAnnotationUtility(
+                  this.#condition.attributeId,
+                  (this.#condition as ConditionAnnotationUtility).parentNode
+                )
+              );
+            }
             break;
           case this.#condition instanceof ConditionFilterUtility:
-            for (const label of this.#LABELS.querySelectorAll(
+            for (const label of this.#LABELS.querySelectorAll<HTMLLIElement>(
               ':scope > .label'
             )) {
               ConditionBuilder.removeFilter(
                 this.#condition.attributeId,
-                label.dataset.node
+                label.dataset.node!
               );
             }
             break;
@@ -97,9 +90,10 @@ export default class StackingConditionView {
 
   // public methods
 
-  addFilter(node) {
+  addFilter(node: string) {
     const getFilter = () => {
       const filter = Records.getFilter(this.#condition.attributeId, node);
+      console.log(filter)
       if (filter === undefined) {
         setTimeout(getFilter, POLLING_DURATION);
       } else {

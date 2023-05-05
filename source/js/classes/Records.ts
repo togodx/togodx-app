@@ -1,6 +1,6 @@
 import Color from 'colorjs.io';
 import AttributeUtility from './AttributeUtility';
-import { Breakdown } from '../interfaces';
+import { Breakdown, BreakdownWithParentNode } from '../interfaces';
 
 class Records {
   #categories;
@@ -94,7 +94,7 @@ class Records {
     return this.#attributes.find(attribute => attribute.id === attributeId)!;
   }
 
-  getFilter(attributeId: string, node: string | undefined) {
+  getFilter(attributeId: string, node: string | undefined): BreakdownWithParentNode | undefined {
     const attribute = this.getAttribute(attributeId);
     return attribute.getFilter(node);
   }

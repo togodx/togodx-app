@@ -61,7 +61,7 @@ export default class AttributeUtility {
     return Promise.resolve(res);
   }
 
-  getFilter(node: string) {
+  getFilter(node: string): BreakdownWithParentNode | undefined {
     return this.#filters.find(filter => filter.node === node);
   }
 

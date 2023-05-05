@@ -46,7 +46,9 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
   }
 
   get label(): string {
+    console.log(this.#node)
     if (this.#node) {
+      console.log(this)
       return this.filter.label;
     } else {
       return this.annotation.label;
@@ -61,6 +63,7 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
     if (!this.#filter) {
       this.#filter = Records.getFilter(this._attributeId, this.#node)!;
     }
+    console.log(this.#filter)
     return this.#filter;
   }
 
