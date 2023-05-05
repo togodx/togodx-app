@@ -5,9 +5,12 @@ import ConditionAnnotationUtility from './ConditionAnnotationUtility';
 
 const POLLING_DURATION = 1000;
 
+type ConditionType = 'filter' | 'annotation';
+
 export default class StackingConditionView {
   // #isRange;
   #condition: ConditionFilterUtility | ConditionAnnotationUtility;
+  #conditionType: ConditionType;
   #ROOT: HTMLDivElement;
   #LABELS: HTMLUListElement;
 
@@ -17,6 +20,7 @@ export default class StackingConditionView {
     isRange = false
   ) {
     this.#condition = condition;
+    this.#conditionType = condition instanceof ConditionFilterUtility ? 'filter' : 'annotation';
     const attribute = Records.getAttribute(condition.attributeId);
     // this.#isRange = isRange;
 
@@ -28,61 +32,28 @@ export default class StackingConditionView {
     );
     this.#ROOT.dataset.categoryId = condition.categoryId;
     this.#ROOT.dataset.attributeId = condition.attributeId;
+    this.#ROOT.dataset.conditionType = this.#conditionType;
     if (condition instanceof ConditionAnnotationUtility && condition.parentNode)
       this.#ROOT.dataset.parentNode = condition.parentNode;
     // make view
-    let label: string,
-      ancestorLabels = [Records.getCategory(condition.categoryId).label];
-    switch (true) {
-      case condition instanceof ConditionAnnotationUtility:
-        {
-          if (
-            condition instanceof ConditionAnnotationUtility &&
-            condition.parentNode
-          ) {
-            const getFilter = () => {
-              try {
-                const filter = condition.filter;
-                label = `<div class="label _category-color">${filter.label}</div>`;
-                ancestorLabels.push(
-                  attribute.label,
-                  ...condition.ancestors.map(ancestor => {
-                    return Records.getFilter(condition.attributeId, ancestor)
-                      .label;
-                  })
-                );
-                this.#make(container, ancestorLabels, label);
-              } catch (e) {
-                setTimeout(getFilter, POLLING_DURATION);
-              }
-            };
-            getFilter();
-          } else {
-            label = `<div class="label _category-color">${attribute.label}</div>`;
-            this.#make(container, ancestorLabels, label);
-          }
-        }
-        break;
-      case this.#condition instanceof ConditionFilterUtility:
-        label = `<ul class="labels"></ul>`;
-        ancestorLabels.push(attribute.label);
-        this.#make(container, ancestorLabels, label);
-        break;
-    }
+    const label: string = this.#conditionType === 'annotation' ? `<div class="label _category-color">${condition.label}</div>` : '<ul class="labels"></ul>'; 
+    // switch (true) {
+    //   case condition instanceof ConditionAnnotationUtility:
+    //     label = `<div class="label _category-color">${condition.label}</div>`;
+    //     break;
+    //   case condition instanceof ConditionFilterUtility:
+    //     label = `<ul class="labels"></ul>`;
+    //     break;
+    // }
+    console.log(label)
+    this.#make(container, label);
 
     // TODO: クリックイベントで当該要素を表示する
   }
 
   // private methods
 
-  #make(container: HTMLDivElement, ancestorLabels, label: string) {
-    // this.#ROOT.innerHTML = `
-    // <div class="close-button-view"></div>
-    // <ul class="path _category-color">
-    //   ${ancestorLabels.map(ancestor => `<li>${ancestor}</li>`).join('')}
-    // </ul>
-    // ${label}`;
-    console.log(this.#condition);
+  #make(container: HTMLDivElement, label: string) {
     this.#ROOT.innerHTML = `
     <div class="close-button-view"></div>
     <p class="attribute _category-color">${this.#condition.attributeLabel}</p>

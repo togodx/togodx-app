@@ -15,29 +15,10 @@
     right: .4rem
   > .attribute
     margin: 0
-    padding: .6rem 1.4rem 0 0
+    padding: .4rem 1.4rem .1rem 0
     font-size: 1rem
     font-weight: bold
     line-height: 1
-
-  // > .path
-  //   margin: 0
-  //   padding: .6rem 1.4rem 0 0
-  //   list-style: none
-  //   font-size: 1rem
-  //   font-weight: bold
-  //   line-height: 1
-  //   // color: var(--color-gray)
-  //   > li
-  //     display: inline-block
-  //     + li
-  //       &::before
-  //         content: ""
-  //         display: inline-block
-  //         border-left: solid .1rem var(--color-gray)
-  //         height: 1.4rem
-  //         transform: rotate(20deg)
-  //         margin: -.6rem .4rem 0 .4rem
   > .label
     line-height: 1
     font-size: 1.4rem
@@ -67,3 +48,7 @@
             border-left-color: rgba(0, 0, 0, .5)
     > .label
       color: white
+  &[data-condition-type="annotation"]:not([data-parent-node])
+    padding-top: .4rem
+    > .attribute
+      display: none
