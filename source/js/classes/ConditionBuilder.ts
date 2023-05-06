@@ -356,7 +356,7 @@ class ConditionBuilder {
 
   #getChildNodes(attributeId: string, node: string) {
     return new Promise<void>((resolve, reject) => {
-      Records.fetchAttributeFilters(attributeId, node)
+      Records.fetchChildNodes(attributeId, node)
         .then(() => {
           resolve();
         })

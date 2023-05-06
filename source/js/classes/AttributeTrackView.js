@@ -190,12 +190,12 @@ export default class AttributeTrackView {
     if (this.#madeFilters) return;
     this.#madeFilters = true;
 
-    const filters = await Records.fetchAttributeFilters(
-      this.#attribute.id
-    ).catch(err => {
-      console.error(err);
-      this.#showError(err);
-    });
+    const filters = await Records.fetchChildNodes(this.#attribute.id).catch(
+      err => {
+        console.error(err);
+        this.#showError(err);
+      }
+    );
     this.#LOADING_VIEW.classList.remove('-shown');
     this.#ROOT.classList.remove('-preparing');
     if (!filters) return;

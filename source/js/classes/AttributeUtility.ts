@@ -27,19 +27,19 @@ export default class AttributeUtility {
 
   // public Methods
 
-  async fetchFiltersWithParentNode(parentNode: string): Promise<Breakdown[]> {
+  async fetchChildNodes(node: string): Promise<Breakdown[]> {
     let filters = this.#filters.filter(
-      filter => filter.parentNode === parentNode
+      filter => filter.parentNode === node
     );
     if (filters.length === 0) {
       const body: BreakdownRequest = {};
-      if (parentNode) body.node = parentNode;
+      if (node) body.node = node;
       if (this.order) body.order = this.order;
       filters = await axios.post(this.api, body).then(res => {
         filters = res.data;
         // set parent node
-        if (parentNode)
-          filters.forEach(filter => (filter.parentNode = parentNode));
+        if (node)
+          filters.forEach(filter => (filter.parentNode = node));
         // set filters
         this.#filters.push(...filters);
         return res.data;

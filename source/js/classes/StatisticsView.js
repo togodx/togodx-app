@@ -32,13 +32,12 @@ export default class StatisticsView {
 
     // display order of bar chart
     if (condition.parentNode) {
-      Records.fetchAttributeFilters(
-        this.#attributeId,
-        condition.parentNode
-      ).then(filters => {
-        this.#referenceFilters = filters;
-        this.#draw();
-      });
+      Records.fetchChildNodes(this.#attributeId, condition.parentNode).then(
+        filters => {
+          this.#referenceFilters = filters;
+          this.#draw();
+        }
+      );
     } else {
       this.#referenceFilters = Records.getAttribute(this.#attributeId).filters;
     }

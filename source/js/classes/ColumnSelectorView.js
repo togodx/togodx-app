@@ -57,7 +57,7 @@ export default class ColumnSelectorView {
       if (columnView) {
         resolve(columnView);
       } else {
-        Records.fetchAttributeFilters(this.#attribute.id, node)
+        Records.fetchChildNodes(this.#attribute.id, node)
           .then(filters => {
             this.#setItems(filters, depth);
             const columnView = this.#makeCoumnView(filters, depth, node);

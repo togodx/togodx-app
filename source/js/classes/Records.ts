@@ -75,9 +75,9 @@ class Records {
     this.#datasets = datasets;
   }
 
-  fetchAttributeFilters(attributeId: string, node: string): Promise<Breakdown[]> {
+  async fetchChildNodes(attributeId: string, node: string): Promise<Breakdown[]> {
     const attribute = this.getAttribute(attributeId);
-    return attribute.fetchFiltersWithParentNode(node);
+    return await attribute.fetchChildNodes(node);
   }
 
   getCategory(id) {
