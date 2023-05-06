@@ -61,7 +61,7 @@ export default class AttributeUtility {
     return Promise.resolve(res);
   }
 
-  getNode(node: string): BreakdownWithParentNode | undefined {
+  getNode(node: string | undefined): BreakdownWithParentNode | undefined {
     return this.#nodes.find(node2 => node2.node === node);
   }
 
