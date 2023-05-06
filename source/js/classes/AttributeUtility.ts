@@ -27,19 +27,19 @@ export default class AttributeUtility {
 
   // public Methods
 
-  async fetchChildNodes(node: string): Promise<Breakdown[]> {
+  async fetchChildNodes(nodeId: string): Promise<Breakdown[]> {
     let nodes = this.#nodes.filter(
-      node2 => node2.parentNode === node
+      node => node.parentNode === nodeId
     );
     if (nodes.length === 0) {
       const body: BreakdownRequest = {};
-      if (node) body.node = node;
+      if (nodeId) body.node = nodeId;
       if (this.order) body.order = this.order;
       nodes = await axios.post(this.api, body).then(res => {
         nodes = res.data;
         // set parent node
-        if (node)
-          nodes.forEach(node2 => (node2.parentNode = node));
+        if (nodeId)
+          nodes.forEach(node => (node.parentNode = nodeId));
         // set nodes
         this.#nodes.push(...nodes);
         return res.data;
@@ -48,21 +48,21 @@ export default class AttributeUtility {
     return Promise.resolve(nodes);
   }
 
-  async fetchHierarchicNode(node: string | undefined): Promise<BreakdownHierarchyResponse> {
-    let res = this.#cache.get(node);
+  async fetchHierarchicNode(nodeId: string | undefined): Promise<BreakdownHierarchyResponse> {
+    let res = this.#cache.get(nodeId);
     if (!res) {
       const body: BreakdownHierarchyRequest = {
         hierarchy: '',
-        node,
+        node: nodeId,
       };
       res = await axios.post(this.api, body).then(res => res.data) as BreakdownHierarchyResponse;
-      this.#cache.set(node, res);
+      this.#cache.set(nodeId, res);
     }
     return Promise.resolve(res);
   }
 
-  getNode(node: string | undefined): BreakdownWithParentNode | undefined {
-    return this.#nodes.find(node2 => node2.node === node);
+  getNode(nodeId: string | undefined): BreakdownWithParentNode | undefined {
+    return this.#nodes.find(node => node.node === nodeId);
   }
 
   // accessors

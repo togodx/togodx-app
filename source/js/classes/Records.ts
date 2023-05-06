@@ -78,9 +78,22 @@ class Records {
 
   // node
 
-  async fetchChildNodes(attributeId: string, node: string): Promise<Breakdown[]> {
+  async fetchParentNodeId(attributeId: string, node: string | undefined): Promise<string> {
+    // const attribute = this.getAttribute(attributeId);
+    // const filter = attribute.nodes.find(filter => filter.node === node);
+    // return filter?.parentNode || '';
     const attribute = this.getAttribute(attributeId);
-    return await attribute.fetchChildNodes(node);
+    await attribute.fetchHierarchicNode(node);
+    return Promise.resolve('123')
+  }
+
+  async fetchNode(nodeId: string): Promise<Breakdown> {
+
+  }
+
+  async fetchChildNodes(attributeId: string, nodeId: string): Promise<Breakdown[]> {
+    const attribute = this.getAttribute(attributeId);
+    return await attribute.fetchChildNodes(nodeId);
   }
 
   getNode(attributeId: string, node: string | undefined): BreakdownWithParentNode | undefined {
@@ -105,15 +118,6 @@ class Records {
     } while (parent);
     ancestors.pop();
     return ancestors;
-  }
-
-  async fetchParentNode(attributeId: string, node: string | undefined): Promise<string> {
-    // const attribute = this.getAttribute(attributeId);
-    // const filter = attribute.nodes.find(filter => filter.node === node);
-    // return filter?.parentNode || '';
-    const attribute = this.getAttribute(attributeId);
-    await attribute.fetchHierarchicNode(node);
-    return Promise.resolve('123')
   }
 
   // category
