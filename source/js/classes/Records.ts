@@ -1,17 +1,18 @@
 import Color from 'colorjs.io';
 import AttributeUtility from './AttributeUtility';
-import { Breakdown, BreakdownWithParentNode } from '../interfaces';
+import { AttributesCategory, AttributesDatasetObject, Breakdown, BreakdownWithParentNode } from '../interfaces';
 
 class Records {
-  #categories;
+  #categories: AttributesCategory[];
   #attributes: AttributeUtility[];
-  #datasets;
+  #datasets: AttributesDatasetObject;
 
   constructor() {}
 
   // public methods
 
   setAttributes({categories, attributes, datasets}) {
+    console.log(categories, attributes, datasets)
     // define categories
     for (let i = 0; i < categories.length; i++) {
       let hue = 360 - (360 * i) / categories.length + 130;
@@ -75,23 +76,11 @@ class Records {
     this.#datasets = datasets;
   }
 
+  // node
+
   async fetchChildNodes(attributeId: string, node: string): Promise<Breakdown[]> {
     const attribute = this.getAttribute(attributeId);
     return await attribute.fetchChildNodes(node);
-  }
-
-  getCategory(id) {
-    return this.#categories.find(category => category.id === id);
-  }
-
-  getCategoryWithAttributeId(attributeId) {
-    return this.#categories.find(
-      category => category.attributes.indexOf(attributeId) !== -1
-    );
-  }
-
-  getAttribute(attributeId: string): AttributeUtility {
-    return this.#attributes.find(attribute => attribute.id === attributeId)!;
   }
 
   getFilter(attributeId: string, node: string | undefined): BreakdownWithParentNode | undefined {
@@ -126,6 +115,26 @@ class Records {
     await attribute.fetchNode(node);
     return Promise.resolve('123')
   }
+
+  // category
+
+  getCategory(id) {
+    return this.#categories.find(category => category.id === id);
+  }
+
+  getCategoryWithAttributeId(attributeId) {
+    return this.#categories.find(
+      category => category.attributes.indexOf(attributeId) !== -1
+    );
+  }
+
+  // attribute
+
+  getAttribute(attributeId: string): AttributeUtility {
+    return this.#attributes.find(attribute => attribute.id === attributeId)!;
+  }
+
+  // dataset
 
   getDatasetLabel(dataset) {
     return this.#datasets[dataset].label;
