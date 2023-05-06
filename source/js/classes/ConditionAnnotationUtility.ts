@@ -61,7 +61,7 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
 
   get filter(): Breakdown {
     if (!this.#filter) {
-      this.#filter = Records.getFilter(this._attributeId, this.#node)!;
+      this.#filter = Records.getNode(this._attributeId, this.#node)!;
     }
     console.log(this.#filter)
     return this.#filter;

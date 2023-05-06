@@ -15,40 +15,40 @@ interface BreakdownRequest {
 export default class AttributeUtility {
   #id: string;
   #attribute: AttributesAttribute;
-  #filters: BreakdownWithParentNode[];
+  #nodes: BreakdownWithParentNode[];
   #cache: Map<string | undefined, BreakdownHierarchyResponse>;
 
   constructor(id: string, attribute: AttributesAttribute) {
     this.#id = id;
     this.#attribute = attribute;
-    this.#filters = [];
+    this.#nodes = [];
     this.#cache = new Map();
   }
 
   // public Methods
 
   async fetchChildNodes(node: string): Promise<Breakdown[]> {
-    let filters = this.#filters.filter(
-      filter => filter.parentNode === node
+    let nodes = this.#nodes.filter(
+      node2 => node2.parentNode === node
     );
-    if (filters.length === 0) {
+    if (nodes.length === 0) {
       const body: BreakdownRequest = {};
       if (node) body.node = node;
       if (this.order) body.order = this.order;
-      filters = await axios.post(this.api, body).then(res => {
-        filters = res.data;
+      nodes = await axios.post(this.api, body).then(res => {
+        nodes = res.data;
         // set parent node
         if (node)
-          filters.forEach(filter => (filter.parentNode = node));
-        // set filters
-        this.#filters.push(...filters);
+          nodes.forEach(node2 => (node2.parentNode = node));
+        // set nodes
+        this.#nodes.push(...nodes);
         return res.data;
       })
     }
-    return Promise.resolve(filters);
+    return Promise.resolve(nodes);
   }
 
-  async fetchNode(node: string | undefined): Promise<BreakdownHierarchyResponse> {
+  async fetchHierarchicNode(node: string | undefined): Promise<BreakdownHierarchyResponse> {
     let res = this.#cache.get(node);
     if (!res) {
       const body: BreakdownHierarchyRequest = {
@@ -61,8 +61,8 @@ export default class AttributeUtility {
     return Promise.resolve(res);
   }
 
-  getFilter(node: string): BreakdownWithParentNode | undefined {
-    return this.#filters.find(filter => filter.node === node);
+  getNode(node: string): BreakdownWithParentNode | undefined {
+    return this.#nodes.find(node2 => node2.node === node);
   }
 
   // accessors
@@ -100,6 +100,6 @@ export default class AttributeUtility {
   }
 
   get filters() {
-    return this.#filters;
+    return this.#nodes;
   }
 }

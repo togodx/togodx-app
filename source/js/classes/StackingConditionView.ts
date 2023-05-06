@@ -91,11 +91,11 @@ export default class StackingConditionView {
   // public methods
 
   addFilter(node: string) {
-    const getFilter = () => {
-      const filter = Records.getFilter(this.#condition.attributeId, node);
+    const getNode = () => {
+      const filter = Records.getNode(this.#condition.attributeId, node);
       console.log(filter)
       if (filter === undefined) {
-        setTimeout(getFilter, POLLING_DURATION);
+        setTimeout(getNode, POLLING_DURATION);
       } else {
         this.#LABELS.insertAdjacentHTML(
           'beforeend',
@@ -113,7 +113,7 @@ export default class StackingConditionView {
           });
       }
     };
-    getFilter();
+    getNode();
   }
 
   removeAnnotation(conditionUtilityAnnotation) {

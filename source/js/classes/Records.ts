@@ -83,15 +83,15 @@ class Records {
     return await attribute.fetchChildNodes(node);
   }
 
-  getFilter(attributeId: string, node: string | undefined): BreakdownWithParentNode | undefined {
+  getNode(attributeId: string, node: string | undefined): BreakdownWithParentNode | undefined {
     const attribute = this.getAttribute(attributeId);
-    return attribute.getFilter(node);
+    return attribute.getNode(node);
   }
 
-  getFiltersWithParentNode(attributeId: string, parentNode: string) {
-    const attribute = this.getAttribute(attributeId);
-    return attribute.filters.filter(filter => filter.parentNode === parentNode);
-  }
+  // getNodesWithParentNode(attributeId: string, parentNode: string) {
+  //   const attribute = this.getAttribute(attributeId);
+  //   return attribute.filters.filter(filter => filter.parentNode === parentNode);
+  // }
 
   getAncestors(attributeId: string, node: string): Breakdown[] {
     const attribute = this.getAttribute(attributeId)!;
@@ -112,7 +112,7 @@ class Records {
     // const filter = attribute.filters.find(filter => filter.node === node);
     // return filter?.parentNode || '';
     const attribute = this.getAttribute(attributeId);
-    await attribute.fetchNode(node);
+    await attribute.fetchHierarchicNode(node);
     return Promise.resolve('123')
   }
 
