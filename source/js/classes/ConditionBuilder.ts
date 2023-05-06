@@ -160,7 +160,7 @@ class ConditionBuilder {
         conditionUtilityFilter.attributeId === attributeId
     );
     if (oldConditionFilterUtility) {
-      const originalFilters = Records.getAttribute(attributeId)!.filters;
+      const originalFilters = Records.getAttribute(attributeId)!.nodes;
       originalFilters.forEach(originalFilter => {
         const indexInNew = nodes.indexOf(originalFilter.node);
         const indexInOld = oldConditionFilterUtility.nodes.indexOf(

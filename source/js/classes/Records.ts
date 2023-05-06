@@ -90,7 +90,7 @@ class Records {
 
   // getNodesWithParentNode(attributeId: string, parentNode: string) {
   //   const attribute = this.getAttribute(attributeId);
-  //   return attribute.filters.filter(filter => filter.parentNode === parentNode);
+  //   return attribute.nodes.filter(filter => filter.parentNode === parentNode);
   // }
 
   getAncestors(attributeId: string, node: string): Breakdown[] {
@@ -99,7 +99,7 @@ class Records {
     let parent: AttributeUtility | undefined;
     do {
       // find ancestors
-      parent = attribute.filters.find(filter => filter.node === node);
+      parent = attribute.nodes.find(filter => filter.node === node);
       if (parent) ancestors.unshift(parent);
       node = parent?.parentNode;
     } while (parent);
@@ -109,7 +109,7 @@ class Records {
 
   async fetchParentNode(attributeId: string, node: string | undefined): Promise<string> {
     // const attribute = this.getAttribute(attributeId);
-    // const filter = attribute.filters.find(filter => filter.node === node);
+    // const filter = attribute.nodes.find(filter => filter.node === node);
     // return filter?.parentNode || '';
     const attribute = this.getAttribute(attributeId);
     await attribute.fetchHierarchicNode(node);

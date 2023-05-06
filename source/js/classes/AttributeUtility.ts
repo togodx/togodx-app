@@ -99,7 +99,7 @@ export default class AttributeUtility {
     return this.#attribute.order;
   }
 
-  get filters() {
+  get nodes() {
     return this.#nodes;
   }
 }

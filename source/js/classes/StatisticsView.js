@@ -39,7 +39,7 @@ export default class StatisticsView {
         }
       );
     } else {
-      this.#referenceFilters = Records.getAttribute(this.#attributeId).filters;
+      this.#referenceFilters = Records.getAttribute(this.#attributeId).nodes;
     }
 
     // references
