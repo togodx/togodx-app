@@ -48,17 +48,23 @@ export default class AttributeUtility {
     return Promise.resolve(nodes);
   }
 
-  async fetchHierarchicNode(nodeId: string | undefined): Promise<BreakdownHierarchyResponse> {
-    let res = this.#cache.get(nodeId);
-    if (!res) {
+  async fetchNode(nodeId: string | undefined): Promise<Breakdown> {
+    const bhr = await this.#fetchHierarchicNode(nodeId);
+    console.log(bhr)
+    return Promise.resolve(bhr.self);
+  }
+
+  async #fetchHierarchicNode(nodeId: string | undefined): Promise<BreakdownHierarchyResponse> {
+    let bhr = this.#cache.get(nodeId);
+    if (!bhr) {
       const body: BreakdownHierarchyRequest = {
         hierarchy: '',
         node: nodeId,
       };
-      res = await axios.post(this.api, body).then(res => res.data) as BreakdownHierarchyResponse;
-      this.#cache.set(nodeId, res);
+      bhr = await axios.post(this.api, body).then(res => res.data) as BreakdownHierarchyResponse;
+      this.#cache.set(nodeId, bhr);
     }
-    return Promise.resolve(res);
+    return Promise.resolve(bhr);
   }
 
   getNode(nodeId: string | undefined): BreakdownWithParentNode | undefined {

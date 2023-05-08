@@ -78,17 +78,18 @@ class Records {
 
   // node
 
-  async fetchParentNodeId(attributeId: string, node: string | undefined): Promise<string> {
+  async fetchParentNodeId(attributeId: string, nodeId: string | undefined): Promise<string> {
     // const attribute = this.getAttribute(attributeId);
     // const filter = attribute.nodes.find(filter => filter.node === node);
     // return filter?.parentNode || '';
     const attribute = this.getAttribute(attributeId);
-    await attribute.fetchHierarchicNode(node);
+    await attribute.fetchNode(nodeId);
     return Promise.resolve('123')
   }
 
-  async fetchNode(nodeId: string): Promise<Breakdown> {
-
+  async fetchNode(attributeId: string, nodeId: string): Promise<Breakdown> {
+    const attribute = this.getAttribute(attributeId);
+    return await attribute.fetchNode(nodeId);
   }
 
   async fetchChildNodes(attributeId: string, nodeId: string): Promise<Breakdown[]> {
@@ -96,9 +97,9 @@ class Records {
     return await attribute.fetchChildNodes(nodeId);
   }
 
-  getNode(attributeId: string, node: string | undefined): BreakdownWithParentNode | undefined {
+  getNode(attributeId: string, nodeId: string | undefined): BreakdownWithParentNode | undefined {
     const attribute = this.getAttribute(attributeId);
-    return attribute.getNode(node);
+    return attribute.getNode(nodeId);
   }
 
   // getNodesWithParentNode(attributeId: string, parentNode: string) {
@@ -106,15 +107,15 @@ class Records {
   //   return attribute.nodes.filter(filter => filter.parentNode === parentNode);
   // }
 
-  getAncestors(attributeId: string, node: string): Breakdown[] {
+  getAncestors(attributeId: string, nodeId: string): Breakdown[] {
     const attribute = this.getAttribute(attributeId)!;
     const ancestors = [];
     let parent: AttributeUtility | undefined;
     do {
       // find ancestors
-      parent = attribute.nodes.find(filter => filter.node === node);
+      parent = attribute.nodes.find(filter => filter.node === nodeId);
       if (parent) ancestors.unshift(parent);
-      node = parent?.parentNode;
+      nodeId = parent?.parentNode;
     } while (parent);
     ancestors.pop();
     return ancestors;

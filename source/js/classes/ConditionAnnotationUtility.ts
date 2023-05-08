@@ -3,13 +3,13 @@ import Records from './Records';
 import {ConditionAnnotationWithAncestor, Breakdown, ConditionAnnotation} from '../interfaces';
 
 export default class ConditionAnnotationUtility extends ConditionUtility {
-  #node: string | undefined;
+  #nodeId: string | undefined;
   #filter: Breakdown;
 
-  constructor(attributeId: string, node: string | undefined) {
+  constructor(attributeId: string, nodeId: string | undefined) {
     super(attributeId);
-    console.log(attributeId, node);
-    this.#node = node;
+    console.log(attributeId, nodeId);
+    this.#nodeId = nodeId;
 
     // get parent node
     // console.log(Records.fetchParentNodeId(attributeId, node!));
@@ -18,10 +18,10 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
 
   // methods
 
-  isSameCondition(attributeId: string, parentNode: string | undefined): boolean {
+  isSameCondition(attributeId: string, parentNodeId: string | undefined): boolean {
     if (attributeId === this._attributeId) {
-      if (parentNode) {
-        return parentNode === this.#node;
+      if (parentNodeId) {
+        return parentNodeId === this.#nodeId;
       } else {
         return true;
       }
@@ -33,21 +33,24 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
   // accessor
 
   get parentNode(): string | undefined {
-    return this.#node;
+    return this.#nodeId;
+  }
+  get nodeId(): string | undefined {
+    return this.#nodeId;
   }
 
   // get ancestors() {
-  //   if (!this.#node) return this.#node;
-  //   return this.getAncestors(this.#node);
+  //   if (!this.#nodeId) return this.#nodeId;
+  //   return this.getAncestors(this.#nodeId);
   // }
   get ancestors(): undefined | string[] {
-    if (!this.#node) return undefined;
-    return this.getAncestors(this.#node);
+    if (!this.#nodeId) return undefined;
+    return this.getAncestors(this.#nodeId);
   }
 
   get label(): string {
-    console.log(this.#node)
-    if (this.#node) {
+    console.log(this.#nodeId)
+    if (this.#nodeId) {
       console.log(this)
       return this.filter.label;
     } else {
@@ -61,7 +64,7 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
 
   get filter(): Breakdown {
     if (!this.#filter) {
-      this.#filter = Records.getNode(this._attributeId, this.#node)!;
+      this.#filter = Records.getNode(this._attributeId, this.#nodeId)!;
     }
     console.log(this.#filter)
     return this.#filter;
@@ -71,7 +74,7 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
     const query: ConditionAnnotation = {
       attribute: this._attributeId,
     };
-    if (this.#node) query.node = this.#node;
+    if (this.#nodeId) query.node = this.#nodeId;
     return query;
   }
 
@@ -79,8 +82,8 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
     const annotation: ConditionAnnotationWithAncestor = {
       attributeId: this._attributeId,
     };
-    if (this.#node) {
-      annotation.parentNode = this.#node;
+    if (this.#nodeId) {
+      annotation.parentNode = this.#nodeId;
       annotation.ancestors = this.ancestors;
     }
     return annotation;

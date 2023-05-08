@@ -19,9 +19,9 @@ export default class StackingConditionView {
     condition: ConditionFilterUtility | ConditionAnnotationUtility,
     isRange = false
   ) {
+    console.log('****************', this)
     this.#condition = condition;
     this.#conditionType = condition instanceof ConditionFilterUtility ? 'filter' : 'annotation';
-    const attribute = Records.getAttribute(condition.attributeId);
     // this.#isRange = isRange;
 
     // attributes
@@ -33,22 +33,36 @@ export default class StackingConditionView {
     this.#ROOT.dataset.categoryId = condition.categoryId;
     this.#ROOT.dataset.attributeId = condition.attributeId;
     this.#ROOT.dataset.conditionType = this.#conditionType;
-    if (condition instanceof ConditionAnnotationUtility && condition.parentNode)
-      this.#ROOT.dataset.parentNode = condition.parentNode;
+    if (condition instanceof ConditionAnnotationUtility && condition.nodeId)
+      this.#ROOT.dataset.parentNode = condition.nodeId;
 
     // make view
-    // const label: string = this.#conditionType === 'annotation' 
-    //   ? `<div class="label _category-color">${condition.label}</div>` 
-    //   : '<ul class="labels"></ul>'; 
+    this.#makeHTML(container);
+  }
+
+
+  // private methods
+
+  async #makeHTML(container: HTMLDivElement) {
+
+    // preload
+    if (this.#condition instanceof ConditionAnnotationUtility && this.#condition.nodeId) {
+      console.log(this.#condition.nodeId)
+      const attribute = Records.getAttribute(this.#condition.attributeId);
+      const node = await attribute.fetchNode(this.#condition.nodeId)
+      console.log(node)
+    }
+
+
+    // make view
     this.#ROOT.innerHTML = `
     <div class="close-button-view"></div>
     <p class="attribute _category-color">${this.#condition.attributeLabel}</p>
     ${this.#conditionType === 'annotation' 
-      ? `<div class="label _category-color">${condition.label}</div>` 
+      ? `<div class="label _category-color">${this.#condition.label}</div>` 
       : '<ul class="labels"></ul>'}
     `;
     container.append(this.#ROOT);
-    // container.insertAdjacentElement('beforeend', this.#ROOT);
 
     // reference
     if (this.#condition instanceof ConditionFilterUtility) {
@@ -69,7 +83,7 @@ export default class StackingConditionView {
               ConditionBuilder.removeAnnotation(
                 new ConditionAnnotationUtility(
                   this.#condition.attributeId,
-                  (this.#condition as ConditionAnnotationUtility).parentNode
+                  (this.#condition as ConditionAnnotationUtility).nodeId
                 )
               );
             }
@@ -88,41 +102,50 @@ export default class StackingConditionView {
       });
   }
 
+
   // public methods
 
-  addFilter(node: string) {
-    const getNode = () => {
-      const filter = Records.getNode(this.#condition.attributeId, node);
-      console.log(filter)
-      if (filter === undefined) {
-        setTimeout(getNode, POLLING_DURATION);
-      } else {
-        this.#LABELS.insertAdjacentHTML(
-          'beforeend',
-          `<li class="label _category-background-color" data-node="${filter.node}">${filter.label}<div class="close-button-view"></div></li>`
-        );
-        // attach event
-        this.#LABELS
-          .querySelector(':scope > .label:last-child')
-          .addEventListener('click', e => {
-            e.stopPropagation();
-            ConditionBuilder.removeFilter(
-              this.#condition.attributeId,
-              e.target.parentNode.dataset.node
-            );
-          });
-      }
-    };
-    getNode();
+  async addFilter(nodeId: string) {
+    const node = await Records.fetchNode(this.#condition.attributeId, nodeId);
+    console.log(node)
+    const li = document.createElement('li');
+    li.classList.add('label', '_category-background-color');
+    li.dataset.node = node.node;
+    li.innerHTML = `${node.label}<div class="close-button-view"></div>`;
+    this.#LABELS.append(li);
+
+    // const getNode = () => {
+    //   const node = Records.getNode(this.#condition.attributeId, nodeId);
+    //   console.log(node)
+    //   if (node === undefined) {
+    //     setTimeout(getNode, POLLING_DURATION);
+    //   } else {
+    //     this.#LABELS.insertAdjacentHTML(
+    //       'beforeend',
+    //       `<li class="label _category-background-color" data-node="${node.node}">${node.label}<div class="close-button-view"></div></li>`
+    //     );
+    //     // attach event
+    //     this.#LABELS
+    //       .querySelector<HTMLLIElement>(':scope > .label:last-child')!
+    //       .addEventListener('click', e => {
+    //         e.stopPropagation();
+    //         ConditionBuilder.removeFilter(
+    //           this.#condition.attributeId,
+    //           e.target!.parentNode.dataset.node
+    //         );
+    //       });
+    //   }
+    // };
+    // getNode();
   }
 
   removeAnnotation(conditionUtilityAnnotation) {
     const isMatch =
       conditionUtilityAnnotation.attributeId === this.#condition.attributeId &&
-      (conditionUtilityAnnotation.parentNode
-        ? conditionUtilityAnnotation.parentNode === this.#condition.parentNode
+      (conditionUtilityAnnotation.nodeId
+        ? conditionUtilityAnnotation.nodeId === (this.#condition as ConditionAnnotationUtility).nodeId
         : true);
-    if (isMatch) this.#ROOT.parentNode.removeChild(this.#ROOT);
+    if (isMatch) this.#ROOT.remove();
     return isMatch;
   }
 
@@ -132,7 +155,7 @@ export default class StackingConditionView {
         this.#LABELS.querySelector(`:scope > [data-node="${node}"`)
       );
       if (this.#LABELS.childNodes.length === 0) {
-        this.#ROOT.parentNode.removeChild(this.#ROOT);
+        this.#ROOT.remove();
         return true;
       } else {
         return false;
