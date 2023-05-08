@@ -130,7 +130,7 @@ export default class CategoryBrowserColumn extends LitElement {
 
                 <category-browser-sorter
                   prop="label"
-                  label="Values"
+                  label="Term"
                   class="label"
                 ></category-browser-sorter>
                 <category-browser-sorter

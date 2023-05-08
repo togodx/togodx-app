@@ -237,6 +237,12 @@ export const styles = css`
     hyphens: auto;
   }
 
+  .count,
+  .mapped,
+  .pvalue {
+    text-align: right;
+  }
+
   .mapped,
   .pvalue {
     display: none;
