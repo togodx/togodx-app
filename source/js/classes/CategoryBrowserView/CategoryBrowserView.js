@@ -78,30 +78,6 @@ export class CategoryBrowserView extends LitElement {
     });
   }
 
-  static get styles() {
-    return css`
-      :host {
-        position: absolute;
-        inset: 0;
-      }
-      .container {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        height: 100%;
-        padding: 5px;
-      }
-
-      .suggest {
-        height: 20px;
-      }
-      .category-browser {
-        position: relative;
-        flex: 1;
-      }
-    `;
-  }
-
   static get properties() {
     return {
       categoryData: {type: Object, state: true},
@@ -140,8 +116,6 @@ export class CategoryBrowserView extends LitElement {
     const maxSelf = isLog10
       ? Math.log10(incomingData.self.count)
       : incomingData.self.count;
-
-    // const color = this.#getColor(,) `rgb(${filter.baseColor.mix(App.colorSilver, 1 - (isLog10 ? filter.countLog10 : filter.count) / max).coords.map(cood => cood * 256).join(',')})`;
 
     const nodeIdVal = incomingData.self.node;
 
