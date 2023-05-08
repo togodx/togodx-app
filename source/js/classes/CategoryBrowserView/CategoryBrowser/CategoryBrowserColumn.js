@@ -3,18 +3,15 @@ import {repeat} from 'lit/directives/repeat.js';
 import {flip} from './flipColumn';
 import {styles} from './CategoryBrowserColumn.css';
 import {createRef, ref} from 'lit/directives/ref.js';
-import {store} from '../../../functions/util';
+import {observeState} from 'lit-element-state';
+import {state} from '../CategoryBrowserState';
 
-export default class CategoryBrowserColumn extends LitElement {
+export default class CategoryBrowserColumn extends observeState(LitElement) {
   #columnRef = createRef();
 
   #maxCountWidth = 0;
   #maxMappedWidth = 0;
   #maxPvalueWidth = 0;
-  #unsubscribe = store.subscribe(
-    'userFiltersSet',
-    this.#userFiltersSet.bind(this)
-  );
 
   static get styles() {
     return styles;
@@ -29,7 +26,6 @@ export default class CategoryBrowserColumn extends LitElement {
         type: String,
         state: true,
       },
-      userFiltersSet: {type: Boolean, state: true},
       scrolledHeroRect: {type: Object, state: true},
       animationOptions: {type: Object, state: true},
     };
@@ -42,18 +38,17 @@ export default class CategoryBrowserColumn extends LitElement {
     this.scrolledHeroRect = null;
     this.animationOptions = {};
     this.idNodeMap = new Map();
-    this.userFiltersSet = false;
+
     this.checkedIds = [];
   }
 
   #userFiltersSet(userFiltersSet) {
-    this.userFiltersSet = userFiltersSet;
+    state.userFiltersSet = userFiltersSet;
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.idNodeMap.clear();
-    this.#unsubscribe();
   }
 
   #getMaxCountWidth(titleText, valArr) {
@@ -92,13 +87,13 @@ export default class CategoryBrowserColumn extends LitElement {
       });
     }
 
-    // TODO gette
     if (this.#columnRef.value && this.nodes.length > 0) {
       this.#maxCountWidth = this.#getMaxCountWidth(
-        'Values',
+        'Term',
         this.nodes.map(node => node.count?.toLocaleString())
       );
-      if (store.state.userFiltersSet) {
+      if (state.userFiltersSet) {
+        console.log('store.state.userFiltersSet', state.userFiltersSet);
         this.#maxMappedWidth = this.#getMaxCountWidth(
           'Mapped',
           this.nodes.map(node => node.mapped?.toLocaleString())
@@ -140,7 +135,7 @@ export default class CategoryBrowserColumn extends LitElement {
                 ></category-browser-sorter>
                 <category-browser-sorter
                   prop="mapped"
-                  class="mapped ${store.state.userFiltersSet
+                  class="mapped ${state.userFiltersSet
                     ? '-user-filter-set'
                     : ''}"
                   label="Mapped"
@@ -149,7 +144,7 @@ export default class CategoryBrowserColumn extends LitElement {
                 <category-browser-sorter
                   prop="pvalue"
                   label="p-value"
-                  class="pvalue ${store.state.userFiltersSet
+                  class="pvalue ${state.userFiltersSet
                     ? '-user-filter-set'
                     : ''}"
                   style="width: ${this.#maxPvalueWidth}px"

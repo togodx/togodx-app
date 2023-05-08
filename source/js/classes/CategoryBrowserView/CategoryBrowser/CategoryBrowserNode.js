@@ -1,9 +1,10 @@
 import {LitElement, html, nothing} from 'lit';
 import {ref, createRef} from 'lit/directives/ref.js';
 import {styles} from './CategoryBrowserNode.css';
-import {store} from '../../../functions/util';
+import {state} from '../CategoryBrowserState';
+import {observeState} from 'lit-element-state';
 
-export class CategoryNode extends LitElement {
+export class CategoryNode extends observeState(LitElement) {
   #greyedOut = false;
 
   static get styles() {
@@ -87,7 +88,7 @@ export class CategoryNode extends LitElement {
       this.leftConnectorClassName = '';
       this.rightConnectorClassName = '';
     }
-    this.#greyedOut = !this.data.pvalue && store.state.userFiltersSet;
+    this.#greyedOut = !this.data.pvalue && state.userFiltersSet;
   }
 
   updated() {
@@ -187,17 +188,13 @@ export class CategoryNode extends LitElement {
               ${this.data.count?.toLocaleString()}
             </div>
             <div
-              class="mapped ${store.state.userFiltersSet
-                ? '-user-filter-set'
-                : ''}"
+              class="mapped ${state.userFiltersSet ? '-user-filter-set' : ''}"
               style="width: ${this.mappedWidth}px"
             >
               ${this.data.mapped?.toLocaleString()}
             </div>
             <div
-              class="pvalue ${store.state.userFiltersSet
-                ? '-user-filter-set'
-                : ''}"
+              class="pvalue ${state.userFiltersSet ? '-user-filter-set' : ''}"
               style="width: ${this.pvalueWidth}px"
             >
               ${this.data.pvalue?.toExponential(2)}

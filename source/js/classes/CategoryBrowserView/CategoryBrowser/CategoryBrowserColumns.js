@@ -4,8 +4,10 @@ import {ref, createRef} from 'lit/directives/ref.js';
 import {repeat} from 'lit/directives/repeat.js';
 
 import {styles} from './CategoryBrowserColumns.css';
+import {state} from '../CategoryBrowserState';
+import {observeState} from 'lit-element-state';
 
-export class CategoryBrowserColumns extends LitElement {
+export class CategoryBrowserColumns extends observeState(LitElement) {
   static get styles() {
     return styles;
   }
@@ -202,7 +204,7 @@ export class CategoryBrowserColumns extends LitElement {
         >
           ${repeat(
             this._columns,
-            column => column,
+            column => column + '' + state.userFiltersSet,
             column => {
               return html`
                 <category-browser-column

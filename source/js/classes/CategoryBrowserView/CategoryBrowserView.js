@@ -1,5 +1,5 @@
-import {css, html, LitElement} from 'lit';
-import {cachedAxios, store} from '../../functions/util';
+import {html, LitElement} from 'lit';
+import {cachedAxios} from '../../functions/util';
 import DefaultEventEmitter from '../DefaultEventEmitter';
 import './Suggest/Suggest';
 import './CategoryBrowser/CategoryBrowser';
@@ -15,9 +15,11 @@ import ConditionAnnotation from '../ConditionAnnotation';
 import * as event from '../../events';
 import ConditionBuilder from '../ConditionBuilder';
 import {sortEvent} from './CategoryBrowser/sortConst';
+import {observeState} from 'lit-element-state';
+import {state} from './CategoryBrowserState';
 
 //TODO add mutation observer to observe body's data-condition change
-export class CategoryBrowserView extends LitElement {
+export class CategoryBrowserView extends observeState(LitElement) {
   #items;
   #API = new cachedAxios();
   #categoryAPIBaseURL;
@@ -26,8 +28,8 @@ export class CategoryBrowserView extends LitElement {
   #attributeId;
   #userFilterMap = new Map();
   #categoryColor;
-  #state = store.state;
-  #unsubscribe = store.subscribe('condition', this.#onBodyMutation.bind(this));
+  // #state = store.state;
+  // #unsubscribe = store.subscribe('condition', this.#onBodyMutation.bind(this));
   #sortOrder = 'none';
   #sortProp = '';
   #unsortedData = null;
@@ -56,7 +58,7 @@ export class CategoryBrowserView extends LitElement {
     this.suggestionsLoading = false;
     this.nodeId = '';
     this.term = '';
-    this.condition = document.body.dataset.condition;
+    // this.condition = document.body.dataset.condition;
     this.checkedIds = {filter: [], annotation: []};
 
     this.addEventListener(
@@ -66,9 +68,9 @@ export class CategoryBrowserView extends LitElement {
     element.append(this);
   }
 
-  #onBodyMutation(condition) {
-    this.condition = condition;
-  }
+  // #onBodyMutation(condition) {
+  //   this.condition = condition;
+  // }
 
   #addLog10ToItems(categoryData) {
     return categoryData.map((item, index) => {
@@ -88,7 +90,7 @@ export class CategoryBrowserView extends LitElement {
       nodeId: {type: String, state: true},
       term: {type: String, state: true},
       checkedIds: {type: Object, state: true},
-      condition: {type: String, state: true},
+      // condition: {type: String, state: true},
     };
   }
 
@@ -216,13 +218,13 @@ export class CategoryBrowserView extends LitElement {
         break;
     }
 
-    if (this.condition === 'filter') {
+    if (state.condition === 'filter') {
       if (action === 'add') {
         ConditionBuilder.addFilter(this.#attributeId, e.detail.id);
       } else {
         ConditionBuilder.removeFilter(this.#attributeId, e.detail.id);
       }
-    } else if (this.condition === 'annotation') {
+    } else if (state.condition === 'annotation') {
       const conditionAnnotation = new ConditionAnnotation(
         this.#attributeId,
         e.detail.id
@@ -341,7 +343,7 @@ export class CategoryBrowserView extends LitElement {
             @node-checked="${this.#handleNodeCheck}"
             id="category-browser"
             .data="${this.categoryData}"
-            .checkedIds="${this.checkedIds[this.condition]}"
+            .checkedIds="${this.checkedIds[state.condition]}"
           ></category-browser>
         </div>
       </div>
@@ -396,7 +398,10 @@ export class CategoryBrowserView extends LitElement {
         this.#userFilterMap.set(filter.node, filter);
       });
 
-      this.#state.userFiltersSet = true;
+      console.log('userFiltersSet changed to true');
+      // this.#state.userFiltersSet = true;
+
+      state.userFiltersSet = true;
 
       this.#addMappedToData();
       this.categoryData = this.#unsortedData;
@@ -406,7 +411,8 @@ export class CategoryBrowserView extends LitElement {
   /** When Mapped IDs are cleared */
   #handleClearUserFilters() {
     this.#userFilterMap.clear();
-    this.#state.userFiltersSet = false;
+
+    state.userFiltersSet = false;
 
     this.#unsortedData = {
       role: this.#clickedRole,
@@ -443,14 +449,14 @@ export class CategoryBrowserView extends LitElement {
         case 'add':
           this.checkedIds = {
             ...this.checkedIds,
-            [this.condition]: [...this.checkedIds[this.condition], node],
+            [state.condition]: [...this.checkedIds[state.condition], node],
           };
 
           break;
         case 'remove':
           this.checkedIds = {
             ...this.checkedIds,
-            [this.condition]: this.checkedIds[this.condition].filter(
+            [state.condition]: this.checkedIds[state.condition].filter(
               id => id !== node
             ),
           };
@@ -498,8 +504,6 @@ export class CategoryBrowserView extends LitElement {
       event.mutateAnnotationCondition,
       this.#handleAddRemoveFilter.bind(this)
     );
-
-    this.#unsubscribe();
   }
 }
 

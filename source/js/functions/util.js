@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Color from 'colorjs.io';
 import DefaultEventEmitter from '../classes/DefaultEventEmitter';
+import {state} from '../classes/CategoryBrowserView/CategoryBrowserState';
 
 /**
  *
@@ -105,81 +106,10 @@ export class cachedAxios {
   }
 }
 
-// class ObservableStore {
-//   constructor() {
-//     this._observers = new Set();
-//     this._eventObservers = new Map();
-//   }
-
-//   /** Subscribe to an event */
-//   subscribe(eventType, observer) {
-//     if (this._eventObservers.has(eventType)) {
-//       this._eventObservers.get(eventType).add(observer);
-//       return;
-//     } else {
-//       this._eventObservers.set(eventType, new Set([observer]));
-//     }
-//   }
-
-//   unsubscribe(eventType, observer) {
-//     if (this._eventObservers.has(eventType)) {
-//       this._eventObservers.get(eventType).delete(observer);
-//     }
-//   }
-
-//   /** Notify observers. Event type: {type: <eventType: string>, ...} */
-//   notify(event) {
-//     if (this._eventObservers.has(event.type)) {
-//       this._eventObservers.get(event.type).forEach(observer => observer(event));
-//     }
-//   }
-// }
-
-//export const observable = new ObservableStore();
-
-class ReactiveStore {
-  constructor(initialState) {
-    this._eventObservers = new Map();
-    this.state = new Proxy(initialState, {
-      set: (obj, prop, value) => {
-        obj[prop] = value;
-        this.#notify(value);
-        return true;
-      },
-    });
-  }
-
-  subscribe(key, observer) {
-    if (this._eventObservers.has(key)) {
-      this._eventObservers.get(key).add(observer);
-    } else {
-      this._eventObservers.set(key, new Set([observer]));
-    }
-    return () => this.unsubscribe(key, observer);
-  }
-
-  unsubscribe(key, observer) {
-    if (this._eventObservers.has(key)) {
-      this._eventObservers.get(key).delete(observer);
-    }
-  }
-
-  #notify(key, value) {
-    if (this._eventObservers.has(key)) {
-      this._eventObservers.get(key).forEach(observer => observer(value));
-    }
-  }
-}
-
-export const store = new ReactiveStore({
-  condition: document.body.dataset.condition,
-  userFiltersSet: false,
-});
-
 const mutationObserver = new MutationObserver(mutations => {
   mutations.forEach(mutation => {
     if (mutation.type === 'attributes') {
-      store.state.condition = mutation.target.dataset.condition;
+      state.condition = mutation.target.dataset.condition;
     }
   });
 });
