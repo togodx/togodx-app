@@ -111,6 +111,13 @@ export default class CategoryBrowserColumn extends observeState(LitElement) {
     }
   }
 
+  shouldUpdate(changed) {
+    if (this.role === 'hero' && changed.has('checkedIds')) {
+      return false;
+    }
+    return true;
+  }
+
   get containedId() {
     return this.nodes[0].id;
   }
