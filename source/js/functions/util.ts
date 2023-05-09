@@ -1,7 +1,6 @@
 import axios, {type AxiosInstance} from 'axios';
 import Color from 'colorjs.io';
 import DefaultEventEmitter from '../classes/DefaultEventEmitter.ts';
-import {state} from '../classes/CategoryBrowserView/CategoryBrowserState.js';
 
 export function colorTintByHue(baseColor: Color, hue: number): Color {
   return baseColor
@@ -101,19 +100,6 @@ export class cachedAxios {
     });
   }
 }
-
-const mutationObserver = new MutationObserver(mutations => {
-  mutations.forEach(mutation => {
-    if (mutation.type === 'attributes') {
-      state.condition = (mutation.target as HTMLElement).dataset.condition;
-    }
-  });
-});
-
-mutationObserver.observe(document.body, {
-  attributes: true,
-  attributeFilter: ['data-condition'],
-});
 
 type ArrowedFormat = 'tsv' | 'json';
 export function download(

@@ -240,7 +240,7 @@ export class CategoryBrowserView extends observeState(LitElement) {
     this.nodeId = e.detail.id;
   }
 
-  #handleSortChange(keys) {
+  #handleSortChange() {
     const children = this.#unsortedData.relations.children.slice();
     const parents = this.#unsortedData.relations.parents.slice();
 

@@ -36,12 +36,14 @@ export class CategoryBrowserSorter extends observeState(LitElement) {
   }
 
   render() {
+    let sorterClass = `sorter`;
+    if (state.sortOrder !== 'none' && state.sortProp === this.prop) {
+      sorterClass += ` -${state.sortOrder}`;
+    }
     return html`
       <div class="column-sorter-container" @click=${this.#handleSortChange}>
         ${this.label}
-        <div
-          class="sorter -${state.sortOrder !== 'none' ? state.sortOrder : ''}"
-        ></div>
+        <div class="${sorterClass}"></div>
       </div>
     `;
   }

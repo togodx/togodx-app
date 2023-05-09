@@ -17,3 +17,16 @@ class CategoryBrowserState extends LitState {
 }
 
 export const state = new CategoryBrowserState();
+
+const mutationObserver = new MutationObserver(mutations => {
+  mutations.forEach(mutation => {
+    if (mutation.type === 'attributes') {
+      state.condition = mutation.target.dataset.condition;
+    }
+  });
+});
+
+mutationObserver.observe(document.body, {
+  attributes: true,
+  attributeFilter: ['data-condition'],
+});
