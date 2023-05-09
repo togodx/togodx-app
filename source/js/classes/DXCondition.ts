@@ -1,7 +1,7 @@
-import ConditionAnnotationUtility from './ConditionAnnotationUtility';
-import ConditionFilterUtility from './ConditionFilterUtility';
-import ConditionBuilder from './ConditionBuilder';
-import App from './App';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
+import ConditionFilterUtility from './ConditionFilterUtility.ts';
+import ConditionBuilder from './ConditionBuilder.ts';
+import App from './App.ts';
 import axios from 'axios';
 import {getApiParameter} from '../functions/queryTemplates';
 import {
@@ -9,10 +9,10 @@ import {
   ConditionFilter,
   ConditionAnnotation,
   TableHeader,
-} from '../interfaces';
+} from '../interfaces.ts';
 
-const LIMIT: number = 100;
-let idCounter: number = 0;
+const LIMIT = 100;
+let idCounter = 0;
 
 // TODO: キャッシュの機構を作る
 

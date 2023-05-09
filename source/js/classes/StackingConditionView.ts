@@ -1,7 +1,7 @@
-import ConditionBuilder from './ConditionBuilder';
-import Records from './Records';
-import ConditionFilterUtility from './ConditionFilterUtility';
-import ConditionAnnotationUtility from './ConditionAnnotationUtility';
+import ConditionBuilder from './ConditionBuilder.ts';
+import Records from './Records.ts';
+import ConditionFilterUtility from './ConditionFilterUtility.ts';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
 
 const POLLING_DURATION = 1000;
 
@@ -12,7 +12,7 @@ export default class StackingConditionView {
   #condition: ConditionFilterUtility | ConditionAnnotationUtility;
   #conditionType: ConditionType;
   #ROOT: HTMLDivElement;
-  #LABELS: HTMLUListElement;
+  #LABELS?: HTMLUListElement;
 
   constructor(
     container: HTMLDivElement,
@@ -66,7 +66,7 @@ export default class StackingConditionView {
 
     // reference
     if (this.#condition instanceof ConditionFilterUtility) {
-      this.#LABELS = this.#ROOT.querySelector(':scope > .labels')!;
+      this.#LABELS = this.#ROOT.querySelector(':scope > .labels') as HTMLUListElement;
       for (const node of this.#condition.nodes) {
         this.addFilter(node);
       }
@@ -89,7 +89,7 @@ export default class StackingConditionView {
             }
             break;
           case this.#condition instanceof ConditionFilterUtility:
-            for (const label of this.#LABELS.querySelectorAll<HTMLLIElement>(
+            for (const label of this.#LABELS!.querySelectorAll<HTMLLIElement>(
               ':scope > .label'
             )) {
               ConditionBuilder.removeFilter(
@@ -112,7 +112,7 @@ export default class StackingConditionView {
     li.classList.add('label', '_category-background-color');
     li.dataset.node = node.node;
     li.innerHTML = `${node.label}<div class="close-button-view"></div>`;
-    this.#LABELS.append(li);
+    this.#LABELS!.append(li);
 
     // const getNode = () => {
     //   const node = Records.getNode(this.#condition.attributeId, nodeId);
@@ -139,7 +139,7 @@ export default class StackingConditionView {
     // getNode();
   }
 
-  removeAnnotation(conditionUtilityAnnotation) {
+  removeAnnotation(conditionUtilityAnnotation: ConditionAnnotationUtility) {
     const isMatch =
       conditionUtilityAnnotation.attributeId === this.#condition.attributeId &&
       (conditionUtilityAnnotation.nodeId
@@ -149,10 +149,10 @@ export default class StackingConditionView {
     return isMatch;
   }
 
-  removeFilter(attributeId, node) {
-    if (attributeId === this.#condition.attributeId) {
+  removeFilter(attributeId: string, node: string) {
+    if (attributeId === this.#condition.attributeId && !!this.#LABELS) {
       this.#LABELS.removeChild(
-        this.#LABELS.querySelector(`:scope > [data-node="${node}"`)
+        this.#LABELS.querySelector(`:scope > [data-node="${node}"`) as Element
       );
       if (this.#LABELS.childNodes.length === 0) {
         this.#ROOT.remove();
@@ -165,7 +165,7 @@ export default class StackingConditionView {
     }
   }
 
-  sameAttribute(attributeId) {
+  sameAttribute(attributeId: string) {
     return attributeId === this.#condition.attributeId;
   }
 }

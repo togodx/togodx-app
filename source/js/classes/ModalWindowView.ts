@@ -11,7 +11,7 @@ export default class ModalWindowView {
   #BODY: HTMLDivElement;
   #popupPosition: Position;
   #dragStartPosition: Position;
-  #handleKeydown: Function;
+  #handleKeydown: ()=>void;
 
   constructor() {
     this.#ROOT = document.createElement('section');

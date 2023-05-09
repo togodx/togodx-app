@@ -1,13 +1,12 @@
-import DefaultEventEmitter from './DefaultEventEmitter';
-import ConditionBuilder from './ConditionBuilder';
-import Records from './Records';
-import ConditionResultsPanelView from './ConditionResultsPanelView';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
+import ConditionBuilder from './ConditionBuilder.ts';
+import Records from './Records.ts';
+import ConditionResultsPanelView, { LoadStatus } from './ConditionResultsPanelView.ts';
 import * as event from '../events';
 import axios, {AxiosError} from 'axios';
-import DXCondition from './DXCondition';
-import ConditionFilterUtility from './ConditionFilterUtility';
-import { LoadStatus } from './ConditionResultsPanelView';
-import { Preset } from '../interfaces';
+import DXCondition from './DXCondition.ts';
+import ConditionFilterUtility from './ConditionFilterUtility.ts';
+import { Preset } from '../interfaces.ts';
 
 export default class ConditionResultsController {
   #dxCondition: DXCondition;

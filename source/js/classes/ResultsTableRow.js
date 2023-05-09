@@ -1,5 +1,5 @@
-import DefaultEventEmitter from './DefaultEventEmitter';
-import {createPopupEvent} from '../functions/util';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
+import {createPopupEvent} from '../functions/util.ts';
 import * as event from '../events';
 
 export default class ResultsTableRow {

@@ -1,5 +1,5 @@
 import AttributeTrackView from './AttributeTrackView.js';
-import PresetManager from './PresetManager.js';
+import PresetManager from './PresetManager.ts';
 
 export default class CategoryView {
   #attributeTrackViews: AttributeTrackView[];

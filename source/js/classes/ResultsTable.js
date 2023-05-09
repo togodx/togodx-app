@@ -1,7 +1,7 @@
-import ConditionBuilder from './ConditionBuilder';
-import DefaultEventEmitter from './DefaultEventEmitter';
+import ConditionBuilder from './ConditionBuilder.ts';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import StatisticsView from './StatisticsView';
-import Records from './Records';
+import Records from './Records.ts';
 import ResultsTableRow from './ResultsTableRow';
 import * as event from '../events';
 
@@ -160,7 +160,7 @@ export default class ResultsTable {
   }
 
   #setupTable(conditionResults) {
-    if ((document.body.dataset.display = 'results')) {
+    if (document.body.dataset.display === 'results') {
       // reset
       this.#conditionResults = conditionResults;
       this.#intersctionObserver.unobserve(this.#TABLE_END);

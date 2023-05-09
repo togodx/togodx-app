@@ -1,15 +1,20 @@
 import Color from 'colorjs.io';
-import AttributeUtility from './AttributeUtility';
-import { AttributesCategory, AttributesDatasetObject, Breakdown, BreakdownWithParentNode } from '../interfaces';
+import AttributeUtility from './AttributeUtility.ts';
+import { AttributesCategory, AttributesDatasetObject, Breakdown, BreakdownWithParentNode } from '../interfaces.ts';
 
+type setAttributesArgs = {
+  categories: AttributesCategory[];
+  attributes: AttributeUtility[];
+  datasets: AttributesDatasetObject;
+}
 class Records {
-  #categories: AttributesCategory[];
-  #attributes: AttributeUtility[];
-  #datasets: AttributesDatasetObject;
+  #categories?: AttributesCategory[];
+  #attributes?: AttributeUtility[];
+  #datasets?: AttributesDatasetObject;
 
   // public methods
 
-  setAttributes({categories, attributes, datasets}) {
+  setAttributes({categories, attributes, datasets}:setAttributesArgs ) {
     console.log(categories, attributes, datasets)
     // define categories
 
@@ -21,10 +26,10 @@ class Records {
       categories[i].hue = hue;
       categories[i].color = srgb;
       categories[i].colorCSSValue = `rgb(${srgb.coords
-        .map(channel => channel * 256)
+        .map((channel: number) => channel * 256)
         .join(',')})`;
       categories[i].colorCSSStrongValue = `rgb(${srgbStrong.coords
-        .map(channel => channel * 256)
+        .map((channel: number) => channel * 256)
         .join(',')})`;
     }
     this.#categories = Object.freeze(categories);

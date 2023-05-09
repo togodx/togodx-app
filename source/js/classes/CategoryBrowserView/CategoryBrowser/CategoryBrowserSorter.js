@@ -2,7 +2,7 @@ import {LitElement, html} from 'lit';
 
 import {styles} from './CategoryBrowserSorter.css';
 import {ref, createRef} from 'lit/directives/ref.js';
-import DefaultEventEmitter from '../../DefaultEventEmitter';
+import DefaultEventEmitter from '../../DefaultEventEmitter.ts';
 import {sortEvent, sortOrderConst} from './sortConst';
 
 export class CategoryBrowserSorter extends LitElement {

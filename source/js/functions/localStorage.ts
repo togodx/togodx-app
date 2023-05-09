@@ -1,1 +1,1 @@
-export const currentAttributeSet: string = 'currentAttributeSet';
+export const currentAttributeSet = 'currentAttributeSet';

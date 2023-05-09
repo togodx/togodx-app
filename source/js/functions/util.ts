@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios, {type AxiosInstance} from 'axios';
 import Color from 'colorjs.io';
-import DefaultEventEmitter from '../classes/DefaultEventEmitter';
+import DefaultEventEmitter from '../classes/DefaultEventEmitter.ts';
 import {state} from '../classes/CategoryBrowserView/CategoryBrowserState';
 
 export function colorTintByHue(baseColor: Color, hue: number): Color {
@@ -37,8 +37,10 @@ export function createPopupEvent(
   DefaultEventEmitter.dispatchEvent(customEvent);
 }
 
-<<<<<<< HEAD:source/js/functions/util.js
 export class cachedAxios {
+  axios: AxiosInstance;
+  maxCacheSize: number;
+  cache: Map<string, object>;
   /**
    * Create cached axios instance
    * @param {string} baseURL - base URL.
@@ -55,16 +57,11 @@ export class cachedAxios {
     this.cache = new Map();
   }
 
-  /**
-   *
-   * @param {string} url - url part bo be fetched. Fetched url will be  baseURL + url
-   * @returns {object} {data} - response data
-   */
-  get(url) {
+  get(url: string) {
     if (this.cache.has(url)) {
       return Promise.resolve(this.cache.get(url));
     }
-    return this.axios.get().then(res => {
+    return this.axios.get(url).then(res => {
       if (res.status !== 200) {
         throw new Error(res.statusText);
       }
@@ -82,7 +79,7 @@ export class cachedAxios {
     });
   }
 
-  post(url) {
+  post(url: string) {
     if (this.cache.has(url)) {
       return Promise.resolve(this.cache.get(url));
     }
@@ -117,7 +114,7 @@ mutationObserver.observe(document.body, {
   attributes: true,
   attributeFilter: ['data-condition'],
 });
-=======
+
 type ArrowedFormat = 'tsv' | 'json';
 export function download(
   text: string,
@@ -140,4 +137,3 @@ export function download(
   a.click();
   a.remove();
 }
->>>>>>> import-condition3:source/js/functions/util.ts

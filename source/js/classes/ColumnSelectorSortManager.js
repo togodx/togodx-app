@@ -1,4 +1,4 @@
-import DefaultEventEmitter from './DefaultEventEmitter';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import * as event from '../events';
 
 const SORTABLE_COLUMNS = ['label', 'total', 'mapped', 'pvalue'];

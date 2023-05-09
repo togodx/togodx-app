@@ -1,5 +1,5 @@
-import Records from "./Records";
-import AttributeUtility from "./AttributeUtility";
+import Records from "./Records.ts";
+import AttributeUtility from "./AttributeUtility.ts";
 
 export default class ConditionUtility {
 

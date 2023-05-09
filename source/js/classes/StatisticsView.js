@@ -1,5 +1,5 @@
-import DefaultEventEmitter from './DefaultEventEmitter';
-import Records from './Records';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
+import Records from './Records.ts';
 import * as event from '../events';
 import _ from 'lodash';
 

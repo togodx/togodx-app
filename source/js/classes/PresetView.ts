@@ -1,6 +1,6 @@
-import ModalWindowView from './ModalWindowView';
-import PresetManager from './PresetManager';
-import {Preset} from '../interfaces';
+import ModalWindowView from './ModalWindowView.ts';
+import PresetManager from './PresetManager.ts';
+import {Preset} from '../interfaces.ts';
 
 export default class PresetView extends ModalWindowView {
   #isRendered = false;
@@ -64,9 +64,9 @@ export default class PresetView extends ModalWindowView {
       //   // const label = e.target.value;
       //   // PresetManager.updateBySetLabel(label);
       // });
-    sections[1]
-      .querySelector(':scope > input')
-      .addEventListener('change', e => {
+    (sections[1]
+      .querySelector(':scope > input') as HTMLInputElement)
+      .addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
         PresetManager.importSet(file);

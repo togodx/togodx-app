@@ -6,14 +6,14 @@ export enum ProgressIndicatorMode {
 
 export default class ProgressIndicator {
   #ROOT: HTMLElement;
-  #TEXT_OFFSET: HTMLSpanElement;
-  #TEXT_TOTAL: HTMLSpanElement;
+  #TEXT_OFFSET?: HTMLSpanElement;
+  #TEXT_TOTAL?: HTMLSpanElement;
   #TEXT_STATUS: HTMLDivElement;
   #BAR: HTMLDivElement;
-  #totalDuration: number;
+  #totalDuration?: number;
   #total: number;
   #mode: ProgressIndicatorMode;
-  #lastTime: number;
+  #lastTime?: number;
 
   /**
    * @param { HTMLElement } elm
@@ -45,21 +45,21 @@ export default class ProgressIndicator {
       </div>`;
 
     this.#ROOT = elm;
-    this.#BAR = elm.querySelector<HTMLDivElement>(':scope > .progress > .bar')!;
-    this.#TEXT_STATUS = elm.querySelector<HTMLDivElement>(':scope > .text > .status')!;
+    this.#BAR = elm.querySelector(':scope > .progress > .bar') as HTMLDivElement
+    this.#TEXT_STATUS = elm.querySelector(':scope > .text > .status') as HTMLDivElement
     this.#total = 0;
 
     if (mode === ProgressIndicatorMode.SIMPLE) return;
 
-    const amount: HTMLDivElement = elm.querySelector<HTMLDivElement>(
+    const amount = elm.querySelector(
       ':scope > .text > .amount'
-    )!;
-    this.#TEXT_OFFSET = amount.querySelector<HTMLSpanElement>(
+    ) as HTMLDivElement
+    this.#TEXT_OFFSET = amount.querySelector(
       ':scope > span.offset'
-    )!;
-    this.#TEXT_TOTAL = amount.querySelector<HTMLSpanElement>(
+    )  as HTMLDivElement
+    this.#TEXT_TOTAL = amount.querySelector(
       ':scope > span.total'
-    )!;
+    )  as HTMLDivElement
     this.#totalDuration = 0;
   }
 
@@ -67,29 +67,23 @@ export default class ProgressIndicator {
   /**
    * @param { number } offset
    */
-  #updateAmount(offset: number): void {
+  #updateAmount(offset: number) {
+    if (!this.#TEXT_OFFSET) return;
     this.#TEXT_OFFSET.textContent = offset.toString();
   }
 
-  /**
-   * @param { number } offset
-   */
-  #updateBarWidth(offset:number = 0): void {
+ 
+  #updateBarWidth(offset = 0) {
     this.#BAR.style.width =
       offset / this.#total ? `${(offset / this.#total) * 100}%` : '0%';
   }
 
-  /**
-   * @param { number } durationPerItem
-   * @param { number } itemsLeft
-   */
+ 
   #remainingTimeInSec(durationPerItem: number, itemsLeft: number): number {
     return (durationPerItem * itemsLeft) / 1000 || 0;
   }
 
-  /**
-   * @param { number } time
-   */
+ 
   #timeString(time: number): string {
     if (time <= 0) return '0 sec.';
 
@@ -101,14 +95,11 @@ export default class ProgressIndicator {
     return h > 0 ? `${h} hr.` : m > 0 ? `${m} min.` : `${s} sec.`;
   }
 
-  /**
-   * @param { number } offset
-   * @param { number } startTime - start time of 1 instance
-   */
-  #updateTime(offset: number, startTime: number): void {
-    this.#totalDuration += Date.now() - startTime;
+
+  #updateTime(offset: number, startTime: number) {
+    this.#totalDuration! += Date.now() - startTime;
     const remainingTime = this.#remainingTimeInSec(
-      this.#totalDuration / offset,
+      this.#totalDuration! / offset,
       this.#total - offset
     );
     this.#TEXT_STATUS.innerHTML = this.#timeString(remainingTime);
@@ -128,7 +119,7 @@ export default class ProgressIndicator {
   /**
    * @param { offset: number } progressInfo
    */
-  updateProgressBar(offset: number = 0): void {
+  updateProgressBar(offset = 0): void {
     const lastTime = this.#lastTime || Date.now();
     this.#updateBarWidth(offset);
     if (this.#mode === ProgressIndicatorMode.SIMPLE) return;
@@ -143,11 +134,11 @@ export default class ProgressIndicator {
    * @param { number } total
    * @param { boolean } isError
    */
-  setIndicator(message: string = '', total: number = 0, isError: boolean = false): void {
+  setIndicator(message = '', total = 0, isError = false): void {
     this.#total = total;
     if (this.#mode === ProgressIndicatorMode.SIMPLE) this.#setMessage(message, isError);
     else if (this.#mode === ProgressIndicatorMode.DETAILED)
-      this.#TEXT_TOTAL.textContent = `/ ${this.#total.toString()}`;
+      this.#TEXT_TOTAL!.textContent = `/ ${this.#total.toString()}`;
   }
 
   reset(): void {

@@ -1,19 +1,19 @@
-import DefaultEventEmitter from './DefaultEventEmitter';
-import ConditionBuilderView from './ConditionBuilderView';
-import ConditionBuilder from './ConditionBuilder';
-import Records from './Records';
-import CategoryView from './CategoryView';
-import PresetView from './PresetView';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
+import ConditionBuilderView from './ConditionBuilderView.ts';
+import ConditionBuilder from './ConditionBuilder.ts';
+import Records from './Records.ts';
+import CategoryView from './CategoryView.ts';
+import PresetView from './PresetView.ts';
 import ResultDetailModal from './ResultDetailModal';
 import BalloonView from './BalloonView';
-import ConditionsController from './ConditionsController';
+import ConditionsController from './ConditionsController.ts';
 import UploadUserIDsView from './UploadUserIDsView';
 import Color from 'colorjs.io';
 import StanzaManager from './StanzaManager';
 import ResultsTable from './ResultsTable';
-import PresetManager from './PresetManager';
+import PresetManager from './PresetManager.ts';
 import * as event from '../events';
-import {Config, ViewModes, Templates, Backend, Attributes, API} from '../interfaces';
+import {Config, ViewModes, Templates, Backend, Attributes, API} from '../interfaces.ts';
 
 type ConfigResponces = [Templates, Backend, Attributes];
 
@@ -73,37 +73,6 @@ class App {
     await PresetManager.init(config.PRESET);
 
     // load config json
-<<<<<<< HEAD:source/js/classes/App.js
-    Promise.all([
-      fetch(config.TEMPLATES),
-      fetch(config.BACKEND),
-      fetch(config.ATTRIBUTES),
-    ])
-      .then(responces => {
-        return Promise.all(responces.map(responce => responce.json()));
-      })
-      .then(([templates, backend, attributes]) => {
-        Records.setAttributes(attributes);
-        console.log({attributes});
-        // define primary keys
-        const customEvent = new CustomEvent(event.defineTogoKey, {
-          detail: {datasets: attributes.datasets},
-        });
-        DefaultEventEmitter.dispatchEvent(customEvent);
-        // initialize stanza manager
-        StanzaManager.init(templates);
-        // aggregate
-        this.#backend = Object.freeze(backend);
-        this.#makeCategoryViews();
-        this.#defineAllTracksCollapseButton();
-        ConditionBuilder.init();
-      });
-  }
-
-  // private methods
-
-  #draw() {
-=======
     const [templates, backend, attributes] = await Promise
       .all([
         fetch(config.TEMPLATES),
@@ -121,7 +90,6 @@ class App {
     StanzaManager.init(templates);
     // aggregate
     this.#backend = Object.freeze(backend);
->>>>>>> import-condition3:source/js/classes/App.ts
     this.#makeCategoryViews();
     this.#defineAllTracksCollapseButton();
     ConditionBuilder.init();

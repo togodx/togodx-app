@@ -1,4 +1,4 @@
-import ConditionBuilder from './ConditionBuilder';
+import ConditionBuilder from './ConditionBuilder.ts';
 
 export default class HistogramRangeSelectorController {
   #target;

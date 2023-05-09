@@ -1,9 +1,9 @@
 import ColumnItemView from './ColumnItemView';
-import ConditionBuilder from './ConditionBuilder';
-import DefaultEventEmitter from './DefaultEventEmitter';
+import ConditionBuilder from './ConditionBuilder.ts';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import ColumnSelectorSortManager from './ColumnSelectorSortManager';
-import App from './App';
-import Records from './Records';
+import App from './App.ts';
+import Records from './Records.ts';
 import * as event from '../events';
 import {getApiParameter} from '../functions/queryTemplates';
 import axios from 'axios';

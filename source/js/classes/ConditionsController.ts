@@ -1,8 +1,8 @@
-import ConditionResultsController from './ConditionResultsController';
-import DefaultEventEmitter from './DefaultEventEmitter';
+import ConditionResultsController from './ConditionResultsController.ts';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import * as event from '../events';
-import DXCondition from './DXCondition';
-import { download } from '../functions/util';
+import DXCondition from './DXCondition.ts';
+import { download } from '../functions/util.ts';
 
 export default class ConditionsController {
   #conditionResultsControllers: ConditionResultsController[];

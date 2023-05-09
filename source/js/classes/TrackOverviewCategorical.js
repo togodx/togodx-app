@@ -1,9 +1,9 @@
-import App from './App';
-import DefaultEventEmitter from './DefaultEventEmitter';
-import ConditionBuilder from './ConditionBuilder';
-import Records from './Records';
+import App from './App.ts';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
+import ConditionBuilder from './ConditionBuilder.ts';
+import Records from './Records.ts';
 import * as event from '../events';
-import * as util from '../functions/util';
+import * as util from '../functions/util.ts';
 
 const MIN_PIN_SIZE = 12;
 const MAX_PIN_SIZE = 24;

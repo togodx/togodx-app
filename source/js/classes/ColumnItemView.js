@@ -1,7 +1,7 @@
-import DefaultEventEmitter from './DefaultEventEmitter';
-import ConditionBuilder from './ConditionBuilder';
-import ConditionAnnotationUtility from './ConditionAnnotationUtility';
-import App from './App';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
+import ConditionBuilder from './ConditionBuilder.ts';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
+import App from './App.ts';
 import * as event from '../events';
 
 export default class ColumnItemView {

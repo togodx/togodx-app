@@ -1,8 +1,8 @@
-import ModalWindowView from './ModalWindowView';
-import DefaultEventEmitter from './DefaultEventEmitter';
-import Records from './Records';
+import ModalWindowView from './ModalWindowView.ts';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
+import Records from './Records.ts';
 import StanzaManager from './StanzaManager';
-import {createPopupEvent} from '../functions/util';
+import {createPopupEvent} from '../functions/util.ts';
 import * as event from '../events';
 
 export default class ResultDetailModal extends ModalWindowView {

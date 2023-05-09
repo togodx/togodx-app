@@ -1,10 +1,10 @@
-import ConditionResultsController from './ConditionResultsController';
-import ProgressIndicator from './ProgressIndicator';
-import Records from './Records';
-import ConditionBuilder from './ConditionBuilder';
-import PresetManager from './PresetManager';
-import { download } from '../functions/util';
-import { Preset } from '../interfaces';
+import ConditionResultsController from './ConditionResultsController.ts';
+import ProgressIndicator from './ProgressIndicator.ts';
+import Records from './Records.ts';
+import ConditionBuilder from './ConditionBuilder.ts';
+import PresetManager from './PresetManager.ts';
+import { download } from '../functions/util.ts';
+import { Preset } from '../interfaces.ts';
 
 const BUTTONS: string[] = [ 'resume', 'retry', 'tsv', 'condition', 'edit' ]
 
@@ -158,22 +158,22 @@ export default class ConditionResultsPanelView {
     download(JSON.stringify([this.preset]), 'json', 'togodx-preset', true);
   }
 
-  controllerStatusProxy(status) {
-    const self = this;
+  controllerStatusProxy(status: object) {
+
     this.#statusProxy = new Proxy(status, {
-      get(target, property, receiver) {
+      get: (target, property, receiver) => {
         // console.log(target, property, receiver)
         return Reflect.get(target, property, receiver);
       },
-      set(target, property, value, receiver) {
+      set: (target, property, value, receiver) => {
         // console.log(target, property, value, receiver)
         // console.log(status)
         switch (property) {
           case 'total': 
-            self.#loadedIds(value);
+            this.#loadedIds(value);
             break;
           case 'current': 
-            self.#loadedProperties(value);
+            this.#loadedProperties(value);
             break;
         }
         return Reflect.set(target, property, value, receiver);
@@ -205,7 +205,7 @@ export default class ConditionResultsPanelView {
     if (this.#statusProxy.total === count) this.#completed();
   }
 
-  #completed(message: string = 'Complete'): void {
+  #completed(message = 'Complete'): void {
     this.#ROOT.dataset.load = LoadStatus.completed;
     this.#STATUS.textContent = message;
     this.#ROOT.classList.remove('-loading');
