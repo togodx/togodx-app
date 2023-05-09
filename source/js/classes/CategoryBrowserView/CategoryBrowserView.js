@@ -14,7 +14,6 @@ import Records from '../Records.ts';
 import ConditionAnnotation from '../ConditionAnnotationUtility.ts';
 import * as event from '../../events';
 import ConditionBuilder from '../ConditionBuilder.ts';
-import {sortEvent} from './CategoryBrowser/sortConst';
 import {observeState} from 'lit-element-state';
 import {state} from './CategoryBrowserState';
 
@@ -52,7 +51,10 @@ export class CategoryBrowserView extends observeState(LitElement) {
     // this.condition = document.body.dataset.condition;
     this.checkedIds = {filter: [], annotation: []};
 
-    state.addObserver(this.#handleSortChange.bind(this), 'sortOrder');
+    state.addObserver(this.#handleSortChange.bind(this), [
+      'sortOrder',
+      'sortProp',
+    ]);
 
     element.append(this);
   }
@@ -158,10 +160,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
     if (changed.has('term') && this.term) {
       this.#loadSuggestData(this.term);
     }
-
-    if (changed.has('sortProp')) {
-      this.handleSortChange();
-    }
   }
 
   #loadCategoryData(nodeId) {
@@ -242,7 +240,7 @@ export class CategoryBrowserView extends observeState(LitElement) {
     this.nodeId = e.detail.id;
   }
 
-  #handleSortChange() {
+  #handleSortChange(keys) {
     const children = this.#unsortedData.relations.children.slice();
     const parents = this.#unsortedData.relations.parents.slice();
 
@@ -279,20 +277,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
         this.categoryData = this.#unsortedData;
         break;
     }
-
-    // Here change toggle state of sorters
-    // const newSortState = {property: state.sortProp, order: state.sortOrder};
-
-    // state.sortProp = this.#sortProp;
-    // state.sortOrder = this.#sortOrder;
-    // DefaultEventEmitter.dispatchEvent(
-    //   new CustomEvent(sortEvent.outsideSortChange, {
-    //     detail: newSortState,
-    //     bubbles: true,
-    //     composed: true,
-    //   })
-    // );
-    //this.#addMappedToData();
   }
 
   // load initial data
