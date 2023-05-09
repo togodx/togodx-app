@@ -9,7 +9,7 @@ import {state} from '../CategoryBrowserState';
 export default class CategoryBrowserColumn extends observeState(LitElement) {
   #columnRef = createRef();
 
-  #maxCountWidth = 0;
+  #maxCountWidth = 50;
   #maxMappedWidth = 0;
   #maxPvalueWidth = 0;
 
@@ -42,42 +42,40 @@ export default class CategoryBrowserColumn extends observeState(LitElement) {
     this.checkedIds = [];
   }
 
-  #userFiltersSet(userFiltersSet) {
-    state.userFiltersSet = userFiltersSet;
-  }
-
   disconnectedCallback() {
     super.disconnectedCallback();
     this.idNodeMap.clear();
   }
 
-  #getMaxCountWidth(titleText, valArr) {
-    const div = document.createElement('div');
-    div.innerText = titleText;
-    div.style.display = 'inline-block';
-    div.style.paddingLeft = '0.3rem';
-    const sorter = document.createElement('div');
-    sorter.style.width = '1.2rem';
-    sorter.style.display = 'inline-block';
-    div.appendChild(sorter);
-    this.#columnRef.value?.appendChild(div);
+  // TODO sometimes returns 0 sometimes not ... =/
+  // #getMaxCountWidth(titleText, valArr) {
+  //   const div = document.createElement('div');
+  //   div.innerText = titleText;
+  //   div.style.display = 'inline-block';
+  //   div.style.paddingLeft = '0.3rem';
+  //   const sorter = document.createElement('div');
+  //   sorter.style.width = '1.2rem';
+  //   sorter.style.display = 'inline-block';
+  //   div.appendChild(sorter);
+  //   document.body.appendChild(div);
 
-    let max = div.getBoundingClientRect().width + 10;
-    this.#columnRef.value?.removeChild(div);
+  //   let max = div.getBoundingClientRect().width + 10;
 
-    valArr.forEach(text => {
-      const span = document.createElement('span');
-      span.innerText = text;
-      this.#columnRef.value?.appendChild(span);
-      const countWidth = span.getBoundingClientRect().width;
-      if (countWidth > max) {
-        max = countWidth;
-      }
-      this.#columnRef.value?.removeChild(span);
-    });
+  //   document.body.removeChild(div);
 
-    return max;
-  }
+  //   valArr.forEach(text => {
+  //     const span = document.createElement('span');
+  //     span.innerText = text;
+  //     this.#columnRef.value?.appendChild(span);
+  //     const countWidth = span.getBoundingClientRect().width;
+  //     if (countWidth > max) {
+  //       max = countWidth;
+  //     }
+  //     this.#columnRef.value?.removeChild(span);
+  //   });
+
+  //   return max;
+  // }
 
   willUpdate(changed) {
     if (changed.has('nodes')) {
@@ -87,21 +85,24 @@ export default class CategoryBrowserColumn extends observeState(LitElement) {
       });
     }
 
-    if (this.#columnRef.value && this.nodes.length > 0) {
-      this.#maxCountWidth = this.#getMaxCountWidth(
-        'Term',
-        this.nodes.map(node => node.count?.toLocaleString())
-      );
+    if (this.nodes.length > 0) {
+      // this.#getMaxCountWidth(
+      //   'Term',
+      //   this.nodes.map(node => node.count?.toLocaleString())
+      // );
       if (state.userFiltersSet) {
-        console.log('store.state.userFiltersSet', state.userFiltersSet);
-        this.#maxMappedWidth = this.#getMaxCountWidth(
-          'Mapped',
-          this.nodes.map(node => node.mapped?.toLocaleString())
-        );
-        this.#maxPvalueWidth = this.#getMaxCountWidth(
-          'p-value',
-          this.nodes.map(node => node.pvalue?.toExponential(2))
-        );
+        this.#maxMappedWidth = 50;
+        // this.#getMaxCountWidth(
+        //   'Mapped',
+        //   this.nodes.map(node => node.mapped?.toLocaleString())
+        // );
+        this.#maxPvalueWidth = 50;
+        //  = this.#getMaxCountWidth(
+        //   'p-value',
+        //   this.nodes.map(node => node.pvalue?.toExponential(2))
+        // );
+      } else {
+        this.#maxPvalueWidth = this.#maxMappedWidth = 0;
       }
     }
 
