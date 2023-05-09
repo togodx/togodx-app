@@ -58,7 +58,7 @@ export default class PresetView extends ModalWindowView {
           const url = dl.dataset.url!;
           this.#loadPreset(url);
         });
-      })
+      });
       // .addEventListener('click', e => {
       //   console.log(e)
       //   // const label = e.target.value;
