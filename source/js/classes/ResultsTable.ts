@@ -4,6 +4,7 @@ import StatisticsView from './StatisticsView';
 import Records from './Records';
 import ResultsTableRow from './ResultsTableRow';
 import * as event from '../events';
+import DXCondition from './DXCondition';
 
 const NUM_OF_PREVIEW = 5;
 const displayMap = new Map([
@@ -22,16 +23,17 @@ export default class ResultsTable {
   #header;
   #previewDxCondition;
   #ROOT;
-  #NUMBER_OF_ENTRIES;
+  #NUMBER_OF_ENTRIES: HTMLSpanElement;
   #COLLAPSE_BUTTON;
-  #COLGROUP;
-  #THEAD;
+  #COLGROUP: HTMLTableColElement;
+  #THEAD: HTMLTableRowElement;
   #STATS;
-  #TBODY;
+  #TBODY: HTMLTableRowElement;
   #TABLE_END;
   #LOADING_VIEW;
 
   constructor(elm) {
+    console.log(elm)
     this.#statisticsViews = [];
 
     // references
@@ -43,12 +45,12 @@ export default class ResultsTable {
     this.#COLLAPSE_BUTTON = header.querySelector(
       ':scope > .collapsenotchbutton'
     );
-    const inner = elm.querySelector(':scope > .inner');
-    const TABLE = inner.querySelector(':scope > table');
-    this.#COLGROUP = TABLE.querySelector(':scope > colgroup');
-    this.#THEAD = TABLE.querySelector(':scope > thead > tr.header');
+    const inner = elm.querySelector(':scope > .inner') as HTMLDivElement;
+    const TABLE = inner.querySelector(':scope > table') as HTMLTableElement;
+    this.#COLGROUP = TABLE.querySelector(':scope > colgroup')!;
+    this.#THEAD = TABLE.querySelector(':scope > thead > tr.header')!;
     this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics');
-    this.#TBODY = TABLE.querySelector(':scope > tbody');
+    this.#TBODY = TABLE.querySelector(':scope > tbody')!;
     this.#TABLE_END = inner.querySelector(':scope > .tableend');
     this.#LOADING_VIEW = this.#TABLE_END.querySelector(
       ':scope > .loading-view'
@@ -176,13 +178,27 @@ export default class ResultsTable {
     }
   }
 
-  #makeTableHeader(dxCondition) {
+  async #makeTableHeader(dxCondition: DXCondition) {
     // make column group
     this.#COLGROUP.innerHTML = '<col></col>'.repeat(
       dxCondition.conditionUtilityFilters.length +
         dxCondition.conditionUtilityAnnotations.length +
         1
     );
+    // labels
+    const labels: string[] = [];
+    for (const cua of dxCondition.conditionUtilityAnnotations) {
+      const attribute = Records.getAttribute(cua.attributeId);
+      let label: string = '';
+      if (cua.nodeId) {
+        const node = await attribute.fetchNode(cua.nodeId)
+        labels.push(node.label);
+      } else {
+        labels.push(attribute.label);
+      }
+    }
+    console.log(labels)
+
     // make table header
     this.#THEAD.innerHTML = `
       <th>
@@ -209,21 +225,23 @@ export default class ResultsTable {
         .join('')}
       ${dxCondition.conditionUtilityAnnotations
         .map(
-          conditionUtilityAnnotation => `
+          (cua, i) => `
             <th>
               <div class="inner _category-color" data-category-id="${
-                conditionUtilityAnnotation.categoryId
+                cua.categoryId
               }">
                 <div class="togo-key-view">${Records.getDatasetLabel(
-                  conditionUtilityAnnotation.dataset
+                  cua.dataset
                 )}</div>
-                <span>${conditionUtilityAnnotation.label}</span>
+                <span>${labels[i]}</span>
               </div>
-            </th>`
-        )
+            </th>`)
         .join('')}
       `;
   }
+  // async #labels() {
+
+  // }
 
   #makeStats(dxCondition) {
     for (const td of this.#STATS.querySelectorAll(':scope > td')) {

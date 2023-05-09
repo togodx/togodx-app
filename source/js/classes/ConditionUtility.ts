@@ -46,7 +46,7 @@ export default class ConditionUtility {
 
   get categoryId(): string {
     if (!this.#categoryId) {
-      this.#categoryId = Records.getCategoryWithAttributeId(this.annotation.id).id;
+      this.#categoryId = Records.getCategoryWithAttributeId(this.annotation.id)!.id;
     }
     return this.#categoryId;
   }
