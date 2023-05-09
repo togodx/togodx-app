@@ -1,8 +1,8 @@
 import AttributeTrackView from './AttributeTrackView.js';
-import AttributesManager from './AttributesManager';
+import PresetManager from './PresetManager.js';
 
 export default class CategoryView {
-  #attributeTrackViews;
+  #attributeTrackViews: AttributeTrackView[];
   #lastState;
   #ROOT;
 
@@ -25,7 +25,7 @@ export default class CategoryView {
         new AttributeTrackView(
           attribute,
           container,
-          AttributesManager.containsInDisplayedAttributes(attribute),
+          PresetManager.containsInDisplayedAttributes(attribute),
           i / attributes.length
         )
     );
@@ -62,7 +62,7 @@ export default class CategoryView {
           case 0: // ok
             {
               // set local storage
-              AttributesManager.updateByDifferenceData(
+              PresetManager.updateByDifferenceData(
                 this.#makeAttributesDisplayStateMap()
               );
             }
@@ -81,7 +81,7 @@ export default class CategoryView {
     });
   }
 
-  #makeAttributesDisplayStateMap() {
+  #makeAttributesDisplayStateMap(): Map<string, boolean> {
     const stateMap = new Map();
     this.#attributeTrackViews.forEach(attributeTrackView => {
       stateMap.set(attributeTrackView.id, attributeTrackView.visibility);

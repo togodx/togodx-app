@@ -1,0 +1,17 @@
+[
+  {
+    "label": "Default set",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada mauris nec est fringilla faucibus. Donec nec eros vel leo commodo pharetra. Ut eget vestibulum ipsum. Nullam sed elit nec mi auctor bibendum. Vivamus elementum sapien eget odio efficitur consequat. Integer vel tortor nec nisi commodo bibendum at id ipsum. Sed lacinia justo ac suscipit lacinia. Nullam ultrices ante vitae nisi efficitur, sit amet pulvinar quam egestas. Duis aliquet volutpat lobortis. Sed facilisis sagittis ligula vel volutpat. Suspendisse potenti. Sed interdum, nunc id malesuada vehicula, ex velit gravida ante, in pretium nibh tellus at lacus.",
+    "url": "./default_set.json"
+  },
+  {
+    "label": "Other set1",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada mauris nec est fringilla faucibus. Donec nec eros vel leo commodo pharetra. Ut eget vestibulum ipsum. Nullam sed elit nec mi auctor bibendum. Vivamus elementum sapien eget odio efficitur consequat. Integer vel tortor nec nisi commodo bibendum at id ipsum. Sed lacinia justo ac suscipit lacinia. Nullam ultrices ante vitae nisi efficitur, sit amet pulvinar quam egestas. Duis aliquet volutpat lobortis. Sed facilisis sagittis ligula vel volutpat. Suspendisse potenti. Sed interdum, nunc id malesuada vehicula, ex velit gravida ante, in pretium nibh tellus at lacus.",
+    "url": "./other_set1.json"
+  },
+  {
+    "label": "Other set2",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada mauris nec est fringilla faucibus. Donec nec eros vel leo commodo pharetra. Ut eget vestibulum ipsum. Nullam sed elit nec mi auctor bibendum. Vivamus elementum sapien eget odio efficitur consequat. Integer vel tortor nec nisi commodo bibendum at id ipsum. Sed lacinia justo ac suscipit lacinia. Nullam ultrices ante vitae nisi efficitur, sit amet pulvinar quam egestas. Duis aliquet volutpat lobortis. Sed facilisis sagittis ligula vel volutpat. Suspendisse potenti. Sed interdum, nunc id malesuada vehicula, ex velit gravida ante, in pretium nibh tellus at lacus.",
+    "url": "./other_set2.json"
+  }
+]

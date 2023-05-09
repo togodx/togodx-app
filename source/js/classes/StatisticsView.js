@@ -6,16 +6,16 @@ import _ from 'lodash';
 export default class StatisticsView {
   #index;
   #attributeId;
-  #tableData;
+  #conditionResults;
   #referenceFilters;
   #BARS;
   #ROOT;
   #ROOT_NODE;
 
-  constructor(statisticsRootNode, elm, tableData, index, condition) {
+  constructor(statisticsRootNode, elm, conditionResults, index, condition) {
     this.#index = index;
     this.#attributeId = condition.attributeId;
-    this.#tableData = tableData;
+    this.#conditionResults = conditionResults;
     this.#ROOT_NODE = statisticsRootNode;
     this.#ROOT = elm;
 
@@ -32,15 +32,14 @@ export default class StatisticsView {
 
     // display order of bar chart
     if (condition.parentNode) {
-      Records.fetchAttributeFilters(
-        this.#attributeId,
-        condition.parentNode
-      ).then(filters => {
-        this.#referenceFilters = filters;
-        this.#draw();
-      });
+      Records.fetchChildNodes(this.#attributeId, condition.parentNode).then(
+        filters => {
+          this.#referenceFilters = filters;
+          this.#draw();
+        }
+      );
     } else {
-      this.#referenceFilters = Records.getAttribute(this.#attributeId).filters;
+      this.#referenceFilters = Records.getAttribute(this.#attributeId).nodes;
     }
 
     // references
@@ -57,8 +56,8 @@ export default class StatisticsView {
       this.#draw.bind(this)
     );
     DefaultEventEmitter.addEventListener(
-      event.failedFetchTableDataIds,
-      this.#failedFetchTableDataIds.bind(this)
+      event.failedFetchConditionResultsIDs,
+      this.#failedFetchConditionResultsIDs.bind(this)
     );
   }
 
@@ -72,18 +71,18 @@ export default class StatisticsView {
       this.#draw.bind(this)
     );
     DefaultEventEmitter.removeEventListener(
-      event.failedFetchTableDataIds,
-      this.#failedFetchTableDataIds.bind(this)
+      event.failedFetchConditionResultsIDs,
+      this.#failedFetchConditionResultsIDs.bind(this)
     );
   }
 
   /**
-   * @param {TableData} detail.tableData
+   * @param {ConditionResults} detail.conditionResults
    * @param {Array} detail.rows
    * @param {Boolean} detail.done
    */
   #draw(e) {
-    const flattenedAttributes = this.#tableData.data
+    const flattenedAttributes = this.#conditionResults.data
       .map(datum => datum.attributes[this.#index])
       .map(attribute => attribute.items)
       .flat();
@@ -166,7 +165,7 @@ export default class StatisticsView {
     }
   }
 
-  #failedFetchTableDataIds() {
+  #failedFetchConditionResultsIDs() {
     this.#ROOT
       .querySelector(':scope > .loading-view')
       .classList.remove('-shown');

@@ -3,19 +3,17 @@ import Color from 'colorjs.io';
 import DefaultEventEmitter from '../classes/DefaultEventEmitter';
 import {state} from '../classes/CategoryBrowserView/CategoryBrowserState';
 
-/**
- *
- * @param {Color} baseColor
- * @param {Color} tintColor
- */
-export function colorTintByHue(baseColor, hue) {
+export function colorTintByHue(baseColor: Color, hue: number): Color {
   return baseColor
     .mix(new Color('hsv', [hue, 70, 50]), 0.15)
     .set({lightness: lightness => lightness * 1.1})
     .to('srgb');
 }
 
-export function createPopupEvent(togoKeyView, newEvent) {
+export function createPopupEvent(
+  togoKeyView: HTMLElement,
+  newEvent: string
+): void {
   const x = togoKeyView.dataset.x;
   const y = togoKeyView.dataset.y;
   const customEvent = new CustomEvent(newEvent, {
@@ -39,6 +37,7 @@ export function createPopupEvent(togoKeyView, newEvent) {
   DefaultEventEmitter.dispatchEvent(customEvent);
 }
 
+<<<<<<< HEAD:source/js/functions/util.js
 export class cachedAxios {
   /**
    * Create cached axios instance
@@ -118,3 +117,27 @@ mutationObserver.observe(document.body, {
   attributes: true,
   attributeFilter: ['data-condition'],
 });
+=======
+type ArrowedFormat = 'tsv' | 'json';
+export function download(
+  text: string,
+  format: ArrowedFormat,
+  filename: string,
+  isTimestamp: boolean
+): void {
+  const FORMAT = {
+    tsv: {mime: 'text/tsv', extension: 'tsv'},
+    json: {mime: 'application/json', extension: 'json'},
+  };
+  const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+  const blob = new Blob([bom, text], {type: FORMAT[format].mime});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${filename}${
+    isTimestamp ? `_${new Date().toISOString()}` : ''
+  }.${FORMAT[format].extension}`;
+  a.click();
+  a.remove();
+}
+>>>>>>> import-condition3:source/js/functions/util.ts

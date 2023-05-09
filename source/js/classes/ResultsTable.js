@@ -17,7 +17,7 @@ const prMapEntry = new Map([
 
 export default class ResultsTable {
   #intersctionObserver;
-  #tableData;
+  #conditionResults;
   #statisticsViews;
   #header;
   #previewDxCondition;
@@ -26,7 +26,6 @@ export default class ResultsTable {
   #COLLAPSE_BUTTON;
   #COLGROUP;
   #THEAD;
-  #THEAD_SUB;
   #STATS;
   #TBODY;
   #TABLE_END;
@@ -48,7 +47,6 @@ export default class ResultsTable {
     const TABLE = inner.querySelector(':scope > table');
     this.#COLGROUP = TABLE.querySelector(':scope > colgroup');
     this.#THEAD = TABLE.querySelector(':scope > thead > tr.header');
-    // this.#THEAD_SUB = TABLE.querySelector(':scope > thead > tr.subheader');
     this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics');
     this.#TBODY = TABLE.querySelector(':scope > tbody');
     this.#TABLE_END = inner.querySelector(':scope > .tableend');
@@ -80,7 +78,7 @@ export default class ResultsTable {
       event.mutateEstablishConditions,
       this.#makePreview.bind(this)
     );
-    DefaultEventEmitter.addEventListener(event.selectTableData, e =>
+    DefaultEventEmitter.addEventListener(event.selectConditionResults, e =>
       this.#setupTable(e.detail)
     );
     DefaultEventEmitter.addEventListener(event.addNextRows, e =>
@@ -89,16 +87,49 @@ export default class ResultsTable {
     DefaultEventEmitter.addEventListener(event.highlightColumn, e => {
       this.#highlightColumn(e.detail);
     });
-    DefaultEventEmitter.addEventListener(event.failedFetchTableDataIds, e =>
-      this.#failed(e.detail)
+    DefaultEventEmitter.addEventListener(
+      event.failedFetchConditionResultsIDs,
+      e => this.#failed(e.detail)
     );
+
+    // statistics
+    const controller = this.#STATS.querySelector(
+      ':scope > th.controller > .inner'
+    );
+    controller.querySelectorAll(':scope > label > input').forEach(radio => {
+      radio.addEventListener('change', () => {
+        switch (radio.value) {
+          case 'hits_all':
+            this.#STATS.classList.remove('-onlyhitcount');
+            this.#STATS.classList.remove('-stretch');
+            break;
+          case 'hits_all_percentage':
+            this.#STATS.classList.remove('-onlyhitcount');
+            this.#STATS.classList.add('-stretch');
+            break;
+          case 'hits_only':
+            this.#STATS.classList.add('-onlyhitcount');
+            this.#STATS.classList.remove('-stretch');
+            break;
+        }
+        const customEvent = new CustomEvent(event.changeStatisticsViewMode);
+        DefaultEventEmitter.dispatchEvent(customEvent);
+        window.localStorage.setItem('statistics_view_moe', radio.value);
+      });
+    });
+    const statisticsViewMoe = window.localStorage.getItem(
+      'statistics_view_moe'
+    );
+    controller
+      .querySelector(`:scope > label > input[value="${statisticsViewMoe}"]`)
+      ?.dispatchEvent(new MouseEvent('click'));
   }
 
   // private methods
 
   #enterTableEnd() {
     this.#intersctionObserver.unobserve(this.#TABLE_END);
-    this.#tableData.next();
+    this.#conditionResults.next();
   }
 
   async #makePreview() {
@@ -106,7 +137,7 @@ export default class ResultsTable {
       this.#TBODY.innerHTML = '';
       this.#previewDxCondition = ConditionBuilder.dxCondition;
       // get IDs
-      const ids = await this.#previewDxCondition.ids;
+      const ids = await this.#previewDxCondition.getIDs();
       this.#header = this.#previewDxCondition.tableHeader;
       // make table header
       this.#NUMBER_OF_ENTRIES.innerHTML = `${ids.length.toLocaleString()} ${prMapEntry.get(
@@ -128,28 +159,28 @@ export default class ResultsTable {
     }
   }
 
-  #setupTable(tableData) {
-    if (document.body.dataset.display === 'results') {
+  #setupTable(conditionResults) {
+    if ((document.body.dataset.display = 'results')) {
       // reset
-      this.#tableData = tableData;
+      this.#conditionResults = conditionResults;
       this.#intersctionObserver.unobserve(this.#TABLE_END);
-      this.#header = tableData.dxCondition.tableHeader;
+      this.#header = conditionResults.dxCondition.tableHeader;
       this.#ROOT.classList.remove('-complete');
       this.#THEAD.innerHTML = '';
       this.#TBODY.innerHTML = '';
       this.#LOADING_VIEW.classList.add('-shown');
       DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
 
-      this.#makeTableHeader(tableData.dxCondition);
-      this.#makeStats(tableData.dxCondition);
+      this.#makeTableHeader(conditionResults.dxCondition);
+      this.#makeStats(conditionResults.dxCondition);
     }
   }
 
   #makeTableHeader(dxCondition) {
     // make column group
     this.#COLGROUP.innerHTML = '<col></col>'.repeat(
-      dxCondition.conditionFilters.length +
-        dxCondition.conditionAnnotations.length +
+      dxCondition.conditionUtilityFilters.length +
+        dxCondition.conditionUtilityAnnotations.length +
         1
     );
     // make table header
@@ -161,40 +192,37 @@ export default class ResultsTable {
           )}</div>
         </div>
       </th>
-      ${dxCondition.conditionFilters
-        .map(conditionFilter => {
+      ${dxCondition.conditionUtilityFilters
+        .map(conditionUtilityFilter => {
           return `
             <th>
               <div class="inner _category-background-color" data-category-id="${
-                conditionFilter.categoryId
+                conditionUtilityFilter.categoryId
               }">
                 <div class="togo-key-view">${Records.getDatasetLabel(
-                  conditionFilter.dataset
+                  conditionUtilityFilter.dataset
                 )}</div>
-                <span>${conditionFilter.label}</span>
+                <span>${conditionUtilityFilter.label}</span>
               </div>
             </th>`;
         })
         .join('')}
-      ${dxCondition.conditionAnnotations
+      ${dxCondition.conditionUtilityAnnotations
         .map(
-          conditionAnnotation => `
+          conditionUtilityAnnotation => `
             <th>
               <div class="inner _category-color" data-category-id="${
-                conditionAnnotation.categoryId
+                conditionUtilityAnnotation.categoryId
               }">
                 <div class="togo-key-view">${Records.getDatasetLabel(
-                  conditionAnnotation.dataset
+                  conditionUtilityAnnotation.dataset
                 )}</div>
-                <span>${conditionAnnotation.label}</span>
+                <span>${conditionUtilityAnnotation.label}</span>
               </div>
             </th>`
         )
         .join('')}
       `;
-    // makte table sub header
-    //     this.#THEAD_SUB.innerHTML = `
-    // `;
   }
 
   #makeStats(dxCondition) {
@@ -207,8 +235,8 @@ export default class ResultsTable {
     this.#statisticsViews = [];
     dxCondition;
     const conditions = [
-      ...dxCondition.conditionFilters,
-      ...dxCondition.conditionAnnotations,
+      ...dxCondition.conditionUtilityFilters,
+      ...dxCondition.conditionUtilityAnnotations,
     ];
     conditions.forEach((condition, index) => {
       const td = document.createElement('td');
@@ -218,7 +246,7 @@ export default class ResultsTable {
         new StatisticsView(
           this.#STATS,
           td.querySelector(':scope > .inner > div'),
-          this.#tableData,
+          this.#conditionResults,
           index,
           condition
         )
@@ -232,7 +260,7 @@ export default class ResultsTable {
     const isValidResults =
       document.body.dataset.display === 'results' &&
       !isPreview &&
-      dxCondition === this.#tableData?.dxCondition;
+      dxCondition === this.#conditionResults?.dxCondition;
 
     if (isValidPreview || isValidResults) {
       // make table

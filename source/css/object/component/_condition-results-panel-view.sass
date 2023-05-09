@@ -1,4 +1,4 @@
-.table-data-controller-view
+.condition-results-panel-view
   background-color: white
   box-shadow: var(--shadow-shallow)
   text-align: center
@@ -10,7 +10,7 @@
   cursor: pointer
   transition: opacity var(--transition-instant)
   position: relative
-  .material-icons-outlined
+  .material-icons
     font-size: 1.4rem
     width: 1.6rem
   > .close-button-view
@@ -43,56 +43,92 @@
     justify-content: center
     > p
       margin-bottom: 0
-      opacity: .25
       transition: opacity var(--transition-instant)
-      &.-error
+      > .error
         color: red
-        opacity: 1
-      &.-flickering
-        animation: var(--transition-fetching) infinite alternate fetching
-    > .material-icons-outlined
+    > .material-icons
       display: none
 
-  > .controller
+  > .buttons
     display: flex
-    color: white
-    > .button
+    > button
       padding: .2rem 0
       flex-grow: 1
       background-color: var(--color-translucent-lamp-black2)
+      border: none
       transition: background-color var(--transition-instant)
       cursor: pointer
       display: block
+    > button
+      color: white
+      display: none
+      &::before
+        font-family: 'Material Icons'
+        margin-left: -.4rem
+        margin-right: .2rem
+        top: 1px
+        position: relative
       &:hover
         background-color: var(--color-lamp-black)
-      > a
-        color: white
-        text-decoration: none
+
+      &[data-button="resume"]
+        &::before
+          content: "play_arrow"
+        &::after
+          content: "Resume"
+      &[data-button="retry"]
+        &::before
+          content: "refresh"
+        &::after
+          content: "Retry"
+      &[data-button="tsv"]
+        &::before
+          content: "download"
+        &::after
+          content: "TSV"
+      &[data-button="condition"]
         display: block
-        > span
-          vertical-align: middle
-      &.none
-        display: none
-      
+        &::before
+          content: "download"
+        &::after
+          content: "Export"
       &[data-button="edit"]
-        body[data-display="results"] &
-          display: none
-      &[data-button="download-json"]
-        display: none
+        body[data-display="properties"] &
+          display: block
+        &::before
+          content: "edit"
+        &::after
+          content: "Edit"
+
+  &.-loading
+    > .progress-indicator
+      display: block
+    > .buttons
+      > button[data-button="resume"]
+        &::before
+          content: "pause"
+        &::after
+          content: "Pause"
+
+  &:not([data-load="ids"])
+    > .progress-indicator
+      display: block
+  &[data-load="properties"]
+    > .buttons
+      > button[data-button="resume"]
+        display: block
+  &[data-load="completed"]:not([data-total-count="0"])
+    > .buttons
+      > button[data-button="tsv"]
+        display: block
 
   &.-current, &:hover
     opacity: 1
   &.-current
     cursor: initial
-  &.-fetching, &[data-status="load rows"], &[data-status="complete"]
+  &.-loading
     > .status
-      > p
-        opacity: 1
-    > .controller
-      display: flex
-  &.-fetching
-    > .status
-      > .material-icons-outlined
+      > .material-icons
         display: block
         &.-rotating
           animation: rotation 3s linear infinite

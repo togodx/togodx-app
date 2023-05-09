@@ -4,7 +4,7 @@ block var
   - page = "top"
 
 block script
-  script(type="module" src="js/main.js")
+  script(type="module" src="./js/main.js")
 
 block main
 
@@ -169,14 +169,16 @@ block main
 
           header(data-hidden-by="results")
             h2.title Condition builder
-            button.rounded-button-view.-verysmall.-outline(type="button") Clear
+            button.rounded-button-view.-verysmall.-outline(type="button")
+              span.material-icons delete
+              | Clear
           .switch-button-view(data-hidden-by="results")
-            button.-active(data-button="filter" title="Add filters" value="filter")
+            button.-active(data-button="filter" value="filter")
               span.material-icons filter_alt
-              | Filter
-            button(data-button="annotation" title="Map attributes" value="annotation")
-              span.material-icons format_list_bulleted
-              | Annotation
+              | Filtering
+            button(data-button="annotation" value="annotation")
+              span.material-icons bar_chart
+              | Projection
             
           .conditions(data-hidden-by="results")
             .condition(data-condition-type="dataset")
@@ -186,6 +188,20 @@ block main
                   | Select target dataset
                 select(disabled)
                   //- option(val="gene") Gene
+            #UploadUserIDsView.condition(data-condition-type="ids")
+              .inner
+                h2.title
+                  span.material-icons location_on
+                  | Map your IDs
+                  small optional
+                  .button
+                    button.rounded-button-view.-verysmall.-black
+                      span.material-icons subdirectory_arrow_right
+                      | Try
+                textarea(type="text" placeholder="Enter IDs")
+                .buttons
+                  button.rounded-button-view.-verysmall.-outline(type="button") Submit
+                  button.rounded-button-view.-verysmall.-outline(type="button") Reset
             .condition(data-condition-type="filters")
               .inner
                 h2.title
@@ -200,26 +216,12 @@ block main
                       li Position
                       li.end Genital
                     .label Testis
-            #UploadUserIDsView.condition(data-condition-type="ids")
-              .inner
-                h2.title
-                  span.material-icons location_on
-                  | Mapped IDs
-                  small optional
-                  .button
-                    button.rounded-button-view.-verysmall.-black
-                      span.material-icons subdirectory_arrow_right
-                      | Try
-                textarea(type="text" placeholder="Enter IDs")
-                .buttons
-                  button.rounded-button-view.-verysmall.-outline(type="button") Submit
-                  button.rounded-button-view.-verysmall.-outline(type="button") Reset
-
             .condition(data-condition-type="annotations")
               .inner
                 h2.title
-                  span.material-icons format_list_bulleted
-                  | Mapped attributes
+                  span.material-icons bar_chart
+                  | Projections
+                  small optional
                 .conditions.-empty
                 //-
                   .stacking-condition-view
@@ -240,15 +242,22 @@ block main
         
         section#Conditions(data-number-of-conditions="0")
           header
-            h2.title Saved conditions
+            h2.title Conditions
+            button#ImportConditionButton.rounded-button-view.-verysmall.-outline(type="button" value="import")
+              span.material-icons publish
+              | Import
+            button.rounded-button-view.-verysmall.-outline(type="button" value="export")
+              span.material-icons download
+              | Export
+
           .conditions
       
       .row
 
         section#MiscArea
-          button.return.rounded-button-view.-black.-spread
-            span.material-icons settings
-            | Settings
+          //- button.return.rounded-button-view.-black.-spread
+          //-   span.material-icons settings
+          //-   | Settings
           p.copyright
             | © 2020 
             a(href="https://dbcls.rois.ac.jp/" target="_blank") DBCLS

@@ -1,14 +1,16 @@
 import Color from 'colorjs.io';
-import Attribute from './Attribute';
+import AttributeUtility from './AttributeUtility';
+import { AttributesCategory, AttributesDatasetObject, Breakdown, BreakdownWithParentNode } from '../interfaces';
 
 class Records {
-  #categories;
-  #attributes;
-  #datasets;
+  #categories: AttributesCategory[];
+  #attributes: AttributeUtility[];
+  #datasets: AttributesDatasetObject;
 
   // public methods
 
   setAttributes({categories, attributes, datasets}) {
+    console.log(categories, attributes, datasets)
     // define categories
 
     for (let i = 0; i < categories.length; i++) {
@@ -29,13 +31,13 @@ class Records {
 
     // set attributes
     this.#attributes = Object.keys(attributes).map(
-      id => new Attribute(id, attributes[id])
+      id => new AttributeUtility(id, attributes[id])
     );
 
     // make stylesheet
     const styleElm = document.createElement('style');
     document.head.appendChild(styleElm);
-    const styleSheet = styleElm.sheet;
+    const styleSheet = styleElm.sheet!;
     styleSheet.insertRule(`:root {
       ${categories
         .map(
@@ -63,16 +65,62 @@ class Records {
       ._category-border-color[data-category-id="${category.id}"], [data-category-id="${category.id}"] ._category-border-color {
         border-color: var(--color-category-${category.id});
       }`);
+      styleSheet.insertRule(`
+      ._category-border-color-strong[data-category-id="${category.id}"], [data-category-id="${category.id}"] ._category-border-color-strong {
+        border-color: var(--color-category-${category.id}-strong);
+      }`);
     }
 
     // set datasets
     this.#datasets = datasets;
   }
 
-  fetchAttributeFilters(attributeId, node) {
+  // node
+
+  async fetchParentNodeId(attributeId: string, nodeId: string | undefined): Promise<string> {
+    // const attribute = this.getAttribute(attributeId);
+    // const filter = attribute.nodes.find(filter => filter.node === node);
+    // return filter?.parentNode || '';
     const attribute = this.getAttribute(attributeId);
-    return attribute.fetchFiltersWithParentNode(node);
+    await attribute.fetchNode(nodeId);
+    return Promise.resolve('123')
   }
+
+  async fetchNode(attributeId: string, nodeId: string): Promise<Breakdown> {
+    const attribute = this.getAttribute(attributeId);
+    return await attribute.fetchNode(nodeId);
+  }
+
+  async fetchChildNodes(attributeId: string, nodeId: string): Promise<Breakdown[]> {
+    const attribute = this.getAttribute(attributeId);
+    return await attribute.fetchChildNodes(nodeId);
+  }
+
+  getNode(attributeId: string, nodeId: string | undefined): BreakdownWithParentNode | undefined {
+    const attribute = this.getAttribute(attributeId);
+    return attribute.getNode(nodeId);
+  }
+
+  // getNodesWithParentNode(attributeId: string, parentNode: string) {
+  //   const attribute = this.getAttribute(attributeId);
+  //   return attribute.nodes.filter(filter => filter.parentNode === parentNode);
+  // }
+
+  getAncestors(attributeId: string, nodeId: string): Breakdown[] {
+    const attribute = this.getAttribute(attributeId)!;
+    const ancestors = [];
+    let parent: AttributeUtility | undefined;
+    do {
+      // find ancestors
+      parent = attribute.nodes.find(filter => filter.node === nodeId);
+      if (parent) ancestors.unshift(parent);
+      nodeId = parent?.parentNode;
+    } while (parent);
+    ancestors.pop();
+    return ancestors;
+  }
+
+  // category
 
   getCategory(id) {
     return this.#categories.find(category => category.id === id);
@@ -84,33 +132,13 @@ class Records {
     );
   }
 
-  getAttribute(attributeId) {
-    return this.#attributes.find(attribute => attribute.id === attributeId);
+  // attribute
+
+  getAttribute(attributeId: string): AttributeUtility {
+    return this.#attributes.find(attribute => attribute.id === attributeId)!;
   }
 
-  getFilter(attributeId, node) {
-    const attribute = this.getAttribute(attributeId);
-    return attribute.getFilter(node);
-  }
-
-  getFiltersWithParentNode(attributeId, parentNode) {
-    const attribute = this.getAttribute(attributeId);
-    return attribute.filters.filter(filter => filter.parentNode === parentNode);
-  }
-
-  getAncestors(attributeId, node) {
-    const attribute = this.getAttribute(attributeId);
-    const ancestors = [];
-    let parent;
-    do {
-      // find ancestors
-      parent = attribute.filters.find(filter => filter.node === node);
-      if (parent) ancestors.unshift(parent);
-      node = parent?.parentNode;
-    } while (parent);
-    ancestors.pop();
-    return ancestors;
-  }
+  // dataset
 
   getDatasetLabel(dataset) {
     return this.#datasets[dataset].label;
@@ -122,7 +150,7 @@ class Records {
     return this.#categories;
   }
 
-  get attributes() {
+  get attributes(): AttributeUtility[] {
     return this.#attributes;
   }
 }

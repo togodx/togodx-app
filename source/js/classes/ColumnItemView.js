@@ -1,6 +1,6 @@
 import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
-import ConditionAnnotation from './ConditionAnnotation';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility';
 import App from './App';
 import * as event from '../events';
 
@@ -58,24 +58,24 @@ export default class ColumnItemView {
 
     // even listener
     this.#INPUT_KEY.addEventListener('change', e => {
-      const conditionAnnotation = new ConditionAnnotation(
+      const conditionUtilityAnnotation = new ConditionAnnotationUtility(
         column.attributeId,
         node
       );
       if (e.target.checked) {
-        ConditionBuilder.addAnnotation(conditionAnnotation);
+        ConditionBuilder.addAnnotation(conditionUtilityAnnotation);
       } else {
         ConditionBuilder.removeAnnotation(column.attributeId, node);
       }
     });
     DefaultEventEmitter.addEventListener(
       event.mutateAnnotationCondition,
-      ({detail: {action, conditionAnnotation}}) => {
+      ({detail: {action, conditionUtilityAnnotation}}) => {
         if (action === 'remove') {
-          if (column.attributeId === conditionAnnotation.attributeId) {
+          if (column.attributeId === conditionUtilityAnnotation.attributeId) {
             if (
-              conditionAnnotation.parentNode &&
-              node === conditionAnnotation.parentNode
+              conditionUtilityAnnotation.parentNode &&
+              node === conditionUtilityAnnotation.parentNode
             ) {
               this.#INPUT_KEY.checked = action === 'add';
             }

@@ -5,7 +5,7 @@ import collapseView from '../functions/collapseView';
 import ColumnSelectorView from './ColumnSelectorView';
 import HistogramRangeSelectorView from './HistogramRangeSelectorView';
 import TrackOverviewCategorical from './TrackOverviewCategorical';
-import ConditionAnnotation from './ConditionAnnotation';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility';
 import * as event from '../events';
 import {CategoryBrowserView} from './CategoryBrowserView/CategoryBrowserView';
 
@@ -110,11 +110,15 @@ export default class AttributeTrackView {
       e.stopPropagation();
       if (this.#CHECKBOX_ALL_PROPERTIES.checked) {
         // add
-        ConditionBuilder.addAnnotation(new ConditionAnnotation(attributeId));
+        ConditionBuilder.addAnnotation(
+          new ConditionAnnotationUtility(attributeId)
+        );
         this.#ROOT.classList.add('-allselected');
       } else {
         // remove
-        ConditionBuilder.removeAnnotation(new ConditionAnnotation(attributeId));
+        ConditionBuilder.removeAnnotation(
+          new ConditionAnnotationUtility(attributeId)
+        );
         this.#ROOT.classList.remove('-allselected');
       }
     });
@@ -132,17 +136,17 @@ export default class AttributeTrackView {
     // event listener
     DefaultEventEmitter.addEventListener(
       event.mutateAnnotationCondition,
-      ({detail: {action, conditionAnnotation}}) => {
-        if (conditionAnnotation.parentNode !== undefined) return;
+      ({detail: {action, conditionUtilityAnnotation}}) => {
+        if (conditionUtilityAnnotation.parentNode !== undefined) return;
         switch (action) {
           case 'add':
-            if (conditionAnnotation.attributeId === attributeId) {
+            if (conditionUtilityAnnotation.attributeId === attributeId) {
               this.#CHECKBOX_ALL_PROPERTIES.checked = true;
               this.#ROOT.classList.add('-allselected');
             }
             break;
           case 'remove':
-            if (conditionAnnotation.attributeId === attributeId) {
+            if (conditionUtilityAnnotation.attributeId === attributeId) {
               this.#CHECKBOX_ALL_PROPERTIES.checked = false;
               this.#ROOT.classList.remove('-allselected');
             }
@@ -187,12 +191,12 @@ export default class AttributeTrackView {
     if (this.#madeFilters) return;
     this.#madeFilters = true;
 
-    const filters = await Records.fetchAttributeFilters(
-      this.#attribute.id
-    ).catch(err => {
-      console.error(err);
-      this.#showError(err);
-    });
+    const filters = await Records.fetchChildNodes(this.#attribute.id).catch(
+      err => {
+        console.error(err);
+        this.#showError(err);
+      }
+    );
     this.#LOADING_VIEW.classList.remove('-shown');
     this.#ROOT.classList.remove('-preparing');
     if (!filters) return;

@@ -1,17 +1,22 @@
+type Position = {
+  x: string | number | undefined;
+  y: string | number | undefined;
+}
+
 export default class ModalWindowView {
-  #ROOT;
-  #WINDOW;
-  #HEADER;
-  #TITLE;
-  #BODY;
-  #popupPosition;
-  #dragStartPosition;
-  #handleKeydown;
+  #ROOT: HTMLElement;
+  #WINDOW: HTMLDivElement;
+  #HEADER: HTMLElement;
+  #TITLE: HTMLHeadingElement;
+  #BODY: HTMLDivElement;
+  #popupPosition: Position;
+  #dragStartPosition: Position;
+  #handleKeydown: Function;
 
   constructor() {
     this.#ROOT = document.createElement('section');
     this.#ROOT.classList.add('modal-window-view');
-    document.querySelector('body').append(this.#ROOT);
+    document.body.append(this.#ROOT);
     this.#ROOT.innerHTML = `<div class="window">
       <header>
         <h2 class="title"></h2>
@@ -23,13 +28,13 @@ export default class ModalWindowView {
     this.#popupPosition = {x: undefined, y: undefined};
 
     // references
-    this.#WINDOW = this.#ROOT.querySelector(':scope > .window');
-    this.#HEADER = this.#WINDOW.querySelector(':scope > header');
-    this.#TITLE = this.#HEADER.querySelector(':scope > .title');
-    const closeButton = this.#HEADER.querySelector(
+    this.#WINDOW = this.#ROOT.querySelector(':scope > .window')!;
+    this.#HEADER = this.#WINDOW.querySelector(':scope > header')!;
+    this.#TITLE = this.#HEADER.querySelector(':scope > .title')!;
+    const closeButton: HTMLButtonElement = this.#HEADER.querySelector(
       ':scope > .close-button-view'
-    );
-    this.#BODY = this.#WINDOW.querySelector(':scope > .body');
+    )!;
+    this.#BODY = this.#WINDOW.querySelector(':scope > .body')!;
 
     // attach event
     closeButton.addEventListener('click', () => this._close());
@@ -42,17 +47,17 @@ export default class ModalWindowView {
 
   // protected methods
 
-  _open() {
+  protected _open() {
     this.#ROOT.classList.add('-opened');
     // key event
     this.#handleKeydown = this.#keydown.bind(this);
     document.addEventListener('keydown', this.#handleKeydown);
   }
 
-  _close(exitingPopup = true) {
+  protected _close(exitingPopup = true) {
     // reset popup to the center if it is shown for first time
     // keep moved axes if user has dragged popup while moving with arrows
-    const popupStyle = this._ROOT.querySelector('.window')?.style;
+    const popupStyle = this.#WINDOW.style;
     this.#popupPosition.y = exitingPopup ? '' : popupStyle?.top;
     this.#popupPosition.x = exitingPopup ? '' : popupStyle?.left;
 
@@ -62,38 +67,38 @@ export default class ModalWindowView {
     document.removeEventListener('keydown', this.#handleKeydown);
   }
 
-  get _ROOT() {
+  protected get _ROOT() {
     return this.#ROOT;
   }
 
-  get _WINDOW() {
+  protected get _WINDOW() {
     return this.#WINDOW;
   }
 
-  get _HEADER() {
+  protected get _HEADER() {
     return this.#HEADER;
   }
 
-  get _TITLE() {
+  protected get _TITLE() {
     return this.#TITLE;
   }
 
-  get _BODY() {
+  protected get _BODY() {
     return this.#BODY;
   }
 
   // private methods
 
-  #startDrag(e) {
+  #startDrag(e: DragEvent) {
     this.#WINDOW.classList.add('-dragging');
     this.#dragStartPosition = {
       x: e.clientX,
       y: e.clientY,
     };
 
-    const dragging = e => {
-      const dx = e.clientX - this.#dragStartPosition.x;
-      const dy = e.clientY - this.#dragStartPosition.y;
+    const dragging = (e: DragEvent) => {
+      const dx = e.clientX - Number(this.#dragStartPosition.x);
+      const dy = e.clientY - Number(this.#dragStartPosition.y);
 
       this.#WINDOW.style.top = `${this.#WINDOW.offsetTop + dy}px`;
       this.#WINDOW.style.left = `${this.#WINDOW.offsetLeft + dx}px`;
@@ -111,7 +116,7 @@ export default class ModalWindowView {
     document.addEventListener('mouseup', endDrag);
   }
 
-  #keydown(e) {
+  #keydown(e: KeyboardEvent) {
     if (e.key == 'Escape') {
       this._close();
     }

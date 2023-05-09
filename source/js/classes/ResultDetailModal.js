@@ -96,7 +96,7 @@ export default class ResultDetailModal extends ModalWindowView {
     // for continuous value (distribution), do not output label
     const filter = isPrimaryKey
       ? ''
-      : Records.getFilter(
+      : Records.getNode(
           togoKeyView.dataset.attributeId,
           togoKeyView.dataset.node
         );

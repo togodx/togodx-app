@@ -1,0 +1,54 @@
+[
+  {
+    "dataset": "ensembl_gene",
+    "filters": [
+      {
+        "attribute": "gene_chromosome_ensembl",
+        "nodes": [
+          "03",
+          "04"
+        ]
+      },
+      {
+        "attribute": "protein_domains_uniprot",
+        "nodes": [
+          "1133"
+        ]
+      },
+      {
+        "attribute": "compound_chemical_role_chebi",
+        "nodes": [
+          "52214"
+        ]
+      }
+    ],
+    "annotations": [
+      {
+        "attribute": "disease_diseases_mondo",
+        "node": "0005071"
+      },
+      {
+        "attribute": "interaction_proteins_in_pathway_reactome"
+      }
+    ],
+    "queries": [],
+    "attributeSet": [
+      "gene_biotype_ensembl",
+      "gene_chromosome_ensembl",
+      "protein_uniprotkb_section_uniprot",
+      "protein_domains_uniprot",
+      "structure_data_existence_uniprot",
+      "structure_helical_regions_uniprot",
+      "interaction_proteins_in_pathway_reactome",
+      "interaction_compounds_in_pathway_reactome",
+      "compound_chemical_role_chebi",
+      "compound_application_type_chebi",
+      "glycan_mass_glycosmos",
+      "glycan_tissue_glycosmos",
+      "disease_diseases_mondo",
+      "disease_diseases_mesh",
+      "variant_gwas_togovar",
+      "variant_clinical_significance_togovar"
+    ]
+  }
+]

@@ -1,8 +1,7 @@
 import ConditionBuilder from './ConditionBuilder';
 import DefaultEventEmitter from './DefaultEventEmitter';
 import StackingConditionView from './StackingConditionView';
-// import ConditionAnnotation from './ConditionAnnotation';
-import ConditionFilter from './ConditionFilter';
+import ConditionFilterUtility from './ConditionFilterUtility';
 import * as event from '../events';
 
 // const POLLING_DURATION = 100;
@@ -72,13 +71,13 @@ export default class ConditionBuilderView {
     // event listeners
     DefaultEventEmitter.addEventListener(
       event.mutateAnnotationCondition,
-      ({detail: {action, conditionAnnotation}}) => {
+      ({detail: {action, conditionUtilityAnnotation}}) => {
         switch (action) {
           case 'add':
-            this.#addAnnotation(conditionAnnotation);
+            this.#addAnnotation(conditionUtilityAnnotation);
             break;
           case 'remove':
-            this.#removeAnnotation(conditionAnnotation);
+            this.#removeAnnotation(conditionUtilityAnnotation);
             break;
         }
       }
@@ -141,23 +140,22 @@ export default class ConditionBuilderView {
     this.#DATASET_KEY.dispatchEvent(new Event('change'));
   }
 
-  #addAnnotation(conditionAnnotation) {
+  #addAnnotation(conditionUtilityAnnotation) {
     // modifier
     this.#ANNOTATIONS_CONDITIONS_CONTAINER.classList.remove('-empty');
     // make view
     this.#properties.push(
       new StackingConditionView(
         this.#ANNOTATIONS_CONDITIONS_CONTAINER,
-        'annotation',
-        conditionAnnotation
+        conditionUtilityAnnotation
       )
     );
   }
 
-  #removeAnnotation(conditionAnnotation) {
+  #removeAnnotation(conditionUtilityAnnotation) {
     // remove from array
     const index = this.#properties.findIndex(stackingConditionView =>
-      stackingConditionView.removeAnnotation(conditionAnnotation)
+      stackingConditionView.removeAnnotation(conditionUtilityAnnotation)
     );
     this.#properties.splice(index, 1);
     // modifier
@@ -180,8 +178,7 @@ export default class ConditionBuilderView {
       this.#propertyFilters.push(
         new StackingConditionView(
           this.#FILTERS_CONDITIONS_CONTAINER,
-          'value',
-          new ConditionFilter(attributeId, [node])
+          new ConditionFilterUtility(attributeId, [node])
         )
       );
     }

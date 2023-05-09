@@ -1,14 +1,15 @@
 import Records from "./Records";
+import AttributeUtility from "./AttributeUtility";
 
-export default class ConditionBase {
+export default class ConditionUtility {
 
-  _attributeId;
-  _ancestors = new Map();
-  #annotation; // <Attribute>
-  #categoryId;
-  #dataset;
+  protected _attributeId: string;
+  protected _ancestors: Map<string, string[]> = new Map();
+  #annotation: AttributeUtility;
+  #categoryId: string;
+  #dataset: string;
 
-  constructor(attributeId) {
+  constructor(attributeId: string) {
     this._attributeId = attributeId;
   }
 
@@ -17,12 +18,12 @@ export default class ConditionBase {
    * @param {string} node 
    * @param {string} ancestors 
    */
-  setAncestors(node, ancestors) {
+  setAncestors(node: string, ancestors: string[]): void {
     if (!node || !ancestors) return;
     this._ancestors.set(node, [...ancestors]);
   }
 
-  getAncestors(node) {
+  getAncestors(node: string): string[] {
     let ancestors = this._ancestors.get(node);
     if (!ancestors) {
       ancestors = Records.getAncestors(this._attributeId, node).map(ancestor => ancestor.node);
@@ -34,23 +35,23 @@ export default class ConditionBase {
 
   // accessor
 
-  get attributeId() {
+  get attributeId(): string {
     return this._attributeId;
   }
 
-  get annotation() {
+  get annotation(): AttributeUtility {
     if (!this.#annotation) this.#annotation = Records.getAttribute(this._attributeId);
     return this.#annotation;
   }
 
-  get categoryId() {
+  get categoryId(): string {
     if (!this.#categoryId) {
       this.#categoryId = Records.getCategoryWithAttributeId(this.annotation.id).id;
     }
     return this.#categoryId;
   }
 
-  get dataset() {
+  get dataset(): string {
     if (!this.#dataset) {
       this.#dataset = this.annotation.dataset;
     }

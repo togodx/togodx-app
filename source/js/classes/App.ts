@@ -3,7 +3,7 @@ import ConditionBuilderView from './ConditionBuilderView';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import CategoryView from './CategoryView';
-import SettingsView from './SettingsView';
+import PresetView from './PresetView';
 import ResultDetailModal from './ResultDetailModal';
 import BalloonView from './BalloonView';
 import ConditionsController from './ConditionsController';
@@ -11,19 +11,22 @@ import UploadUserIDsView from './UploadUserIDsView';
 import Color from 'colorjs.io';
 import StanzaManager from './StanzaManager';
 import ResultsTable from './ResultsTable';
-import AttributesManager from './AttributesManager';
+import PresetManager from './PresetManager';
 import * as event from '../events';
+import {Config, ViewModes, Templates, Backend, Attributes, API} from '../interfaces';
+
+type ConfigResponces = [Templates, Backend, Attributes];
 
 class App {
-  #viewModes;
-  #backend;
+  #viewModes: ViewModes;
+  #backend: Backend;
 
-  #colorWhite;
-  #colorLightGray;
-  #colorSilver;
-  #colorGray;
-  #colorDarkGray;
-  #colorLampBlack;
+  #colorWhite: Color;
+  #colorLightGray: Color;
+  #colorSilver: Color;
+  #colorGray: Color;
+  #colorDarkGray: Color;
+  #colorLampBlack: Color;
 
   constructor() {
     this.#colorWhite = new Color('white').to('srgb');
@@ -34,19 +37,18 @@ class App {
     this.#colorLampBlack = new Color('--color-lamp-black').to('srgb');
   }
 
-  async ready(config) {
-    const body = document.body;
+  async ready(config: Config): Promise<void> {
     // view modes
     this.#viewModes = {};
     document
-      .querySelectorAll(
-        '#Properties > .header > nav .viewmodecontroller input[type="checkbox"]'
+      .querySelectorAll<HTMLInputElement>(
+        '#Properties > .inner > .header > nav .viewmodecontroller input[type="checkbox"]'
       )
       .forEach(checkbox => {
         this.#viewModes[checkbox.value] = checkbox.checked;
         checkbox.addEventListener('click', () => {
           if (checkbox.value === 'heatmap')
-            body.dataset.heatmap = checkbox.checked;
+          document.body.dataset.heatmap = checkbox.checked.toString();
           this.#viewModes[checkbox.value] = checkbox.checked;
           const customEvent = new CustomEvent(event.changeViewModes, {
             detail: this.#viewModes,
@@ -56,21 +58,22 @@ class App {
       });
     // events
     DefaultEventEmitter.addEventListener(event.restoreParameters, () => {
-      document.querySelector('#App > .loading-view').classList.remove('-shown');
+      document.querySelector<HTMLDivElement>('#App > .loading-view')!.classList.remove('-shown');
     });
     // set up views
     new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
-    new ConditionsController(document.querySelector('#Conditions'));
-    new SettingsView();
+    new ConditionsController(document.querySelector('#Conditions')!);
+    new PresetView();
     new ResultDetailModal();
     new BalloonView();
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
     new ResultsTable(document.querySelector('#ResultsTable'));
 
     // standard displayed attributes
-    await AttributesManager.init(config.ATTRIBUTES_SETS);
+    await PresetManager.init(config.PRESET);
 
     // load config json
+<<<<<<< HEAD:source/js/classes/App.js
     Promise.all([
       fetch(config.TEMPLATES),
       fetch(config.BACKEND),
@@ -100,26 +103,48 @@ class App {
   // private methods
 
   #draw() {
+=======
+    const [templates, backend, attributes] = await Promise
+      .all([
+        fetch(config.TEMPLATES),
+        fetch(config.BACKEND),
+        fetch(config.ATTRIBUTES),
+      ])
+      .then((res) => Promise.all(res.map(res => res.json())));
+    Records.setAttributes(attributes);
+    // define primary keys
+    const customEvent = new CustomEvent(event.defineTogoKey, {
+      detail: {datasets: attributes.datasets},
+    });
+    DefaultEventEmitter.dispatchEvent(customEvent);
+    // initialize stanza manager
+    StanzaManager.init(templates);
+    // aggregate
+    this.#backend = Object.freeze(backend);
+>>>>>>> import-condition3:source/js/classes/App.ts
     this.#makeCategoryViews();
     this.#defineAllTracksCollapseButton();
-    document.querySelector('#App > .loading-view').classList.remove('-shown');
+    ConditionBuilder.init();
   }
 
-  #makeCategoryViews() {
+  // private methods
+
+  #makeCategoryViews(): void {
     const conceptsContainer = document.querySelector(
       '#Properties > .inner > .concepts'
-    );
+    )!;
     Records.categories.forEach(category => {
-      const elm = document.createElement('section');
-      new CategoryView(category, elm);
-      conceptsContainer.insertAdjacentElement('beforeend', elm);
+      // TODO: define type of 'category'
+      const section = document.createElement('section');
+      new CategoryView(category, section);
+      conceptsContainer.insertAdjacentElement('beforeend', section);
     });
   }
 
-  #defineAllTracksCollapseButton() {
+  #defineAllTracksCollapseButton(): void {
     const collapsebutton = document.querySelector(
       '#Properties > .inner > header > .title > h2.collapsebutton'
-    );
+    )!;
     collapsebutton.addEventListener('click', () => {
       let customEvent = new CustomEvent(event.allTracksCollapse);
       if (collapsebutton.classList.contains('-spread')) {
@@ -135,17 +160,12 @@ class App {
 
   // public methods
 
-  /**
-   *
-   * @param {String} api 'aggregate' or 'dataframe' or 'locate'
-   * @returns
-   */
-  getApiUrl(api) {
+  getApiUrl(api: API): string {
     return this.#backend[api].url;
   }
 
   // accessor
-  get viewModes() {
+  get viewModes(): ViewModes {
     return this.#viewModes;
   }
   // get aggregate() {
@@ -157,22 +177,22 @@ class App {
   // get locate() {
   //   return this.#backend.locate.url;
   // }
-  get colorWhite() {
+  get colorWhite(): Color {
     return this.#colorWhite;
   }
-  get colorLightGray() {
+  get colorLightGray(): Color {
     return this.#colorLightGray;
   }
-  get colorSilver() {
+  get colorSilver(): Color {
     return this.#colorSilver;
   }
-  get colorGray() {
+  get colorGray(): Color {
     return this.#colorGray;
   }
-  get colorDarkGray() {
+  get colorDarkGray(): Color {
     return this.#colorDarkGray;
   }
-  get colorLampBlack() {
+  get colorLampBlack(): Color {
     return this.#colorLampBlack;
   }
 }
