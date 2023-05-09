@@ -80,7 +80,7 @@ export default class ConditionResultsController {
    * @param { Error } err - first check userCancel, then server error, timeout err part of else
    */
   #handleError(err: AxiosError): void {
-    console.log(err);
+    console.error(err);
     if (axios.isCancel && err.message === 'user cancel') return;
 
     const code = err.response?.status;

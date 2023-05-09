@@ -35,7 +35,6 @@ export default class ConditionFilterUtility extends ConditionUtility {
   }
 
   get label(): string {
-    console.log(this.annotation);
     return this.annotation.label;
   }
 

@@ -8,12 +8,7 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
 
   constructor(attributeId: string, nodeId: string | undefined) {
     super(attributeId);
-    console.log(attributeId, nodeId);
     this.#nodeId = nodeId;
-
-    // get parent node
-    // console.log(Records.fetchParentNodeId(attributeId, node!));
-    
   }
 
   // methods
@@ -49,9 +44,7 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
   }
 
   get label(): string {
-    console.log(this.#nodeId)
     if (this.#nodeId) {
-      console.log(this)
       return this.filter.label;
     } else {
       return this.annotation.label;
@@ -66,7 +59,6 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
     if (!this.#filter) {
       this.#filter = Records.getNode(this._attributeId, this.#nodeId)!;
     }
-    console.log(this.#filter)
     return this.#filter;
   }
 

@@ -19,7 +19,6 @@ export default class StackingConditionView {
     condition: ConditionFilterUtility | ConditionAnnotationUtility,
     isRange = false
   ) {
-    console.log('****************', this)
     this.#condition = condition;
     this.#conditionType = condition instanceof ConditionFilterUtility ? 'filter' : 'annotation';
     // this.#isRange = isRange;
