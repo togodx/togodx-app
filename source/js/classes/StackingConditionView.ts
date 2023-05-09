@@ -45,21 +45,24 @@ export default class StackingConditionView {
 
   async #makeHTML(container: HTMLDivElement) {
 
-    // preload
-    if (this.#condition instanceof ConditionAnnotationUtility && this.#condition.nodeId) {
-      console.log(this.#condition.nodeId)
-      const attribute = Records.getAttribute(this.#condition.attributeId);
-      const node = await attribute.fetchNode(this.#condition.nodeId)
-      console.log(node)
+    // get label
+    const attribute = Records.getAttribute(this.#condition.attributeId);
+    let label: string = '';
+    if (this.#condition instanceof ConditionAnnotationUtility) {
+      if (this.#condition.nodeId) {
+        const node = await attribute.fetchNode(this.#condition.nodeId)
+        label = node.label;
+      } else {
+        label = attribute.label;
+      }
     }
-
 
     // make view
     this.#ROOT.innerHTML = `
     <div class="close-button-view"></div>
     <p class="attribute _category-color">${this.#condition.attributeLabel}</p>
     ${this.#conditionType === 'annotation' 
-      ? `<div class="label _category-color">${this.#condition.label}</div>` 
+      ? `<div class="label _category-color">${label}</div>` 
       : '<ul class="labels"></ul>'}
     `;
     container.append(this.#ROOT);

@@ -50,7 +50,6 @@ export default class AttributeUtility {
 
   async fetchNode(nodeId: string | undefined): Promise<Breakdown> {
     const bhr = await this.#fetchHierarchicNode(nodeId);
-    console.log(bhr)
     return Promise.resolve(bhr.self);
   }
 
