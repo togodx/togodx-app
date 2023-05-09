@@ -1,13 +1,11 @@
 import {LitElement, html} from 'lit';
 
 import {styles} from './CategoryBrowserSorter.css';
-import {ref, createRef} from 'lit/directives/ref.js';
-import DefaultEventEmitter from '../../DefaultEventEmitter.ts';
-import {sortEvent, sortOrderConst} from './sortConst';
+import {observeState} from 'lit-element-state';
+import {state} from '../CategoryBrowserState';
 
-export class CategoryBrowserSorter extends LitElement {
+export class CategoryBrowserSorter extends observeState(LitElement) {
   #currentOrderOptionIndex = 0;
-  #containterRef = createRef();
 
   static get properties() {
     return {
@@ -25,61 +23,63 @@ export class CategoryBrowserSorter extends LitElement {
     super();
     this.prop = '';
     this.label = '';
-    this.order = sortOrderConst.default;
+    this.order = state.sortOrderOptions[0].value;
   }
 
   #handleSortChange() {
     this.#currentOrderOptionIndex =
-      (this.#currentOrderOptionIndex + 1) % sortOrderConst.length;
-    const order = sortOrderConst[this.#currentOrderOptionIndex].value;
-    this.dispatchEvent(
-      new CustomEvent(sortEvent.sortChange, {
-        detail: {
-          property: this.prop,
-          order,
-        },
-        bubbles: true,
-        composed: true,
-      })
-    );
+      (this.#currentOrderOptionIndex + 1) % state.sortOrderOptions.length;
+
+    state.sortOrder =
+      state.sortOrderOptions[this.#currentOrderOptionIndex].value;
+    state.sortProp = this.prop;
+    // const order = state.sortOrderConst[this.#currentOrderOptionIndex].value;
+    // this.dispatchEvent(
+    //   new CustomEvent(sortEvent.sortChange, {
+    //     detail: {
+    //       property: this.prop,
+    //       order,
+    //     },
+    //     bubbles: true,
+    //     composed: true,
+    //   })
+    // );
   }
 
-  #handleOutsideSortChange(e) {
-    const {property, order} = e.detail;
-    if (property === this.prop) {
-      this.order = order;
-    } else {
-      this.order = sortOrderConst.default.value;
-    }
-  }
+  // #handleOutsideSortChange(e) {
+  //   const {property, order} = e.detail;
+  //   if (property === this.prop) {
+  //     this.order = order;
+  //   } else {
+  //     this.order = sortOrderConst.default.value;
+  //   }
+  // }
 
-  connectedCallback() {
-    super.connectedCallback();
+  // connectedCallback() {
+  //   super.connectedCallback();
 
-    DefaultEventEmitter.addEventListener(
-      sortEvent.outsideSortChange,
-      this.#handleOutsideSortChange.bind(this)
-    );
-  }
+  //   DefaultEventEmitter.addEventListener(
+  //     sortEvent.outsideSortChange,
+  //     this.#handleOutsideSortChange.bind(this)
+  //   );
+  // }
 
-  disconnectedCallback() {
-    super.disconnectedCallback();
+  // disconnectedCallback() {
+  //   super.disconnectedCallback();
 
-    DefaultEventEmitter.removeEventListener(
-      'sort-change',
-      this.#handleOutsideSortChange.bind(this)
-    );
-  }
+  //   DefaultEventEmitter.removeEventListener(
+  //     'sort-change',
+  //     this.#handleOutsideSortChange.bind(this)
+  //   );
+  // }
 
   render() {
     return html`
-      <div
-        class="column-sorter-container"
-        @click=${this.#handleSortChange}
-        ${ref(this.#containterRef)}
-      >
+      <div class="column-sorter-container" @click=${this.#handleSortChange}>
         ${this.label}
-        <div class="sorter -${this.order ? this.order : ''}"></div>
+        <div
+          class="sorter -${state.sortOrder !== 'none' ? state.sortOrder : ''}"
+        ></div>
       </div>
     `;
   }

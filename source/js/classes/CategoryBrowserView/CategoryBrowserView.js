@@ -28,16 +28,7 @@ export class CategoryBrowserView extends observeState(LitElement) {
   #attributeId;
   #userFilterMap = new Map();
   #categoryColor;
-  // #state = store.state;
-  // #unsubscribe = store.subscribe('condition', this.#onBodyMutation.bind(this));
-  #sortOrder = 'none';
-  #sortProp = '';
   #unsortedData = null;
-  #sortOrderOprions = [
-    {value: 'none', label: 'None'},
-    {value: 'asc', label: 'Ascending'},
-    {value: 'desc', label: 'Descending'},
-  ];
 
   constructor(element, attribute, items) {
     super();
@@ -61,10 +52,8 @@ export class CategoryBrowserView extends observeState(LitElement) {
     // this.condition = document.body.dataset.condition;
     this.checkedIds = {filter: [], annotation: []};
 
-    this.addEventListener(
-      sortEvent.sortChange,
-      this.#handleSortChange.bind(this)
-    );
+    state.addObserver(this.#handleSortChange.bind(this), 'sortOrder');
+
     element.append(this);
   }
 
@@ -169,6 +158,10 @@ export class CategoryBrowserView extends observeState(LitElement) {
     if (changed.has('term') && this.term) {
       this.#loadSuggestData(this.term);
     }
+
+    if (changed.has('sortProp')) {
+      this.handleSortChange();
+    }
   }
 
   #loadCategoryData(nodeId) {
@@ -249,24 +242,21 @@ export class CategoryBrowserView extends observeState(LitElement) {
     this.nodeId = e.detail.id;
   }
 
-  #handleSortChange(e) {
-    this.#sortOrder = e.detail.order;
-    this.#sortProp = e.detail.property;
-
+  #handleSortChange() {
     const children = this.#unsortedData.relations.children.slice();
     const parents = this.#unsortedData.relations.parents.slice();
 
     // sorting here but here there is no yet mapped
-    switch (this.#sortOrder) {
+    switch (state.sortOrder) {
       case 'desc':
         this.categoryData = {
           ...this.#unsortedData,
           relations: {
             children: children.sort((a, b) => {
-              return a[this.#sortProp] < b[this.#sortProp] ? 1 : -1;
+              return a[state.sortProp] < b[state.sortProp] ? 1 : -1;
             }),
             parents: parents.sort((a, b) => {
-              return a[this.#sortProp] < b[this.#sortProp] ? 1 : -1;
+              return a[state.sortProp] < b[state.sortProp] ? 1 : -1;
             }),
           },
         };
@@ -276,10 +266,10 @@ export class CategoryBrowserView extends observeState(LitElement) {
           ...this.#unsortedData,
           relations: {
             children: children.sort((a, b) => {
-              return a[this.#sortProp] > b[this.#sortProp] ? 1 : -1;
+              return a[state.sortProp] > b[state.sortProp] ? 1 : -1;
             }),
             parents: parents.sort((a, b) => {
-              return a[this.#sortProp] > b[this.#sortProp] ? 1 : -1;
+              return a[state.sortProp] > b[state.sortProp] ? 1 : -1;
             }),
           },
         };
@@ -291,14 +281,17 @@ export class CategoryBrowserView extends observeState(LitElement) {
     }
 
     // Here change toggle state of sorters
-    const newSortState = {property: this.#sortProp, order: this.#sortOrder};
-    DefaultEventEmitter.dispatchEvent(
-      new CustomEvent(sortEvent.outsideSortChange, {
-        detail: newSortState,
-        bubbles: true,
-        composed: true,
-      })
-    );
+    // const newSortState = {property: state.sortProp, order: state.sortOrder};
+
+    // state.sortProp = this.#sortProp;
+    // state.sortOrder = this.#sortOrder;
+    // DefaultEventEmitter.dispatchEvent(
+    //   new CustomEvent(sortEvent.outsideSortChange, {
+    //     detail: newSortState,
+    //     bubbles: true,
+    //     composed: true,
+    //   })
+    // );
     //this.#addMappedToData();
   }
 
@@ -337,8 +330,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
         </div>
         <div class="category-browser">
           <category-browser
-            .sortOrder="${this.#sortOrder}"
-            .sortProp="${this.#sortProp}"
             @node-clicked="${this.#handleNodeClick}"
             @node-checked="${this.#handleNodeCheck}"
             id="category-browser"
@@ -398,7 +389,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
         this.#userFilterMap.set(filter.node, filter);
       });
 
-      console.log('userFiltersSet changed to true');
       // this.#state.userFiltersSet = true;
 
       state.userFiltersSet = true;
@@ -444,7 +434,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
     const {action, attributeId, node} = e.detail;
 
     if (attributeId === this.#attributeId) {
-      console.log('handleAddRemoveFilter', e.detail);
       switch (action) {
         case 'add':
           this.checkedIds = {

@@ -5,6 +5,13 @@ class CategoryBrowserState extends LitState {
     return {
       userFiltersSet: false,
       condition: document.body.dataset.condition,
+      sortOrder: 'none',
+      sortOrderOptions: [
+        {value: 'none', label: 'None'},
+        {value: 'asc', label: 'Ascending'},
+        {value: 'desc', label: 'Descending'},
+      ],
+      sortProp: '',
     };
   }
 }

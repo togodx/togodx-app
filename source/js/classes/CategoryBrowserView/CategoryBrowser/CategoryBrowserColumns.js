@@ -134,7 +134,6 @@ export class CategoryBrowserColumns extends observeState(LitElement) {
       }
     }
     if (changedProperties.has('_columns')) {
-      console.log('_columns changed', this._columns);
       this.nodeWidth =
         this.nodeRef.value?.getBoundingClientRect().width -
           (this.nodeRef.value?.getBoundingClientRect().right -
