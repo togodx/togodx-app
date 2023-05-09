@@ -17,7 +17,6 @@ import ConditionBuilder from '../ConditionBuilder.ts';
 import {observeState} from 'lit-element-state';
 import {state} from './CategoryBrowserState';
 
-//TODO add mutation observer to observe body's data-condition change
 export class CategoryBrowserView extends observeState(LitElement) {
   #items;
   #API = new cachedAxios();
@@ -48,7 +47,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
     this.suggestionsLoading = false;
     this.nodeId = '';
     this.term = '';
-    // this.condition = document.body.dataset.condition;
     this.checkedIds = {filter: [], annotation: []};
 
     state.addObserver(this.#handleSortChange.bind(this), [
@@ -58,10 +56,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
 
     element.append(this);
   }
-
-  // #onBodyMutation(condition) {
-  //   this.condition = condition;
-  // }
 
   #addLog10ToItems(categoryData) {
     return categoryData.map((item, index) => {
@@ -81,7 +75,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
       nodeId: {type: String, state: true},
       term: {type: String, state: true},
       checkedIds: {type: Object, state: true},
-      // condition: {type: String, state: true},
     };
   }
 
@@ -284,47 +277,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
     this.#loadCategoryData();
   }
 
-  render() {
-    return html`
-      <div class="container" id="category-browser-view">
-        <div class="columns-bg-wrapper">
-          <div class="columns-bg"></div>
-          <div class="columns-bg"></div>
-          <div class="columns-bg"></div>
-        </div>
-        <div class="suggest">
-          <div class="column-title-wrapper">
-            <div class="column-title"><h3>Broader</h3></div>
-          </div>
-          <div class="column-title-wrapper">
-            <div class="column-title">
-              <h3>Term</h3>
-              <suggest-element
-                @suggestion-input="${debounce(this.#handleSuggestInput)}"
-                @suggestion-select="${this.#handleSuggestSelect}"
-                .loading="${this.suggestionLoading}"
-                .suggestions="${this.suggestionsData}"
-                id="suggest"
-              ></suggest-element>
-            </div>
-          </div>
-          <div class="column-title-wrapper">
-            <div class="column-title"><h3>Narrower</h3></div>
-          </div>
-        </div>
-        <div class="category-browser">
-          <category-browser
-            @node-clicked="${this.#handleNodeClick}"
-            @node-checked="${this.#handleNodeCheck}"
-            id="category-browser"
-            .data="${this.categoryData}"
-            .checkedIds="${this.checkedIds[state.condition]}"
-          ></category-browser>
-        </div>
-      </div>
-    `;
-  }
-
   createRenderRoot() {
     return this;
   }
@@ -437,6 +389,47 @@ export class CategoryBrowserView extends observeState(LitElement) {
           break;
       }
     }
+  }
+
+  render() {
+    return html`
+      <div class="container" id="category-browser-view">
+        <div class="columns-bg-wrapper">
+          <div class="columns-bg"></div>
+          <div class="columns-bg"></div>
+          <div class="columns-bg"></div>
+        </div>
+        <div class="suggest">
+          <div class="column-title-wrapper">
+            <div class="column-title"><h3>Broader</h3></div>
+          </div>
+          <div class="column-title-wrapper">
+            <div class="column-title">
+              <h3>Term</h3>
+              <suggest-element
+                @suggestion-input="${debounce(this.#handleSuggestInput)}"
+                @suggestion-select="${this.#handleSuggestSelect}"
+                .loading="${this.suggestionLoading}"
+                .suggestions="${this.suggestionsData}"
+                id="suggest"
+              ></suggest-element>
+            </div>
+          </div>
+          <div class="column-title-wrapper">
+            <div class="column-title"><h3>Narrower</h3></div>
+          </div>
+        </div>
+        <div class="category-browser">
+          <category-browser
+            @node-clicked="${this.#handleNodeClick}"
+            @node-checked="${this.#handleNodeCheck}"
+            id="category-browser"
+            .data="${this.categoryData}"
+            .checkedIds="${this.checkedIds[state.condition]}"
+          ></category-browser>
+        </div>
+      </div>
+    `;
   }
 
   connectedCallback() {

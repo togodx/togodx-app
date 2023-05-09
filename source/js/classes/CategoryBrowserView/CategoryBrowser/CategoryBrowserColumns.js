@@ -60,7 +60,6 @@ export class CategoryBrowserColumns extends observeState(LitElement) {
 
   willUpdate(changedProperties) {
     if (changedProperties.has('data')) {
-      // if (changedProperties.get('data')) {
       if (this.data && this.data.details) {
         if (
           this.data.details.id &&
