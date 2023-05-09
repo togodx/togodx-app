@@ -112,7 +112,11 @@ export default class CategoryBrowserColumn extends observeState(LitElement) {
   }
 
   shouldUpdate(changed) {
-    if (this.role === 'hero' && changed.has('checkedIds')) {
+    if (
+      this.role === 'hero' &&
+      changed.has('checkedIds') &&
+      !changed.has('nodes')
+    ) {
       return false;
     }
     return true;
