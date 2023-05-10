@@ -36,15 +36,27 @@ export default class ConditionResultsPanelView {
     // this.#ROOT.dataset.totalCount = '';
     this.#ROOT.dataset.load = LoadStatus.ids;
 
+    this.#makeHTML();
+  }
+
+  async #makeHTML(): Promise<void> {
+
+    // get annotation labels
+    const annotationLabels: string[] = [];
+    for (const cua of this.#controller.dxCondition.conditionUtilityAnnotations) {
+      annotationLabels.push(await cua.fetchLabel());
+    }
+
+    // make html
     this.#ROOT.innerHTML = `
     <div class="close-button-view"></div>
     <div class="conditions">
       <div class="condition">
-        <p title="${controller.dxCondition.togoKey}">${Records.getDatasetLabel(
-      controller.dxCondition.togoKey
+        <p title="${this.#controller.dxCondition.togoKey}">${Records.getDatasetLabel(
+      this.#controller.dxCondition.togoKey
     )}</p>
       </div>
-      ${controller.dxCondition.conditionUtilityFilters
+      ${this.#controller.dxCondition.conditionUtilityFilters
         .map(conditionUtilityFilter => {
           const label = Records.getAttribute(conditionUtilityFilter.attributeId)!.label;
           return `<div class="condition _category-background-color" data-category-id="${conditionUtilityFilter.categoryId}">
@@ -52,10 +64,10 @@ export default class ConditionResultsPanelView {
             </div>`;
         })
         .join('')}
-      ${controller.dxCondition.conditionUtilityAnnotations
-        .map(conditionUtilityAnnotation => {
+      ${this.#controller.dxCondition.conditionUtilityAnnotations
+        .map((conditionUtilityAnnotation, i) => {
           return `<div class="condition _category-color" data-category-id="${conditionUtilityAnnotation.categoryId}">
-              <p title="${conditionUtilityAnnotation.label}">${conditionUtilityAnnotation.label}</p>
+              <p title="${annotationLabels[i]}">${annotationLabels[i]}</p>
             </div>`;
         })
         .join('')}
@@ -107,7 +119,6 @@ export default class ConditionResultsPanelView {
         }
       })
     })
-    
   }
 
   #pauseOrResume(): void {

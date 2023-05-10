@@ -1,4 +1,5 @@
 import ConditionBuilder from './ConditionBuilder';
+import ConditionResultsController from './ConditionResultsController';
 import DefaultEventEmitter from './DefaultEventEmitter';
 import StatisticsView from './StatisticsView';
 import Records from './Records';
@@ -21,8 +22,8 @@ const prMapEntry = new Map([
 
 export default class ResultsTable {
   #intersctionObserver: IntersectionObserver;
-  #conditionResults;
-  #statisticsViews;
+  #conditionResults: ConditionResultsController;
+  #statisticsViews: StatisticsView[];
   #header: TableHeader[];
   #previewDxCondition: DXCondition;
   #ROOT: HTMLElement;
@@ -163,8 +164,7 @@ export default class ResultsTable {
     }
   }
 
-  #setupTable(conditionResults) {
-    console.log(conditionResults)
+  #setupTable(conditionResults: ConditionResultsController) {
     if ((document.body.dataset.display = 'results')) {
       // reset
       this.#conditionResults = conditionResults;
@@ -239,7 +239,7 @@ export default class ResultsTable {
 
   // }
 
-  #makeStats(dxCondition) {
+  #makeStats(dxCondition: DXCondition) {
     for (const td of this.#STATS.querySelectorAll(':scope > td')) {
       td.remove();
     }
@@ -266,7 +266,6 @@ export default class ResultsTable {
         )
       );
     });
-    console.log(this.#statisticsViews)
   }
 
   #addNextRows({dxCondition, offset, nextRows, isPreview = false}) {
