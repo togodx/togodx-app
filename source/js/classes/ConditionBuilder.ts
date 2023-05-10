@@ -21,7 +21,7 @@ class ConditionBuilder {
   #conditionUtilityAnnotations: ConditionAnnotationUtility[];
   #conditionUtilityFilters: ConditionFilterUtility[];
   #dataset: string;
-  #userIds: string;
+  #userIds: string[];
   #isRestoredConditinoFromURLParameters = false;
   #preparingCounter;
 
@@ -30,6 +30,7 @@ class ConditionBuilder {
     this.#conditionUtilityFilters = [];
     this.#preparingCounter = 0;
     this.#isRestoredConditinoFromURLParameters = false;
+    this.#userIds = [];
 
     // event listeners
     window.addEventListener(
@@ -54,7 +55,7 @@ class ConditionBuilder {
   }
 
   setUserIds(ids = '') {
-    this.#userIds = ids.replace(/,/g, ' ').split(/\s+/).join(',');
+    this.#userIds = ids.replace(/,/g, ' ').split(/\s+/);
     // post processing (permalink, evaluate)
     this.#postProcessing();
   }
@@ -194,6 +195,7 @@ class ConditionBuilder {
     const customEvent = new CustomEvent(event.sendCondition, {
       detail: new DXCondition(
         this.#dataset,
+        this.#userIds,
         this.#conditionUtilityAnnotations,
         this.#conditionUtilityFilters,
         PresetManager.currentAttributeSet
@@ -237,12 +239,14 @@ class ConditionBuilder {
   }
 
   get userIds() {
-    return !this.#userIds ? [] : this.#userIds.split(',');
+    console.log(this.#userIds)
+    return this.#userIds ? [...this.#userIds] : [];
   }
 
   get dxCondition() {
     return new DXCondition(
       this.#dataset,
+      this.#userIds,
       this.#conditionUtilityAnnotations,
       this.#conditionUtilityFilters,
       PresetManager.currentAttributeSet

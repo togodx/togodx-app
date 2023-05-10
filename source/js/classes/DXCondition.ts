@@ -35,12 +35,15 @@ export default class DXCondition {
    */
   constructor(
     togoKey: string,
+    userIds: string[],
     conditionUtilityAnnotations: ConditionAnnotationUtility[],
     conditionUtilityFilters: ConditionFilterUtility[],
     attributeSet: string[]
   ) {
+    console.log(userIds);
     this.#id = idCounter++;
     this.#togoKey = togoKey;
+    this.#userIds = [...userIds];
     this.#conditionUtilityAnnotations = this.#copyConditionAnnotationUtilitys(
       conditionUtilityAnnotations
     );
@@ -133,7 +136,7 @@ export default class DXCondition {
         getApiParameter('aggregate', {
           dataset: this.togoKey,
           filters: this.queryFilters,
-          queries: ConditionBuilder.userIds,
+          queries: this.#userIds,
         })
       );
       this.#ids = res.data;
@@ -142,6 +145,7 @@ export default class DXCondition {
   }
 
   async getNextProperties(limit: number = LIMIT): Promise<DataFrame[]> {
+    console.log(this.#ids);
     const res = await axios.post(
       App.getApiUrl('dataframe'),
       getApiParameter('dataframe', {
