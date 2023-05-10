@@ -37,6 +37,9 @@ export default class ConditionFilterUtility extends ConditionUtility {
   get label(): string {
     return this.annotation.label;
   }
+  fetchLabel(): Promise<string> {
+    return Promise.resolve(this.annotation.label);
+  }
 
   get attributeLabel(): string {
     return this.annotation.label;

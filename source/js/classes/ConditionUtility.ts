@@ -39,9 +39,13 @@ export default class ConditionUtility {
     return this._attributeId;
   }
 
-  get annotation(): AttributeUtility {
+  get attribute(): AttributeUtility {
     if (!this.#annotation) this.#annotation = Records.getAttribute(this._attributeId);
     return this.#annotation;
+  }
+
+  get annotation(): AttributeUtility {
+    return this.attribute;
   }
 
   get categoryId(): string {

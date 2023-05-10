@@ -5,6 +5,9 @@ import Records from './Records';
 import ResultsTableRow from './ResultsTableRow';
 import * as event from '../events';
 import DXCondition from './DXCondition';
+import {
+  TableHeader,
+} from '../interfaces';
 
 const NUM_OF_PREVIEW = 5;
 const displayMap = new Map([
@@ -17,44 +20,43 @@ const prMapEntry = new Map([
 ]);
 
 export default class ResultsTable {
-  #intersctionObserver;
+  #intersctionObserver: IntersectionObserver;
   #conditionResults;
   #statisticsViews;
-  #header;
-  #previewDxCondition;
-  #ROOT;
+  #header: TableHeader[];
+  #previewDxCondition: DXCondition;
+  #ROOT: HTMLElement;
   #NUMBER_OF_ENTRIES: HTMLSpanElement;
-  #COLLAPSE_BUTTON;
+  #COLLAPSE_BUTTON: HTMLDivElement;
   #COLGROUP: HTMLTableColElement;
   #THEAD: HTMLTableRowElement;
-  #STATS;
+  #STATS: HTMLTableRowElement;
   #TBODY: HTMLTableRowElement;
-  #TABLE_END;
-  #LOADING_VIEW;
+  #TABLE_END: HTMLDivElement;
+  #LOADING_VIEW: HTMLDivElement;
 
-  constructor(elm) {
-    console.log(elm)
+  constructor(elm: HTMLElement) {
     this.#statisticsViews = [];
 
     // references
     this.#ROOT = elm;
-    const header = elm.querySelector(':scope > header');
+    const header = elm.querySelector(':scope > header')!;
     this.#NUMBER_OF_ENTRIES = header.querySelector(
       ':scope > span > span.count'
-    );
+    )!;
     this.#COLLAPSE_BUTTON = header.querySelector(
       ':scope > .collapsenotchbutton'
-    );
+    )!;
     const inner = elm.querySelector(':scope > .inner') as HTMLDivElement;
     const TABLE = inner.querySelector(':scope > table') as HTMLTableElement;
     this.#COLGROUP = TABLE.querySelector(':scope > colgroup')!;
     this.#THEAD = TABLE.querySelector(':scope > thead > tr.header')!;
-    this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics');
+    this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics')!;
     this.#TBODY = TABLE.querySelector(':scope > tbody')!;
-    this.#TABLE_END = inner.querySelector(':scope > .tableend');
+    this.#TABLE_END = inner.querySelector(':scope > .tableend')!;
     this.#LOADING_VIEW = this.#TABLE_END.querySelector(
       ':scope > .loading-view'
-    );
+    )!;
 
     // get next data automatically
     this.#intersctionObserver = new IntersectionObserver(entries => {
@@ -162,6 +164,7 @@ export default class ResultsTable {
   }
 
   #setupTable(conditionResults) {
+    console.log(conditionResults)
     if ((document.body.dataset.display = 'results')) {
       // reset
       this.#conditionResults = conditionResults;
@@ -188,16 +191,9 @@ export default class ResultsTable {
     // labels
     const labels: string[] = [];
     for (const cua of dxCondition.conditionUtilityAnnotations) {
-      const attribute = Records.getAttribute(cua.attributeId);
-      let label: string = '';
-      if (cua.nodeId) {
-        const node = await attribute.fetchNode(cua.nodeId)
-        labels.push(node.label);
-      } else {
-        labels.push(attribute.label);
-      }
+      const label = await cua.fetchLabel();
+      labels.push(label);
     }
-    console.log(labels)
 
     // make table header
     this.#THEAD.innerHTML = `
@@ -270,6 +266,7 @@ export default class ResultsTable {
         )
       );
     });
+    console.log(this.#statisticsViews)
   }
 
   #addNextRows({dxCondition, offset, nextRows, isPreview = false}) {

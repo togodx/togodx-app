@@ -50,6 +50,14 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
       return this.annotation.label;
     }
   }
+  async fetchLabel(): Promise<string> {
+    if (this.#nodeId) {
+      const node = await this.attribute.fetchNode(this.#nodeId)
+      return Promise.resolve(node.label);
+    } else {
+      return Promise.resolve(this.annotation.label);
+    }
+  }
 
   get attributeLabel(): string {
     return this.annotation.label;
