@@ -1,8 +1,11 @@
 import ConditionResultsController from './ConditionResultsController';
 import DefaultEventEmitter from './DefaultEventEmitter';
+import ConditionFilterUtility from './ConditionFilterUtility';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility';
 import * as event from '../events';
 import DXCondition from './DXCondition';
 import { download } from '../functions/util';
+import {Preset} from '../interfaces';
 
 export default class ConditionsController {
   #conditionResultsControllers: ConditionResultsController[];
@@ -17,6 +20,10 @@ export default class ConditionsController {
     this.#CONDITIONS_CONTAINER = elm.querySelector<HTMLDivElement>(':scope > .conditions')!;
 
     // event listener
+    DefaultEventEmitter.addEventListener(
+      event.addCondition,
+      this.#addConditionResultsController.bind(this)
+    );
     DefaultEventEmitter.addEventListener(
       event.sendCondition,
       this.#setConditionResultsController.bind(this)
@@ -55,6 +62,23 @@ export default class ConditionsController {
   }
 
   /* private methods */
+
+  #addConditionResultsController(e: CustomEvent) {
+    const preset: Preset = e.detail;
+    console.log(preset)
+    const dxCondition = new DXCondition(
+      preset.condition!.dataset,
+      preset.condition!.queries,
+      preset.condition!.annotations.
+        map(annotation => new ConditionAnnotationUtility(annotation.attribute, annotation.node)),
+      preset.condition!.filters.
+        map(filter => new ConditionFilterUtility(filter.attribute, filter.nodes)),
+      preset.attributeSet
+    )
+    console.log(dxCondition)
+    const controller = new ConditionResultsController(dxCondition);
+    this.#CONDITIONS_CONTAINER.prepend(controller.element);
+  }
 
   #setConditionResultsController(e: CustomEvent) {
     const dxCondition: DXCondition = e.detail;

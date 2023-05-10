@@ -2,7 +2,7 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import Records from './Records';
 import {currentAttributeSet} from '../functions/localStorage.js';
 import * as event from '../events';
-import {PresetMetaDatum} from '../interfaces';
+import {PresetMetaDatum, Preset} from '../interfaces';
 // import {download} from '../functions/util';
 
 class PresetManager {
@@ -81,12 +81,19 @@ class PresetManager {
     reader.onload = (e: ProgressEvent) => {
       try {
         const fileReader: FileReader = <FileReader>e.target!;
-        const set: string[] = JSON.parse(<string>fileReader.result);
-        const existingIds: string[] = Records.attributes.map(attribute => attribute.id);
-        const filteredSet = set.filter(id => existingIds.indexOf(id) >= 0);
-        // update
-        this.#currentAttributeSet = filteredSet;
-        this.#changed();
+        const set: Preset[] = JSON.parse(<string>fileReader.result);
+        console.log(set)
+
+        set.forEach(preset => {
+          const customEvent = new CustomEvent(event.addCondition, {detail: preset});
+          DefaultEventEmitter.dispatchEvent(customEvent);
+        })
+
+        // const existingIds: string[] = Records.attributes.map(attribute => attribute.id);
+        // const filteredSet = set.filter(id => existingIds.indexOf(id) >= 0);
+        // // update
+        // this.#currentAttributeSet = filteredSet;
+        // this.#changed();
       } catch (e) {
         console.error(e);
         window.alert('File parsing failed.');
