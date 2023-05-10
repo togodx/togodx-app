@@ -44,20 +44,16 @@ export default class ConditionUtility {
     return this.#annotation;
   }
 
-  get annotation(): AttributeUtility {
-    return this.attribute;
-  }
-
   get categoryId(): string {
     if (!this.#categoryId) {
-      this.#categoryId = Records.getCategoryWithAttributeId(this.annotation.id)!.id;
+      this.#categoryId = Records.getCategoryWithAttributeId(this.attribute.id)!.id;
     }
     return this.#categoryId;
   }
 
   get dataset(): string {
     if (!this.#dataset) {
-      this.#dataset = this.annotation.dataset;
+      this.#dataset = this.attribute.dataset;
     }
     return this.#dataset;
   }

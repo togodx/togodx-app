@@ -35,14 +35,14 @@ export default class ConditionFilterUtility extends ConditionUtility {
   }
 
   get label(): string {
-    return this.annotation.label;
+    return this.attribute.label;
   }
   fetchLabel(): Promise<string> {
-    return Promise.resolve(this.annotation.label);
+    return Promise.resolve(this.attribute.label);
   }
 
   get attributeLabel(): string {
-    return this.annotation.label;
+    return this.attribute.label;
   }
 
   get query(): ConditionFilter {

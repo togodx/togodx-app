@@ -47,7 +47,7 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
     if (this.#nodeId) {
       return this.filter.label;
     } else {
-      return this.annotation.label;
+      return this.attribute.label;
     }
   }
   async fetchLabel(): Promise<string> {
@@ -55,12 +55,12 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
       const node = await this.attribute.fetchNode(this.#nodeId)
       return Promise.resolve(node.label);
     } else {
-      return Promise.resolve(this.annotation.label);
+      return Promise.resolve(this.attribute.label);
     }
   }
 
   get attributeLabel(): string {
-    return this.annotation.label;
+    return this.attribute.label;
   }
 
   get filter(): Breakdown {
