@@ -25,7 +25,7 @@ export default class ConditionResultsController {
     this.#panelView = new ConditionResultsPanelView(this);
     this.#status = this.#panelView.controllerStatusProxy({});
 
-    ConditionBuilder.finish();
+    ConditionBuilder.finish(true);
     this.select();
     this.#getQueryIds();
   }

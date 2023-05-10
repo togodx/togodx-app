@@ -8,6 +8,12 @@ export function colorTintByHue(baseColor: Color, hue: number): Color {
     .to('srgb');
 }
 
+export function isSameArray(arr1: any[], arr2: any[]): boolean {
+  return (
+    arr1.length === arr2.length && arr1.every((val, idx) => val === arr2[idx])
+  );
+}
+
 export function createPopupEvent(
   togoKeyView: HTMLElement,
   newEvent: string

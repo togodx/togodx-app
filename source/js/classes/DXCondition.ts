@@ -10,6 +10,7 @@ import {
   ConditionAnnotation,
   TableHeader,
 } from '../interfaces';
+import {isSameArray} from '../functions/util';
 
 const LIMIT: number = 100;
 let idCounter: number = 0;
@@ -19,6 +20,7 @@ let idCounter: number = 0;
 export default class DXCondition {
   #id: number;
   #togoKey: string;
+  #userIds: string[];
   #conditionUtilityAnnotations: ConditionAnnotationUtility[];
   #conditionUtilityFilters: ConditionFilterUtility[];
   #ids: string[];
@@ -57,6 +59,15 @@ export default class DXCondition {
    * @return Boolean
    */
   checkSameCondition(dxCondition: DXCondition): boolean {
+    let isMache = true;
+    // attribute set
+    console.log(this);
+    if (!isSameArray(this.attributeSet, dxCondition.attributeSet)) return false;
+
+    // dataset
+    if (this.dataset !== dxCondition.dataset) return false;
+
+    // ids
     // annotations
     let matchAnnotations = false;
     if (
@@ -80,7 +91,7 @@ export default class DXCondition {
         }
       );
     }
-    // values
+    // filters
     let matchFilters = false;
     if (
       this.conditionUtilityFilters.length ===
@@ -170,6 +181,14 @@ export default class DXCondition {
   }
 
   // accessor
+
+  get attributeSet(): string[] {
+    return [...this.#attributeSet];
+  }
+
+  get dataset(): string {
+    return this.#togoKey;
+  }
 
   get togoKey(): string {
     return this.#togoKey;
