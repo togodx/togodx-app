@@ -76,7 +76,7 @@ export default class ConditionsController {
       preset.attributeSet
     )
     console.log(dxCondition)
-    const controller = new ConditionResultsController(dxCondition);
+    const controller = new ConditionResultsController(dxCondition, false);
     this.#CONDITIONS_CONTAINER.prepend(controller.element);
   }
 
@@ -93,7 +93,7 @@ export default class ConditionsController {
       sameConditionConditionResultsController.select();
     } else {
       // make new table data
-      const controller = new ConditionResultsController(dxCondition);
+      const controller = new ConditionResultsController(dxCondition, true);
       this.#CONDITIONS_CONTAINER.prepend(controller.element);
       this.#conditionResultsControllers.push(controller);
     }

@@ -13,11 +13,13 @@ interface ConditionResultsControllerStatus {
   current: number;
 }
 
-export enum LoadStatus {
-  ids = 'ids',
-  properties = 'properties',
-  completed = 'completed',
-}
+// export enum LoadStatus {
+//   ids = 'ids',
+//   properties = 'properties',
+//   completed = 'completed',
+// }
+
+type LoadStatus = 'ids' | 'properties' | 'completed';
 
 export default class ConditionResultsPanelView {
   #ROOT: HTMLElement;
@@ -34,7 +36,7 @@ export default class ConditionResultsPanelView {
     this.#ROOT.classList.add('condition-results-panel-view', '-loading');
     // this.#ROOT.dataset.currentCount = '0';
     // this.#ROOT.dataset.totalCount = '';
-    this.#ROOT.dataset.load = LoadStatus.ids;
+    this.#ROOT.dataset.load = 'ids';
 
     this.#makeHTML();
   }
@@ -203,7 +205,7 @@ export default class ConditionResultsPanelView {
   #loadedIds(count: number): void {
     this.#ROOT.dataset.totalCount = count.toString();
     if (count > 0) {
-      this.#ROOT.dataset.load = LoadStatus.properties;
+      this.#ROOT.dataset.load = 'properties';
       this.#STATUS.textContent = 'Getting data';
       this.#progressIndicator.setIndicator(undefined, count);
     } else {
@@ -217,7 +219,7 @@ export default class ConditionResultsPanelView {
   }
 
   #completed(message: string = 'Complete'): void {
-    this.#ROOT.dataset.load = LoadStatus.completed;
+    this.#ROOT.dataset.load = 'completed';
     this.#STATUS.textContent = message;
     this.#ROOT.classList.remove('-loading');
   }
@@ -227,9 +229,10 @@ export default class ConditionResultsPanelView {
   }
   get loadStatus(): LoadStatus {
     const loadStatus = <LoadStatus>this.#ROOT.dataset.load!;
-    const values = Object.values(LoadStatus);
-    if (values.includes(loadStatus)) return loadStatus;
-    else throw new Error('invalid load status');
+    // const values = Object.values(LoadStatus);
+    // if (values.includes(loadStatus)) return loadStatus;
+    // else throw new Error('invalid load status');
+    return loadStatus;
   }
   get preset(): Preset {
     return {

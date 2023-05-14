@@ -42,6 +42,7 @@ class ConditionBuilder {
       this.#clearConditinos.bind(this)
     );
   }
+  
 
   // public methods
 
@@ -252,6 +253,7 @@ class ConditionBuilder {
       PresetManager.currentAttributeSet
     );
   }
+
 
   // private methods
 

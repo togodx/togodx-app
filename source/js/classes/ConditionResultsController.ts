@@ -6,7 +6,7 @@ import * as event from '../events';
 import axios, {AxiosError} from 'axios';
 import DXCondition from './DXCondition';
 import ConditionFilterUtility from './ConditionFilterUtility';
-import { LoadStatus } from './ConditionResultsPanelView';
+// import { LoadStatus } from './ConditionResultsPanelView';
 import { Preset } from '../interfaces';
 
 export default class ConditionResultsController {
@@ -16,7 +16,7 @@ export default class ConditionResultsController {
   #panelView: ConditionResultsPanelView;
   #status: any;
 
-  constructor(dxCondition: DXCondition) {
+  constructor(dxCondition: DXCondition, isSelectAfterGenerating: boolean = false) {
     const cancelToken = axios.CancelToken;
     this.#source = cancelToken.source();
 
@@ -25,10 +25,13 @@ export default class ConditionResultsController {
     this.#panelView = new ConditionResultsPanelView(this);
     this.#status = this.#panelView.controllerStatusProxy({});
 
+    if (!isSelectAfterGenerating) return;
     ConditionBuilder.finish(true);
     this.select();
-    this.#getQueryIds();
   }
+
+
+  // private methods
 
   async #getQueryIds(): Promise<void> {
     // get IDs
@@ -93,7 +96,9 @@ export default class ConditionResultsController {
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 
-  /* private methods */
+
+  // public methods
+
   deleteCondition(): void {
     const customEvent = new CustomEvent(event.deleteConditionResults, {
       detail: this,
@@ -136,15 +141,22 @@ export default class ConditionResultsController {
     });
     DefaultEventEmitter.dispatchEvent(customEvent1);
     // send rows
-    if (this.#panelView.loadStatus !== LoadStatus.ids) {
-      const customEvent2 = new CustomEvent(event.addNextRows, {
-        detail: {
-          dxCondition: this.#dxCondition,
-          offset: 0,
-          nextRows: this.data,
-        },
-      });
-      DefaultEventEmitter.dispatchEvent(customEvent2);
+    switch (this.#panelView.loadStatus) {
+      case 'ids':
+        this.#getQueryIds();
+        break;
+      case 'properties':
+      case 'completed': {
+        const customEvent2 = new CustomEvent(event.addNextRows, {
+          detail: {
+            dxCondition: this.#dxCondition,
+            offset: 0,
+            nextRows: this.data,
+          },
+        });
+        DefaultEventEmitter.dispatchEvent(customEvent2);
+      }
+        break;
     }
   }
 

@@ -19,7 +19,7 @@ let idCounter: number = 0;
 
 export default class DXCondition {
   #id: number;
-  #togoKey: string;
+  #dataset: string;
   #userIds: string[];
   #conditionUtilityAnnotations: ConditionAnnotationUtility[];
   #conditionUtilityFilters: ConditionFilterUtility[];
@@ -27,14 +27,8 @@ export default class DXCondition {
   #properties: DataFrame[];
   #attributeSet: string[];
 
-  /**
-   *
-   * @param {string} togoKey
-   * @param {ConditionAnnotationUtility[]} conditionUtilityAnnotations
-   * @param {ConditionFilterUtility[]} conditionUtilityFilters
-   */
   constructor(
-    togoKey: string,
+    dataset: string,
     userIds: string[],
     conditionUtilityAnnotations: ConditionAnnotationUtility[],
     conditionUtilityFilters: ConditionFilterUtility[],
@@ -42,7 +36,7 @@ export default class DXCondition {
   ) {
     console.log(userIds);
     this.#id = idCounter++;
-    this.#togoKey = togoKey;
+    this.#dataset = dataset;
     this.#userIds = [...userIds];
     this.#conditionUtilityAnnotations = this.#copyConditionAnnotationUtilitys(
       conditionUtilityAnnotations
@@ -54,13 +48,8 @@ export default class DXCondition {
     this.#properties = [];
   }
 
-  // methods
+  // public methods
 
-  /**
-   *
-   * @param {DXCondition} dxCondition
-   * @return Boolean
-   */
   checkSameCondition(dxCondition: DXCondition): boolean {
     let isMache = true;
     // attribute set
@@ -161,6 +150,8 @@ export default class DXCondition {
     return properties;
   }
 
+  // private methods
+
   #copyConditionAnnotationUtilitys(
     conditionUtilityAnnotations: ConditionAnnotationUtility[]
   ): ConditionAnnotationUtility[] {
@@ -191,11 +182,10 @@ export default class DXCondition {
   }
 
   get dataset(): string {
-    return this.#togoKey;
+    return this.#dataset;
   }
-
   get togoKey(): string {
-    return this.#togoKey;
+    return this.#dataset;
   }
 
   get conditionUtilityAnnotations(): ConditionAnnotationUtility[] {
