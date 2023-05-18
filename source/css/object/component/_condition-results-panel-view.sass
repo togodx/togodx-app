@@ -44,6 +44,8 @@
     > p
       margin-bottom: 0
       transition: opacity var(--transition-instant)
+      &::before
+        content: "Awaiting"
       > .error
         color: red
     > .material-icons
@@ -109,6 +111,14 @@
           content: "pause"
         &::after
           content: "Pause"
+    &[data-load="ids"]
+      > .status
+        > p::before
+          content: "Getting ID list"
+    &[data-load="properties"]
+      > .status
+        > p::before
+          content: "Getting Data"
 
   &:not([data-load="ids"])
     > .progress-indicator
@@ -121,6 +131,9 @@
     > .buttons
       > button[data-button="tsv"]
         display: block
+    > .status
+      > p::before
+        content: "Complete"
 
   &.-current, &:hover
     opacity: 1

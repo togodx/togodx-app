@@ -33,7 +33,7 @@ export default class ConditionResultsPanelView {
     this.#controller = controller;
     this.#ROOT = document.createElement('div');
     // view
-    this.#ROOT.classList.add('condition-results-panel-view', '-loading');
+    this.#ROOT.classList.add('condition-results-panel-view');
     // this.#ROOT.dataset.currentCount = '0';
     // this.#ROOT.dataset.totalCount = '';
     this.#ROOT.dataset.load = 'ids';
@@ -127,9 +127,9 @@ export default class ConditionResultsPanelView {
     this.#ROOT.classList.toggle('-loading');
     const isLoading: boolean = this.#ROOT.classList.contains('-loading');
     this.#controller.pauseOrResume(isLoading);
-    this.#STATUS.textContent = isLoading
-      ? 'Getting data'
-      : 'Awaiting';
+    // this.#STATUS.textContent = isLoading
+    //   ? 'Getting data'
+    //   : 'Awaiting';
   }
 
   #downloadTSV(): void {
@@ -206,7 +206,7 @@ export default class ConditionResultsPanelView {
     this.#ROOT.dataset.totalCount = count.toString();
     if (count > 0) {
       this.#ROOT.dataset.load = 'properties';
-      this.#STATUS.textContent = 'Getting data';
+      // this.#STATUS.textContent = 'Getting data';
       this.#progressIndicator.setIndicator(undefined, count);
     } else {
       this.#completed('No Data Found');
