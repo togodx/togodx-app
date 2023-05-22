@@ -75,7 +75,7 @@ export default class ConditionResultsPanelView {
         .join('')}
     </div>
     <div class="status">
-      <p>Getting ID list</p>
+      <p></p>
       <span class="material-icons -rotating">autorenew</span>
     </div>
     <div class="-border"></div>
@@ -127,9 +127,6 @@ export default class ConditionResultsPanelView {
     this.#ROOT.classList.toggle('-loading');
     const isLoading: boolean = this.#ROOT.classList.contains('-loading');
     this.#controller.pauseOrResume(isLoading);
-    // this.#STATUS.textContent = isLoading
-    //   ? 'Getting data'
-    //   : 'Awaiting';
   }
 
   #downloadTSV(): void {
@@ -199,17 +196,22 @@ export default class ConditionResultsPanelView {
     this.#STATUS.innerHTML = `<span class="error">${code
       ? `${message} (${code})`
       : message}</span>`;
+    this.#ROOT.classList.add('-error');
     this.#ROOT.classList.remove('-loading');
+  }
+
+  loadIds():void {
+    // this.#ROOT.dataset.load = 'ids';
+    this.#ROOT.classList.add('-loading');
   }
 
   #loadedIds(count: number): void {
     this.#ROOT.dataset.totalCount = count.toString();
     if (count > 0) {
       this.#ROOT.dataset.load = 'properties';
-      // this.#STATUS.textContent = 'Getting data';
       this.#progressIndicator.setIndicator(undefined, count);
     } else {
-      this.#completed('No Data Found');
+      this.#completed();
     }
   }
 
@@ -218,11 +220,13 @@ export default class ConditionResultsPanelView {
     if (this.#statusProxy.total === count) this.#completed();
   }
 
-  #completed(message: string = 'Complete'): void {
+  #completed(): void {
     this.#ROOT.dataset.load = 'completed';
-    this.#STATUS.textContent = message;
     this.#ROOT.classList.remove('-loading');
   }
+
+
+  // accessors
 
   get element(): HTMLElement {
     return this.#ROOT;

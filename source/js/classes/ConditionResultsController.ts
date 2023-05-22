@@ -35,6 +35,7 @@ export default class ConditionResultsController {
 
   async #getQueryIds(): Promise<void> {
     // get IDs
+    this.#panelView.loadIds();
     await this.#dxCondition.getIDs().catch(error => {
       this.#handleError(error);
     });
