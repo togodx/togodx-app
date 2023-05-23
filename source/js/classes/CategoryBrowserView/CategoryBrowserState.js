@@ -12,6 +12,7 @@ class CategoryBrowserState extends LitState {
         {value: 'desc', label: 'Descending'},
       ],
       sortProp: '',
+      rootNodeIds: new Set(),
     };
   }
 }

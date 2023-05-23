@@ -90,6 +90,10 @@ export class CategoryBrowserView extends observeState(LitElement) {
       ...(incomingData.parents ?? []),
     ]);
 
+    if (incomingData.parents.length === 0) {
+      state.rootNodeIds.add(incomingData.self.node);
+    }
+
     let maxChildren = Math.max(
       ...incomingData.children.map(filter => filter.count)
     );
