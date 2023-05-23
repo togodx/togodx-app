@@ -2,12 +2,12 @@ import DefaultEventEmitter from './DefaultEventEmitter';
 import ConditionBuilder from './ConditionBuilder';
 import Records from './Records';
 import ConditionResultsPanelView from './ConditionResultsPanelView';
-import * as event from '../events';
-import axios, {AxiosError} from 'axios';
 import DXCondition from './DXCondition';
 import ConditionFilterUtility from './ConditionFilterUtility';
-// import { LoadStatus } from './ConditionResultsPanelView';
+import PresetManager from './PresetManager';
+import * as event from '../events';
 import { Preset } from '../interfaces';
+import axios, {AxiosError} from 'axios';
 
 export default class ConditionResultsController {
   #dxCondition: DXCondition;
@@ -112,7 +112,7 @@ export default class ConditionResultsController {
   }
 
   edit(): void {
-    // property (attribute)
+    // annotation
     ConditionBuilder.setAnnotation(
       this.#dxCondition.conditionUtilityAnnotations.map(
         conditionUtilityAnnotation => {
@@ -121,7 +121,7 @@ export default class ConditionResultsController {
       ),
       false
     );
-    // attribute (classification/distribution)
+    // filter
     Records.attributes.forEach(({id}) => {
       const conditionUtilityFilter: ConditionFilterUtility | undefined =
         this.#dxCondition.conditionUtilityFilters.find(
@@ -131,9 +131,10 @@ export default class ConditionResultsController {
       if (conditionUtilityFilter) nodes.push(...conditionUtilityFilter.nodes);
       ConditionBuilder.setFilter(id, nodes, false);
     });
+    // attribute set
+    PresetManager.currentAttributeSet = this.#dxCondition.attributeSet;
   }
 
-  /* public methods */
   select(): void {
     this.#panelView.selected = true;
     // dispatch event

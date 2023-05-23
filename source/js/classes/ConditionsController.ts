@@ -65,7 +65,6 @@ export default class ConditionsController {
 
   #addConditionResultsController(e: CustomEvent) {
     const preset: Preset = e.detail;
-    console.log(preset)
     const dxCondition = new DXCondition(
       preset.condition!.dataset,
       preset.condition!.queries,
@@ -75,7 +74,6 @@ export default class ConditionsController {
         map(filter => new ConditionFilterUtility(filter.attribute, filter.nodes)),
       preset.attributeSet
     )
-    console.log(dxCondition)
     const controller = new ConditionResultsController(dxCondition, false);
     this.#CONDITIONS_CONTAINER.prepend(controller.element);
   }

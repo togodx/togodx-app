@@ -82,18 +82,10 @@ class PresetManager {
       try {
         const fileReader: FileReader = <FileReader>e.target!;
         const set: Preset[] = JSON.parse(<string>fileReader.result);
-        console.log(set)
-
         set.forEach(preset => {
           const customEvent = new CustomEvent(event.addCondition, {detail: preset});
           DefaultEventEmitter.dispatchEvent(customEvent);
         })
-
-        // const existingIds: string[] = Records.attributes.map(attribute => attribute.id);
-        // const filteredSet = set.filter(id => existingIds.indexOf(id) >= 0);
-        // // update
-        // this.#currentAttributeSet = filteredSet;
-        // this.#changed();
       } catch (e) {
         console.error(e);
         window.alert('File parsing failed.');
@@ -113,6 +105,13 @@ class PresetManager {
 
   get currentAttributeSet(): string[] {
     return [...this.#currentAttributeSet];
+  }
+
+  set currentAttributeSet(set: string[]) {
+    const existingIds: string[] = Records.attributes.map(attribute => attribute.id);
+    const filteredSet = set.filter(id => existingIds.indexOf(id) >= 0);
+    this.#currentAttributeSet = [...filteredSet];
+    this.#changed();
   }
 
   // private
