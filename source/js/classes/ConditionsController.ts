@@ -76,6 +76,7 @@ export default class ConditionsController {
     )
     const controller = new ConditionResultsController(dxCondition, false);
     this.#CONDITIONS_CONTAINER.prepend(controller.element);
+    this.#conditionResultsControllers.unshift(controller);
   }
 
   #setConditionResultsController(e: CustomEvent) {
