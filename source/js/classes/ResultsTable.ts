@@ -72,7 +72,7 @@ export default class ResultsTable {
 
     // attach event
     this.#COLLAPSE_BUTTON.addEventListener('click', () => {
-      const currentDisplay = document.body.dataset.display;
+      const currentDisplay = document.body.dataset.display!;
       document.body.dataset.display = displayMap.get(currentDisplay);
       if (currentDisplay === 'properties')
         ConditionBuilder.makeQueryParameter();
@@ -137,8 +137,9 @@ export default class ResultsTable {
     this.#conditionResults.next();
   }
 
-  async #makePreview() {
-    if ((document.body.dataset.display = 'properties')) {
+  async #makePreview(e: CustomEvent) {
+    const isEstablised = e.detail as boolean;
+    if (isEstablised && (document.body.dataset.display = 'properties')) {
       this.#TBODY.innerHTML = '';
       this.#previewDxCondition = ConditionBuilder.dxCondition;
       // get IDs

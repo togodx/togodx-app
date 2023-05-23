@@ -260,7 +260,6 @@ class ConditionBuilder {
   // private methods
 
   #postProcessing(dontLeaveInHistory = true) {
-    if (!this.#isRestoredConditinoFromURLParameters) return;
 
     // evaluate if search is possible
     const established =
@@ -269,6 +268,8 @@ class ConditionBuilder {
       detail: established,
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
+
+    if (!this.#isRestoredConditinoFromURLParameters) return;
 
     if (!IS_SAVE_CONDITION_IN_SEARCH_PARAMS || !dontLeaveInHistory) return;
     // get hierarchic conditions
