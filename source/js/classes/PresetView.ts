@@ -65,11 +65,13 @@ export default class PresetView extends ModalWindowView {
       //   // PresetManager.updateBySetLabel(label);
       // });
     sections[1]
-      .querySelector(':scope > input')
+      .querySelector(':scope > input')!
       .addEventListener('change', e => {
-        const file = e.target.files[0];
+        const input: HTMLInputElement = e.target as HTMLInputElement;
+        const file = input.files![0];
         if (!file) return;
         PresetManager.importSet(file);
+        this._close();
       });
     // sections[2]
     //   .querySelector(':scope > button')

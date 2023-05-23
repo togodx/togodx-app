@@ -134,7 +134,6 @@ export default class DXCondition {
   }
 
   async getNextProperties(limit: number = LIMIT): Promise<DataFrame[]> {
-    console.log(this.#ids);
     const res = await axios.post(
       App.getApiUrl('dataframe'),
       getApiParameter('dataframe', {

@@ -96,7 +96,7 @@ export default class ModalWindowView {
       y: e.clientY,
     };
 
-    const dragging = (e: DragEvent) => {
+    const dragging = (e: DragEvent): void => {
       const dx = e.clientX - Number(this.#dragStartPosition.x);
       const dy = e.clientY - Number(this.#dragStartPosition.y);
 
