@@ -168,14 +168,18 @@ export class CategoryNode extends observeState(LitElement) {
             : ''}
           part="card"
         >
-          <div class="checkbox-container">
-            <input
-              type="checkbox"
-              .checked=${this.checked}
-              .disabled=${this.#greyedOut}
-              @change=${this.#handleCheckboxChange}
-            />
-          </div>
+          ${state.condition === 'filter' || this.mode !== 'hero'
+            ? html`
+                <div class="checkbox-container">
+                  <input
+                    type="checkbox"
+                    .checked=${this.checked}
+                    .disabled=${this.#greyedOut}
+                    @change=${this.#handleCheckboxChange}
+                  />
+                </div>
+              `
+            : nothing}
 
           <div
             class="ontology-card-content ${!this.data.tip ? '-haschild' : ''}"
