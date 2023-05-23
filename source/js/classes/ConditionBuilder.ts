@@ -7,6 +7,8 @@ import * as event from '../events';
 import PresetManager from './PresetManager';
 import { SelectedNodes } from '../interfaces';
 
+const IS_SAVE_CONDITION_IN_SEARCH_PARAMS = false;
+
 interface Condition {
   dataset: string;
   filters: ConditionFilterUtility[];
@@ -224,7 +226,7 @@ class ConditionBuilder {
     if (conditionUtilityAnnotations)
       nodes.annotations.push(
         ...conditionUtilityAnnotations.map(
-          annotationCondiiton => annotationCondiiton.parentNode
+          annotationCondiiton => annotationCondiiton.parentNode!
         )
       );
     if (conditionUtilityFilter)
@@ -268,6 +270,7 @@ class ConditionBuilder {
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
 
+    if (!IS_SAVE_CONDITION_IN_SEARCH_PARAMS || !dontLeaveInHistory) return;
     // get hierarchic conditions
     const annotations = this.#conditionUtilityAnnotations.map(
       annotationCondiiton => annotationCondiiton.conditionAnnotationWithAncestor
@@ -276,23 +279,28 @@ class ConditionBuilder {
       conditionUtilityFilter =>
         conditionUtilityFilter.conditionFilterWithAncestor
     );
-
     // generate permalink
+    // if (!dontLeaveInHistory) return;
     const params = new URL(location.href).searchParams;
     params.set('dataset', this.#dataset);
     params.set('annotations', JSON.stringify(annotations));
     params.set('filters', JSON.stringify(filters));
-    if (dontLeaveInHistory)
-      window.history.pushState(
-        null,
-        '',
-        `${window.location.origin}${
-          window.location.pathname
-        }?${params.toString()}`
-      );
+    window.history.pushState(
+      null,
+      '',
+      `${window.location.origin}${
+        window.location.pathname
+      }?${params.toString()}`
+    );
   }
 
   #createSearchConditionFromURLParameters(isFirst = false) {
+    if (!IS_SAVE_CONDITION_IN_SEARCH_PARAMS) {
+      // dispatch event
+      const customEvent = new CustomEvent(event.restoreParameters);
+      DefaultEventEmitter.dispatchEvent(customEvent);
+      return;
+    };
     // get conditions with ancestors
     const params = new URL(location.href).searchParams;
     const condition: Condition = {

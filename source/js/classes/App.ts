@@ -67,7 +67,7 @@ class App {
     new ResultDetailModal();
     new BalloonView();
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
-    new ResultsTable(document.querySelector('#ResultsTable'));
+    new ResultsTable(document.querySelector('#ResultsTable')!);
 
     // standard displayed attributes
     await PresetManager.init(config.PRESET);
