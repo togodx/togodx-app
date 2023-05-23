@@ -1,8 +1,11 @@
 import {html, LitElement, nothing} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
 import {scrollMeUp} from './scrollMeUp';
+import {createRef, ref} from 'lit/directives/ref.js';
 
 export class Suggest extends LitElement {
+  #inputRef = createRef();
+
   constructor() {
     super();
     this.suggestions = [];
@@ -41,7 +44,6 @@ export class Suggest extends LitElement {
   }
 
   #handleSelectSuggestion(suggestion) {
-    console.log('handleSelectSuggestion', suggestion);
     this.dispatchEvent(
       new CustomEvent('suggestion-select', {
         detail: {
@@ -51,6 +53,8 @@ export class Suggest extends LitElement {
         composed: true,
       })
     );
+    this.#inputRef.value.value = '';
+    this.suggestions = [];
     this.#hideSuggestions();
   }
 
@@ -111,6 +115,7 @@ export class Suggest extends LitElement {
             @focusout="${this.#hideSuggestions}"
             @focusin=${this.#handleFocus}
             @click=${this.#handleFocus}
+            ${ref(this.#inputRef)}
             class="${this.show && this.suggestions.length > 0
               ? '-suggestions-shown'
               : ''}"

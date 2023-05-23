@@ -6,7 +6,7 @@ export const styles = css`
     flex-basis: 0;
     display: block;
     position: relative;
-    --column-gap: 0.2rem;
+    --column-gap: 0.5em;
     --node-padding-x: 6px;
     --node-padding-y: 3px;
   }
@@ -65,8 +65,14 @@ export const styles = css`
     margin-right: var(--node-padding-x);
   }
 
+  category-browser-sorter {
+    display: flex;
+    justify-content: flex-end;
+  }
+
   category-browser-sorter.label {
     flex: 1;
+    justify-content: flex-start;
   }
 
   .pvalue,
@@ -75,7 +81,7 @@ export const styles = css`
   }
 
   .-user-filter-set {
-    display: block;
+    display: flex;
   }
 
   .drilldown {

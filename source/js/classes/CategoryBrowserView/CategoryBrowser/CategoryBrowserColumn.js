@@ -144,6 +144,7 @@ export default class CategoryBrowserColumn extends observeState(LitElement) {
                   style="width: ${this.#maxCountWidth}px"
                   prop="count"
                   label="Total"
+                  class="count"
                 ></category-browser-sorter>
                 <category-browser-sorter
                   prop="mapped"

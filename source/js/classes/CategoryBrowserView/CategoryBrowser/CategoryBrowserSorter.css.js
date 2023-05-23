@@ -5,7 +5,6 @@ export const styles = css`
     width: fit-content;
     cursor: pointer;
     padding: var(--node-padding-y) 0;
-    padding-left: 0.2rem;
   }
   .column-sorter-container:hover {
     background-color: var(--color-lamp-black);
