@@ -1,19 +1,19 @@
-import DefaultEventEmitter from './DefaultEventEmitter';
-import ConditionBuilderView from './ConditionBuilderView';
-import ConditionBuilder from './ConditionBuilder';
-import Records from './Records';
-import CategoryView from './CategoryView';
-import PresetView from './PresetView';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
+import ConditionBuilderView from './ConditionBuilderView.ts';
+import ConditionBuilder from './ConditionBuilder.ts';
+import Records from './Records.ts';
+import CategoryView from './CategoryView.ts';
+import PresetView from './PresetView.ts';
 import ResultDetailModal from './ResultDetailModal';
 import BalloonView from './BalloonView';
-import ConditionsController from './ConditionsController';
+import ConditionsController from './ConditionsController.ts';
 import UploadUserIDsView from './UploadUserIDsView';
 import Color from 'colorjs.io';
 import StanzaManager from './StanzaManager';
-import ResultsTable from './ResultsTable';
-import PresetManager from './PresetManager';
+import ResultsTable from './ResultsTable.ts';
+import PresetManager from './PresetManager.ts';
 import * as event from '../events';
-import {Config, ViewModes, Templates, Backend, Attributes, API} from '../interfaces';
+import {Config, ViewModes, Templates, Backend, Attributes, API} from '../interfaces.ts';
 
 type ConfigResponces = [Templates, Backend, Attributes];
 

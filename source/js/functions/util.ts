@@ -1,5 +1,6 @@
+import axios, {type AxiosInstance} from 'axios';
 import Color from 'colorjs.io';
-import DefaultEventEmitter from '../classes/DefaultEventEmitter';
+import DefaultEventEmitter from '../classes/DefaultEventEmitter.ts';
 
 export function colorTintByHue(baseColor: Color, hue: number): Color {
   return baseColor
@@ -39,6 +40,71 @@ export function createPopupEvent(
     },
   });
   DefaultEventEmitter.dispatchEvent(customEvent);
+}
+
+export class cachedAxios {
+  axios: AxiosInstance;
+  maxCacheSize: number;
+  cache: Map<string, object>;
+  /**
+   * Create cached axios instance
+   * @param {string} baseURL - base URL.
+   * @param {number} maxCacheSize - maximum cache entries number. After reaching this treshold, oldest entries will be deleted from cache.
+   */
+  constructor(maxCacheSize = 100) {
+    this.axios = axios.create({
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    });
+    this.maxCacheSize = maxCacheSize;
+    this.cache = new Map();
+  }
+
+  get(url: string) {
+    if (this.cache.has(url)) {
+      return Promise.resolve(this.cache.get(url));
+    }
+    return this.axios.get(url).then(res => {
+      if (res.status !== 200) {
+        throw new Error(res.statusText);
+      }
+
+      if (Object.keys(res.data).length === 0) {
+        throw new Error('Empty response from API');
+      }
+
+      this.cache.set(url, {data: res.data});
+      if (this.cache.size > this.maxCacheSize) {
+        const [first] = this.cache.keys();
+        this.cache.delete(first);
+      }
+      return {data: res.data};
+    });
+  }
+
+  post(url: string) {
+    if (this.cache.has(url)) {
+      return Promise.resolve(this.cache.get(url));
+    }
+    return this.axios.post(url).then(res => {
+      if (res.status !== 200) {
+        throw new Error(res.statusText);
+      }
+
+      if (Object.keys(res.data).length === 0) {
+        throw new Error('Empty response from API');
+      }
+
+      this.cache.set(url, {data: res.data});
+      if (this.cache.size > this.maxCacheSize) {
+        const [first] = this.cache.keys();
+        this.cache.delete(first);
+      }
+      return {data: res.data};
+    });
+  }
 }
 
 type ArrowedFormat = 'tsv' | 'json';

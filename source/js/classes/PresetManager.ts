@@ -1,14 +1,15 @@
-import DefaultEventEmitter from './DefaultEventEmitter';
-import Records from './Records';
-import {currentAttributeSet} from '../functions/localStorage.js';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
+import Records from './Records.ts';
+import {currentAttributeSet} from '../functions/localStorage.ts';
 import * as event from '../events';
-import {PresetMetaDatum, Preset} from '../interfaces';
+import {PresetMetaDatum, Preset} from '../interfaces.ts';
 // import {download} from '../functions/util';
 
 class PresetManager {
   #currentAttributeSet: string[];
   #presetMetaData: PresetMetaDatum[];
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   constructor() {}
 
   // public

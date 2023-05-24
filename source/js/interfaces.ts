@@ -1,5 +1,5 @@
-import ConditionFilterUtility from './classes/ConditionFilterUtility';
-import ConditionAnnotationUtility from './classes/ConditionAnnotationUtility';
+import ConditionFilterUtility from './classes/ConditionFilterUtility.ts';
+import ConditionAnnotationUtility from './classes/ConditionAnnotationUtility.ts';
 import Color from 'colorjs.io';
 
 // config

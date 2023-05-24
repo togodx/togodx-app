@@ -1,12 +1,13 @@
-import DefaultEventEmitter from './DefaultEventEmitter';
-import Records from './Records';
-import ConditionBuilder from './ConditionBuilder';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
+import Records from './Records.ts';
+import ConditionBuilder from './ConditionBuilder.ts';
 import collapseView from '../functions/collapseView';
 import ColumnSelectorView from './ColumnSelectorView';
 import HistogramRangeSelectorView from './HistogramRangeSelectorView';
 import TrackOverviewCategorical from './TrackOverviewCategorical';
-import ConditionAnnotationUtility from './ConditionAnnotationUtility';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
 import * as event from '../events';
+import {CategoryBrowserView} from './CategoryBrowserView/CategoryBrowserView';
 
 export default class AttributeTrackView {
   #attribute;
@@ -210,11 +211,19 @@ export default class AttributeTrackView {
     // make selector view
     switch (this.#attribute.datamodel) {
       case 'classification':
-        new ColumnSelectorView(
-          this.#SELECT_CONTAINER,
-          this.#attribute,
-          filters
-        );
+        if (filters.some(filter => !filter.tip)) {
+          new CategoryBrowserView(
+            this.#SELECT_CONTAINER,
+            this.#attribute,
+            filters
+          );
+        } else {
+          new ColumnSelectorView(
+            this.#SELECT_CONTAINER,
+            this.#attribute,
+            filters
+          );
+        }
         break;
       case 'distribution':
         new HistogramRangeSelectorView(

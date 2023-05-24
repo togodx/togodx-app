@@ -1,8 +1,8 @@
-import ConditionBuilder from './ConditionBuilder';
-import DefaultEventEmitter from './DefaultEventEmitter';
-import StackingConditionView from './StackingConditionView';
-import ConditionFilterUtility from './ConditionFilterUtility';
-import * as event from '../events';
+import ConditionBuilder from './ConditionBuilder.ts';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
+import StackingConditionView from './StackingConditionView.ts';
+import ConditionFilterUtility from './ConditionFilterUtility.ts';
+import * as event from '../events.js';
 
 // const POLLING_DURATION = 100;
 

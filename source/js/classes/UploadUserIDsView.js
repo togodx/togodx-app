@@ -1,10 +1,10 @@
-import DefaultEventEmitter from './DefaultEventEmitter';
-import ConditionBuilder from './ConditionBuilder';
-import Records from './Records';
-import App from './App';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
+import ConditionBuilder from './ConditionBuilder.ts';
+import Records from './Records.ts';
+import App from './App.ts';
 import * as event from '../events';
 import {getApiParameter} from '../functions/queryTemplates';
-import ProgressIndicator from './ProgressIndicator';
+import ProgressIndicator from './ProgressIndicator.ts';
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
 

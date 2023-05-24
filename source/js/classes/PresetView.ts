@@ -1,6 +1,6 @@
-import ModalWindowView from './ModalWindowView';
-import PresetManager from './PresetManager';
-import {Preset} from '../interfaces';
+import ModalWindowView from './ModalWindowView.ts';
+import PresetManager from './PresetManager.ts';
+import {Preset} from '../interfaces.ts';
 
 export default class PresetView extends ModalWindowView {
   #isRendered = false;
@@ -58,7 +58,7 @@ export default class PresetView extends ModalWindowView {
           const url = dl.dataset.url!;
           this.#loadPreset(url);
         });
-      })
+      });
       // .addEventListener('click', e => {
       //   console.log(e)
       //   // const label = e.target.value;

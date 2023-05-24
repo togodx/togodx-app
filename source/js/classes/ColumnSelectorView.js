@@ -1,4 +1,4 @@
-import Records from './Records';
+import Records from './Records.ts';
 import ColumnView from './ColumnView';
 
 export default class ColumnSelectorView {

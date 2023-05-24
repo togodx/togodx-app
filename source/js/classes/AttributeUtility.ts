@@ -5,7 +5,7 @@ import {
   BreakdownWithParentNode,
   BreakdownHierarchyRequest,
   BreakdownHierarchyResponse,
-} from '../interfaces';
+} from '../interfaces.ts';
 
 interface BreakdownRequest {
   node?: string;

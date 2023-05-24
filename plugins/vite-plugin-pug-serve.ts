@@ -50,7 +50,7 @@ export const vitePluginPugServe = (): Plugin => {
           }
 
           // xxxx.htmlが存在しないときは xxxx.pug があるか確認する
-          const pugPath: string = `${
+          const pugPath = `${
             fullReqPath.slice(0, Math.max(0, fullReqPath.lastIndexOf("."))) ||
             fullReqPath
           }.pug`;

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import { vitePluginPugBuild } from "./vite-plugin-pug-build";
 import { vitePluginPugServe } from "./vite-plugin-pug-serve";
 

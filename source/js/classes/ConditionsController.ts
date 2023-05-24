@@ -1,11 +1,11 @@
-import ConditionResultsController from './ConditionResultsController';
-import DefaultEventEmitter from './DefaultEventEmitter';
-import ConditionFilterUtility from './ConditionFilterUtility';
-import ConditionAnnotationUtility from './ConditionAnnotationUtility';
+import ConditionResultsController from './ConditionResultsController.ts';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
+import ConditionFilterUtility from './ConditionFilterUtility.ts';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
+import DXCondition from './DXCondition.ts';
 import * as event from '../events';
-import DXCondition from './DXCondition';
-import { download } from '../functions/util';
-import {Preset} from '../interfaces';
+import { download } from '../functions/util.ts';
+import {Preset} from '../interfaces.ts';
 
 export default class ConditionsController {
   #conditionResultsControllers: ConditionResultsController[];

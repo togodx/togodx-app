@@ -1,10 +1,10 @@
-import ConditionUtility from './ConditionUtility';
-import Records from './Records';
+import ConditionUtility from './ConditionUtility.ts';
+import Records from './Records.ts';
 import {
   ConditionFilterWithAncestor,
   ConditionFilterWithAncestorNode,
   ConditionFilter,
-} from '../interfaces';
+} from '../interfaces.ts';
 
 export default class ConditionFilterUtility extends ConditionUtility {
   #nodes: string[];

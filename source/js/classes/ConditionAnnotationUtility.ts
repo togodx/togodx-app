@@ -1,6 +1,6 @@
-import ConditionUtility from './ConditionUtility';
-import Records from './Records';
-import {ConditionAnnotationWithAncestor, Breakdown, ConditionAnnotation} from '../interfaces';
+import ConditionUtility from './ConditionUtility.ts';
+import Records from './Records.ts';
+import {ConditionAnnotationWithAncestor, Breakdown, ConditionAnnotation} from '../interfaces.ts';
 
 export default class ConditionAnnotationUtility extends ConditionUtility {
   #nodeId: string | undefined;

@@ -1,12 +1,12 @@
-import DefaultEventEmitter from './DefaultEventEmitter';
-import ConditionBuilder from './ConditionBuilder';
-import Records from './Records';
-import ConditionResultsPanelView from './ConditionResultsPanelView';
-import DXCondition from './DXCondition';
-import ConditionFilterUtility from './ConditionFilterUtility';
-import PresetManager from './PresetManager';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
+import ConditionBuilder from './ConditionBuilder.ts';
+import Records from './Records.ts';
+import ConditionResultsPanelView from './ConditionResultsPanelView.ts';
+import DXCondition from './DXCondition.ts';
+import ConditionFilterUtility from './ConditionFilterUtility.ts';
+import PresetManager from './PresetManager.ts';
 import * as event from '../events';
-import { Preset } from '../interfaces';
+import { Preset } from '../interfaces.ts';
 import axios, {AxiosError} from 'axios';
 
 export default class ConditionResultsController {
@@ -16,7 +16,7 @@ export default class ConditionResultsController {
   #panelView: ConditionResultsPanelView;
   #status: any;
 
-  constructor(dxCondition: DXCondition, isSelectAfterGenerating: boolean = false) {
+  constructor(dxCondition: DXCondition, isSelectAfterGenerating = false) {
     const cancelToken = axios.CancelToken;
     this.#source = cancelToken.source();
 

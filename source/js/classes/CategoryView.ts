@@ -1,5 +1,5 @@
 import AttributeTrackView from './AttributeTrackView.js';
-import PresetManager from './PresetManager.js';
+import PresetManager from './PresetManager.ts';
 
 export default class CategoryView {
   #attributeTrackViews: AttributeTrackView[];
@@ -57,7 +57,7 @@ export default class CategoryView {
     // event
     const buttons = this.#ROOT.querySelectorAll(':scope > .buttons > button');
     buttons.forEach((button, i) => {
-      button.addEventListener('click', e => {
+      button.addEventListener('click', () => {
         switch (i) {
           case 0: // ok
             {

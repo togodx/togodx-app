@@ -1,11 +1,11 @@
-import DefaultEventEmitter from './DefaultEventEmitter';
-import Records from './Records';
-import ConditionAnnotationUtility from './ConditionAnnotationUtility';
-import ConditionFilterUtility from './ConditionFilterUtility';
-import DXCondition from './DXCondition';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
+import Records from './Records.ts';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
+import ConditionFilterUtility from './ConditionFilterUtility.ts';
+import DXCondition from './DXCondition.ts';
 import * as event from '../events';
-import PresetManager from './PresetManager';
-import { SelectedNodes, Preset } from '../interfaces';
+import PresetManager from './PresetManager.ts';
+import { SelectedNodes, Preset } from '../interfaces.ts';
 import axios from 'axios';
 
 const IS_SAVE_CONDITION_IN_SEARCH_PARAMS = false;
@@ -349,7 +349,7 @@ class ConditionBuilder {
   #makeQueueOfGettingChildNodes(condition: Condition) {
     if (condition.dataset) this.#dataset = condition.dataset;
     const queue: Task[] = [];
-    const addQueue: Function = (attributeId: string, node: string, ancestors: string[]) => {
+    const addQueue = (attributeId: string, node: string, ancestors: string[]) => {
       const ancestors2 = [node];
       if (ancestors) ancestors2.push(...ancestors);
       ancestors2.forEach(node => {

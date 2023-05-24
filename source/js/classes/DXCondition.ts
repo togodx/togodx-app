@@ -1,7 +1,6 @@
-import ConditionAnnotationUtility from './ConditionAnnotationUtility';
-import ConditionFilterUtility from './ConditionFilterUtility';
-import ConditionBuilder from './ConditionBuilder';
-import App from './App';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
+import ConditionFilterUtility from './ConditionFilterUtility.ts';
+import App from './App.ts';
 import axios from 'axios';
 import {getApiParameter} from '../functions/queryTemplates';
 import {
@@ -9,11 +8,11 @@ import {
   ConditionFilter,
   ConditionAnnotation,
   TableHeader,
-} from '../interfaces';
-import {isSameArray} from '../functions/util';
+} from '../interfaces.ts';
+import {isSameArray} from '../functions/util.ts';
 
-const LIMIT: number = 100;
-let idCounter: number = 0;
+const LIMIT = 100;
+let idCounter = 0;
 
 // TODO: キャッシュの機構を作る
 
@@ -51,7 +50,7 @@ export default class DXCondition {
   // public methods
 
   checkSameCondition(dxCondition: DXCondition): boolean {
-    let isMache = true;
+    // let isMache = true;
     // attribute set
     console.log(this);
     if (!isSameArray(this.attributeSet, dxCondition.attributeSet)) return false;

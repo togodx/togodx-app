@@ -1,14 +1,15 @@
-import ConditionBuilder from './ConditionBuilder';
-import ConditionResultsController from './ConditionResultsController';
-import DefaultEventEmitter from './DefaultEventEmitter';
+/* eslint-disable no-constant-condition */
+import ConditionBuilder from './ConditionBuilder.ts';
+import ConditionResultsController from './ConditionResultsController.ts';
+import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import StatisticsView from './StatisticsView';
-import Records from './Records';
+import Records from './Records.ts';
 import ResultsTableRow from './ResultsTableRow';
 import * as event from '../events';
-import DXCondition from './DXCondition';
+import DXCondition from './DXCondition.ts';
 import {
   TableHeader,
-} from '../interfaces';
+} from '../interfaces.ts';
 
 const NUM_OF_PREVIEW = 5;
 const displayMap = new Map([
