@@ -168,7 +168,8 @@ export class CategoryNode extends observeState(LitElement) {
             : ''}
           part="card"
         >
-          ${state.condition === 'filter' || !state.rootNodeIds.has(this.data.id)
+          ${state.condition === 'annotation' ||
+          !state.rootNodeIds.has(this.data.id)
             ? html`
                 <div class="checkbox-container">
                   <input
