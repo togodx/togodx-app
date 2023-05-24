@@ -204,6 +204,7 @@ export const styles = css`
     justify-content: space-between;
     align-items: center;
     gap: 0.5em;
+    margin-bottom: -1px;
   }
 
   .ontology-card-content {
