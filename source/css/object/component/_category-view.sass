@@ -71,13 +71,16 @@
     transition: opacity var(--transition-wipe)
   > .buttons
     text-align: center
-    position: absolute
-    bottom: -3.6rem
+    position: sticky
+    bottom: 4.6rem
     width: 100%
+    height: 0
     opacity: 0
     transition: opacity var(--transition-wipe)
     > .rounded-button-view
       display: inline-block
+      position: relative
+      top: 1rem
       + .rounded-button-view
         margin-left: .4rem
   &.-editing

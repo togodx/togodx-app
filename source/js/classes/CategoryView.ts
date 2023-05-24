@@ -1,12 +1,14 @@
 import AttributeTrackView from './AttributeTrackView.js';
 import PresetManager from './PresetManager.ts';
+import {AttributesCategory} from '../interfaces.ts';
 
 export default class CategoryView {
   #attributeTrackViews: AttributeTrackView[];
-  #lastState;
-  #ROOT;
+  #lastState: Map<string, boolean> = new Map();
+  #ROOT: HTMLElement;
 
-  constructor(category, elm) {
+  constructor(category: AttributesCategory, elm: HTMLElement) {
+    console.log(category, elm);
     this.#ROOT = elm;
     elm.classList.add('category-view');
     elm.innerHTML = `
@@ -32,9 +34,10 @@ export default class CategoryView {
 
     // event
     elm
-      .querySelector(':scope > h3 > .collapsebutton')
+      .querySelector(':scope > h3 > .collapsebutton')!
       .addEventListener('click', () => {
         elm.classList.add('-editing');
+        document.body.dataset.editingCategory = category.id;
         this.#enterAttributesDisplaySettingMode();
         this.#attributeTrackViews.forEach(attributeTrackView =>
           attributeTrackView.makeFilters()
@@ -56,7 +59,7 @@ export default class CategoryView {
     );
     // event
     const buttons = this.#ROOT.querySelectorAll(':scope > .buttons > button');
-    buttons.forEach((button, i) => {
+    buttons.forEach((button: HTMLButtonElement, i: number) => {
       button.addEventListener('click', () => {
         switch (i) {
           case 0: // ok
@@ -76,6 +79,7 @@ export default class CategoryView {
             });
             break;
         }
+        document.body.dataset.editingCategory = '';
         this.#ROOT.classList.remove('-editing');
       });
     });

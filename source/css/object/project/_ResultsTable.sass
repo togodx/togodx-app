@@ -3,6 +3,10 @@
   bottom: 0
   z-index: var(--z-results)
   background-color: var(--color-lamp-black)
+  transition: opacity var(--transition-wipe)
+  body:not([data-editing-category=""]) &
+    opacity: 0
+    pointer-events: none
   > header
     --padding: calc(var(--height-results-header) - 1lh)
     color: white
