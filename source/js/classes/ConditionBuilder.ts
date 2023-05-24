@@ -5,7 +5,8 @@ import ConditionFilterUtility from './ConditionFilterUtility';
 import DXCondition from './DXCondition';
 import * as event from '../events';
 import PresetManager from './PresetManager';
-import { SelectedNodes } from '../interfaces';
+import { SelectedNodes, Preset } from '../interfaces';
+import axios from 'axios';
 
 const IS_SAVE_CONDITION_IN_SEARCH_PARAMS = false;
 
@@ -49,7 +50,26 @@ class ConditionBuilder {
   // public methods
 
   init() {
-    this.#createSearchConditionFromURLParameters(true);
+
+    const params = new URL(location.href).searchParams;
+
+    // get preset
+    const preset = params.get('preset')!;
+    let presetUrl: URL | undefined;
+    try {
+      presetUrl = new URL(preset);
+    } catch (e) {
+      console.error(e);
+    }
+    if (presetUrl) this.#preset(presetUrl);
+
+    if (IS_SAVE_CONDITION_IN_SEARCH_PARAMS) {
+      this.#createSearchConditionFromURLParameters(true);
+    } else {
+      // dispatch event
+      const customEvent = new CustomEvent(event.restoreParameters);
+      DefaultEventEmitter.dispatchEvent(customEvent);
+    }
   }
 
   setSubject(dataset: string) {
@@ -259,6 +279,16 @@ class ConditionBuilder {
 
   // private methods
 
+  async #preset(url): Promise<void> {
+    const presets: Preset[] = await axios
+      .get(url)
+      .then(res => res.data);
+    presets.forEach(preset => {
+      const customEvent = new CustomEvent(event.addCondition, {detail: preset});
+      DefaultEventEmitter.dispatchEvent(customEvent);
+    });
+  }
+
   #postProcessing(dontLeaveInHistory = true) {
 
     // evaluate if search is possible
@@ -296,12 +326,6 @@ class ConditionBuilder {
   }
 
   #createSearchConditionFromURLParameters(isFirst = false) {
-    if (!IS_SAVE_CONDITION_IN_SEARCH_PARAMS) {
-      // dispatch event
-      const customEvent = new CustomEvent(event.restoreParameters);
-      DefaultEventEmitter.dispatchEvent(customEvent);
-      return;
-    };
     // get conditions with ancestors
     const params = new URL(location.href).searchParams;
     const condition: Condition = {

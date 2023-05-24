@@ -81,11 +81,11 @@ class PresetManager {
     reader.onload = (e: ProgressEvent) => {
       try {
         const fileReader: FileReader = <FileReader>e.target!;
-        const set: Preset[] = JSON.parse(<string>fileReader.result);
-        set.forEach(preset => {
+        const presets: Preset[] = JSON.parse(<string>fileReader.result);
+        presets.forEach(preset => {
           const customEvent = new CustomEvent(event.addCondition, {detail: preset});
           DefaultEventEmitter.dispatchEvent(customEvent);
-        })
+        });
       } catch (e) {
         console.error(e);
         window.alert('File parsing failed.');
