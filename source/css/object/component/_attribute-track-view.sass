@@ -19,7 +19,9 @@
       max-width: calc(100% - var(--width-track-column-property))
       transition: width var(--transition-instant)
       position: relative
-      overflow-x: auto
+      // overflow-x: auto
+      &:has(> category-browser-view)
+        overflow-x: auto
     &.-upper
       > .left
         position: relative
