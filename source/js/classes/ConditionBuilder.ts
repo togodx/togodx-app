@@ -3,7 +3,7 @@ import Records from './Records.ts';
 import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
 import ConditionFilterUtility from './ConditionFilterUtility.ts';
 import DXCondition from './DXCondition.ts';
-import * as event from '../events';
+import * as event from '../events.js';
 import PresetManager from './PresetManager.ts';
 import { SelectedNodes, Preset } from '../interfaces.ts';
 import axios from 'axios';
@@ -232,8 +232,8 @@ class ConditionBuilder {
       filters: [],
       annotations: [],
     };
-    console.log(this.#conditionUtilityAnnotations)
-    console.log(this.#conditionUtilityFilters)
+    // console.log(this.#conditionUtilityAnnotations)
+    // console.log(this.#conditionUtilityFilters)
     const conditionUtilityAnnotations =
       this.#conditionUtilityAnnotations.filter(
         conditionUtilityAnnotation =>
@@ -251,7 +251,7 @@ class ConditionBuilder {
       );
     if (conditionUtilityFilter)
       nodes.filters.push(...conditionUtilityFilter.nodes);
-    console.log(nodes)
+    // console.log(nodes)
     return nodes;
   }
 
@@ -280,6 +280,7 @@ class ConditionBuilder {
   // private methods
 
   async #preset(url): Promise<void> {
+    console.log(url)
     const presets: Preset[] = await axios
       .get(url)
       .then(res => res.data);
@@ -349,7 +350,7 @@ class ConditionBuilder {
   #makeQueueOfGettingChildNodes(condition: Condition) {
     if (condition.dataset) this.#dataset = condition.dataset;
     const queue: Task[] = [];
-    const addQueue = (attributeId: string, node: string, ancestors: string[]) => {
+    const addQueue = (attributeId: string, node: string, ancestors: string[] | undefined) => {
       const ancestors2 = [node];
       if (ancestors) ancestors2.push(...ancestors);
       ancestors2.forEach(node => {
