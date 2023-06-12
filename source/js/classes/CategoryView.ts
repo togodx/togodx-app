@@ -8,7 +8,6 @@ export default class CategoryView {
   #ROOT: HTMLElement;
 
   constructor(category: AttributesCategory, elm: HTMLElement) {
-    console.log(category, elm);
     this.#ROOT = elm;
     elm.classList.add('category-view');
     elm.innerHTML = `

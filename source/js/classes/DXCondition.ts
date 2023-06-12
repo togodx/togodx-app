@@ -22,7 +22,7 @@ export default class DXCondition {
   #userIds: string[];
   #conditionUtilityAnnotations: ConditionAnnotationUtility[];
   #conditionUtilityFilters: ConditionFilterUtility[];
-  #ids: string[];
+  #ids: string[] | undefined;
   #properties: DataFrame[];
   #attributeSet: string[];
 
@@ -129,7 +129,7 @@ export default class DXCondition {
       );
       this.#ids = res.data;
     }
-    return this.#ids;
+    return this.#ids!;
   }
 
   async getNextProperties(limit: number = LIMIT): Promise<DataFrame[]> {
@@ -139,7 +139,7 @@ export default class DXCondition {
         dataset: this.togoKey,
         filters: this.queryFilters,
         annotations: this.queryAnnotations,
-        queries: this.#ids.slice(this.offset, this.offset + limit),
+        queries: this.#ids!.slice(this.offset, this.offset + limit),
       })
       // {cancelToken: this.#source.token}
     );
@@ -215,7 +215,8 @@ export default class DXCondition {
   }
 
   get isPropertiesLoaded(): boolean {
-    return this.offset >= this.#ids?.length;
+    if (this.#ids) return this.offset >= this.#ids?.length;
+    else           return false;
   }
 
   get ids(): string[] | undefined {

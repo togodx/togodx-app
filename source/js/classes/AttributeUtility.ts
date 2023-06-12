@@ -49,8 +49,15 @@ export default class AttributeUtility {
   }
 
   async fetchNode(nodeId: string | undefined): Promise<Breakdown> {
-    const bhr = await this.#fetchHierarchicNode(nodeId);
-    return Promise.resolve(bhr.self);
+    switch (this.#attribute.datamodel) {
+      case 'classification': {
+        const bhr = await this.#fetchHierarchicNode(nodeId);
+        return Promise.resolve(bhr.self);
+      }
+      case 'distribution': {
+        return Promise.resolve(this.getNode(nodeId) as Breakdown);
+      }
+    }
   }
 
   async #fetchHierarchicNode(nodeId: string | undefined): Promise<BreakdownHierarchyResponse> {

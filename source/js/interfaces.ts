@@ -41,7 +41,7 @@ export interface AttributesObject {
 }
 export interface AttributesAttribute {
   api: string;
-  datamodel: string;
+  datamodel: 'classification' | 'distribution';
   dataset: string;
   description: string;
   label: string;
@@ -125,7 +125,7 @@ export interface Breakdown {
   node: string;
   label: string;
   count: number;
-  tip: boolean;
+  tip?: boolean;
 }
 export interface BreakdownWithParentNode extends Breakdown {
   parentNode: string;

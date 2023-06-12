@@ -2,20 +2,20 @@ import Color from 'colorjs.io';
 import AttributeUtility from './AttributeUtility.ts';
 import { AttributesCategory, AttributesDatasetObject, Breakdown, BreakdownWithParentNode } from '../interfaces.ts';
 
-type setAttributesArgs = {
+type SetAttributesArgs = {
   categories: AttributesCategory[];
-  attributes: AttributeUtility[];
+  attributes: { [key: string]: AttributeUtility };
   datasets: AttributesDatasetObject;
 }
+
 class Records {
-  #categories?: AttributesCategory[];
-  #attributes?: AttributeUtility[];
-  #datasets?: AttributesDatasetObject;
+  #categories: AttributesCategory[] = [];
+  #attributes: AttributeUtility[] = [];
+  #datasets: AttributesDatasetObject = {};
 
   // public methods
 
-  setAttributes({categories, attributes, datasets}:setAttributesArgs ) {
-    console.log(categories, attributes, datasets)
+  setAttributes({categories, attributes, datasets}: SetAttributesArgs ) {
     // define categories
 
     for (let i = 0; i < categories.length; i++) {
@@ -32,12 +32,14 @@ class Records {
         .map((channel: number) => channel * 256)
         .join(',')})`;
     }
-    this.#categories = Object.freeze(categories);
+    this.#categories = categories;
+    Object.freeze(this.#categories);
 
     // set attributes
     this.#attributes = Object.keys(attributes).map(
-      id => new AttributeUtility(id, attributes[id])
+      (id) => new AttributeUtility(id, attributes[id])
     );
+    Object.freeze(this.#attributes);
 
     // make stylesheet
     const styleElm = document.createElement('style');
@@ -78,6 +80,7 @@ class Records {
 
     // set datasets
     this.#datasets = datasets;
+    Object.freeze(this.#datasets);
   }
 
   // node
@@ -111,10 +114,10 @@ class Records {
   //   return attribute.nodes.filter(filter => filter.parentNode === parentNode);
   // }
 
-  getAncestors(attributeId: string, nodeId: string): Breakdown[] {
+  getAncestors(attributeId: string, nodeId: string | undefined): Breakdown[] {
     const attribute = this.getAttribute(attributeId)!;
-    const ancestors = [];
-    let parent: AttributeUtility | undefined;
+    const ancestors: Breakdown[] = [];
+    let parent: BreakdownWithParentNode | undefined;
     do {
       // find ancestors
       parent = attribute.nodes.find(filter => filter.node === nodeId);
@@ -128,10 +131,11 @@ class Records {
   // category
 
   getCategory(id) {
+    console.log(id)
     return this.#categories.find(category => category.id === id);
   }
 
-  getCategoryWithAttributeId(attributeId) {
+  getCategoryWithAttributeId(attributeId: string) {
     return this.#categories.find(
       category => category.attributes.indexOf(attributeId) !== -1
     );
@@ -145,13 +149,13 @@ class Records {
 
   // dataset
 
-  getDatasetLabel(dataset) {
+  getDatasetLabel(dataset: string): string {
     return this.#datasets[dataset].label;
   }
 
   // public accessors
 
-  get categories() {
+  get categories(): AttributesCategory[] {
     return this.#categories;
   }
 

@@ -126,7 +126,7 @@ export default class StackingConditionView {
   }
 
   removeFilter(attributeId: string, node: string): boolean {
-    if (attributeId === this.#condition.attributeId) {
+    if (this.#LABELS && attributeId === this.#condition.attributeId) {
       this.#LABELS.querySelector(`:scope > [data-node="${node}"`)?.remove();
       if (this.#LABELS.childNodes.length === 0) {
         this.#ROOT.remove();
