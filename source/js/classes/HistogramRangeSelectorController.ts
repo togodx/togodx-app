@@ -48,9 +48,10 @@ export default class HistogramRangeSelectorController {
           return selectionEnd;
         },
         set: value => {
+          console.log(this);
           if (selectionEnd !== value) {
             selectionEnd = value;
-            self.#update();
+            this.#update();
           }
         },
       },
@@ -62,7 +63,7 @@ export default class HistogramRangeSelectorController {
           if (selectionStart !== start || selectionEnd !== end) {
             selectionStart = start;
             selectionEnd = end;
-            self.#update();
+            this.#update();
           }
         },
       },

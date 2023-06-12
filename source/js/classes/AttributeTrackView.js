@@ -3,7 +3,7 @@ import Records from './Records.ts';
 import ConditionBuilder from './ConditionBuilder.ts';
 import collapseView from '../functions/collapseView';
 import ColumnSelectorView from './ColumnSelectorView';
-import HistogramRangeSelectorView from './HistogramRangeSelectorView';
+import HistogramRangeSelectorView from './HistogramRangeSelectorView.ts';
 import TrackOverviewCategorical from './TrackOverviewCategorical';
 import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
 import * as event from '../events';

@@ -1,8 +1,8 @@
 import App from './App.ts';
 import Records from './Records.ts';
 import DefaultEventEmitter from './DefaultEventEmitter.ts';
-import HistogramRangeSelectorController from './HistogramRangeSelectorController';
-import * as event from '../events';
+import HistogramRangeSelectorController from './HistogramRangeSelectorController.ts';
+import * as event from '../events.js';
 import * as util from '../functions/util.ts';
 
 const NUM_OF_GRID = 4;
