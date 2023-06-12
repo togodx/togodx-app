@@ -1,13 +1,22 @@
 import ConditionBuilder from './ConditionBuilder.ts';
+import HistogramRangeSelectorView from './HistogramRangeSelectorView.ts';
+
+
+type Range = [number, number];
+interface Selection {
+  start: number;
+  end: number;
+  range: Range;
+}
 
 export default class HistogramRangeSelectorController {
-  #target;
-  #selection;
-  #unit;
-  #SELECTING_AREA;
-  #SELECTOR_BARS;
+  #target: HistogramRangeSelectorView;
+  #selection: Selection;
+  #unit: number;
+  #SELECTING_AREA: HTMLDivElement;
+  #SELECTOR_BARS: HTMLDivElement[];
 
-  constructor(target, selector) {
+  constructor(target: HistogramRangeSelectorView, selector: HTMLDivElement) {
     // definition
     this.#target = target;
     this.#unit = 100 / target.items.length;
@@ -17,10 +26,10 @@ export default class HistogramRangeSelectorController {
     // reference
     this.#SELECTING_AREA = selector.querySelector(
       ':scope > .inner > .selectingarea'
-    );
-    this.#SELECTOR_BARS = selector.querySelectorAll(
+    )!;
+    this.#SELECTOR_BARS = Array.from(selector.querySelectorAll(
       ':scope > .inner > .overview > .bar'
-    );
+    ));
 
     // interaction
     this.#defineInteraction(selector);
@@ -48,7 +57,6 @@ export default class HistogramRangeSelectorController {
           return selectionEnd;
         },
         set: value => {
-          console.log(this);
           if (selectionEnd !== value) {
             selectionEnd = value;
             this.#update();
@@ -70,21 +78,21 @@ export default class HistogramRangeSelectorController {
     });
   }
 
-  #defineInteraction(selector) {
+  #defineInteraction(selector: HTMLDivElement) {
     let isMouseDown = false,
-      startX,
-      initialStart,
-      initialEnd,
-      initialWidth,
-      totalWidth,
-      interactionType,
-      direction;
+      startX: number,
+      initialStart: number,
+      initialEnd: number,
+      initialWidth: number,
+      totalWidth: number,
+      interactionType: string,
+      direction: string;
 
     // references
-    const selectorController = selector.querySelector(
+    const selectorController: HTMLDivElement = selector.querySelector(
       ':scope > .inner > .controller'
-    );
-    const handlesArray = Array.from(
+    )!;
+    const handles: HTMLDivElement[] = Array.from(
       this.#SELECTING_AREA.querySelectorAll(':scope > .handle')
     );
     // const handles = {
@@ -92,7 +100,7 @@ export default class HistogramRangeSelectorController {
     //   right: handlesArray.filter(handle => handle.dataset.direction === 'end')
     // };
 
-    const init = e => {
+    const init = (e: MouseEvent) => {
       e.stopImmediatePropagation();
       totalWidth = selectorController.getBoundingClientRect().width;
       isMouseDown = true;
@@ -101,14 +109,15 @@ export default class HistogramRangeSelectorController {
     };
 
     // make selecting area
-    selectorController.addEventListener('mousedown', e => {
+    selectorController.addEventListener('mousedown', (e: MouseEvent) => {
       interactionType = 'make';
       selector.classList.add('-makingarea');
       init(e);
     });
 
     // drag selecting area
-    this.#SELECTING_AREA.addEventListener('mousedown', e => {
+    this.#SELECTING_AREA.addEventListener('mousedown', (e: MouseEvent) => {
+      console.log(this);
       interactionType = 'drag';
       selector.classList.add('-draggingarea');
       initialStart = this.start;
@@ -117,10 +126,10 @@ export default class HistogramRangeSelectorController {
     });
 
     // resize selecting area
-    handlesArray.forEach(handle =>
-      handle.addEventListener('mousedown', e => {
+    handles.forEach(handle =>
+      handle.addEventListener('mousedown', (e: MouseEvent) => {
         interactionType = 'resize';
-        direction = e.target.dataset.direction;
+        direction = (e.target as HTMLElement).dataset.direction!;
         selector.classList.add('-resizingarea');
         initialStart = this.start;
         initialEnd = this.end;
@@ -131,8 +140,8 @@ export default class HistogramRangeSelectorController {
     // dragging behavior
     selectorController.addEventListener('mousemove', e => {
       if (isMouseDown) {
-        let range;
-        const x = (e.layerX / totalWidth) * 100;
+        let range: Range;
+        const x = (e.offsetX / totalWidth) * 100;
         switch (interactionType) {
           case 'make':
             {
@@ -211,7 +220,7 @@ export default class HistogramRangeSelectorController {
     this.#SELECTING_AREA.style.width =
       (this.end - this.start) * this.#unit + '%';
     // overview
-    this.#SELECTOR_BARS.forEach((bar, index) => {
+    this.#SELECTOR_BARS.forEach((bar: HTMLDivElement, index: number) => {
       if (this.start <= index && index < this.end)
         bar.classList.add('-selected');
       else bar.classList.remove('-selected');
@@ -243,7 +252,7 @@ export default class HistogramRangeSelectorController {
     const items = [];
     if (this.width !== 0) {
       items.push(
-        ...this.#target.items.filter((item_, index) => {
+        ...this.#target.items.filter((item_, index: number) => {
           if (this.start <= index && index < this.end) return true;
           else return false;
         })

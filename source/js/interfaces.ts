@@ -130,6 +130,9 @@ export interface Breakdown {
 export interface BreakdownWithParentNode extends Breakdown {
   parentNode: string;
 }
+export interface BreakdownWithElement extends Breakdown {
+  elm?: HTMLElement;
+}
 export interface BreakdownHierarchyRequest {
   hierarchy: '';
   node?: string;

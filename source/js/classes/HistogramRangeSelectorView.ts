@@ -1,23 +1,24 @@
 import App from './App.ts';
 import Records from './Records.ts';
+import AttributeUtility from './AttributeUtility.ts';
 import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import HistogramRangeSelectorController from './HistogramRangeSelectorController.ts';
 import * as event from '../events.js';
 import * as util from '../functions/util.ts';
+import { Breakdown, BreakdownWithElement } from '../interfaces.ts';
 
 const NUM_OF_GRID = 4;
 
 export default class HistogramRangeSelectorView {
-  #items;
-  #attribute;
+  #items: BreakdownWithElement[];
+  #attribute: AttributeUtility;
   #selectorController;
-  #OVERVIEW_CONTAINER;
-  #ROOT;
-  #GRIDS;
+  #ROOT: HTMLDivElement;
+  #GRIDS: HTMLDivElement[];
 
-  constructor(elm, attribute, items) {
+  constructor(elm: HTMLDivElement, attribute: AttributeUtility, items: Breakdown[]) {
     this.#attribute = attribute;
-    const category = Records.getCategoryWithAttributeId(this.#attribute.id);
+    const category = Records.getCategoryWithAttributeId(this.#attribute.id)!;
     this.#items = items.map(item => Object.assign({}, item));
 
     // make container
@@ -40,10 +41,10 @@ export default class HistogramRangeSelectorView {
         </div>
         <svg class="additionalline"></svg>
       </div>`;
-    this.#ROOT = elm.querySelector(':scope > .histogram-range-selector-view');
-    const histogram = this.#ROOT.querySelector(':scope > .histogram');
-    const selector = this.#ROOT.querySelector(':scope > .selector > .inner');
-    const overview = selector.querySelector(':scope > .overview');
+    this.#ROOT = elm.querySelector(':scope > .histogram-range-selector-view')!;
+    const histogram = this.#ROOT.querySelector(':scope > .histogram')!;
+    const selector = this.#ROOT.querySelector(':scope > .selector > .inner')!;
+    const overview = selector.querySelector(':scope > .overview')!;
 
     // make graph
     const max = Math.max(...this.#items.map(item => item.count));
@@ -57,10 +58,10 @@ export default class HistogramRangeSelectorView {
       style="width: ${width}%; height: ${(item.count / max) * 100}%;"></div>`
       )
       .join('');
-    const graph = histogram.querySelector(':scope > .graph');
+    const graph = histogram.querySelector(':scope > .graph')!;
     graph.innerHTML = this.#items
       .map(
-        (item, index) => `<div class="bar" data-node="${
+        (item, index: number) => `<div class="bar" data-node="${
           item.node
         }" data-count="${item.count}">
       <div class="actual" style="background-color: rgb(${util
@@ -74,9 +75,9 @@ export default class HistogramRangeSelectorView {
 
     // reference
     histogram
-      .querySelectorAll(':scope > .graph > .bar')
-      .forEach((item, index) => (this.#items[index].elm = item));
-    this.#GRIDS = histogram.querySelectorAll(':scope > .gridcontainer > .grid');
+      .querySelectorAll<HTMLElement>(':scope > .graph > .bar')
+      .forEach((item, index: number) => (this.#items[index].elm = item));
+    this.#GRIDS = Array.from(histogram.querySelectorAll<HTMLDivElement>(':scope > .gridcontainer > .grid'));
 
     // event
     DefaultEventEmitter.addEventListener(event.changeViewModes, () =>
@@ -86,7 +87,7 @@ export default class HistogramRangeSelectorView {
     // this.#setupRangeSelector();
     this.#selectorController = new HistogramRangeSelectorController(
       this,
-      this.#ROOT.querySelector(':scope > .selector')
+      this.#ROOT.querySelector(':scope > .selector')!
     );
     this.update();
   }
@@ -112,26 +113,26 @@ export default class HistogramRangeSelectorView {
     const digits = String(Math.ceil(max)).length;
     const unit =
       Number(String(max).charAt(0).padEnd(digits, '0')) / NUM_OF_GRID;
-    this.#GRIDS.forEach((grid, index) => {
+    this.#GRIDS.forEach((grid: HTMLDivElement, index: number) => {
       const scale = unit * index;
       grid.style.bottom = `${
         ((isLog10 ? Math.log10(scale) : scale) / processedMax) * 100
       }%`;
-      grid.querySelector(':scope > .label').textContent =
+      grid.querySelector(':scope > .label')!.textContent =
         scale.toLocaleString();
     });
 
     // graph
     this.#items.forEach(item => {
       if (selectedItems.indexOf(item) === -1) {
-        item.elm.classList.add('-filtered');
+        item.elm!.classList.add('-filtered');
       } else {
-        item.elm.classList.remove('-filtered');
+        item.elm!.classList.remove('-filtered');
         const height =
           ((isLog10 ? Math.log10(item.count) : item.count) / processedMax) *
           100;
-        item.elm.style.width = `${width}%`;
-        item.elm.querySelector(':scope > .actual').style.height = `${height}%`;
+        item.elm!.style.width = `${width}%`;
+        item.elm!.querySelector<HTMLElement>(':scope > .actual')!.style.height = `${height}%`;
       }
     });
   }
