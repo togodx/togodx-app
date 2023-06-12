@@ -33,6 +33,7 @@ class ConditionBuilder {
     this.#conditionUtilityFilters = [];
     this.#preparingCounter = 0;
     this.#isRestoredConditinoFromURLParameters = false;
+    this.#dataset = '';
     this.#userIds = [];
 
     // event listeners
@@ -279,11 +280,15 @@ class ConditionBuilder {
 
   // private methods
 
-  async #preset(url): Promise<void> {
-    console.log(url)
+  async #preset(url: URL): Promise<void> {
+    axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
     const presets: Preset[] = await axios
-      .get(url)
-      .then(res => res.data);
+      .get(url.href)
+      .then(res => res.data)
+      .catch(err => {
+        console.error(err);
+        return Promise.reject();
+      });
     presets.forEach(preset => {
       const customEvent = new CustomEvent(event.addCondition, {detail: preset});
       DefaultEventEmitter.dispatchEvent(customEvent);

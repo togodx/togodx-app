@@ -54,7 +54,7 @@ export default class PresetView extends ModalWindowView {
     sections[0]
       .querySelectorAll<HTMLDListElement>(':scope > nav > dl')
       .forEach(dl => {
-        dl.addEventListener('click', e => {
+        dl.addEventListener('click', () => {
           const url = dl.dataset.url!;
           this.#loadPreset(url);
         });
