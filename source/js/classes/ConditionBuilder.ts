@@ -55,14 +55,16 @@ class ConditionBuilder {
     const params = new URL(location.href).searchParams;
 
     // get preset
-    const preset = params.get('preset')!;
-    let presetUrl: URL | undefined;
-    try {
-      presetUrl = new URL(preset);
-    } catch (e) {
-      console.error(e);
+    const preset: string | null = params.get('preset');
+    if (preset) {
+      let presetUrl: URL | undefined;
+      try {
+        presetUrl = new URL(preset);
+      } catch (e) {
+        console.error(e);
+      }
+      if (presetUrl) this.#preset(presetUrl);
     }
-    if (presetUrl) this.#preset(presetUrl);
 
     if (IS_SAVE_CONDITION_IN_SEARCH_PARAMS) {
       this.#createSearchConditionFromURLParameters(true);
