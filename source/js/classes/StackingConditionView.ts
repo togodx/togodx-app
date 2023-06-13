@@ -3,8 +3,6 @@ import Records from './Records.ts';
 import ConditionFilterUtility from './ConditionFilterUtility.ts';
 import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
 
-const POLLING_DURATION = 1000;
-
 type ConditionType = 'filter' | 'annotation';
 
 export default class StackingConditionView {
@@ -17,7 +15,7 @@ export default class StackingConditionView {
   constructor(
     container: HTMLDivElement,
     condition: ConditionFilterUtility | ConditionAnnotationUtility,
-    isRange = false
+    isRange = false // TODO: support 'distribution'
   ) {
     this.#condition = condition;
     this.#conditionType = condition instanceof ConditionFilterUtility ? 'filter' : 'annotation';
@@ -63,8 +61,8 @@ export default class StackingConditionView {
     }
 
     // event
-    this.#ROOT
-      .querySelector(':scope > .close-button-view')!
+    const closeButton = this.#ROOT.querySelector(':scope > .close-button-view') as HTMLDivElement;
+    closeButton
       .addEventListener('click', () => {
         switch (true) {
           case this.#condition instanceof ConditionAnnotationUtility:
@@ -79,13 +77,15 @@ export default class StackingConditionView {
             }
             break;
           case this.#condition instanceof ConditionFilterUtility:
-            for (const label of this.#LABELS!.querySelectorAll<HTMLLIElement>(
-              ':scope > .label'
-            )) {
-              ConditionBuilder.removeFilter(
-                this.#condition.attributeId,
-                label.dataset.node!
-              );
+            if (this.#LABELS) {
+              for (const label of this.#LABELS.querySelectorAll<HTMLLIElement>(
+                ':scope > .label'
+              )) {
+                ConditionBuilder.removeFilter(
+                  this.#condition.attributeId,
+                  label.dataset.node as string
+                );
+              }
             }
             break;
         }
@@ -103,14 +103,15 @@ export default class StackingConditionView {
     li.classList.add('label', '_category-background-color');
     li.dataset.node = node.node;
     li.innerHTML = `${node.label}<div class="close-button-view"></div>`;
-    this.#LABELS!.append(li);
+    if (this.#LABELS) this.#LABELS.append(li);
 
     // attach event
-    li.querySelector(':scope > .close-button-view')!.addEventListener('click', e => {
+    const closeButton = li.querySelector(':scope > .close-button-view') as HTMLDivElement;
+    closeButton.addEventListener('click', e => {
       e.stopPropagation();
       ConditionBuilder.removeFilter(
         this.#condition.attributeId,
-        li.dataset.node!
+        li.dataset.node as string
       );
     });
   }
