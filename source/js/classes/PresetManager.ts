@@ -6,8 +6,8 @@ import {PresetMetaDatum, Preset} from '../interfaces.ts';
 // import {download} from '../functions/util';
 
 class PresetManager {
-  #currentAttributeSet: string[];
-  #presetMetaData: PresetMetaDatum[];
+  #currentAttributeSet: string[] = [];
+  #presetMetaData: PresetMetaDatum[] = [];
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   constructor() {}
@@ -27,10 +27,6 @@ class PresetManager {
       .then(res => res.json())
       .then((presets: PresetMetaDatum[]) => {
         this.#presetMetaData = presets;
-      })
-      .catch(() => {
-        this.#presetMetaData = [];
-        this.#currentAttributeSet = [];
       });
 
     if (storagedDisplayAttributes.length > 0) {
@@ -76,12 +72,12 @@ class PresetManager {
 
   importSet(file: File): void {
     const reader = new FileReader();
-    reader.onerror = e => {
+    reader.onerror = () => {
       window.alert('Failed to load.');
     };
     reader.onload = (e: ProgressEvent) => {
       try {
-        const fileReader: FileReader = <FileReader>e.target!;
+        const fileReader: FileReader = <FileReader>e.target;
         const presets: Preset[] = JSON.parse(<string>fileReader.result);
         presets.forEach(preset => {
           const customEvent = new CustomEvent(event.addCondition, {detail: preset});
