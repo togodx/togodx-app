@@ -3,7 +3,7 @@ import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import ConditionFilterUtility from './ConditionFilterUtility.ts';
 import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
 import DXCondition from './DXCondition.ts';
-import * as event from '../events';
+import * as events from '../events';
 import { download } from '../functions/util.ts';
 import {Preset} from '../interfaces.ts';
 
@@ -17,24 +17,24 @@ export default class ConditionsController {
 
     // references
     this.#ROOT = elm;
-    this.#CONDITIONS_CONTAINER = elm.querySelector<HTMLDivElement>(':scope > .conditions')!;
+    this.#CONDITIONS_CONTAINER = elm.querySelector(':scope > .conditions') as HTMLDivElement;
 
     // event listener
     DefaultEventEmitter.addEventListener(
-      event.addCondition,
-      this.#addConditionResultsController.bind(this)
+      events.addCondition,
+      <EventListener>this.#addConditionResultsController.bind(this)
     );
     DefaultEventEmitter.addEventListener(
-      event.sendCondition,
-      this.#setConditionResultsController.bind(this)
+      events.sendCondition,
+      <EventListener>this.#setConditionResultsController.bind(this)
     );
     DefaultEventEmitter.addEventListener(
-      event.selectConditionResults,
-      this.#selectConditionResultsController.bind(this)
+      events.selectConditionResults,
+      <EventListener>this.#selectConditionResultsController.bind(this)
     );
     DefaultEventEmitter.addEventListener(
-      event.deleteConditionResults,
-      this.#deleteConditionResultsController.bind(this)
+      events.deleteConditionResults,
+      <EventListener>this.#deleteConditionResultsController.bind(this)
     );
 
     // event
@@ -65,12 +65,13 @@ export default class ConditionsController {
 
   #addConditionResultsController(e: CustomEvent) {
     const preset: Preset = e.detail;
+    if (!preset.condition) return;
     const dxCondition = new DXCondition(
-      preset.condition!.dataset,
-      preset.condition!.queries,
-      preset.condition!.annotations.
+      preset.condition.dataset,
+      preset.condition.queries,
+      preset.condition.annotations.
         map(annotation => new ConditionAnnotationUtility(annotation.attribute, annotation.node)),
-      preset.condition!.filters.
+      preset.condition.filters.
         map(filter => new ConditionFilterUtility(filter.attribute, filter.nodes)),
       preset.attributeSet
     )
