@@ -371,7 +371,21 @@ export class CategoryBrowserView extends observeState(LitElement) {
   // TODO here checked ids wont updating properly when we change the condition
 
   #handleAddRemoveFilter(e) {
-    const {action, attributeId, node} = e.detail;
+    const action = e.detail.action;
+    const {attributeId, node} = (() => {
+      switch (state.condition) {
+        case 'filter':
+          return {
+            attributeId: e.detail.attributeId,
+            node: e.detail.node,
+          };
+        case 'annotation':
+          return {
+            attributeId: e.detail.conditionUtilityAnnotation.attributeId,
+            node: e.detail.conditionUtilityAnnotation.nodeId,
+          };
+      }
+    })();
 
     if (attributeId === this.#attributeId) {
       switch (action) {

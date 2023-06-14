@@ -187,22 +187,25 @@ class ConditionBuilder {
         conditionUtilityFilter.attributeId === attributeId
     );
     if (oldConditionFilterUtility) {
-      const originalFilters = Records.getAttribute(attributeId)!.nodes;
-      originalFilters.forEach(originalFilter => {
-        const indexInNew = nodes.indexOf(originalFilter.node);
-        const indexInOld = oldConditionFilterUtility.nodes.indexOf(
-          originalFilter.node
-        );
-        if (indexInNew !== -1) {
-          // if new filter does not exist in old filters, add property filter
-          if (indexInOld === -1)
-            this.addFilter(attributeId, originalFilter.node, [], false);
-        } else {
-          // if extra filter exists in old filters, remove property filter
-          if (indexInOld !== -1)
-            this.removeFilter(attributeId, originalFilter.node, false);
-        }
-      });
+      const attribute = Records.getAttribute(attributeId);
+      if (attribute) {
+        const originalFilters = attribute.nodes;
+        originalFilters.forEach(originalFilter => {
+          const indexInNew = nodes.indexOf(originalFilter.node);
+          const indexInOld = oldConditionFilterUtility.nodes.indexOf(
+            originalFilter.node
+          );
+          if (indexInNew !== -1) {
+            // if new filter does not exist in old filters, add property filter
+            if (indexInOld === -1)
+              this.addFilter(attributeId, originalFilter.node, [], false);
+          } else {
+            // if extra filter exists in old filters, remove property filter
+            if (indexInOld !== -1)
+              this.removeFilter(attributeId, originalFilter.node, false);
+          }
+        });
+      }
     } else {
       for (const node of nodes) {
         this.addFilter(attributeId, node, [], false);
