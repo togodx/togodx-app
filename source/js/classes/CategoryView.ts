@@ -53,7 +53,7 @@ export default class CategoryView {
   #enterAttributesDisplaySettingMode() {
     this.#ROOT.classList.add('-editing');
     document.body.dataset.editingCategory = this.#category.id;
-    if (!this.#ROOT.querySelector(':scope > .buttons')) this.#makeButtons();
+    // if (!this.#ROOT.querySelector(':scope > .buttons')) this.#makeButtons();
     // save status
     this.#lastState = this.#makeAttributesDisplayStateMap();
     // load filters
@@ -66,6 +66,21 @@ export default class CategoryView {
   }
 
   #leaveAttributesDisplaySettingMode() {
+    const confirmation = window.confirm('Do you want to reflect the changes?');
+    if (confirmation) {
+      // set local storage
+      PresetManager.updateByDifferenceData(
+        this.#makeAttributesDisplayStateMap()
+      );
+    } else {
+      // return to state
+      this.#attributeTrackViews.forEach(attributeTrackView => {
+        attributeTrackView.visibility = this.#lastState.get(
+          attributeTrackView.id
+        );
+      });
+    }
+    // close
     document.body.dataset.editingCategory = '';
     this.#ROOT.classList.remove('-editing');
     document.removeEventListener('keydown', this.#boundEventHandler);
@@ -75,39 +90,39 @@ export default class CategoryView {
     if (e.key === 'Escape') this.#leaveAttributesDisplaySettingMode();
   }
 
-  #makeButtons() {
-    // make buttons
-    this.#ROOT.insertAdjacentHTML(
-      'beforeend',
-      '<div class="buttons"><button class="rounded-button-view">OK</button><button class="rounded-button-view">Cancel</button></div>'
-    );
-    // event
-    const buttons = this.#ROOT.querySelectorAll<HTMLButtonElement>(':scope > .buttons > button');
-    buttons.forEach((button: HTMLButtonElement, i: number) => {
-      button.addEventListener('click', () => {
-        switch (i) {
-          case 0: // ok
-            {
-              // set local storage
-              PresetManager.updateByDifferenceData(
-                this.#makeAttributesDisplayStateMap()
-              );
-            }
-            break;
-          case 1: // cancel
-            // return to state
-            this.#attributeTrackViews.forEach(attributeTrackView => {
-              attributeTrackView.visibility = this.#lastState.get(
-                attributeTrackView.id
-              );
-            });
-            break;
-        }
-        document.body.dataset.editingCategory = '';
-        this.#ROOT.classList.remove('-editing');
-      });
-    });
-  }
+  // #makeButtons() {
+  //   // make buttons
+  //   this.#ROOT.insertAdjacentHTML(
+  //     'beforeend',
+  //     '<div class="buttons"><button class="rounded-button-view">OK</button><button class="rounded-button-view">Cancel</button></div>'
+  //   );
+  //   // event
+  //   const buttons = this.#ROOT.querySelectorAll<HTMLButtonElement>(':scope > .buttons > button');
+  //   buttons.forEach((button: HTMLButtonElement, i: number) => {
+  //     button.addEventListener('click', () => {
+  //       switch (i) {
+  //         case 0: // ok
+  //           {
+  //             // set local storage
+  //             PresetManager.updateByDifferenceData(
+  //               this.#makeAttributesDisplayStateMap()
+  //             );
+  //           }
+  //           break;
+  //         case 1: // cancel
+  //           // return to state
+  //           this.#attributeTrackViews.forEach(attributeTrackView => {
+  //             attributeTrackView.visibility = this.#lastState.get(
+  //               attributeTrackView.id
+  //             );
+  //           });
+  //           break;
+  //       }
+  //       document.body.dataset.editingCategory = '';
+  //       this.#ROOT.classList.remove('-editing');
+  //     });
+  //   });
+  // }
 
   #makeAttributesDisplayStateMap(): Map<string, boolean> {
     const stateMap = new Map();
