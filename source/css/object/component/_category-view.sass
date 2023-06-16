@@ -20,18 +20,18 @@
       width: 0
       height: 0
       position: absolute
-      bottom: 0
+      top: 0
       left: 0
       border-style: solid
-      border-width: .6rem 0 0 .6rem
-      border-color: transparent transparent transparent var(--color-lamp-black)
+      border-width: .6rem .6rem 0 0
+      border-color: var(--color-lamp-black) transparent transparent transparent
     > .label
       text-overflow: ellipsis
       overflow: hidden
-      max-height: calc(100% - 1.2rem)
+      max-height: calc(100% - .4rem)
       display: inline-block
       vertical-align: middle
-      padding-top: .8rem
+      padding-top: 2rem
     > .collapsebutton
       display: block
       width: 1.2rem
@@ -40,7 +40,7 @@
       background-color: var(--color-lamp-black)
       position: absolute
       left: .4rem
-      bottom: .4rem
+      top: .4rem
       cursor: pointer
       transition: transform var(--transition-instant)
       &::before, &::after
@@ -96,7 +96,7 @@
         rotate: 45deg
         scale: 1.5
         &::before, &::after
-          background-color: var(--color-lamp-black)
+          // background-color: var(--color-lamp-black)
 
     > .backdrop
       z-index: -1
