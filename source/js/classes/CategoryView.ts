@@ -1,4 +1,4 @@
-import AttributeTrackView from './AttributeTrackView.js';
+import AttributeTrackView from './AttributeTrackView.ts';
 import PresetManager from './PresetManager.ts';
 import {AttributesCategory} from '../interfaces.ts';
 

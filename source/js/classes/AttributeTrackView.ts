@@ -8,24 +8,27 @@ import TrackOverviewCategorical from './TrackOverviewCategorical.js';
 import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
 import * as event from '../events.js';
 import {CategoryBrowserView} from './CategoryBrowserView/CategoryBrowserView.js';
+import { AttributesCategory } from '../interfaces.ts';
+import AttributeUtility from './AttributeUtility.ts';
 
 export default class AttributeTrackView {
-  #attribute;
-  #madeFilters;
-  #ROOT;
-  #LOADING_VIEW;
-  #SELECT_CONTAINER;
-  #OVERVIEW_CONTAINER;
-  #CHECKBOX_ALL_PROPERTIES;
-  #CHECKBOX_VISIBILITY;
-  #COLLAPSE_BUTTON;
+  #attribute:               AttributeUtility;
+  #madeFilters:             boolean;
+  #ROOT:                    HTMLDivElement;
+  #LOADING_VIEW:            HTMLDivElement;
+  #SELECT_CONTAINER:        HTMLDivElement;
+  #OVERVIEW_CONTAINER:      HTMLUListElement;
+  #CHECKBOX_ALL_PROPERTIES: HTMLInputElement;
+  #CHECKBOX_VISIBILITY:     HTMLInputElement;
+  #COLLAPSE_BUTTON:         HTMLDivElement;
 
   constructor(attributeId, container, displayed, positionRate) {
+    console.log(attributeId, container, displayed, positionRate)
     this.#attribute = Records.getAttribute(attributeId);
     this.#madeFilters = false;
     this.#ROOT = document.createElement('div');
     container.insertAdjacentElement('beforeend', this.#ROOT);
-    const category = Records.getCategoryWithAttributeId(attributeId);
+    const category = Records.getCategoryWithAttributeId(attributeId) as AttributesCategory;
     this.#ROOT.classList.add(
       'attribute-track-view',
       '-preparing',
@@ -81,22 +84,22 @@ export default class AttributeTrackView {
 
     // references
 
-    const rowupper = this.#ROOT.querySelector(':scope > .row.-upper');
-    const overview = rowupper.querySelector(':scope > .filters > .overview');
-    this.#OVERVIEW_CONTAINER = overview.querySelector(':scope > .inner');
-    this.#LOADING_VIEW = overview.querySelector(':scope > .loading-view');
+    const rowupper = this.#ROOT.querySelector(':scope > .row.-upper') as HTMLDivElement;
+    const overview = rowupper.querySelector(':scope > .filters > .overview') as HTMLDivElement;
+    this.#OVERVIEW_CONTAINER = overview.querySelector(':scope > .inner') as HTMLUListElement;
+    this.#LOADING_VIEW = overview.querySelector(':scope > .loading-view') as HTMLDivElement;
     this.#SELECT_CONTAINER = this.#ROOT.querySelector(
       ':scope > .row.-lower > .selector'
-    );
+    ) as HTMLDivElement;
     this.#COLLAPSE_BUTTON = rowupper.querySelector(
       ':scope > .left > .collapsebutton'
-    );
+    ) as HTMLDivElement;
     this.#CHECKBOX_ALL_PROPERTIES = this.#COLLAPSE_BUTTON.querySelector(
       ':scope > input.mapping'
-    );
+    ) as HTMLInputElement;
     this.#CHECKBOX_VISIBILITY = this.#COLLAPSE_BUTTON.querySelector(
       ':scope > input.visibility'
-    );
+    ) as HTMLInputElement;
     if (!displayed) {
       this.#CHECKBOX_VISIBILITY.ckecked = false;
       this.#ROOT.classList.add('-hidden');
