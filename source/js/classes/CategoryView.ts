@@ -3,23 +3,26 @@ import PresetManager from './PresetManager.ts';
 import {AttributesCategory} from '../interfaces.ts';
 
 export default class CategoryView {
+  #category: AttributesCategory;
   #attributeTrackViews: AttributeTrackView[];
   #lastState: Map<string, boolean> = new Map();
   #ROOT: HTMLElement;
 
   constructor(category: AttributesCategory, elm: HTMLElement) {
+
+    this.#category = category;
     this.#ROOT = elm;
     elm.classList.add('category-view');
     elm.innerHTML = `
     <h3 class="title _category-background-color-strong" data-category-id="${category.id}">
-      <span class="label">${category.label}</span>
+      <span class="label">${this.#category.label}</span>
       <span class="collapsebutton"></span>
     </h3>
     <div class="attributes"></div>
     <div class="backdrop"></div>`;
 
     // make tracks
-    const attributes = category.attributes;
+    const attributes = this.#category.attributes;
     const container = elm.querySelector(':scope > .attributes');
     this.#attributeTrackViews = attributes.map(
       (attribute, i) =>
@@ -32,22 +35,31 @@ export default class CategoryView {
     );
 
     // event
-    elm
-      .querySelector(':scope > h3 > .collapsebutton')!
-      .addEventListener('click', () => {
-        elm.classList.add('-editing');
-        document.body.dataset.editingCategory = category.id;
+    const collapsebutton = elm.querySelector(':scope > h3 > .collapsebutton') as HTMLButtonElement;
+    collapsebutton.addEventListener('click', () => {
+      if (elm.classList.contains('-editing')) {
+        this.#leaveAttributesDisplaySettingMode();
+      } else {
         this.#enterAttributesDisplaySettingMode();
-        this.#attributeTrackViews.forEach(attributeTrackView =>
-          attributeTrackView.makeFilters()
-        );
-      });
+      }
+    });
   }
 
   #enterAttributesDisplaySettingMode() {
+    this.#ROOT.classList.add('-editing');
+    document.body.dataset.editingCategory = this.#category.id;
     if (!this.#ROOT.querySelector(':scope > .buttons')) this.#makeButtons();
-    // aggregate status
+    // save status
     this.#lastState = this.#makeAttributesDisplayStateMap();
+    // load filters
+    this.#attributeTrackViews.forEach(attributeTrackView =>
+      attributeTrackView.makeFilters()
+    );
+  }
+
+  #leaveAttributesDisplaySettingMode() {
+    document.body.dataset.editingCategory = '';
+    this.#ROOT.classList.remove('-editing');
   }
 
   #makeButtons() {
@@ -57,7 +69,7 @@ export default class CategoryView {
       '<div class="buttons"><button class="rounded-button-view">OK</button><button class="rounded-button-view">Cancel</button></div>'
     );
     // event
-    const buttons = this.#ROOT.querySelectorAll(':scope > .buttons > button');
+    const buttons = this.#ROOT.querySelectorAll<HTMLButtonElement>(':scope > .buttons > button');
     buttons.forEach((button: HTMLButtonElement, i: number) => {
       button.addEventListener('click', () => {
         switch (i) {

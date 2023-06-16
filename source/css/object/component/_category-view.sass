@@ -28,33 +28,36 @@
     > .label
       text-overflow: ellipsis
       overflow: hidden
-      max-height: calc(100% - 20px)
+      max-height: calc(100% - 1.2rem)
       display: inline-block
       vertical-align: middle
       padding-top: .8rem
     > .collapsebutton
-      display: inline-block
-      width: 1rem
-      height: 1rem
+      display: block
+      width: 1.2rem
+      height: 1.2rem
       border-radius: 100%
       background-color: var(--color-lamp-black)
-      position: relative
-      left: .3rem
+      position: absolute
+      left: .4rem
+      bottom: .4rem
       cursor: pointer
+      transition: transform var(--transition-instant)
       &::before, &::after
         content: ""
         position: absolute
         background-color: white
+        transition: background var(--transition-instant)
       &::before
         width: .6rem
         height: .15rem
-        top: .4rem
-        left: .2rem
+        top: .5rem
+        left: .3rem
       &::after
         width: .15rem
         height: .6rem
-        top: .2rem
-        left: .4rem
+        top: .3rem
+        left: .5rem
   > .attributes
     width: calc(100% - var(--width-track-column-subject))
     position: relative
@@ -87,8 +90,14 @@
     z-index: var(--z-modal-window)
     > .title
       > .collapsebutton
-        pointer-events: none
-        opacity: .4
+        // pointer-events: none
+        // opacity: .4
+        background-color: transparent
+        rotate: 45deg
+        scale: 1.5
+        &::before, &::after
+          background-color: var(--color-lamp-black)
+
     > .backdrop
       z-index: -1
       opacity: 1
