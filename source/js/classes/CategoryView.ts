@@ -15,6 +15,10 @@ export default class CategoryView {
     this.#ROOT = elm;
     elm.classList.add('category-view');
     elm.innerHTML = `
+    <div class="selectall">
+      <input type="checkbox" id="category-${category.id}-selectall">
+      <label for="category-${category.id}-selectall">Select all / Unselect All</label>
+    </div>
     <h3 class="title _category-background-color-strong" data-category-id="${category.id}">
       <span class="label">${this.#category.label}</span>
       <span class="collapsebutton"></span>

@@ -3,9 +3,23 @@
   background-color: var(--color-gray)
   + .category-view
     margin-top: .2rem
+  > .selectall, > .backdrop
+    opacity: 0
+    pointer-events: none
+    transition: opacity var(--transition-wipe)
+  > .selectall
+    position: absolute
+    left: calc(var(--width-track-column-subject) + 1.2rem)
+    top: -2.4rem
+    line-height: 2.4rem
+    color: white
+    font-weight: bold
+    > input
+      vertical-align: middle
+      margin-right: .2rem
   > .title
     margin: 0
-    width: calc(var(--width-track-column-subject) - 1px)
+    width: calc(var(--width-track-column-subject) - .1rem)
     color: white
     font-size: 1.2rem
     line-height: var(--width-track-column-subject)
@@ -63,15 +77,13 @@
     position: relative
     left: var(--width-track-column-subject)
   > .backdrop
+    z-index: -1
     position: fixed
     top: 0
     left: 0
     width: 100%
     height: 100%
-    opacity: 0
     background-color: var(--color-backdrop)
-    pointer-events: none
-    transition: opacity var(--transition-wipe)
   > .buttons
     text-align: center
     position: sticky
@@ -92,13 +104,11 @@
       > .collapsebutton
         // pointer-events: none
         // opacity: .4
-        background-color: transparent
-        transform: rotate(45deg) scale(1.5)
+        // background-color: transparent
+        transform: rotate(225deg)
         &::before, &::after
           // background-color: var(--color-lamp-black)
-
-    > .backdrop
-      z-index: -1
+    > .backdrop, > .selectall
       opacity: 1
       pointer-events: auto
     > .buttons
