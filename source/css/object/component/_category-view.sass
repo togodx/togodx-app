@@ -42,12 +42,12 @@
       left: .4rem
       top: .4rem
       cursor: pointer
-      transition: transform var(--transition-instant)
+      transition: transform var(--transition-wipe)
       &::before, &::after
         content: ""
         position: absolute
         background-color: white
-        transition: background var(--transition-instant)
+        // transition: background var(--transition-wipe)
       &::before
         width: .6rem
         height: .15rem
@@ -93,8 +93,7 @@
         // pointer-events: none
         // opacity: .4
         background-color: transparent
-        rotate: 45deg
-        scale: 1.5
+        transform: rotate(45deg) scale(1.5)
         &::before, &::after
           // background-color: var(--color-lamp-black)
 
