@@ -6,6 +6,7 @@ export default class CategoryView {
   #category: AttributesCategory;
   #attributeTrackViews: AttributeTrackView[];
   #lastState: Map<string, boolean> = new Map();
+  #boundEventHandler: any;
   #ROOT: HTMLElement;
 
   constructor(category: AttributesCategory, elm: HTMLElement) {
@@ -55,11 +56,19 @@ export default class CategoryView {
     this.#attributeTrackViews.forEach(attributeTrackView =>
       attributeTrackView.makeFilters()
     );
+    // key event
+    this.#boundEventHandler = this.#keydown.bind(this);
+    document.addEventListener('keydown', this.#boundEventHandler);
   }
 
   #leaveAttributesDisplaySettingMode() {
     document.body.dataset.editingCategory = '';
     this.#ROOT.classList.remove('-editing');
+    document.removeEventListener('keydown', this.#boundEventHandler);
+  }
+
+  #keydown(e: KeyboardEvent) {
+    if (e.key === 'Escape') this.#leaveAttributesDisplaySettingMode();
   }
 
   #makeButtons() {
