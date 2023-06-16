@@ -1,13 +1,13 @@
 import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import Records from './Records.ts';
 import ConditionBuilder from './ConditionBuilder.ts';
-import collapseView from '../functions/collapseView';
-import ColumnSelectorView from './ColumnSelectorView';
+import collapseView from '../functions/collapseView.js';
+import ColumnSelectorView from './ColumnSelectorView.js';
 import HistogramRangeSelectorView from './HistogramRangeSelectorView.ts';
-import TrackOverviewCategorical from './TrackOverviewCategorical';
+import TrackOverviewCategorical from './TrackOverviewCategorical.js';
 import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
-import * as event from '../events';
-import {CategoryBrowserView} from './CategoryBrowserView/CategoryBrowserView';
+import * as event from '../events.js';
+import {CategoryBrowserView} from './CategoryBrowserView/CategoryBrowserView.js';
 
 export default class AttributeTrackView {
   #attribute;
