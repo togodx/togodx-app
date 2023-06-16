@@ -48,3 +48,6 @@ export const collapsed = 'collapsed';
 
 // Attribute
 export const changeDisplayedAttributeSet = 'changeDisplayedAttributeSet';
+
+// Preset
+export const loadedPresets = 'loadedPresets';

@@ -1,7 +1,7 @@
 import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import Records from './Records.ts';
 import {currentAttributeSet} from '../functions/localStorage.ts';
-import * as event from '../events';
+import * as events from '../events';
 import {PresetMetaDatum, Preset} from '../interfaces.ts';
 // import {download} from '../functions/util';
 
@@ -27,7 +27,10 @@ class PresetManager {
       .then(res => res.json())
       .then((presets: PresetMetaDatum[]) => {
         this.#presetMetaData = presets;
-      });
+        console.log(presets)
+        const customEvent = new CustomEvent(events.loadedPresets, {detail: presets});
+        DefaultEventEmitter.dispatchEvent(customEvent);
+    });
 
     if (storagedDisplayAttributes.length > 0) {
       this.#currentAttributeSet = storagedDisplayAttributes;
@@ -80,7 +83,7 @@ class PresetManager {
         const fileReader: FileReader = <FileReader>e.target;
         const presets: Preset[] = JSON.parse(<string>fileReader.result);
         presets.forEach(preset => {
-          const customEvent = new CustomEvent(event.addCondition, {detail: preset});
+          const customEvent = new CustomEvent(events.addCondition, {detail: preset});
           DefaultEventEmitter.dispatchEvent(customEvent);
         });
       } catch (e) {
@@ -121,7 +124,7 @@ class PresetManager {
     );
     // emit
     if (!emit) return;
-    const customEvent = new CustomEvent(event.changeDisplayedAttributeSet, {
+    const customEvent = new CustomEvent(events.changeDisplayedAttributeSet, {
       detail: [...this.#currentAttributeSet],
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
