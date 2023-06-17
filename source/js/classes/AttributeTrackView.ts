@@ -6,7 +6,7 @@ import ColumnSelectorView from './ColumnSelectorView.js';
 import HistogramRangeSelectorView from './HistogramRangeSelectorView.ts';
 import TrackOverviewCategorical from './TrackOverviewCategorical.js';
 import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
-import * as event from '../events.js';
+import * as events from '../events.js';
 import {CategoryBrowserView} from './CategoryBrowserView/CategoryBrowserView.js';
 import { AttributesCategory } from '../interfaces.ts';
 import AttributeUtility from './AttributeUtility.ts';
@@ -22,8 +22,7 @@ export default class AttributeTrackView {
   #CHECKBOX_VISIBILITY:     HTMLInputElement;
   #COLLAPSE_BUTTON:         HTMLDivElement;
 
-  constructor(attributeId, container, displayed, positionRate) {
-    console.log(attributeId, container, displayed, positionRate)
+  constructor(attributeId: string, container: HTMLDivElement, displayed: boolean, positionRate: number) {
     this.#attribute = Records.getAttribute(attributeId);
     this.#madeFilters = false;
     this.#ROOT = document.createElement('div');
@@ -101,7 +100,7 @@ export default class AttributeTrackView {
       ':scope > input.visibility'
     ) as HTMLInputElement;
     if (!displayed) {
-      this.#CHECKBOX_VISIBILITY.ckecked = false;
+      this.#CHECKBOX_VISIBILITY.checked = false;
       this.#ROOT.classList.add('-hidden');
     }
 
@@ -116,14 +115,13 @@ export default class AttributeTrackView {
         ConditionBuilder.addAnnotation(
           new ConditionAnnotationUtility(attributeId)
         );
-        this.#ROOT.classList.add('-allselected');
       } else {
         // remove
         ConditionBuilder.removeAnnotation(
           new ConditionAnnotationUtility(attributeId)
         );
-        this.#ROOT.classList.remove('-allselected');
       }
+      this.#ROOT.classList.toggle('-allselected', this.#CHECKBOX_ALL_PROPERTIES.checked);
     });
 
     // visibility
@@ -138,46 +136,20 @@ export default class AttributeTrackView {
 
     // event listener
     DefaultEventEmitter.addEventListener(
-      event.mutateAnnotationCondition,
-      ({detail: {action, conditionUtilityAnnotation}}) => {
-        if (conditionUtilityAnnotation.parentNode !== undefined) return;
-        switch (action) {
-          case 'add':
-            if (conditionUtilityAnnotation.attributeId === attributeId) {
-              this.#CHECKBOX_ALL_PROPERTIES.checked = true;
-              this.#ROOT.classList.add('-allselected');
-            }
-            break;
-          case 'remove':
-            if (conditionUtilityAnnotation.attributeId === attributeId) {
-              this.#CHECKBOX_ALL_PROPERTIES.checked = false;
-              this.#ROOT.classList.remove('-allselected');
-            }
-            break;
-        }
-      }
+      events.mutateAnnotationCondition,
+      this.#mutateAnnotationCondition.bind(this) as EventListener
     );
-    DefaultEventEmitter.addEventListener(event.allTracksCollapse, e => {
-      if (e.detail) {
-        if (!this.#ROOT.classList.contains('-spread')) {
-          this.#COLLAPSE_BUTTON.dispatchEvent(new MouseEvent('click'));
-        }
-      } else {
-        if (this.#ROOT.classList.contains('-spread')) {
-          this.#COLLAPSE_BUTTON.dispatchEvent(new MouseEvent('click'));
-        }
-      }
-    });
-
-    DefaultEventEmitter.addEventListener(event.toggleErrorUserFilters, e => {
-      if (e.detail.mode === 'show') {
-        if (e.detail.attributeId !== attributeId) return;
-        this.#showError(e.detail.message, true);
-      } else if (e.detail.mode === 'hide') this.#clearError();
-    });
+    DefaultEventEmitter.addEventListener(
+      events.allTracksCollapse,
+      this.#allTracksCollapse.bind(this) as EventListener
+    );
+    DefaultEventEmitter.addEventListener(
+      events.toggleErrorUserFilters,
+      this.#toggleErrorUserFilters.bind(this) as EventListener
+    );
 
     DefaultEventEmitter.addEventListener(
-      event.changeDisplayedAttributeSet,
+      events.changeDisplayedAttributeSet,
       e => {
         const displayed = e.detail.indexOf(attributeId) >= 0;
         this.visibility = displayed;
@@ -239,6 +211,46 @@ export default class AttributeTrackView {
   }
 
   // private methods
+
+  #mutateAnnotationCondition(event: CustomEvent) {
+    const {action, conditionUtilityAnnotation} = event.detail;
+    // ({detail: {action, conditionUtilityAnnotation}}) => {
+    if (conditionUtilityAnnotation.parentNode !== undefined) return;
+    switch (action) {
+      case 'add':
+        if (conditionUtilityAnnotation.attributeId === this.#attribute.id) {
+          this.#CHECKBOX_ALL_PROPERTIES.checked = true;
+          this.#ROOT.classList.add('-allselected');
+        }
+        break;
+      case 'remove':
+        if (conditionUtilityAnnotation.attributeId === this.#attribute.id) {
+          this.#CHECKBOX_ALL_PROPERTIES.checked = false;
+          this.#ROOT.classList.remove('-allselected');
+        }
+        break;
+    }
+  }
+
+  #allTracksCollapse(event: CustomEvent) {
+    if (event.detail) {
+      if (!this.#ROOT.classList.contains('-spread')) {
+        this.#COLLAPSE_BUTTON.dispatchEvent(new MouseEvent('click'));
+      }
+    } else {
+      if (this.#ROOT.classList.contains('-spread')) {
+        this.#COLLAPSE_BUTTON.dispatchEvent(new MouseEvent('click'));
+      }
+    }
+  }
+
+  #toggleErrorUserFilters(event: CustomEvent) {
+    console.log(event)
+    if (event.detail.mode === 'show') {
+      if (event.detail.attributeId !== this.#attribute.id) return;
+      this.#showError(event.detail.message, true);
+    } else if (event.detail.mode === 'hide') this.#clearError();
+  }
 
   #showError(error, inUserIDs = false) {
     if (

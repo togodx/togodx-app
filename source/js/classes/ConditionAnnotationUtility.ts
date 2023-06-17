@@ -6,14 +6,14 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
   #nodeId: string | undefined;
   #filter: Breakdown;
 
-  constructor(attributeId: string, nodeId: string | undefined) {
+  constructor(attributeId: string, nodeId?: string) {
     super(attributeId);
     this.#nodeId = nodeId;
   }
 
   // methods
 
-  isSameCondition(attributeId: string, parentNodeId: string | undefined): boolean {
+  isSameCondition(attributeId: string, parentNodeId?: string): boolean {
     if (attributeId === this._attributeId) {
       if (parentNodeId) {
         return parentNodeId === this.#nodeId;
