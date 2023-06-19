@@ -1,13 +1,12 @@
 import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import ConditionBuilder from './ConditionBuilder.ts';
-import Records from './Records.ts';
 import App from './App.ts';
 import * as event from '../events.js';
 import {getApiParameter} from '../functions/queryTemplates.js';
 import ProgressIndicator from './ProgressIndicator.ts';
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
-import AttributeUtility from './AttributeUtility.ts';
+import PresetManager from './PresetManager.ts';
 
 const timeOutError = 'ECONNABORTED';
 
@@ -19,6 +18,7 @@ export default class UploadUserIDsView {
   // #source;
   #offset = 0;
   #errorCount = 0;
+  #currentAttributeSet: string[] = [];
 
   constructor(elm: HTMLDivElement) {
     // TODO: set axios settings in common file
@@ -89,11 +89,9 @@ export default class UploadUserIDsView {
 
   #fetch() {
     if (this.#USER_IDS.value === '') return;
+    this.#currentAttributeSet = PresetManager.currentAttributeSet;
     this.#prepareProgressIndicator();
-    Records.attributes.forEach(attribute => {
-      // TODO: この処理は Attribute に移行
-      this.#getAttribute(attribute);
-    });
+    this.#currentAttributeSet.forEach(attributeId => this.#getAttribute(attributeId));
   }
 
   #prepareProgressIndicator() {
@@ -102,20 +100,19 @@ export default class UploadUserIDsView {
     // this.#source = CancelToken.source();
 
     this.#ROOT.classList.add('-fetching');
-    this.#ROOT.dataset.status = '';
+    this.#ROOT.dataset.load = '';
     this.#progressIndicator.setIndicator(
       'In progress',
-      Records.attributes.length
+      this.#currentAttributeSet.length
     );
   }
 
-  #getAttribute(attribute: AttributeUtility) {
-    const id = attribute.id;
+  #getAttribute(attributeId: string) {
     axios
       .post(
         App.getApiUrl('locate'),
         getApiParameter('locate', {
-          attribute: id,
+          attribute: attributeId,
           node: '',
           dataset: ConditionBuilder.currentDataset,
           queries: ConditionBuilder.userIds,
@@ -131,7 +128,7 @@ export default class UploadUserIDsView {
         // dispatch event
         const customEvent = new CustomEvent(event.setUserFilters, {
           detail: {
-            attributeId: id,
+            attributeId: attributeId,
             filters: response.data,
           },
         });
@@ -143,7 +140,7 @@ export default class UploadUserIDsView {
         const customEvent = new CustomEvent(event.toggleErrorUserFilters, {
           detail: {
             mode: 'show',
-            attributeId: id,
+            attributeId: attributeId,
             message: 'Failed to map this ID',
           },
         });
@@ -152,7 +149,7 @@ export default class UploadUserIDsView {
         this.#errorCount++;
       })
       .then(() => {
-        if (this.#offset >= Records.attributes.length) {
+        if (this.#offset >= this.#currentAttributeSet.length) {
           this.#complete(this.#errorCount > 0);
         }
       });
