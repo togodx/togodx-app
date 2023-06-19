@@ -280,7 +280,7 @@ export default class AttributeTrackView {
   get id() {
     return this.#attribute.id;
   }
-  get visibility() {
+  get visibility(): boolean  {
     return this.#CHECKBOX_VISIBILITY.checked;
   }
   set visibility(visible) {

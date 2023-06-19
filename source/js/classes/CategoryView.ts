@@ -8,6 +8,7 @@ export default class CategoryView {
   #lastState: Map<string, boolean> = new Map();
   #boundEventHandler: any;
   #ROOT: HTMLElement;
+  #SELECT_ALL: HTMLInputElement;
 
   constructor(category: AttributesCategory, elm: HTMLElement) {
 
@@ -25,10 +26,11 @@ export default class CategoryView {
     </h3>
     <div class="attributes"></div>
     <div class="backdrop"></div>`;
+    this.#SELECT_ALL = elm.querySelector(':scope > .selectall > input') as HTMLInputElement;
 
     // make tracks
     const attributes = this.#category.attributes;
-    const container = elm.querySelector(':scope > .attributes');
+    const container = elm.querySelector(':scope > .attributes') as HTMLDivElement;
     this.#attributeTrackViews = attributes.map(
       (attribute, i) =>
         new AttributeTrackView(
@@ -48,6 +50,27 @@ export default class CategoryView {
         this.#enterAttributesDisplaySettingMode();
       }
     });
+    // obsever attribute tracks
+    let callbacked = false;
+    container.childNodes.forEach(attributeTrackView => {
+      const config = { attributes: true };
+      const callback = (mutations: MutationRecord[]) => {
+        if (!callbacked) callbacked = true;
+        window.requestAnimationFrame(() => {
+          callbacked = false;
+          for (const mutation of mutations) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+              const count = this.#attributeTrackViews.filter(view => view.visibility).length;
+              this.#SELECT_ALL.checked = count === attributes.length;
+              this.#SELECT_ALL.indeterminate = 0 < count && count < attributes.length;
+            }
+          }
+        })
+      };
+      const observer = new MutationObserver(callback);
+      observer.observe(attributeTrackView, config);
+    });
+
   }
 
   #enterAttributesDisplaySettingMode() {
@@ -75,7 +98,7 @@ export default class CategoryView {
     } else {
       // return to state
       this.#attributeTrackViews.forEach(attributeTrackView => {
-        attributeTrackView.visibility = this.#lastState.get(
+        attributeTrackView.visibility = !!this.#lastState.get(
           attributeTrackView.id
         );
       });
