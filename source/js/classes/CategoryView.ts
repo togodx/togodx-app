@@ -50,6 +50,11 @@ export default class CategoryView {
         this.#enterAttributesDisplaySettingMode();
       }
     });
+    this.#SELECT_ALL.addEventListener('change', () => {
+      for (const attributeTrackView of this.#attributeTrackViews) {
+        attributeTrackView.visibility = this.#SELECT_ALL.checked;
+      }
+    })
     // obsever attribute tracks
     let callbacked = false;
     container.childNodes.forEach(attributeTrackView => {
