@@ -1,8 +1,5 @@
 
-export enum ProgressIndicatorMode {
-  SIMPLE = 'simple',
-  DETAILED = 'detailed',
-}
+type ProgressIndicatorMode = 'simple' | 'detailed';
 
 export default class ProgressIndicator {
   #ROOT: HTMLElement;
@@ -19,15 +16,15 @@ export default class ProgressIndicator {
    * @param { HTMLElement } elm
    * @param { 'simple' | 'detailed' } mode - Default is detailed mode with time bar and amount tracker
    */
-  constructor(elm: HTMLElement, mode: ProgressIndicatorMode = ProgressIndicatorMode.DETAILED) {
+  constructor(elm: HTMLElement, mode: ProgressIndicatorMode = 'detailed') {
     this.#mode = mode;
     elm.classList.add('progress-indicator', `-${mode}`);
     const loadingIcon =
-      mode === ProgressIndicatorMode.SIMPLE
+      mode === 'simple'
         ? '<span class="material-icons -rotating">autorenew</span>'
         : '';
     const counter =
-      mode === ProgressIndicatorMode.DETAILED
+      mode === 'detailed'
         ? `<div class="amount">
           <span class="offset">0</span>
           <span class="total"></span>
@@ -49,7 +46,7 @@ export default class ProgressIndicator {
     this.#TEXT_STATUS = elm.querySelector(':scope > .text > .status') as HTMLDivElement
     this.#total = 0;
 
-    if (mode === ProgressIndicatorMode.SIMPLE) return;
+    if (mode === 'simple') return;
 
     const amount = elm.querySelector(
       ':scope > .text > .amount'
@@ -116,29 +113,26 @@ export default class ProgressIndicator {
 
   /* public accessors */
 
-  /**
-   * @param { offset: number } progressInfo
-   */
+  setIndicator(message = '', total = 0, isError = false): void {
+    this.#total = total;
+    switch (this.#mode) {
+      case 'simple':
+        this.#setMessage(message, isError);
+        break;
+      case 'detailed':
+        (this.#TEXT_TOTAL as HTMLElement).textContent = `/ ${this.#total.toString()}`;
+        break;
+      }
+  }
+
   updateProgressBar(offset = 0): void {
     const lastTime = this.#lastTime || Date.now();
     this.#updateBarWidth(offset);
-    if (this.#mode === ProgressIndicatorMode.SIMPLE) return;
+    if (this.#mode === 'simple') return;
 
     this.#updateAmount(offset);
     this.#updateTime(offset, lastTime);
     this.#lastTime = Date.now();
-  }
-
-  /**
-   * @param { string } message
-   * @param { number } total
-   * @param { boolean } isError
-   */
-  setIndicator(message = '', total = 0, isError = false): void {
-    this.#total = total;
-    if (this.#mode === ProgressIndicatorMode.SIMPLE) this.#setMessage(message, isError);
-    else if (this.#mode === ProgressIndicatorMode.DETAILED)
-      this.#TEXT_TOTAL!.textContent = `/ ${this.#total.toString()}`;
   }
 
   reset(): void {

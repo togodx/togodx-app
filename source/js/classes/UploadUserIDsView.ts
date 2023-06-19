@@ -2,27 +2,28 @@ import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import ConditionBuilder from './ConditionBuilder.ts';
 import Records from './Records.ts';
 import App from './App.ts';
-import * as event from '../events';
-import {getApiParameter} from '../functions/queryTemplates';
+import * as event from '../events.js';
+import {getApiParameter} from '../functions/queryTemplates.js';
 import ProgressIndicator from './ProgressIndicator.ts';
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
+import AttributeUtility from './AttributeUtility.ts';
 
 const timeOutError = 'ECONNABORTED';
 
 export default class UploadUserIDsView {
-  #ROOT;
-  #BODY;
-  #USER_IDS;
+  #ROOT: HTMLDivElement;
+  #BODY: HTMLBodyElement;
+  #USER_IDS: HTMLTextAreaElement;
   #progressIndicator;
-  #source;
-  #offset;
-  #errorCount;
+  // #source;
+  #offset = 0;
+  #errorCount = 0;
 
-  constructor(elm) {
+  constructor(elm: HTMLDivElement) {
     // TODO: set axios settings in common file
     // TODO: set 'user cancel' as a const in axios setting file
-    axios.defaults.timeout = 120000;
+    axios.defaults.timeout = 120_000;
     axiosRetry(axios, {
       retries: 5,
       shouldResetTimeout: true,
@@ -38,40 +39,38 @@ export default class UploadUserIDsView {
     });
 
     this.#ROOT = elm;
-    this.#offset = 0;
-    this.#errorCount = 0;
 
-    this.#BODY = document.querySelector('body');
-    const inner = elm.querySelector(':scope > .inner');
-    this.#USER_IDS = inner.querySelector(':scope > textarea');
+    this.#BODY = document.querySelector('body') as HTMLBodyElement;
+    const inner = elm.querySelector(':scope > .inner') as HTMLDivElement;
+    this.#USER_IDS = inner.querySelector(':scope > textarea') as HTMLTextAreaElement;
 
-    elm.appendChild(document.createElement('div'));
-    this.#progressIndicator = new ProgressIndicator(elm.lastChild, 'simple');
+    const progressIndicator = document.createElement('div');
+    elm.append(progressIndicator);
+    this.#progressIndicator = new ProgressIndicator(progressIndicator, 'simple');
 
     // attach events
-    inner
-      .querySelector(':scope > .title > .button > button')
-      .addEventListener('click', () => {
-        this.#USER_IDS.value = this.#USER_IDS.placeholder.replace('e.g. ', '');
-        this.#USER_IDS.dispatchEvent(new Event('change'));
-        submitButton.dispatchEvent(new Event('click'));
-      });
-    const buttons = inner.querySelector(':scope > .buttons');
-    const submitButton = buttons.querySelector(':scope > button:nth-child(1)');
+    const tryButton = inner.querySelector(':scope > .title > .button > button') as HTMLButtonElement;
+    const buttons = inner.querySelector(':scope > .buttons') as HTMLDivElement;
+    const submitButton = buttons.childNodes[0] as HTMLButtonElement;
+    const resetButton = buttons.childNodes[1] as HTMLButtonElement;
+    tryButton.addEventListener('click', e => {
+      e.stopPropagation();
+      this.#USER_IDS.value = this.#USER_IDS.placeholder.replace('e.g. ', '');
+      this.#USER_IDS.dispatchEvent(new Event('change'));
+      submitButton.dispatchEvent(new Event('click'));
+    });
     submitButton.addEventListener('click', e => {
       e.stopPropagation();
       // clear after 2nd execution
-      if (this.#source) this.#reset(true);
+      // if (this.#source) this.#reset(true);
       this.#fetch();
       return false;
     });
-    buttons
-      .querySelector(':scope > button:nth-child(2)')
-      .addEventListener('click', e => {
-        e.stopPropagation();
-        this.#clear();
-        return false;
-      });
+    resetButton.addEventListener('click', e => {
+      e.stopPropagation();
+      this.#clear();
+      return false;
+    });
 
     // event listeners
     this.#USER_IDS.addEventListener('change', () => {
@@ -99,8 +98,8 @@ export default class UploadUserIDsView {
 
   #prepareProgressIndicator() {
     // reset axios cancellation
-    const CancelToken = axios.CancelToken;
-    this.#source = CancelToken.source();
+    // const CancelToken = axios.CancelToken;
+    // this.#source = CancelToken.source();
 
     this.#ROOT.classList.add('-fetching');
     this.#ROOT.dataset.status = '';
@@ -110,7 +109,8 @@ export default class UploadUserIDsView {
     );
   }
 
-  #getAttribute({id}) {
+  #getAttribute(attribute: AttributeUtility) {
+    const id = attribute.id;
     axios
       .post(
         App.getApiUrl('locate'),
@@ -119,10 +119,10 @@ export default class UploadUserIDsView {
           node: '',
           dataset: ConditionBuilder.currentDataset,
           queries: ConditionBuilder.userIds,
-        }),
-        {
-          cancelToken: this.#source.token,
-        }
+        })
+        // {
+        //   cancelToken: this.#source.token,
+        // }
       )
       .then(response => {
         this.#BODY.classList.add('-showuserids');
@@ -138,7 +138,8 @@ export default class UploadUserIDsView {
         DefaultEventEmitter.dispatchEvent(customEvent);
       })
       .catch(error => {
-        if (axios.isCancel && error.message === 'user cancel') return;
+        // if (axios.isCancel && error.message === 'user cancel') return;
+        if (error.message === 'user cancel') return;
         const customEvent = new CustomEvent(event.toggleErrorUserFilters, {
           detail: {
             mode: 'show',
@@ -159,19 +160,18 @@ export default class UploadUserIDsView {
 
   #handleProp() {
     this.#offset += 1;
-    this.#progressIndicator.updateProgressBar({
-      offset: this.#offset,
-    });
+    this.#progressIndicator.updateProgressBar(this.#offset);
   }
 
   #complete(withError = false) {
-    let msg = withError
+    const msg = withError
       ? `Failed to map IDs for ${this.#errorCount} attribute${
           this.#errorCount > 1 ? 's' : ''
         }`
       : 'Mapping completed';
     this.#progressIndicator.setIndicator(msg, undefined, withError);
-    this.#ROOT.dataset.status = 'complete';
+    this.#ROOT.dataset.load = 'completed';
+    this.#ROOT.classList.remove('-fetching');
   }
 
   #resetCounters() {
@@ -180,7 +180,7 @@ export default class UploadUserIDsView {
   }
 
   #reset(isPreparing = false) {
-    this.#source?.cancel('user cancel');
+    // this.#source?.cancel('user cancel');
     this.#resetCounters();
     const customEvent = new CustomEvent(event.clearUserFilters);
     DefaultEventEmitter.dispatchEvent(customEvent);

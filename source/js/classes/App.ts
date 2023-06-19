@@ -7,7 +7,7 @@ import PresetView from './PresetView.ts';
 import ResultDetailModal from './ResultDetailModal';
 import BalloonView from './BalloonView';
 import ConditionsController from './ConditionsController.ts';
-import UploadUserIDsView from './UploadUserIDsView';
+import UploadUserIDsView from './UploadUserIDsView.ts';
 import Color from 'colorjs.io';
 import StanzaManager from './StanzaManager';
 import ResultsTable from './ResultsTable.ts';
