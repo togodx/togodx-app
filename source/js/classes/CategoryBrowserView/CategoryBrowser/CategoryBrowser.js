@@ -25,7 +25,6 @@ export class CategoryBrowser extends observeState(LitElement) {
   constructor() {
     super();
     this.data = {};
-    this.loading = false;
     this.error = {message: '', isError: false};
     this.showKeys = ['node', 'label'];
     this.checkedIds = [];

@@ -45,7 +45,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
 
     this.categoryData = {};
     this.categoryLoading = false;
-    this.initialLoading = true;
     this.suggestionsData = {};
     this.suggestionsLoading = false;
     this.nodeId = '';
@@ -73,7 +72,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
       categoryData: {type: Object, state: true},
       suggestionsData: {type: Object, state: true},
       categoryLoading: {type: Boolean, state: true},
-      initialLoading: {type: Boolean, state: true},
       suggestionsLoading: {type: Boolean, state: true},
       url: {type: String, state: true},
       nodeId: {type: String, state: true},
@@ -173,7 +171,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
     this.categoryLoading = true;
     this.#API.post(this.#categoryAPIBaseURL.href).then(({data}) => {
       this.categoryLoading = false;
-      this.initialLoading = false;
       this.#unsortedData = this.#convertCategoryData(data);
       this.#addMappedToData();
       this.categoryData = this.#unsortedData;
@@ -420,9 +417,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
   render() {
     return html`
       <div class="container" id="category-browser-view">
-        ${this.initialLoading
-          ? html`<div class="loading-view -shown"></div>`
-          : nothing}
         <div class="columns-bg-wrapper">
           ${repeat(
             [1, 2, 3],
@@ -463,7 +457,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
             id="category-browser"
             .data="${this.categoryData}"
             .checkedIds="${this.checkedIds[state.condition]}"
-            .loading="${this.categoryLoading && !this.initialLoading}"
           ></category-browser>
         </div>
       </div>
