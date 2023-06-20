@@ -19,13 +19,13 @@
             position: relative
             $WIDTH: calc((100% - var(--width-category-browser-column))/2)
             &::after
-                content: ''
                 position: absolute
                 top: 0
                 bottom: 0
                 left: calc($WIDTH/2)
                 right: calc($WIDTH/2)
                 pointer-events: none
+                content: ''
                 background-color: var(--color-lighter-gray)
 
     .suggest
