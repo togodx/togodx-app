@@ -417,7 +417,11 @@ export class CategoryBrowserView extends observeState(LitElement) {
   render() {
     return html`
       <div class="container" id="category-browser-view">
-        <div class="columns-bg-wrapper">
+        <div
+          class="columns-bg-wrapper ${state.editingCategory !== ''
+            ? '-dark'
+            : ''}"
+        >
           ${repeat(
             [1, 2, 3],
             d => `${d}_${this.categoryLoading}`,

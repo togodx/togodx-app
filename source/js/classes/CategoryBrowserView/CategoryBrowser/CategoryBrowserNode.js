@@ -155,7 +155,12 @@ export class CategoryNode extends observeState(LitElement) {
   render() {
     return html`
       <div class="card-container">
-        <div class="connector ${this.leftConnectorClassName}"></div>
+        <div
+          class="connector ${this
+            .leftConnectorClassName} ${state.editingCategory !== ''
+            ? '-dark'
+            : ''}"
+        ></div>
         <div
           ${ref(this.nodeRef)}
           class="ontology-card ${this.hidden ? 'hidden' : ''} ${this.mode ===
@@ -205,7 +210,12 @@ export class CategoryNode extends observeState(LitElement) {
             <div class="drilldown"></div>
           </div>
         </div>
-        <div class="connector ${this.rightConnectorClassName}"></div>
+        <div
+          class="connector ${this
+            .rightConnectorClassName} ${state.editingCategory !== ''
+            ? '-dark'
+            : ''}"
+        ></div>
       </div>
     `;
   }

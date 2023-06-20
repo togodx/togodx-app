@@ -27,7 +27,10 @@
                 pointer-events: none
                 content: ''
                 background-color: var(--color-lighter-gray)
-
+        &.-dark
+            >.columns-bg
+                &::after
+                    background-color: var(--color-dark-gray)
     .suggest
         z-index: var(--z-category-suggestions)
         display: flex

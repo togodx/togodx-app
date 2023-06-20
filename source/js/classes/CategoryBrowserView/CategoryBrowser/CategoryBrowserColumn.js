@@ -130,7 +130,11 @@ export default class CategoryBrowserColumn extends observeState(LitElement) {
     return html`
       <div class="column" ${ref(this.#columnRef)}>
         ${this.containedId !== 'dummy'
-          ? html`<div class="header-container">
+          ? html`<div
+              class="header-container ${state.editingCategory !== ''
+                ? '-dark'
+                : ''}"
+            >
               <div class="header-bg"></div>
               <div class="header">
                 <div class="checkbox"></div>

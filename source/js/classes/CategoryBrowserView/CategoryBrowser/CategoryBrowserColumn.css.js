@@ -9,6 +9,7 @@ export const styles = css`
     --column-gap: 0.5em;
     --node-padding-x: 6px;
     --node-padding-y: 3px;
+    --bg-color-dark: #292929;
   }
 
   .column {
@@ -28,6 +29,22 @@ export const styles = css`
     background-color: var(--color-gray);
     z-index: var(--z-category-column-header);
     --width-side: calc((100% - var(--width-category-browser-column)) / 2);
+    transition: background-color var(--transition-wipe);
+  }
+
+  .header-container.-dark {
+    background-color: var(--bg-color-dark);
+    transition: background-color var(--transition-wipe);
+  }
+
+  .header-container.-dark::before {
+    background-color: var(--color-dark-gray);
+    transition: background-color var(--transition-wipe);
+  }
+
+  .header-container.-dark::after {
+    background-color: var(--color-dark-gray);
+    transition: background-color var(--transition-wipe);
   }
 
   .header-container::before {
@@ -37,6 +54,7 @@ export const styles = css`
     height: 100%;
     left: calc(var(--width-side) / 2);
     background-color: var(--color-lighter-gray);
+    transition: background-color var(--transition-wipe);
   }
   .header-container::after {
     content: '';
@@ -45,6 +63,7 @@ export const styles = css`
     height: 100%;
     right: calc(var(--width-side) / 2);
     background-color: var(--color-lighter-gray);
+    transition: background-color var(--transition-wipe);
   }
 
   .header {

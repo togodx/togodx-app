@@ -13,6 +13,7 @@ class CategoryBrowserState extends LitState {
       ],
       sortProp: '',
       rootNodeIds: new Set(),
+      editingCategory: '',
     };
   }
 }
@@ -22,12 +23,17 @@ export const state = new CategoryBrowserState();
 const mutationObserver = new MutationObserver(mutations => {
   mutations.forEach(mutation => {
     if (mutation.type === 'attributes') {
-      state.condition = mutation.target.dataset.condition;
+      if (mutation.attributeName === 'data-condition') {
+        state.condition = mutation.target.dataset.condition;
+      }
+      if (mutation.attributeName === 'data-editing-category') {
+        state.editingCategory = mutation.target.dataset.editingCategory;
+      }
     }
   });
 });
 
 mutationObserver.observe(document.body, {
   attributes: true,
-  attributeFilter: ['data-condition'],
+  attributeFilter: ['data-condition', 'data-editing-category'],
 });
