@@ -14,10 +14,17 @@ export const styles = css`
 
   .column {
     height: 100%;
+    display: flex;
+    flex-direction: column;
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;
     max-height: calc(var(--togostanza-outline-height) - var(--history-height));
+  }
+
+  .clipping-mask {
+    height: 100%;
+    overflow: auto;
   }
 
   .header-container {
@@ -26,44 +33,6 @@ export const styles = css`
     justify-content: space-between;
     align-items: center;
     top: 0;
-    background-color: var(--color-gray);
-    z-index: var(--z-category-column-header);
-    --width-side: calc((100% - var(--width-category-browser-column)) / 2);
-    transition: background-color var(--transition-wipe);
-  }
-
-  .header-container.-dark {
-    background-color: var(--bg-color-dark);
-    transition: background-color var(--transition-wipe);
-  }
-
-  .header-container.-dark::before {
-    background-color: var(--color-dark-gray);
-    transition: background-color var(--transition-wipe);
-  }
-
-  .header-container.-dark::after {
-    background-color: var(--color-dark-gray);
-    transition: background-color var(--transition-wipe);
-  }
-
-  .header-container::before {
-    content: '';
-    position: absolute;
-    width: calc(var(--width-side) / 2);
-    height: 100%;
-    left: calc(var(--width-side) / 2);
-    background-color: var(--color-lighter-gray);
-    transition: background-color var(--transition-wipe);
-  }
-  .header-container::after {
-    content: '';
-    position: absolute;
-    width: calc(var(--width-side) / 2);
-    height: 100%;
-    right: calc(var(--width-side) / 2);
-    background-color: var(--color-lighter-gray);
-    transition: background-color var(--transition-wipe);
   }
 
   .header {
