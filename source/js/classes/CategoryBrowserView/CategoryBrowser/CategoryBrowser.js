@@ -4,8 +4,6 @@ import {observeState} from 'lit-element-state';
 import {state} from '../CategoryBrowserState';
 
 export class CategoryBrowser extends observeState(LitElement) {
-  #showLoader = true;
-
   static get styles() {
     return styles;
   }
