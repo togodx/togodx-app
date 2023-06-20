@@ -18,13 +18,61 @@
     > a
       > img
         height: 3.1rem
-  > nav.mainmenu
+  > nav
+    > ul
+      display: block
+      > li
+        display: inline-block
+  > .mainmenu
     margin: 0 1rem
     padding: 0
     list-style: none
-  > nav.submenu
+    > ul
+      padding-left: 0
+      > li
+        --padding-dropmenu: 1rem
+        position: relative
+        > .menuitem
+          padding-inline: var(--padding-dropmenu)
+          font-size: 1.4rem
+          position: relative
+          cursor: pointer
+          &::after
+            content: ""
+            border-width: .4rem .4rem 0 .4rem
+            border-color: var(--color-lamp-black) transparent transparent transparent
+            display: inline-block
+        > ul
+          line-height: 1.2em
+          position: absolute
+          backdrop-filter: blur(20px)
+          background-color: #fffa
+          top: calc(var(--height-header) - .8rem)
+          padding: 0
+          border-radius: .4rem
+          width: 100vw
+          max-width: 30vw
+          max-height: calc(100vh - var(--height-header))
+          overflow: auto
+          box-shadow: 0 .5rem 1rem #0002
+          > li
+            padding: calc(var(--padding-dropmenu) * 0.4) var(--padding-dropmenu)
+            cursor: pointer
+            transition: background var(--transition-instant)
+            &:first-child
+              padding-top: calc(var(--padding-dropmenu) * 0.8)
+            &:last-child
+              padding-bottom: calc(var(--padding-dropmenu) * 0.8)
+            &:hover
+              background-color: #FFFC
+            + li
+              border-top: solid .1rem var(--color-separator)
+            > dl
+              margin-bottom: 0
+  > .submenu
     flex-grow: 1
     text-align: right
+    white-space: nowrap
     > ul
       > li
         padding-left: 1rem

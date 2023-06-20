@@ -28,8 +28,10 @@ export default class Header {
     const ul = document.createElement('ul')
     ul.innerHTML = presets.map(preset => `
       <li data-url="${preset.url}">
-        <div>${preset.label}</div>
-        <div>${preset.description}</div>
+        <dl>
+          <dt>${preset.label}</dt>
+          <dd>${preset.description}</dd>
+        </dl>
       </li>
     `).join('');
     li.append(ul)
