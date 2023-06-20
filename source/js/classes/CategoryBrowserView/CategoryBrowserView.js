@@ -159,9 +159,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
     if (changed.has('term') && this.term) {
       this.#loadSuggestData(this.term);
     }
-    if (changed.has('categoryLoading')) {
-      console.log('categoryLoading', this.categoryLoading);
-    }
   }
 
   #loadCategoryData(nodeId) {
