@@ -27,7 +27,6 @@ class PresetManager {
       .then(res => res.json())
       .then((presets: PresetMetaDatum[]) => {
         this.#presetMetaData = presets;
-        console.log(presets)
         const customEvent = new CustomEvent(events.loadedPresets, {detail: presets});
         DefaultEventEmitter.dispatchEvent(customEvent);
     });
@@ -36,10 +35,7 @@ class PresetManager {
       this.#currentAttributeSet = storagedDisplayAttributes;
     } else {
       // get default preset
-      // TODO: 暗黙的にデフォルトデータとしているので、あまり筋がよろしくない
-      const preset = await fetch(this.#presetMetaData[0].url)
-        .then(res => res.json());
-        this.#currentAttributeSet = preset[0].attributeSet;
+      this.#currentAttributeSet = this.#presetMetaData[0].attributeSet;
     }
   }
 
