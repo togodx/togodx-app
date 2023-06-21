@@ -1,9 +1,9 @@
 import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import Records from './Records.ts';
-import {currentAttributeSet} from '../functions/localStorage.ts';
 import * as events from '../events';
+import {currentAttributeSet} from '../functions/localStorage.ts';
 import {PresetMetaDatum, Preset} from '../interfaces.ts';
-// import {download} from '../functions/util';
+import axios from 'axios';
 
 class PresetManager {
   #currentAttributeSet: string[] = [];
@@ -72,6 +72,29 @@ class PresetManager {
   //     this.#changed();
   //   }
   // }
+
+  async loadPreset(url: string): Promise<Preset[]> {
+    axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+    const presets: Preset[] = await axios
+      .get(url)
+      .then(res => res.data)
+      .catch(err => {
+        console.error(err);
+        return Promise.reject();
+      });
+    return presets;
+  }
+
+  async loadAttributeSet(url: string): Promise<void> {
+    const presets: Preset[] = await this.loadPreset(url);
+    const attributeSet = presets[0].attributeSet;
+    if (attributeSet?.length > 0) {
+      this.#currentAttributeSet = [...attributeSet];
+      this.#changed();
+    } else {
+      console.error('Invalid preset file.');
+    }
+  }
 
   importSet(file: File): void {
     const reader = new FileReader();

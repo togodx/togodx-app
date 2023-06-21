@@ -1,6 +1,7 @@
 import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import * as events from '../events.js';
 import { PresetMetaDatum } from '../interfaces.ts';
+import PresetManager from './PresetManager.ts';
 
 export default class Header {
   #MAIN_MENU: HTMLElement;
@@ -20,21 +21,21 @@ export default class Header {
   }
 
   #loadedPresets(event: CustomEvent): void {
-    console.log(event)
-    console.log(event.detail)
     const presets: PresetMetaDatum[] = event.detail;
-    const li = this.#MAIN_MENU.querySelector(':scope > ul > li:nth-child(1') as HTMLUListElement;
-    console.log(li)
-    const ul = document.createElement('ul')
-    ul.innerHTML = presets.map(preset => `
-      <li data-url="${preset.url}">
+    // make menu
+    const li = this.#MAIN_MENU.querySelector(':scope > ul > li:nth-child(1)') as HTMLUListElement;
+    const ul = document.createElement('ul');
+    li.append(ul);
+    const lis = presets.map(preset => {
+      const li = document.createElement('li');
+      li.innerHTML = `
         <dl>
           <dt>${preset.label}</dt>
           <dd>${preset.description}</dd>
-        </dl>
-      </li>
-    `).join('');
-    li.append(ul)
-
+        </dl>`;
+      li.addEventListener('click', () => PresetManager.loadAttributeSet(preset.url));
+      return li;
+    });
+    ul.append(...lis);
   }
 }

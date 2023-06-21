@@ -39,9 +39,13 @@
           cursor: pointer
           &::after
             content: ""
+            border-style: solid
             border-width: .4rem .4rem 0 .4rem
             border-color: var(--color-lamp-black) transparent transparent transparent
             display: inline-block
+            position: relative
+            left: .3rem
+            top: -.2rem
         > ul
           line-height: 1.2em
           position: absolute
@@ -55,6 +59,10 @@
           max-height: calc(100vh - var(--height-header))
           overflow: auto
           box-shadow: 0 .5rem 1rem #0002
+          pointer-events: none
+          opacity: 0
+          translate: 0 -1rem
+          transition: opacity var(--transition-instant), translate var(--transition-instant)
           > li
             padding: calc(var(--padding-dropmenu) * 0.4) var(--padding-dropmenu)
             cursor: pointer
@@ -64,11 +72,19 @@
             &:last-child
               padding-bottom: calc(var(--padding-dropmenu) * 0.8)
             &:hover
-              background-color: #FFFC
+              background-color: #FFFA
             + li
               border-top: solid .1rem var(--color-separator)
             > dl
               margin-bottom: 0
+              > dt
+                margin: .6rem 0 .4rem
+                font-size: 1.4rem
+        &:hover
+          > ul
+            pointer-events: auto
+            opacity: 1
+            translate: 0 0
   > .submenu
     flex-grow: 1
     text-align: right
