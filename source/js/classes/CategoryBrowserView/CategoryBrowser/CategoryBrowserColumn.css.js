@@ -9,14 +9,22 @@ export const styles = css`
     --column-gap: 0.5em;
     --node-padding-x: 6px;
     --node-padding-y: 3px;
+    --bg-color-dark: #292929;
   }
 
   .column {
     height: 100%;
+    display: flex;
+    flex-direction: column;
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;
     max-height: calc(var(--togostanza-outline-height) - var(--history-height));
+  }
+
+  .clipping-mask {
+    height: 100%;
+    overflow: auto;
   }
 
   .header-container {
@@ -25,26 +33,6 @@ export const styles = css`
     justify-content: space-between;
     align-items: center;
     top: 0;
-    background-color: var(--color-gray);
-    z-index: var(--z-category-column-header);
-    --width-side: calc((100% - var(--width-category-browser-column)) / 2);
-  }
-
-  .header-container::before {
-    content: '';
-    position: absolute;
-    width: calc(var(--width-side) / 2);
-    height: 100%;
-    left: calc(var(--width-side) / 2);
-    background-color: var(--color-lighter-gray);
-  }
-  .header-container::after {
-    content: '';
-    position: absolute;
-    width: calc(var(--width-side) / 2);
-    height: 100%;
-    right: calc(var(--width-side) / 2);
-    background-color: var(--color-lighter-gray);
   }
 
   .header {

@@ -4,8 +4,6 @@ import {observeState} from 'lit-element-state';
 import {state} from '../CategoryBrowserState';
 
 export class CategoryBrowser extends observeState(LitElement) {
-  #showLoader = false;
-
   static get styles() {
     return styles;
   }
@@ -13,7 +11,6 @@ export class CategoryBrowser extends observeState(LitElement) {
   static get properties() {
     return {
       data: {type: Object, state: true},
-      loading: {type: Boolean, state: true},
       error: {type: Object, state: true},
       checkedIds: {type: Array, state: true},
       showKeys: {
@@ -26,7 +23,6 @@ export class CategoryBrowser extends observeState(LitElement) {
   constructor() {
     super();
     this.data = {};
-    this.loading = false;
     this.error = {message: '', isError: false};
     this.showKeys = ['node', 'label'];
     this.checkedIds = [];
@@ -35,9 +31,6 @@ export class CategoryBrowser extends observeState(LitElement) {
   render() {
     return html`
       <div class="container">
-        ${this.loading && this.#showLoader
-          ? html` <div part="loader" class="loader"></div>`
-          : nothing}
         ${this.error.isError
           ? html`
               <category-error message="${this.error.message}"> </category-error>

@@ -1,4 +1,5 @@
-import {html, LitElement} from 'lit';
+import {html, LitElement, nothing} from 'lit';
+import {repeat} from 'lit/directives/repeat.js';
 import {cachedAxios} from '../../functions/util.ts';
 import DefaultEventEmitter from '../DefaultEventEmitter.ts';
 import './Suggest/Suggest';
@@ -8,6 +9,7 @@ import './CategoryBrowser/CategoryBrowserColumn';
 import './CategoryBrowser/CategoryBrowserError';
 import './CategoryBrowser/CategoryBrowserNode';
 import './CategoryBrowser/CategoryBrowserSorter';
+import './CategoryBrowser/CategoryBrowserLoader';
 import {setUserFilters, clearUserFilters} from '../../events';
 import App from '../App.ts';
 import Records from '../Records.ts';
@@ -412,10 +414,22 @@ export class CategoryBrowserView extends observeState(LitElement) {
   render() {
     return html`
       <div class="container" id="category-browser-view">
-        <div class="columns-bg-wrapper">
-          <div class="columns-bg"></div>
-          <div class="columns-bg"></div>
-          <div class="columns-bg"></div>
+        <div
+          class="columns-bg-wrapper ${state.editingCategory !== ''
+            ? '-dark'
+            : ''}"
+        >
+          ${repeat(
+            [1, 2, 3],
+            d => `${d}_${this.categoryLoading}`,
+            () => html`
+              <div class="columns-bg">
+                ${this.categoryLoading
+                  ? html`<category-loader id="category-browser-loader" />`
+                  : nothing}
+              </div>
+            `
+          )}
         </div>
         <div class="suggest">
           <div class="column-title-wrapper">

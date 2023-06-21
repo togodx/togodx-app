@@ -6,6 +6,7 @@ export const styles = css`
     position: relative;
     --default-background_color: white;
     --connector-color: var(--color-dark-gray);
+    --connector-color-dark: var(--color-gray);
     --border-color: var(--color-dark-gray);
     --node-bg-color: white;
     --leader-top-offset: min(50%, 12px);
@@ -23,6 +24,9 @@ export const styles = css`
     top: var(--leader-top-offset);
     box-sizing: border-box;
   }
+  .-hero-right.-dark:before {
+    border-bottom: 1px solid var(--connector-color-dark);
+  }
 
   .-hero-left:before {
     position: absolute;
@@ -32,6 +36,10 @@ export const styles = css`
     border-bottom: 1px solid var(--connector-color);
     top: var(--leader-top-offset);
     box-sizing: border-box;
+  }
+
+  .-hero-left.-dark:before {
+    border-bottom: 1px solid var(--connector-color-dark);
   }
 
   .-hero-left-1:after {
@@ -47,6 +55,10 @@ export const styles = css`
     box-sizing: border-box;
   }
 
+  .-hero-left-1.-dark:after {
+    border-left: 8px solid var(--connector-color-dark);
+  }
+
   .-children-first:before {
     position: absolute;
     content: '';
@@ -55,6 +67,10 @@ export const styles = css`
     border-left: 1px solid var(--connector-color);
     bottom: -6px;
     box-sizing: border-box;
+  }
+
+  .-children-first.-dark:before {
+    border-left: 1px solid var(--connector-color-dark);
   }
 
   .-children-first:after {
@@ -67,6 +83,10 @@ export const styles = css`
     box-sizing: border-box;
   }
 
+  .-children-first.-dark:after {
+    border-bottom: 1px solid var(--connector-color-dark);
+  }
+
   .-children-last:before {
     position: absolute;
     content: '';
@@ -75,6 +95,10 @@ export const styles = css`
     border-left: 1px solid var(--connector-color);
     top: -6px;
     box-sizing: border-box;
+  }
+
+  .-children-last.-dark:before {
+    border-left: 1px solid var(--connector-color-dark);
   }
 
   .-children-last:after {
@@ -87,6 +111,10 @@ export const styles = css`
     box-sizing: border-box;
   }
 
+  .-children-last.-dark:after {
+    border-top: 1px solid var(--connector-color-dark);
+  }
+
   .-children-mid:before {
     position: absolute;
     content: '';
@@ -97,6 +125,10 @@ export const styles = css`
     box-sizing: border-box;
   }
 
+  .-children-mid.-dark:before {
+    border-left: 1px solid var(--connector-color-dark);
+  }
+
   .-children-mid:after {
     position: absolute;
     content: '';
@@ -105,6 +137,10 @@ export const styles = css`
     border-bottom: 1px solid var(--connector-color);
     top: var(--leader-top-offset);
     box-sizing: border-box;
+  }
+
+  .-children-mid.-dark:after {
+    border-bottom: 1px solid var(--connector-color-dark);
   }
 
   .-parents-first:before {
@@ -118,6 +154,10 @@ export const styles = css`
     box-sizing: border-box;
   }
 
+  .-parents-first.-dark:before {
+    border-right: 1px solid var(--connector-color-dark);
+  }
+
   .-parents-first:after {
     position: absolute;
     content: '';
@@ -126,6 +166,10 @@ export const styles = css`
     border-bottom: 1px solid var(--connector-color);
     top: var(--leader-top-offset);
     box-sizing: border-box;
+  }
+
+  .-parents-first.-dark:after {
+    border-bottom: 1px solid var(--connector-color-dark);
   }
 
   .-parents-last:before {
@@ -139,6 +183,10 @@ export const styles = css`
     box-sizing: border-box;
   }
 
+  .-parents-last.-dark:before {
+    border-right: 1px solid var(--connector-color-dark);
+  }
+
   .-parents-last:after {
     position: absolute;
     content: '';
@@ -147,6 +195,10 @@ export const styles = css`
     border-top: 1px solid var(--connector-color);
     top: var(--leader-top-offset);
     box-sizing: border-box;
+  }
+
+  .-parents-last.-dark:after {
+    border-top: 1px solid var(--connector-color-dark);
   }
 
   .-parents-mid:before {
@@ -160,6 +212,10 @@ export const styles = css`
     box-sizing: border-box;
   }
 
+  .-parents-mid.-dark:before {
+    border-right: 1px solid var(--connector-color-dark);
+  }
+
   .-parents-mid:after {
     position: absolute;
     content: '';
@@ -168,6 +224,10 @@ export const styles = css`
     border-bottom: 1px solid var(--connector-color);
     top: var(--leader-top-offset);
     box-sizing: border-box;
+  }
+
+  .-parents-mid.-dark:after {
+    border-bottom: 1px solid var(--connector-color-dark);
   }
 
   .-parents-single:after {
@@ -180,6 +240,10 @@ export const styles = css`
     box-sizing: border-box;
   }
 
+  .-parents-single.-dark:after {
+    border-bottom: 1px solid var(--connector-color-dark);
+  }
+
   .-children-single:before {
     position: absolute;
     content: '';
@@ -188,6 +252,10 @@ export const styles = css`
     border-bottom: 1px solid var(--connector-color);
     top: var(--leader-top-offset);
     box-sizing: border-box;
+  }
+
+  .-children-single.-dark:before {
+    border-bottom: 1px solid var(--connector-color-dark);
   }
 
   .ontology-card {

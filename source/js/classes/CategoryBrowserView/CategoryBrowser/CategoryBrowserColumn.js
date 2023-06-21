@@ -130,7 +130,11 @@ export default class CategoryBrowserColumn extends observeState(LitElement) {
     return html`
       <div class="column" ${ref(this.#columnRef)}>
         ${this.containedId !== 'dummy'
-          ? html`<div class="header-container">
+          ? html`<div
+              class="header-container ${state.editingCategory !== ''
+                ? '-dark'
+                : ''}"
+            >
               <div class="header-bg"></div>
               <div class="header">
                 <div class="checkbox"></div>
@@ -168,42 +172,44 @@ export default class CategoryBrowserColumn extends observeState(LitElement) {
               <div class="header-bg"></div>
             </div>`
           : nothing}
-        ${this.nodes.length
-          ? html`
-              ${repeat(
-                this.nodes,
-                node => node.id,
-                (node, index) => {
-                  return html`<category-node
-                    key="${node.id}"
-                    id="${node.id}"
-                    .data=${node}
-                    .mode=${this.role}
-                    .prevRect=${this.scrolledHeroRect}
-                    .order=${this.nodes.length === 1
-                      ? 'single'
-                      : index === 0
-                      ? 'first'
-                      : index === this.nodes.length - 1
-                      ? 'last'
-                      : 'mid'}
-                    .checked=${this.checkedIds.includes(node.id)}
-                    .countWidth=${this.#maxCountWidth}
-                    .mappedWidth=${this.#maxMappedWidth}
-                    .pvalueWidth=${this.#maxPvalueWidth}
-                    ${flip({
-                      id: node.id,
-                      heroId: this.heroId,
-                      previousHeroId: this.previousHeroId,
-                      role: this.role,
-                      scrolledHeroRect: this.scrolledHeroRect,
-                      options: this.animationOptions,
-                    })}
-                  />`;
-                }
-              )}
-            `
-          : nothing}
+        <div class="clipping-mask">
+          ${this.nodes.length
+            ? html`
+                ${repeat(
+                  this.nodes,
+                  node => node.id,
+                  (node, index) => {
+                    return html`<category-node
+                      key="${node.id}"
+                      id="${node.id}"
+                      .data=${node}
+                      .mode=${this.role}
+                      .prevRect=${this.scrolledHeroRect}
+                      .order=${this.nodes.length === 1
+                        ? 'single'
+                        : index === 0
+                        ? 'first'
+                        : index === this.nodes.length - 1
+                        ? 'last'
+                        : 'mid'}
+                      .checked=${this.checkedIds.includes(node.id)}
+                      .countWidth=${this.#maxCountWidth}
+                      .mappedWidth=${this.#maxMappedWidth}
+                      .pvalueWidth=${this.#maxPvalueWidth}
+                      ${flip({
+                        id: node.id,
+                        heroId: this.heroId,
+                        previousHeroId: this.previousHeroId,
+                        role: this.role,
+                        scrolledHeroRect: this.scrolledHeroRect,
+                        options: this.animationOptions,
+                      })}
+                    />`;
+                  }
+                )}
+              `
+            : nothing}
+        </div>
       </div>
     `;
   }
