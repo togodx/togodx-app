@@ -33,7 +33,7 @@ export default class Header {
           <dt>${preset.label}</dt>
           <dd>${preset.description}</dd>
         </dl>`;
-      li.addEventListener('click', () => PresetManager.loadAttributeSet(preset.url));
+      li.addEventListener('click', () => PresetManager.currentAttributeSet = preset.attributeSet);
       return li;
     });
     ul.append(...lis);

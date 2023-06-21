@@ -85,17 +85,6 @@ class PresetManager {
     return presets;
   }
 
-  async loadAttributeSet(url: string): Promise<void> {
-    const presets: Preset[] = await this.loadPreset(url);
-    const attributeSet = presets[0].attributeSet;
-    if (attributeSet?.length > 0) {
-      this.#currentAttributeSet = [...attributeSet];
-      this.#changed();
-    } else {
-      console.error('Invalid preset file.');
-    }
-  }
-
   importSet(file: File): void {
     const reader = new FileReader();
     reader.onerror = () => {

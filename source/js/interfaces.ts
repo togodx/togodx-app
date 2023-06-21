@@ -81,7 +81,7 @@ export interface AttributesDatasetConversion {
 export interface PresetMetaDatum {
   label: string;
   description: string;
-  url: string;
+  attributeSet: string[];
 }
 export interface Preset {
   condition?: Condition;
