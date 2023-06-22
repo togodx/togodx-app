@@ -27,17 +27,6 @@ export default class PresetView extends ModalWindowView {
     this._BODY.innerHTML = `<section>
       <!--<h3><span>Attributes set</span></h3>-->
       <section>
-        <h4>Select set</h4>
-        <nav>
-          ${PresetManager.presetMetaData
-            .map(preset => `<dl data-url="${preset.url}">
-              <dt>${preset.label}</dt>
-              <dd>${preset.description}</dd>
-            </dl>`)
-            .join('')}
-        </nav>
-      </section>
-      <section>
         <h4>Import set</h4>
         <input type="file" id="SettingsAttributeImportSet" accept=".json" />
       </section>
@@ -51,20 +40,7 @@ export default class PresetView extends ModalWindowView {
 
     // events
     const sections = this._BODY.querySelectorAll(':scope > section > section');
-    sections[0]
-      .querySelectorAll<HTMLDListElement>(':scope > nav > dl')
-      .forEach(dl => {
-        dl.addEventListener('click', () => {
-          const url = dl.dataset.url!;
-          this.#loadPreset(url);
-        });
-      });
-      // .addEventListener('click', e => {
-      //   console.log(e)
-      //   // const label = e.target.value;
-      //   // PresetManager.updateBySetLabel(label);
-      // });
-    sections[1]
+    (sections[0])
       .querySelector(':scope > input')!
       .addEventListener('change', e => {
         const input: HTMLInputElement = e.target as HTMLInputElement;
@@ -73,17 +49,5 @@ export default class PresetView extends ModalWindowView {
         PresetManager.importSet(file);
         this._close();
       });
-    // sections[2]
-    //   .querySelector(':scope > button')
-    //   .addEventListener('click', () => {
-    //     PresetManager.downloadCurrentSet();
-    //   });
-  }
-
-  async #loadPreset(url: string): Promise<void>{
-    console.log(url)
-    const preset: Preset = await fetch(url)
-      .then(res => res.json());
-    console.log(preset)
   }
 }

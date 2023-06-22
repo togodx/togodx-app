@@ -1,13 +1,13 @@
 import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import Records from './Records.ts';
+import * as events from '../events';
 import {currentAttributeSet} from '../functions/localStorage.ts';
-import * as event from '../events';
 import {PresetMetaDatum, Preset} from '../interfaces.ts';
-// import {download} from '../functions/util';
+import axios from 'axios';
 
 class PresetManager {
-  #currentAttributeSet: string[];
-  #presetMetaData: PresetMetaDatum[];
+  #currentAttributeSet: string[] = [];
+  #presetMetaData: PresetMetaDatum[] = [];
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   constructor() {}
@@ -27,20 +27,15 @@ class PresetManager {
       .then(res => res.json())
       .then((presets: PresetMetaDatum[]) => {
         this.#presetMetaData = presets;
-      })
-      .catch(() => {
-        this.#presetMetaData = [];
-        this.#currentAttributeSet = [];
-      });
+        const customEvent = new CustomEvent(events.loadedPresets, {detail: presets});
+        DefaultEventEmitter.dispatchEvent(customEvent);
+    });
 
     if (storagedDisplayAttributes.length > 0) {
       this.#currentAttributeSet = storagedDisplayAttributes;
     } else {
       // get default preset
-      // TODO: 暗黙的にデフォルトデータとしているので、あまり筋がよろしくない
-      const preset = await fetch(this.#presetMetaData[0].url)
-        .then(res => res.json());
-        this.#currentAttributeSet = preset[0].attributeSet;
+      this.#currentAttributeSet = this.#presetMetaData[0].attributeSet;
     }
   }
 
@@ -74,17 +69,29 @@ class PresetManager {
   //   }
   // }
 
+  async loadPreset(url: string): Promise<Preset[]> {
+    axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+    const presets: Preset[] = await axios
+      .get(url)
+      .then(res => res.data)
+      .catch(err => {
+        console.error(err);
+        return Promise.reject();
+      });
+    return presets;
+  }
+
   importSet(file: File): void {
     const reader = new FileReader();
-    reader.onerror = e => {
+    reader.onerror = () => {
       window.alert('Failed to load.');
     };
     reader.onload = (e: ProgressEvent) => {
       try {
-        const fileReader: FileReader = <FileReader>e.target!;
+        const fileReader: FileReader = <FileReader>e.target;
         const presets: Preset[] = JSON.parse(<string>fileReader.result);
         presets.forEach(preset => {
-          const customEvent = new CustomEvent(event.addCondition, {detail: preset});
+          const customEvent = new CustomEvent(events.addCondition, {detail: preset});
           DefaultEventEmitter.dispatchEvent(customEvent);
         });
       } catch (e) {
@@ -125,7 +132,7 @@ class PresetManager {
     );
     // emit
     if (!emit) return;
-    const customEvent = new CustomEvent(event.changeDisplayedAttributeSet, {
+    const customEvent = new CustomEvent(events.changeDisplayedAttributeSet, {
       detail: [...this.#currentAttributeSet],
     });
     DefaultEventEmitter.dispatchEvent(customEvent);

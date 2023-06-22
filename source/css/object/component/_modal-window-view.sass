@@ -1,3 +1,5 @@
+@use "../../foundation/_mixins.sass" as *
+
 .modal-window-view
   --padding-side: .8rem
   --height-header: 3rem
@@ -13,13 +15,13 @@
   left: 0
   right: 0
   bottom: 0
-  background-color: var(--color-backdrop)
   z-index: var(--z-modal-window-backdrop)
   pointer-events: none
   &.-opened
     opacity: 1
     pointer-events: auto
   > .window
+    +overlay-window
     z-index: var(--z-modal-window)
     position: absolute
     display: flex
@@ -29,8 +31,6 @@
     max-height: 90vh
     align-items: center
     align-content: center
-    background-color: rgba(255, 255, 255, .85)
-    border-radius: .4rem
     > header
       cursor: grab
       display: flex

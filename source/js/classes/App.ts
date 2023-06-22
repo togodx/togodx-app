@@ -12,6 +12,7 @@ import Color from 'colorjs.io';
 import StanzaManager from './StanzaManager';
 import ResultsTable from './ResultsTable.ts';
 import PresetManager from './PresetManager.ts';
+import Header from './Header.ts';
 import * as event from '../events';
 import {Config, ViewModes, Templates, Backend, Attributes, API} from '../interfaces.ts';
 
@@ -62,12 +63,13 @@ class App {
     });
     // set up views
     new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
-    new ConditionsController(document.querySelector('#Conditions')!);
+    new ConditionsController(document.querySelector('#Conditions') as HTMLElement);
     new PresetView();
     new ResultDetailModal();
     new BalloonView();
     new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
-    new ResultsTable(document.querySelector('#ResultsTable')!);
+    new ResultsTable(document.querySelector('#ResultsTable') as HTMLElement);
+    new Header(document.querySelector('#Header') as HTMLElement);
 
     // standard displayed attributes
     await PresetManager.init(config.PRESET);

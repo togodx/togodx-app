@@ -3,10 +3,9 @@ import Records from './Records.ts';
 import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
 import ConditionFilterUtility from './ConditionFilterUtility.ts';
 import DXCondition from './DXCondition.ts';
-import * as event from '../events.js';
 import PresetManager from './PresetManager.ts';
+import * as event from '../events.js';
 import { SelectedNodes, Preset } from '../interfaces.ts';
-import axios from 'axios';
 
 const IS_SAVE_CONDITION_IN_SEARCH_PARAMS = false;
 
@@ -63,7 +62,7 @@ class ConditionBuilder {
       } catch (e) {
         console.error(e);
       }
-      if (presetUrl) this.#preset(presetUrl);
+      if (presetUrl) this.#preset(presetUrl.href);
     }
 
     if (IS_SAVE_CONDITION_IN_SEARCH_PARAMS) {
@@ -285,15 +284,8 @@ class ConditionBuilder {
 
   // private methods
 
-  async #preset(url: URL): Promise<void> {
-    axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-    const presets: Preset[] = await axios
-      .get(url.href)
-      .then(res => res.data)
-      .catch(err => {
-        console.error(err);
-        return Promise.reject();
-      });
+  async #preset(url: string): Promise<void> {
+    const presets: Preset[] = await PresetManager.loadPreset(url);
     presets.forEach(preset => {
       const customEvent = new CustomEvent(event.addCondition, {detail: preset});
       DefaultEventEmitter.dispatchEvent(customEvent);
