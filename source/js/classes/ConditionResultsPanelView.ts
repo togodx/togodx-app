@@ -24,6 +24,7 @@ type LoadStatus = 'ids' | 'properties' | 'completed';
 export default class ConditionResultsPanelView {
   #ROOT: HTMLElement;
   #STATUS: HTMLParagraphElement;
+  #CLOSE_BUTTON: HTMLDivElement;
   #controller: ConditionResultsController;
   #progressIndicator: ProgressIndicator;
   #statusProxy: ConditionResultsControllerStatus;
@@ -95,12 +96,12 @@ export default class ConditionResultsPanelView {
       if (this.#ROOT.classList.contains('-current')) return;
       this.#controller.select();
     });
-    const closeButton = this.#ROOT.querySelector(':scope > .close-button-view') as HTMLDivElement;
-    closeButton.addEventListener('click', e => {
+    this.#CLOSE_BUTTON = this.#ROOT.querySelector(':scope > .close-button-view') as HTMLDivElement;
+    this.#CLOSE_BUTTON.addEventListener('click', e => {
         e.stopPropagation();
         // delete element
         this.#ROOT.remove();
-        this.#controller.deleteCondition();
+        this.#controller.deleteConditionByPanelView();
       });
     this.#ROOT.querySelectorAll<HTMLButtonElement>(':scope > .buttons > button').forEach(button => {
       button.addEventListener('click', e => {
@@ -203,6 +204,10 @@ export default class ConditionResultsPanelView {
   loadIds():void {
     // this.#ROOT.dataset.load = 'ids';
     this.#ROOT.classList.add('-loading');
+  }
+
+  closeByController(): void {
+    this.#CLOSE_BUTTON.click();
   }
 
   #loadedIds(count: number): void {

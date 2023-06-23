@@ -48,7 +48,7 @@ export default class ConditionsController {
             download(JSON.stringify(this.#conditionResultsControllers.map(crc => crc.preset)), 'json', 'togodx-preset', true);
             break;
           case 'clear':
-            console.log('clear')
+            this.#deleteAllConditions();
             break;
         }
       });
@@ -117,5 +117,11 @@ export default class ConditionsController {
     const controller: ConditionResultsController = e.detail;
     const index = this.#conditionResultsControllers.indexOf(controller);
     this.#conditionResultsControllers.splice(index, 1);
+  }
+
+  #deleteAllConditions() {
+    while (this.#conditionResultsControllers.length > 0) {
+      this.#conditionResultsControllers[0].delete();
+    }
   }
 }

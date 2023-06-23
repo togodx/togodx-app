@@ -100,7 +100,7 @@ export default class ConditionResultsController {
 
   // public methods
 
-  deleteCondition(): void {
+  deleteConditionByPanelView(): void {
     const customEvent = new CustomEvent(event.deleteConditionResults, {
       detail: this,
     });
@@ -109,6 +109,9 @@ export default class ConditionResultsController {
     this.#source.cancel('user cancel');
     // transition
     document.body.dataset.display = 'properties';
+  }
+  delete(): void {
+    this.#panelView.closeByController();
   }
 
   edit(): void {
