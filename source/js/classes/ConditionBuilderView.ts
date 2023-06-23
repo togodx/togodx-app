@@ -62,7 +62,7 @@ export default class ConditionBuilderView {
         document.body.dataset.display = 'properties';
       });
     elm
-      .querySelector(':scope > header > button.rounded-button-view')
+      .querySelector(':scope > header > button')
       .addEventListener('click', () => {
         const customEvent = new CustomEvent(event.clearCondition);
         DefaultEventEmitter.dispatchEvent(customEvent);

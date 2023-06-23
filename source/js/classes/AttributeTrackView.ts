@@ -245,7 +245,6 @@ export default class AttributeTrackView {
   }
 
   #toggleErrorUserFilters(event: CustomEvent) {
-    console.log(event)
     if (event.detail.mode === 'show') {
       if (event.detail.attributeId !== this.#attribute.id) return;
       this.#showError(event.detail.message, true);

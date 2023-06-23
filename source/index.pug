@@ -169,9 +169,8 @@ block main
 
           header(data-hidden-by="results")
             h2.title Condition builder
-            button.rounded-button-view.-verysmall.-outline(type="button")
+            button.icon-button-view(type="button" title="Delete search condition")
               span.material-icons delete
-              | Clear
           .switch-button-view(data-hidden-by="results")
             button.-active(data-button="filter" value="filter")
               span.material-icons filter_alt
@@ -243,12 +242,12 @@ block main
         section#Conditions(data-number-of-conditions="0")
           header
             h2.title Conditions
-            button#ImportConditionButton.rounded-button-view.-verysmall.-outline(type="button" value="import")
+            button#ImportConditionButton.icon-button-view(type="button" value="import" title="Import search conditions")
               span.material-icons publish
-              | Import
-            button.rounded-button-view.-verysmall.-outline(type="button" value="export")
+            button.icon-button-view(type="button" value="export" title="Export search conditions")
               span.material-icons download
-              | Export
+            button.icon-button-view(type="button" value="clear" title="Delete search condition")
+              span.material-icons delete
 
           .conditions
       

@@ -47,6 +47,9 @@ export default class ConditionsController {
           case 'export':
             download(JSON.stringify(this.#conditionResultsControllers.map(crc => crc.preset)), 'json', 'togodx-preset', true);
             break;
+          case 'clear':
+            console.log('clear')
+            break;
         }
       });
     });
