@@ -4,11 +4,12 @@
   height: 100%
   overflow: hidden
   > .inner
+    padding-right: var(--width-condition)
     height: 100%
-    width: calc((max(100vw, var(--min-width-app)) - var(--width-condition)) * 2)
-    display: flex
-    transition: transform var(--transition-wipe)
-    overflow: hidden
+    // width: calc((max(100vw, var(--min-width-app)) - var(--width-condition)) * 2)
+    // display: flex
+    // transition: transform var(--transition-wipe)
+    // overflow: hidden
     background-color: var(--color-lamp-black)
   > .loading-view
     position: fixed

@@ -7,7 +7,6 @@ export default class Header {
   #MAIN_MENU: HTMLElement;
 
   constructor(elm: HTMLElement) {
-    console.log(this, elm);
 
     // references
     this.#MAIN_MENU = elm.querySelector(':scope > .mainmenu') as HTMLElement;
