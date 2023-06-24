@@ -1,6 +1,8 @@
 .category-view
   position: relative
   background-color: var(--color-gray)
+  &[data-number-of-visible-track="0"]
+    display: none
   + .category-view
     margin-top: .2rem
   > .selectall, > .backdrop

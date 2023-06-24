@@ -65,9 +65,7 @@ export default class CategoryView {
           callbacked = false;
           for (const mutation of mutations) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-              const count = this.#attributeTrackViews.filter(view => view.visibility).length;
-              this.#SELECT_ALL.checked = count === attributes.length;
-              this.#SELECT_ALL.indeterminate = 0 < count && count < attributes.length;
+              this.#countVisibleTracks();
             }
           }
         })
@@ -76,6 +74,15 @@ export default class CategoryView {
       observer.observe(attributeTrackView, config);
     });
 
+    this.#countVisibleTracks();
+  }
+
+  #countVisibleTracks() {
+    const attributes = this.#category.attributes;
+    const count = this.#attributeTrackViews.filter(view => view.visibility).length;
+    this.#SELECT_ALL.checked = count === attributes.length;
+    this.#SELECT_ALL.indeterminate = 0 < count && count < attributes.length;
+    this.#ROOT.dataset.numberOfVisibleTrack = String(count);
   }
 
   #enterAttributesDisplaySettingMode() {
