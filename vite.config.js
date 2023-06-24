@@ -7,6 +7,7 @@ import eslint from "vite-plugin-eslint";
 
 export default defineConfig({
   root: "source",
+  base: "./",
 
   build: {
     // eslint-disable-next-line no-undef
