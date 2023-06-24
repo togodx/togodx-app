@@ -96,7 +96,7 @@ class PresetManager {
         const fileReader: FileReader = <FileReader>e.target;
         const presets: Preset[] = JSON.parse(<string>fileReader.result);
         presets.forEach(preset => {
-          const customEvent = new CustomEvent(events.addCondition, {detail: preset});
+          const customEvent = new CustomEvent(events.addConditionResults, {detail: preset});
           DefaultEventEmitter.dispatchEvent(customEvent);
         });
       } catch (e) {

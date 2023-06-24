@@ -4,7 +4,7 @@ import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
 import ConditionFilterUtility from './ConditionFilterUtility.ts';
 import DXCondition from './DXCondition.ts';
 import PresetManager from './PresetManager.ts';
-import * as event from '../events.js';
+import * as events from '../events.js';
 import { SelectedNodes, Preset } from '../interfaces.ts';
 
 const IS_SAVE_CONDITION_IN_SEARCH_PARAMS = false;
@@ -41,7 +41,7 @@ class ConditionBuilder {
       this.#createSearchConditionFromURLParameters.bind(this)
     );
     DefaultEventEmitter.addEventListener(
-      event.clearCondition,
+      events.clearCondition,
       this.#clearConditinos.bind(this)
     );
   }
@@ -69,7 +69,7 @@ class ConditionBuilder {
       this.#createSearchConditionFromURLParameters(true);
     } else {
       // dispatch event
-      const customEvent = new CustomEvent(event.restoreParameters);
+      const customEvent = new CustomEvent(events.restoreParameters);
       DefaultEventEmitter.dispatchEvent(customEvent);
     }
   }
@@ -91,7 +91,7 @@ class ConditionBuilder {
     // evaluate
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutateAnnotationCondition, {
+    const customEvent = new CustomEvent(events.mutateAnnotationCondition, {
       detail: {action: 'add', conditionUtilityAnnotation},
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
@@ -115,7 +115,7 @@ class ConditionBuilder {
     // evaluate
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutateFilterCondition, {
+    const customEvent = new CustomEvent(events.mutateFilterCondition, {
       detail: {action: 'add', attributeId, node},
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
@@ -136,7 +136,7 @@ class ConditionBuilder {
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutateAnnotationCondition, {
+    const customEvent = new CustomEvent(events.mutateAnnotationCondition, {
       detail: {
         action: 'remove',
         conditionUtilityAnnotation: conditionUtilityAnnotation2,
@@ -161,7 +161,7 @@ class ConditionBuilder {
     // post processing (permalink, evaluate)
     if (isFinal) this.#postProcessing();
     // dispatch event
-    const customEvent = new CustomEvent(event.mutateFilterCondition, {
+    const customEvent = new CustomEvent(events.mutateFilterCondition, {
       detail: {action: 'remove', attributeId, node},
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
@@ -220,7 +220,7 @@ class ConditionBuilder {
 
   makeQueryParameter() {
     // emmit event
-    const customEvent = new CustomEvent(event.sendCondition, {
+    const customEvent = new CustomEvent(events.sendConditionResults, {
       detail: new DXCondition(
         this.#dataset,
         this.#userIds,
@@ -287,7 +287,7 @@ class ConditionBuilder {
   async #preset(url: string): Promise<void> {
     const presets: Preset[] = await PresetManager.loadPreset(url);
     presets.forEach(preset => {
-      const customEvent = new CustomEvent(event.addCondition, {detail: preset});
+      const customEvent = new CustomEvent(events.addConditionResults, {detail: preset});
       DefaultEventEmitter.dispatchEvent(customEvent);
     });
   }
@@ -297,7 +297,7 @@ class ConditionBuilder {
     // evaluate if search is possible
     const established =
       this.#dataset && this.#conditionUtilityFilters.length > 0;
-    const customEvent = new CustomEvent(event.mutateEstablishConditions, {
+    const customEvent = new CustomEvent(events.mutateEstablishConditions, {
       detail: established,
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
@@ -425,7 +425,7 @@ class ConditionBuilder {
     this.finish(false);
 
     // dispatch event
-    const customEvent = new CustomEvent(event.restoreParameters);
+    const customEvent = new CustomEvent(events.restoreParameters);
     DefaultEventEmitter.dispatchEvent(customEvent);
   }
 

@@ -13,10 +13,15 @@ export const changeViewModes = 'changeViewModes';
 export const mutateAnnotationCondition = 'mutateAnnotationCondition';
 export const mutateFilterCondition = 'mutateFilterCondition';
 export const mutateEstablishConditions = 'mutateEstablishConditions';
-export const addCondition = 'addCondition';
-export const sendCondition = 'sendCondition';
 export const restoreParameters = 'restoreParameters';
 export const clearCondition = 'clearCondition';
+
+// Condition results
+export const selectConditionResults = 'selectConditionResults';
+export const sendConditionResults = 'sendConditionResults';
+export const addConditionResults = 'addConditionResults';
+export const deleteConditionResults = 'deleteConditionResults';
+export const deleteAllConditionResults = 'deleteAllConditionResults';
 
 // Stanza
 export const hideStanza = 'hideStanza';
@@ -28,9 +33,6 @@ export const failedFetchConditionResultsIDs = 'failedFetchConditionResultsIDs';
 export const addNextRows = 'addNextRows';
 
 // Table data
-export const selectConditionResults = 'selectConditionResults';
-export const deleteConditionResults = 'deleteConditionResults';
-export const deleteAllConditionResults = 'deleteAllConditionResults';
 export const highlightColumn = 'highlightColumn';
 
 // Track

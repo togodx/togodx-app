@@ -21,11 +21,11 @@ export default class ConditionsController {
 
     // event listener
     DefaultEventEmitter.addEventListener(
-      events.addCondition,
+      events.addConditionResults,
       <EventListener>this.#addConditionResultsController.bind(this)
     );
     DefaultEventEmitter.addEventListener(
-      events.sendCondition,
+      events.sendConditionResults,
       <EventListener>this.#setConditionResultsController.bind(this)
     );
     DefaultEventEmitter.addEventListener(
