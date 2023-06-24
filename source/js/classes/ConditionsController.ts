@@ -36,6 +36,10 @@ export default class ConditionsController {
       events.deleteConditionResults,
       <EventListener>this.#deleteConditionResultsController.bind(this)
     );
+    DefaultEventEmitter.addEventListener(
+      events.deleteAllConditionResults,
+      <EventListener>this.#deleteAllConditionResults.bind(this)
+    );
 
     // event
     this.#ROOT.querySelectorAll<HTMLButtonElement>(':scope > header > button').forEach(button => {
@@ -48,7 +52,7 @@ export default class ConditionsController {
             download(JSON.stringify(this.#conditionResultsControllers.map(crc => crc.preset)), 'json', 'togodx-preset', true);
             break;
           case 'clear':
-            this.#deleteAllConditions();
+            this.#deleteAllConditionResults();
             break;
         }
       });
@@ -119,7 +123,7 @@ export default class ConditionsController {
     this.#conditionResultsControllers.splice(index, 1);
   }
 
-  #deleteAllConditions() {
+  #deleteAllConditionResults() {
     while (this.#conditionResultsControllers.length > 0) {
       this.#conditionResultsControllers[0].delete();
     }

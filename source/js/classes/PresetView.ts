@@ -46,17 +46,11 @@ export default class PresetView extends ModalWindowView {
     // events
     const sections = this._BODY.querySelectorAll(':scope > section > section');
     const inputFile = sections[0].querySelector(':scope > input[type="file"]') as HTMLInputElement;
-    console.log(inputFile)
     inputFile.addEventListener('change', e => {
-      const input: HTMLInputElement = e.target as HTMLInputElement;
-      console.log(input, inputFile)
-      console.log(input === inputFile)
-      const selectedRadio = sections[0].querySelector(':scope > .option > input[name="SettingsAttributeImportSet_option"]:checked');
-      
-      console.log( selectedRadio )
-      const file = input.files![0];
+      const selectedRadio = <HTMLInputElement>sections[0].querySelector(':scope > .option > input[name="SettingsAttributeImportSet_option"]:checked');
+      const file = inputFile.files![0];
       if (!file) return;
-      PresetManager.importSet(file);
+      PresetManager.importSet(file, !!(selectedRadio?.value === 'add'));
       this._close();
     });
   }

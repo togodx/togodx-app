@@ -30,6 +30,7 @@ export const addNextRows = 'addNextRows';
 // Table data
 export const selectConditionResults = 'selectConditionResults';
 export const deleteConditionResults = 'deleteConditionResults';
+export const deleteAllConditionResults = 'deleteAllConditionResults';
 export const highlightColumn = 'highlightColumn';
 
 // Track

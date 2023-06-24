@@ -81,13 +81,18 @@ class PresetManager {
     return presets;
   }
 
-  importSet(file: File): void {
+  importSet(file: File, isAdd: boolean): void {
     const reader = new FileReader();
     reader.onerror = () => {
       window.alert('Failed to load.');
     };
     reader.onload = (e: ProgressEvent) => {
       try {
+        // 'add' or 'overwrite'
+        if (!isAdd) {
+          DefaultEventEmitter.dispatchEvent(new CustomEvent(events.deleteAllConditionResults));
+        }
+        // read file
         const fileReader: FileReader = <FileReader>e.target;
         const presets: Preset[] = JSON.parse(<string>fileReader.result);
         presets.forEach(preset => {
