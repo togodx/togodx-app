@@ -3,6 +3,6 @@
     margin-bottom: -.6rem
   &[data-number-of-conditions="0"]
     > header
-      > button[value="export"]
+      > button[value="export"], > button[value="clear"]
         pointer-events: none
-        opacity: var(--opacity-disabled)
+        opacity: calc(var(--opacity-disabled) / 1.5)
