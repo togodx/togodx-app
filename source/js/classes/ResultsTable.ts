@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable no-constant-condition */
 import ConditionBuilder from './ConditionBuilder.ts';
 import ConditionResultsController from './ConditionResultsController.ts';
@@ -5,7 +6,7 @@ import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import StatisticsView from './StatisticsView';
 import Records from './Records.ts';
 import ResultsTableRow from './ResultsTableRow';
-import * as event from '../events';
+import * as events from '../events';
 import DXCondition from './DXCondition.ts';
 import {
   TableHeader,
@@ -23,17 +24,17 @@ const prMapEntry = new Map([
 
 export default class ResultsTable {
   #intersctionObserver: IntersectionObserver;
-  #conditionResults: ConditionResultsController;
+  #conditionResults: ConditionResultsController | undefined;
   #statisticsViews: StatisticsView[];
-  #header: TableHeader[];
-  #previewDxCondition: DXCondition;
+  #header: TableHeader[] | undefined;
+  #previewDxCondition: DXCondition | undefined;
   #ROOT: HTMLElement;
   #NUMBER_OF_ENTRIES: HTMLSpanElement;
   #COLLAPSE_BUTTON: HTMLDivElement;
   #COLGROUP: HTMLTableColElement;
   #THEAD: HTMLTableRowElement;
   #STATS: HTMLTableRowElement;
-  #TBODY: HTMLTableRowElement;
+  #TBODY: HTMLTableSectionElement;
   #TABLE_END: HTMLDivElement;
   #LOADING_VIEW: HTMLDivElement;
 
@@ -42,23 +43,23 @@ export default class ResultsTable {
 
     // references
     this.#ROOT = elm;
-    const header = elm.querySelector(':scope > header')!;
+    const header = elm.querySelector(':scope > header') as HTMLElement;
     this.#NUMBER_OF_ENTRIES = header.querySelector(
       ':scope > span > span.count'
-    )!;
+    ) as HTMLSpanElement;
     this.#COLLAPSE_BUTTON = header.querySelector(
       ':scope > .collapsenotchbutton'
-    )!;
+    ) as HTMLDivElement;
     const inner = elm.querySelector(':scope > .inner') as HTMLDivElement;
     const TABLE = inner.querySelector(':scope > table') as HTMLTableElement;
-    this.#COLGROUP = TABLE.querySelector(':scope > colgroup')!;
-    this.#THEAD = TABLE.querySelector(':scope > thead > tr.header')!;
-    this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics')!;
-    this.#TBODY = TABLE.querySelector(':scope > tbody')!;
-    this.#TABLE_END = inner.querySelector(':scope > .tableend')!;
+    this.#COLGROUP = TABLE.querySelector(':scope > colgroup') as HTMLTableColElement;
+    this.#THEAD = TABLE.querySelector(':scope > thead > tr.header') as HTMLTableRowElement;
+    this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics') as HTMLTableRowElement;
+    this.#TBODY = TABLE.querySelector(':scope > tbody') as HTMLTableSectionElement;
+    this.#TABLE_END = inner.querySelector(':scope > .tableend') as HTMLDivElement;
     this.#LOADING_VIEW = this.#TABLE_END.querySelector(
       ':scope > .loading-view'
-    )!;
+    ) as HTMLDivElement;
 
     // get next data automatically
     this.#intersctionObserver = new IntersectionObserver(entries => {
@@ -81,20 +82,21 @@ export default class ResultsTable {
 
     // event listeners
     DefaultEventEmitter.addEventListener(
-      event.mutateEstablishConditions,
+      events.mutateEstablishConditions,
       this.#makePreview.bind(this)
     );
-    DefaultEventEmitter.addEventListener(event.selectConditionResults, e =>
-      this.#setupTable(e.detail)
+    DefaultEventEmitter.addEventListener(
+      events.selectConditionResults,
+      this.#setupTable.bind(this)
     );
-    DefaultEventEmitter.addEventListener(event.addNextRows, e =>
+    DefaultEventEmitter.addEventListener(events.addNextRows, e =>
       this.#addNextRows(e.detail)
     );
-    DefaultEventEmitter.addEventListener(event.highlightColumn, e => {
+    DefaultEventEmitter.addEventListener(events.highlightColumn, e => {
       this.#highlightColumn(e.detail);
     });
     DefaultEventEmitter.addEventListener(
-      event.failedFetchConditionResultsIDs,
+      events.failedFetchConditionResultsIDs,
       e => this.#failed(e.detail)
     );
 
@@ -118,7 +120,7 @@ export default class ResultsTable {
             this.#STATS.classList.remove('-stretch');
             break;
         }
-        const customEvent = new CustomEvent(event.changeStatisticsViewMode);
+        const customEvent = new CustomEvent(events.changeStatisticsViewMode);
         DefaultEventEmitter.dispatchEvent(customEvent);
         window.localStorage.setItem('statistics_view_moe', radio.value);
       });
@@ -138,8 +140,8 @@ export default class ResultsTable {
     this.#conditionResults.next();
   }
 
-  async #makePreview(e: CustomEvent) {
-    const isEstablised = e.detail as boolean;
+  async #makePreview(e: Event) {
+    const isEstablised = (e as CustomEvent).detail as boolean;
     if (isEstablised && (document.body.dataset.display = 'properties')) {
       this.#TBODY.innerHTML = '';
       this.#previewDxCondition = ConditionBuilder.dxCondition;
@@ -152,7 +154,7 @@ export default class ResultsTable {
       )}`;
       this.#makeTableHeader(this.#previewDxCondition);
       // make rows
-      document.body.dataset.numberOfResults = ids.length;
+      document.body.dataset.numberOfResults = String(ids.length);
       const nextRows = await this.#previewDxCondition.getNextProperties(
         NUM_OF_PREVIEW
       );
@@ -166,7 +168,8 @@ export default class ResultsTable {
     }
   }
 
-  #setupTable(conditionResults: ConditionResultsController) {
+  #setupTable(e: Event) {
+    const conditionResults: ConditionResultsController = (e as CustomEvent).detail;
     if ((document.body.dataset.display = 'results')) {
       // reset
       this.#conditionResults = conditionResults;
@@ -176,7 +179,7 @@ export default class ResultsTable {
       this.#THEAD.innerHTML = '';
       this.#TBODY.innerHTML = '';
       this.#LOADING_VIEW.classList.add('-shown');
-      DefaultEventEmitter.dispatchEvent(new CustomEvent(event.hideStanza));
+      DefaultEventEmitter.dispatchEvent(new CustomEvent(events.hideStanza));
 
       this.#makeTableHeader(conditionResults.dxCondition);
       this.#makeStats(conditionResults.dxCondition);
