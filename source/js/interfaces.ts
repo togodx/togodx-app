@@ -1,6 +1,7 @@
-import ConditionFilterUtility from './classes/ConditionFilterUtility.ts';
-import ConditionAnnotationUtility from './classes/ConditionAnnotationUtility.ts';
+// import ConditionFilterUtility from './classes/ConditionFilterUtility.ts';
+// import ConditionAnnotationUtility from './classes/ConditionAnnotationUtility.ts';
 import Color from 'colorjs.io';
+import DXCondition from './classes/DXCondition.ts';
 
 // config
 export interface Config {
@@ -190,3 +191,8 @@ export type TableHeader = {
   categoryId: string,
   attributeId: string,
 };
+export interface TableRow {
+  dxCondition: DXCondition;
+  offset: number;
+  nextRows: DataFrame[];
+}

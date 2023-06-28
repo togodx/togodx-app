@@ -1,18 +1,35 @@
+import { BreakdownWithParentNode, DataFrameAttributeItem, TableRow } from './../interfaces.ts';
 import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import Records from './Records.ts';
-import * as event from '../events';
+import ConditionResultsController from './ConditionResultsController.ts';
+import ConditionFilterUtility from './ConditionFilterUtility.ts';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
+import * as events from '../events.js';
 import _ from 'lodash';
 
+
+type HitValue = {
+  node: string;
+  label: string;
+  count: number;
+  hitCount: number;
+}
 export default class StatisticsView {
   #index;
   #attributeId;
   #conditionResults;
   #referenceFilters;
-  #BARS;
-  #ROOT;
-  #ROOT_NODE;
+  #BARS: HTMLDivElement;
+  #ROOT: HTMLDivElement;
+  #ROOT_NODE: HTMLTableRowElement;
 
-  constructor(statisticsRootNode, elm, conditionResults, index, condition) {
+  constructor(
+    statisticsRootNode: HTMLTableRowElement,
+    elm: HTMLDivElement,
+    conditionResults: ConditionResultsController,
+    index: number,
+    condition: ConditionFilterUtility | ConditionAnnotationUtility
+  ) {
     this.#index = index;
     this.#attributeId = condition.attributeId;
     this.#conditionResults = conditionResults;
@@ -31,10 +48,10 @@ export default class StatisticsView {
     `;
 
     // display order of bar chart
-    if (condition.parentNode) {
+    if (condition instanceof ConditionAnnotationUtility && condition.parentNode) {
       Records.fetchChildNodes(this.#attributeId, condition.parentNode).then(
         filters => {
-          this.#referenceFilters = filters;
+          this.#referenceFilters = filters as BreakdownWithParentNode[];
           this.#draw();
         }
       );
@@ -43,35 +60,35 @@ export default class StatisticsView {
     }
 
     // references
-    const container = elm.querySelector(':scope > .statistics');
-    this.#BARS = container.querySelector(':scope > .bars');
+    const container = elm.querySelector(':scope > .statistics') as HTMLDivElement;
+    this.#BARS = container.querySelector(':scope > .bars') as HTMLDivElement;
 
     // event listener
     DefaultEventEmitter.addEventListener(
-      event.addNextRows,
-      this.#draw.bind(this)
+      events.addNextRows,
+      <EventListener>this.#draw.bind(this)
     );
     DefaultEventEmitter.addEventListener(
-      event.changeStatisticsViewMode,
-      this.#draw.bind(this)
+      events.changeStatisticsViewMode,
+      <EventListener>this.#draw.bind(this)
     );
     DefaultEventEmitter.addEventListener(
-      event.failedFetchConditionResultsIDs,
+      events.failedFetchConditionResultsIDs,
       this.#failedFetchConditionResultsIDs.bind(this)
     );
   }
 
   destroy() {
     DefaultEventEmitter.removeEventListener(
-      event.addNextRows,
-      this.#draw.bind(this)
+      events.addNextRows,
+      <EventListener>this.#draw.bind(this)
     );
     DefaultEventEmitter.removeEventListener(
-      event.changeStatisticsViewMode,
-      this.#draw.bind(this)
+      events.changeStatisticsViewMode,
+      <EventListener>this.#draw.bind(this)
     );
     DefaultEventEmitter.removeEventListener(
-      event.failedFetchConditionResultsIDs,
+      events.failedFetchConditionResultsIDs,
       this.#failedFetchConditionResultsIDs.bind(this)
     );
   }
@@ -81,15 +98,15 @@ export default class StatisticsView {
    * @param {Array} detail.rows
    * @param {Boolean} detail.done
    */
-  #draw(e) {
-    const flattenedAttributes = this.#conditionResults.data
+  #draw(e?: CustomEvent<TableRow>) {
+    const flattenedAttributes: DataFrameAttributeItem[] = this.#conditionResults.data
       .map(datum => datum.attributes[this.#index])
       .map(attribute => attribute.items)
       .flat();
-    const uniquedAttributes = _.uniqWith(flattenedAttributes, (a, b) => {
+    const uniquedAttributes: DataFrameAttributeItem[] = _.uniqWith(flattenedAttributes, (a, b) => {
       return a.entry === b.entry && a.node === b.node;
     });
-    const hitVlues = [];
+    const hitVlues: HitValue[] = [];
     this.#referenceFilters?.forEach(({node, label, count}) => {
       const filtered = uniquedAttributes.filter(
         attribute => attribute.node === node
@@ -102,9 +119,10 @@ export default class StatisticsView {
         hitCount: filtered.length,
       });
     });
+    console.log(hitVlues)
 
     // max
-    let countMax;
+    let countMax: number;
     const isOnlyHitCount = this.#ROOT_NODE.classList.contains('-onlyhitcount');
     const isStretch =
       !isOnlyHitCount && this.#ROOT_NODE.classList.contains('-stretch');
@@ -114,8 +132,9 @@ export default class StatisticsView {
       countMax = Math.max(...hitVlues.map(filter => filter.count));
     }
 
-    hitVlues.reduce((lastBar, {node, label, count, hitCount}) => {
-      let bar = this.#BARS.querySelector(`:scope > .bar[data-node="${node}"]`);
+    hitVlues.reduce((lastBar: HTMLDivElement | null, hitValue: HitValue) => {
+      const {node, label, count, hitCount} = hitValue;
+      let bar = this.#BARS.querySelector<HTMLDivElement>(`:scope > .bar[data-node="${node}"]`);
       if (bar === null) {
         // add bar
         bar = document.createElement('div');
@@ -135,11 +154,11 @@ export default class StatisticsView {
         }
       }
       // styling
-      bar.querySelector(':scope > .wholebar').style.height = `${
+      (bar.querySelector(':scope > .wholebar') as HTMLDivElement).style.height = `${
         (count / countMax) * 100
       }%`;
-      const hitbar = bar.querySelector(':scope > .hitbar');
-      const hitCountLabel = hitbar.querySelector(':scope > .filter');
+      const hitbar = bar.querySelector(':scope > .hitbar') as HTMLDivElement;
+      const hitCountLabel = hitbar.querySelector(':scope > .filter') as HTMLDivElement;
       let hitbarHeight;
       if (isStretch) {
         hitbarHeight = hitCount / count;
@@ -155,19 +174,19 @@ export default class StatisticsView {
         hitCountLabel.classList.remove('-below');
       }
       return bar;
-    }, undefined);
+    }, null);
 
     if (e?.detail?.dxCondition.isPropertiesLoaded) {
       this.#ROOT.classList.add('-completed');
-      this.#ROOT
-        .querySelector(':scope > .loading-view')
+      (this.#ROOT
+        .querySelector(':scope > .loading-view') as HTMLDivElement)
         .classList.remove('-shown');
     }
   }
 
   #failedFetchConditionResultsIDs() {
-    this.#ROOT
-      .querySelector(':scope > .loading-view')
+    (this.#ROOT
+      .querySelector(':scope > .loading-view') as HTMLDivElement)
       .classList.remove('-shown');
   }
 }

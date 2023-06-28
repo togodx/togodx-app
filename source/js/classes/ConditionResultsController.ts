@@ -6,7 +6,7 @@ import DXCondition from './DXCondition.ts';
 import ConditionFilterUtility from './ConditionFilterUtility.ts';
 import PresetManager from './PresetManager.ts';
 import * as event from '../events';
-import { Preset } from '../interfaces.ts';
+import { Preset, TableRow } from '../interfaces.ts';
 import axios, {AxiosError} from 'axios';
 
 export default class ConditionResultsController {
@@ -152,7 +152,7 @@ export default class ConditionResultsController {
         break;
       case 'properties':
       case 'completed': {
-        const customEvent2 = new CustomEvent(event.addNextRows, {
+        const customEvent2 = new CustomEvent<TableRow>(event.addNextRows, {
           detail: {
             dxCondition: this.#dxCondition,
             offset: 0,

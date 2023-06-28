@@ -3,14 +3,25 @@
 import ConditionBuilder from './ConditionBuilder.ts';
 import ConditionResultsController from './ConditionResultsController.ts';
 import DefaultEventEmitter from './DefaultEventEmitter.ts';
-import StatisticsView from './StatisticsView';
+import StatisticsView from './StatisticsView.ts';
 import Records from './Records.ts';
 import ResultsTableRow from './ResultsTableRow';
 import * as events from '../events';
 import DXCondition from './DXCondition.ts';
 import {
-  TableHeader,
+  TableHeader, TableRow
 } from '../interfaces.ts';
+
+interface cellPosition {
+  x: number;
+  y: number;
+}
+interface HigllightColumn {
+  x: number;
+  isEnter: boolean;
+  oldCell: cellPosition;
+  newCell: cellPosition;
+}
 
 const NUM_OF_PREVIEW = 5;
 const displayMap = new Map([
@@ -87,24 +98,25 @@ export default class ResultsTable {
     );
     DefaultEventEmitter.addEventListener(
       events.selectConditionResults,
-      this.#setupTable.bind(this)
+      <EventListener>this.#setupTable.bind(this)
     );
-    DefaultEventEmitter.addEventListener(events.addNextRows, e =>
-      this.#addNextRows(e.detail)
+    DefaultEventEmitter.addEventListener(events.addNextRows, e => {
+      this.#addNextRows((e as CustomEvent).detail);
+    }
     );
     DefaultEventEmitter.addEventListener(events.highlightColumn, e => {
-      this.#highlightColumn(e.detail);
+      this.#highlightColumn((e as CustomEvent).detail);
     });
     DefaultEventEmitter.addEventListener(
       events.failedFetchConditionResultsIDs,
-      e => this.#failed(e.detail)
+      () => this.#failed()
     );
 
     // statistics
     const controller = this.#STATS.querySelector(
       ':scope > th.controller > .inner'
-    );
-    controller.querySelectorAll(':scope > label > input').forEach(radio => {
+    ) as HTMLDivElement;
+    controller.querySelectorAll<HTMLInputElement>(':scope > label > input').forEach((radio) => {
       radio.addEventListener('change', () => {
         switch (radio.value) {
           case 'hits_all':
@@ -137,11 +149,11 @@ export default class ResultsTable {
 
   #enterTableEnd() {
     this.#intersctionObserver.unobserve(this.#TABLE_END);
-    this.#conditionResults.next();
+    this.#conditionResults?.next();
   }
 
   async #makePreview(e: Event) {
-    const isEstablised = (e as CustomEvent).detail as boolean;
+    const isEstablised = (e as CustomEvent<boolean>).detail;
     if (isEstablised && (document.body.dataset.display = 'properties')) {
       this.#TBODY.innerHTML = '';
       this.#previewDxCondition = ConditionBuilder.dxCondition;
@@ -158,18 +170,19 @@ export default class ResultsTable {
       const nextRows = await this.#previewDxCondition.getNextProperties(
         NUM_OF_PREVIEW
       );
-      this.#addNextRows({
-        dxCondition: this.#previewDxCondition,
-        offset: 0,
-        nextRows,
-        isAutoLoading: false,
-        isPreview: true,
-      });
+      this.#addNextRows(
+        {
+          dxCondition: this.#previewDxCondition,
+          offset: 0,
+          nextRows,
+        },
+        true
+      );
     }
   }
 
-  #setupTable(e: Event) {
-    const conditionResults: ConditionResultsController = (e as CustomEvent).detail;
+  #setupTable(e: CustomEvent) {
+    const conditionResults: ConditionResultsController = e.detail;
     if ((document.body.dataset.display = 'results')) {
       // reset
       this.#conditionResults = conditionResults;
@@ -264,8 +277,8 @@ export default class ResultsTable {
       this.#statisticsViews.push(
         new StatisticsView(
           this.#STATS,
-          td.querySelector(':scope > .inner > div'),
-          this.#conditionResults,
+          td.querySelector(':scope > .inner > div') as HTMLDivElement,
+          this.#conditionResults as ConditionResultsController,
           index,
           condition
         )
@@ -273,7 +286,8 @@ export default class ResultsTable {
     });
   }
 
-  #addNextRows({dxCondition, offset, nextRows, isPreview = false}) {
+  #addNextRows(tableRow: TableRow, isPreview = false) {
+    const { dxCondition, offset, nextRows } = tableRow;
     const isValidPreview =
       document.body.dataset.display === 'properties' && isPreview;
     const isValidResults =
@@ -303,7 +317,8 @@ export default class ResultsTable {
     }
   }
 
-  #highlightColumn({x, isEnter, oldCell, newCell}) {
+  #highlightColumn(params: HigllightColumn) {
+    const {x, isEnter, oldCell, newCell} = params;
     // TODO: ハイライト関係の最適化
     // if (oldCell.x) {
     //   this.#COLGROUP
@@ -319,11 +334,11 @@ export default class ResultsTable {
     this.#TBODY
       .querySelectorAll(`:scope > tr.-selected`)
       .forEach(tr => tr.classList.remove('-selected'));
-    this.#COLGROUP
-      .querySelector(`:scope > col:nth-child(${+newCell.x + 1})`)
+    (this.#COLGROUP
+      .querySelector(`:scope > col:nth-child(${+newCell.x + 1})`) as HTMLTableColElement)
       .classList.add('-selected');
-    this.#TBODY
-      .querySelector(`:scope > tr[data-index="${newCell.y}"]`)
+    (this.#TBODY
+      .querySelector(`:scope > tr[data-index="${newCell.y}"]`) as HTMLTableRowElement)
       .classList.add('-selected');
   }
 
