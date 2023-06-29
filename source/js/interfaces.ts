@@ -215,3 +215,6 @@ export interface DatasetExpandedItems {
 export interface DatasetExpandedItemFields {
   [key: string]: string | string[] | number;
 }
+export interface DatasetIds {
+  [dataset: string]: Set<string>;
+}

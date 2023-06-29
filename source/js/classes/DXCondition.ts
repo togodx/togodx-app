@@ -1,6 +1,6 @@
 import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
 import ConditionFilterUtility from './ConditionFilterUtility.ts';
-import Dataset from './Dataset.ts';
+// import Dataset from './Dataset.ts';
 import App from './App.ts';
 import axios from 'axios';
 import {getApiParameter} from '../functions/queryTemplates';
@@ -14,10 +14,6 @@ import {isSameArray} from '../functions/util.ts';
 
 const LIMIT = 100;
 let idCounter = 0;
-
-interface DatasetIds {
-  [dataset: string]: string[];
-}
 
 // TODO: キャッシュの機構を作る
 
@@ -150,24 +146,6 @@ export default class DXCondition {
       // {cancelToken: this.#source.token}
     );
     const properties: DataFrame[] = res.data;
-    // get expanded items
-    const datasetIds: DatasetIds = {};
-    const setId = (dataset: string, id: string) => {
-      if (!datasetIds[dataset]) datasetIds[dataset] = [];
-      if (!datasetIds[dataset].includes(id)) datasetIds[dataset].push(id);
-    }
-    for (const property of properties) {
-      setId(property.index.dataset, property.index.entry);
-      for (const attribute of property.attributes) {
-        for (const item of attribute.items) {
-          setId(item.dataset, item.entry);
-        }
-      }
-    }
-    for (const dataset in datasetIds) {
-      await Dataset.prepareExpandedItems(dataset, datasetIds[dataset]);
-    }
-    // finish
     this.#properties.push(...properties);
     return properties;
   }

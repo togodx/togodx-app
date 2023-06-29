@@ -2,7 +2,7 @@ import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import Dataset from './Dataset.ts';
 import {createPopupEvent} from '../functions/util.ts';
 import {
-  DataFrame, TableHeader, TableRow
+  DataFrame, TableHeader, DatasetIds
 } from '../interfaces.ts';
 import * as events from '../events.js';
 
@@ -35,15 +35,13 @@ export default class ResultsTableRow {
       ...row.attributes,
     ].map((column, columnIndex) => {
       const td = document.createElement('td');
-      td.dataset.x = String(columnIndex);
-      td.dataset.y = String(index);
+      td.dataset.x = columnIndex.toString();
+      td.dataset.y = index.toString();
       td.innerHTML = `<div class="inner">
         <ul>
         ${column.items
           .map(
             (item, itemIndex) => {
-              const expanded = Dataset.getExpandedItem(item.dataset, item.entry);
-              console.log(item)
               return `<li>
                 <div class="mainkeyvalue">
                   <div class="togo-key-view${
@@ -69,15 +67,6 @@ export default class ResultsTableRow {
                   >${item.entry}</div>
                   <span>${item.label}</span>
                 </div>
-                <dl>
-                  ${expanded
-                    ? Object.keys(expanded).map(key => {
-                      return key === 'id' ? '' : `
-                      <dt>${key}</dt>
-                      <dd>${expanded[key]}</dd>`
-                    }).join('')
-                    : ''}
-                </dl>
               </li>`;
             }
           )
@@ -87,20 +76,20 @@ export default class ResultsTableRow {
 
       // remove highlight on mouseleave only when there is no popup
       td.addEventListener('mouseenter', () => {
-        const oldTd = this.#TBODY.querySelector('td.-highlighting');
+        const oldTd = this.#TBODY.querySelector('td.-highlighting') as HTMLTableCellElement;
         oldTd?.classList.remove('-highlighting');
         td.classList.add('-highlighting');
         const customEvent = new CustomEvent(events.highlightColumn, {
           detail: {
-            x: +td.dataset.x,
+            x: +(td.dataset.x as string),
             isEnter: true,
             oldCell: {
-              x: +oldTd?.dataset.x,
-              y: +oldTd?.dataset.y,
+              x: +(oldTd?.dataset.x as string),
+              y: +(oldTd?.dataset.y as string),
             },
             newCell: {
-              x: +td.dataset.x,
-              y: +td.dataset.y,
+              x: +(td.dataset.x as string),
+              y: +(td.dataset.y as string),
             },
           },
         });
@@ -117,7 +106,7 @@ export default class ResultsTableRow {
       // });
 
       // naming needs improvement but hierarcy for Popup screen is like below
-      td.querySelectorAll('.togo-key-view').forEach(togoKeyView => {
+      td.querySelectorAll<HTMLDivElement>('.togo-key-view').forEach(togoKeyView => {
         togoKeyView.addEventListener('click', () => {
           createPopupEvent(togoKeyView, events.showStanza);
         });
@@ -128,7 +117,33 @@ export default class ResultsTableRow {
     this.#ROOT.append(...tds);
   }
 
+  makeDetail() {
+    this.#ROOT.querySelectorAll<HTMLDivElement>('.togo-key-view').forEach(togoKeyView => {
+      const expanded = Dataset.getExpandedItem(togoKeyView.dataset.dataset as string, togoKeyView.dataset.entry as string);
+      if (expanded) {
+        const dl = document.createElement('dl');
+        dl.innerHTML = Object.keys(expanded).map(key => {
+          return key === 'id' ? '' : `
+          <dt>${key}</dt>
+          <dd>${expanded[key]}</dd>`
+        }).join('');
+        togoKeyView.parentElement?.after(dl);
+      }
+    })
+  }
+
   get elm() {
     return this.#ROOT;
+  }
+  get datasetIds() {
+    const datasetIds: DatasetIds = {};
+    const setId = (dataset: string, id: string) => {
+      if (!datasetIds[dataset]) datasetIds[dataset] = new Set();
+      datasetIds[dataset].add(id);
+    }
+    this.#ROOT.querySelectorAll<HTMLDivElement>('.togo-key-view').forEach(elm => {
+      setId(elm.dataset.dataset as string, elm.dataset.entry as string);
+    });
+    return datasetIds;
   }
 }

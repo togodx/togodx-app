@@ -7,9 +7,10 @@ import StatisticsView from './StatisticsView.ts';
 import Records from './Records.ts';
 import DXCondition from './DXCondition.ts';
 import ResultsTableRow from './ResultsTableRow.ts';
+import Dataset from './Dataset.ts';
 import * as events from '../events';
 import {
-  TableHeader, TableRow
+  TableHeader, TableRow, DatasetIds
 } from '../interfaces.ts';
 
 interface cellPosition {
@@ -24,6 +25,7 @@ interface HigllightColumn {
 }
 
 const NUM_OF_PREVIEW = 5;
+const LIMIT_REQUEST_DETAIL = 10;
 const displayMap = new Map([
   ['properties', 'results'],
   ['results', 'properties'],
@@ -39,6 +41,8 @@ export default class ResultsTable {
   #statisticsViews: StatisticsView[];
   #header: TableHeader[] | undefined;
   #previewDxCondition: DXCondition | undefined;
+  #rowsNotShownInDetail: ResultsTableRow[] = [];
+  #rowsInPreparation: ResultsTableRow[] = [];
   #ROOT: HTMLElement;
   #NUMBER_OF_ENTRIES: HTMLSpanElement;
   #COLLAPSE_BUTTON: HTMLDivElement;
@@ -84,6 +88,11 @@ export default class ResultsTable {
     });
 
     // attach event
+    header.querySelector(':scope > .option-controller-view > label > input')?.addEventListener('change', () => {
+      const isDisplay = !(document.body.dataset.displayDetailInResults === 'true');
+      document.body.dataset.displayDetailInResults = isDisplay.toString();
+      if (isDisplay) this.#showDetail();
+    });
     this.#COLLAPSE_BUTTON.addEventListener('click', () => {
       const currentDisplay = document.body.dataset.display!;
       document.body.dataset.display = displayMap.get(currentDisplay);
@@ -145,7 +154,32 @@ export default class ResultsTable {
       ?.dispatchEvent(new MouseEvent('click'));
   }
 
+
   // private methods
+
+  async #showDetail() {
+    this.#rowsInPreparation = this.#rowsNotShownInDetail.splice(0, LIMIT_REQUEST_DETAIL);
+
+    // aggregate entries
+    const datasetIds: DatasetIds = {};
+    const mergeDatasetIds = (newDatasetIds: DatasetIds) => {
+      for (const [dataset, ids] of Object.entries(newDatasetIds)) {
+        if (!datasetIds[dataset]) datasetIds[dataset] = new Set();
+        ids.forEach(id => datasetIds[dataset].add(id));
+      }
+    }
+    for (const row of this.#rowsInPreparation) {
+      mergeDatasetIds(row.datasetIds);
+    }
+    // get expanded items
+    for (const dataset in datasetIds) {
+      await Dataset.prepareExpandedItems(dataset, [...datasetIds[dataset]]);
+    }
+    // draw
+    for (const row of this.#rowsInPreparation) {
+      row.makeDetail();
+    }
+  }
 
   #enterTableEnd() {
     this.#intersctionObserver.unobserve(this.#TABLE_END);
@@ -188,6 +222,8 @@ export default class ResultsTable {
       this.#conditionResults = conditionResults;
       this.#intersctionObserver.unobserve(this.#TABLE_END);
       this.#header = conditionResults.dxCondition.tableHeader;
+      this.#rowsNotShownInDetail = [];
+      this.#rowsInPreparation = [];
       this.#ROOT.classList.remove('-complete');
       this.#THEAD.innerHTML = '';
       this.#TBODY.innerHTML = '';
@@ -308,6 +344,7 @@ export default class ResultsTable {
           this.#header as TableHeader[],
           row
         );
+        this.#rowsNotShownInDetail.push(tr);
         return tr.elm;
       });
       this.#TBODY.append(...rows);
