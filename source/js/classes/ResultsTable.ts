@@ -5,9 +5,10 @@ import ConditionResultsController from './ConditionResultsController.ts';
 import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import StatisticsView from './StatisticsView.ts';
 import Records from './Records.ts';
+import DXCondition from './DXCondition.ts';
+import Dataset from './Dataset.ts';
 import ResultsTableRow from './ResultsTableRow';
 import * as events from '../events';
-import DXCondition from './DXCondition.ts';
 import {
   TableHeader, TableRow
 } from '../interfaces.ts';
@@ -181,8 +182,8 @@ export default class ResultsTable {
     }
   }
 
-  #setupTable(e: CustomEvent) {
-    const conditionResults: ConditionResultsController = e.detail;
+  async #setupTable(e: Event) {
+    const conditionResults: ConditionResultsController = (e as CustomEvent).detail;
     if ((document.body.dataset.display = 'results')) {
       // reset
       this.#conditionResults = conditionResults;
@@ -194,12 +195,13 @@ export default class ResultsTable {
       this.#LOADING_VIEW.classList.add('-shown');
       DefaultEventEmitter.dispatchEvent(new CustomEvent(events.hideStanza));
 
-      this.#makeTableHeader(conditionResults.dxCondition);
+      await this.#makeTableHeader(conditionResults.dxCondition);
       this.#makeStats(conditionResults.dxCondition);
     }
   }
 
   async #makeTableHeader(dxCondition: DXCondition) {
+
     // make column group
     this.#COLGROUP.innerHTML = '<col></col>'.repeat(
       dxCondition.conditionUtilityFilters.length +

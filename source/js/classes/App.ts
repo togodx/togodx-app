@@ -13,13 +13,11 @@ import StanzaManager from './StanzaManager';
 import ResultsTable from './ResultsTable.ts';
 import PresetManager from './PresetManager.ts';
 import Header from './Header.ts';
-import * as event from '../events';
-import {Config, ViewModes, Templates, Backend, Attributes, API} from '../interfaces.ts';
-
-type ConfigResponces = [Templates, Backend, Attributes];
+import * as events from '../events';
+import {Config, ViewModes, Backend, API} from '../interfaces.ts';
 
 class App {
-  #viewModes: ViewModes;
+  #viewModes: ViewModes = {};
   #backend: Backend;
 
   #colorWhite: Color;
@@ -40,7 +38,6 @@ class App {
 
   async ready(config: Config): Promise<void> {
     // view modes
-    this.#viewModes = {};
     document
       .querySelectorAll<HTMLInputElement>(
         '#Properties > .inner > .header > nav .viewmodecontroller input[type="checkbox"]'
@@ -51,15 +48,15 @@ class App {
           if (checkbox.value === 'heatmap')
           document.body.dataset.heatmap = checkbox.checked.toString();
           this.#viewModes[checkbox.value] = checkbox.checked;
-          const customEvent = new CustomEvent(event.changeViewModes, {
+          const customEvent = new CustomEvent(events.changeViewModes, {
             detail: this.#viewModes,
           });
           DefaultEventEmitter.dispatchEvent(customEvent);
         });
       });
     // events
-    DefaultEventEmitter.addEventListener(event.restoreParameters, () => {
-      document.querySelector<HTMLDivElement>('#App > .loading-view')!.classList.remove('-shown');
+    DefaultEventEmitter.addEventListener(events.restoreParameters, () => {
+      (document.querySelector('#App > .loading-view') as HTMLDivElement).classList.remove('-shown');
     });
     // set up views
     new ConditionBuilderView(document.querySelector('#ConditionBuilder'));
@@ -67,7 +64,7 @@ class App {
     new PresetView();
     new ResultDetailModal();
     new BalloonView();
-    new UploadUserIDsView(document.querySelector('#UploadUserIDsView'));
+    new UploadUserIDsView(document.querySelector('#UploadUserIDsView') as HTMLDivElement);
     new ResultsTable(document.querySelector('#ResultsTable') as HTMLElement);
     new Header(document.querySelector('#Header') as HTMLElement);
 
@@ -84,7 +81,7 @@ class App {
       .then((res) => Promise.all(res.map(res => res.json())));
     Records.setAttributes(attributes);
     // define primary keys
-    const customEvent = new CustomEvent(event.defineTogoKey, {
+    const customEvent = new CustomEvent(events.defineTogoKey, {
       detail: {datasets: attributes.datasets},
     });
     DefaultEventEmitter.dispatchEvent(customEvent);
@@ -102,7 +99,7 @@ class App {
   #makeCategoryViews(): void {
     const conceptsContainer = document.querySelector(
       '#Properties > .inner > .concepts'
-    )!;
+    ) as HTMLDivElement;
     Records.categories.forEach(category => {
       // TODO: define type of 'category'
       const section = document.createElement('section');
@@ -114,15 +111,15 @@ class App {
   #defineAllTracksCollapseButton(): void {
     const collapsebutton = document.querySelector(
       '#Properties > .inner > header > .title > h2.collapsebutton'
-    )!;
+    ) as HTMLHeadingElement;
     collapsebutton.addEventListener('click', () => {
-      let customEvent = new CustomEvent(event.allTracksCollapse);
+      let customEvent = new CustomEvent(events.allTracksCollapse);
       if (collapsebutton.classList.contains('-spread')) {
         collapsebutton.classList.remove('-spread');
-        customEvent = new CustomEvent(event.allTracksCollapse, {detail: false});
+        customEvent = new CustomEvent(events.allTracksCollapse, {detail: false});
       } else {
         collapsebutton.classList.add('-spread');
-        customEvent = new CustomEvent(event.allTracksCollapse, {detail: true});
+        customEvent = new CustomEvent(events.allTracksCollapse, {detail: true});
       }
       DefaultEventEmitter.dispatchEvent(customEvent);
     });

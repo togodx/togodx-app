@@ -196,3 +196,22 @@ export interface TableRow {
   offset: number;
   nextRows: DataFrame[];
 }
+export interface DatasetFields {
+  data: {
+    __type: {
+      name: string,
+      fields: DatasetFieldsName[],
+    },
+  };
+}
+export interface DatasetFieldsName {
+  name: string;
+}
+export interface DatasetExpandedItems {
+  data: {
+    [dataset: string]: DatasetExpandedItemFields[],
+  };
+}
+export interface DatasetExpandedItemFields {
+  [key: string]: string | string[] | number;
+}

@@ -119,7 +119,6 @@ export default class StatisticsView {
         hitCount: filtered.length,
       });
     });
-    console.log(hitVlues)
 
     // max
     let countMax: number;
