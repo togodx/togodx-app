@@ -179,6 +179,8 @@ export default class ResultsTable {
     for (const row of this.#rowsInPreparation) {
       row.makeDetail();
     }
+    // prepare next
+    if (this.#rowsNotShownInDetail.length > 0 && this.#isDisplayResults) this.#showDetail();
   }
 
   #enterTableEnd() {
@@ -292,9 +294,6 @@ export default class ResultsTable {
         .join('')}
       `;
   }
-  // async #labels() {
-
-  // }
 
   #makeStats(dxCondition: DXCondition) {
     for (const td of this.#STATS.querySelectorAll(':scope > td')) {
@@ -385,5 +384,9 @@ export default class ResultsTable {
   #failed() {
     this.#ROOT.classList.add('-complete');
     this.#LOADING_VIEW.classList.remove('-shown');
+  }
+
+  get #isDisplayResults() {
+    return document.body.dataset.displayDetailInResults === 'true';
   }
 }
