@@ -6,8 +6,7 @@ import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import StatisticsView from './StatisticsView.ts';
 import Records from './Records.ts';
 import DXCondition from './DXCondition.ts';
-import Dataset from './Dataset.ts';
-import ResultsTableRow from './ResultsTableRow';
+import ResultsTableRow from './ResultsTableRow.ts';
 import * as events from '../events';
 import {
   TableHeader, TableRow
@@ -231,10 +230,12 @@ export default class ResultsTable {
               <div class="inner _category-background-color" data-category-id="${
                 conditionUtilityFilter.categoryId
               }">
-                <div class="togo-key-view">${Records.getDatasetLabel(
-                  conditionUtilityFilter.dataset
-                )}</div>
-                <span>${conditionUtilityFilter.label}</span>
+                <div class="mainkeyvalue">
+                  <div class="togo-key-view">${Records.getDatasetLabel(
+                    conditionUtilityFilter.dataset
+                  )}</div>
+                  <span>${conditionUtilityFilter.label}</span>
+                </div>
               </div>
             </th>`;
         })
@@ -304,7 +305,7 @@ export default class ResultsTable {
           offset + index,
           dxCondition.togoKey,
           this.#TBODY,
-          this.#header,
+          this.#header as TableHeader[],
           row
         );
         return tr.elm;

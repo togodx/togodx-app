@@ -1,14 +1,19 @@
 import DefaultEventEmitter from './DefaultEventEmitter.ts';
+import Dataset from './Dataset.ts';
 import {createPopupEvent} from '../functions/util.ts';
-import * as event from '../events';
+import {
+  DataFrame, TableHeader, TableRow
+} from '../interfaces.ts';
+import * as events from '../events.js';
 
 export default class ResultsTableRow {
   #ROOT;
   #TBODY;
 
-  constructor(index, dataset, tbody, header, row) {
-    this.#ROOT = document.createElement('tr');
-    this.#ROOT.dataset.index = index;
+  constructor(index: number, dataset: string, tbody: HTMLTableSectionElement, header: TableHeader[], row: DataFrame) {
+    console.log(index, dataset, tbody, header, row);
+    this.#ROOT = document.createElement('tr') as HTMLTableRowElement;
+    this.#ROOT.dataset.index = String(index);
     this.#ROOT.dataset.togoId = row.index.entry;
     this.#ROOT.dataset.entry = row.index.entry;
     this.#TBODY = tbody;
@@ -25,34 +30,49 @@ export default class ResultsTableRow {
       ...row.attributes,
     ].map((column, columnIndex) => {
       const td = document.createElement('td');
-      td.dataset.x = columnIndex;
-      td.dataset.y = index;
+      td.dataset.x = String(columnIndex);
+      td.dataset.y = String(index);
       td.innerHTML = `<div class="inner">
         <ul>
         ${column.items
           .map(
-            (item, itemIndex) => `<li>
-            <div class="togo-key-view${columnIndex === 0 ? ' primarykey' : ''}"
-              data-x="${[columnIndex]}"
-              data-y="${[index]}"
-              data-y2="${itemIndex}"
-              data-dataset="${item.dataset}"
-              data-category-id="${
-                columnIndex === 0
-                  ? 'primary'
-                  : header[columnIndex - 1].categoryId
-              }"
-              ${
-                columnIndex === 0
-                  ? ''
-                  : `data-attribute-id="${
-                      header[columnIndex - 1].attributeId
-                    }" data-node="${item.node}"`
-              }
-              data-entry="${item.entry}"
-            >${item.entry}</div>
-            <span>${item.label}</span>
-          </li>`
+            (item, itemIndex) => {
+              const expanded = Dataset.getExpandedItem(item.dataset, item.entry);
+              console.log(expanded)
+              return `<li>
+                <div class="mainkeyvalue">
+                  <div class="togo-key-view${
+                    columnIndex === 0 ? ' primarykey' : ''
+                  }"
+                    data-x="${[columnIndex]}"
+                    data-y="${[index]}"
+                    data-y2="${itemIndex}"
+                    data-dataset="${item.dataset}"
+                    data-category-id="${
+                      columnIndex === 0
+                        ? 'primary'
+                        : header[columnIndex - 1].categoryId
+                    }"
+                    ${
+                      columnIndex === 0
+                        ? ''
+                        : `data-attribute-id="${
+                            header[columnIndex - 1].attributeId
+                          }" data-node="${item.node}"`
+                    }
+                    data-entry="${item.entry}"
+                  >${item.entry}</div>
+                  <span>${item.label}</span>
+                </div>
+                <dl>
+                  ${expanded
+                    ? Object.keys(expanded).map(key => `
+                      <dt>${key}</dt>
+                      <dd>${expanded[key]}</dd>`).join('')
+                    : ''}
+                </dl>
+              </li>`;
+            }
           )
           .join('')}
         </ul>
@@ -63,7 +83,7 @@ export default class ResultsTableRow {
         const oldTd = this.#TBODY.querySelector('td.-highlighting');
         oldTd?.classList.remove('-highlighting');
         td.classList.add('-highlighting');
-        const customEvent = new CustomEvent(event.highlightColumn, {
+        const customEvent = new CustomEvent(events.highlightColumn, {
           detail: {
             x: +td.dataset.x,
             isEnter: true,
@@ -92,7 +112,7 @@ export default class ResultsTableRow {
       // naming needs improvement but hierarcy for Popup screen is like below
       td.querySelectorAll('.togo-key-view').forEach(togoKeyView => {
         togoKeyView.addEventListener('click', () => {
-          createPopupEvent(togoKeyView, event.showStanza);
+          createPopupEvent(togoKeyView, events.showStanza);
         });
       });
 

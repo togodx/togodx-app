@@ -77,6 +77,9 @@
         > .inner
           padding-left: var(--padding-track-inline)
           padding-right: var(--padding-track-inline)
+          .mainkeyvalue
+            white-space: nowrap
+            font-weight: bold
       > thead
         height: 100%
         > tr
@@ -88,8 +91,6 @@
               padding-top: var(--padding)
               padding-bottom: var(--padding)
           &.header
-            font-weight: bold
-            white-space: nowrap
             > th
               position: sticky
               top: 0
@@ -161,7 +162,24 @@
                     background-color: var(--color-lamp-black)
                 > li
                   + li
-                    margin-block-start: .2rem
+                    margin-top: .4rem
+                    padding-top: .5rem
+                    border-top: dashed 1px var(--color-separator)
+                  > dl
+                    margin: .4rem 0 0
+                    display: grid
+                    grid-template-columns: max-content max-content
+                    grid-gap: .4rem .8rem
+                    font-size: 1rem
+                    line-height: 1
+                    > dt
+                      text-align: right
+                      color: var(--color-translucent-lamp-black2)
+                      &::after
+                        content: ":"
+                    > dd
+                      margin: 0
+
     > .tableend
       height: 8rem
       position: relative
