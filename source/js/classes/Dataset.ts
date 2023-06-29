@@ -33,7 +33,6 @@ export default class Dataset {
             const filtered = names.filter(name => _filterItems.indexOf(name) !== -1);
             _cachedExpandedColumns[dataset] = filtered;
           });
-        console.log(_cachedExpandedColumns)
         return _cachedExpandedColumns[dataset];
       } else {
         return Promise.resolve(_cachedExpandedColumns[dataset]);

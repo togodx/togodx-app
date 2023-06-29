@@ -11,11 +11,15 @@
     --padding: calc(var(--height-results-header) - 1lh)
     color: white
     background-color: var(--color-lamp-black)
-    font-size: 1.4rem
-    font-weight: bold
-    padding: calc(var(--padding) * 0.7) 0 calc(var(--padding) * 0.3)
+    padding: calc(var(--padding) * 0.5) var(--padding-track-inline) calc(var(--padding) * 0.5)
     position: relative
     border-top: solid 1px var(--color-dark-gray)
+    display: flex
+    > .information
+      font-size: 1.4rem
+      font-weight: bold
+      flex-grow: 1
+    > .option-controller-
     &::before
       content: ""
       width: calc(var(--size-collapse-button) + 2px)

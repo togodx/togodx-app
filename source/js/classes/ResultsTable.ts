@@ -56,7 +56,7 @@ export default class ResultsTable {
     this.#ROOT = elm;
     const header = elm.querySelector(':scope > header') as HTMLElement;
     this.#NUMBER_OF_ENTRIES = header.querySelector(
-      ':scope > span > span.count'
+      ':scope > .information > span.count'
     ) as HTMLSpanElement;
     this.#COLLAPSE_BUTTON = header.querySelector(
       ':scope > .collapsenotchbutton'

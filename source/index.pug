@@ -22,7 +22,7 @@ block main
                 h2.attributes Attribute values
               nav
                 ul
-                  li.viewmodecontroller
+                  li.option-controller-view
                     label.log10
                       input(type="checkbox" value="log10")
                       | Log scale
@@ -134,10 +134,14 @@ block main
                                 span.count 2,066
         section#ResultsTable
           header
-            span
+            .information
               | Found 
               span.count 0 entries
               | .
+            .option-controller-view
+              label
+                input(type="checkbox" value="show_detial")
+                | Show detail
             .collapsenotchbutton
           .inner
             table

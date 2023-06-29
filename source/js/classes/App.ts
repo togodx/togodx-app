@@ -40,7 +40,7 @@ class App {
     // view modes
     document
       .querySelectorAll<HTMLInputElement>(
-        '#Properties > .inner > .header > nav .viewmodecontroller input[type="checkbox"]'
+        '#Properties > .inner > .header > nav .option-controller-view input[type="checkbox"]'
       )
       .forEach(checkbox => {
         this.#viewModes[checkbox.value] = checkbox.checked;

@@ -10,8 +10,13 @@ export default class ResultsTableRow {
   #ROOT;
   #TBODY;
 
-  constructor(index: number, dataset: string, tbody: HTMLTableSectionElement, header: TableHeader[], row: DataFrame) {
-    console.log(index, dataset, tbody, header, row);
+  constructor(
+    index: number,
+    dataset: string,
+    tbody: HTMLTableSectionElement,
+    header: TableHeader[],
+    row: DataFrame
+  ) {
     this.#ROOT = document.createElement('tr') as HTMLTableRowElement;
     this.#ROOT.dataset.index = String(index);
     this.#ROOT.dataset.togoId = row.index.entry;
@@ -38,7 +43,7 @@ export default class ResultsTableRow {
           .map(
             (item, itemIndex) => {
               const expanded = Dataset.getExpandedItem(item.dataset, item.entry);
-              console.log(expanded)
+              console.log(item)
               return `<li>
                 <div class="mainkeyvalue">
                   <div class="togo-key-view${
@@ -66,9 +71,11 @@ export default class ResultsTableRow {
                 </div>
                 <dl>
                   ${expanded
-                    ? Object.keys(expanded).map(key => `
+                    ? Object.keys(expanded).map(key => {
+                      return key === 'id' ? '' : `
                       <dt>${key}</dt>
-                      <dd>${expanded[key]}</dd>`).join('')
+                      <dd>${expanded[key]}</dd>`
+                    }).join('')
                     : ''}
                 </dl>
               </li>`;
