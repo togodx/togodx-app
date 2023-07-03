@@ -118,6 +118,9 @@ export class CategoryBrowserView extends observeState(LitElement) {
     const parentsArr = incomingData.parents;
 
     const getColor = (datum, max) => {
+      if (datum.count === 0) {
+        return App.colorGray.toString();
+      }
       return `rgb(${this.#categoryColor
         .mix(
           App.colorWhite,
