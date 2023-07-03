@@ -342,7 +342,7 @@ export const styles = css`
   }
 
   .ontology-card.-greyedout {
-    background-color: #ccc;
+    opacity: 0.25;
   }
 
   .children-arrow {
