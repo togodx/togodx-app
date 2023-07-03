@@ -199,7 +199,7 @@ export class CategoryNode extends observeState(LitElement) {
               class="mapped ${state.userFiltersSet ? '-user-filter-set' : ''}"
               style="width: ${this.mappedWidth}px"
             >
-              ${this.data.mapped?.toLocaleString()}
+              ${!this.#greyedOut ? this.data.mapped?.toLocaleString() : ''}
             </div>
             <div
               class="pvalue ${state.userFiltersSet ? '-user-filter-set' : ''}"
