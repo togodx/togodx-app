@@ -21,6 +21,7 @@ import {state} from './CategoryBrowserState';
 
 export class CategoryBrowserView extends observeState(LitElement) {
   #items;
+  #rootNodeId = 'root';
   #API = new cachedAxios();
   #categoryAPIBaseURL;
   #suggestAPIBaseURL;
@@ -187,6 +188,9 @@ export class CategoryBrowserView extends observeState(LitElement) {
       this.#unsortedData = this.#convertCategoryData(data);
       this.#addMappedToData();
       this.categoryData = this.#unsortedData;
+      if (!nodeId) {
+        this.#rootNodeId = this.categoryData.details.id;
+      }
     });
   }
 
@@ -454,7 +458,9 @@ export class CategoryBrowserView extends observeState(LitElement) {
               ></suggest-element>
               <button
                 class="rounded-button-view"
-                ?disabled=${this.categoryLoading}
+                ?disabled=${this.categoryLoading ||
+                !this.nodeId ||
+                this.nodeId === this.#rootNodeId}
                 @click=${this.#resetToRootNode}
                 title="Reset view to root node"
               >
