@@ -169,10 +169,18 @@ export class CategoryBrowserView extends observeState(LitElement) {
     };
   }
 
+  #resetToRootNode() {
+    this.#loadCategoryData('root');
+  }
+
   #loadCategoryData(nodeId) {
-    if (nodeId) {
+    if (nodeId && nodeId !== 'root') {
       this.#categoryAPIBaseURL.searchParams.set('node', nodeId);
     }
+    if (nodeId === 'root') {
+      this.#categoryAPIBaseURL.searchParams.delete('node');
+    }
+
     this.categoryLoading = true;
     this.#API.post(this.#categoryAPIBaseURL.href).then(({data}) => {
       this.categoryLoading = false;
@@ -444,7 +452,14 @@ export class CategoryBrowserView extends observeState(LitElement) {
                 .suggestions="${this.suggestionsData}"
                 id="suggest"
               ></suggest-element>
-              <button class="rounded-button-view">restart_alt</button>
+              <button
+                class="rounded-button-view"
+                ?disabled=${this.categoryLoading}
+                @click=${this.#resetToRootNode}
+                title="Reset view to root node"
+              >
+                restart_alt
+              </button>
             </div>
           </div>
           <div class="column-title-wrapper">
