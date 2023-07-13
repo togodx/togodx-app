@@ -59,14 +59,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
     element.append(this);
   }
 
-  #addLog10ToItems(categoryData) {
-    return categoryData.map((item, index) => {
-      item.countLog10 = item.count === 0 ? 0 : Math.log10(item.count);
-
-      return item;
-    });
-  }
-
   static get properties() {
     return {
       categoryData: {type: Object, state: true},
@@ -78,6 +70,28 @@ export class CategoryBrowserView extends observeState(LitElement) {
       term: {type: String, state: true},
       checkedIds: {type: Object, state: true},
     };
+  }
+
+  willUpdate(changed) {
+    if (changed.has('nodeId') && this.nodeId) {
+      this.#loadCategoryData(this.nodeId);
+    }
+    if (changed.has('term') && this.term) {
+      this.#loadSuggestData(this.term);
+    }
+  }
+
+  // load initial data
+  firstUpdated() {
+    this.#loadCategoryData();
+  }
+
+  #addLog10ToItems(categoryData) {
+    return categoryData.map((item, index) => {
+      item.countLog10 = item.count === 0 ? 0 : Math.log10(item.count);
+
+      return item;
+    });
   }
 
   #convertCategoryData(incomingData) {
@@ -153,15 +167,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
         })),
       },
     };
-  }
-
-  willUpdate(changed) {
-    if (changed.has('nodeId') && this.nodeId) {
-      this.#loadCategoryData(this.nodeId);
-    }
-    if (changed.has('term') && this.term) {
-      this.#loadSuggestData(this.term);
-    }
   }
 
   #loadCategoryData(nodeId) {
@@ -279,15 +284,6 @@ export class CategoryBrowserView extends observeState(LitElement) {
         this.categoryData = this.#unsortedData;
         break;
     }
-  }
-
-  // load initial data
-  firstUpdated() {
-    this.#loadCategoryData();
-  }
-
-  createRenderRoot() {
-    return this;
   }
 
   #addMappedToData() {
@@ -448,6 +444,7 @@ export class CategoryBrowserView extends observeState(LitElement) {
                 .suggestions="${this.suggestionsData}"
                 id="suggest"
               ></suggest-element>
+              <button class="rounded-button-view">restart_alt</button>
             </div>
           </div>
           <div class="column-title-wrapper">
@@ -505,6 +502,10 @@ export class CategoryBrowserView extends observeState(LitElement) {
       event.mutateAnnotationCondition,
       this.#handleAddRemoveFilter.bind(this)
     );
+  }
+
+  createRenderRoot() {
+    return this;
   }
 }
 
