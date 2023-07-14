@@ -50,6 +50,8 @@ export default class CategoryView {
         this.#enterAttributesDisplaySettingMode();
       }
     });
+    const backdrop = elm.querySelector(':scope > .backdrop') as HTMLDivElement;
+    backdrop.addEventListener('click', () => this.#leaveAttributesDisplaySettingMode());
     this.#SELECT_ALL.addEventListener('change', () => {
       for (const attributeTrackView of this.#attributeTrackViews) {
         attributeTrackView.visibility = this.#SELECT_ALL.checked;
