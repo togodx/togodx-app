@@ -5,7 +5,6 @@ import {AttributesCategory} from '../interfaces.ts';
 export default class CategoryView {
   #category: AttributesCategory;
   #attributeTrackViews: AttributeTrackView[];
-  #lastState: Map<string, boolean> = new Map();
   #boundEventHandler: any;
   #ROOT: HTMLElement;
   #SELECT_ALL: HTMLInputElement;
@@ -90,9 +89,6 @@ export default class CategoryView {
   #enterAttributesDisplaySettingMode() {
     this.#ROOT.classList.add('-editing');
     document.body.dataset.editingCategory = this.#category.id;
-    // if (!this.#ROOT.querySelector(':scope > .buttons')) this.#makeButtons();
-    // save status
-    this.#lastState = this.#makeAttributesDisplayStateMap();
     // load filters
     this.#attributeTrackViews.forEach(attributeTrackView =>
       attributeTrackView.makeFilters()
@@ -103,20 +99,9 @@ export default class CategoryView {
   }
 
   #leaveAttributesDisplaySettingMode() {
-    const confirmation = window.confirm('Do you want to reflect the changes?');
-    if (confirmation) {
-      // set local storage
-      PresetManager.updateByDifferenceData(
-        this.#makeAttributesDisplayStateMap()
-      );
-    } else {
-      // return to state
-      this.#attributeTrackViews.forEach(attributeTrackView => {
-        attributeTrackView.visibility = !!this.#lastState.get(
-          attributeTrackView.id
-        );
-      });
-    }
+    PresetManager.updateByDifferenceData(
+      this.#makeAttributesDisplayStateMap()
+    );
     // close
     document.body.dataset.editingCategory = '';
     this.#ROOT.classList.remove('-editing');
