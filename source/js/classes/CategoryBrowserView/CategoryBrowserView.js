@@ -172,6 +172,7 @@ export class CategoryBrowserView extends observeState(LitElement) {
 
   #resetToRootNode() {
     this.#loadCategoryData('root');
+    // comment
   }
 
   #loadCategoryData(nodeId) {
