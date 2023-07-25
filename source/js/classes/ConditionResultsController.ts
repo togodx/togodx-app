@@ -130,11 +130,14 @@ export default class ConditionResultsController {
         this.#dxCondition.conditionUtilityFilters.find(
           conditionUtilityFilter => conditionUtilityFilter.attributeId === id
         );
-      const nodes: string[] = [];
-      if (conditionUtilityFilter) nodes.push(...conditionUtilityFilter.nodes);
-      ConditionBuilder.setFilter(id, nodes, false);
-    });
-    // attribute set
+        if (conditionUtilityFilter) {
+          const nodes: string[] = [];
+          nodes.push(...conditionUtilityFilter.nodes)
+          ConditionBuilder.setFilter(id, nodes, false);
+        }
+      });
+      ConditionBuilder.finish(true);
+      // attribute set
     PresetManager.currentAttributeSet = this.#dxCondition.attributeSet;
   }
 
