@@ -1,12 +1,12 @@
 import ModalWindowView from './ModalWindowView.ts';
 import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import Records from './Records.ts';
-import StanzaManager from './StanzaManager';
+import StanzaManager from './StanzaManager.js';
 import {createPopupEvent} from '../functions/util.ts';
-import * as event from '../events';
+import * as event from '../events.js';
 
 export default class ResultDetailModal extends ModalWindowView {
-  #RESULTS_TABLE;
+  #RESULTS_TABLE: HTMLElement;
   #TBODY;
   #handleKeydown;
   #currentTogoKeyView;
@@ -29,7 +29,7 @@ export default class ResultDetailModal extends ModalWindowView {
     });
 
     // references
-    this.#RESULTS_TABLE = document.querySelector('#ResultsTable');
+    this.#RESULTS_TABLE = document.querySelector('#ResultsTable') as HTMLElement;
     this.#TBODY = this.#RESULTS_TABLE.querySelector('tbody');
 
     // attach event
