@@ -4,12 +4,13 @@ import Records from './Records.ts';
 import StanzaManager from './StanzaManager.js';
 import {createPopupEvent} from '../functions/util.ts';
 import * as event from '../events.js';
+import { ShowEntryDetail } from '../interfaces.ts';
 
 export default class ResultDetailModal extends ModalWindowView {
   #RESULTS_TABLE: HTMLElement;
-  #TBODY;
+  #TBODY: HTMLTableSectionElement;
   #handleKeydown;
-  #currentTogoKeyView;
+  #currentTogoKeyView: HTMLElement | undefined;
 
   constructor() {
     super();
@@ -18,7 +19,7 @@ export default class ResultDetailModal extends ModalWindowView {
     this._HEADER.classList.add('_category-background-color');
 
     // make arrow buttons
-    const makeArrow = direction => {
+    const makeArrow = (direction: string) => {
       const arrow = document.createElement('div');
       arrow.classList.add('arrow', `-${direction.toLowerCase()}`);
       arrow.addEventListener('click', () => this.#move(direction));
@@ -30,7 +31,7 @@ export default class ResultDetailModal extends ModalWindowView {
 
     // references
     this.#RESULTS_TABLE = document.querySelector('#ResultsTable') as HTMLElement;
-    this.#TBODY = this.#RESULTS_TABLE.querySelector('tbody');
+    this.#TBODY = this.#RESULTS_TABLE.querySelector('tbody') as HTMLTableSectionElement;
 
     // attach event
     DefaultEventEmitter.addEventListener(event.showStanza, e => {
@@ -48,9 +49,12 @@ export default class ResultDetailModal extends ModalWindowView {
   }
 
   // bind this on handleKeydown so it will keep listening to same event during the whole popup
-  #showStanza(e) {
-    this.#currentTogoKeyView = e.detail.togoKeyView;
+  #showStanza(e: Event) {
+    console.log(e)
+    const entryDetail: ShowEntryDetail = (e as CustomEvent).detail;
+    this.#currentTogoKeyView = entryDetail.togoKeyView;
     const oldTd = this.#TBODY.querySelector('td.-highlighting');
+    console.log(oldTd)
     oldTd?.classList.remove('-highlighting');
     const td = this.#currentTogoKeyView.closest('td');
     td.classList.add('-highlighting');
@@ -83,9 +87,9 @@ export default class ResultDetailModal extends ModalWindowView {
     this.#setStanza(this.#currentTogoKeyView);
   }
 
-  #setHeader(togoKeyView) {
-    const category = Records.getCategory(togoKeyView.dataset.categoryId);
-    const attribute = Records.getAttribute(togoKeyView.dataset.attributeId);
+  #setHeader(togoKeyView: HTMLElement) {
+    const category = Records.getCategory(togoKeyView.dataset.categoryId as string);
+    const attribute = Records.getAttribute(togoKeyView.dataset.attributeId as string);
     const isPrimaryKey = togoKeyView.classList.contains('primarykey');
     const categoryLabel = `<span class="category _category-background-color-strong">${
       isPrimaryKey ? togoKeyView.dataset.dataset : category.label
@@ -111,7 +115,7 @@ export default class ResultDetailModal extends ModalWindowView {
     `;
   }
 
-  #setStanza(togoKeyView) {
+  #setStanza(togoKeyView: HTMLElement) {
     const stanza = document.createElement('div');
     stanza.className = 'stanzas';
     stanza.innerHTML += StanzaManager.draw(
@@ -123,6 +127,7 @@ export default class ResultDetailModal extends ModalWindowView {
       _script.textContent = scriptElement.textContent;
       scriptElement.replaceWith(_script);
     });
+    this._BODY.innerHTML = '';
     this._BODY.append(stanza);
   }
 

@@ -130,8 +130,7 @@ class Records {
 
   // category
 
-  getCategory(id) {
-    console.log(id)
+  getCategory(id: string) {
     return this.#categories.find(category => category.id === id);
   }
 
