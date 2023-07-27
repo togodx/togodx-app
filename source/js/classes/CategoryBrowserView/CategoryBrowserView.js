@@ -171,16 +171,12 @@ export class CategoryBrowserView extends observeState(LitElement) {
   }
 
   #resetToRootNode() {
-    this.#loadCategoryData('root');
-    // comment
+    this.nodeId = this.#rootNodeId;
   }
 
   #loadCategoryData(nodeId) {
-    if (nodeId && nodeId !== 'root') {
+    if (nodeId) {
       this.#categoryAPIBaseURL.searchParams.set('node', nodeId);
-    }
-    if (nodeId === 'root') {
-      this.#categoryAPIBaseURL.searchParams.delete('node');
     }
 
     this.categoryLoading = true;
@@ -190,6 +186,7 @@ export class CategoryBrowserView extends observeState(LitElement) {
       this.#addMappedToData();
       this.categoryData = this.#unsortedData;
       if (!nodeId) {
+        // Load first time, with root node
         this.#rootNodeId = this.categoryData.details.id;
       }
     });
@@ -456,7 +453,7 @@ export class CategoryBrowserView extends observeState(LitElement) {
               <button
                 class="rounded-button-view"
                 ?disabled=${this.categoryLoading ||
-                !this.nodeId ||
+                this.nodeId === '' ||
                 this.nodeId === this.#rootNodeId}
                 @click=${this.#resetToRootNode}
                 title="Reset view to root node"
