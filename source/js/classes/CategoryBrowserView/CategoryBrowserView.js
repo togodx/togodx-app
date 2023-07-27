@@ -461,7 +461,7 @@ export class CategoryBrowserView extends observeState(LitElement) {
                 @click=${this.#resetToRootNode}
                 title="Reset view to root node"
               >
-                restart_alt
+                skip_previous
               </button>
             </div>
           </div>
