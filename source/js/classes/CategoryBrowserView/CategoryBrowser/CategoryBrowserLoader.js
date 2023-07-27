@@ -23,10 +23,11 @@ class CategoryLoader extends LitElement {
       }
 
       :host {
-        --width: calc((100% - var(--width-category-browser-column)) / 2);
         position: absolute;
-        width: 100%;
-        height: 100%;
+        top: -0.5rem;
+        left: -0.5rem;
+        bottom: 0;
+        right: 0;
         z-index: var(--z-category-suggestions);
       }
 
@@ -35,8 +36,6 @@ class CategoryLoader extends LitElement {
         pointer-events: none;
         position: absolute;
         inset: 0;
-        left: calc(var(--width) / 2);
-        right: calc(var(--width) / 2);
         background-color: var(--color-translucent-lamp-black1);
       }
 
