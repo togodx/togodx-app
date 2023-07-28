@@ -5,10 +5,10 @@
     display: none
   + .category-view
     margin-top: .2rem
-  > .selectall, > .backdrop
+  > .backdrop, > .selectall
     opacity: 0
     pointer-events: none
-    transition: opacity var(--transition-wipe)
+    transition: opacity var(--transition-wipe), backdrop-filter var(--transition-instant)
   > .selectall
     position: absolute
     left: calc(var(--width-track-column-subject) + 1.2rem)
@@ -63,7 +63,6 @@
         content: ""
         position: absolute
         background-color: white
-        // transition: background var(--transition-wipe)
       &::before
         width: .6rem
         height: .15rem
@@ -104,14 +103,10 @@
     z-index: var(--z-modal-window)
     > .title
       > .collapsebutton
-        // pointer-events: none
-        // opacity: .4
-        // background-color: transparent
         transform: rotate(225deg)
-        &::before, &::after
-          // background-color: var(--color-lamp-black)
     > .backdrop, > .selectall
       opacity: 1
       pointer-events: auto
+      backdrop-filter: blur(5px)
     > .buttons
       opacity: 1

@@ -9,7 +9,6 @@ import * as event from '../events';
 import { Preset } from '../interfaces.ts';
 import axios, {AxiosError} from 'axios';
 
-// test
 export default class ConditionResultsController {
   #dxCondition: DXCondition;
   #source: any;
