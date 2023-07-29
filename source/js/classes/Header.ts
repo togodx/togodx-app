@@ -29,7 +29,7 @@ export default class Header {
       const li = document.createElement('li');
       li.innerHTML = `
         <dl>
-          <dt>${preset.label}</dt>
+          <dt>${preset.label} <span>${preset.attributeSet.length} attributes</span></dt>
           <dd>${preset.description}</dd>
         </dl>`;
       li.addEventListener('click', () => PresetManager.currentAttributeSet = preset.attributeSet);
