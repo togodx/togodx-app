@@ -2,7 +2,7 @@
 import ConditionBuilder from './ConditionBuilder.ts';
 import ConditionResultsController from './ConditionResultsController.ts';
 import DefaultEventEmitter from './DefaultEventEmitter.ts';
-import StatisticsView from './StatisticsView';
+import StatisticsView from './StatisticsView.ts';
 import Records from './Records.ts';
 import ResultsTableRow from './ResultsTableRow';
 import * as event from '../events';
