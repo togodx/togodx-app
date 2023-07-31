@@ -37,15 +37,6 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
     return this.#nodeId;
   }
 
-  // get ancestors() {
-  //   if (!this.#nodeId) return this.#nodeId;
-  //   return this.getAncestors(this.#nodeId);
-  // }
-  get ancestors(): undefined | string[] {
-    if (!this.#nodeId) return undefined;
-    return this.getAncestors(this.#nodeId);
-  }
-
   get label(): string {
     if (this.#nodeId) {
       return this.filter.label;

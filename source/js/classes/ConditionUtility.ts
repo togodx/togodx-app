@@ -13,25 +13,25 @@ export default class ConditionUtility {
     this._attributeId = attributeId;
   }
 
-  /**
-   * 
-   * @param {string} node 
-   * @param {string} ancestors 
-   */
-  setAncestors(node: string, ancestors: string[]): void {
-    if (!node || !ancestors) return;
-    this._ancestors.set(node, [...ancestors]);
-  }
+  // /**
+  //  * 
+  //  * @param {string} node 
+  //  * @param {string} ancestors 
+  //  */
+  // setAncestors(node: string, ancestors: string[]): void {
+  //   if (!node || !ancestors) return;
+  //   this._ancestors.set(node, [...ancestors]);
+  // }
 
-  getAncestors(node: string): string[] {
-    console.log(node)
-    let ancestors = this._ancestors.get(node);
-    if (!ancestors) {
-      ancestors = Records.getAncestors(this._attributeId, node).map(ancestor => ancestor.node);
-      this.setAncestors(node, ancestors);
-    }
-    return ancestors;
-  }
+  // getAncestors(node: string): string[] {
+  //   console.log(node)
+  //   let ancestors = this._ancestors.get(node);
+  //   if (!ancestors) {
+  //     ancestors = Records.getAncestors(this._attributeId, node).map(ancestor => ancestor.node);
+  //     this.setAncestors(node, ancestors);
+  //   }
+  //   return ancestors;
+  // }
 
 
   // accessor

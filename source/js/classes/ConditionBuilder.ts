@@ -7,7 +7,7 @@ import PresetManager from './PresetManager.ts';
 import * as events from '../events.js';
 import { SelectedNodes, Preset } from '../interfaces.ts';
 
-const IS_SAVE_CONDITION_IN_SEARCH_PARAMS = true;
+const IS_SAVE_CONDITION_IN_SEARCH_PARAMS = false;
 
 interface Condition {
   dataset: string;
@@ -339,16 +339,9 @@ class ConditionBuilder {
         params.get('annotations')
       ),
     };
-    console.log(condition)
+    if (condition.dataset) this.#dataset = condition.dataset;
 
-    if (isFirst) {
-      if (condition.dataset) this.#dataset = condition.dataset;
-      // get child category ids
-      // this.#makeQueueOfGettingChildNodes(condition);
-      this.#restoreConditions(condition);
-    } else {
-      this.#restoreConditions(condition);
-    }
+    this.#restoreConditions(condition);
   }
 
   // #makeQueueOfGettingChildNodes(condition: Condition) {
@@ -412,9 +405,7 @@ class ConditionBuilder {
   // }
 
   #restoreConditions(condition: Condition) {
-    console.log('#restoreConditions', condition)
     const {dataset, annotations, filters} = condition;
-    console.log(dataset, annotations, filters)
     this.#isRestoredConditinoFromURLParameters = true;
 
     // restore conditions
