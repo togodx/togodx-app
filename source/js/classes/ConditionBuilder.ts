@@ -305,14 +305,9 @@ class ConditionBuilder {
     if (!this.#isRestoredConditinoFromURLParameters) return;
 
     if (!IS_SAVE_CONDITION_IN_SEARCH_PARAMS || !dontLeaveInHistory) return;
-    // get hierarchic conditions
     const annotations = this.#conditionUtilityAnnotations.map(
-      annotationCondiiton => annotationCondiiton.conditionAnnotationWithAncestor
+      annotationCondiiton => annotationCondiiton.query
     );
-    // const filters = this.#conditionUtilityFilters.map(
-    //   conditionUtilityFilter =>
-    //     conditionUtilityFilter.conditionFilterWithAncestor
-    // );
     const filters = this.#conditionUtilityFilters.map(
       conditionUtilityFilter =>
         conditionUtilityFilter.query
@@ -404,17 +399,17 @@ class ConditionBuilder {
   //   }
   // }
 
-  #getChildNodes(attributeId: string, node: string) {
-    return new Promise<void>((resolve, reject) => {
-      Records.fetchChildNodes(attributeId, node)
-        .then(() => {
-          resolve();
-        })
-        .catch(error => {
-          reject(error);
-        });
-    });
-  }
+  // #getChildNodes(attributeId: string, node: string) {
+  //   return new Promise<void>((resolve, reject) => {
+  //     Records.fetchChildNodes(attributeId, node)
+  //       .then(() => {
+  //         resolve();
+  //       })
+  //       .catch(error => {
+  //         reject(error);
+  //       });
+  //   });
+  // }
 
   #restoreConditions(condition: Condition) {
     console.log('#restoreConditions', condition)

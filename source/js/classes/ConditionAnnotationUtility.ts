@@ -1,10 +1,13 @@
 import ConditionUtility from './ConditionUtility.ts';
 import Records from './Records.ts';
-import {ConditionAnnotationWithAncestor, Breakdown, ConditionAnnotation} from '../interfaces.ts';
+import {
+  Breakdown,
+  ConditionAnnotation
+} from '../interfaces.ts';
 
 export default class ConditionAnnotationUtility extends ConditionUtility {
   #nodeId: string | undefined;
-  #filter: Breakdown;
+  #filter: Breakdown | undefined;
 
   constructor(attributeId: string, nodeId?: string) {
     super(attributeId);
@@ -78,27 +81,15 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
     return query;
   }
 
-  get conditionAnnotationWithAncestor(): ConditionAnnotationWithAncestor {
-    const annotation: ConditionAnnotationWithAncestor = {
-      attributeId: this._attributeId,
-    };
-    if (this.#nodeId) {
-      annotation.parentNode = this.#nodeId;
-      annotation.ancestors = this.ancestors;
-    }
-    return annotation;
-  }
-
   // static
 
   static decodeURLSearchParams(searchParams: string | null): ConditionAnnotationUtility[] {
     const annotations: ConditionAnnotationUtility[] = [];
-    const parsed: ConditionAnnotationWithAncestor[] | null = JSON.parse(searchParams || 'null');
+    const parsed: ConditionAnnotation[] | null = JSON.parse(searchParams || 'null');
     if (parsed) {
       annotations.push(
-        ...parsed.map(({attributeId, parentNode, ancestors}) => {
-          const ca = new ConditionAnnotationUtility(attributeId, parentNode);
-          if (parentNode) ca.setAncestors(parentNode, ancestors!);
+        ...parsed.map(({attribute, node}) => {
+          const ca = new ConditionAnnotationUtility(attribute, node);
           return ca;
         })
       );
