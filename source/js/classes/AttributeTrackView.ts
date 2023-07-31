@@ -215,7 +215,7 @@ export default class AttributeTrackView {
   #mutateAnnotationCondition(event: CustomEvent) {
     const {action, conditionUtilityAnnotation} = event.detail;
     // ({detail: {action, conditionUtilityAnnotation}}) => {
-    if (conditionUtilityAnnotation.parentNode !== undefined) return;
+    if (conditionUtilityAnnotation.nodeId !== undefined) return;
     switch (action) {
       case 'add':
         if (conditionUtilityAnnotation.attributeId === this.#attribute.id) {

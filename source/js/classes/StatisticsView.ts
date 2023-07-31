@@ -58,8 +58,8 @@ export default class StatisticsView {
       console.log('******')
       console.log( condition.nodes )
       // attribute.fetchHierarchicNode()
-    } else if (condition instanceof ConditionAnnotationUtility && condition.parentNode) {
-      Records.fetchChildNodes(this.#attributeId, condition.parentNode).then(
+    } else if (condition instanceof ConditionAnnotationUtility && condition.nodeId) {
+      Records.fetchChildNodes(this.#attributeId, condition.nodeId).then(
         nodes => {
           console.log(nodes)
           this.#referenceNodes = nodes;

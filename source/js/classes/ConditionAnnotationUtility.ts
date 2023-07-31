@@ -30,9 +30,9 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
 
   // accessor
 
-  get parentNode(): string | undefined {
-    return this.#nodeId;
-  }
+  // get parentNode(): string | undefined {
+  //   return this.#nodeId;
+  // }
   get nodeId(): string | undefined {
     return this.#nodeId;
   }

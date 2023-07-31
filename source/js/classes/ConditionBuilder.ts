@@ -127,7 +127,7 @@ class ConditionBuilder {
       conditionUtilityAnnotation2 =>
         conditionUtilityAnnotation2.isSameCondition(
           conditionUtilityAnnotation.attributeId,
-          conditionUtilityAnnotation.parentNode || undefined
+          conditionUtilityAnnotation.nodeId || undefined
         )
     );
     if (index === -1) return;
@@ -251,7 +251,7 @@ class ConditionBuilder {
     if (conditionUtilityAnnotations)
       nodes.annotations.push(
         ...conditionUtilityAnnotations.map(
-          annotationCondiiton => annotationCondiiton.parentNode!
+          annotationCondiiton => annotationCondiiton.nodeId!
         )
       );
     if (conditionUtilityFilter)
@@ -363,10 +363,10 @@ class ConditionBuilder {
   //   };
 
   //   condition.annotations.forEach(annotation => {
-  //     if (annotation.parentNode)
+  //     if (annotation.nodeId)
   //       addQueue(
   //         annotation.attributeId,
-  //         annotation.parentNode,
+  //         annotation.nodeId,
   //         annotation.ancestors
   //       );
   //   });

@@ -73,8 +73,8 @@ export default class DXCondition {
                 return (
                   conditionUtilityAnnotation.attributeId ===
                     newConditionAnnotationUtility.attributeId &&
-                  conditionUtilityAnnotation.parentNode ===
-                    newConditionAnnotationUtility.parentNode
+                  conditionUtilityAnnotation.nodeId ===
+                    newConditionAnnotationUtility.nodeId
                 );
               }
             ) !== -1
@@ -157,7 +157,7 @@ export default class DXCondition {
       conditionUtilityAnnotation =>
         new ConditionAnnotationUtility(
           conditionUtilityAnnotation.attributeId,
-          conditionUtilityAnnotation.parentNode
+          conditionUtilityAnnotation.nodeId
         )
     );
   }
