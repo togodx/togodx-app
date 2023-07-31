@@ -94,7 +94,6 @@ export default class ConditionsController {
       this.#conditionResultsControllers.find(conditionResults =>
         conditionResults.dxCondition.checkSameCondition(dxCondition)
       );
-    console.log(sameConditionConditionResultsController)
     if (sameConditionConditionResultsController) {
       // use existing table data
       sameConditionConditionResultsController.select();

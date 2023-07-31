@@ -50,11 +50,9 @@ export default class ResultDetailModal extends ModalWindowView {
 
   // bind this on handleKeydown so it will keep listening to same event during the whole popup
   #showStanza(e: Event) {
-    console.log(e)
     const entryDetail: ShowEntryDetail = (e as CustomEvent).detail;
     this.#currentTogoKeyView = entryDetail.togoKeyView;
     const oldTd = this.#TBODY.querySelector('td.-highlighting');
-    console.log(oldTd)
     oldTd?.classList.remove('-highlighting');
     const td = this.#currentTogoKeyView.closest('td');
     td.classList.add('-highlighting');

@@ -33,7 +33,6 @@ export default class DXCondition {
     conditionUtilityFilters: ConditionFilterUtility[],
     attributeSet: string[]
   ) {
-    console.log(userIds);
     this.#id = idCounter++;
     this.#dataset = dataset;
     this.#userIds = [...userIds];
@@ -52,7 +51,6 @@ export default class DXCondition {
   checkSameCondition(dxCondition: DXCondition): boolean {
     // let isMache = true;
     // attribute set
-    console.log(this);
     if (!isSameArray(this.attributeSet, dxCondition.attributeSet)) return false;
 
     // dataset
