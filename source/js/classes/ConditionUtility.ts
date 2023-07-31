@@ -5,9 +5,9 @@ export default class ConditionUtility {
 
   protected _attributeId: string;
   protected _ancestors: Map<string, string[]> = new Map();
-  #annotation: AttributeUtility;
-  #categoryId: string;
-  #dataset: string;
+  #annotation: AttributeUtility | undefined;
+  #categoryId: string | undefined;
+  #dataset: string | undefined;
 
   constructor(attributeId: string) {
     this._attributeId = attributeId;
@@ -24,6 +24,7 @@ export default class ConditionUtility {
   }
 
   getAncestors(node: string): string[] {
+    console.log(node)
     let ancestors = this._ancestors.get(node);
     if (!ancestors) {
       ancestors = Records.getAncestors(this._attributeId, node).map(ancestor => ancestor.node);

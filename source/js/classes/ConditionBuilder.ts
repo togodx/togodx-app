@@ -7,7 +7,7 @@ import PresetManager from './PresetManager.ts';
 import * as events from '../events.js';
 import { SelectedNodes, Preset } from '../interfaces.ts';
 
-const IS_SAVE_CONDITION_IN_SEARCH_PARAMS = false;
+const IS_SAVE_CONDITION_IN_SEARCH_PARAMS = true;
 
 interface Condition {
   dataset: string;
@@ -309,9 +309,13 @@ class ConditionBuilder {
     const annotations = this.#conditionUtilityAnnotations.map(
       annotationCondiiton => annotationCondiiton.conditionAnnotationWithAncestor
     );
+    // const filters = this.#conditionUtilityFilters.map(
+    //   conditionUtilityFilter =>
+    //     conditionUtilityFilter.conditionFilterWithAncestor
+    // );
     const filters = this.#conditionUtilityFilters.map(
       conditionUtilityFilter =>
-        conditionUtilityFilter.conditionFilterWithAncestor
+        conditionUtilityFilter.query
     );
     // generate permalink
     // if (!dontLeaveInHistory) return;
@@ -340,61 +344,65 @@ class ConditionBuilder {
         params.get('annotations')
       ),
     };
+    console.log(condition)
 
     if (isFirst) {
+      if (condition.dataset) this.#dataset = condition.dataset;
       // get child category ids
-      this.#makeQueueOfGettingChildNodes(condition);
+      // this.#makeQueueOfGettingChildNodes(condition);
+      this.#restoreConditions(condition);
     } else {
       this.#restoreConditions(condition);
     }
   }
 
-  #makeQueueOfGettingChildNodes(condition: Condition) {
-    if (condition.dataset) this.#dataset = condition.dataset;
-    const queue: Task[] = [];
-    const addQueue = (attributeId: string, node: string, ancestors: string[] | undefined) => {
-      const ancestors2 = [node];
-      if (ancestors) ancestors2.push(...ancestors);
-      ancestors2.forEach(node => {
-        if (
-          queue.findIndex(
-            (task: Task) => task.attributeId === attributeId && task.node === node
-          ) === -1
-        ) {
-          const task: Task = {attributeId, node};
-          queue.push(task);
-        }
-      });
-    };
+  // #makeQueueOfGettingChildNodes(condition: Condition) {
+  //   if (condition.dataset) this.#dataset = condition.dataset;
+  //   const queue: Task[] = [];
+  //   const addQueue = (attributeId: string, node: string, ancestors: string[] | undefined) => {
+  //     const ancestors2 = [node];
+  //     if (ancestors) ancestors2.push(...ancestors);
+  //     ancestors2.forEach(node => {
+  //       if (
+  //         queue.findIndex(
+  //           (task: Task) => task.attributeId === attributeId && task.node === node
+  //         ) === -1
+  //       ) {
+  //         const task: Task = {attributeId, node};
+  //         queue.push(task);
+  //       }
+  //     });
+  //   };
 
-    condition.annotations.forEach(annotation => {
-      if (annotation.parentNode)
-        addQueue(
-          annotation.attributeId,
-          annotation.parentNode,
-          annotation.ancestors
-        );
-    });
-    condition.filters.forEach(filter => {
-      filter.nodes.forEach(node => {
-        const ancestors = filter.getAncestors(node);
-        if (ancestors.length > 0) addQueue(filter.attributeId, node, ancestors);
-      });
-    });
+  //   condition.annotations.forEach(annotation => {
+  //     if (annotation.parentNode)
+  //       addQueue(
+  //         annotation.attributeId,
+  //         annotation.parentNode,
+  //         annotation.ancestors
+  //       );
+  //   });
+  //   condition.filters.forEach(filter => {
+  //     filter.nodes.forEach(node => {
+  //       const ancestors = filter.getAncestors(node);
+  //       if (ancestors.length > 0) addQueue(filter.attributeId, node, ancestors);
+  //     });
+  //   });
+  //   console.log(...queue)
 
-    this.#progressQueueOfGettingChildNodes(condition, queue);
-  }
+  //   this.#progressQueueOfGettingChildNodes(condition, queue);
+  // }
 
-  #progressQueueOfGettingChildNodes(condition: Condition, queue: Task[]) {
-    if (queue.length > 0) {
-      const {attributeId, node} = queue.shift()!;
-      this.#getChildNodes(attributeId, node).then(() =>
-        this.#progressQueueOfGettingChildNodes(condition, queue)
-      );
-    } else {
-      this.#restoreConditions(condition);
-    }
-  }
+  // #progressQueueOfGettingChildNodes(condition: Condition, queue: Task[]) {
+  //   if (queue.length > 0) {
+  //     const {attributeId, node} = queue.shift() as Task;
+  //     this.#getChildNodes(attributeId, node).then(() =>
+  //       this.#progressQueueOfGettingChildNodes(condition, queue)
+  //     );
+  //   } else {
+  //     this.#restoreConditions(condition);
+  //   }
+  // }
 
   #getChildNodes(attributeId: string, node: string) {
     return new Promise<void>((resolve, reject) => {
@@ -409,8 +417,9 @@ class ConditionBuilder {
   }
 
   #restoreConditions(condition: Condition) {
-    console.log('#restoreConditions')
+    console.log('#restoreConditions', condition)
     const {dataset, annotations, filters} = condition;
+    console.log(dataset, annotations, filters)
     this.#isRestoredConditinoFromURLParameters = true;
 
     // restore conditions

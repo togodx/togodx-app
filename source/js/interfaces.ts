@@ -148,14 +148,14 @@ export interface ConditionFilter {
   attribute: string;
   nodes: string[];
 }
-export interface ConditionFilterWithAncestor {
-  attributeId: string;
-  nodes: ConditionFilterWithAncestorNode[];
-}
-export interface ConditionFilterWithAncestorNode {
-  node: string;
-  ancestors?: string[];
-}
+// export interface ConditionFilterWithAncestor {
+//   attributeId: string;
+//   nodes: ConditionFilterWithAncestorNode[];
+// }
+// export interface ConditionFilterWithAncestorNode {
+//   node: string;
+//   ancestors?: string[];
+// }
 
 // annotation condition
 export interface ConditionAnnotation {
