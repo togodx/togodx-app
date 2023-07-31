@@ -103,8 +103,10 @@ export default class AttributeUtility {
     return Promise.resolve(bhr);
   }
 
-  getNode(nodeId: string | undefined): BreakdownWithParentNode | undefined {
-    return this.#n__odes.find(node => node.node === nodeId);
+  getNode(nodeId: string): Breakdown | undefined {
+    console.log(this.#cacheNodes.get(nodeId))
+    return this.#cacheNodes.get(nodeId);
+    // return this.#n__odes.find(node => node.node === nodeId);
   }
 
   // accessors

@@ -104,7 +104,7 @@ class Records {
     return await attribute.fetchChildNodes(nodeId);
   }
 
-  getNode(attributeId: string, nodeId: string | undefined): BreakdownWithParentNode | undefined {
+  getNode(attributeId: string, nodeId: string): Breakdown | undefined {
     const attribute = this.getAttribute(attributeId);
     return attribute.getNode(nodeId);
   }
@@ -114,19 +114,19 @@ class Records {
   //   return attribute.nodes.filter(filter => filter.parentNode === parentNode);
   // }
 
-  getAncestors(attributeId: string, nodeId: string | undefined): Breakdown[] {
-    const attribute = this.getAttribute(attributeId);
-    const ancestors: Breakdown[] = [];
-    let parent: BreakdownWithParentNode | undefined;
-    do {
-      // find ancestors
-      parent = attribute.n__odes.find(filter => filter.node === nodeId);
-      if (parent) ancestors.unshift(parent);
-      nodeId = parent?.parentNode;
-    } while (parent);
-    ancestors.pop();
-    return ancestors;
-  }
+  // getAncestors(attributeId: string, nodeId: string | undefined): Breakdown[] {
+  //   const attribute = this.getAttribute(attributeId);
+  //   const ancestors: Breakdown[] = [];
+  //   let parent: BreakdownWithParentNode | undefined;
+  //   do {
+  //     // find ancestors
+  //     parent = attribute.n__odes.find(filter => filter.node === nodeId);
+  //     if (parent) ancestors.unshift(parent);
+  //     nodeId = parent?.parentNode;
+  //   } while (parent);
+  //   ancestors.pop();
+  //   return ancestors;
+  // }
 
   // category
 
