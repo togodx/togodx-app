@@ -11,18 +11,26 @@ interface BreakdownRequest {
   node?: string;
   order?: string;
 }
+interface NodeRelationship {
+  parents: string[];
+  children: string[];
+}
 
 export default class AttributeUtility {
   #id: string;
   #attribute: AttributesAttribute;
   #nodes: BreakdownWithParentNode[];
   #cache: Map<string | undefined, BreakdownHierarchyResponse>;
+  #cacheNodes: Map<string, Breakdown>;
+  #cacheNodeRelationship: Map<string, NodeRelationship>;
 
   constructor(id: string, attribute: AttributesAttribute) {
     this.#id = id;
     this.#attribute = attribute;
     this.#nodes = [];
     this.#cache = new Map();
+    this.#cacheNodes = new Map();
+    this.#cacheNodeRelationship = new Map();
   }
 
   // public Methods
@@ -37,6 +45,7 @@ export default class AttributeUtility {
       if (this.order) body.order = this.order;
       nodes = await axios.post(this.api, body).then(res => {
         nodes = res.data;
+        console.log('***********', nodes);
         // set parent node
         if (nodeId)
           nodes.forEach(node => (node.parentNode = nodeId));
@@ -51,7 +60,7 @@ export default class AttributeUtility {
   async fetchNode(nodeId: string | undefined): Promise<Breakdown> {
     switch (this.#attribute.datamodel) {
       case 'classification': {
-        const bhr = await this.#fetchHierarchicNode(nodeId);
+        const bhr = await this.fetchHierarchicNode(nodeId);
         return Promise.resolve(bhr.self);
       }
       case 'distribution': {
@@ -60,7 +69,7 @@ export default class AttributeUtility {
     }
   }
 
-  async #fetchHierarchicNode(nodeId: string | undefined): Promise<BreakdownHierarchyResponse> {
+  async fetchHierarchicNode(nodeId: string | undefined): Promise<BreakdownHierarchyResponse> {
     let bhr = this.#cache.get(nodeId);
     if (!bhr) {
       const body: BreakdownHierarchyRequest = {
@@ -68,7 +77,20 @@ export default class AttributeUtility {
         node: nodeId,
       };
       bhr = await axios.post(this.api, body).then(res => res.data) as BreakdownHierarchyResponse;
+      // cache
       this.#cache.set(nodeId, bhr);
+      console.log(this.#cache)
+      const nodes = [...bhr.parents, bhr.self, ...bhr.children];
+      console.log(nodes)
+      nodes.forEach(node => this.#cacheNodes.set(node.node, node));
+      console.log(this.#cacheNodes)
+      if (nodeId) {
+        this.#cacheNodeRelationship.set(nodeId, {
+          parents: bhr.parents.map(parent => parent.node),
+          children: bhr.children.map(child => child.node),
+        });
+        console.log(this.#cacheNodeRelationship)
+      }
     }
     return Promise.resolve(bhr);
   }
