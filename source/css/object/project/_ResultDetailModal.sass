@@ -36,9 +36,9 @@
           &::before
             left: var(--block-start-arrow)
         &.-right, &.-left
-          top: 0
+          bottom: 0
           width: var(--margin-stanza)
-          height: 100%
+          height: calc(100% - var(--height-header))
           &::before
             top: var(--block-start-arrow)
         &.-up

@@ -1,6 +1,7 @@
 import axios, {type AxiosInstance} from 'axios';
 import Color from 'colorjs.io';
 import DefaultEventEmitter from '../classes/DefaultEventEmitter.ts';
+import { ShowEntryDetail } from '../interfaces.ts';
 
 export function colorTintByHue(baseColor: Color, hue: number): Color {
   return baseColor
@@ -19,26 +20,26 @@ export function createPopupEvent(
   togoKeyView: HTMLElement,
   newEvent: string
 ): void {
-  const x = togoKeyView.dataset.x;
-  const y = togoKeyView.dataset.y;
-  const customEvent = new CustomEvent(newEvent, {
-    detail: {
-      togoKeyView,
-      keys: {
-        dataKey: togoKeyView.dataset.dataset,
-        subjectId: togoKeyView.dataset.categoryId,
-        mainCategoryId: togoKeyView.dataset.attributeId,
-        subCategoryId: togoKeyView.dataset.node,
-        uniqueEntryId: togoKeyView.dataset.entry,
-      },
-      properties: {
-        dataX: x,
-        dataY: y,
-        dataSubOrder: togoKeyView.dataset.y2,
-        isPrimaryKey: togoKeyView.classList.contains('primarykey'),
-      },
+  const x = togoKeyView.dataset.x as string;
+  const y = togoKeyView.dataset.y as string;
+  const detail: ShowEntryDetail = { // TODO: keys と properties は使ってないかもしれない
+    togoKeyView,
+    keys: {
+      dataKey: togoKeyView.dataset.dataset as string,
+      subjectId: togoKeyView.dataset.categoryId as string,
+      mainCategoryId: togoKeyView.dataset.attributeId as string,
+      subCategoryId: togoKeyView.dataset.node as string,
+      uniqueEntryId: togoKeyView.dataset.entry as string,
     },
-  });
+    properties: {
+      dataX: x,
+      dataY: y,
+      dataSubOrder: togoKeyView.dataset.y2 as string,
+      isPrimaryKey: togoKeyView.classList.contains('primarykey'),
+    },
+}
+  const customEvent = new CustomEvent(newEvent, {
+    detail});
   DefaultEventEmitter.dispatchEvent(customEvent);
 }
 

@@ -4,7 +4,7 @@ import ConditionBuilder from './ConditionBuilder.ts';
 import Records from './Records.ts';
 import CategoryView from './CategoryView.ts';
 import PresetView from './PresetView.ts';
-import ResultDetailModal from './ResultDetailModal';
+import ResultDetailModal from './ResultDetailModal.ts';
 import BalloonView from './BalloonView';
 import ConditionsController from './ConditionsController.ts';
 import UploadUserIDsView from './UploadUserIDsView.ts';

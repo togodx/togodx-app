@@ -190,3 +190,21 @@ export type TableHeader = {
   categoryId: string,
   attributeId: string,
 };
+
+// entry
+export interface ShowEntryDetail {
+  togoKeyView: HTMLElement;
+  keys: {
+    dataKey: string,
+    subjectId: string,
+    mainCategoryId: string,
+    subCategoryId: string,
+    uniqueEntryId: string,
+  };
+  properties: {
+    dataX: string,
+    dataY: string,
+    dataSubOrder: string,
+    isPrimaryKey: boolean,
+  };
+}
