@@ -188,20 +188,20 @@ class ConditionBuilder {
     if (oldConditionFilterUtility) {
       const attribute = Records.getAttribute(attributeId);
       if (attribute) {
-        const originalFilters = attribute.nodes;
-        originalFilters.forEach(originalFilter => {
-          const indexInNew = nodes.indexOf(originalFilter.node);
+        const originalNodess = attribute.nodes;
+        originalNodess.forEach(originalNode => {
+          const indexInNew = nodes.indexOf(originalNode.node);
           const indexInOld = oldConditionFilterUtility.nodes.indexOf(
-            originalFilter.node
+            originalNode.node
           );
           if (indexInNew !== -1) {
             // if new filter does not exist in old filters, add property filter
             if (indexInOld === -1)
-              this.addFilter(attributeId, originalFilter.node, [], false);
+              this.addFilter(attributeId, originalNode.node, [], false);
           } else {
             // if extra filter exists in old filters, remove property filter
             if (indexInOld !== -1)
-              this.removeFilter(attributeId, originalFilter.node, false);
+              this.removeFilter(attributeId, originalNode.node, false);
           }
         });
       }
@@ -409,6 +409,7 @@ class ConditionBuilder {
   }
 
   #restoreConditions(condition: Condition) {
+    console.log('#restoreConditions')
     const {dataset, annotations, filters} = condition;
     this.#isRestoredConditinoFromURLParameters = true;
 
@@ -417,9 +418,9 @@ class ConditionBuilder {
     // this.#userIds = userIds;
     this.setAnnotation(annotations, false);
     Records.attributes.forEach(({id}) => {
-      const attribute = filters.find(attribute => attribute.attributeId === id);
+      const filter = filters.find(filter => filter.attributeId === id);
       const nodes: string[] = [];
-      if (attribute) nodes.push(...attribute.nodes);
+      if (filter) nodes.push(...filter.nodes);
       this.setFilter(id, nodes, false);
     });
     this.finish(false);

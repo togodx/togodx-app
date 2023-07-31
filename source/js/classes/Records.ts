@@ -115,12 +115,12 @@ class Records {
   // }
 
   getAncestors(attributeId: string, nodeId: string | undefined): Breakdown[] {
-    const attribute = this.getAttribute(attributeId)!;
+    const attribute = this.getAttribute(attributeId);
     const ancestors: Breakdown[] = [];
     let parent: BreakdownWithParentNode | undefined;
     do {
       // find ancestors
-      parent = attribute.nodes.find(filter => filter.node === nodeId);
+      parent = attribute.n__odes.find(filter => filter.node === nodeId);
       if (parent) ancestors.unshift(parent);
       nodeId = parent?.parentNode;
     } while (parent);

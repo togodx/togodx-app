@@ -5,7 +5,7 @@ import ConditionFilterUtility from './ConditionFilterUtility.ts';
 import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
 import * as event from '../events.js';
 import _ from 'lodash';
-import { DataFrameAttributeItem } from '../interfaces.ts';
+import { Breakdown, DataFrameAttributeItem } from '../interfaces.ts';
 
 interface HitValue {
   node: string;
@@ -18,7 +18,7 @@ export default class StatisticsView {
   #index;
   #attributeId;
   #conditionResults;
-  #referenceFilters;
+  #referenceNodes: Breakdown[] = [];
   #BARS;
   #ROOT;
   #ROOT_NODE;
@@ -58,19 +58,18 @@ export default class StatisticsView {
       console.log('******')
       console.log( condition.nodes )
       // attribute.fetchHierarchicNode()
-      this.#referenceFilters = [];
     } else if (condition instanceof ConditionAnnotationUtility && condition.parentNode) {
       Records.fetchChildNodes(this.#attributeId, condition.parentNode).then(
-        filters => {
-          console.log(filters)
-          this.#referenceFilters = filters;
+        nodes => {
+          console.log(nodes)
+          this.#referenceNodes = nodes;
           this.#draw();
         }
       );
     } else { // top lever nodes
-      this.#referenceFilters = Records.getAttribute(this.#attributeId).nodes;
+      this.#referenceNodes = Records.getAttribute(this.#attributeId).nodes;
     }
-    console.log(this.#referenceFilters)
+    console.log(this.#referenceNodes)
 
     // references
     const container = elm.querySelector(':scope > .statistics') as HTMLDivElement;
@@ -121,9 +120,9 @@ export default class StatisticsView {
       return a.entry === b.entry && a.node === b.node;
     });
     console.log(uniquedAttributes)
-    console.log(this.#referenceFilters)
+    console.log(this.#referenceNodes)
     const hitVlues: HitValue[] = [];
-    this.#referenceFilters?.forEach(({node, label, count}) => {
+    this.#referenceNodes?.forEach(({node, label, count}) => {
       const filtered = uniquedAttributes.filter(
         attribute => attribute.node === node
       );

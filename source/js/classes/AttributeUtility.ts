@@ -19,15 +19,15 @@ interface NodeRelationship {
 export default class AttributeUtility {
   #id: string;
   #attribute: AttributesAttribute;
-  #nodes: BreakdownWithParentNode[];
+  #n__odes: BreakdownWithParentNode[]; // top level nodes
   #cache: Map<string | undefined, BreakdownHierarchyResponse>;
-  #cacheNodes: Map<string, Breakdown>;
+  #cacheNodes: Map<string, Breakdown>; // all nodes
   #cacheNodeRelationship: Map<string, NodeRelationship>;
 
   constructor(id: string, attribute: AttributesAttribute) {
     this.#id = id;
     this.#attribute = attribute;
-    this.#nodes = [];
+    this.#n__odes = [];
     this.#cache = new Map();
     this.#cacheNodes = new Map();
     this.#cacheNodeRelationship = new Map();
@@ -36,7 +36,7 @@ export default class AttributeUtility {
   // public Methods
 
   async fetchChildNodes(nodeId: string): Promise<Breakdown[]> {
-    let nodes = this.#nodes.filter(
+    let nodes = this.#n__odes.filter(
       node => node.parentNode === nodeId
     );
     if (nodes.length === 0) {
@@ -46,11 +46,19 @@ export default class AttributeUtility {
       nodes = await axios.post(this.api, body).then(res => {
         nodes = res.data;
         console.log('***********', nodes);
-        // set parent node
-        if (nodeId)
-          nodes.forEach(node => (node.parentNode = nodeId));
-        // set nodes
-        this.#nodes.push(...nodes);
+        // cache
+        nodes.forEach(node => this.#cacheNodes.set(node.node, node));
+        // set nodes (compatibility)
+        this.#n__odes.push(...nodes.map(node => {
+          const node2 = Object.assign({}, node);
+          if (nodeId) node2.parentNode = nodeId;
+          return node2;
+        }));
+        // // set parent node
+        // if (nodeId)
+        //   nodes.forEach(node => (node.parentNode = nodeId));
+        // // set nodes
+        // this.#n__odes.push(...nodes);
         return res.data;
       })
     }
@@ -96,7 +104,7 @@ export default class AttributeUtility {
   }
 
   getNode(nodeId: string | undefined): BreakdownWithParentNode | undefined {
-    return this.#nodes.find(node => node.node === nodeId);
+    return this.#n__odes.find(node => node.node === nodeId);
   }
 
   // accessors
@@ -134,6 +142,12 @@ export default class AttributeUtility {
   }
 
   get nodes() {
-    return this.#nodes;
+    console.trace('??????', this)
+    return Array.from(this.#cacheNodes.values());  
+  }
+
+  get n__odes() {
+    console.trace('!!!!!!', this)
+    return this.#n__odes;
   }
 }
