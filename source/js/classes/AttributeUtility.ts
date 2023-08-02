@@ -112,7 +112,9 @@ export default class AttributeUtility {
       bhr = await axios.post(this.api, body).then(res => res.data) as BreakdownHierarchyResponse;
       // cache
       this.#cac__he.set(nodeId, bhr);
-      const nodes = [...bhr.parents, bhr.self, ...bhr.children];
+      const nodes = [bhr.self];
+      if (bhr.parents) nodes.push(...bhr.parents);
+      if (bhr.children) nodes.push(...bhr.children);
       nodes.forEach(node => this.#cacheNodes.set(node.node, node));
       if (nodeId) {
         this.#cacheNodeRelationship.set(nodeId, {

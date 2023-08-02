@@ -48,35 +48,20 @@ export default class StatisticsView {
     `;
 
     // display order of bar chart
-    console.log(condition)
     const attribute = Records.getAttribute(this.#attributeId);
-    // if (condition instanceof ConditionFilterUtility) {
-    //   console.log(condition.nodes.map(node => Records.getNode(this.#attributeId, node)))
-    //   console.log(attribute)
-    // }
-
-    // if (condition instanceof ConditionFilterUtility && attribute.datamodel === 'classification' && attribute.nodes.some(node => !node.tip)) {
-    //   console.log('******')
-    //   console.log( condition.nodes )
-    //   // attribute.fetchHierarchicNode()
     if (condition instanceof ConditionFilterUtility) {
-        Promise.all(condition.nodes.map(nodeId => attribute.fetchNode(nodeId)))
-          .then(nodes => {
-            this.#referenceNodes = nodes;
-            this.#draw();
-          });
-    } else if (condition instanceof ConditionAnnotationUtility && condition.nodeId) {
-      Records.fetchChildNodes(this.#attributeId, condition.nodeId).then(
-        nodes => {
-          console.log(nodes)
+      Promise.all(condition.nodes.map(nodeId => attribute.fetchNode(nodeId)))
+        .then(nodes => {
           this.#referenceNodes = nodes;
           this.#draw();
-        }
-      );
-    } else { // top lever nodes
-      this.#referenceNodes = Records.getAttribute(this.#attributeId).nodes;
+        });
+    } else if (condition instanceof ConditionAnnotationUtility) {
+      attribute.fetchHierarchicNode(condition.nodeId)
+        .then(nodes => {
+          this.#referenceNodes = [...nodes.children];
+          this.#draw();
+        })
     }
-    console.log(this.#referenceNodes)
 
     // references
     const container = elm.querySelector(':scope > .statistics') as HTMLDivElement;
@@ -112,13 +97,7 @@ export default class StatisticsView {
     );
   }
 
-  /**
-   * @param {ConditionResults} detail.conditionResults
-   * @param {Array} detail.rows
-   * @param {Boolean} detail.done
-   */
   #draw(event?: Event) {
-    console.log(this.#conditionResults)
     const flattenedAttributes = this.#conditionResults.data
       .map(datum => datum.attributes[this.#index])
       .map(attribute => attribute.items)
@@ -126,8 +105,6 @@ export default class StatisticsView {
     const uniquedAttributes: DataFrameAttributeItem[] = _.uniqWith(flattenedAttributes, (a, b) => {
       return a.entry === b.entry && a.node === b.node;
     });
-    console.log(uniquedAttributes)
-    console.log(this.#referenceNodes)
     const hitVlues: HitValue[] = [];
     this.#referenceNodes?.forEach(({node, label, count}) => {
       const filtered = uniquedAttributes.filter(
@@ -141,7 +118,6 @@ export default class StatisticsView {
         hitCount: filtered.length,
       });
     });
-    console.log(hitVlues)
 
     // max
     let countMax: number;
