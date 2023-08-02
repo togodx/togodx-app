@@ -1,6 +1,6 @@
 import Color from 'colorjs.io';
 import AttributeUtility from './AttributeUtility.ts';
-import { AttributesCategory, AttributesDatasetObject, Breakdown, BreakdownWithParentNode } from '../interfaces.ts';
+import { AttributesCategory, AttributesDatasetObject, Breakdown } from '../interfaces.ts';
 
 type SetAttributesArgs = {
   categories: AttributesCategory[];
@@ -147,7 +147,7 @@ class Records {
   // attribute
 
   getAttribute(attributeId: string): AttributeUtility {
-    return this.#attributes.find(attribute => attribute.id === attributeId)!;
+    return this.#attributes.find(attribute => attribute.id === attributeId) as AttributeUtility;
   }
 
   // dataset

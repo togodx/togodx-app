@@ -127,9 +127,6 @@ export interface Breakdown {
   count: number;
   tip?: boolean;
 }
-export interface BreakdownWithParentNode extends Breakdown {
-  parentNode: string;
-}
 export interface BreakdownWithElement extends Breakdown {
   elm?: HTMLElement;
 }
@@ -154,14 +151,9 @@ export interface ConditionAnnotation {
   attribute: string;
   node?: string;
 }
-// TODO: ConditionFilter と ConditionFilterWithAncestor、ConditionAnnotation と ConditionAnnotationWithAncestor は統合する
-// 特に `parentNode` は早急に `node` に変更する
-// ancestors は API で取得できるようにしてほしい
 
 export interface Condition {
   dataset: string;
-  // filters: ConditionFilterWithAncestor[];
-  // annotations: ConditionAnnotationWithAncestor[];
   filters: ConditionFilter[];
   annotations: ConditionAnnotation[];
   queries: string[];
