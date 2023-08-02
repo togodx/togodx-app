@@ -19,6 +19,7 @@ interface NodeRelationship {
 export default class AttributeUtility {
   #id: string;
   #attribute: AttributesAttribute;
+  #firstLevelNodes: string[] | undefined;
   #n__odes: BreakdownWithParentNode[]; // top level nodes
   #cac__he: Map<string | undefined, BreakdownHierarchyResponse>;
   #cacheNodes: Map<string, Breakdown>; // all nodes
@@ -35,39 +36,55 @@ export default class AttributeUtility {
 
   // public Methods
 
-  async fetchChildNodes(nodeId: string): Promise<Breakdown[]> {
-    let nod__es = this.#n__odes.filter(
-      node => node.parentNode === nodeId
-    );
-    if (nod__es.length === 0) {
+  async fetchFirstLevelNodes(): Promise<Breakdown[]> {
+    if (!this.#firstLevelNodes) {
       const body: BreakdownRequest = {};
-      if (nodeId) body.node = nodeId;
       if (this.order) body.order = this.order;
-      nod__es = await axios.post(this.api, body).then(res => {
-        nod__es = res.data;
-        console.log('***********', nod__es);
-        // cache
-        nod__es.forEach(node => this.#cacheNodes.set(node.node, node));
-        // set nodes (compatibility)
-        this.#n__odes.push(...nod__es.map(node => {
-          const node2 = Object.assign({}, node);
-          if (nodeId) node2.parentNode = nodeId;
-          return node2;
-        }));
-        // // set parent node
-        // if (nodeId)
-        //   nodes.forEach(node => (node.parentNode = nodeId));
-        // // set nodes
-        // this.#n__odes.push(...nodes);
-        return res.data;
-      })
+      await axios.post(this.api, body)
+        .then(res => {
+          const nodes: Breakdown[] = res.data;
+          this.#firstLevelNodes = nodes.map(node => node.node);
+          for (const node of nodes) {this.#cacheNodes.set(node.node, node)}
+        });
     }
-    // let nodes = this.#cacheNodeRelationship.get(nodeId);
-    // if (!nodes) {
-
-    // }
-    return Promise.resolve(nod__es);
+    const nodes = (this.#firstLevelNodes as string[]).map(nodeId => this.#cacheNodes.get(nodeId) as Breakdown);
+    return Promise.resolve(nodes);
   }
+
+  // async fetchChildNodes(nodeId: string): Promise<Breakdown[]> {
+  //   console.log(nodeId);
+  //   let nod__es = this.#n__odes.filter(
+  //     node => node.parentNode === nodeId
+  //   );
+  //   if (nod__es.length === 0) {
+  //     const body: BreakdownRequest = {};
+  //     if (nodeId) body.node = nodeId;
+  //     if (this.order) body.order = this.order;
+  //     nod__es = await axios.post(this.api, body).then(res => {
+  //       nod__es = res.data;
+  //       console.log('***********', nod__es);
+  //       // cache
+  //       nod__es.forEach(node => this.#cacheNodes.set(node.node, node));
+  //       // set nodes (compatibility)
+  //       this.#n__odes.push(...nod__es.map(node => {
+  //         const node2 = Object.assign({}, node);
+  //         if (nodeId) node2.parentNode = nodeId;
+  //         return node2;
+  //       }));
+  //       // // set parent node
+  //       // if (nodeId)
+  //       //   nodes.forEach(node => (node.parentNode = nodeId));
+  //       // // set nodes
+  //       // this.#n__odes.push(...nodes);
+  //       return res.data;
+  //     })
+  //   }
+  //   // let nodes = this.#cacheNodeRelationship.get(nodeId);
+  //   // if (!nodes) {
+
+  //   // }
+  //   return Promise.resolve(nod__es);
+  // }
 
   async fetchNode(nodeId: string | undefined): Promise<Breakdown> {
     switch (this.#attribute.datamodel) {
@@ -82,11 +99,9 @@ export default class AttributeUtility {
   }
 
   async fetchHierarchicNode(nodeId: string | undefined): Promise<BreakdownHierarchyResponse> {
-    console.log(nodeId)
     // let bhr = this.#cac__he.get(nodeId);
     let bhr: BreakdownHierarchyResponse;
     const nodeRelationship = this.#cacheNodeRelationship.get(nodeId);
-    console.log(nodeRelationship)
     if (nodeRelationship) {
       bhr = this.#rebuildHierarchicNode(nodeId as string, nodeRelationship);
     } else {
@@ -97,7 +112,6 @@ export default class AttributeUtility {
       bhr = await axios.post(this.api, body).then(res => res.data) as BreakdownHierarchyResponse;
       // cache
       this.#cac__he.set(nodeId, bhr);
-      console.log(this.#cac__he)
       const nodes = [...bhr.parents, bhr.self, ...bhr.children];
       nodes.forEach(node => this.#cacheNodes.set(node.node, node));
       if (nodeId) {

@@ -99,9 +99,13 @@ class Records {
     return await attribute.fetchNode(nodeId);
   }
 
+  /**
+   * Used only in ColumnSelectorView, but commented out since ColumnSelectorView is no longer used
+   */
   async fetchChildNodes(attributeId: string, nodeId: string): Promise<Breakdown[]> {
     const attribute = this.getAttribute(attributeId);
     return await attribute.fetchChildNodes(nodeId);
+    // return Promise.resolve([]);
   }
 
   getNode(attributeId: string, nodeId: string): Breakdown | undefined {
