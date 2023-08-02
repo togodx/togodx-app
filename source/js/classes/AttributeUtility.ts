@@ -83,11 +83,13 @@ export default class AttributeUtility {
 
   async fetchHierarchicNode(nodeId: string | undefined): Promise<BreakdownHierarchyResponse> {
     console.log(nodeId)
-    let bhr = this.#cac__he.get(nodeId);
+    // let bhr = this.#cac__he.get(nodeId);
+    let bhr: BreakdownHierarchyResponse;
     const nodeRelationship = this.#cacheNodeRelationship.get(nodeId);
-    console.log(bhr)
     console.log(nodeRelationship)
-    if (!bhr) {
+    if (nodeRelationship) {
+      bhr = this.#rebuildHierarchicNode(nodeId as string, nodeRelationship);
+    } else {
       const body: BreakdownHierarchyRequest = {
         hierarchy: '',
         node: nodeId,
@@ -97,49 +99,23 @@ export default class AttributeUtility {
       this.#cac__he.set(nodeId, bhr);
       console.log(this.#cac__he)
       const nodes = [...bhr.parents, bhr.self, ...bhr.children];
-      console.log(nodes)
       nodes.forEach(node => this.#cacheNodes.set(node.node, node));
-      console.log(this.#cacheNodes)
       if (nodeId) {
         this.#cacheNodeRelationship.set(nodeId, {
           parents: bhr.parents.map(parent => parent.node),
           children: bhr.children.map(child => child.node),
         });
-        console.log(this.#cacheNodeRelationship)
       }
     }
-    // if (!bhr) {
-    //   const body: BreakdownHierarchyRequest = {
-    //     hierarchy: '',
-    //     node: nodeId,
-    //   };
-    //   bhr = await axios.post(this.api, body).then(res => res.data) as BreakdownHierarchyResponse;
-    //   // cache
-    //   this.#cac__he.set(nodeId, bhr);
-    //   console.log(this.#cac__he)
-    //   const nodes = [...bhr.parents, bhr.self, ...bhr.children];
-    //   console.log(nodes)
-    //   nodes.forEach(node => this.#cacheNodes.set(node.node, node));
-    //   console.log(this.#cacheNodes)
-    //   if (nodeId) {
-    //     this.#cacheNodeRelationship.set(nodeId, {
-    //       parents: bhr.parents.map(parent => parent.node),
-    //       children: bhr.children.map(child => child.node),
-    //     });
-    //     console.log(this.#cacheNodeRelationship)
-    //   }
-    // }
-    return Promise.resolve(bhr);
+    return Promise.resolve(bhr as BreakdownHierarchyResponse);
   }
 
   #rebuildHierarchicNode(nodeId: string, nodeRelatinoship: NodeRelationship): BreakdownHierarchyResponse {
-    console.log(nodeId, nodeRelatinoship)
     const bhr: BreakdownHierarchyResponse = {
       self: this.#cacheNodes.get(nodeId) as Breakdown,
       parents: nodeRelatinoship.parents.map(parentId => this.#cacheNodes.get(parentId) as Breakdown),
       children: nodeRelatinoship.children.map(childId => this.#cacheNodes.get(childId) as Breakdown),
     }
-    console.log(bhr)
     return bhr;
   }
 
