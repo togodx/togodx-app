@@ -143,35 +143,21 @@ export interface BreakdownHierarchyResponse {
   children: Breakdown[];
 }
 
-// filter condition
+// condition
+
 export interface ConditionFilter {
   attribute: string;
   nodes: string[];
 }
-export interface ConditionFilterWithAncestor {
-  attributeId: string;
-  nodes: ConditionFilterWithAncestorNode[];
-}
-export interface ConditionFilterWithAncestorNode {
-  node: string;
-  ancestors?: string[];
-}
 
-// annotation condition
 export interface ConditionAnnotation {
   attribute: string;
-  node?: string | undefined;
-}
-export interface ConditionAnnotationWithAncestor {
-  attributeId: string;
-  parentNode?: string;
-  ancestors?: string[];
+  node?: string;
 }
 // TODO: ConditionFilter と ConditionFilterWithAncestor、ConditionAnnotation と ConditionAnnotationWithAncestor は統合する
 // 特に `parentNode` は早急に `node` に変更する
 // ancestors は API で取得できるようにしてほしい
 
-// condition
 export interface Condition {
   dataset: string;
   // filters: ConditionFilterWithAncestor[];

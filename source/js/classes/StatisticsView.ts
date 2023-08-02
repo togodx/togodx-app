@@ -1,18 +1,35 @@
 import DefaultEventEmitter from './DefaultEventEmitter.ts';
 import Records from './Records.ts';
-import * as event from '../events';
+import ConditionResultsController from './ConditionResultsController.ts';
+import ConditionFilterUtility from './ConditionFilterUtility.ts';
+import ConditionAnnotationUtility from './ConditionAnnotationUtility.ts';
+import * as event from '../events.js';
 import _ from 'lodash';
+import { Breakdown, DataFrameAttributeItem } from '../interfaces.ts';
+
+interface HitValue {
+  node: string;
+  label: string;
+  count: number;
+  hitCount: number;
+}
 
 export default class StatisticsView {
   #index;
   #attributeId;
   #conditionResults;
-  #referenceFilters;
+  #referenceNodes: Breakdown[] = [];
   #BARS;
   #ROOT;
   #ROOT_NODE;
 
-  constructor(statisticsRootNode, elm, conditionResults, index, condition) {
+  constructor(
+    statisticsRootNode: HTMLTableRowElement,
+    elm: HTMLDivElement,
+    conditionResults: ConditionResultsController,
+    index: number,
+    condition: ConditionFilterUtility | ConditionAnnotationUtility
+  ) {
     this.#index = index;
     this.#attributeId = condition.attributeId;
     this.#conditionResults = conditionResults;
@@ -31,20 +48,24 @@ export default class StatisticsView {
     `;
 
     // display order of bar chart
-    if (condition.parentNode) {
-      Records.fetchChildNodes(this.#attributeId, condition.parentNode).then(
-        filters => {
-          this.#referenceFilters = filters;
+    const attribute = Records.getAttribute(this.#attributeId);
+    if (condition instanceof ConditionFilterUtility) {
+      Promise.all(condition.nodes.map(nodeId => attribute.fetchNode(nodeId)))
+        .then(nodes => {
+          this.#referenceNodes = nodes;
           this.#draw();
-        }
-      );
-    } else {
-      this.#referenceFilters = Records.getAttribute(this.#attributeId).nodes;
+        });
+    } else if (condition instanceof ConditionAnnotationUtility) {
+      attribute.fetchHierarchicNode(condition.nodeId)
+        .then(nodes => {
+          this.#referenceNodes = [...nodes.children];
+          this.#draw();
+        })
     }
 
     // references
-    const container = elm.querySelector(':scope > .statistics');
-    this.#BARS = container.querySelector(':scope > .bars');
+    const container = elm.querySelector(':scope > .statistics') as HTMLDivElement;
+    this.#BARS = container.querySelector(':scope > .bars') as HTMLDivElement;
 
     // event listener
     DefaultEventEmitter.addEventListener(
@@ -76,21 +97,16 @@ export default class StatisticsView {
     );
   }
 
-  /**
-   * @param {ConditionResults} detail.conditionResults
-   * @param {Array} detail.rows
-   * @param {Boolean} detail.done
-   */
-  #draw(e) {
+  #draw(event?: Event) {
     const flattenedAttributes = this.#conditionResults.data
       .map(datum => datum.attributes[this.#index])
       .map(attribute => attribute.items)
       .flat();
-    const uniquedAttributes = _.uniqWith(flattenedAttributes, (a, b) => {
+    const uniquedAttributes: DataFrameAttributeItem[] = _.uniqWith(flattenedAttributes, (a, b) => {
       return a.entry === b.entry && a.node === b.node;
     });
-    const hitVlues = [];
-    this.#referenceFilters?.forEach(({node, label, count}) => {
+    const hitVlues: HitValue[] = [];
+    this.#referenceNodes?.forEach(({node, label, count}) => {
       const filtered = uniquedAttributes.filter(
         attribute => attribute.node === node
       );
@@ -104,7 +120,7 @@ export default class StatisticsView {
     });
 
     // max
-    let countMax;
+    let countMax: number;
     const isOnlyHitCount = this.#ROOT_NODE.classList.contains('-onlyhitcount');
     const isStretch =
       !isOnlyHitCount && this.#ROOT_NODE.classList.contains('-stretch');
@@ -115,6 +131,7 @@ export default class StatisticsView {
     }
 
     hitVlues.reduce((lastBar, {node, label, count, hitCount}) => {
+      console.log(lastBar, node, label, count, hitCount)
       let bar = this.#BARS.querySelector(`:scope > .bar[data-node="${node}"]`);
       if (bar === null) {
         // add bar
@@ -157,7 +174,7 @@ export default class StatisticsView {
       return bar;
     }, undefined);
 
-    if (e?.detail?.dxCondition.isPropertiesLoaded) {
+    if ((event as CustomEvent)?.detail?.dxCondition.isPropertiesLoaded) {
       this.#ROOT.classList.add('-completed');
       this.#ROOT
         .querySelector(':scope > .loading-view')

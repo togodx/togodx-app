@@ -1,10 +1,6 @@
 import ConditionUtility from './ConditionUtility.ts';
 import Records from './Records.ts';
-import {
-  ConditionFilterWithAncestor,
-  ConditionFilterWithAncestorNode,
-  ConditionFilter,
-} from '../interfaces.ts';
+import {ConditionFilter} from '../interfaces.ts';
 
 export default class ConditionFilterUtility extends ConditionUtility {
   #nodes: string[];
@@ -52,44 +48,17 @@ export default class ConditionFilterUtility extends ConditionUtility {
     };
   }
 
-  get conditionFilterWithAncestor(): ConditionFilterWithAncestor {
-    const cfwa: ConditionFilterWithAncestor = {
-      attributeId: this._attributeId,
-      nodes: [],
-    };
-    this.#nodes.forEach(node => {
-      const node2: ConditionFilterWithAncestorNode = {node};
-      const ancestors: string[] = Records.getAncestors(
-        this._attributeId,
-        node
-      ).map(ancestor => ancestor.node);
-      if (ancestors.length > 0) node2.ancestors = ancestors;
-      cfwa.nodes.push(node2);
-    });
-    return cfwa;
-  }
-
   // static
 
   static decodeURLSearchParams(
     searchParams: string | null
   ): ConditionFilterUtility[] {
     const filters: ConditionFilterUtility[] = [];
-    const parsed: ConditionFilterWithAncestor[] = JSON.parse(
-      searchParams || 'null'
-    );
+    const parsed: ConditionFilter[] = JSON.parse(searchParams || 'null');
     if (parsed) {
       filters.push(
-        ...parsed.map(({attributeId, nodes}) => {
-          const cf = new ConditionFilterUtility(
-            attributeId,
-            nodes.map(node => node.node)
-          );
-          nodes.forEach(({node, ancestors}) => {
-            if (ancestors) {
-              cf.setAncestors(node, ancestors);
-            }
-          });
+        ...parsed.map(({attribute, nodes}) => {
+          const cf = new ConditionFilterUtility(attribute, nodes);
           return cf;
         })
       );

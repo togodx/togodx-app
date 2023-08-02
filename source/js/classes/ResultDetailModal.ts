@@ -99,8 +99,8 @@ export default class ResultDetailModal extends ModalWindowView {
     const filter = isPrimaryKey
       ? ''
       : Records.getNode(
-          togoKeyView.dataset.attributeId,
-          togoKeyView.dataset.node
+          togoKeyView.dataset.attributeId as string,
+          togoKeyView.dataset.node as string
         );
     const valueLabel =
       attribute?.datamodel !== 'distribution' && filter?.label

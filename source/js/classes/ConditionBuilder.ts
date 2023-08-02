@@ -127,7 +127,7 @@ class ConditionBuilder {
       conditionUtilityAnnotation2 =>
         conditionUtilityAnnotation2.isSameCondition(
           conditionUtilityAnnotation.attributeId,
-          conditionUtilityAnnotation.parentNode || undefined
+          conditionUtilityAnnotation.nodeId || undefined
         )
     );
     if (index === -1) return;
@@ -188,20 +188,20 @@ class ConditionBuilder {
     if (oldConditionFilterUtility) {
       const attribute = Records.getAttribute(attributeId);
       if (attribute) {
-        const originalFilters = attribute.nodes;
-        originalFilters.forEach(originalFilter => {
-          const indexInNew = nodes.indexOf(originalFilter.node);
+        const originalNodess = attribute.nodes;
+        originalNodess.forEach(originalNode => {
+          const indexInNew = nodes.indexOf(originalNode.node);
           const indexInOld = oldConditionFilterUtility.nodes.indexOf(
-            originalFilter.node
+            originalNode.node
           );
           if (indexInNew !== -1) {
             // if new filter does not exist in old filters, add property filter
             if (indexInOld === -1)
-              this.addFilter(attributeId, originalFilter.node, [], false);
+              this.addFilter(attributeId, originalNode.node, [], false);
           } else {
             // if extra filter exists in old filters, remove property filter
             if (indexInOld !== -1)
-              this.removeFilter(attributeId, originalFilter.node, false);
+              this.removeFilter(attributeId, originalNode.node, false);
           }
         });
       }
@@ -251,7 +251,7 @@ class ConditionBuilder {
     if (conditionUtilityAnnotations)
       nodes.annotations.push(
         ...conditionUtilityAnnotations.map(
-          annotationCondiiton => annotationCondiiton.parentNode!
+          annotationCondiiton => annotationCondiiton.nodeId!
         )
       );
     if (conditionUtilityFilter)
@@ -305,13 +305,12 @@ class ConditionBuilder {
     if (!this.#isRestoredConditinoFromURLParameters) return;
 
     if (!IS_SAVE_CONDITION_IN_SEARCH_PARAMS || !dontLeaveInHistory) return;
-    // get hierarchic conditions
     const annotations = this.#conditionUtilityAnnotations.map(
-      annotationCondiiton => annotationCondiiton.conditionAnnotationWithAncestor
+      annotationCondiiton => annotationCondiiton.query
     );
     const filters = this.#conditionUtilityFilters.map(
       conditionUtilityFilter =>
-        conditionUtilityFilter.conditionFilterWithAncestor
+        conditionUtilityFilter.query
     );
     // generate permalink
     // if (!dontLeaveInHistory) return;
@@ -340,73 +339,70 @@ class ConditionBuilder {
         params.get('annotations')
       ),
     };
-
-    if (isFirst) {
-      // get child category ids
-      this.#makeQueueOfGettingChildNodes(condition);
-    } else {
-      this.#restoreConditions(condition);
-    }
-  }
-
-  #makeQueueOfGettingChildNodes(condition: Condition) {
     if (condition.dataset) this.#dataset = condition.dataset;
-    const queue: Task[] = [];
-    const addQueue = (attributeId: string, node: string, ancestors: string[] | undefined) => {
-      const ancestors2 = [node];
-      if (ancestors) ancestors2.push(...ancestors);
-      ancestors2.forEach(node => {
-        if (
-          queue.findIndex(
-            (task: Task) => task.attributeId === attributeId && task.node === node
-          ) === -1
-        ) {
-          const task: Task = {attributeId, node};
-          queue.push(task);
-        }
-      });
-    };
 
-    condition.annotations.forEach(annotation => {
-      if (annotation.parentNode)
-        addQueue(
-          annotation.attributeId,
-          annotation.parentNode,
-          annotation.ancestors
-        );
-    });
-    condition.filters.forEach(filter => {
-      filter.nodes.forEach(node => {
-        const ancestors = filter.getAncestors(node);
-        if (ancestors.length > 0) addQueue(filter.attributeId, node, ancestors);
-      });
-    });
-
-    this.#progressQueueOfGettingChildNodes(condition, queue);
+    this.#restoreConditions(condition);
   }
 
-  #progressQueueOfGettingChildNodes(condition: Condition, queue: Task[]) {
-    if (queue.length > 0) {
-      const {attributeId, node} = queue.shift()!;
-      this.#getChildNodes(attributeId, node).then(() =>
-        this.#progressQueueOfGettingChildNodes(condition, queue)
-      );
-    } else {
-      this.#restoreConditions(condition);
-    }
-  }
+  // #makeQueueOfGettingChildNodes(condition: Condition) {
+  //   if (condition.dataset) this.#dataset = condition.dataset;
+  //   const queue: Task[] = [];
+  //   const addQueue = (attributeId: string, node: string, ancestors: string[] | undefined) => {
+  //     const ancestors2 = [node];
+  //     if (ancestors) ancestors2.push(...ancestors);
+  //     ancestors2.forEach(node => {
+  //       if (
+  //         queue.findIndex(
+  //           (task: Task) => task.attributeId === attributeId && task.node === node
+  //         ) === -1
+  //       ) {
+  //         const task: Task = {attributeId, node};
+  //         queue.push(task);
+  //       }
+  //     });
+  //   };
 
-  #getChildNodes(attributeId: string, node: string) {
-    return new Promise<void>((resolve, reject) => {
-      Records.fetchChildNodes(attributeId, node)
-        .then(() => {
-          resolve();
-        })
-        .catch(error => {
-          reject(error);
-        });
-    });
-  }
+  //   condition.annotations.forEach(annotation => {
+  //     if (annotation.nodeId)
+  //       addQueue(
+  //         annotation.attributeId,
+  //         annotation.nodeId,
+  //         annotation.ancestors
+  //       );
+  //   });
+  //   condition.filters.forEach(filter => {
+  //     filter.nodes.forEach(node => {
+  //       const ancestors = filter.getAncestors(node);
+  //       if (ancestors.length > 0) addQueue(filter.attributeId, node, ancestors);
+  //     });
+  //   });
+  //   console.log(...queue)
+
+  //   this.#progressQueueOfGettingChildNodes(condition, queue);
+  // }
+
+  // #progressQueueOfGettingChildNodes(condition: Condition, queue: Task[]) {
+  //   if (queue.length > 0) {
+  //     const {attributeId, node} = queue.shift() as Task;
+  //     this.#getChildNodes(attributeId, node).then(() =>
+  //       this.#progressQueueOfGettingChildNodes(condition, queue)
+  //     );
+  //   } else {
+  //     this.#restoreConditions(condition);
+  //   }
+  // }
+
+  // #getChildNodes(attributeId: string, node: string) {
+  //   return new Promise<void>((resolve, reject) => {
+  //     Records.fetchChildNodes(attributeId, node)
+  //       .then(() => {
+  //         resolve();
+  //       })
+  //       .catch(error => {
+  //         reject(error);
+  //       });
+  //   });
+  // }
 
   #restoreConditions(condition: Condition) {
     const {dataset, annotations, filters} = condition;
@@ -417,9 +413,9 @@ class ConditionBuilder {
     // this.#userIds = userIds;
     this.setAnnotation(annotations, false);
     Records.attributes.forEach(({id}) => {
-      const attribute = filters.find(attribute => attribute.attributeId === id);
+      const filter = filters.find(filter => filter.attributeId === id);
       const nodes: string[] = [];
-      if (attribute) nodes.push(...attribute.nodes);
+      if (filter) nodes.push(...filter.nodes);
       this.setFilter(id, nodes, false);
     });
     this.finish(false);

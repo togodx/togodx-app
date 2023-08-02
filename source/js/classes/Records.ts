@@ -99,12 +99,16 @@ class Records {
     return await attribute.fetchNode(nodeId);
   }
 
+  /**
+   * Used only in ColumnSelectorView, but commented out since ColumnSelectorView is no longer used
+   */
   async fetchChildNodes(attributeId: string, nodeId: string): Promise<Breakdown[]> {
     const attribute = this.getAttribute(attributeId);
     return await attribute.fetchChildNodes(nodeId);
+    // return Promise.resolve([]);
   }
 
-  getNode(attributeId: string, nodeId: string | undefined): BreakdownWithParentNode | undefined {
+  getNode(attributeId: string, nodeId: string): Breakdown | undefined {
     const attribute = this.getAttribute(attributeId);
     return attribute.getNode(nodeId);
   }
@@ -114,19 +118,19 @@ class Records {
   //   return attribute.nodes.filter(filter => filter.parentNode === parentNode);
   // }
 
-  getAncestors(attributeId: string, nodeId: string | undefined): Breakdown[] {
-    const attribute = this.getAttribute(attributeId)!;
-    const ancestors: Breakdown[] = [];
-    let parent: BreakdownWithParentNode | undefined;
-    do {
-      // find ancestors
-      parent = attribute.nodes.find(filter => filter.node === nodeId);
-      if (parent) ancestors.unshift(parent);
-      nodeId = parent?.parentNode;
-    } while (parent);
-    ancestors.pop();
-    return ancestors;
-  }
+  // getAncestors(attributeId: string, nodeId: string | undefined): Breakdown[] {
+  //   const attribute = this.getAttribute(attributeId);
+  //   const ancestors: Breakdown[] = [];
+  //   let parent: BreakdownWithParentNode | undefined;
+  //   do {
+  //     // find ancestors
+  //     parent = attribute.n__odes.find(filter => filter.node === nodeId);
+  //     if (parent) ancestors.unshift(parent);
+  //     nodeId = parent?.parentNode;
+  //   } while (parent);
+  //   ancestors.pop();
+  //   return ancestors;
+  // }
 
   // category
 

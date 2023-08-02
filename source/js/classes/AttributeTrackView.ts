@@ -166,37 +166,37 @@ export default class AttributeTrackView {
     if (this.#madeFilters) return;
     this.#madeFilters = true;
 
-    const filters = await Records.fetchChildNodes(this.#attribute.id).catch(
-      err => {
+    const nodes = await this.#attribute.fetchFirstLevelNodes().catch(
+        err => {
         console.error(err);
         this.#showError(err);
       }
     );
     this.#LOADING_VIEW.classList.remove('-shown');
     this.#ROOT.classList.remove('-preparing');
-    if (!filters) return;
+    if (!nodes) return;
 
     // make overview
     new TrackOverviewCategorical(
       this.#OVERVIEW_CONTAINER,
       this.#attribute,
-      filters
+      nodes
     );
 
     // make selector view
     switch (this.#attribute.datamodel) {
       case 'classification':
-        if (filters.some(filter => !filter.tip)) {
+        if (nodes.some(node => !node.tip)) {
           new CategoryBrowserView(
             this.#SELECT_CONTAINER,
             this.#attribute,
-            filters
+            nodes
           );
         } else {
           new ColumnSelectorView(
             this.#SELECT_CONTAINER,
             this.#attribute,
-            filters
+            nodes
           );
         }
         break;
@@ -204,7 +204,7 @@ export default class AttributeTrackView {
         new HistogramRangeSelectorView(
           this.#SELECT_CONTAINER,
           this.#attribute,
-          filters
+          nodes
         );
         break;
     }
@@ -215,7 +215,7 @@ export default class AttributeTrackView {
   #mutateAnnotationCondition(event: CustomEvent) {
     const {action, conditionUtilityAnnotation} = event.detail;
     // ({detail: {action, conditionUtilityAnnotation}}) => {
-    if (conditionUtilityAnnotation.parentNode !== undefined) return;
+    if (conditionUtilityAnnotation.nodeId !== undefined) return;
     switch (action) {
       case 'add':
         if (conditionUtilityAnnotation.attributeId === this.#attribute.id) {

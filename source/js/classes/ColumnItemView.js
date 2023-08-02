@@ -74,8 +74,8 @@ export default class ColumnItemView {
         if (action === 'remove') {
           if (column.attributeId === conditionUtilityAnnotation.attributeId) {
             if (
-              conditionUtilityAnnotation.parentNode &&
-              node === conditionUtilityAnnotation.parentNode
+              conditionUtilityAnnotation.nodeId &&
+              node === conditionUtilityAnnotation.nodeId
             ) {
               this.#INPUT_KEY.checked = action === 'add';
             }
