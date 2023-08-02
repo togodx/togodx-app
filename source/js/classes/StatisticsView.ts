@@ -54,10 +54,17 @@ export default class StatisticsView {
     //   console.log(condition.nodes.map(node => Records.getNode(this.#attributeId, node)))
     //   console.log(attribute)
     // }
-    if (condition instanceof ConditionFilterUtility && attribute.datamodel === 'classification' && attribute.nodes.some(node => !node.tip)) {
-      console.log('******')
-      console.log( condition.nodes )
-      // attribute.fetchHierarchicNode()
+
+    // if (condition instanceof ConditionFilterUtility && attribute.datamodel === 'classification' && attribute.nodes.some(node => !node.tip)) {
+    //   console.log('******')
+    //   console.log( condition.nodes )
+    //   // attribute.fetchHierarchicNode()
+    if (condition instanceof ConditionFilterUtility) {
+        Promise.all(condition.nodes.map(nodeId => attribute.fetchNode(nodeId)))
+          .then(nodes => {
+            this.#referenceNodes = nodes;
+            this.#draw();
+          });
     } else if (condition instanceof ConditionAnnotationUtility && condition.nodeId) {
       Records.fetchChildNodes(this.#attributeId, condition.nodeId).then(
         nodes => {

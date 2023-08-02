@@ -47,7 +47,7 @@ export default class AttributeUtility {
           for (const node of nodes) {this.#cacheNodes.set(node.node, node)}
         });
     }
-    const nodes = (this.#firstLevelNodes as string[]).map(nodeId => this.#cacheNodes.get(nodeId) as Breakdown);
+    const nodes = this.firstLevelNodes as Breakdown[];
     return Promise.resolve(nodes);
   }
 
@@ -99,7 +99,7 @@ export default class AttributeUtility {
   }
 
   async fetchHierarchicNode(nodeId: string | undefined): Promise<BreakdownHierarchyResponse> {
-    // let bhr = this.#cac__he.get(nodeId);
+    console.log('fetchHierarchicNode', nodeId)
     let bhr: BreakdownHierarchyResponse;
     const nodeRelationship = this.#cacheNodeRelationship.get(nodeId);
     if (nodeRelationship) {
@@ -182,4 +182,13 @@ export default class AttributeUtility {
     console.trace('!!!!!!', this)
     return this.#n__odes;
   }
+
+  get firstLevelNodes(): Breakdown[] | undefined {
+    if (this.#firstLevelNodes) {
+      return this.#firstLevelNodes.map(nodeId => this.#cacheNodes.get(nodeId) as Breakdown);
+    } else {
+      return undefined;
+    }
+  }
+  
 }
