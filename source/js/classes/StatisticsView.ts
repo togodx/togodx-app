@@ -22,6 +22,7 @@ export default class StatisticsView {
   #BARS;
   #ROOT;
   #ROOT_NODE;
+  #LOADING_VIEW;
 
   constructor(
     statisticsRootNode: HTMLTableRowElement,
@@ -66,6 +67,7 @@ export default class StatisticsView {
     // references
     const container = elm.querySelector(':scope > .statistics') as HTMLDivElement;
     this.#BARS = container.querySelector(':scope > .bars') as HTMLDivElement;
+    this.#LOADING_VIEW = elm.querySelector(':scope > .loading-view') as HTMLDivElement;
 
     // event listener
     DefaultEventEmitter.addEventListener(
@@ -130,9 +132,9 @@ export default class StatisticsView {
       countMax = Math.max(...hitVlues.map(filter => filter.count));
     }
 
-    hitVlues.reduce((lastBar, {node, label, count, hitCount}) => {
-      console.log(lastBar, node, label, count, hitCount)
-      let bar = this.#BARS.querySelector(`:scope > .bar[data-node="${node}"]`);
+    hitVlues.reduce((lastBar: undefined | HTMLDivElement, hitValue) => {
+      const {node, label, count, hitCount} = hitValue;
+      let bar = this.#BARS.querySelector(`:scope > .bar[data-node="${node}"]`) as HTMLDivElement;
       if (bar === null) {
         // add bar
         bar = document.createElement('div');
@@ -152,11 +154,11 @@ export default class StatisticsView {
         }
       }
       // styling
-      bar.querySelector(':scope > .wholebar').style.height = `${
+      ((bar as HTMLDivElement).querySelector(':scope > .wholebar') as HTMLDivElement).style.height = `${
         (count / countMax) * 100
       }%`;
-      const hitbar = bar.querySelector(':scope > .hitbar');
-      const hitCountLabel = hitbar.querySelector(':scope > .filter');
+      const hitbar = bar.querySelector(':scope > .hitbar') as HTMLDivElement;
+      const hitCountLabel = hitbar.querySelector(':scope > .filter') as HTMLDivElement;
       let hitbarHeight;
       if (isStretch) {
         hitbarHeight = hitCount / count;
@@ -176,15 +178,11 @@ export default class StatisticsView {
 
     if ((event as CustomEvent)?.detail?.dxCondition.isPropertiesLoaded) {
       this.#ROOT.classList.add('-completed');
-      this.#ROOT
-        .querySelector(':scope > .loading-view')
-        .classList.remove('-shown');
+      this.#LOADING_VIEW.classList.remove('-shown');
     }
   }
 
   #failedFetchConditionResultsIDs() {
-    this.#ROOT
-      .querySelector(':scope > .loading-view')
-      .classList.remove('-shown');
+    this.#LOADING_VIEW.classList.remove('-shown');
   }
 }

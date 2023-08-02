@@ -5,7 +5,7 @@ import ConditionFilterUtility from './ConditionFilterUtility.ts';
 import DXCondition from './DXCondition.ts';
 import PresetManager from './PresetManager.ts';
 import * as events from '../events.js';
-import { SelectedNodes, Preset } from '../interfaces.ts';
+import { SelectedNodes, Preset, Breakdown } from '../interfaces.ts';
 
 const IS_SAVE_CONDITION_IN_SEARCH_PARAMS = false;
 
@@ -188,7 +188,7 @@ class ConditionBuilder {
     if (oldConditionFilterUtility) {
       const attribute = Records.getAttribute(attributeId);
       if (attribute) {
-        const originalNodess = attribute.nodes;
+        const originalNodess = attribute.firstLevelNodes as Breakdown[];
         originalNodess.forEach(originalNode => {
           const indexInNew = nodes.indexOf(originalNode.node);
           const indexInOld = oldConditionFilterUtility.nodes.indexOf(
