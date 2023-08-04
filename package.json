@@ -3,6 +3,8 @@
     "axios": "^1.2.2",
     "axios-retry": "^3.3.1",
     "colorjs.io": "0.0.7",
+    "lit": "^2.7.0",
+    "lit-element-state": "^1.7.0",
     "lodash": "^4.17.21"
   },
   "repository": {},
@@ -12,9 +14,14 @@
   "devDependencies": {
     "@types/node": "^18.11.18",
     "@types/pug": "^2.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
+    "@typescript-eslint/parser": "^5.57.0",
+    "eslint": "^8.37.0",
+    "eslint-plugin-import": "^2.27.5",
     "pug": "^3.0.2",
     "sass": "^1.57.1",
     "vite": "^4.0.4",
+    "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-static-copy": "^0.13.0"
   },
   "license": "UNLICENSED",

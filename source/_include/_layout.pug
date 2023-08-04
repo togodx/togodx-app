@@ -18,7 +18,7 @@ html.no-js(lang="en")
     link(rel="manifest" href="site.webmanifest")
     link(rel="apple-touch-icon" href="icon.png")
     // Place favicon.ico in the root directory
-    link(rel="stylesheet" href="css/main.sass")
+    link(rel="stylesheet" href="./css/main.sass")
 
   body(
     data-page=page
@@ -26,6 +26,7 @@ html.no-js(lang="en")
     data-display="properties"
     data-number-of-results="0"
     data-condition="filter"
+    data-editing-category
   )
     noscript
       iframe(src="https://www.googletagmanager.com/ns.html?id=GTM-T97JK83" height="0" width="0" style="display:none;visibility:hidden")
@@ -34,8 +35,12 @@ html.no-js(lang="en")
     header#Header
       h1
         a(href="./")
-          img(src="/images/logotype.svg" alt="TogoDX - Togo Data Explorer")
-      nav
+          img(src="./images/logotype.svg" alt="TogoDX - Togo Data Explorer")
+      nav.mainmenu
+        ul
+          li
+            h2.menuitem Select preset
+      nav.submenu
         ul
           li
             a(href="https://togodx.github.io/togodx-config-human/about.html") About

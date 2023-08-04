@@ -18,6 +18,9 @@
       flex-basis: calc(100% - var(--width-track-column-property))
       max-width: calc(100% - var(--width-track-column-property))
       transition: width var(--transition-instant)
+      position: relative
+      &:has(> category-browser-view)
+        overflow-x: auto
     &.-upper
       > .left
         position: relative
@@ -117,4 +120,4 @@
     display: none
     .category-view.-editing &
       display: inherit
-      opacity: .7
+      opacity: .6

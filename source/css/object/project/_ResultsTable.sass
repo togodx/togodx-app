@@ -1,26 +1,46 @@
 #ResultsTable
+  --size-collapse-button: 3.2rem
   bottom: 0
   z-index: var(--z-results)
   background-color: var(--color-lamp-black)
+  transition: opacity var(--transition-wipe)
+  body:not([data-editing-category=""]) &
+    opacity: 0
+    pointer-events: none
   > header
     --padding: calc(var(--height-results-header) - 1lh)
     color: white
+    background-color: var(--color-lamp-black)
     font-size: 1.4rem
     font-weight: bold
     padding: calc(var(--padding) * 0.7) 0 calc(var(--padding) * 0.3)
     position: relative
+    border-top: solid 1px var(--color-dark-gray)
+    &::before
+      content: ""
+      width: calc(var(--size-collapse-button) + 2px)
+      height: calc(var(--size-collapse-button) + 2px)
+      border: solid 1px var(--color-dark-gray)
+      position: absolute
+      top: -6px
+      left: calc(50% - var(--size-collapse-button) * 0.5 - 1px)
+      border-radius: calc((var(--size-collapse-button) + 2px) * 0.5)
+      z-index: -1
+      transition: top var(--transition-wipe)
+      [data-display="results"] &
+        top: 1px
     > .collapsenotchbutton
       position: absolute
-      top: -.5rem
-      width: 3.2rem
-      height: 3.2rem
-      left: calc(50% - 1.6rem)
-      border-radius: 1.6rem
+      top: -5px
+      width: var(--size-collapse-button)
+      height: var(--size-collapse-button)
+      left: calc(50% - var(--size-collapse-button) * 0.5)
+      border-radius: calc(var(--size-collapse-button) * 0.5)
       background-color: var(--color-lamp-black)
       cursor: pointer
       transition: top var(--transition-wipe)
       [data-display="results"] &
-        top: .2rem
+        top: 2px
       [data-number-of-results="0"] &
         pointer-events: none
       &::before
@@ -41,6 +61,7 @@
   > .inner
     --padding: calc((var(--height-results-thead-row) - var(--height-togo-key-view)) * 0.5)
     overflow: auto
+    height: calc(100% - var(--height-results-header))
     > table
       width: 100%
       height: auto
@@ -54,8 +75,8 @@
       th, td
         padding: 0
         > .inner
-          padding-left: var(--padding-track-inline-start)
-          padding-right: var(--padding-track-inline-start)
+          padding-left: var(--padding-track-inline)
+          padding-right: var(--padding-track-inline)
       > thead
         height: 100%
         > tr
@@ -144,6 +165,9 @@
     > .tableend
       height: 8rem
       position: relative
-    &.-complete
+      [data-display="properties"] &
+        display: none
+  &.-complete
+    > .inner
       > .tableend
         display: none

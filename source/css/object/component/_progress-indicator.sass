@@ -1,64 +1,63 @@
 .progress-indicator
-    padding: .4rem .4rem
-    display: none
-    font-size: 1rem
-    &.-border
-        border-bottom: solid .1rem var(--color-separator)
-    &.-simple
-        >.text
-            padding-top: 1rem
+  padding: .4rem .4rem
+  display: none
+  font-size: 1rem
+  &.-border
+    border-bottom: solid .1rem var(--color-separator)
+  &.-simple
+    >.text
+      padding-top: 1rem
+  > .text
+    line-height: 1
+    display: flex
+    justify-content: space-between
+    > .amount
+      display: none
+    > .status
+      display: flex
+      align-items: center
+      text-align: center
+      > .material-icons
+        font-size: 1.4rem
+        width: 1.6rem
+        &.-rotating
+          animation: rotation 3s linear infinite
+  > .progress
+    margin: .4rem 0
+    position: relative
+    height: .4rem
+    width: 100%
+    background-color: rgba(0, 0, 0, .1)
+    > .bar
+      background-color: var(--color-lamp-black)
+      position: absolute
+      height: .4rem
+      top: 0
+      left: 0
+      transition: width var(--transition-wipe)
+  .-fetching &
+    display: block
+  [data-load="properties"] &, [data-load="completed"] &
     > .text
-        line-height: 1
-        display: flex
-        justify-content: space-between
-        > .amount-of-data
-            display: none
-        > .status
-            display: flex
-            align-items: center
-            text-align: center
-            >.material-icons-outlined
-                font-size: 1.4rem
-                width: 1.6rem
-                &.-rotating
-                    animation: rotation 3s linear infinite
-    > .progress
-        margin: .4rem 0
-        position: relative
-        height: .4rem
-        width: 100%
-        background-color: rgba(0, 0, 0, .1)
-        > .bar
-            background-color: var(--color-lamp-black)
-            position: absolute
-            height: .4rem
-            top: 0
-            left: 0
-            transition: width var(--transition-wipe)
-    .-fetching &, [data-status="load rows"] &, [data-status="complete"] &
+      > .amount
         display: block
-    [data-status="load rows"] &, [data-status="complete"] &
-        > .text
-            > .amount-of-data
-                display: block
-    .-fetching &
-        > .text
-            > .bar
-                animation: var(--transition-fetching) infinite alternate fetching
-    [data-status="complete"] &
-        > .text
-            > .status
-                display: none
-        &.-simple, &.error
-            > .progress
-                display: none
-            > .text
-                > .status
-                    display: block
-                    > .material-icons-outlined
-                        display: none
-        &.error
-            > .text
-                > .status
-                    color: var(--color-error)
-                    
+  .-fetching &
+    > .text
+      > .bar
+        animation: var(--transition-fetching) infinite alternate fetching
+  [data-load="completed"] &
+    > .text
+      > .status
+        display: none
+    &.-simple, &.error
+      > .progress
+        display: none
+      > .text
+        > .status
+          display: block
+          > .material-icons
+            display: none
+    &.error
+      > .text
+        > .status
+          color: var(--color-error)

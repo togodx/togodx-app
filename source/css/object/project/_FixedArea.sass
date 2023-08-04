@@ -1,6 +1,6 @@
 #FixedArea
-  --padding-inline-start: 1.2rem
-  --padding-block-start: 1rem
+  --padding-inline: 1.2rem
+  --padding-block: 1rem
   border-left: solid .1rem var(--color-lamp-black)
   background-color: var(--color-gray)
   width: var(--width-condition)
@@ -18,23 +18,25 @@
     > section
       display: flex
       flex-direction: column
-      // height: 100%
-      padding: var(--padding-block-start) var(--padding-inline-start)
+      padding: var(--padding-block) var(--padding-inline)
+      &#MiscArea
+        padding-block: .7rem
       > header
-        padding: 0 0 var(--padding-track-block-start)
-        line-height: calc(var(--height-track) - var(--padding-track-block-start) * 2)
+        padding: 0 0 var(--padding-track-block)
+        line-height: calc(var(--height-track) - var(--padding-track-block) * 2)
         font-size: 1.4rem
         line-height: 1
         font-weight: bold
         color: white
         position: relative
+        display: flex
+        gap: .4em
         > .title
           margin: 0
           font-size: var(--font-size-title)
-        > .rounded-button-view
-          position: absolute
-          top: -.2rem
-          right: 0
+          flex-grow: 1
+        > .icon-button-view
+          font-size: 1.5rem
   > .row
     position: relative
     &::before
