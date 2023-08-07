@@ -1,7 +1,9 @@
 .attribute-track-view
-  margin-bottom: .1rem
+  margin-bottom: 1px
   font-size: 1.2rem
   position: relative
+  &:last-child
+    margin-bottom: 0
   > .row
     display: flex
     height: var(--height-track)
@@ -16,6 +18,9 @@
       flex-basis: calc(100% - var(--width-track-column-property))
       max-width: calc(100% - var(--width-track-column-property))
       transition: width var(--transition-instant)
+      position: relative
+      &:has(> category-browser-view)
+        overflow-x: auto
     &.-upper
       > .left
         position: relative
@@ -42,6 +47,13 @@
             margin-right: .4rem
             [data-condition="annotation"] &
               display: inherit
+            .category-view.-editing &
+              display: none
+          > .visibility
+            display: none
+            margin-right: .4rem
+            .category-view.-editing &
+              display: inherit
       > .right
         > .overview
           height: var(--height-track)
@@ -60,6 +72,8 @@
             background-color: rgba(lightgrey, .8)
             font-size: 1rem
             line-height: 3rem
+        .category-view.-editing &
+          pointer-events: none
     &.-lower
       content-visibility: hidden
       user-select: none
@@ -87,7 +101,7 @@
           > .overview
             background-color: transparent !important
   &.-allselected
-    &::after
+    &::before
       content: ""
       position: absolute
       top: 0
@@ -95,10 +109,15 @@
       display: block
       width: 100%
       height: 100%
-      border: solid .1rem black
-      box-shadow: 0 0 0 .1rem rgba(white, .5) inset
       pointer-events: none
+      border: solid 2px var(--color-selected)
+      z-index: var(--z-track-item-selected-hover)
   &.-spread
     > .row.-lower
       content-visibility: visible
       user-select: auto
+  &.-hidden
+    display: none
+    .category-view.-editing &
+      display: inherit
+      opacity: .6

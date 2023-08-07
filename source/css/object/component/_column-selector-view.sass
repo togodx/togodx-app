@@ -29,6 +29,10 @@
                   cursor: pointer
                   > input
                     vertical-align: middle
+                  .category-view.-editing &
+                    pointer-events: none
+                    > input
+                      opacity: .4
           > thead, > tbody
             > tr
               > .mapped, > .pvalue
@@ -117,38 +121,7 @@
                     display: none
               > .total, > .mapped, > .pvalue
                 text-align: right
-              &.-haschild
-                > .drilldown
-                  position: relative
-                  cursor: pointer
-                  width: 1.6rem
-                  &::before, &::after
-                    content: ""
-                    position: absolute
-                    display: block
-                  &::before
-                    width: 1rem
-                    height: 1rem
-                    top: .5rem
-                    right: .3rem
-                    border-radius: 100%
-                  &::after
-                    border-style: solid
-                    border-width: .3rem 0 .3rem .4rem
-                    border-color: transparent transparent transparent var(--color-lamp-black)
-                    top: .7rem
-                    right: .5rem
-                  &:hover
-                    &::before
-                      background-color: var(--color-lamp-black)
-                    &::after
-                      border-color: transparent transparent transparent white
-                &.-selected
-                  > .drilldown
-                    &::before
-                      background-color: var(--color-lamp-black)
-                    &::after
-                      border-color: transparent transparent transparent white
+
           body.-showuserids &
             > thead, > tbody
               > tr

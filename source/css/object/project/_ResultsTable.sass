@@ -1,16 +1,82 @@
 #ResultsTable
-  --thheight: 0.8rem
-  > .body
+  --size-collapse-button: 3.2rem
+  bottom: 0
+  z-index: var(--z-results)
+  background-color: var(--color-lamp-black)
+  transition: opacity var(--transition-wipe)
+  body:not([data-editing-category=""]) &
+    opacity: 0
+    pointer-events: none
+  > header
+    --padding: calc(var(--height-results-header) - 1lh)
+    color: white
+    background-color: var(--color-lamp-black)
+    font-size: 1.4rem
+    font-weight: bold
+    padding: calc(var(--padding) * 0.7) 0 calc(var(--padding) * 0.3)
+    position: relative
+    border-top: solid 1px var(--color-dark-gray)
+    &::before
+      content: ""
+      width: calc(var(--size-collapse-button) + 2px)
+      height: calc(var(--size-collapse-button) + 2px)
+      border: solid 1px var(--color-dark-gray)
+      position: absolute
+      top: -6px
+      left: calc(50% - var(--size-collapse-button) * 0.5 - 1px)
+      border-radius: calc((var(--size-collapse-button) + 2px) * 0.5)
+      z-index: -1
+      transition: top var(--transition-wipe)
+      [data-display="results"] &
+        top: 1px
+    > .collapsenotchbutton
+      position: absolute
+      top: -5px
+      width: var(--size-collapse-button)
+      height: var(--size-collapse-button)
+      left: calc(50% - var(--size-collapse-button) * 0.5)
+      border-radius: calc(var(--size-collapse-button) * 0.5)
+      background-color: var(--color-lamp-black)
+      cursor: pointer
+      transition: top var(--transition-wipe)
+      [data-display="results"] &
+        top: 2px
+      [data-number-of-results="0"] &
+        pointer-events: none
+      &::before
+        content: ""
+        width: .8rem
+        height: .8rem
+        border-top: solid .2rem white
+        border-right: solid .2rem white
+        display: block
+        position: absolute
+        translate: 1.2rem .8rem
+        rotate: -0.125turn
+        transition: rotate var(--transition-instant)
+        [data-display="results"] &
+          rotate: .375turn
+        [data-number-of-results="0"] &
+          opacity: .3
+  > .inner
+    --padding: calc((var(--height-results-thead-row) - var(--height-togo-key-view)) * 0.5)
+    overflow: auto
+    height: calc(100% - var(--height-results-header))
     > table
       width: 100%
-      height: 100%
+      height: auto
       font-size: 1.2rem
       line-height: 1.2
       background-color: white
+      > colgroup
+        > col
+          &.-selected
+            background-color: var(--color-selected-translucent)
       th, td
         padding: 0
         > .inner
-          padding: var(--padding-track-block-start) var(--padding-track-inline-start)
+          padding-left: var(--padding-track-inline)
+          padding-right: var(--padding-track-inline)
       > thead
         height: 100%
         > tr
@@ -18,37 +84,39 @@
           > th, td
             height: 100%
             > .inner
-              height: 100%
-          &.header, &.subheader
+              height: var(--height-results-thead-row)
+              padding-top: var(--padding)
+              padding-bottom: var(--padding)
+          &.header
             font-weight: bold
             white-space: nowrap
             > th
               position: sticky
+              top: 0
               z-index: var(--z-results-header)
               line-height: 1.5rem
               > .inner
                 border-bottom: solid .1rem var(--color-black)
-                &.-noborder
-                  border: none
-            &.header
-              > th
-                top: 0
-                &:nth-child(1)
-                  > .inner
-                    height: calc(var(--thheight) * 4)
-                    padding-top: calc(var(--thheight) * 0.5 + var(--padding-track-block-start))
-                &:nth-child(1), &:nth-child(2)
-                  > .inner
-                    background-color: var(--color-lamp-black)
-                    > .togo-key-view
-                      background-color: var(--color-dark-gray)
-            &.subheader
-              > th
-                top: var(--thheight)
+                &._category-color
+                  background-color: white
+                > .togo-key-view
+                  background-color: var(--color-dark-gray)
+              &:first-child
                 > .inner
-                  &._category-color
-                    background-color: white
+                  background-color: var(--color-lamp-black)
           &.statistics
+            color: white
+            background-color: var(--color-lamp-black)
+            > th
+              vertical-align: top
+            > th, > td
+              > .inner
+                height: auto
+                transition: height var(--transition-wipe), padding var(--transition-wipe)
+                overflow: hidden
+                [data-display="properties"] &
+                  height: 0
+                  padding: 0
             > th.controller
               > .inner
                 > label
@@ -63,28 +131,24 @@
                   > label.stretch
                     opacity: .4
                     pointer-events: none
-            > td
-              // position: sticky
-              // top: calc(var(--padding-track-block-start) * 2 + 1.6rem)
-              > .inner
-                background-color: white
-                // border-bottom: solid .1rem var(--color-black)
       > tbody
         > tr
           border-bottom: solid .1rem var(--color-separator)
           position: relative
-          background-color: white
           transition: border var(--transition-instant), box-shadow var(--transition-instant)
           &:hover, &.-selected
-            background-color: var(--color-selected)
+            background-color: var(--color-selected-translucent)
           > th, > td
             vertical-align: top
           > th
             font-weight: normal
           > td
             &.-selected
-              background-color: var(--color-selected)
+              background-color: var(--color-selected-translucent)
             > .inner
+              --padding-block: calc((var(--height-results-tbody-row) - 1lh) * 0.5)
+              padding-top: var(--padding-block)
+              padding-bottom: var(--padding-block)
               > ul
                 margin: 0
                 padding-inline-start: 0
@@ -101,7 +165,9 @@
     > .tableend
       height: 8rem
       position: relative
+      [data-display="properties"] &
+        display: none
   &.-complete
-    > .body
+    > .inner
       > .tableend
         display: none

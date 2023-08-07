@@ -1,0 +1,153 @@
+.condition-results-panel-view
+  background-color: white
+  box-shadow: var(--shadow-shallow)
+  text-align: center
+  font-size: 1rem
+  animation: var(--transition-instant) enter-stacking-item
+  transform-origin: 0 0
+  margin-top: .6rem
+  opacity: var(--opacity-disabled)
+  cursor: pointer
+  transition: opacity var(--transition-instant)
+  position: relative
+  .material-icons
+    font-size: 1.4rem
+    width: 1.6rem
+  > .close-button-view
+    position: absolute
+    top: .4rem
+    right: .4rem
+  > .conditions
+    display: flex
+    font-weight: bold
+    border-bottom: solid .1rem var(--color-separator)
+    > .condition
+      padding: .2rem .4rem
+      overflow: hidden
+      flex-grow: 1
+      &:first-child
+        color: white
+        background-color: var(--color-lamp-black)
+      > p
+        margin-bottom: 0
+        text-overflow: ellipsis
+        white-space: nowrap
+        overflow: hidden
+      &:last-child
+        padding-right: 1.8rem
+  > .status
+    padding: .3rem 0
+    border-bottom: solid .1rem var(--color-separator)
+    display: flex
+    align-items: center
+    justify-content: center
+    > p
+      margin-bottom: 0
+      transition: opacity var(--transition-instant)
+      &::before
+        content: "Awaiting"
+      > .error
+        color: red
+    > .material-icons
+      display: none
+
+  > .buttons
+    display: flex
+    > button
+      padding: .2rem 0
+      flex-grow: 1
+      background-color: var(--color-translucent-lamp-black2)
+      border: none
+      transition: background-color var(--transition-instant)
+      cursor: pointer
+      display: block
+    > button
+      color: white
+      display: none
+      &::before
+        font-family: 'Material Icons'
+        margin-left: -.4rem
+        margin-right: .2rem
+        top: 1px
+        position: relative
+      &:hover
+        background-color: var(--color-lamp-black)
+
+      &[data-button="resume"]
+        &::before
+          content: "play_arrow"
+        &::after
+          content: "Resume"
+      &[data-button="retry"]
+        &::before
+          content: "refresh"
+        &::after
+          content: "Retry"
+      &[data-button="tsv"]
+        &::before
+          content: "download"
+        &::after
+          content: "TSV"
+      &[data-button="condition"]
+        display: block
+        &::before
+          content: "download"
+        &::after
+          content: "Export"
+      &[data-button="edit"]
+        body[data-display="properties"] &
+          display: block
+        &::before
+          content: "edit"
+        &::after
+          content: "Edit"
+
+  &.-loading
+    > .progress-indicator
+      display: block
+    > .buttons
+      > button[data-button="resume"]
+        &::before
+          content: "pause"
+        &::after
+          content: "Pause"
+    &[data-load="ids"]
+      > .status
+        > p::before
+          content: "Getting ID list"
+    &[data-load="properties"]
+      > .status
+        > p::before
+          content: "Getting Data"
+
+  &:not([data-load="ids"])
+    > .progress-indicator
+      display: block
+  &[data-load="properties"]
+    > .buttons
+      > button[data-button="resume"]
+        display: block
+  &[data-load="completed"]:not([data-total-count="0"])
+    > .buttons
+      > button[data-button="tsv"]
+        display: block
+    > .status
+      > p::before
+        content: "Complete"
+
+  &.-current, &:hover
+    opacity: 1
+  &.-current
+    cursor: initial
+  &.-loading
+    > .status
+      > .material-icons
+        display: block
+        &.-rotating
+          animation: rotation 3s linear infinite
+
+@keyframes rotation
+  0%
+    transform: rotate(0)
+  100%
+    transform: rotate(360deg)

@@ -1,13 +1,112 @@
 .category-view
-  display: flex
+  position: relative
+  background-color: var(--color-gray)
+  &[data-number-of-visible-track="0"]
+    display: none
+  + .category-view
+    margin-top: .2rem
+  > .backdrop, > .selectall
+    opacity: 0
+    pointer-events: none
+    transition: opacity var(--transition-wipe), backdrop-filter var(--transition-instant)
+  > .selectall
+    position: absolute
+    left: calc(var(--width-track-column-subject) + 1.2rem)
+    top: -2.4rem
+    line-height: 2.4rem
+    color: white
+    font-weight: bold
+    > input
+      vertical-align: middle
+      margin-right: .2rem
   > .title
     margin: 0
-    width: var(--width-track-column-subject)
-    background-color: #BF3030
+    width: calc(var(--width-track-column-subject) - .1rem)
     color: white
     font-size: 1.2rem
     line-height: var(--width-track-column-subject)
     writing-mode: vertical-rl
-    text-align: center
+    text-align: left
+    position: absolute
+    left: 0
+    height: 100%
+    &::before
+      content: ""
+      display: block
+      width: 0
+      height: 0
+      position: absolute
+      top: 0
+      left: 0
+      border-style: solid
+      border-width: .6rem .6rem 0 0
+      border-color: var(--color-lamp-black) transparent transparent transparent
+    > .label
+      text-overflow: ellipsis
+      overflow: hidden
+      max-height: calc(100% - .4rem)
+      display: inline-block
+      vertical-align: middle
+      padding-top: 2rem
+    > .collapsebutton
+      display: block
+      width: 1.2rem
+      height: 1.2rem
+      border-radius: 100%
+      background-color: var(--color-lamp-black)
+      position: absolute
+      left: .4rem
+      top: .4rem
+      cursor: pointer
+      transition: transform var(--transition-wipe)
+      &::before, &::after
+        content: ""
+        position: absolute
+        background-color: white
+      &::before
+        width: .6rem
+        height: .15rem
+        top: .5rem
+        left: .3rem
+      &::after
+        width: .15rem
+        height: .6rem
+        top: .3rem
+        left: .5rem
   > .attributes
     width: calc(100% - var(--width-track-column-subject))
+    position: relative
+    left: var(--width-track-column-subject)
+  > .backdrop
+    z-index: -1
+    position: fixed
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    background-color: var(--color-backdrop)
+  > .buttons
+    text-align: center
+    position: sticky
+    bottom: 4.6rem
+    width: 100%
+    height: 0
+    opacity: 0
+    transition: opacity var(--transition-wipe)
+    > .rounded-button-view
+      display: inline-block
+      position: relative
+      top: 1rem
+      + .rounded-button-view
+        margin-left: .4rem
+  &.-editing
+    z-index: var(--z-modal-window)
+    > .title
+      > .collapsebutton
+        transform: rotate(225deg)
+    > .backdrop, > .selectall
+      opacity: 1
+      pointer-events: auto
+      backdrop-filter: blur(5px)
+    > .buttons
+      opacity: 1

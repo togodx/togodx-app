@@ -1,8 +1,5 @@
-import App from './classes/App.js';
+import App from './classes/App.ts';
+import config from './config.json';
 
-fetch('./config.json')
-  .then(response => response.json())
-  .then(api => {
-    globalThis.togositeapp = App;
-    App.ready(api);
-  });
+globalThis.togositeapp = App;
+App.ready(config);

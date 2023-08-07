@@ -1,6 +1,3 @@
-import App from '../classes/App';
-import ConditionBuilder from '../classes/ConditionBuilder';
-
 const noprocessing = parameter => parameter;
 const stringify = parameter => JSON.stringify(parameter);
 

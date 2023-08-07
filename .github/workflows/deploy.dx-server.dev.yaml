@@ -22,7 +22,17 @@ jobs:
 
       - name: "Copy config.dx-server-dev.json"
         run: |
-          cp -f ./config/config.dx-server-dev.json ./app/build/config.json
+          cp -f ./config/config.dx-server-dev.json ./app/source/js/config.json
+
+      - name: "Install Node & build vite.js app"
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - run: |
+          cd ./app
+          npm ci
+          npm run build
 
       - name: "Upload to S3 bucket: togodx-dx-server-dev"
         uses: opspresso/action-s3-sync@master
