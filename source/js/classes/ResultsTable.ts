@@ -31,9 +31,9 @@ export default class ResultsTable {
   #NUMBER_OF_ENTRIES: HTMLSpanElement;
   #COLLAPSE_BUTTON: HTMLDivElement;
   #COLGROUP: HTMLTableColElement;
-  #THEAD: HTMLTableRowElement;
+  #THEAD: HTMLTableSectionElement;
   #STATS: HTMLTableRowElement;
-  #TBODY: HTMLTableRowElement;
+  #TBODY: HTMLTableSectionElement;
   #TABLE_END: HTMLDivElement;
   #LOADING_VIEW: HTMLDivElement;
 
@@ -42,23 +42,23 @@ export default class ResultsTable {
 
     // references
     this.#ROOT = elm;
-    const header = elm.querySelector(':scope > header')!;
+    const header = elm.querySelector(':scope > header') as HTMLElement;
     this.#NUMBER_OF_ENTRIES = header.querySelector(
       ':scope > span > span.count'
-    )!;
+    ) as HTMLSpanElement;
     this.#COLLAPSE_BUTTON = header.querySelector(
       ':scope > .collapsenotchbutton'
-    )!;
+    ) as HTMLDivElement;
     const inner = elm.querySelector(':scope > .inner') as HTMLDivElement;
     const TABLE = inner.querySelector(':scope > table') as HTMLTableElement;
-    this.#COLGROUP = TABLE.querySelector(':scope > colgroup')!;
-    this.#THEAD = TABLE.querySelector(':scope > thead > tr.header')!;
-    this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics')!;
-    this.#TBODY = TABLE.querySelector(':scope > tbody')!;
-    this.#TABLE_END = inner.querySelector(':scope > .tableend')!;
+    this.#COLGROUP = TABLE.querySelector(':scope > colgroup') as HTMLTableColElement;
+    this.#THEAD = TABLE.querySelector(':scope > thead > tr.header') as HTMLTableRowElement;
+    this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics') as HTMLTableRowElement;
+    this.#TBODY = TABLE.querySelector(':scope > tbody') as HTMLTableSectionElement;
+    this.#TABLE_END = inner.querySelector(':scope > .tableend') as HTMLDivElement;
     this.#LOADING_VIEW = this.#TABLE_END.querySelector(
       ':scope > .loading-view'
-    )!;
+    ) as HTMLDivElement;
 
     // get next data automatically
     this.#intersctionObserver = new IntersectionObserver(entries => {
