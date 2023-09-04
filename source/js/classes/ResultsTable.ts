@@ -275,7 +275,6 @@ export default class ResultsTable {
 
   #addNextRows(additionalRows: AdditionalRows) {
     const {dxCondition, offset, nextRows, isPreview = false} = additionalRows;
-    console.log(dxCondition, offset, nextRows, isPreview)
     const isValidPreview =
       document.body.dataset.display === 'properties' && isPreview;
     const isValidResults =
