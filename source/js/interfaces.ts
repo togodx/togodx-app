@@ -186,3 +186,6 @@ export interface ShowEntryDetail {
     isPrimaryKey: boolean,
   };
 }
+
+// display
+export type Display = 'results' | 'properties';

@@ -8,8 +8,16 @@ import ResultsTableRow from './ResultsTableRow';
 import * as event from '../events';
 import DXCondition from './DXCondition.ts';
 import {
-  TableHeader,
+  TableHeader, DataFrame, Display
 } from '../interfaces.ts';
+
+interface AdditionalRows {
+  dxCondition: DXCondition;
+  offset: number;
+  nextRows: DataFrame[];
+  isAutoLoading?: boolean;
+  isPreview?: boolean;
+}
 
 const NUM_OF_PREVIEW = 5;
 const displayMap = new Map([
@@ -23,17 +31,17 @@ const prMapEntry = new Map([
 
 export default class ResultsTable {
   #intersctionObserver: IntersectionObserver;
-  #conditionResults: ConditionResultsController;
+  #conditionResults: undefined | ConditionResultsController;
   #statisticsViews: StatisticsView[];
-  #header: TableHeader[];
-  #previewDxCondition: DXCondition;
+  #header: TableHeader[] = [];
+  #previewDxCondition: undefined | DXCondition;
   #ROOT: HTMLElement;
   #NUMBER_OF_ENTRIES: HTMLSpanElement;
   #COLLAPSE_BUTTON: HTMLDivElement;
   #COLGROUP: HTMLTableColElement;
-  #THEAD: HTMLTableRowElement;
+  #THEAD: HTMLTableSectionElement;
   #STATS: HTMLTableRowElement;
-  #TBODY: HTMLTableRowElement;
+  #TBODY: HTMLTableSectionElement;
   #TABLE_END: HTMLDivElement;
   #LOADING_VIEW: HTMLDivElement;
 
@@ -42,23 +50,23 @@ export default class ResultsTable {
 
     // references
     this.#ROOT = elm;
-    const header = elm.querySelector(':scope > header')!;
+    const header = elm.querySelector(':scope > header') as HTMLElement;
     this.#NUMBER_OF_ENTRIES = header.querySelector(
       ':scope > span > span.count'
-    )!;
+    ) as HTMLSpanElement;
     this.#COLLAPSE_BUTTON = header.querySelector(
       ':scope > .collapsenotchbutton'
-    )!;
+    ) as HTMLDivElement;
     const inner = elm.querySelector(':scope > .inner') as HTMLDivElement;
     const TABLE = inner.querySelector(':scope > table') as HTMLTableElement;
-    this.#COLGROUP = TABLE.querySelector(':scope > colgroup')!;
-    this.#THEAD = TABLE.querySelector(':scope > thead > tr.header')!;
-    this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics')!;
-    this.#TBODY = TABLE.querySelector(':scope > tbody')!;
-    this.#TABLE_END = inner.querySelector(':scope > .tableend')!;
+    this.#COLGROUP = TABLE.querySelector(':scope > colgroup') as HTMLTableColElement;
+    this.#THEAD = TABLE.querySelector(':scope > thead > tr.header') as HTMLTableSectionElement;
+    this.#STATS = TABLE.querySelector(':scope > thead > tr.statistics') as HTMLTableRowElement;
+    this.#TBODY = TABLE.querySelector(':scope > tbody') as HTMLTableSectionElement;
+    this.#TABLE_END = inner.querySelector(':scope > .tableend') as HTMLDivElement;
     this.#LOADING_VIEW = this.#TABLE_END.querySelector(
       ':scope > .loading-view'
-    )!;
+    ) as HTMLDivElement;
 
     // get next data automatically
     this.#intersctionObserver = new IntersectionObserver(entries => {
@@ -73,7 +81,7 @@ export default class ResultsTable {
 
     // attach event
     this.#COLLAPSE_BUTTON.addEventListener('click', () => {
-      const currentDisplay = document.body.dataset.display!;
+      const currentDisplay = document.body.dataset.display as Display;
       document.body.dataset.display = displayMap.get(currentDisplay);
       if (currentDisplay === 'properties')
         ConditionBuilder.makeQueryParameter();
@@ -84,25 +92,19 @@ export default class ResultsTable {
       event.mutateEstablishConditions,
       this.#makePreview.bind(this)
     );
-    DefaultEventEmitter.addEventListener(event.selectConditionResults, e =>
-      this.#setupTable(e.detail)
-    );
-    DefaultEventEmitter.addEventListener(event.addNextRows, e =>
-      this.#addNextRows(e.detail)
-    );
-    DefaultEventEmitter.addEventListener(event.highlightColumn, e => {
-      this.#highlightColumn(e.detail);
+    DefaultEventEmitter.addEventListener(event.selectConditionResults, this.#setupTable.bind(this));
+    DefaultEventEmitter.addEventListener(event.addNextRows, e => {
+      const additionalRows: AdditionalRows = (e as CustomEvent).detail;
+      this.#addNextRows(additionalRows);
     });
-    DefaultEventEmitter.addEventListener(
-      event.failedFetchConditionResultsIDs,
-      e => this.#failed(e.detail)
-    );
+    DefaultEventEmitter.addEventListener(event.highlightColumn, this.#highlightColumn.bind(this));
+    DefaultEventEmitter.addEventListener(event.failedFetchConditionResultsIDs, this.#failed.bind(this));
 
     // statistics
     const controller = this.#STATS.querySelector(
       ':scope > th.controller > .inner'
-    );
-    controller.querySelectorAll(':scope > label > input').forEach(radio => {
+    ) as HTMLDivElement;
+    controller.querySelectorAll<HTMLInputElement>(':scope > label > input').forEach(radio => {
       radio.addEventListener('change', () => {
         switch (radio.value) {
           case 'hits_all':
@@ -135,11 +137,11 @@ export default class ResultsTable {
 
   #enterTableEnd() {
     this.#intersctionObserver.unobserve(this.#TABLE_END);
-    this.#conditionResults.next();
+    if (this.#conditionResults) this.#conditionResults.next();
   }
 
-  async #makePreview(e: CustomEvent) {
-    const isEstablised = e.detail as boolean;
+  async #makePreview(e: Event) {
+    const isEstablised = (e as CustomEvent).detail as boolean;
     if (isEstablised && (document.body.dataset.display = 'properties')) {
       this.#TBODY.innerHTML = '';
       this.#previewDxCondition = ConditionBuilder.dxCondition;
@@ -152,7 +154,7 @@ export default class ResultsTable {
       )}`;
       this.#makeTableHeader(this.#previewDxCondition);
       // make rows
-      document.body.dataset.numberOfResults = ids.length;
+      document.body.dataset.numberOfResults = String(ids.length);
       const nextRows = await this.#previewDxCondition.getNextProperties(
         NUM_OF_PREVIEW
       );
@@ -166,7 +168,8 @@ export default class ResultsTable {
     }
   }
 
-  #setupTable(conditionResults: ConditionResultsController) {
+  #setupTable(e: Event) {
+    const conditionResults: ConditionResultsController = (e as CustomEvent).detail;
     if ((document.body.dataset.display = 'results')) {
       // reset
       this.#conditionResults = conditionResults;
@@ -261,8 +264,8 @@ export default class ResultsTable {
       this.#statisticsViews.push(
         new StatisticsView(
           this.#STATS,
-          td.querySelector(':scope > .inner > div'),
-          this.#conditionResults,
+          td.querySelector(':scope > .inner > div') as HTMLDivElement,
+          this.#conditionResults as ConditionResultsController,
           index,
           condition
         )
@@ -270,7 +273,8 @@ export default class ResultsTable {
     });
   }
 
-  #addNextRows({dxCondition, offset, nextRows, isPreview = false}) {
+  #addNextRows(additionalRows: AdditionalRows) {
+    const {dxCondition, offset, nextRows, isPreview = false} = additionalRows;
     const isValidPreview =
       document.body.dataset.display === 'properties' && isPreview;
     const isValidResults =
@@ -300,7 +304,8 @@ export default class ResultsTable {
     }
   }
 
-  #highlightColumn({x, isEnter, oldCell, newCell}) {
+  #highlightColumn(e: Event) {
+    const {x, isEnter, oldCell, newCell} = (e as CustomEvent).detail;
     // TODO: ハイライト関係の最適化
     // if (oldCell.x) {
     //   this.#COLGROUP
@@ -317,11 +322,9 @@ export default class ResultsTable {
       .querySelectorAll(`:scope > tr.-selected`)
       .forEach(tr => tr.classList.remove('-selected'));
     this.#COLGROUP
-      .querySelector(`:scope > col:nth-child(${+newCell.x + 1})`)
-      .classList.add('-selected');
+      .querySelector(`:scope > col:nth-child(${+newCell.x + 1})`)?.classList.add('-selected');
     this.#TBODY
-      .querySelector(`:scope > tr[data-index="${newCell.y}"]`)
-      .classList.add('-selected');
+      .querySelector(`:scope > tr[data-index="${newCell.y}"]`)?.classList.add('-selected');
   }
 
   #failed() {
