@@ -8,6 +8,7 @@ export default class ConditionAnnotationUtility extends ConditionUtility {
 
   constructor(attributeId: string, nodeId?: string) {
     super(attributeId);
+    console.trace(attributeId, nodeId);
     this.#nodeId = nodeId;
   }
 

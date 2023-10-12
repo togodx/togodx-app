@@ -31,6 +31,7 @@ export default class StatisticsView {
     index: number,
     condition: ConditionFilterUtility | ConditionAnnotationUtility
   ) {
+    console.log(statisticsRootNode, conditionResults, index, condition)
     this.#index = index;
     this.#attributeId = condition.attributeId;
     this.#conditionResults = conditionResults;
@@ -57,11 +58,25 @@ export default class StatisticsView {
           this.#draw();
         });
     } else if (condition instanceof ConditionAnnotationUtility) {
+      console.log(attribute)
+      console.log(attribute.datamodel)
+      switch (attribute.datamodel) {
+        case 'classification':
+          break;
+        case 'distribution':
+          console.log(condition)
+          attribute.fetchNode(condition.nodeId)
+            .then(res => {
+              console.log(res)
+            })
+          break;
+      }
       attribute.fetchHierarchicNode(condition.nodeId)
         .then(nodes => {
           this.#referenceNodes = [...nodes.children];
+          console.log(this.#referenceNodes)
           this.#draw();
-        })
+        });
     }
 
     // references
@@ -100,13 +115,16 @@ export default class StatisticsView {
   }
 
   #draw(event?: Event) {
+    console.log(event)
     const flattenedAttributes = this.#conditionResults.data
       .map(datum => datum.attributes[this.#index])
       .map(attribute => attribute.items)
       .flat();
+    console.log(flattenedAttributes)
     const uniquedAttributes: DataFrameAttributeItem[] = _.uniqWith(flattenedAttributes, (a, b) => {
       return a.entry === b.entry && a.node === b.node;
     });
+    console.log(uniquedAttributes)
     const hitVlues: HitValue[] = [];
     this.#referenceNodes?.forEach(({node, label, count}) => {
       const filtered = uniquedAttributes.filter(
