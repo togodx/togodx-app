@@ -62,21 +62,33 @@ export default class StatisticsView {
       console.log(attribute.datamodel)
       switch (attribute.datamodel) {
         case 'classification':
+          // console.log(attribute.fetchFirstLevelNodes)
+          // this.#referenceNodes = [...attribute.fetchFirstLevelNodes];
+          // this.#draw();
+          console.log(condition)
+          attribute.fetchHierarchicNode(condition.nodeId)
+            .then(nodes => {
+              console.log(nodes)
+              this.#referenceNodes = [...nodes.children];
+              this.#draw();
+            })
           break;
         case 'distribution':
-          console.log(condition)
-          attribute.fetchNode(condition.nodeId)
-            .then(res => {
-              console.log(res)
+          console.log(attribute)
+          attribute.fetchFirstLevelNodes()
+            .then(nodes => {
+              console.log(nodes)
+              this.#referenceNodes = [...nodes];
+              this.#draw();
             })
           break;
       }
-      attribute.fetchHierarchicNode(condition.nodeId)
-        .then(nodes => {
-          this.#referenceNodes = [...nodes.children];
-          console.log(this.#referenceNodes)
-          this.#draw();
-        });
+      // attribute.fetchHierarchicNode(condition.nodeId)
+      //   .then(nodes => {
+      //     this.#referenceNodes = [...nodes.children];
+      //     console.log(this.#referenceNodes)
+      //     this.#draw();
+      //   });
     }
 
     // references
