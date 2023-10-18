@@ -59,30 +59,20 @@ export default class StatisticsView {
     } else if (condition instanceof ConditionAnnotationUtility) {
       switch (attribute.datamodel) {
         case 'classification':
-          console.log(condition)
           attribute.fetchHierarchicNode(condition.nodeId)
             .then(nodes => {
-              console.log(nodes)
               this.#referenceNodes = [...nodes.children];
               this.#draw();
             })
           break;
         case 'distribution':
-          console.log(attribute)
           attribute.fetchFirstLevelNodes()
             .then(nodes => {
-              console.log(nodes)
               this.#referenceNodes = [...nodes];
               this.#draw();
             })
           break;
       }
-      // attribute.fetchHierarchicNode(condition.nodeId)
-      //   .then(nodes => {
-      //     this.#referenceNodes = [...nodes.children];
-      //     console.log(this.#referenceNodes)
-      //     this.#draw();
-      //   });
     }
 
     // references
@@ -121,16 +111,13 @@ export default class StatisticsView {
   }
 
   #draw(event?: Event) {
-    console.log(event)
     const flattenedAttributes = this.#conditionResults.data
       .map(datum => datum.attributes[this.#index])
       .map(attribute => attribute.items)
       .flat();
-    console.log(flattenedAttributes)
     const uniquedAttributes: DataFrameAttributeItem[] = _.uniqWith(flattenedAttributes, (a, b) => {
       return a.entry === b.entry && a.node === b.node;
     });
-    console.log(uniquedAttributes)
     const hitVlues: HitValue[] = [];
     this.#referenceNodes?.forEach(({node, label, count}) => {
       const filtered = uniquedAttributes.filter(
