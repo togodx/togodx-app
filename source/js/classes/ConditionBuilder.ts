@@ -7,7 +7,7 @@ import PresetManager from './PresetManager.ts';
 import * as events from '../events.js';
 import { SelectedNodes, Preset, Breakdown } from '../interfaces.ts';
 
-const IS_SAVE_CONDITION_IN_SEARCH_PARAMS = true;
+const IS_SAVE_CONDITION_IN_SEARCH_PARAMS = false;
 
 interface Condition {
   dataset: string;
