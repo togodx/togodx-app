@@ -33,7 +33,6 @@ export default class DXCondition {
     conditionUtilityFilters: ConditionFilterUtility[],
     attributeSet: string[]
   ) {
-    console.log(conditionUtilityAnnotations);
     this.#id = idCounter++;
     this.#dataset = dataset;
     this.#userIds = [...userIds];

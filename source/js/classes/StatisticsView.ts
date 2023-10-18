@@ -31,7 +31,6 @@ export default class StatisticsView {
     index: number,
     condition: ConditionFilterUtility | ConditionAnnotationUtility
   ) {
-    console.log(statisticsRootNode, conditionResults, index, condition)
     this.#index = index;
     this.#attributeId = condition.attributeId;
     this.#conditionResults = conditionResults;
@@ -58,13 +57,8 @@ export default class StatisticsView {
           this.#draw();
         });
     } else if (condition instanceof ConditionAnnotationUtility) {
-      console.log(attribute)
-      console.log(attribute.datamodel)
       switch (attribute.datamodel) {
         case 'classification':
-          // console.log(attribute.fetchFirstLevelNodes)
-          // this.#referenceNodes = [...attribute.fetchFirstLevelNodes];
-          // this.#draw();
           console.log(condition)
           attribute.fetchHierarchicNode(condition.nodeId)
             .then(nodes => {
