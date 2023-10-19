@@ -49,20 +49,7 @@ export default class StatisticsView {
     `;
 
     // display order of bar chart
-    const attribute = Records.getAttribute(this.#attributeId);
-    if (condition instanceof ConditionFilterUtility) {
-      Promise.all(condition.nodes.map(nodeId => attribute.fetchNode(nodeId)))
-        .then(nodes => {
-          this.#referenceNodes = nodes;
-          this.#draw();
-        });
-    } else if (condition instanceof ConditionAnnotationUtility) {
-      attribute.fetchHierarchicNode(condition.nodeId)
-        .then(nodes => {
-          this.#referenceNodes = [...nodes.children];
-          this.#draw();
-        })
-    }
+    this.#prepareReferenceNodes(condition);
 
     // references
     const container = elm.querySelector(':scope > .statistics') as HTMLDivElement;
@@ -97,6 +84,28 @@ export default class StatisticsView {
       event.failedFetchConditionResultsIDs,
       this.#failedFetchConditionResultsIDs.bind(this)
     );
+  }
+
+  async #prepareReferenceNodes(condition: ConditionFilterUtility | ConditionAnnotationUtility) {
+    const attribute = Records.getAttribute(this.#attributeId);
+    let breakdowns: Breakdown[] = [];
+    if (condition instanceof ConditionFilterUtility) {
+      // get single node
+      breakdowns = await Promise.all(condition.nodes.map(nodeId => attribute.fetchNode(nodeId)));
+    } else if (condition instanceof ConditionAnnotationUtility) {
+      // get all nodes of parent node
+      switch (attribute.datamodel) {
+        case 'classification':
+          breakdowns = await attribute.fetchHierarchicNode(condition.nodeId)
+            .then(nodes => nodes.children);
+          break;
+        case 'distribution':
+          breakdowns = await attribute.fetchFirstLevelNodes();
+          break;
+      }
+    }
+    this.#referenceNodes = [...breakdowns];
+    this.#draw();
   }
 
   #draw(event?: Event) {
