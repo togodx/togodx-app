@@ -97,9 +97,9 @@ export class CategoryBrowserView extends observeState(LitElement) {
     });
 
     return this.#API.post(App.getApiUrl('locate'), parameter).then(({data}) => {
-      data.forEach(filter => {
+      for (const filter of data) {
         this.#userFilterMap.set(filter.node, filter);
-      });
+      }
     });
   }
 
