@@ -117,7 +117,6 @@ export default class HistogramRangeSelectorController {
 
     // drag selecting area
     this.#SELECTING_AREA.addEventListener('mousedown', (e: MouseEvent) => {
-      console.log(this);
       interactionType = 'drag';
       selector.classList.add('-draggingarea');
       initialStart = this.start;

@@ -16,8 +16,6 @@ export default class ColumnItemView {
   #INPUT_KEY;
 
   constructor(column, {count, node, tip, label}, index, selectedNodes) {
-    // console.log(column, count, node, tip, label, index, selectedNodes);
-
     this.#label = label;
     this.#count = count;
     this.#node = node;
