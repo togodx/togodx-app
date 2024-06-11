@@ -94,7 +94,6 @@ export default class AttributeUtility {
   }
 
   getNode(nodeId: string): Breakdown | undefined {
-    console.log(this.#cacheNodes.get(nodeId))
     return this.#cacheNodes.get(nodeId);
   }
 
