@@ -18,6 +18,7 @@ import * as event from '../../events';
 import ConditionBuilder from '../ConditionBuilder.ts';
 import {observeState} from 'lit-element-state';
 import {state} from './CategoryBrowserState';
+import {getApiParameter} from '../../functions/queryTemplates.js';
 
 export class CategoryBrowserView extends observeState(LitElement) {
   #items;
@@ -87,6 +88,21 @@ export class CategoryBrowserView extends observeState(LitElement) {
     this.#loadCategoryData();
   }
 
+  #updateNodeMapped(nodeId) {
+    const parameter = getApiParameter('locate', {
+      attribute: this.#attributeId,
+      node: nodeId,
+      dataset: ConditionBuilder.currentDataset,
+      queries: ConditionBuilder.userIds,
+    });
+
+    return this.#API.post(App.getApiUrl('locate'), parameter).then(({data}) => {
+      for (const filter of data) {
+        this.#userFilterMap.set(filter.node, filter);
+      }
+    });
+  }
+
   #addLog10ToItems(categoryData) {
     return categoryData.map((item, index) => {
       item.countLog10 = item.count === 0 ? 0 : Math.log10(item.count);
@@ -95,6 +111,7 @@ export class CategoryBrowserView extends observeState(LitElement) {
     });
   }
 
+  /** Converts data from API to input format of the ontology browser */
   #convertCategoryData(incomingData) {
     const isLog10 = App.viewModes.log10;
 
@@ -174,17 +191,35 @@ export class CategoryBrowserView extends observeState(LitElement) {
     this.nodeId = this.#rootNodeId;
   }
 
+  /**
+   * Apply mapping data stored in #userFilterMap to the data shown in the category browser and rerender
+   */
+  #applyFilterToData() {
+    this.#addMappedToData();
+    this.categoryData = this.#unsortedData;
+  }
+
+  /** Loads data of children nodes (on node click) */
   #loadCategoryData(nodeId) {
     if (nodeId) {
       this.#categoryAPIBaseURL.searchParams.set('node', nodeId);
     }
-
     this.categoryLoading = true;
     this.#API.post(this.#categoryAPIBaseURL.href).then(({data}) => {
-      this.categoryLoading = false;
       this.#unsortedData = this.#convertCategoryData(data);
-      this.#addMappedToData();
-      this.categoryData = this.#unsortedData;
+      // if mapping is on, call mapping api for this node id, and populate #userFilterMap
+      if (ConditionBuilder.userIds.length > 0) {
+        this.#updateNodeMapped(nodeId)
+          .then(this.#applyFilterToData.bind(this))
+          .finally(() => {
+            this.categoryLoading = false;
+          });
+      } else {
+        // if mapping is off, just populate the data
+        this.categoryLoading = false;
+        this.#applyFilterToData();
+      }
+
       if (!nodeId) {
         // Load first time, with root node
         this.#rootNodeId = this.categoryData.details.id;
@@ -212,6 +247,10 @@ export class CategoryBrowserView extends observeState(LitElement) {
   #handleNodeClick(e) {
     this.nodeId = e.detail.id;
     this.#clickedRole = e.detail.role;
+
+    // if (ConditionBuilder.userIds) {
+    //   this.#updateNodeMapped();
+    // }
   }
 
   #handleNodeCheck(e) {
@@ -334,19 +373,18 @@ export class CategoryBrowserView extends observeState(LitElement) {
 
   /** When MappedIDs "Try", add pvalue & mapped values to data */
   #handleSetUserFilters(e) {
-    if (this.#attributeId === e.detail.attributeId) {
-      this.#userFilterMap.clear();
-      e.detail.filters.forEach(filter => {
-        this.#userFilterMap.set(filter.node, filter);
-      });
+    if (this.#attributeId !== e.detail.attributeId) return;
 
-      // this.#state.userFiltersSet = true;
+    this.#userFilterMap.clear();
+    e.detail.filters.forEach(filter => {
+      this.#userFilterMap.set(filter.node, filter);
+    });
 
-      state.userFiltersSet = true;
+    // this.#state.userFiltersSet = true;
 
-      this.#addMappedToData();
-      this.categoryData = this.#unsortedData;
-    }
+    state.userFiltersSet = true;
+
+    this.#applyFilterToData();
   }
 
   /** When Mapped IDs are cleared */

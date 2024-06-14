@@ -85,11 +85,17 @@ export class cachedAxios {
     });
   }
 
-  post(url: string) {
-    if (this.cache.has(url)) {
-      return Promise.resolve(this.cache.get(url));
+  post(url: string, data?: object) {
+    let cacheKey: string = url;
+    if (data) {
+      cacheKey += JSON.stringify(data);
     }
-    return this.axios.post(url).then(res => {
+
+    if (this.cache.has(cacheKey)) {
+      return Promise.resolve(this.cache.get(cacheKey));
+    }
+
+    return this.axios.post(url, data).then(res => {
       if (res.status !== 200) {
         throw new Error(res.statusText);
       }
@@ -98,7 +104,7 @@ export class cachedAxios {
         throw new Error('Empty response from API');
       }
 
-      this.cache.set(url, {data: res.data});
+      this.cache.set(cacheKey, {data: res.data});
       if (this.cache.size > this.maxCacheSize) {
         const [first] = this.cache.keys();
         this.cache.delete(first);

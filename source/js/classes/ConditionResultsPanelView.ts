@@ -173,12 +173,10 @@ export default class ConditionResultsPanelView {
 
     this.#statusProxy = new Proxy(status, {
       get: (target, property, receiver) => {
-        // console.log(target, property, receiver)
         return Reflect.get(target, property, receiver);
       },
       set: (target, property, value, receiver) => {
-        // console.log(target, property, value, receiver)
-        // console.log(status)
+   
         switch (property) {
           case 'total': 
             this.#loadedIds(value);
