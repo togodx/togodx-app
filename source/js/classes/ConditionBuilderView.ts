@@ -64,8 +64,12 @@ export default class ConditionBuilderView {
     elm
       .querySelector(':scope > header > button')
       .addEventListener('click', () => {
-        const customEvent = new CustomEvent(event.clearCondition);
-        DefaultEventEmitter.dispatchEvent(customEvent);
+        const customEvent1 = new CustomEvent(event.clearCondition);
+        DefaultEventEmitter.dispatchEvent(customEvent1);
+        const customEvent2 = new CustomEvent(event.mutateEstablishConditions, {
+          detail: false
+        });
+        DefaultEventEmitter.dispatchEvent(customEvent2);
       });
 
     // event listeners

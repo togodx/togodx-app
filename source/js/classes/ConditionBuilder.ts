@@ -237,8 +237,6 @@ class ConditionBuilder {
       filters: [],
       annotations: [],
     };
-    // console.log(this.#conditionUtilityAnnotations)
-    // console.log(this.#conditionUtilityFilters)
     const conditionUtilityAnnotations =
       this.#conditionUtilityAnnotations.filter(
         conditionUtilityAnnotation =>
@@ -256,7 +254,6 @@ class ConditionBuilder {
       );
     if (conditionUtilityFilter)
       nodes.filters.push(...conditionUtilityFilter.nodes);
-    // console.log(nodes)
     return nodes;
   }
 
@@ -267,7 +264,6 @@ class ConditionBuilder {
   }
 
   get userIds() {
-    console.log(this.#userIds)
     return this.#userIds ? [...this.#userIds] : [];
   }
 
