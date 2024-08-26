@@ -167,10 +167,8 @@ export default class ResultsTable {
       }
     } else {
       this.#previewDxCondition = undefined;
-      this.#TBODY.innerHTML = '';
-      this.#COLGROUP.innerHTML = '';
       this.#THEAD.innerHTML = '';
-      this.#STATS.innerHTML = '';
+      this.#TBODY.innerHTML = '';
     }
     this.#NUMBER_OF_ENTRIES.innerHTML = `${numberOfResults.toLocaleString()} ${prMapEntry.get(
       new Intl.PluralRules('en-US').select(numberOfResults)
