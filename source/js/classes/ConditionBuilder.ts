@@ -237,7 +237,6 @@ class ConditionBuilder {
       filters: [],
       annotations: [],
     };
-
     const conditionUtilityAnnotations =
       this.#conditionUtilityAnnotations.filter(
         conditionUtilityAnnotation =>
@@ -255,7 +254,6 @@ class ConditionBuilder {
       );
     if (conditionUtilityFilter)
       nodes.filters.push(...conditionUtilityFilter.nodes);
-
     return nodes;
   }
 
