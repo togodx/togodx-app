@@ -93,7 +93,6 @@ export default class ConditionResultsPanelView {
 
     // events
     this.#ROOT.addEventListener('click', () => {
-      if (this.#ROOT.classList.contains('-current')) return;
       this.#controller.select();
     });
     this.#CLOSE_BUTTON = this.#ROOT.querySelector(':scope > .close-button-view') as HTMLDivElement;
