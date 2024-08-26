@@ -20,7 +20,6 @@ export default class ConditionBuilderView {
   #EXEC_BUTTON: HTMLButtonElement;
 
   constructor(elm: HTMLElement) {
-    console.log(elm)
     this.#properties = [];
     this.#propertyFilters = [];
     this.#isDefined = false;
