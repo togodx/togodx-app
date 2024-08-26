@@ -23,11 +23,11 @@ type LoadStatus = 'ids' | 'properties' | 'completed';
 
 export default class ConditionResultsPanelView {
   #ROOT: HTMLElement;
-  #STATUS: HTMLParagraphElement;
-  #CLOSE_BUTTON: HTMLDivElement;
+  #STATUS!: HTMLParagraphElement;
+  #CLOSE_BUTTON!: HTMLDivElement;
   #controller: ConditionResultsController;
-  #progressIndicator: ProgressIndicator;
-  #statusProxy: ConditionResultsControllerStatus;
+  #progressIndicator!: ProgressIndicator;
+  #statusProxy!: ConditionResultsControllerStatus;
 
   constructor(controller: ConditionResultsController) {
 
@@ -169,32 +169,29 @@ export default class ConditionResultsPanelView {
     download(JSON.stringify([this.preset]), 'json', 'togodx-preset', true);
   }
 
-  controllerStatusProxy(status: object) {
-
-    this.#statusProxy = new Proxy(status, {
-      get: (target, property, receiver) => {
-        return Reflect.get(target, property, receiver);
-      },
-      set: (target, property, value, receiver) => {
-   
-        switch (property) {
-          case 'total': 
-            this.#loadedIds(value);
-            break;
-          case 'current': 
-            this.#loadedProperties(value);
-            break;
+  controllerStatusProxy(status: ConditionResultsControllerStatus) {
+  
+      this.#statusProxy = new Proxy(status, {
+        get: (target, property, receiver) => {
+          return Reflect.get(target, property, receiver);
+        },
+        set: (target, property, value, receiver) => {
+          switch (property) {
+            case 'total': 
+              this.#loadedIds(value);
+              break;
+            case 'current': 
+              this.#loadedProperties(value);
+              break;
+          }
+          return Reflect.set(target, property, value, receiver);
         }
-        return Reflect.set(target, property, value, receiver);
-      }
-    })
-    return this.#statusProxy;
-  }
+      })
+      return this.#statusProxy;
+    }
 
   displayError(message: string, code: number): void {
-    this.#STATUS.innerHTML = `<span class="error">${code
-      ? `${message} (${code})`
-      : message}</span>`;
+    this.#STATUS.innerHTML = `<span class="error">${code !== undefined ? code : ''}${message}</span>`;
     this.#ROOT.classList.add('-error');
     this.#ROOT.classList.remove('-loading');
   }
