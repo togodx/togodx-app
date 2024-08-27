@@ -45,7 +45,7 @@
       margin-bottom: 0
       transition: opacity var(--transition-instant)
       &::before
-        content: "Awaiting"
+        content: "Click to execute"
       > .error
         color: red
     > .material-icons
@@ -114,11 +114,11 @@
     &[data-load="ids"]
       > .status
         > p::before
-          content: "Getting ID list"
+          content: "Fetching ID list"
     &[data-load="properties"]
       > .status
         > p::before
-          content: "Getting Data"
+          content: "Fetching data"
 
   &:not([data-load="ids"])
     > .progress-indicator
@@ -133,12 +133,10 @@
         display: block
     > .status
       > p::before
-        content: "Complete"
+        content: "Completed"
 
   &.-current, &:hover
     opacity: 1
-  &.-current
-    cursor: initial
   &.-loading
     > .status
       > .material-icons

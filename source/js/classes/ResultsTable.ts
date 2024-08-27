@@ -142,30 +142,38 @@ export default class ResultsTable {
 
   async #makePreview(e: Event) {
     const isEstablised = (e as CustomEvent).detail as boolean;
-    if (isEstablised && (document.body.dataset.display = 'properties')) {
+    let numberOfResults = 0;
+    if (isEstablised) {
+      if ((document.body.dataset.display = 'properties')) {
+        this.#TBODY.innerHTML = '';
+        this.#previewDxCondition = ConditionBuilder.dxCondition;
+        // get IDs
+        const ids = await this.#previewDxCondition.getIDs();
+        numberOfResults = ids.length;
+        this.#header = this.#previewDxCondition.tableHeader;
+        // make table header
+        this.#makeTableHeader(this.#previewDxCondition);
+        // make rows
+        const nextRows = await this.#previewDxCondition.getNextProperties(
+          NUM_OF_PREVIEW
+        );
+        this.#addNextRows({
+          dxCondition: this.#previewDxCondition,
+          offset: 0,
+          nextRows,
+          isAutoLoading: false,
+          isPreview: true,
+        });
+      }
+    } else {
+      this.#previewDxCondition = undefined;
+      this.#THEAD.innerHTML = '';
       this.#TBODY.innerHTML = '';
-      this.#previewDxCondition = ConditionBuilder.dxCondition;
-      // get IDs
-      const ids = await this.#previewDxCondition.getIDs();
-      this.#header = this.#previewDxCondition.tableHeader;
-      // make table header
-      this.#NUMBER_OF_ENTRIES.innerHTML = `${ids.length.toLocaleString()} ${prMapEntry.get(
-        new Intl.PluralRules('en-US').select(ids.length)
-      )}`;
-      this.#makeTableHeader(this.#previewDxCondition);
-      // make rows
-      document.body.dataset.numberOfResults = String(ids.length);
-      const nextRows = await this.#previewDxCondition.getNextProperties(
-        NUM_OF_PREVIEW
-      );
-      this.#addNextRows({
-        dxCondition: this.#previewDxCondition,
-        offset: 0,
-        nextRows,
-        isAutoLoading: false,
-        isPreview: true,
-      });
     }
+    this.#NUMBER_OF_ENTRIES.innerHTML = `${numberOfResults.toLocaleString()} ${prMapEntry.get(
+      new Intl.PluralRules('en-US').select(numberOfResults)
+    )}`;
+    document.body.dataset.numberOfResults = String(numberOfResults);
   }
 
   #setupTable(e: Event) {
