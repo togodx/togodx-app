@@ -304,7 +304,9 @@ class ConditionBuilder {
 
     // evaluate if search is possible
     const established =
-      this.#dataset && this.#conditionUtilityFilters.length > 0;
+      Boolean(this.#dataset) &&
+      (this.#conditionUtilityFilters.length > 0 ||
+        this.#userIds.filter(Boolean).length > 0);
     const customEvent = new CustomEvent(events.mutateEstablishConditions, {
       detail: established,
     });
