@@ -103,6 +103,20 @@ export default class ConditionBuilderView {
       }
     );
     DefaultEventEmitter.addEventListener(
+      event.mutateSubject,
+      (e: Event) => {
+        const dataset = (e as CustomEvent<string>).detail;
+        // reflect to the dataset selector without firing a change event
+        if (this.#DATASET_KEY.value === dataset) return;
+        const hasOption = Array.from(this.#DATASET_KEY.options)
+          .some(option => option.value === dataset);
+        if (!hasOption) return;
+        this.#DATASET_KEY.value = dataset;
+        const examples = this.#placeHolderExamples[dataset];
+        if (examples) this.#USER_IDS.placeholder = `e.g. ${examples.join(', ')}`;
+      }
+    );
+    DefaultEventEmitter.addEventListener(
       event.defineTogoKey,
       this.#defineDatasetKeys.bind(this) as EventListener
     );

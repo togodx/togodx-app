@@ -10,6 +10,8 @@ export const toggleErrorUserFilters = 'toggleErrorUserFilters';
 export const changeViewModes = 'changeViewModes';
 
 // Condition
+export const mutateSubject = 'mutateSubject';
+export const mutateUserIds = 'mutateUserIds';
 export const mutateAnnotationCondition = 'mutateAnnotationCondition';
 export const mutateFilterCondition = 'mutateFilterCondition';
 export const mutateEstablishConditions = 'mutateEstablishConditions';

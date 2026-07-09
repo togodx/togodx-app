@@ -183,6 +183,9 @@ export default class DXCondition {
   get togoKey(): string {
     return this.#dataset;
   }
+  get userIds(): string[] {
+    return [...this.#userIds];
+  }
 
   get conditionUtilityAnnotations(): ConditionAnnotationUtility[] {
     return this.#conditionUtilityAnnotations;

@@ -77,12 +77,20 @@ class ConditionBuilder {
   setSubject(dataset: string) {
     this.#dataset = dataset;
     this.#postProcessing();
+    // dispatch event (reflect to dataset selector in the builder)
+    DefaultEventEmitter.dispatchEvent(
+      new CustomEvent(events.mutateSubject, {detail: dataset})
+    );
   }
 
   setUserIds(ids = '') {
     this.#userIds = ids.replace(/,/g, ' ').split(/\s+/);
     // post processing (permalink, evaluate)
     this.#postProcessing();
+    // dispatch event (reflect to user IDs textarea in the builder)
+    DefaultEventEmitter.dispatchEvent(
+      new CustomEvent(events.mutateUserIds, {detail: this.#userIds})
+    );
   }
 
   addAnnotation(conditionUtilityAnnotation: ConditionAnnotationUtility, isFinal = true) {
