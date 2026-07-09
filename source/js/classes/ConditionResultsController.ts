@@ -115,6 +115,10 @@ export default class ConditionResultsController {
   }
 
   edit(): void {
+    // dataset
+    ConditionBuilder.setSubject(this.#dxCondition.togoKey);
+    // queries (user IDs)
+    ConditionBuilder.setUserIds(this.#dxCondition.userIds.join(' '));
     // annotation
     ConditionBuilder.setAnnotation(
       this.#dxCondition.conditionUtilityAnnotations.map(

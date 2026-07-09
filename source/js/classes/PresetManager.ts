@@ -99,6 +99,13 @@ class PresetManager {
           const customEvent = new CustomEvent(events.addConditionResults, {detail: preset});
           DefaultEventEmitter.dispatchEvent(customEvent);
         });
+        // reflect the first condition to the condition builder
+        const firstPreset = presets.find(preset => preset.condition);
+        if (firstPreset) {
+          DefaultEventEmitter.dispatchEvent(
+            new CustomEvent(events.importFirstCondition, {detail: firstPreset})
+          );
+        }
       } catch (e) {
         console.error(e);
         window.alert('File parsing failed.');

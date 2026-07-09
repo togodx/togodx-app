@@ -80,6 +80,24 @@ export default class UploadUserIDsView {
     //   if (e.keyCode === 13) this.#fetch();
     // });
     DefaultEventEmitter.addEventListener(
+      event.mutateUserIds,
+      (e: Event) => {
+        // reflect to the textarea without firing a change event
+        const ids = (e as CustomEvent<string[]>).detail;
+        const value = ids.join(' ').trim();
+        if (this.#USER_IDS.value === value) return;
+        this.#USER_IDS.value = value;
+      }
+    );
+    DefaultEventEmitter.addEventListener(
+      event.submitUserIds,
+      () => {
+        // auto-submit "Map your IDs" (triggered after importing a preset)
+        this.#resetCounters();
+        this.#fetch();
+      }
+    );
+    DefaultEventEmitter.addEventListener(
       event.clearCondition,
       this.#clear.bind(this)
     );

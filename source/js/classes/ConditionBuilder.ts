@@ -44,6 +44,10 @@ class ConditionBuilder {
       events.clearCondition,
       this.#clearConditinos.bind(this)
     );
+    DefaultEventEmitter.addEventListener(
+      events.importFirstCondition,
+      this.#restoreConditionFromPreset.bind(this) as EventListener
+    );
   }
   
 
@@ -77,12 +81,20 @@ class ConditionBuilder {
   setSubject(dataset: string) {
     this.#dataset = dataset;
     this.#postProcessing();
+    // dispatch event (reflect to dataset selector in the builder)
+    DefaultEventEmitter.dispatchEvent(
+      new CustomEvent(events.mutateSubject, {detail: dataset})
+    );
   }
 
   setUserIds(ids = '') {
     this.#userIds = ids.replace(/,/g, ' ').split(/\s+/);
     // post processing (permalink, evaluate)
     this.#postProcessing();
+    // dispatch event (reflect to user IDs textarea in the builder)
+    DefaultEventEmitter.dispatchEvent(
+      new CustomEvent(events.mutateUserIds, {detail: this.#userIds})
+    );
   }
 
   addAnnotation(conditionUtilityAnnotation: ConditionAnnotationUtility, isFinal = true) {
@@ -237,7 +249,6 @@ class ConditionBuilder {
       filters: [],
       annotations: [],
     };
-
     const conditionUtilityAnnotations =
       this.#conditionUtilityAnnotations.filter(
         conditionUtilityAnnotation =>
@@ -255,7 +266,6 @@ class ConditionBuilder {
       );
     if (conditionUtilityFilter)
       nodes.filters.push(...conditionUtilityFilter.nodes);
-
     return nodes;
   }
 
@@ -294,7 +304,9 @@ class ConditionBuilder {
 
     // evaluate if search is possible
     const established =
-      this.#dataset && this.#conditionUtilityFilters.length > 0;
+      Boolean(this.#dataset) &&
+      (this.#conditionUtilityFilters.length > 0 ||
+        this.#userIds.filter(Boolean).length > 0);
     const customEvent = new CustomEvent(events.mutateEstablishConditions, {
       detail: established,
     });
@@ -421,6 +433,46 @@ class ConditionBuilder {
     // dispatch event
     const customEvent = new CustomEvent(events.restoreParameters);
     DefaultEventEmitter.dispatchEvent(customEvent);
+  }
+
+  // reflect an uploaded preset's condition to the condition builder UI
+  #restoreConditionFromPreset(e: CustomEvent) {
+    const preset: Preset = e.detail;
+    const condition = preset.condition;
+    if (!condition) return;
+
+    // attribute set
+    PresetManager.currentAttributeSet = preset.attributeSet;
+    // dataset
+    if (condition.dataset) this.setSubject(condition.dataset);
+    // queries (user IDs)
+    const queries = (condition.queries ?? []).filter(Boolean);
+    this.setUserIds(queries.join(' '));
+    // annotations
+    this.setAnnotation(
+      (condition.annotations ?? []).map(
+        annotation =>
+          new ConditionAnnotationUtility(annotation.attribute, annotation.node)
+      ),
+      false
+    );
+    // filters
+    Records.attributes.forEach(({id}) => {
+      const filter = (condition.filters ?? []).find(
+        filter => filter.attribute === id
+      );
+      const nodes: string[] = [];
+      if (filter) nodes.push(...filter.nodes);
+      this.setFilter(id, nodes, false);
+    });
+    this.finish(true);
+
+    // auto-submit "Map your IDs" when queries exist
+    if (queries.length > 0) {
+      DefaultEventEmitter.dispatchEvent(
+        new CustomEvent(events.submitUserIds)
+      );
+    }
   }
 
   #clearConditinos() {
