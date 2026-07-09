@@ -95,6 +95,9 @@ class App {
     this.#makeCategoryViews();
     this.#defineAllTracksCollapseButton();
     ConditionBuilder.init();
+    // import conditions passed via URL (?conditions=<encodeURIComponent(JSON)>),
+    // behaving the same as uploading that JSON
+    PresetManager.importFromSearchParams(location.search);
   }
 
   // private methods

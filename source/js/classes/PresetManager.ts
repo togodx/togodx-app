@@ -88,30 +88,63 @@ class PresetManager {
     };
     reader.onload = (e: ProgressEvent) => {
       try {
-        // 'add' or 'overwrite'
-        if (!isAdd) {
-          DefaultEventEmitter.dispatchEvent(new CustomEvent(events.deleteAllConditionResults));
-        }
         // read file
         const fileReader: FileReader = <FileReader>e.target;
         const presets: Preset[] = JSON.parse(<string>fileReader.result);
-        presets.forEach(preset => {
-          const customEvent = new CustomEvent(events.addConditionResults, {detail: preset});
-          DefaultEventEmitter.dispatchEvent(customEvent);
-        });
-        // reflect the first condition to the condition builder
-        const firstPreset = presets.find(preset => preset.condition);
-        if (firstPreset) {
-          DefaultEventEmitter.dispatchEvent(
-            new CustomEvent(events.importFirstCondition, {detail: firstPreset})
-          );
-        }
+        this.#applyPresets(presets, isAdd);
       } catch (e) {
         console.error(e);
         window.alert('File parsing failed.');
       }
     };
     reader.readAsText(file);
+  }
+
+  // Import conditions passed in the URL, e.g. ?conditions=<encodeURIComponent(JSON)>.
+  // The payload is the same Preset[] as an uploaded file, so it runs the exact
+  // same pipeline as importSet (add mode).
+  importFromSearchParams(search: string): void {
+    // URLSearchParams already percent-decodes the value
+    const raw = new URLSearchParams(search).get('conditions');
+    if (!raw) return;
+    // consume the parameter: strip it from the address bar so a reload/share
+    // does not re-import and the (long) URL is cleaned up
+    this.#removeSearchParam('conditions');
+    try {
+      const presets: Preset[] = JSON.parse(raw);
+      if (!Array.isArray(presets)) return;
+      this.#applyPresets(presets, true);
+    } catch (e) {
+      console.error(e);
+      window.alert('Failed to parse conditions from URL.');
+    }
+  }
+
+  // remove a single query parameter from the current URL without reloading
+  #removeSearchParam(key: string): void {
+    const url = new URL(location.href);
+    if (!url.searchParams.has(key)) return;
+    url.searchParams.delete(key);
+    window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+  }
+
+  // shared pipeline for uploaded / URL-provided presets
+  #applyPresets(presets: Preset[], isAdd: boolean): void {
+    // 'add' or 'overwrite'
+    if (!isAdd) {
+      DefaultEventEmitter.dispatchEvent(new CustomEvent(events.deleteAllConditionResults));
+    }
+    presets.forEach(preset => {
+      const customEvent = new CustomEvent(events.addConditionResults, {detail: preset});
+      DefaultEventEmitter.dispatchEvent(customEvent);
+    });
+    // reflect the first condition to the condition builder
+    const firstPreset = presets.find(preset => preset.condition);
+    if (firstPreset) {
+      DefaultEventEmitter.dispatchEvent(
+        new CustomEvent(events.importFirstCondition, {detail: firstPreset})
+      );
+    }
   }
 
   // downloadCurrentSet(): void {
