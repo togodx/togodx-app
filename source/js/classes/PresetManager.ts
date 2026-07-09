@@ -107,6 +107,9 @@ class PresetManager {
     // URLSearchParams already percent-decodes the value
     const raw = new URLSearchParams(search).get('conditions');
     if (!raw) return;
+    // consume the parameter: strip it from the address bar so a reload/share
+    // does not re-import and the (long) URL is cleaned up
+    this.#removeSearchParam('conditions');
     try {
       const presets: Preset[] = JSON.parse(raw);
       if (!Array.isArray(presets)) return;
@@ -115,6 +118,14 @@ class PresetManager {
       console.error(e);
       window.alert('Failed to parse conditions from URL.');
     }
+  }
+
+  // remove a single query parameter from the current URL without reloading
+  #removeSearchParam(key: string): void {
+    const url = new URL(location.href);
+    if (!url.searchParams.has(key)) return;
+    url.searchParams.delete(key);
+    window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
   }
 
   // shared pipeline for uploaded / URL-provided presets
