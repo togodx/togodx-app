@@ -5,6 +5,7 @@ export const defineTogoKey = 'defineTogoKey';
 export const setUserFilters = 'setUserFilters';
 export const clearUserFilters = 'clearUserFilters';
 export const toggleErrorUserFilters = 'toggleErrorUserFilters';
+export const submitUserIds = 'submitUserIds';
 
 // View mode
 export const changeViewModes = 'changeViewModes';
@@ -17,6 +18,7 @@ export const mutateFilterCondition = 'mutateFilterCondition';
 export const mutateEstablishConditions = 'mutateEstablishConditions';
 export const restoreParameters = 'restoreParameters';
 export const clearCondition = 'clearCondition';
+export const importFirstCondition = 'importFirstCondition';
 
 // Condition results
 export const selectConditionResults = 'selectConditionResults';

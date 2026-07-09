@@ -90,6 +90,14 @@ export default class UploadUserIDsView {
       }
     );
     DefaultEventEmitter.addEventListener(
+      event.submitUserIds,
+      () => {
+        // auto-submit "Map your IDs" (triggered after importing a preset)
+        this.#resetCounters();
+        this.#fetch();
+      }
+    );
+    DefaultEventEmitter.addEventListener(
       event.clearCondition,
       this.#clear.bind(this)
     );
