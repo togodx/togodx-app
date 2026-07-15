@@ -88,7 +88,7 @@ class ConditionBuilder {
   }
 
   setUserIds(ids = '') {
-    this.#userIds = ids.replace(/,/g, ' ').split(/\s+/);
+    this.#userIds = ids.replace(/,/g, ' ').split(/\s+/).filter(Boolean);
     // post processing (permalink, evaluate)
     this.#postProcessing();
     // dispatch event (reflect to user IDs textarea in the builder)
